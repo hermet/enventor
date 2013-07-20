@@ -28,11 +28,13 @@ fake_objs_update(fake_obj *fo)
    Edje_Part_Type type;
    part_obj *po;
 
-   Eina_Bool removed = EINA_TRUE;
+   Eina_Bool removed;
 
    //Remove the fake swallow objects that parts are removed.
    EINA_LIST_FOREACH_SAFE(fo->swallows, l, l_next, po)
      {
+        removed = EINA_FALSE;
+
         EINA_LIST_FOREACH(parts, l2, part_name)
           {
              if (strlen(po->name) > strlen(part_name))
@@ -45,9 +47,11 @@ fake_objs_update(fake_obj *fo)
                }
 
              if (edje_edit_part_type_get(edje, part_name) !=
-                 EDJE_PART_TYPE_SWALLOW) continue;
-
-             removed = EINA_FALSE;
+                 EDJE_PART_TYPE_SWALLOW)
+               {
+                  removed = EINA_TRUE;
+                  break;
+               }
           }
         if (removed)
           {
@@ -80,6 +84,7 @@ fake_objs_update(fake_obj *fo)
              po->obj = obj;
              po->name = eina_stringshare_add(part_name);
              fo->swallows = eina_list_append(fo->swallows, po);
+             printf("%s - obj(%p)\n", part_name, obj);
           }
      }
 }
