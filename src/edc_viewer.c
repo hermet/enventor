@@ -17,6 +17,7 @@ struct viewer_s
    Eina_Stringshare *part_name;
 
    Eina_Bool view_reload;
+   Eina_Bool dummy_obj;
 };
 
 static void
@@ -119,9 +120,20 @@ view_obj_idler_cb(void *data)
                                 vd->group_name);
    elm_object_content_set(vd->scroller, vd->layout);
 
-   dummy_obj_new(vd->layout);
+   if (vd->dummy_obj)
+     dummy_obj_new(vd->layout);
 
    return ECORE_CALLBACK_CANCEL;
+}
+
+void
+view_dummy_toggle(view_data *vd)
+{
+   Eina_Bool dummy_obj = option_dummy_swallow_get(vd->od);
+   if (dummy_obj == vd->dummy_obj) return;
+   if (dummy_obj) dummy_obj_new(vd->layout);
+   else dummy_obj_del(vd->layout);
+   vd->dummy_obj = dummy_obj;
 }
 
 void
@@ -152,6 +164,7 @@ view_init(Evas_Object *parent, const char *group, stats_data *sd,
    vd->sd = sd;
    vd->od = od;
    vd->scroller = view_scroller_create(parent);
+   vd->dummy_obj = option_dummy_swallow_get(od);
 
    view_new(vd, group);
 

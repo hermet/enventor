@@ -114,6 +114,7 @@ layout_del_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED, Evas_Object *obj,
 
 void dummy_obj_new(Evas_Object *layout)
 {
+   DFUNC_NAME();
    dummy_obj *dummy = evas_object_data_get(layout, DUMMYOBJ);
    if (dummy) return;
 
@@ -126,7 +127,8 @@ void dummy_obj_new(Evas_Object *layout)
    ecore_animator_add(animator_cb, dummy);
    evas_object_data_set(layout, DUMMYOBJ, dummy);
 
-   evas_object_event_callback_add(layout, EVAS_CALLBACK_DEL, layout_del_cb, dummy);
+   evas_object_event_callback_add(layout, EVAS_CALLBACK_DEL, layout_del_cb,
+                                  dummy);
 
    dummy->layout = layout;
 }
@@ -134,7 +136,7 @@ void dummy_obj_new(Evas_Object *layout)
 void dummy_obj_del(Evas_Object *layout)
 {
    dummy_obj *dummy = evas_object_data_get(layout, DUMMYOBJ);
-   if (dummy) return;
+   if (!dummy) return;
 
    Eina_List *l;
    part_obj *po;
