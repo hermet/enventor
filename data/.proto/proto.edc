@@ -30,7 +30,7 @@ collections {
             description { state: "default" 0.0;
                rel1.relative: 0.0 0.5;
                rel2.relative: 0.5 1.0;
-               color: 0 150 0 255;
+               color: 50 150 150 255;
                text {
                   size: 25;
                   font: "Sans";

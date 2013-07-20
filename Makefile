@@ -58,5 +58,5 @@ uninstall:
 	rm -rf $(BINDIR)/$(BINARY)
 
 clean:
-	@rm -f $(EDJDIR)/*.edj *~ $(BINARY) $(SRCDIR)/*.o
+	@rm -f $(EDJDIR)/*.edj *~ $(BINARY)
 	@rm -f $(PROTODIR)/.proto.edc $(PROTODIR)/.proto.edj

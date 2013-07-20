@@ -80,7 +80,7 @@ base_gui_construct(app_data *ad)
 
    //Window
    Evas_Object *win = elm_win_util_standard_add(elm_app_name_get(),
-                                                "Edje Writer");
+                                                "Enventor");
    elm_win_focus_highlight_enabled_set(win, EINA_TRUE);
    evas_object_smart_callback_add(win, "delete,request", win_delete_request_cb,
                                   ad);
