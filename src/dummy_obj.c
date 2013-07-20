@@ -114,7 +114,6 @@ layout_del_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED, Evas_Object *obj,
 
 void dummy_obj_new(Evas_Object *layout)
 {
-   DFUNC_NAME();
    dummy_obj *dummy = evas_object_data_get(layout, DUMMYOBJ);
    if (dummy) return;
 
