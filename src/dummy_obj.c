@@ -16,7 +16,7 @@ struct dummy_obj_s
    Eina_List *swallows;
 };
 
-const char *DUMMYOBJ = "dummobj";
+const char *DUMMYOBJ = "dummy_obj";
 
 void
 dummy_objs_update(dummy_obj *dummy)
