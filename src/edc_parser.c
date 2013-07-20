@@ -3,12 +3,13 @@
 
 struct parser_s
 {
-   Eina_List *attrs;     //FIXME: Use Inlist
+   Eina_Inlist *attrs;
    Ecore_Thread *thread;
 };
 
 typedef struct parser_attr_s
 {
+   EINA_INLIST;
    Eina_Stringshare *keyword;
    attr_value value;
 } parser_attr;
@@ -46,7 +47,7 @@ parser_type_init(parser_data *pd)
    attr = calloc(1, sizeof(parser_attr));
    attr->keyword = eina_stringshare_add("type");
    attr->value.strs = types;
-   pd->attrs = eina_list_append(pd->attrs, attr);
+   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
 
    Eina_List *comps = NULL;
    comps = eina_list_append(comps, eina_stringshare_add("RAW"));
@@ -57,7 +58,7 @@ parser_type_init(parser_data *pd)
    attr = calloc(1, sizeof(parser_attr));
    attr->keyword = eina_stringshare_add("image");
    attr->value.strs = comps;
-   pd->attrs = eina_list_append(pd->attrs, attr);
+   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
 
    Eina_List *transit = NULL;
    transit = eina_list_append(transit, eina_stringshare_add("LINEAR"));
@@ -74,75 +75,74 @@ parser_type_init(parser_data *pd)
    attr = calloc(1, sizeof(parser_attr));
    attr->keyword = eina_stringshare_add("transition");
    attr->value.strs = transit;
-   pd->attrs = eina_list_append(pd->attrs, attr);
+   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
 
    attr = calloc(1, sizeof(parser_attr));
    attr->keyword = eina_stringshare_add("color");
    attr->value.min = 0;
    attr->value.max = 255;
    attr->value.integer = EINA_TRUE;
-   pd->attrs = eina_list_append(pd->attrs, attr);
+   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
 
    attr = calloc(1, sizeof(parser_attr));
    attr->keyword = eina_stringshare_add("relative");
    attr->value.min = 0.0;
    attr->value.max = 1;
-   pd->attrs = eina_list_append(pd->attrs, attr);
+   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
 
    attr = calloc(1, sizeof(parser_attr));
    attr->keyword = eina_stringshare_add("scale");
    attr->value.min = 0;
    attr->value.max = 1;
    attr->value.integer = EINA_TRUE;
-   pd->attrs = eina_list_append(pd->attrs, attr);
+   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
 
    attr = calloc(1, sizeof(parser_attr));
    attr->keyword = eina_stringshare_add("fixed");
    attr->value.min = 0;
    attr->value.max = 1;
    attr->value.integer = EINA_TRUE;
-   pd->attrs = eina_list_append(pd->attrs, attr);
+   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
 
    attr = calloc(1, sizeof(parser_attr));
    attr->keyword = eina_stringshare_add("aspect");
    attr->value.min = 0.0;
    attr->value.max = 1.0;
-   pd->attrs = eina_list_append(pd->attrs, attr);
+   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
 
    attr = calloc(1, sizeof(parser_attr));
    attr->keyword = eina_stringshare_add("align");
    attr->value.min = 0.0;
    attr->value.max = 1.0;
-   pd->attrs = eina_list_append(pd->attrs, attr);
+   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
 
    attr = calloc(1, sizeof(parser_attr));
    attr->keyword = eina_stringshare_add("size");
    attr->value.min = 1;
    attr->value.max = 255;
    attr->value.integer = EINA_TRUE;
-   pd->attrs = eina_list_append(pd->attrs, attr);
+   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
 
    attr = calloc(1, sizeof(parser_attr));
    attr->keyword = eina_stringshare_add("min");
    attr->value.min = 0;
    attr->value.max = 1000;
    attr->value.integer = EINA_TRUE;
-   pd->attrs = eina_list_append(pd->attrs, attr);
+   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
 
    attr = calloc(1, sizeof(parser_attr));
    attr->keyword = eina_stringshare_add("max");
    attr->value.min = 0;
    attr->value.max = 1000;
    attr->value.integer = EINA_TRUE;
-   pd->attrs = eina_list_append(pd->attrs, attr);
+   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
 
    attr = calloc(1, sizeof(parser_attr));
    attr->keyword = eina_stringshare_add("mouse_events");
    attr->value.min = 0;
    attr->value.max = 1000;
    attr->value.integer = EINA_TRUE;
-   pd->attrs = eina_list_append(pd->attrs, attr);
-
+   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
 }
 
 attr_value *
@@ -152,7 +152,6 @@ parser_attribute_get(parser_data *pd, const char *text, const char *cur)
 
    char *p = (char *) cur;
 
-   Eina_List *l;
    parser_attr *attr;
    Eina_Bool instring = EINA_FALSE;
    Eina_Bool necessary = EINA_FALSE;
@@ -178,7 +177,7 @@ parser_attribute_get(parser_data *pd, const char *text, const char *cur)
    if (!p) return NULL;
    if (p != text) p++;
 
-   EINA_LIST_FOREACH(pd->attrs, l, attr)
+   EINA_INLIST_FOREACH(pd->attrs, attr)
      {
         if (strstr(p, attr->keyword))
           return &attr->value;
@@ -200,20 +199,22 @@ parser_term(parser_data *pd)
 {
    if (pd->thread) ecore_thread_cancel(pd->thread);
 
-   Eina_List *l, *ll;
+   Eina_List *l;
    parser_attr *attr;
    Eina_Stringshare *str;
 
-   EINA_LIST_FOREACH(pd->attrs, l, attr)
+   while(pd->attrs)
      {
+        attr = EINA_INLIST_CONTAINER_GET(pd->attrs, parser_attr);
+        pd->attrs = eina_inlist_remove(pd->attrs, pd->attrs);
+
         eina_stringshare_del(attr->keyword);
 
-        EINA_LIST_FOREACH(attr->value.strs, ll, str)
+        EINA_LIST_FOREACH(attr->value.strs, l, str)
            eina_stringshare_del(str);
         eina_list_free(attr->value.strs);
         free(attr);
      }
-   eina_list_free(pd->attrs);
 
    free(pd);
 }
