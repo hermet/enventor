@@ -13,6 +13,8 @@ struct menu_s
    Evas_Object *toggle_stats;
    Evas_Object *toggle_linenumber;
    Evas_Object *toggle_highlight;
+   Evas_Object *dummy_swallow;
+
    Evas_Object *ctxpopup;
 
    void (*close_cb)(void *data);
@@ -177,6 +179,7 @@ setting_apply_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
    option_stats_bar_set(od, elm_check_state_get(md->toggle_stats));
    option_linenumber_set(od, elm_check_state_get(md->toggle_linenumber));
    option_part_highlight_set(od, elm_check_state_get(md->toggle_highlight));
+   option_dummy_swallow_set(od, elm_check_state_get(md->dummy_swallow));
    option_apply(od);
 
    setting_close(md);
@@ -263,10 +266,16 @@ setting_open(menu_data *md)
                                snd_path_entry);
 
    //Preference
-   Evas_Object *box = elm_box_add(layout);
+   Evas_Object *scroller = elm_scroller_add(layout);
+   elm_object_part_content_set(layout, "elm.swallow.preference", scroller);
+   evas_object_show(scroller);
+
+   Evas_Object *box = elm_box_add(scroller);
+   evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(box, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_show(box);
 
-   elm_object_part_content_set(layout, "elm.swallow.preference", box);
+   elm_object_content_set(scroller, box);
 
    Evas_Object *toggle;
 
@@ -331,6 +340,19 @@ setting_open(menu_data *md)
 
    elm_box_pack_end(box, toggle_highlight);
 
+   //Toggle (Dummy Swallow)
+   Evas_Object *dummy_swallow = elm_check_add(box);
+   elm_object_style_set(dummy_swallow, "toggle");
+   elm_check_state_set(dummy_swallow, option_dummy_swallow_get(md->od));
+   evas_object_size_hint_weight_set(dummy_swallow, EVAS_HINT_EXPAND,
+                                    EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(dummy_swallow, EVAS_HINT_FILL,
+                                   EVAS_HINT_FILL);
+   elm_object_text_set(dummy_swallow, "Dummy Swallow");
+   evas_object_show(dummy_swallow);
+
+   elm_box_pack_end(box, dummy_swallow);
+
    //Toggle (Auto Indentation)
    toggle = elm_check_add(box);
    elm_object_style_set(toggle, "toggle");
@@ -381,6 +403,7 @@ setting_open(menu_data *md)
    md->toggle_stats = toggle_stats;
    md->toggle_linenumber = toggle_linenumber;
    md->toggle_highlight = toggle_highlight;
+   md->dummy_swallow = dummy_swallow;
 }
 
 static void

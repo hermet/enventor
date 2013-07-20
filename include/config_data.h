@@ -22,4 +22,7 @@ void option_view_size_get(option_data *od, Evas_Coord *w, Evas_Coord *h);
 void option_view_size_set(option_data *od, Evas_Coord w, Evas_Coord h);
 Eina_Bool option_part_highlight_get(option_data *od);
 void option_part_highlight_set(option_data *od, Eina_Bool highlight);
+Eina_Bool option_dummy_swallow_get(option_data *od);
+void option_dummy_swallow_set(option_data *od, Eina_Bool dummy_swallow);
+
 

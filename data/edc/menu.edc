@@ -787,18 +787,6 @@ group { name: "setting_layout";
             }
          }
       }
-      part { name: "preference_bg";
-         type: RECT;
-         scale: 1;
-         description {
-            rel1.to_x: "preference_guide";
-            rel1.to_y: "preference_guide";
-            rel1.offset: 0 5;
-            rel1.relative: 0 1;
-            rel2.to: "preference_frame";
-            color: 170 170 170 170;
-         }
-      }
       part { name: "elm.swallow.preference";
          type: SWALLOW;
          scale: 1;

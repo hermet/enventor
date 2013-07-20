@@ -18,6 +18,7 @@ struct config_s
    Eina_Bool stats_bar : 1;
    Eina_Bool linenumber : 1;
    Eina_Bool part_highlight : 1;
+   Eina_Bool dummy_swallow : 1;
 };
 
 void
@@ -72,6 +73,7 @@ option_init(const char *edc_path, const char *edc_img_path,
 
    od->linenumber = EINA_TRUE;
    od->part_highlight = EINA_TRUE;
+   od->dummy_swallow = EINA_TRUE;
 
    return od;
 }
@@ -271,4 +273,16 @@ void
 option_part_highlight_set(option_data *od, Eina_Bool highlight)
 {
    od->part_highlight = highlight;
+}
+
+Eina_Bool
+option_dummy_swallow_get(option_data *od)
+{
+   return od->dummy_swallow;
+}
+
+void
+option_dummy_swallow_set(option_data *od, Eina_Bool dummy_swallow)
+{
+   od->dummy_swallow = dummy_swallow;
 }

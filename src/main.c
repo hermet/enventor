@@ -310,6 +310,8 @@ option_update_cb(void *data, option_data *od)
    statusbar_toggle(ad);
    part_highlight_toggle(ad);
 
+   //FIXME: implement dummy object update.
+
    //previous build was failed, Need to rebuild then reload the edj.
    if (view_reload_need_get(ad->vd))
      {
