@@ -1,0 +1,68 @@
+collections {
+   images {
+      image: "logo.png" COMP;
+   }
+   group { name: "main";
+      parts {
+         part { name: "logo";
+            type: IMAGE;
+            description { state: "default" 0.0;
+               rel1.relative: 0.0 0.0;
+               rel2.relative: 0.5 0.5;
+               image.normal: "logo.png";
+            }
+            description { state: "hide" 0.0;
+               inherit: "default" 0.0;
+               color: 127 127 127 127;
+            }
+         }
+         part { name: "rect";
+            type: RECT;
+            description { state: "default" 0.0;
+               rel1.relative: 0.5 0.0;
+               rel2.relative: 1.0 0.5;
+               color: 255 255 0 255;
+            }
+         }
+         part { name: "text";
+            type: TEXT;
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1.relative: 0.0 0.5;
+               rel2.relative: 0.5 1.0;
+               color: 0 150 0 255;
+               text {
+                  size: 25;
+                  font: "Sans";
+                  text: "Enventor";
+                  align: 0.5 0.5;
+               }
+            }
+         }
+         part { name: "content";
+            type: SWALLOW;
+            description { state: "default" 0.0;
+               rel1.relative: 0.5 0.5;
+               rel2.relative: 1.0 1.0;
+               color: 255 255 0 255;
+            }
+         }
+      }
+/*
+      programs {
+         program { name: "mouse_down";
+            signal: "mouse,down,1";
+            source: "logo";
+            action: STATE_SET "hide" 0.0;
+            target: "logo";
+         }
+         program { name: "mouse_up";
+            signal: "mouse,up,1";
+            source: "logo";
+            action: STATE_SET "default" 0.0;
+            target: "logo";
+         }
+      }
+*/
+   }
+}

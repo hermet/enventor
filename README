@@ -1,0 +1,22 @@
+Short Cut Keys:
+
+Esc = Open/Close Menu
+F5 = Show/Hide Line Number
+F6 = Show/Hide Status
+Ctrl+S = Save / Compile EDC
+Ctrl+L = Load EDC
+Ctrl+A = Select Text All
+Ctrl+Double Click = Select a word
+Ctrl+C = Copy Selected Text
+Ctrl+V = Paste Copied Text
+Ctrl+Home = Go to the Top line
+Ctrl+End = Go to the Bottom line
+Ctrl+H = Part Highlighting
+Ctrl+, = Full Edit View
+Ctrl+. = Full Edje View
+Ctrl+/ = Split View
+
+Command Line Usage:
+
+enventor --help
+enventor [input file] [-id image path] [-sd sound path]

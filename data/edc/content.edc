@@ -1,0 +1,108 @@
+images {
+   image: "part_highlight.png" COMP;
+   image: "swallow.png" COMP;
+}
+
+group { name: "swallow";
+   parts {
+      part { name: "base";
+         type: RECT;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            color: 255 0 0 10;
+         }
+      }
+      part { name: "img";
+         type: IMAGE;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            image.normal: "swallow.png";
+            align: 0.5 0.5;
+            min: 0 0;
+            max: 60 60;
+            color: 255 255 255 127;
+         }
+      }
+      part { name: "frame_l";
+         type: RECT;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            align: 0 0.5;
+            rel1.relative: 0 0;
+            rel2.relative: 0 1;
+            color: 255 0 0 127;
+            min: 1 0;
+            fixed: 1 0;
+         }
+      }
+      part { name: "frame_r";
+         type: RECT;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            align: 1 0.5;
+            rel1.relative: 1 0;
+            rel2.relative: 1 1;
+            color: 255 0 0 127;
+            min: 1 0;
+            fixed: 1 0;
+         }
+      }
+      part { name: "frame_t";
+         type: RECT;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            align: 0.5 0;
+            rel1.relative: 0 0;
+            rel2.relative: 1 0;
+            color: 255 0 0 127;
+            min: 0 1;
+            fixed: 0 1;
+         }
+      }
+      part { name: "frame_b";
+         type: RECT;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            align: 0.5 1;
+            rel1.relative: 0 1;
+            rel2.relative: 1 1;
+            color: 255 0 0 127;
+            min: 0 1;
+            fixed: 0 1;
+         }
+      }
+   }
+}
+
+group { name: "part_highlight";
+   parts {
+      part { name: "base";
+         type: IMAGE;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            image.normal: "part_highlight.png";
+            image.border: 3 3 3 3;
+            image.border_scale: 1;
+         }
+         description { state: "transparent" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 0;
+         }
+      }
+   }
+   programs {
+      program { name: "load";
+         signal: "load";
+         action: STATE_SET "transparent" 0.0;
+         target: "base";
+         transition: LINEAR 0.65;
+         after: "anim";
+      }
+      program { name: "anim";
+         action: STATE_SET "default" 0.0;
+         target: "base";
+         transition: LINEAR 0.65;
+         after: "load";
+      }
+   }
+}
