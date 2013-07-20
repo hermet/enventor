@@ -1,7 +1,6 @@
 #ifndef __COMMON_H__
 #define __COMMON_H__
 
-
 #define DEBUG_MODE 1
 
 #ifdef DEBUG_MODE
@@ -14,8 +13,7 @@
   #define DFUNC_NAME()
 #endif
 
-#define PROTO_EDC_PATH "/tmp/.proto.edc"
-
+extern const char *PROTO_EDC_PATH;
 extern char EDJE_PATH[PATH_MAX];
 
 struct attr_value_s
