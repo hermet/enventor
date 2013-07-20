@@ -16,12 +16,12 @@ struct dummy_obj_s
    Eina_List *swallows;
 };
 
-const char *FAKEOBJ = "fakeobj";
+const char *DUMMYOBJ = "dummobj";
 
 void
-dummy_objs_update(dummy_obj *fo)
+dummy_objs_update(dummy_obj *dummy)
 {
-   Evas_Object *edje = elm_layout_edje_get(fo->layout);
+   Evas_Object *edje = elm_layout_edje_get(dummy->layout);
    Eina_List *parts = edje_edit_parts_list_get(edje);
    Eina_List *l, *l_next, *l2;
    char *part_name;
@@ -31,7 +31,7 @@ dummy_objs_update(dummy_obj *fo)
    Eina_Bool removed;
 
    //Remove the fake swallow objects that parts are removed.
-   EINA_LIST_FOREACH_SAFE(fo->swallows, l, l_next, po)
+   EINA_LIST_FOREACH_SAFE(dummy->swallows, l, l_next, po)
      {
         removed = EINA_FALSE;
 
@@ -57,7 +57,7 @@ dummy_objs_update(dummy_obj *fo)
           {
              evas_object_del(po->obj);
              eina_stringshare_del(po->name);
-             fo->swallows = eina_list_remove_list(fo->swallows, l);
+             dummy->swallows = eina_list_remove_list(dummy->swallows, l);
              free(po);
           }
      }
@@ -76,14 +76,14 @@ dummy_objs_update(dummy_obj *fo)
              if (!po) continue;
 
              //New part. Add fake object.
-             Evas_Object *obj = elm_layout_add(fo->layout);
+             Evas_Object *obj = elm_layout_add(dummy->layout);
              elm_layout_file_set(obj, EDJE_PATH, "swallow");
              evas_object_show(obj);
-             elm_object_part_content_set(fo->layout, part_name, obj);
+             elm_object_part_content_set(dummy->layout, part_name, obj);
 
              po->obj = obj;
              po->name = eina_stringshare_add(part_name);
-             fo->swallows = eina_list_append(fo->swallows, po);
+             dummy->swallows = eina_list_append(dummy->swallows, po);
           }
      }
 }
@@ -91,8 +91,8 @@ dummy_objs_update(dummy_obj *fo)
 static Eina_Bool
 animator_cb(void *data)
 {
-   dummy_obj *fo = data;
-   dummy_objs_update(fo);
+   dummy_obj *dummy = data;
+   dummy_objs_update(dummy);
    return ECORE_CALLBACK_CANCEL;
 }
 
@@ -101,8 +101,8 @@ edje_change_file_cb(void *data, Evas_Object *obj EINA_UNUSED,
                     const char *emission EINA_UNUSED,
                     const char *source EINA_UNUSED)
 {
-   dummy_obj *fo = data;
-   dummy_objs_update(fo);
+   dummy_obj *dummy = data;
+   dummy_objs_update(dummy);
 }
 
 static void
@@ -114,38 +114,38 @@ layout_del_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED, Evas_Object *obj,
 
 void dummy_obj_new(Evas_Object *layout)
 {
-   dummy_obj *fo = evas_object_data_get(layout, FAKEOBJ);
-   if (fo) return;
+   dummy_obj *dummy = evas_object_data_get(layout, DUMMYOBJ);
+   if (dummy) return;
 
-   fo = calloc(1, sizeof(dummy_obj));
+   dummy = calloc(1, sizeof(dummy_obj));
 
    edje_object_signal_callback_add(elm_layout_edje_get(layout),
                                    "edje,change,file", "edje",
-                                   edje_change_file_cb, fo);
+                                   edje_change_file_cb, dummy);
 
-   ecore_animator_add(animator_cb, fo);
-   evas_object_data_set(layout, FAKEOBJ, fo);
+   ecore_animator_add(animator_cb, dummy);
+   evas_object_data_set(layout, DUMMYOBJ, dummy);
 
-   evas_object_event_callback_add(layout, EVAS_CALLBACK_DEL, layout_del_cb, fo);
+   evas_object_event_callback_add(layout, EVAS_CALLBACK_DEL, layout_del_cb, dummy);
 
-   fo->layout = layout;
+   dummy->layout = layout;
 }
 
 void dummy_obj_del(Evas_Object *layout)
 {
-   dummy_obj *fo = evas_object_data_get(layout, FAKEOBJ);
-   if (fo) return;
+   dummy_obj *dummy = evas_object_data_get(layout, DUMMYOBJ);
+   if (dummy) return;
 
    Eina_List *l;
    part_obj *po;
-   EINA_LIST_FOREACH(fo->swallows, l, po)
+   EINA_LIST_FOREACH(dummy->swallows, l, po)
      {
         evas_object_del(po->obj);
         eina_stringshare_del(po->name);
         free(po);
      }
-   eina_list_free(fo->swallows);
+   eina_list_free(dummy->swallows);
 
-   evas_object_data_set(layout, FAKEOBJ, NULL);
+   evas_object_data_set(layout, DUMMYOBJ, NULL);
    evas_object_event_callback_del(layout, EVAS_CALLBACK_DEL, layout_del_cb);
 }
