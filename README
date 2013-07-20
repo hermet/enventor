@@ -15,6 +15,7 @@ Ctrl+H = Part Highlighting
 Ctrl+, = Full Edit View
 Ctrl+. = Full Edje View
 Ctrl+/ = Split View
+Ctrl+W = Show/Hide Dummy Swallow Object
 
 Command Line Usage:
 

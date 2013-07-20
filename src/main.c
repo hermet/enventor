@@ -210,11 +210,21 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
              part_highlight_toggle(ad);
              return ECORE_CALLBACK_DONE;
           }
+        //Part Highlight
+        if (!strcmp(event->keyname, "w") || !strcmp(event->keyname, "W"))
+          {
+             option_dummy_swallow_set(ad->od,
+                                     !option_dummy_swallow_get(ad->od));
+             view_dummy_toggle(ad->vd);
+             return ECORE_CALLBACK_DONE;
+          }
+        //Full Edit View
         if (!strcmp(event->keyname, "comma"))
           {
              panes_full_view_left(ad->panes);
              return ECORE_CALLBACK_DONE;
           }
+        //Full Edje View
         if (!strcmp(event->keyname, "period"))
           {
              panes_full_view_right(ad->panes);
