@@ -632,7 +632,7 @@ group { name: "setting_layout";
             rel2 {to: "base_frame"; relative: 1 0;}
             align: 0.5 0;
             visible: 0;
-            min: 0 60;
+            min: 0 50;
             fixed: 0 1;
          }
       }
@@ -644,7 +644,7 @@ group { name: "setting_layout";
             rel2 {to: "img_path_frame"; relative: 1 1;}
             align: 0.5 0;
             visible: 0;
-            min: 0 60;
+            min: 0 50;
             fixed: 0 1;
          }
       }
@@ -656,7 +656,7 @@ group { name: "setting_layout";
             rel2 {to: "snd_path_frame"; relative: 1 1;}
             align: 0.5 0;
             visible: 0;
-            min: 0 200;
+            min: 0 230;
             fixed: 0 1;
          }
       }
