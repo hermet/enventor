@@ -53,7 +53,7 @@ fake_objs_update(fake_obj *fo)
           {
              evas_object_del(po->obj);
              eina_stringshare_del(po->name);
-             fo->swallows = eina_list_remove(fo->swallows, l);
+             fo->swallows = eina_list_remove_list(fo->swallows, l);
              free(po);
           }
      }
@@ -68,14 +68,14 @@ fake_objs_update(fake_obj *fo)
              //Check this part is exist 
              if (edje_object_part_swallow_get(edje, part_name)) continue;
 
+             part_obj *po = malloc(sizeof(part_obj));
+             if (!po) continue;
+
              //New part. Add fake object.
              Evas_Object *obj = elm_layout_add(fo->layout);
              elm_layout_file_set(obj, EDJE_PATH, "swallow");
              evas_object_show(obj);
              elm_object_part_content_set(fo->layout, part_name, obj);
-
-             part_obj *po = malloc(sizeof(part_obj));
-             if (!po) continue;
 
              po->obj = obj;
              po->name = eina_stringshare_add(part_name);
