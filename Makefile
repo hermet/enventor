@@ -10,7 +10,7 @@ OBJECTS=$(SRCDIR)/main.o \
         $(SRCDIR)/config_data.o \
         $(SRCDIR)/edc_parser.o \
         $(SRCDIR)/panes.o \
-        $(SRCDIR)/fake_obj.o
+        $(SRCDIR)/dummy_obj.o
 EDJS=$(EDJDIR)/enventor.edj
 BINARY=enventor
 DIRNAME=enventor

@@ -10,7 +10,7 @@ typedef struct part_obj_s
    Eina_Stringshare *name;
 } part_obj;
 
-struct fake_obj_s
+struct dummy_obj_s
 {
    Evas_Object *layout;
    Eina_List *swallows;
@@ -19,7 +19,7 @@ struct fake_obj_s
 const char *FAKEOBJ = "fakeobj";
 
 void
-fake_objs_update(fake_obj *fo)
+dummy_objs_update(dummy_obj *fo)
 {
    Evas_Object *edje = elm_layout_edje_get(fo->layout);
    Eina_List *parts = edje_edit_parts_list_get(edje);
@@ -84,7 +84,6 @@ fake_objs_update(fake_obj *fo)
              po->obj = obj;
              po->name = eina_stringshare_add(part_name);
              fo->swallows = eina_list_append(fo->swallows, po);
-             printf("%s - obj(%p)\n", part_name, obj);
           }
      }
 }
@@ -92,8 +91,8 @@ fake_objs_update(fake_obj *fo)
 static Eina_Bool
 animator_cb(void *data)
 {
-   fake_obj *fo = data;
-   fake_objs_update(fo);
+   dummy_obj *fo = data;
+   dummy_objs_update(fo);
    return ECORE_CALLBACK_CANCEL;
 }
 
@@ -102,23 +101,23 @@ edje_change_file_cb(void *data, Evas_Object *obj EINA_UNUSED,
                     const char *emission EINA_UNUSED,
                     const char *source EINA_UNUSED)
 {
-   fake_obj *fo = data;
-   fake_objs_update(fo);
+   dummy_obj *fo = data;
+   dummy_objs_update(fo);
 }
 
 static void
 layout_del_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED, Evas_Object *obj,
               void *event_info EINA_UNUSED)
 {
-   fake_obj_del(obj);
+   dummy_obj_del(obj);
 }
 
-void fake_obj_new(Evas_Object *layout)
+void dummy_obj_new(Evas_Object *layout)
 {
-   fake_obj *fo = evas_object_data_get(layout, FAKEOBJ);
+   dummy_obj *fo = evas_object_data_get(layout, FAKEOBJ);
    if (fo) return;
 
-   fo = calloc(1, sizeof(fake_obj));
+   fo = calloc(1, sizeof(dummy_obj));
 
    edje_object_signal_callback_add(elm_layout_edje_get(layout),
                                    "edje,change,file", "edje",
@@ -132,9 +131,9 @@ void fake_obj_new(Evas_Object *layout)
    fo->layout = layout;
 }
 
-void fake_obj_del(Evas_Object *layout)
+void dummy_obj_del(Evas_Object *layout)
 {
-   fake_obj *fo = evas_object_data_get(layout, FAKEOBJ);
+   dummy_obj *fo = evas_object_data_get(layout, FAKEOBJ);
    if (fo) return;
 
    Eina_List *l;

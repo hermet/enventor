@@ -119,7 +119,7 @@ view_obj_idler_cb(void *data)
                                 vd->group_name);
    elm_object_content_set(vd->scroller, vd->layout);
 
-   fake_obj_new(vd->layout);
+   dummy_obj_new(vd->layout);
 
    return ECORE_CALLBACK_CANCEL;
 }

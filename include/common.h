@@ -33,7 +33,7 @@ typedef struct syntax_color_s color_data;
 typedef struct config_s option_data;
 typedef struct parser_s parser_data;
 typedef struct attr_value_s attr_value;
-typedef struct fake_obj_s fake_obj;
+typedef struct dummy_obj_s dummy_obj;
 
 #include "edc_editor.h"
 #include "menu.h"
@@ -43,6 +43,6 @@ typedef struct fake_obj_s fake_obj;
 #include "config_data.h"
 #include "edc_parser.h"
 #include "panes.h"
-#include "fake_obj.h"
+#include "dummy_obj.h"
 
 #endif
