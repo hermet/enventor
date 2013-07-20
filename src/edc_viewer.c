@@ -131,8 +131,17 @@ view_dummy_toggle(view_data *vd)
 {
    Eina_Bool dummy_obj = option_dummy_swallow_get(vd->od);
    if (dummy_obj == vd->dummy_obj) return;
-   if (dummy_obj) dummy_obj_new(vd->layout);
-   else dummy_obj_del(vd->layout);
+   if (dummy_obj)
+     {
+        stats_info_msg_update(vd->sd, "Dummy Swallow Enabled");
+        dummy_obj_new(vd->layout);
+     }
+   else
+     {
+        stats_info_msg_update(vd->sd, "Dummy Swallow Disabled");
+        dummy_obj_del(vd->layout);
+     }
+
    vd->dummy_obj = dummy_obj;
 }
 

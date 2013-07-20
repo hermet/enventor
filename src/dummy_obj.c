@@ -147,7 +147,12 @@ void dummy_obj_del(Evas_Object *layout)
         free(po);
      }
    eina_list_free(dummy->swallows);
+   free(dummy);
 
    evas_object_data_set(layout, DUMMYOBJ, NULL);
    evas_object_event_callback_del(layout, EVAS_CALLBACK_DEL, layout_del_cb);
+   edje_object_signal_callback_del(elm_layout_edje_get(layout),
+                                   "edje,change,file", "edje",
+                                   edje_change_file_cb);
+
 }

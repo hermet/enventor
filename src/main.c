@@ -167,7 +167,6 @@ part_highlight_toggle(app_data *ad)
    if (highlight) edit_cur_part_update(ad->ed);
    else view_part_highlight_set(ad->vd, NULL);
 
-   if (!option_stats_bar_get(ad->od)) return;
    if (highlight)
      stats_info_msg_update(ad->sd, "Part Highlighting Enabled");
    else

@@ -75,6 +75,8 @@ info_msg_timer_cb(void *data)
 void
 stats_info_msg_update(stats_data *sd, const char *msg)
 {
+   if (!option_stats_bar_get(sd->od)) return;
+
    elm_object_part_text_set(sd->layout, "elm.text.info_msg", msg);
    elm_object_signal_emit(sd->layout, "elm,action,info_msg,show", "");
    if (sd->info_msg_timer) ecore_timer_del(sd->info_msg_timer);
