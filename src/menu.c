@@ -8,6 +8,7 @@ struct menu_s
    Evas_Object *setting_layout;
    Evas_Object *warning_layout;
    Evas_Object *fileselector_layout;
+   Evas_Object *help_layout;
    Evas_Object *img_path_entry;
    Evas_Object *snd_path_entry;
    Evas_Object *toggle_stats;
@@ -42,6 +43,12 @@ static void
 fileselector_close(menu_data *md)
 {
    elm_object_signal_emit(md->fileselector_layout, "elm,state,dismiss", "");
+}
+
+static void
+help_close(menu_data *md)
+{
+   elm_object_signal_emit(md->help_layout, "elm,state,dismiss", "");
 }
 
 static void
@@ -86,10 +93,25 @@ setting_dismiss_done(void *data, Evas_Object *obj EINA_UNUSED,
                      const char *source EINA_UNUSED)
 {
    menu_data *md = data;
-   evas_object_del(md->setting_layout);
-   md->setting_layout = NULL;
+   evas_object_del(md->help_layout);
+   md->help_layout = NULL;
    elm_object_disabled_set(md->menu_layout, EINA_FALSE);
    elm_object_focus_set(md->menu_layout, EINA_TRUE);
+}
+
+static void
+help_dismiss_done(void *data, Evas_Object *obj EINA_UNUSED,
+                  const char *emission EINA_UNUSED,
+                  const char *source EINA_UNUSED)
+{
+   menu_data *md = data;
+   evas_object_del(md->help_layout);
+   md->help_layout = NULL;
+   if (md->menu_layout)
+     {
+        elm_object_disabled_set(md->menu_layout, EINA_FALSE);
+        elm_object_focus_set(md->menu_layout, EINA_TRUE);
+     }
 }
 
 static void
@@ -413,10 +435,62 @@ help_open(menu_data *md)
    Evas_Object *layout = elm_layout_add(md->win);
    elm_layout_file_set(layout, EDJE_PATH, "help_layout");
    elm_object_signal_callback_add(layout, "elm,state,dismiss,done", "",
-                                  setting_dismiss_done, md);
+                                  help_dismiss_done, md);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    elm_win_resize_object_add(md->win, layout);
    evas_object_show(layout);
+
+   //Entry
+   Evas_Object *entry = elm_entry_add(layout);
+   elm_object_style_set(entry, elm_app_name_get());
+   elm_entry_scrollable_set(entry, EINA_TRUE);
+   elm_entry_line_wrap_set(entry, EINA_TRUE);
+   evas_object_show(entry);
+
+   elm_object_part_content_set(layout, "elm.swallow.entry", entry);
+
+   elm_entry_entry_append(entry, "<color=#ffffff><font_size=12>");
+
+   //Read README
+   char buf[PATH_MAX];
+   snprintf(buf, sizeof(buf), "%s/docs/README", elm_app_data_dir_get());
+
+   Eina_File *file = eina_file_open(buf, EINA_FALSE);
+   if (!file) goto err;
+
+   Eina_Iterator *itr = eina_file_map_lines(file);
+   if (!itr) goto err;
+
+   Eina_Strbuf *strbuf = eina_strbuf_new();
+   if (!strbuf) goto err;
+
+   Eina_File_Line *line;
+   int line_num = 0;
+
+   EINA_ITERATOR_FOREACH(itr, line)
+     {
+        //Append edc code
+        if (line_num > 0)
+          {
+             if (!eina_strbuf_append(strbuf, "<br/>")) goto err;
+          }
+
+        if (!eina_strbuf_append_length(strbuf, line->start, line->length))
+          goto err;
+        line_num++;
+     }
+   elm_entry_entry_append(entry, eina_strbuf_string_get(strbuf));
+   elm_entry_entry_append(entry, "</font_size></color>");
+
+   if (md->menu_layout)
+     elm_object_disabled_set(md->menu_layout, EINA_TRUE);
+
+md->help_layout = layout;
+
+err:
+   if (strbuf) eina_strbuf_free(strbuf);
+   if (itr) eina_iterator_free(itr);
+   if (file) eina_file_close(file);
 }
 
 static void
@@ -744,6 +818,11 @@ menu_option_toggle()
         else if (md->fileselector_layout)
           {
              fileselector_close(md);
+             return EINA_TRUE;
+          }
+        else if (md->help_layout)
+          {
+             help_close(md);
              return EINA_TRUE;
           }
      }

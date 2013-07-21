@@ -8,11 +8,90 @@ images {
 
 group { name: "help_layout";
    parts {
+      part { name: "clipper";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 127 127 127 127;
+         }
+         description { state: "show" 0.0;
+            color: 255 255 255 255;
+         }
+      }
       part { name: "bg";
          type: RECT;
+         clip_to: "clipper";
          description { state: "default" 0.0;
             color: 0 0 0 175;
          }
+      }
+      part { name: "left_top_padding";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 10 10;
+            fixed: 1 1;
+            align: 0 0;
+            rel2.relative: 0 0;
+         }
+      }
+      part { name: "right_bottom_padding";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 10 10;
+            fixed: 1 1;
+            align: 1 1;
+            rel1.relative: 1 1;
+         }
+      }
+      part { name: "elm.swallow.entry";
+         type: SWALLOW;
+         scale: 1;
+         clip_to: "clipper";
+         description { state: "default" 0.0;
+            rel1.to: "left_top_padding";
+            rel1.relative: 1 1;
+            rel2.to: "right_bottom_padding";
+            rel2.relative: 0 0;
+         }
+      }
+      part { name: "event_blocker";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+            visible: 1;
+         }
+         description { state: "hide" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
+      }
+   }
+   programs {
+      program { name: "load";
+         signal: "load";
+         action: STATE_SET "show" 0.0;
+         transition: "DECELERATE" 0.5;
+         target: "clipper";
+         after: "event_blocker_hide";
+      }
+      program { name: "dismiss";
+         signal: "elm,state,dismiss";
+         source: "";
+         action: STATE_SET "default" 0.0;
+//         transition: "DECELERATE" 0.125;
+         target: "clipper";
+         target: "event_blocker";
+         after: "dismiss_done";
+      }
+      program { name: "event_blocker_hide";
+         signal: "elm,state,event_blocker,hide";
+         source: "";
+         action: STATE_SET "hide" 0.0;
+         target: "event_blocker";
+      }
+      program { name: "dismiss_done";
+         action: SIGNAL_EMIT "elm,state,dismiss,done" "";
       }
    }
 }
