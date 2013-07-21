@@ -442,7 +442,7 @@ help_open(menu_data *md)
 
    //Entry
    Evas_Object *entry = elm_entry_add(layout);
-   elm_object_style_set(entry, elm_app_name_get());
+   elm_object_style_set(entry, "readme");
    elm_entry_scrollable_set(entry, EINA_TRUE);
    elm_entry_line_wrap_set(entry, EINA_TRUE);
    elm_entry_editable_set(entry, EINA_FALSE);
