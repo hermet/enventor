@@ -52,6 +52,8 @@ install: $(BINARY)
 	@install $(EDJDIR)/enventor.edj  $(DATADIR)/edj
 	@mkdir -p $(DATADIR)/images
 	@install data/images/* $(DATADIR)/images
+	@mkdir -p $(DATADIR)/docs
+	@install README $(DATADIR)/docs
 
 uninstall:
 	rm -rf $(DATADIR)

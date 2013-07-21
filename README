@@ -1,4 +1,42 @@
+Enventor: The Edc Editor v0.1
+
+********************************************************************************
+FOR ANY ISSUES PLEASE EMAIL:
+enlightenment-devel@lists.sourceforge.net
+********************************************************************************
+
+Requirements:
+-------------
+
+  eina (>= 1.7.0)
+  eet (>= 1.7.0)
+  evas (>= 1.7.0)
+  embryo (>= 1.7.0)
+  ecore (>= 1.7.0)
+  edje (>= 1.7.0)
+  eio (>= 1.7.0)
+  elementary (>= 1.7.0)
+
+Please not that some features may not quite function correctly or completely on
+EFL 1.7, and 1.8 or newer would be better.
+
+Please see http://www.enlightenment.org for information on these.
+
+This is an EDC editor with some convenient functions. It's brand new and was
+only started near the begining of June 2013, so expecting it to do everything a
+mature script editor does is a bit premature, but considering it's
+young age, it does a lot.
+
+Compiling:
+----------
+
+Once you have met requirements, copiling and installing is simple:
+
+  ./build.sh
+
+
 Short Cut Keys:
+---------------
 
 Esc = Open/Close Menu
 F5 = Show/Hide Line Number
@@ -17,7 +55,9 @@ Ctrl+. = Full Edje View
 Ctrl+/ = Split View
 Ctrl+W = Show/Hide Dummy Swallow Object
 
+
 Command Line Usage:
+-------------------
 
 enventor --help
 enventor [input file] [-id image path] [-sd sound path]
