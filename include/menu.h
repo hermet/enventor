@@ -4,5 +4,5 @@ Eina_Bool menu_option_toggle();
 void menu_ctxpopup_register(Evas_Object *ctxpopup);
 Eina_Bool menu_edc_load(menu_data *md);
 void menu_exit(menu_data *md);
-
+Eina_Bool menu_help(menu_data *md);
 

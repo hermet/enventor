@@ -255,6 +255,12 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
      {
         ad->ctrl_pressed = EINA_TRUE;
      }
+   //README
+   else if (!strcmp(event->keyname, "F1"))
+     {
+        ad->menu_opened = menu_help(ad->md);
+        return ECORE_CALLBACK_DONE;
+     }
    //Line Number
    else if (!strcmp(event->keyname, "F5"))
      {

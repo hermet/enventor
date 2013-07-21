@@ -93,8 +93,8 @@ setting_dismiss_done(void *data, Evas_Object *obj EINA_UNUSED,
                      const char *source EINA_UNUSED)
 {
    menu_data *md = data;
-   evas_object_del(md->help_layout);
-   md->help_layout = NULL;
+   evas_object_del(md->setting_layout);
+   md->setting_layout = NULL;
    elm_object_disabled_set(md->menu_layout, EINA_FALSE);
    elm_object_focus_set(md->menu_layout, EINA_TRUE);
 }
@@ -445,7 +445,10 @@ help_open(menu_data *md)
    elm_object_style_set(entry, elm_app_name_get());
    elm_entry_scrollable_set(entry, EINA_TRUE);
    elm_entry_line_wrap_set(entry, EINA_TRUE);
+   elm_entry_editable_set(entry, EINA_FALSE);
    evas_object_show(entry);
+
+   elm_object_focus_set(entry, EINA_TRUE);
 
    elm_object_part_content_set(layout, "elm.swallow.entry", entry);
 
@@ -706,6 +709,13 @@ load_save_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 }
 
 Eina_Bool
+menu_help(menu_data *md)
+{
+   help_open(md);
+   return EINA_TRUE;
+}
+
+Eina_Bool
 menu_edc_load(menu_data *md)
 {
    if (edit_changed_get(md->ed))
@@ -824,6 +834,14 @@ menu_option_toggle()
           {
              help_close(md);
              return EINA_TRUE;
+          }
+     }
+   else
+     {
+        if (md->help_layout)
+          {
+             help_close(md);
+             return EINA_FALSE;
           }
      }
 

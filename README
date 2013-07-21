@@ -39,6 +39,7 @@ Short Cut Keys:
 --------------------------------------------------------------------------------
  
 Esc = Open/Close Menu
+F1 = Show README
 F5 = Show/Hide Line Number
 F6 = Show/Hide Status
 Ctrl+S = Save / Compile EDC
