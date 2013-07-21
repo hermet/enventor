@@ -407,6 +407,27 @@ setting_open(menu_data *md)
 }
 
 static void
+help_open(menu_data *md)
+{
+   //Layout
+   Evas_Object *layout = elm_layout_add(md->win);
+   elm_layout_file_set(layout, EDJE_PATH, "help_layout");
+   elm_object_signal_callback_add(layout, "elm,state,dismiss,done", "",
+                                  setting_dismiss_done, md);
+   evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   elm_win_resize_object_add(md->win, layout);
+   evas_object_show(layout);
+}
+
+static void
+help_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
+            void *event_info EINA_UNUSED)
+{
+   menu_data *md = data;
+   help_open(md);
+}
+
+static void
 setting_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
                void *event_info EINA_UNUSED)
 {
@@ -459,7 +480,7 @@ exit_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 }
 
 static Evas_Object *
-btn_create(Evas_Object *parent, const char *label, Evas_Smart_Cb cb, void *data, Eina_Bool disabled)
+btn_create(Evas_Object *parent, const char *label, Evas_Smart_Cb cb, void *data)
 {
    Evas_Object *layout, *btn;
 
@@ -471,7 +492,6 @@ btn_create(Evas_Object *parent, const char *label, Evas_Smart_Cb cb, void *data,
    btn  = elm_button_add(layout);
    elm_object_style_set(btn, elm_app_name_get());
    evas_object_smart_callback_add(btn, "clicked", cb, data);
-   elm_object_disabled_set(btn, disabled);
    elm_object_text_set(btn, label);
    evas_object_show(btn);
 
@@ -646,33 +666,33 @@ menu_open(menu_data *md)
    Evas_Object *btn;
 
    //Button(New)
-   btn = btn_create(layout, "New", new_btn_cb, md, EINA_FALSE);
+   btn = btn_create(layout, "New", new_btn_cb, md);
    elm_object_focus_set(btn, EINA_TRUE);
    elm_object_part_content_set(layout, "elm.swallow.new_btn", btn);
    ecore_timer_add(0, btn_effect_timer_cb, btn);
 
    //Button(Save)
-   btn = btn_create(layout, "Save", save_btn_cb, md, EINA_FALSE);
+   btn = btn_create(layout, "Save", save_btn_cb, md);
    elm_object_part_content_set(layout, "elm.swallow.save_btn", btn);
    ecore_timer_add(0.03, btn_effect_timer_cb, btn);
 
    //Button(Load)
-   btn = btn_create(layout, "Load", load_btn_cb, md, EINA_FALSE);
+   btn = btn_create(layout, "Load", load_btn_cb, md);
    elm_object_part_content_set(layout, "elm.swallow.load_btn", btn);
    ecore_timer_add(0.06, btn_effect_timer_cb, btn);
 
    //Button(Setting)
-   btn = btn_create(layout, "Setting", setting_btn_cb, md, EINA_FALSE);
+   btn = btn_create(layout, "Setting", setting_btn_cb, md);
    elm_object_part_content_set(layout, "elm.swallow.setting_btn", btn);
    ecore_timer_add(0.09, btn_effect_timer_cb, btn);
 
    //Button(Help)
-   btn = btn_create(layout, "Help", NULL, NULL, EINA_TRUE);
+   btn = btn_create(layout, "Help", help_btn_cb, md);
    elm_object_part_content_set(layout, "elm.swallow.help_btn", btn);
    ecore_timer_add(0.12, btn_effect_timer_cb, btn);
 
    //Button(Exit)
-   btn = btn_create(layout, "Exit", exit_btn_cb, md, EINA_FALSE);
+   btn = btn_create(layout, "Exit", exit_btn_cb, md);
    elm_object_part_content_set(layout, "elm.swallow.exit_btn", btn);
    ecore_timer_add(0.15, btn_effect_timer_cb, btn);
 

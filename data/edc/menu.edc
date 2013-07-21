@@ -6,6 +6,18 @@ images {
    image: "warning.png" COMP;
 }
 
+group { name: "help_layout";
+   parts {
+      part { name: "bg";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 0 0 0 175;
+         }
+      }
+   }
+}
+
+
 group { name: "fileselector_layout";
    parts {
       part { name: "clipper";
@@ -385,7 +397,7 @@ group { name: "menu_layout";
          }
       }
       part { name: "padding1";
-         type: RECT;
+         type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
             rel1.relative: 0 0.5;
@@ -395,7 +407,6 @@ group { name: "menu_layout";
             min: 23 80;
             fixed: 1 1;
             align: 0 0.5;
-            visible: 0;
          }
       }
       part { name: "elm.swallow.new_btn";
@@ -412,7 +423,7 @@ group { name: "menu_layout";
          }
       }
       part { name: "padding2";
-         type: RECT;
+         type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
             rel1.to: "elm.swallow.new_btn";
@@ -421,7 +432,6 @@ group { name: "menu_layout";
             min: 23 80;
             fixed: 1 1;
             align: 0 0.5;
-            visible: 0;
          }
       }
       part { name: "elm.swallow.save_btn";
@@ -438,7 +448,7 @@ group { name: "menu_layout";
          }
       }
       part { name: "padding3";
-         type: RECT;
+         type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
             rel1.to: "elm.swallow.save_btn";
@@ -447,7 +457,6 @@ group { name: "menu_layout";
             min: 23 80;
             fixed: 1 1;
             align: 0 0.5;
-            visible: 0;
          }
       }
       part { name: "elm.swallow.load_btn";
@@ -464,7 +473,7 @@ group { name: "menu_layout";
          }
       }
       part { name: "padding4";
-         type: RECT;
+         type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
             rel1.to: "elm.swallow.load_btn";
@@ -473,7 +482,6 @@ group { name: "menu_layout";
             min: 23 80;
             fixed: 1 1;
             align: 0 0.5;
-            visible: 0;
          }
       }
       part { name: "elm.swallow.setting_btn";
@@ -490,7 +498,7 @@ group { name: "menu_layout";
          }
       }
       part { name: "padding5";
-         type: RECT;
+         type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
             rel1.to: "elm.swallow.setting_btn";
@@ -499,7 +507,6 @@ group { name: "menu_layout";
             min: 23 80;
             fixed: 1 1;
             align: 0 0.5;
-            visible: 0;
          }
       }
       part { name: "elm.swallow.help_btn";
@@ -516,7 +523,7 @@ group { name: "menu_layout";
          }
       }
       part { name: "padding6";
-         type: RECT;
+         type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
             rel1.to: "elm.swallow.help_btn";
@@ -525,7 +532,6 @@ group { name: "menu_layout";
             min: 23 80;
             fixed: 1 1;
             align: 0 0.5;
-            visible: 0;
          }
       }
       part { name: "elm.swallow.exit_btn";
