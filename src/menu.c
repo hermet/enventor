@@ -30,14 +30,12 @@ struct menu_s
 
 static menu_data *g_md;
 
-static void
-warning_no_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
-                  void *event_info EINA_UNUSED);
-static void
-new_save_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
-                void *event_info EINA_UNUSED);
-static void
-edc_reload(menu_data *md, const char *edc_path);
+static void warning_no_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                              void *event_info EINA_UNUSED);
+static void new_save_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                            void *event_info EINA_UNUSED);
+static void edc_reload(menu_data *md, const char *edc_path);
+static void edc_file_save(menu_data *md);
 
 static void
 fileselector_close(menu_data *md)
@@ -442,7 +440,7 @@ help_open(menu_data *md)
 
    //Entry
    Evas_Object *entry = elm_entry_add(layout);
-   elm_object_style_set(entry, "readme");
+   elm_object_style_set(entry, "help");
    elm_entry_scrollable_set(entry, EINA_TRUE);
    elm_entry_line_wrap_set(entry, EINA_TRUE);
    elm_entry_editable_set(entry, EINA_FALSE);
@@ -635,10 +633,36 @@ save_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
 {
    menu_data *md = data;
    edit_save(md->ed);
+
+   //edc_file_save(md);
 }
 
 static void
-fileselector_done_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
+fileselector_save_done_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                          void *event_info)
+{
+   menu_data *md = data;
+   const char *selected = event_info;
+
+   if (selected)
+     {
+        //Filter to read only edc extension file.
+        char *ext = strrchr(selected, '.');
+        if (!ext || strcmp(ext, ".edc"))
+          {
+             //show failed message box.
+             fileselector_close(md);
+             return;
+          }
+        fileselector_close(md);
+        menu_close(md, EINA_FALSE);
+      }
+   else fileselector_close(md);
+}
+
+static void
+fileselector_load_done_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                          void *event_info)
 {
    menu_data *md = data;
    const char *selected = event_info;
@@ -662,6 +686,35 @@ fileselector_done_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 }
 
 static void
+edc_file_save(menu_data *md)
+{
+   //Layout
+   Evas_Object *layout = elm_layout_add(md->win);
+   elm_layout_file_set(layout, EDJE_PATH, "fileselector_layout");
+   elm_object_signal_callback_add(layout, "elm,state,dismiss,done", "",
+                                  fileselector_dismiss_done, md);
+   evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   elm_win_resize_object_add(md->win, layout);
+   evas_object_show(layout);
+
+   Evas_Object *fs = elm_fileselector_add(layout);
+   elm_object_part_text_set(fs, "ok", "Save");
+   elm_fileselector_path_set(fs, getenv("HOME"));
+   elm_fileselector_expandable_set(fs, EINA_FALSE);
+   elm_fileselector_is_save_set(fs, EINA_TRUE);
+   evas_object_smart_callback_add(fs, "done", fileselector_save_done_cb, md);
+   evas_object_show(fs);
+
+   elm_object_part_content_set(layout, "elm.swallow.fileselector", fs);
+
+   if (md->menu_layout)
+     elm_object_disabled_set(md->menu_layout, EINA_TRUE);
+   elm_object_focus_set(fs, EINA_TRUE);
+
+   md->fileselector_layout = layout;
+}
+
+static void
 edc_file_load(menu_data *md)
 {
    //Layout
@@ -674,10 +727,11 @@ edc_file_load(menu_data *md)
    evas_object_show(layout);
 
    Evas_Object *fs = elm_fileselector_add(layout);
-   elm_fileselector_mime_types_filter_append(fs, NULL, "edc");
    elm_fileselector_path_set(fs, getenv("HOME"));
+   elm_object_part_text_set(fs, "ok", "Load");
    elm_fileselector_expandable_set(fs, EINA_FALSE);
-   evas_object_smart_callback_add(fs, "done", fileselector_done_cb, md);
+   elm_fileselector_is_save_set(fs, EINA_TRUE);
+   evas_object_smart_callback_add(fs, "done", fileselector_load_done_cb, md);
    evas_object_show(fs);
 
    elm_object_part_content_set(layout, "elm.swallow.fileselector", fs);
