@@ -382,6 +382,8 @@ color_apply(color_data *cd, const char *src, int length, Eina_Bool realtime)
         Eina_Stringshare *col1 = cd->col1;
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "{", col1);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "}", col1);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "[", col1);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "]", col1);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, ";", col1);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, ":", col1);
 
