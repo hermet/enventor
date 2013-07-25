@@ -118,7 +118,7 @@ edc_proto_setup(option_data *od)
    Eina_Bool success = EINA_TRUE;
 
    char buf[PATH_MAX];
-   snprintf(buf, sizeof(buf), "%s/data/.proto/proto.edc",
+   snprintf(buf, sizeof(buf), "%s/.proto/proto.edc",
             elm_app_data_dir_get());
 
    if (!ecore_file_exists(option_edc_path_get(od)))

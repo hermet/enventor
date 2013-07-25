@@ -13,7 +13,6 @@ OBJECTS=$(SRCDIR)/main.o \
         $(SRCDIR)/dummy_obj.o
 EDJS=$(EDJDIR)/enventor.edj
 BINARY=enventor
-DIRNAME=enventor
 
 PREFIX=/usr/local
 BINDIR=$(PREFIX)/bin
@@ -54,6 +53,8 @@ install: $(BINARY)
 	@install data/images/* $(DATADIR)/images
 	@mkdir -p $(DATADIR)/docs
 	@install README $(DATADIR)/docs
+	@mkdir -p $(DATADIR)/.proto
+	@install data/.proto/proto.edc $(DATADIR)/.proto
 
 uninstall:
 	rm -rf $(DATADIR)
