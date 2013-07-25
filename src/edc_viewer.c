@@ -95,6 +95,14 @@ view_scroller_create(Evas_Object *parent)
    return scroller;
 }
 
+static void
+edje_change_file_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                    const char *emission EINA_UNUSED,
+                    const char *source EINA_UNUSED)
+{
+   view_data *vd = data;
+   view_part_highlight_set(vd, vd->part_name);
+}
 
 static Evas_Object *
 view_obj_create(view_data *vd, const char *file_path, const char *group)
@@ -107,6 +115,9 @@ view_obj_create(view_data *vd, const char *file_path, const char *group)
                                   layout_resize_cb, vd);
    evas_object_event_callback_add(layout, EVAS_CALLBACK_MOUSE_MOVE,
                                   layout_mouse_move_cb, vd);
+   edje_object_signal_callback_add(elm_layout_edje_get(layout),
+                                   "edje,change,file", "edje",
+                                   edje_change_file_cb, vd);
    evas_object_show(layout);
 
    return layout;
