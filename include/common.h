@@ -37,7 +37,7 @@ typedef struct dummy_obj_s dummy_obj;
 
 #include "edc_editor.h"
 #include "menu.h"
-#include "edc_viewer.h"
+#include "edj_viewer.h"
 #include "statusbar.h"
 #include "syntax_color.h"
 #include "config_data.h"

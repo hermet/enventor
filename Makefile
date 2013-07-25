@@ -3,7 +3,7 @@ HEADERDIR=include
 EDJDIR=data/edc
 OBJECTS=$(SRCDIR)/main.o \
         $(SRCDIR)/menu.o \
-        $(SRCDIR)/edc_viewer.o \
+        $(SRCDIR)/edj_viewer.o \
         $(SRCDIR)/edc_editor.o \
         $(SRCDIR)/statusbar.o \
         $(SRCDIR)/syntax_color.o \
