@@ -194,6 +194,8 @@ view_init(Evas_Object *parent, const char *group, stats_data *sd,
 void
 view_term(view_data *vd)
 {
+   if (!vd) return;
+
    if (vd->group_name) eina_stringshare_del(vd->group_name);
    if (vd->part_name) eina_stringshare_del(vd->part_name);
 

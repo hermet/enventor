@@ -117,17 +117,21 @@ edc_proto_setup(option_data *od)
 {
    Eina_Bool success = EINA_TRUE;
 
-if (!ecore_file_exists(option_edc_path_get(od)))
+   char buf[PATH_MAX];
+   snprintf(buf, sizeof(buf), "%s/data/.proto/proto.edc",
+            elm_app_data_dir_get());
+
+   if (!ecore_file_exists(option_edc_path_get(od)))
      {
         EINA_LOG_INFO("No working edc file exists. Copy a proto.edc");
-        success = eina_file_copy("./data/.proto/proto.edc",
+        success = eina_file_copy(buf,
                                  option_edc_path_get(od),
                                  EINA_FILE_COPY_DATA, NULL, NULL);
      }
 
    if (!success)
      {
-        EINA_LOG_ERR("Cannot find proto.edc in ./data/.proto/");
+        EINA_LOG_ERR("Cannot find file! \"%s\"", buf);
         return EINA_FALSE;
      }
 
@@ -435,7 +439,7 @@ menu_close_cb(void *data)
    ad->menu_opened = EINA_FALSE;
 }
 
-static void
+static Eina_Bool
 init(app_data *ad, int argc, char **argv)
 {
    /*To add a key event handler before evas, here initialize the ecore_event
@@ -448,9 +452,9 @@ init(app_data *ad, int argc, char **argv)
    elm_setup();
    config_data_set(ad, argc, argv);
 
-   if (!edje_cc_cmd_set(ad->od)) return;
-   if (!edc_proto_setup(ad->od)) return;
-   if (!base_gui_construct(ad)) return;
+   if (!edje_cc_cmd_set(ad->od)) return EINA_FALSE;
+   if (!edc_proto_setup(ad->od)) return EINA_FALSE;
+   if (!base_gui_construct(ad)) return EINA_FALSE;
 
    statusbar_set(ad, ad->od);
    edc_edit_set(ad, ad->sd, ad->od);
@@ -460,6 +464,8 @@ init(app_data *ad, int argc, char **argv)
    //FIXME: update the edc path whenever file is changed.
    eio_monitor_add(option_edc_path_get(ad->od));
    ecore_event_handler_add(EIO_MONITOR_FILE_MODIFIED, edc_changed_cb, ad);
+
+   return EINA_TRUE;
 }
 
 static void
@@ -481,7 +487,11 @@ main(int argc, char **argv)
    app_data ad;
    memset(&ad, 0x00, sizeof(app_data));
 
-   init(&ad, argc, argv);
+   if (!init(&ad, argc, argv))
+     {
+        term(&ad);
+        return 0;
+     }
 
    elm_run();
 

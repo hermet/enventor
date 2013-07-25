@@ -552,6 +552,8 @@ edit_obj_get(edit_data *ed)
 void
 edit_term(edit_data *ed)
 {
+   if (!ed) return;
+
    color_data *cd = ed->cd;
    parser_data *pd = ed->pd;
 

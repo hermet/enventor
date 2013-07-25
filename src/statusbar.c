@@ -57,6 +57,8 @@ stats_obj_get(stats_data *sd)
 void
 stats_term(stats_data *sd)
 {
+   if (!sd) return;
+
    if (sd->info_msg_timer) ecore_timer_del(sd->info_msg_timer);
    free(sd);
 }
