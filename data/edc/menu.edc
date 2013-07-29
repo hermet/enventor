@@ -146,6 +146,28 @@ group { name: "fileselector_layout";
             rel2 { to: "base_frame"; }
          }
       }
+      part { name: "elm.text.msg";
+         type: TEXT;
+         scale: 1;
+         clip_to: "clipper";
+         description { state: "default" 0.0;
+            rel1.relative: 0 1;
+            rel1.to: "elm.swallow.fileselector";
+            rel2.relative: 1 1;
+            rel2.to: "elm.swallow.fileselector";
+            text {
+               font: FN;
+               size: 11;
+               align: 0.5 1;
+               text: "adfasdfadsf";
+            }
+            color: 0 0 0 0;
+         }
+         description { state: "show" 0.0;
+            inherit: "default" 0.0;
+            color: 255 0 0 255;
+         }
+      }
       part { name: "event_blocker";
          type: RECT;
          description { state: "default" 0.0;
@@ -183,6 +205,25 @@ group { name: "fileselector_layout";
       }
       program { name: "dismiss_done";
          action: SIGNAL_EMIT "elm,state,dismiss,done" "";
+      }
+      program { name: "msg_show";
+         signal: "elm,action,msg,show";
+         source: "";
+         action: STATE_SET "show" 0.0;
+         target: "elm.text.msg";
+         transition: DECELERATE 0.3;
+         after: "msg_idle";
+      }
+      program { name: "msg_idle";
+         action: STATE_SET "show" 0.0;
+         target: "elm.text.msg";
+         transition: DECELERATE 1;
+         after: "msg_hide";
+      }
+      program { name: "msg_hide";
+         action: STATE_SET "default" 0.0;
+         target: "elm.text.msg";
+         transition: DECELERATE 0.3;
       }
    }
 }
@@ -266,7 +307,7 @@ group { name: "warning_layout";
             rel2.relative: 0.5 0;
             text.text: "EDC has been changed";
             text {
-               font: "Sans";
+               font: FN;
                size: 14;
                align: 0.5 0;
                min: 1 1;
@@ -285,7 +326,7 @@ group { name: "warning_layout";
             rel2 { to: "elm.text.title"; relative: 0.5 1; }
             text.text: "Without save, you will lost last changes!";
             text {
-               font: "Sans";
+               font: FN;
                size: 12;
                align: 0.5 0;
                min: 1 1;
@@ -304,7 +345,7 @@ group { name: "warning_layout";
             rel2 { to: "elm.text.desc"; relative: 0.5 1; }
             text.text: "Are you sure you want to do this?";
             text {
-               font: "Sans";
+               font: FN;
                size: 12;
                align: 0.5 0;
                min: 1 1;
@@ -770,7 +811,7 @@ group { name: "setting_layout";
             align: 0 0.5;
             fixed: 1 1;
             text {
-               font: "Sans";
+               font: FN;
                text: "Image Paths:";
                size: 12;
                align: 0 0.5;
@@ -817,7 +858,7 @@ group { name: "setting_layout";
             align: 0 0.5;
             fixed: 1 1;
             text {
-               font: "Sans";
+               font: FN;
                text: "Sound Paths:";
                size: 12;
                align: 0 0.5;
@@ -864,7 +905,7 @@ group { name: "setting_layout";
             align: 0 0;
             fixed: 1 1;
             text {
-               font: "Sans";
+               font: FN;
                text: "Preferences:";
                size: 12;
                align: 0 0;

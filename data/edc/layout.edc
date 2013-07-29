@@ -1,6 +1,6 @@
 styles {
      style { name: "entry_statusbar_style";
-        base: "font=Sans font_size=11 color=#000000 text_class=entry color=#606060";
+        base: "font="FN" font_size=11 color=#000000 text_class=entry color=#606060";
      }
 }
 
@@ -117,7 +117,7 @@ group { name: "statusbar_layout";
             align: 0 0.5;
             color: 0 0 0 0;
             text {
-               font: "Sans";
+               font: FN;
                size: 11;
                align: 0 0.5;
             }

@@ -661,28 +661,70 @@ fileselector_save_done_cb(void *data, Evas_Object *obj EINA_UNUSED,
 }
 
 static void
+fileselector_save_selected_cb(void *data, Evas_Object *obj, void *event_info)
+{
+   fileselector_save_done_cb(data, obj, event_info);
+}
+
+static void
 fileselector_load_done_cb(void *data, Evas_Object *obj EINA_UNUSED,
                           void *event_info)
 {
    menu_data *md = data;
    const char *selected = event_info;
 
-   if (selected)
+   if (!selected)
      {
-        //Filter to read only edc extension file.
-        char *ext = strrchr(selected, '.');
-        if (!ext || strcmp(ext, ".edc") || !ecore_file_can_read(selected))
-          {
-             //show failed message box.
-             fileselector_close(md);
-             return;
-          }
-
-        edc_reload(md, selected);
         fileselector_close(md);
-        menu_close(md, EINA_FALSE);
-      }
-   else fileselector_close(md);
+        return;
+     }
+
+   char buf[PATH_MAX];
+
+   //Directory?
+   if (ecore_file_is_dir(selected))
+     {
+        snprintf(buf, sizeof(buf), "Choose a file to load.");
+        elm_object_part_text_set(md->fileselector_layout,
+                                 "elm.text.msg", buf);
+        elm_object_signal_emit(md->fileselector_layout,
+                               "elm,action,msg,show", "");
+        return;
+     }
+
+   //Filter to read only edc extension file.
+   char *ext = strrchr(selected, '.');
+   if (!ext || strcmp(ext, ".edc"))
+     {
+        elm_object_part_text_set(md->fileselector_layout,
+                                 "elm.text.msg",
+                                 "Support only edc file.");
+        elm_object_signal_emit(md->fileselector_layout,
+                               "elm,action,msg,show", "");
+        return;
+     }
+
+   //Show a message if the it failed to load the file.
+   if (!ecore_file_can_read(selected))
+     {
+        const char *filename = ecore_file_file_get(selected);
+        snprintf(buf, sizeof(buf), "Failed to load: %s.", filename);
+        elm_object_part_text_set(md->fileselector_layout,
+                                 "elm.text.msg", buf);
+        elm_object_signal_emit(md->fileselector_layout,
+                               "elm,action,msg,show", "");
+        return;
+     }
+
+   edc_reload(md, selected);
+   fileselector_close(md);
+   menu_close(md, EINA_FALSE);
+}
+
+static void
+fileselector_load_selected_cb(void *data, Evas_Object *obj, void *event_info)
+{
+   fileselector_load_done_cb(data, obj, event_info);
 }
 
 static void
@@ -703,6 +745,8 @@ edc_file_save(menu_data *md)
    elm_fileselector_expandable_set(fs, EINA_FALSE);
    elm_fileselector_is_save_set(fs, EINA_TRUE);
    evas_object_smart_callback_add(fs, "done", fileselector_save_done_cb, md);
+   evas_object_smart_callback_add(fs, "selected", fileselector_save_selected_cb,
+                                  md);
    evas_object_show(fs);
 
    elm_object_part_content_set(layout, "elm.swallow.fileselector", fs);
@@ -732,6 +776,8 @@ edc_file_load(menu_data *md)
    elm_fileselector_expandable_set(fs, EINA_FALSE);
    elm_fileselector_is_save_set(fs, EINA_TRUE);
    evas_object_smart_callback_add(fs, "done", fileselector_load_done_cb, md);
+   evas_object_smart_callback_add(fs, "selected", fileselector_load_selected_cb,
+                                  md);
    evas_object_show(fs);
 
    elm_object_part_content_set(layout, "elm.swallow.fileselector", fs);

@@ -1,3 +1,5 @@
+#define FN "Sans"
+
 collections {
    #include "content.edc"
    #include "images.edc"
