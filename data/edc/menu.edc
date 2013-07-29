@@ -217,7 +217,7 @@ group { name: "fileselector_layout";
       program { name: "msg_idle";
          action: STATE_SET "show" 0.0;
          target: "elm.text.msg";
-         transition: DECELERATE 1;
+         transition: LINEAR 1;
          after: "msg_hide";
       }
       program { name: "msg_hide";

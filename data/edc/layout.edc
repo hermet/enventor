@@ -139,6 +139,13 @@ group { name: "statusbar_layout";
          action: STATE_SET "show" 0.0;
          target: "elm.text.info_msg";
          transition: DECELERATE 0.3;
+         after: "info_msg_idle";
+      }
+      program { name: "info_msg_idle";
+         action: STATE_SET "show" 0.0;
+         target: "elm.text.info_msg";
+         transition: LINEAR 2;
+         after: "info_msg_hide";
       }
       program { name: "info_msg_hide";
          signal: "elm,action,info_msg,hide";

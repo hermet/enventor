@@ -4,8 +4,6 @@
 struct statusbar_s
 {
    Evas_Object *layout;
-   Ecore_Timer *info_msg_timer;
-
    option_data *od;
 };
 
@@ -58,20 +56,7 @@ void
 stats_term(stats_data *sd)
 {
    if (!sd) return;
-
-   if (sd->info_msg_timer) ecore_timer_del(sd->info_msg_timer);
    free(sd);
-}
-
-static Eina_Bool
-info_msg_timer_cb(void *data)
-{
-   //Hide the save message
-   stats_data *sd = data;
-   if (!option_stats_bar_get(sd->od)) return ECORE_CALLBACK_CANCEL;
-   elm_object_signal_emit(sd->layout, "elm,action,info_msg,hide", "");
-   sd->info_msg_timer = NULL;
-   return ECORE_CALLBACK_CANCEL;
 }
 
 void
@@ -81,8 +66,6 @@ stats_info_msg_update(stats_data *sd, const char *msg)
 
    elm_object_part_text_set(sd->layout, "elm.text.info_msg", msg);
    elm_object_signal_emit(sd->layout, "elm,action,info_msg,show", "");
-   if (sd->info_msg_timer) ecore_timer_del(sd->info_msg_timer);
-   sd->info_msg_timer = ecore_timer_add(2, info_msg_timer_cb, sd);
 }
 
 void
