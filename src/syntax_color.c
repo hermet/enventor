@@ -72,6 +72,7 @@ color_markup_insert(Eina_Strbuf *strbuf, const char **src, int length,
 {
    char buf[128];
 
+   //FIXME: compare opposite case.
    if (strncmp(*cur, cmp, strlen(cmp))) return 0;
 
    eina_strbuf_append_length(strbuf, *prev, *cur - *prev);
@@ -297,6 +298,11 @@ color_cancel(color_data *cd, const char *src, int length)
    return str;
 }
 
+/* 
+	OPTIMIZATION POINT 
+	1. Use Hash
+	2. Apply Color only changed line.
+*/
 const char *
 color_apply(color_data *cd, const char *src, int length, Eina_Bool realtime)
 {
