@@ -632,9 +632,7 @@ save_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
             void *event_info EINA_UNUSED)
 {
    menu_data *md = data;
-   edit_save(md->ed);
-
-   //edc_file_save(md);
+   edc_file_save(md);
 }
 
 static void
@@ -644,20 +642,56 @@ fileselector_save_done_cb(void *data, Evas_Object *obj EINA_UNUSED,
    menu_data *md = data;
    const char *selected = event_info;
 
-   if (selected)
+   if (!selected)
      {
-        //Filter to read only edc extension file.
-        char *ext = strrchr(selected, '.');
-        if (!ext || strcmp(ext, ".edc"))
-          {
-             //show failed message box.
-             fileselector_close(md);
-             return;
-          }
         fileselector_close(md);
-        menu_close(md, EINA_FALSE);
-      }
-   else fileselector_close(md);
+        return;
+     }
+
+   //Filter to read only edc extension file.
+   char *ext = strrchr(selected, '.');
+   if (!ext || strcmp(ext, ".edc"))
+     {
+        elm_object_part_text_set(md->fileselector_layout,
+                                 "elm.text.msg",
+                                 "Support only .edc file.");
+        elm_object_signal_emit(md->fileselector_layout,
+                               "elm,action,msg,show", "");
+        return;
+     }
+
+   //Directory?
+   if (ecore_file_is_dir(selected))
+     {
+        elm_object_part_text_set(md->fileselector_layout,
+                                 "elm.text.msg", "Choose a file to save.");
+        elm_object_signal_emit(md->fileselector_layout,
+                               "elm,action,msg,show", "");
+        return;
+     }
+
+   //Update the edc file and try to save.
+   if (strcmp(option_edc_path_get(md->od), selected))
+     edit_changed_set(md->ed, EINA_TRUE);
+
+   option_edc_path_set(md->od, selected);
+
+   if (!edit_save(md->ed))
+     {
+        char buf[PATH_MAX];
+        snprintf(buf, sizeof(buf), "Failed to load: %s.", selected);
+        elm_object_part_text_set(md->fileselector_layout,
+                                 "elm.text.msg", buf);
+        elm_object_signal_emit(md->fileselector_layout,
+                               "elm,action,msg,show", "");
+        return;
+     }
+
+   view_reload_need_set(md->vd, EINA_TRUE);
+   option_apply(md->od);
+
+   fileselector_close(md);
+   menu_close(md, EINA_FALSE);
 }
 
 static void
@@ -679,34 +713,32 @@ fileselector_load_done_cb(void *data, Evas_Object *obj EINA_UNUSED,
         return;
      }
 
-   char buf[PATH_MAX];
-
-   //Directory?
-   if (ecore_file_is_dir(selected))
-     {
-        snprintf(buf, sizeof(buf), "Choose a file to load.");
-        elm_object_part_text_set(md->fileselector_layout,
-                                 "elm.text.msg", buf);
-        elm_object_signal_emit(md->fileselector_layout,
-                               "elm,action,msg,show", "");
-        return;
-     }
-
    //Filter to read only edc extension file.
    char *ext = strrchr(selected, '.');
    if (!ext || strcmp(ext, ".edc"))
      {
         elm_object_part_text_set(md->fileselector_layout,
                                  "elm.text.msg",
-                                 "Support only edc file.");
+                                 "Support only .edc file.");
         elm_object_signal_emit(md->fileselector_layout,
                                "elm,action,msg,show", "");
         return;
      }
 
-   //Show a message if the it failed to load the file.
+   //Directory?
+   if (ecore_file_is_dir(selected))
+     {
+        elm_object_part_text_set(md->fileselector_layout,
+                                 "elm.text.msg", "Choose a file to load.");
+        elm_object_signal_emit(md->fileselector_layout,
+                               "elm,action,msg,show", "");
+        return;
+     }
+
+   //Show a message if it failed to load the file.
    if (!ecore_file_can_read(selected))
      {
+        char buf[PATH_MAX];
         const char *filename = ecore_file_file_get(selected);
         snprintf(buf, sizeof(buf), "Failed to load: %s.", filename);
         elm_object_part_text_set(md->fileselector_layout,

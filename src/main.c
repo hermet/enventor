@@ -16,6 +16,7 @@ struct app_s
    Evas_Object *layout;
    Evas_Object *panes;
    Evas_Object *win;
+   Eio_Monitor *edc_monitor;
 
    Eina_Bool ctrl_pressed : 1;
    Eina_Bool menu_opened : 1;
@@ -30,7 +31,7 @@ rebuild_edc()
    return EINA_TRUE;
 }
 
-Eina_Bool
+static Eina_Bool
 edc_changed_cb(void *data, int type EINA_UNUSED, void *event)
 {
    //FIXME: Why does this callback called multiple times?
@@ -43,7 +44,7 @@ edc_changed_cb(void *data, int type EINA_UNUSED, void *event)
      return ECORE_CALLBACK_RENEW;
 
    rebuild_edc();
-   edit_changed_reset(ad->ed);
+   edit_changed_set(ad->ed, EINA_FALSE);
 
    return ECORE_CALLBACK_RENEW;
 }
@@ -334,15 +335,17 @@ option_update_cb(void *data, option_data *od)
    if (view_reload_need_get(ad->vd))
      {
         rebuild_edc();
-        edit_changed_reset(ad->ed);
+        edit_changed_set(ad->ed, EINA_FALSE);
         view_new(ad->vd, edit_group_name_get(ad->ed));
         part_changed_cb(ad, NULL);
+        if (ad->edc_monitor) eio_monitor_del(ad->edc_monitor);
+        ad->edc_monitor = eio_monitor_add(option_edc_path_get(ad->od));
      }
    //If the edc is reloaded, then rebuild it!
    else if (edit_changed_get(ad->ed))
      {
         rebuild_edc();
-        edit_changed_reset(ad->ed);
+        edit_changed_set(ad->ed, EINA_FALSE);
      }
 }
 
@@ -461,8 +464,7 @@ init(app_data *ad, int argc, char **argv)
    edc_view_set(ad, ad->od, ad->sd);
    ad->md = menu_init(ad->win, ad->ed, ad->od, ad->vd, menu_close_cb, ad);
 
-   //FIXME: update the edc path whenever file is changed.
-   eio_monitor_add(option_edc_path_get(ad->od));
+   ad->edc_monitor = eio_monitor_add(option_edc_path_get(ad->od));
    ecore_event_handler_add(EIO_MONITOR_FILE_MODIFIED, edc_changed_cb, ad);
 
    return EINA_TRUE;

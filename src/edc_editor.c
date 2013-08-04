@@ -20,7 +20,6 @@ struct editor_s
    menu_data *md;
 
    int line_max;
-   Eina_Stringshare *edc_path;
    Eina_Stringshare *group_name;
    Eina_Stringshare *part_name;
 
@@ -152,28 +151,30 @@ save_msg_show(edit_data *ed)
    char buf[PATH_MAX];
 
    if (ed->edit_changed)
-     snprintf(buf, sizeof(buf), "File saved. \"%s\"", ed->edc_path);
+     snprintf(buf, sizeof(buf), "File saved. \"%s\"",
+              option_edc_path_get(ed->od));
    else
-     snprintf(buf, sizeof(buf), "Already saved. \"%s\"", ed->edc_path);
+     snprintf(buf, sizeof(buf), "Already saved. \"%s\"",
+              option_edc_path_get(ed->od));
 
    stats_info_msg_update(ed->sd, buf);
 }
 
-void
+Eina_Bool
 edit_save(edit_data *ed)
 {
    if (!ed->edit_changed)
      {
         save_msg_show(ed);
-        return;
+        return EINA_TRUE;
      }
 
    const char *text = elm_entry_entry_get(ed->en_edit);
    Evas_Object *tb = elm_entry_textblock_get(ed->en_edit);
    const char *text2 = evas_textblock_text_markup_to_utf8(tb, text);
 
-   FILE *fp = fopen(ed->edc_path, "w");
-   if (!fp) return;
+   FILE *fp = fopen(option_edc_path_get(ed->od), "w");
+   if (!fp) return EINA_FALSE;
 
    fputs(text2, fp);
    fclose(fp);
@@ -181,6 +182,8 @@ edit_save(edit_data *ed)
    save_msg_show(ed);
    //FIXME: If compile edc here? we can edit_changed FALSE;
    //ed->edit_changed = EINA_FALSE;
+
+   return EINA_TRUE;
 }
 
 static void
@@ -602,7 +605,6 @@ edit_edc_read(edit_data *ed, const char *file_path)
    elm_entry_entry_append(ed->en_edit, eina_strbuf_string_get(strbuf));
 
    ed->line_max = line_num;
-   ed->edc_path = eina_stringshare_add(file_path);
    if (ed->group_name) eina_stringshare_del(ed->group_name);
    ed->group_name = parser_group_name_get(ed->pd, ed->en_edit);
 
@@ -628,9 +630,9 @@ edit_changed_get(edit_data *ed)
 }
 
 void
-edit_changed_reset(edit_data *ed)
+edit_changed_set(edit_data *ed, Eina_Bool changed)
 {
-   ed->edit_changed = EINA_FALSE;
+   ed->edit_changed = changed;
 }
 
 void
