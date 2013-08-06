@@ -1214,11 +1214,11 @@ group { name: "elm/ctxpopup/bg/enventor";
       }
    }
    programs {
-/*      program { name: "clicked_event";
+      program { name: "clicked_event";
          signal: "mouse,clicked,1";
          source: "ctxpopup_bg";
          action: SIGNAL_EMIT "elm,action,click" "";
-      } */
+      }
       program { name: "show";
          signal: "elm,state,show";
          source: "elm";
