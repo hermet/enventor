@@ -142,6 +142,8 @@ static void
 warning_layout_create(menu_data *md, Evas_Smart_Cb yes_cb,
                       Evas_Smart_Cb save_cb)
 {
+   if (md->warning_layout) return;
+
    //Layout
    Evas_Object *layout = elm_layout_add(md->win);
    elm_layout_file_set(layout, EDJE_PATH, "warning_layout");
