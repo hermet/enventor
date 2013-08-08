@@ -1,0 +1,3 @@
+MAINTAINERCLEANFILES = Makefile.in
+
+EXTRA_DIST = logo.png
