@@ -10,7 +10,6 @@ struct editor_s
    Evas_Object *en_line;
    Evas_Object *scroller;
    Evas_Object *layout;
-   Evas_Object *ctxpopup;
    Evas_Object *parent;
 
    color_data *cd;
@@ -187,166 +186,38 @@ edit_save(edit_data *ed)
 }
 
 static void
-ctxpopup_dismiss_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
+ctxpopup_dismiss_cb(void *data, Evas_Object *obj, void *event_info)
 {
    edit_data *ed = data;
    evas_object_del(obj);
-   ed->ctxpopup = NULL;
    elm_object_disabled_set(ed->layout, EINA_FALSE);
    elm_object_focus_set(ed->en_edit, EINA_TRUE);
 }
 
 static void
-ctxpopup_it_cb(void *data, Evas_Object *obj, void *event_info)
+ctxpopup_selected_cb(void *data, Evas_Object *obj, void *event_info)
 {
    edit_data *ed = data;
-
-   Elm_Object_Item *it = event_info;
-   elm_entry_entry_insert(ed->en_edit, elm_object_item_text_get(it));
-
+   const char *text = event_info;
+   elm_entry_entry_insert(ed->en_edit, text);
    elm_ctxpopup_dismiss(obj);
-}
-
-static void
-slider_dismiss_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
-{
-   edit_data *ed = data;
-   Evas_Object *layout = elm_object_content_get(obj);
-   Evas_Object *slider = elm_object_part_content_get(layout,
-                                                     "elm.swallow.slider");
-   char buf[128];
-   attr_value *attr = evas_object_data_get(slider, "attr");
-   if (attr->integer)
-     {
-        snprintf(buf, sizeof(buf), "%d",
-                 (int) roundf(elm_slider_value_get(slider)));
-     }
-   else
-     {
-        //if the last digit number is 0 then round up.
-        double val = elm_slider_value_get(slider);
-        snprintf(buf, sizeof(buf), "%0.2f", val);
-        double round_down = atof(buf);
-        snprintf(buf, sizeof(buf), "%0.1f", val);
-        double round_down2 = atof(buf);
-        if (fabs(round_down - round_down2) < 0.0005)
-          snprintf(buf, sizeof(buf), "%0.1f", val);
-        else
-          snprintf(buf, sizeof(buf), "%0.2f", val);
-     }
-   elm_entry_entry_insert(ed->en_edit, buf);
    ed->edit_changed = EINA_TRUE;
    edit_save(ed);
-}
-
-static void
-btn_plus_cb(void *data, Evas_Object *obj EINA_UNUSED,
-            void *event_info EINA_UNUSED)
-{
-   Evas_Object *slider = data;
-   attr_value *attr = evas_object_data_get(slider, "attr");
-   double value = elm_slider_value_get(slider);
-
-   if (attr->integer) elm_slider_value_set(slider, value + 1);
-   else elm_slider_value_set(slider, value + 0.01);
-}
-
-static void
-btn_minus_cb(void *data, Evas_Object *obj EINA_UNUSED,
-             void *event_info EINA_UNUSED)
-{
-   Evas_Object *slider = data;
-   attr_value *attr = evas_object_data_get(slider, "attr");
-   double value = elm_slider_value_get(slider);
-
-   if (attr->integer) elm_slider_value_set(slider, value - 1);
-   else elm_slider_value_set(slider, value - 0.01);
 }
 
 static void
 edit_attr_candidate_show(edit_data *ed, attr_value *attr, int x, int y, const char *selected)
 {
    //Show up the list of the types
-   Evas_Object *ctxpopup = elm_ctxpopup_add(ed->parent);
-   elm_object_style_set(ctxpopup, elm_app_name_get());
+   Evas_Object *ctxpopup = ctxpopup_create(ed->layout, attr, atof(selected),
+                                           ctxpopup_dismiss_cb,
+                                           ctxpopup_selected_cb, ed);
+   if (!ctxpopup) return;
 
-   //case of strings
-   if (attr->strs)
-     {
-        Eina_List *l;
-        Eina_Stringshare *candidate;
-        EINA_LIST_FOREACH(attr->strs, l, candidate)
-          elm_ctxpopup_item_append(ctxpopup, candidate, NULL, ctxpopup_it_cb,
-                                   ed);
-     }
-   //case of numbers
-   else
-     {
-        //Layout
-        Evas_Object *layout = elm_layout_add(ed->en_edit);
-        elm_layout_file_set(layout, EDJE_PATH, "slider_layout");
-        evas_object_show(layout);
-
-        elm_object_content_set(ctxpopup, layout);
-
-        //Slider
-        Evas_Object *slider = elm_slider_add(ed->en_edit);
-        elm_object_scale_set(slider, 1.2125);
-        if (attr->integer) elm_slider_unit_format_set(slider, "%1.0f");
-        else elm_slider_unit_format_set(slider, "%1.2f");
-        elm_slider_span_size_set(slider, 120);
-        elm_slider_indicator_show_set(slider, EINA_FALSE);
-        elm_slider_min_max_set(slider, attr->min, attr->max);
-        elm_slider_value_set(slider, atof(selected));
-        evas_object_data_set(slider, "attr", attr);
-        evas_object_show(slider);
-
-        elm_object_part_content_set(layout, "elm.swallow.slider", slider);
-
-        Evas_Object *btn;
-        Evas_Object *img;
-
-        //Minus Button
-        btn = elm_button_add(layout);
-        evas_object_show(btn);
-        evas_object_smart_callback_add(btn, "clicked", btn_minus_cb, slider);
-
-        elm_object_part_content_set(layout, "elm.swallow.minus", btn);
-
-        //Minus Image
-        img = elm_image_add(btn);
-        elm_image_file_set(img, EDJE_PATH, "minus_img");
-        evas_object_show(img);
-
-        elm_object_content_set(btn, img);
-
-        //Plus Button
-        btn = elm_button_add(layout);
-        evas_object_show(btn);
-        evas_object_smart_callback_add(btn, "clicked", btn_plus_cb, slider);
-
-        elm_object_part_content_set(layout, "elm.swallow.plus", btn);
-
-        //Plus Image
-        img = elm_image_add(btn);
-        elm_image_file_set(img, EDJE_PATH, "plus_img");
-        evas_object_show(img);
-
-        elm_object_content_set(btn, img);
-
-        evas_object_smart_callback_add(ctxpopup, "dismissed",
-                                       slider_dismiss_cb, ed);
-     }
-
-   evas_object_smart_callback_add(ctxpopup, "dismissed", ctxpopup_dismiss_cb,
-                                  ed);
    evas_object_move(ctxpopup, x, y);
    evas_object_show(ctxpopup);
-
    menu_ctxpopup_register(ctxpopup);
    elm_object_disabled_set(ed->layout, EINA_TRUE);
-
-   ed->ctxpopup = ctxpopup;
 }
 
 static void

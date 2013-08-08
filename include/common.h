@@ -44,5 +44,6 @@ typedef struct dummy_obj_s dummy_obj;
 #include "edc_parser.h"
 #include "panes.h"
 #include "dummy_obj.h"
+#include "ctxpopup.h"
 
 #endif
