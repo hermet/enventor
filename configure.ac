@@ -92,7 +92,6 @@ data/theme/Makefile
 data/theme/images/Makefile
 data/sample/Makefile
 data/syntax/Makefile
-data/.proto/Makefile
 ])
 
 AC_OUTPUT
