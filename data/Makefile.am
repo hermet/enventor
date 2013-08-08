@@ -1,3 +1,3 @@
 MAINTAINERCLEANFILES = Makefile.in
 
-SUBDIRS = images sample syntax theme
+SUBDIRS = images theme
