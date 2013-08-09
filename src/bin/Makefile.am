@@ -2,7 +2,9 @@ MAINTAINERCLEANFILES = Makefile.in
 
 bin_PROGRAMS = enventor enventorql
 
-AM_CPPFLAGS = -DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
+AM_CPPFLAGS = -DPACKAGE_DATA_DIR=\"$(pkgdatadir)\" \
+	-DPACKAGE_BIN_DIR=\"$(bindir)\" \
+	-DPACKAGE_LIB_DIR=\"$(libdir)\" \
 	-I$(top_srcdir)/src/bin \
 	-I$(top_srcdir)/include \
         @ENVENTOR_CFLAGS@
