@@ -84,8 +84,8 @@ EFL_WITH_BIN([edje], [edje-cc], [edje_cc])
 
 AC_CONFIG_FILES([
 Makefile
-include/Makefile
 src/Makefile
+src/include/Makefile
 src/bin/Makefile
 data/Makefile
 data/images/Makefile
