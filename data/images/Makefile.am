@@ -1,3 +1,4 @@
 MAINTAINERCLEANFILES = Makefile.in
 
-EXTRA_DIST = logo.png
+filesdir = $(datadir)/$(PACKAGE)/images
+files_DATA = logo.png

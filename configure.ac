@@ -89,7 +89,7 @@ src/bin/Makefile
 data/Makefile
 data/images/Makefile
 data/theme/Makefile
-data/theme/images/Makefile
+data/.proto/Makefile
 ])
 
 AC_OUTPUT
