@@ -416,26 +416,6 @@ config_data_set(app_data *ad, int argc, char **argv)
 }
 
 static void
-elm_setup()
-{
-    elm_config_profile_set("standard");
-
-    //Recover the scale since it will be reset by elm_config_profile_set()
-    char *scale = getenv("ELM_SCALE");
-    if (scale) elm_config_scale_set(atof(scale));
-
-   elm_config_scroll_bounce_enabled_set(EINA_FALSE);
-   elm_policy_set(ELM_POLICY_QUIT, ELM_POLICY_QUIT_LAST_WINDOW_CLOSED);
-   elm_app_info_set("/usr/local/bin", "enventor",
-                    "/usr/local/share/enventor");
-
-   snprintf(EDJE_PATH, sizeof(EDJE_PATH), "%s/edj/enventor.edj",
-            elm_app_data_dir_get());
-
-   elm_theme_extension_add(NULL, EDJE_PATH);
-}
-
-static void
 menu_close_cb(void *data)
 {
    app_data *ad = data;
@@ -451,8 +431,6 @@ init(app_data *ad, int argc, char **argv)
    ecore_event_handler_add(ECORE_EVENT_KEY_DOWN, main_key_down_cb, ad);
    ecore_event_handler_add(ECORE_EVENT_KEY_UP, main_key_up_cb, ad);
 
-   elm_init(argc, argv);
-   elm_setup();
    config_data_set(ad, argc, argv);
 
    if (!edje_cc_cmd_set(ad->od)) return EINA_FALSE;
@@ -479,15 +457,21 @@ term(app_data *ad)
    stats_term(ad->sd);
    option_term(ad->od);
 
-   elm_shutdown();
    ecore_event_shutdown();
+   elm_shutdown();
 }
 
-int
-main(int argc, char **argv)
+EAPI_MAIN int
+elm_main(int argc, char **argv)
 {
-   app_data ad;
-   memset(&ad, 0x00, sizeof(app_data));
+   app_data ad = { 0 };
+
+   elm_policy_set(ELM_POLICY_QUIT, ELM_POLICY_QUIT_LAST_WINDOW_CLOSED);
+   elm_app_compile_bin_dir_set(PACKAGE_BIN_DIR);
+   elm_app_compile_data_dir_set(PACKAGE_DATA_DIR);
+   elm_app_info_set(elm_main, "enventor", "themes/enventor.edj");
+
+   sprintf(EDJE_PATH, "%s/themes/enventor.edj", elm_app_data_dir_get());
 
    if (!init(&ad, argc, argv))
      {
@@ -501,3 +485,4 @@ main(int argc, char **argv)
 
    return 0;
 }
+ELM_MAIN()
