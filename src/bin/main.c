@@ -429,7 +429,7 @@ elm_setup()
    elm_app_info_set("/usr/local/bin", "enventor",
                     "/usr/local/share/enventor");
 
-   snprintf(EDJE_PATH, sizeof(EDJE_PATH), "%s/theme/enventor.edj",
+   snprintf(EDJE_PATH, sizeof(EDJE_PATH), "%s/themes/enventor.edj",
             elm_app_data_dir_get());
 
    elm_theme_extension_add(NULL, EDJE_PATH);

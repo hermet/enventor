@@ -89,7 +89,7 @@ src/include/Makefile
 src/bin/Makefile
 data/Makefile
 data/images/Makefile
-data/theme/Makefile
+data/themes/Makefile
 data/.proto/Makefile
 ])
 
