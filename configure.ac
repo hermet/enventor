@@ -31,6 +31,7 @@ AC_CONFIG_HEADERS(config.h)
 
 AC_GNU_SOURCE
 AC_PROG_LIBTOOL
+AM_PROG_CC_C_O
 
 ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
 ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
@@ -90,6 +91,7 @@ data/Makefile
 data/images/Makefile
 data/theme/Makefile
 data/theme/images/Makefile
+data/.proto/Makefile
 ])
 
 AC_OUTPUT
