@@ -27,8 +27,9 @@ static const char *EDJE_CC_CMD;
 static Eina_Bool
 rebuild_edc()
 {
-   system(EDJE_CC_CMD);
-   return EINA_TRUE;
+   int ret = system(EDJE_CC_CMD);
+   if (ret == -1) return EINA_FALSE;
+   else return EINA_TRUE;
 }
 
 static Eina_Bool
