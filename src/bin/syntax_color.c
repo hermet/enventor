@@ -17,31 +17,13 @@ struct syntax_color_s
    Eina_Stringshare *col3;
    Eina_Stringshare *col4;
    Eina_Stringshare *col5;
-
-   Ecore_Timer *buf_flush_timer;
-
-   Eina_Bool enabled : 1;
 };
 
-Eina_Bool
-buf_flush_timer_cb(void *data)
-{
-   color_data *cd = data;
-   /* At this moment, I have no idea the policy of the eina strbuf.
-      If the string buffer wouldn't reduce the buffer size, it needs to prevent
-      the buffer size not to be grown endlessly. */
-   eina_strbuf_free(cd->strbuf);
-   cd->strbuf = eina_strbuf_new();
-
-   return ECORE_CALLBACK_RENEW;
-}
-
 color_data *
-color_init()
+color_init(Eina_Strbuf *strbuf)
 {
-   color_data *cd = calloc(1, sizeof(color_data));
-   cd->strbuf = eina_strbuf_new();
-   cd->buf_flush_timer = ecore_timer_add(1800, buf_flush_timer_cb, cd);
+   color_data *cd = malloc(sizeof(color_data));
+   cd->strbuf = strbuf;
    cd->col1 = eina_stringshare_add("424242");
    cd->col2 = eina_stringshare_add("a000a0");
    cd->col3 = eina_stringshare_add("0000a0");
@@ -54,8 +36,6 @@ color_init()
 void
 color_term(color_data *cd)
 {
-   if (cd->buf_flush_timer) ecore_timer_del(cd->buf_flush_timer);
-   eina_strbuf_free(cd->strbuf);
    eina_stringshare_del(cd->col1);
    eina_stringshare_del(cd->col2);
    eina_stringshare_del(cd->col3);
@@ -260,7 +240,6 @@ const char *
 color_cancel(color_data *cd, const char *src, int length)
 {
    if (!src || length < 1) return NULL;
-
    Eina_Strbuf *strbuf = cd->strbuf;
    eina_strbuf_reset(strbuf);
 

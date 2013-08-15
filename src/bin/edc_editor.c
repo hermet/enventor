@@ -12,7 +12,7 @@ struct editor_s
    Evas_Object *layout;
    Evas_Object *parent;
 
-   color_data *cd;
+   syntax_helper *sh;
    stats_data *sd;
    option_data *od;
    parser_data *pd;
@@ -77,11 +77,13 @@ syntax_color_apply(edit_data *ed)
 
    int pos = elm_entry_cursor_pos_get(ed->en_edit);
 
-   char *utf8 = (char *) color_cancel(ed->cd, text, strlen(text));
+   char *utf8 = (char *) color_cancel(syntax_color_data_get(ed->sh), text,
+                                      strlen(text));
    if (!utf8) return;
 
    utf8 = strdup(utf8);
-   const char *translated = color_apply(ed->cd, utf8, strlen(utf8), EINA_TRUE);
+   const char *translated = color_apply(syntax_color_data_get(ed->sh), utf8,
+                                        strlen(utf8), EINA_TRUE);
 
    elm_entry_entry_set(ed->en_edit, NULL);
    elm_entry_entry_append(ed->en_edit, translated);
@@ -336,12 +338,12 @@ edit_data *
 edit_init(Evas_Object *parent, stats_data *sd, option_data *od)
 {
    parser_data *pd = parser_init();
-   color_data *cd = color_init();
+   syntax_helper *sh = syntax_init();
 
    edit_data *ed = calloc(1, sizeof(edit_data));
    ed->sd = sd;
    ed->pd = pd;
-   ed->cd = cd;
+   ed->sh = sh;
    ed->od = od;
 
    ecore_event_handler_add(ECORE_EVENT_KEY_DOWN, key_down_cb, ed);
@@ -428,14 +430,14 @@ edit_term(edit_data *ed)
 {
    if (!ed) return;
 
-   color_data *cd = ed->cd;
+   syntax_helper *sh = ed->sh;
    parser_data *pd = ed->pd;
 
    if (ed->group_name) eina_stringshare_del(ed->group_name);
    if (ed->syntax_color_timer) ecore_timer_del(ed->syntax_color_timer);
    free(ed);
 
-   color_term(cd);
+   syntax_term(sh);
    parser_term(pd);
 }
 

@@ -34,11 +34,13 @@ typedef struct config_s option_data;
 typedef struct parser_s parser_data;
 typedef struct attr_value_s attr_value;
 typedef struct dummy_obj_s dummy_obj;
+typedef struct syntax_helper_s syntax_helper;
 
 #include "edc_editor.h"
 #include "menu.h"
 #include "edj_viewer.h"
 #include "statusbar.h"
+#include "syntax_helper.h"
 #include "syntax_color.h"
 #include "config_data.h"
 #include "edc_parser.h"

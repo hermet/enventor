@@ -20,7 +20,8 @@ enventor_SOURCES = \
 	panes.c \
 	statusbar.c \
 	syntax_color.c \
-	ctxpopup.c
+	ctxpopup.c \
+	syntax_helper.c
 
 # QuickLaunch                                                
 enventorql_SOURCES = $(enventor_SOURCES)
