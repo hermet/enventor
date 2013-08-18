@@ -35,6 +35,7 @@ typedef struct parser_s parser_data;
 typedef struct attr_value_s attr_value;
 typedef struct dummy_obj_s dummy_obj;
 typedef struct syntax_helper_s syntax_helper;
+typedef struct indent_s indent_data;
 
 #include "edc_editor.h"
 #include "menu.h"
@@ -47,5 +48,6 @@ typedef struct syntax_helper_s syntax_helper;
 #include "panes.h"
 #include "dummy_obj.h"
 #include "ctxpopup.h"
+#include "indent.h"
 
 #endif
