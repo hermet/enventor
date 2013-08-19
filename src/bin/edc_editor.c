@@ -124,7 +124,21 @@ deleted_line_cnt(const char *str)
 static void
 indent_apply(edit_data *ed)
 {
-//   int space = indent_depth_get(syntax_indent_data_get(ed->sh));
+   const int TAB_SPACE = 3;
+
+   //Get the indentation depth
+   int pos = elm_entry_cursor_pos_get(ed->en_edit);
+   char *src = elm_entry_markup_to_utf8(elm_entry_entry_get(ed->en_edit));
+   int space = indent_depth_get(syntax_indent_data_get(ed->sh), src, pos);
+   space *= TAB_SPACE;
+   free(src);
+
+   //Alloc Empty spaces
+   char *p = alloca(space) + 1;
+   memset(p, ' ', space);
+   p[space] = '\0';
+
+   elm_entry_entry_insert(ed->en_edit, p);
 }
 
 static void

@@ -21,20 +21,20 @@ indent_term(indent_data *id)
 }
 
 int
-indent_depth_get(indent_data *id, const char *src, int pos)
+indent_depth_get(indent_data *id, char *src, int pos)
 {
    if (!src || (pos < 1)) return 0;
 
    int depth = 0;
 
    char *cur = (char *) src;
-   char *end = src + pos;
+   char *end = ((char *) src) + pos;
 
    while (cur && (cur <= end))
      {
-       break;
-
-
+        if (*cur == '{') depth++;
+        else if (*cur == '}') depth--;
+        cur++;
      }
 
    return depth;
