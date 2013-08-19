@@ -51,3 +51,9 @@ syntax_color_data_get(syntax_helper *sh)
 {
    return sh->cd;
 }
+
+indent_data *
+syntax_indent_data_get(syntax_helper *sh)
+{
+   return sh->id;
+}

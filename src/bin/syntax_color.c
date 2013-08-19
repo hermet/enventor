@@ -295,7 +295,7 @@ color_apply(color_data *cd, const char *src, int length, Eina_Bool realtime)
         inside_comment = EINA_FALSE;
      }
 
-   if (!src || length < 1) return NULL;
+   if (!src || (length < 1)) return NULL;
 
    Eina_Strbuf *strbuf = cd->strbuf;
    eina_strbuf_reset(strbuf);

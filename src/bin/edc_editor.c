@@ -122,9 +122,9 @@ deleted_line_cnt(const char *str)
 }
 
 static void
-indent_apply(Evas_Object *entry)
+indent_apply(edit_data *ed)
 {
-
+//   int space = indent_depth_get(syntax_indent_data_get(ed->sh));
 }
 
 static void
@@ -139,7 +139,7 @@ edit_changed_cb(void *data, Evas_Object *obj, void *event_info)
         if (!strcmp(info->change.insert.content, "<br/>"))
           {
              last_line_inc(ed);
-             indent_apply(obj);
+             indent_apply(ed);
           }
      }
    else
