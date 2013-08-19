@@ -85,8 +85,7 @@ syntax_color_apply(edit_data *ed)
    const char *translated = color_apply(syntax_color_data_get(ed->sh), utf8,
                                         strlen(utf8), EINA_TRUE);
 
-   elm_entry_entry_set(ed->en_edit, NULL);
-   elm_entry_entry_append(ed->en_edit, translated);
+   elm_entry_entry_set(ed->en_edit, translated);
    elm_entry_cursor_pos_set(ed->en_edit, pos);
 DFUNC_NAME();
    free(utf8);
@@ -123,7 +122,13 @@ deleted_line_cnt(const char *str)
 }
 
 static void
-edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
+indent_apply(Evas_Object *entry)
+{
+
+}
+
+static void
+edit_changed_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Elm_Entry_Change_Info *info = event_info;
    edit_data *ed = data;
@@ -131,7 +136,11 @@ edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 
    if (info->insert)
      {
-        if (!strcmp(info->change.insert.content, "<br/>")) last_line_inc(ed);
+        if (!strcmp(info->change.insert.content, "<br/>"))
+          {
+             last_line_inc(ed);
+             indent_apply(obj);
+          }
      }
    else
      {
