@@ -148,20 +148,28 @@ edit_changed_cb(void *data, Evas_Object *obj, void *event_info)
    edit_data *ed = data;
    ed->edit_changed = EINA_TRUE;
 
+   Eina_Bool syntax_color = EINA_TRUE;
+
    if (info->insert)
      {
         if (!strcmp(info->change.insert.content, "<br/>"))
           {
              last_line_inc(ed);
              indent_apply(ed);
+             syntax_color = EINA_FALSE;
           }
      }
    else
      {
         //Check the deleted line
-        int num = deleted_line_cnt(info->change.del.content);
-        line_decrease(ed, num);
+        if (!strcmp(info->change.del.content, "<br/>"))
+          {
+             line_decrease(ed, 1);
+             syntax_color = EINA_FALSE;
+          }
      }
+
+   if (!syntax_color) return;
 
    if (ed->syntax_color_timer) ecore_timer_del(ed->syntax_color_timer);
      ed->syntax_color_timer = ecore_timer_add(0.25, syntax_color_timer_cb, ed);
