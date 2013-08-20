@@ -14,7 +14,7 @@ struct menu_s
    Evas_Object *toggle_stats;
    Evas_Object *toggle_linenumber;
    Evas_Object *toggle_highlight;
-   Evas_Object *dummy_swallow;
+   Evas_Object *toggle_swallow;
    Evas_Object *toggle_indent;
 
    Evas_Object *ctxpopup;
@@ -202,7 +202,7 @@ setting_apply_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
    option_stats_bar_set(od, elm_check_state_get(md->toggle_stats));
    option_linenumber_set(od, elm_check_state_get(md->toggle_linenumber));
    option_part_highlight_set(od, elm_check_state_get(md->toggle_highlight));
-   option_dummy_swallow_set(od, elm_check_state_get(md->dummy_swallow));
+   option_dummy_swallow_set(od, elm_check_state_get(md->toggle_swallow));
    option_auto_indent_set(od, elm_check_state_get(md->toggle_indent));
 
    option_apply(od);
@@ -367,17 +367,17 @@ setting_open(menu_data *md)
    elm_box_pack_end(box, toggle_highlight);
 
    //Toggle (Dummy Swallow)
-   Evas_Object *dummy_swallow = elm_check_add(box);
-   elm_object_style_set(dummy_swallow, "toggle");
-   elm_check_state_set(dummy_swallow, option_dummy_swallow_get(md->od));
-   evas_object_size_hint_weight_set(dummy_swallow, EVAS_HINT_EXPAND,
+   Evas_Object *toggle_swallow = elm_check_add(box);
+   elm_object_style_set(toggle_swallow, "toggle");
+   elm_check_state_set(toggle_swallow, option_dummy_swallow_get(md->od));
+   evas_object_size_hint_weight_set(toggle_swallow, EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(dummy_swallow, EVAS_HINT_FILL,
+   evas_object_size_hint_align_set(toggle_swallow, EVAS_HINT_FILL,
                                    EVAS_HINT_FILL);
-   elm_object_text_set(dummy_swallow, "Dummy Swallow");
-   evas_object_show(dummy_swallow);
+   elm_object_text_set(toggle_swallow, "Dummy Swallow");
+   evas_object_show(toggle_swallow);
 
-   elm_box_pack_end(box, dummy_swallow);
+   elm_box_pack_end(box, toggle_swallow);
 
    //Toggle (Auto Indentation)
    Evas_Object *toggle_indent = elm_check_add(box);
@@ -431,7 +431,7 @@ setting_open(menu_data *md)
    md->toggle_stats = toggle_stats;
    md->toggle_linenumber = toggle_linenumber;
    md->toggle_highlight = toggle_highlight;
-   md->dummy_swallow = dummy_swallow;
+   md->toggle_swallow = toggle_swallow;
    md->toggle_indent = toggle_indent;
 }
 
