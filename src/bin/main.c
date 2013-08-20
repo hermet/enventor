@@ -236,11 +236,6 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
              panes_full_view_right(ad->panes);
              return ECORE_CALLBACK_DONE;
           }
-        if (!strcmp(event->keyname, "slash"))
-          {
-             panes_full_view_cancel(ad->panes);
-             return ECORE_CALLBACK_DONE;
-          }
 
         return ECORE_CALLBACK_DONE;
      }

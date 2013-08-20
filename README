@@ -51,9 +51,8 @@ Ctrl+V = Paste Copied Text
 Ctrl+Home = Go to the Top line
 Ctrl+End = Go to the Bottom line
 Ctrl+H = Part Highlighting
-Ctrl+, = Full Edit View
-Ctrl+. = Full Edje View
-Ctrl+/ = Split View
+Ctrl+, = Full Edit View / Split View
+Ctrl+. = Full Edje View / Split View
 Ctrl+W = Show/Hide Dummy Swallow Object
  
  
