@@ -19,6 +19,7 @@ struct config_s
    Eina_Bool linenumber : 1;
    Eina_Bool part_highlight : 1;
    Eina_Bool dummy_swallow : 1;
+   Eina_Bool auto_indent : 1;
 };
 
 void
@@ -74,6 +75,7 @@ option_init(const char *edc_path, const char *edc_img_path,
    od->linenumber = EINA_TRUE;
    od->part_highlight = EINA_TRUE;
    od->dummy_swallow = EINA_TRUE;
+   od->auto_indent = EINA_TRUE;
 
    return od;
 }
@@ -285,4 +287,16 @@ void
 option_dummy_swallow_set(option_data *od, Eina_Bool dummy_swallow)
 {
    od->dummy_swallow = dummy_swallow;
+}
+
+Eina_Bool
+option_auto_indent_get(option_data *od)
+{
+   return od->auto_indent;
+}
+
+void
+option_auto_indent_set(option_data *od, Eina_Bool auto_indent)
+{
+   od->auto_indent = auto_indent;
 }

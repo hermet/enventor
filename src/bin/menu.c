@@ -15,6 +15,7 @@ struct menu_s
    Evas_Object *toggle_linenumber;
    Evas_Object *toggle_highlight;
    Evas_Object *dummy_swallow;
+   Evas_Object *toggle_indent;
 
    Evas_Object *ctxpopup;
 
@@ -202,6 +203,8 @@ setting_apply_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
    option_linenumber_set(od, elm_check_state_get(md->toggle_linenumber));
    option_part_highlight_set(od, elm_check_state_get(md->toggle_highlight));
    option_dummy_swallow_set(od, elm_check_state_get(md->dummy_swallow));
+   option_auto_indent_set(od, elm_check_state_get(md->toggle_indent));
+
    option_apply(od);
 
    setting_close(md);
@@ -248,6 +251,7 @@ setting_reset_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
                          (Eina_List *)option_edc_snd_path_list_get(md->od));
    elm_check_state_set(md->toggle_stats, option_stats_bar_get(od));
    elm_check_state_set(md->toggle_linenumber, option_linenumber_get(od));
+   elm_check_state_set(md->toggle_indent, option_auto_indent_get(od));
 }
 
 static void
@@ -376,15 +380,17 @@ setting_open(menu_data *md)
    elm_box_pack_end(box, dummy_swallow);
 
    //Toggle (Auto Indentation)
-   toggle = elm_check_add(box);
-   elm_object_style_set(toggle, "toggle");
-   elm_object_disabled_set(toggle, EINA_TRUE);
-   evas_object_size_hint_weight_set(toggle, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(toggle, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_object_text_set(toggle, "Auto Indentation");
-   evas_object_show(toggle);
+   Evas_Object *toggle_indent = elm_check_add(box);
+   elm_object_style_set(toggle_indent, "toggle");
+   elm_check_state_set(toggle_indent, option_auto_indent_get(md->od));
+   evas_object_size_hint_weight_set(toggle_indent, EVAS_HINT_EXPAND,
+                                    EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(toggle_indent, EVAS_HINT_FILL,
+                                   EVAS_HINT_FILL);
+   elm_object_text_set(toggle_indent, "Auto Indentation");
+   evas_object_show(toggle_indent);
 
-   elm_box_pack_end(box, toggle);
+   elm_box_pack_end(box, toggle_indent);
 
    //Toggle (Separate Window)
    toggle = elm_check_add(box);
@@ -426,6 +432,7 @@ setting_open(menu_data *md)
    md->toggle_linenumber = toggle_linenumber;
    md->toggle_highlight = toggle_highlight;
    md->dummy_swallow = dummy_swallow;
+   md->toggle_indent = toggle_indent;
 }
 
 static void

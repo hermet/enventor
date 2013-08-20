@@ -155,7 +155,7 @@ edit_changed_cb(void *data, Evas_Object *obj, void *event_info)
         if (!strcmp(info->change.insert.content, "<br/>"))
           {
              last_line_inc(ed);
-             indent_apply(ed);
+             if (option_auto_indent_get(ed->od)) indent_apply(ed);
              syntax_color = EINA_FALSE;
           }
      }
