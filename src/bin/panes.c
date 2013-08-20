@@ -49,13 +49,11 @@ unpress_cb(void *data EINA_UNUSED, Evas_Object *obj,
 }
 
 static void
-double_click_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
+panes_full_view_cancel(panes_data *pd)
 {
    const double TRANSIT_TIME = 0.25;
 
-   panes_data *pd = data;
-
-   pd->origin = elm_panes_content_right_size_get(obj);
+   pd->origin = elm_panes_content_right_size_get(pd->panes);
    pd->delta = panes_last_right_size2 - pd->origin;
 
    Elm_Transit *transit = elm_transit_add();
@@ -77,7 +75,7 @@ left_clicked_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
    //Revert state if the current state is full view left already.
    if (pd->state == PANES_FULL_VIEW_LEFT)
      {
-        panes_full_view_cancel(pd->panes);
+        panes_full_view_cancel(pd);
         elm_object_text_set(obj, "<");
         return;
      }
@@ -109,7 +107,7 @@ right_clicked_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
    //Revert state if the current state is full view left already.
    if (pd->state == PANES_FULL_VIEW_RIGHT)
      {
-        panes_full_view_cancel(pd->panes);
+        panes_full_view_cancel(pd);
         elm_object_text_set(obj, ">");
         return;
      }
@@ -145,13 +143,6 @@ panes_full_view_left(Evas_Object *panes)
    left_clicked_cb(pd, pd->left_arrow, NULL);
 }
 
-void
-panes_full_view_cancel(Evas_Object *panes)
-{
-   panes_data *pd = evas_object_data_get(panes, PANES_DATA);
-   double_click_cb(pd, panes, NULL);
-}
-
 static void
 panes_del_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
              void *event_info EINA_UNUSED)
@@ -169,8 +160,6 @@ panes_create(Evas_Object *parent)
    Evas_Object *panes = elm_panes_add(parent);
    elm_object_style_set(panes, elm_app_name_get());
    evas_object_size_hint_weight_set(panes, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_smart_callback_add(panes, "clicked,double",
-                                  double_click_cb, pd);
    evas_object_smart_callback_add(panes, "press",
                                   press_cb, NULL);
    evas_object_smart_callback_add(panes, "unpress",
