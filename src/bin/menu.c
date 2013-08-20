@@ -251,6 +251,8 @@ setting_reset_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
                          (Eina_List *)option_edc_snd_path_list_get(md->od));
    elm_check_state_set(md->toggle_stats, option_stats_bar_get(od));
    elm_check_state_set(md->toggle_linenumber, option_linenumber_get(od));
+   elm_check_state_set(md->toggle_highlight, option_part_highlight_get(od));
+   elm_check_state_set(md->toggle_swallow, option_dummy_swallow_get(od));
    elm_check_state_set(md->toggle_indent, option_auto_indent_get(od));
 }
 
