@@ -11,6 +11,7 @@ struct menu_s
    Evas_Object *help_layout;
    Evas_Object *img_path_entry;
    Evas_Object *snd_path_entry;
+   Evas_Object *slider_font;
    Evas_Object *toggle_stats;
    Evas_Object *toggle_linenumber;
    Evas_Object *toggle_highlight;
@@ -305,6 +306,39 @@ setting_open(menu_data *md)
 
    elm_object_content_set(scroller, box);
 
+   //Font Size
+   Evas_Object *box2 = elm_box_add(box);
+   elm_box_horizontal_set(box2, EINA_TRUE);
+   evas_object_size_hint_weight_set(box2, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(box2, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_show(box2);
+
+   elm_box_pack_end(box, box2);
+
+   //Font Size (Label)
+   Evas_Object *label = elm_label_add(box2);
+   evas_object_size_hint_weight_set(label, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(label, 0, EVAS_HINT_FILL);
+
+   elm_object_text_set(label, "Font Size");
+   evas_object_show(label);
+
+   elm_box_pack_end(box2, label);
+
+   //Font Size (Slider)
+   Evas_Object *slider = elm_slider_add(box2);
+   elm_object_scale_set(slider, 1.2125);
+   evas_object_size_hint_weight_set(label, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(slider, 1, EVAS_HINT_FILL);
+   elm_slider_value_set(slider, 1.0);
+   elm_slider_span_size_set(slider, 300);
+   elm_slider_indicator_show_set(slider, EINA_FALSE);
+   elm_slider_unit_format_set(slider, "%1.1fx");
+   elm_slider_min_max_set(slider, 0.5, 10.0);
+   evas_object_show(slider);
+
+   elm_box_pack_end(box2, slider);
+
    Evas_Object *toggle;
 
    //Toggle (Tab bar)
@@ -430,6 +464,7 @@ setting_open(menu_data *md)
    md->setting_layout = layout;
    md->img_path_entry = img_path_entry;
    md->snd_path_entry = snd_path_entry;
+   md->slider_font = slider;
    md->toggle_stats = toggle_stats;
    md->toggle_linenumber = toggle_linenumber;
    md->toggle_highlight = toggle_highlight;
