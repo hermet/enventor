@@ -5,6 +5,7 @@ images {
    image: "content_glow.png" COMP;
    image: "warning.png" COMP;
    image: "setting_icon.png" COMP;
+   image: "fileselect.png" COMP;
 }
 
 group { name: "help_layout";
@@ -134,16 +135,60 @@ group { name: "fileselector_layout";
          type: RECT;
          clip_to: "clipper";
          description {
-            rel1 { to: "base_frame_img"; offset: 10 10; }
-            rel2 { to: "base_frame_img"; offset: -21 -11; }
+            rel1 { to: "base_frame_img"; offset: 10 5; }
+            rel2 { to: "base_frame_img"; offset: -11 -11; }
             visible: 0;
+         }
+      }
+      part { name: "title_frame";
+         type: RECT;
+         clip_to: "clipper";
+         description {
+            rel1 { to: "base_frame"; }
+            rel2 { to: "base_frame"; relative: 1 0; }
+            align: 0.5 0;
+            min: 0 25;
+            fixed: 0 1;
+            color: 0 0 0 125;
+         }
+      }
+      part { name: "title_icon";
+         type: IMAGE;
+         scale: 1;
+         clip_to: "clipper";
+         description {
+            align: 0 0.5;
+            min: 20 20;
+            max: 20 20;
+            fixed: 1 1;
+            rel1.to: "title_frame";
+            rel2.to: "title_frame";
+            image.normal: "fileselect.png";
+         }
+      }
+      part { name: "elm.text.title";
+         type: TEXT;
+         scale: 1;
+         clip_to: "clipper";
+         description {
+            rel1.to: "title_frame";
+            rel2.to: "title_frame";
+            color: 255 255 255 255;
+            align: 0.5 0.5;
+            fixed: 1 1;
+            text {
+               font: FN;
+               size: 12;
+               align: 0.5 0.5;
+               min: 1 0;
+            }
          }
       }
       part { name: "elm.swallow.fileselector";
          type: SWALLOW;
          clip_to: "clipper";
          description {
-            rel1 { to: "base_frame"; }
+            rel1 { to: "title_frame"; relative: 0 1; }
             rel2 { to: "base_frame"; }
          }
       }

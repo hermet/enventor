@@ -776,6 +776,7 @@ edc_file_save(menu_data *md)
    //Layout
    Evas_Object *layout = elm_layout_add(md->win);
    elm_layout_file_set(layout, EDJE_PATH, "fileselector_layout");
+   elm_object_part_text_set(layout, "elm.text.title", "Save");
    elm_object_signal_callback_add(layout, "elm,state,dismiss,done", "",
                                   fileselector_dismiss_done, md);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -807,6 +808,7 @@ edc_file_load(menu_data *md)
    //Layout
    Evas_Object *layout = elm_layout_add(md->win);
    elm_layout_file_set(layout, EDJE_PATH, "fileselector_layout");
+   elm_object_part_text_set(layout, "elm.text.title", "Load");
    elm_object_signal_callback_add(layout, "elm,state,dismiss,done", "",
                                   fileselector_dismiss_done, md);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
