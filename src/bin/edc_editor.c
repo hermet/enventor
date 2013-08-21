@@ -40,6 +40,8 @@ last_line_inc(edit_data *ed)
    ed->line_max++;
    snprintf(buf, sizeof(buf), "%d<br/>", ed->line_max);
    elm_entry_entry_append(ed->en_line, buf);
+DFUNC_NAME();
+
 }
 
 static void
@@ -64,6 +66,9 @@ line_decrease(edit_data *ed, int cnt)
    elm_entry_calc_force(ed->en_line);
 
    ed->line_max -= cnt;
+
+DFUNC_NAME();
+
 }
 
 static void
@@ -105,20 +110,6 @@ syntax_color_animator_cb(void *data)
    edit_data *ed = data;
    syntax_color_apply(ed);
    return ECORE_CALLBACK_CANCEL;
-}
-
-static int
-deleted_line_cnt(const char *str)
-{
-   int num = 0;
-
-   while(str)
-     {
-        str = strstr(str, "<br/>");
-        if (str) { num++; str++; }
-        else break;
-     }
-   return num;
 }
 
 static void
