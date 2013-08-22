@@ -323,6 +323,7 @@ option_update_cb(void *data, option_data *od)
    app_data *ad = data;
    edje_cc_cmd_set(od);
    edit_line_number_toggle(ad->ed);
+   edit_font_size_update(ad->ed);
    statusbar_toggle(ad);
    part_highlight_toggle(ad);
    view_dummy_toggle(ad->vd);

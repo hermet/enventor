@@ -557,3 +557,10 @@ edit_group_name_get(edit_data *ed)
 {
    return ed->group_name;
 }
+
+void
+edit_font_size_update(edit_data *ed)
+{
+   elm_object_scale_set(ed->en_edit, option_font_size_get(ed->od));
+   elm_object_scale_set(ed->en_line, option_font_size_get(ed->od));
+}

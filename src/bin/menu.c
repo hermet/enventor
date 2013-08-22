@@ -200,6 +200,7 @@ setting_apply_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
 
    option_edc_img_path_set(od, elm_object_text_get(md->img_path_entry));
    option_edc_snd_path_set(od, elm_object_text_get(md->snd_path_entry));
+   option_font_size_set(od, (float) elm_slider_value_get(md->slider_font));
    option_stats_bar_set(od, elm_check_state_get(md->toggle_stats));
    option_linenumber_set(od, elm_check_state_get(md->toggle_linenumber));
    option_part_highlight_set(od, elm_check_state_get(md->toggle_highlight));
@@ -250,6 +251,7 @@ setting_reset_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
                          (Eina_List *)option_edc_img_path_list_get(md->od));
    snd_path_entry_update(md->snd_path_entry,
                          (Eina_List *)option_edc_snd_path_list_get(md->od));
+   elm_slider_value_set(md->slider_font, option_font_size_get(od));
    elm_check_state_set(md->toggle_stats, option_stats_bar_get(od));
    elm_check_state_set(md->toggle_linenumber, option_linenumber_get(od));
    elm_check_state_set(md->toggle_highlight, option_part_highlight_get(od));
@@ -330,7 +332,7 @@ setting_open(menu_data *md)
    elm_object_scale_set(slider, 1.2125);
    evas_object_size_hint_weight_set(label, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(slider, 1, EVAS_HINT_FILL);
-   elm_slider_value_set(slider, 1.0);
+   elm_slider_value_set(slider, option_font_size_get(md->od));
    elm_slider_span_size_set(slider, 300);
    elm_slider_indicator_show_set(slider, EINA_FALSE);
    elm_slider_unit_format_set(slider, "%1.1fx");
@@ -532,7 +534,7 @@ help_open(menu_data *md)
    if (md->menu_layout)
      elm_object_disabled_set(md->menu_layout, EINA_TRUE);
 
-md->help_layout = layout;
+   md->help_layout = layout;
 
 err:
    if (strbuf) eina_strbuf_free(strbuf);

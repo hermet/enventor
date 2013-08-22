@@ -10,10 +10,12 @@ struct config_s
    Eina_List *edc_snd_path_list;
    Eina_Strbuf *edc_img_path_buf; //pre-stored image paths for edc compile.
    Eina_Strbuf *edc_snd_path_buf; //pre-stored sound paths for edc compile.
+   float font_size;
 
    void (*update_cb)(void *data, option_data *od);
    void *update_cb_data;
    Evas_Coord_Size view_size;
+
 
    Eina_Bool stats_bar : 1;
    Eina_Bool linenumber : 1;
@@ -72,6 +74,7 @@ option_init(const char *edc_path, const char *edc_img_path,
    option_edc_img_path_set(od, edc_img_path);
    option_edc_snd_path_set(od, edc_snd_path);
 
+   od->font_size = 1.0f;
    od->linenumber = EINA_TRUE;
    od->part_highlight = EINA_TRUE;
    od->dummy_swallow = EINA_TRUE;
@@ -293,6 +296,18 @@ Eina_Bool
 option_auto_indent_get(option_data *od)
 {
    return od->auto_indent;
+}
+
+void
+option_font_size_set(option_data *od, float font_size)
+{
+   od->font_size = font_size;
+}
+
+float
+option_font_size_get(option_data *od)
+{
+   return od->font_size;
 }
 
 void

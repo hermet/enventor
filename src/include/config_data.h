@@ -26,4 +26,5 @@ Eina_Bool option_dummy_swallow_get(option_data *od);
 void option_dummy_swallow_set(option_data *od, Eina_Bool dummy_swallow);
 void option_auto_indent_set(option_data *od, Eina_Bool auto_indent);
 Eina_Bool option_auto_indent_get(option_data *od);
-
+void option_font_size_set(option_data *od, float font_size);
+float option_font_size_get(option_data *od);
