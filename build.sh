@@ -1,1 +1,1 @@
-make -j7 && sudo make install
+make clean && make -j7 && sudo make install
