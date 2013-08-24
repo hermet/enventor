@@ -167,11 +167,13 @@ statusbar_toggle(app_data *ad)
 }
 
 static void
-part_highlight_toggle(app_data *ad)
+part_highlight_toggle(app_data *ad, Eina_Bool msg)
 {
    Eina_Bool highlight = config_part_highlight_get(ad->cd);
    if (highlight) edit_cur_part_update(ad->ed);
    else view_part_highlight_set(ad->vd, NULL);
+
+   if (!msg) return;
 
    if (highlight)
      stats_info_msg_update(ad->sd, "Part Highlighting Enabled");
@@ -213,7 +215,7 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
           {
              config_part_highlight_set(ad->cd,
                                        !config_part_highlight_get(ad->cd));
-             part_highlight_toggle(ad);
+             part_highlight_toggle(ad, EINA_TRUE);
              return ECORE_CALLBACK_DONE;
           }
         //Part Highlight
@@ -221,7 +223,7 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
           {
              config_dummy_swallow_set(ad->cd,
                                      !config_dummy_swallow_get(ad->cd));
-             view_dummy_toggle(ad->vd);
+             view_dummy_toggle(ad->vd, EINA_TRUE);
              return ECORE_CALLBACK_DONE;
           }
         //Full Edit View
@@ -240,14 +242,14 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
         if (!strcmp(event->keyname, "equal"))
           {
              config_font_size_set(ad->cd, config_font_size_get(ad->cd) + 0.1f);
-             edit_font_size_update(ad->ed);
+             edit_font_size_update(ad->ed, EINA_TRUE);
              return ECORE_CALLBACK_DONE;
           }
         //Font Size Down
         if (!strcmp(event->keyname, "minus"))
           {
              config_font_size_set(ad->cd, config_font_size_get(ad->cd) - 0.1f);
-             edit_font_size_update(ad->ed);
+             edit_font_size_update(ad->ed, EINA_TRUE);
              return ECORE_CALLBACK_DONE;
           }
 
@@ -338,10 +340,10 @@ config_update_cb(void *data, config_data *cd)
    app_data *ad = data;
    edje_cc_cmd_set(cd);
    edit_line_number_toggle(ad->ed);
-   edit_font_size_update(ad->ed);
+   edit_font_size_update(ad->ed, EINA_FALSE);
    statusbar_toggle(ad);
-   part_highlight_toggle(ad);
-   view_dummy_toggle(ad->vd);
+   part_highlight_toggle(ad, EINA_FALSE);
+   view_dummy_toggle(ad->vd, EINA_FALSE);
 
    //previous build was failed, Need to rebuild then reload the edj.
    if (view_reload_need_get(ad->vd))

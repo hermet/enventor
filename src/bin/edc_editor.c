@@ -550,6 +550,11 @@ edit_new(edit_data *ed)
    elm_entry_entry_set(ed->en_line, "");
    edit_edc_read(ed, config_edc_path_get(ed->cd));
    ed->edit_changed = EINA_TRUE;
+
+   char buf[PATH_MAX];
+   snprintf(buf, sizeof(buf), "File Path: \"%s\"",
+            config_edc_path_get(ed->cd));
+   stats_info_msg_update(ed->sd, buf);
 }
 
 const char *
@@ -559,10 +564,12 @@ edit_group_name_get(edit_data *ed)
 }
 
 void
-edit_font_size_update(edit_data *ed)
+edit_font_size_update(edit_data *ed, Eina_Bool msg)
 {
    elm_object_scale_set(ed->en_edit, config_font_size_get(ed->cd));
    elm_object_scale_set(ed->en_line, config_font_size_get(ed->cd));
+
+   if (!msg) return;
 
    char buf[128];
    snprintf(buf, sizeof(buf), "Font Size: %1.1fx",

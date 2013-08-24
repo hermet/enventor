@@ -138,18 +138,18 @@ view_obj_idler_cb(void *data)
 }
 
 void
-view_dummy_toggle(view_data *vd)
+view_dummy_toggle(view_data *vd, Eina_Bool msg)
 {
    Eina_Bool dummy_obj = config_dummy_swallow_get(vd->cd);
    if (dummy_obj == vd->dummy_obj) return;
    if (dummy_obj)
      {
-        stats_info_msg_update(vd->sd, "Dummy Swallow Enabled");
+        if (msg) stats_info_msg_update(vd->sd, "Dummy Swallow Enabled");
         dummy_obj_new(vd->layout);
      }
    else
      {
-        stats_info_msg_update(vd->sd, "Dummy Swallow Disabled");
+        if (msg) stats_info_msg_update(vd->sd, "Dummy Swallow Disabled");
         dummy_obj_del(vd->layout);
      }
 
