@@ -65,8 +65,8 @@ group { name: "statusbar_layout";
          description {
             rel2.relative: 0.0 1.0;
             align: 0 0.5;
-            min: 120 0;
-            fixed: 1 0;
+            min: 120 18;
+            fixed: 1 1;
             text.style: "entry_statusbar_style";
          }
       }
@@ -79,8 +79,8 @@ group { name: "statusbar_layout";
             rel1.relative: 1 0.0;
             rel2.to: "elm.text.view_size";
             rel2.relative: 1 1.0;
-            min: 180 0;
-            fixed: 1 0;
+            min: 180 18;
+            fixed: 1 1;
             align: 0 0.5;
             text.style: "entry_statusbar_style";
          }
@@ -105,8 +105,8 @@ group { name: "statusbar_layout";
          description {
             rel1.relative: 1 0;
             align: 1 0.5;
-            min: 100 0;
-            fixed: 1 0;
+            min: 100 18;
+            fixed: 1 1;
             text.style: "entry_statusbar_style";
          }
       }
