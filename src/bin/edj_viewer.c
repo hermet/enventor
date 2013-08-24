@@ -4,7 +4,7 @@
 struct viewer_s
 {
    stats_data *sd;
-   option_data *od;
+   config_data *cd;
 
    Evas_Object *parent;
    Evas_Object *layout;
@@ -58,11 +58,11 @@ layout_resize_cb(void *data, Evas *e EINA_UNUSED,
                  Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 {
    view_data *vd = data;
-   if (!option_stats_bar_get(vd->od)) return;
+   if (!config_stats_bar_get(vd->cd)) return;
 
    Evas_Coord w, h;
    evas_object_geometry_get(obj, NULL, NULL, &w, &h);
-   option_view_size_set(vd->od, w, h);
+   config_view_size_set(vd->cd, w, h);
    stats_view_size_update(vd->sd);
 }
 
@@ -71,7 +71,7 @@ layout_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
                      Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    view_data *vd = data;
-   if (!option_stats_bar_get(vd->od)) return;
+   if (!config_stats_bar_get(vd->cd)) return;
 
    Evas_Event_Mouse_Move *ev = event_info;
 
@@ -127,7 +127,7 @@ static Eina_Bool
 view_obj_idler_cb(void *data)
 {
    view_data *vd = data;
-   vd->layout = view_obj_create(vd, option_edj_path_get(vd->od),
+   vd->layout = view_obj_create(vd, config_edj_path_get(vd->cd),
                                 vd->group_name);
    elm_object_content_set(vd->scroller, vd->layout);
 
@@ -140,7 +140,7 @@ view_obj_idler_cb(void *data)
 void
 view_dummy_toggle(view_data *vd)
 {
-   Eina_Bool dummy_obj = option_dummy_swallow_get(vd->od);
+   Eina_Bool dummy_obj = config_dummy_swallow_get(vd->cd);
    if (dummy_obj == vd->dummy_obj) return;
    if (dummy_obj)
      {
@@ -177,14 +177,14 @@ view_reload_need_get(view_data *vd)
 
 view_data *
 view_init(Evas_Object *parent, const char *group, stats_data *sd,
-          option_data *od)
+          config_data *cd)
 {
    view_data *vd = calloc(1, sizeof(view_data));
    vd->parent = parent;
    vd->sd = sd;
-   vd->od = od;
+   vd->cd = cd;
    vd->scroller = view_scroller_create(parent);
-   vd->dummy_obj = option_dummy_swallow_get(od);
+   vd->dummy_obj = config_dummy_swallow_get(cd);
 
    view_new(vd, group);
 

@@ -14,7 +14,7 @@ struct editor_s
 
    syntax_helper *sh;
    stats_data *sd;
-   option_data *od;
+   config_data *cd;
    parser_data *pd;
    menu_data *md;
 
@@ -146,7 +146,7 @@ edit_changed_cb(void *data, Evas_Object *obj, void *event_info)
         if (!strcmp(info->change.insert.content, "<br/>"))
           {
              last_line_inc(ed);
-             if (option_auto_indent_get(ed->od)) indent_apply(ed);
+             if (config_auto_indent_get(ed->cd)) indent_apply(ed);
              syntax_color = EINA_FALSE;
           }
      }
@@ -169,16 +169,16 @@ edit_changed_cb(void *data, Evas_Object *obj, void *event_info)
 static void
 save_msg_show(edit_data *ed)
 {
-   if (!option_stats_bar_get(ed->od)) return;
+   if (!config_stats_bar_get(ed->cd)) return;
 
    char buf[PATH_MAX];
 
    if (ed->edit_changed)
      snprintf(buf, sizeof(buf), "File saved. \"%s\"",
-              option_edc_path_get(ed->od));
+              config_edc_path_get(ed->cd));
    else
      snprintf(buf, sizeof(buf), "Already saved. \"%s\"",
-              option_edc_path_get(ed->od));
+              config_edc_path_get(ed->cd));
 
    stats_info_msg_update(ed->sd, buf);
 }
@@ -196,7 +196,7 @@ edit_save(edit_data *ed)
    Evas_Object *tb = elm_entry_textblock_get(ed->en_edit);
    const char *text2 = evas_textblock_text_markup_to_utf8(tb, text);
 
-   FILE *fp = fopen(option_edc_path_get(ed->od), "w");
+   FILE *fp = fopen(config_edc_path_get(ed->cd), "w");
    if (!fp) return EINA_FALSE;
 
    fputs(text2, fp);
@@ -260,7 +260,7 @@ edit_mouse_down_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
 static void
 cur_line_pos_set(edit_data *ed)
 {
-   if (!option_stats_bar_get(ed->od)) return;
+   if (!config_stats_bar_get(ed->cd)) return;
 
    Evas_Coord y, h;
    elm_entry_cursor_geometry_get(ed->en_edit, NULL, &y, NULL, &h);
@@ -309,7 +309,7 @@ part_name_get_cb(void *data, Eina_Stringshare *part_name)
 void
 edit_cur_part_update(edit_data *ed)
 {
-   if (!option_part_highlight_get(ed->od)) return;
+   if (!config_part_highlight_get(ed->cd)) return;
 
    parser_part_name_get(ed->pd, ed->en_edit, part_name_get_cb, ed);
 }
@@ -357,7 +357,7 @@ key_up_cb(void *data, int type EINA_UNUSED, void *ev)
 }
 
 edit_data *
-edit_init(Evas_Object *parent, stats_data *sd, option_data *od)
+edit_init(Evas_Object *parent, stats_data *sd, config_data *cd)
 {
    parser_data *pd = parser_init();
    syntax_helper *sh = syntax_init();
@@ -366,7 +366,7 @@ edit_init(Evas_Object *parent, stats_data *sd, option_data *od)
    ed->sd = sd;
    ed->pd = pd;
    ed->sh = sh;
-   ed->od = od;
+   ed->cd = cd;
 
    ecore_event_handler_add(ECORE_EVENT_KEY_DOWN, key_down_cb, ed);
    ecore_event_handler_add(ECORE_EVENT_KEY_UP, key_up_cb, ed);
@@ -482,7 +482,7 @@ edit_edc_read(edit_data *ed, const char *file_path)
 
    EINA_ITERATOR_FOREACH(itr, line)
      {
-        //Append edc code
+        //Append edc ccde
         if (line_num > 0)
           {
              if (!eina_strbuf_append(strbuf, "<br/>")) goto err;
@@ -533,7 +533,7 @@ edit_changed_set(edit_data *ed, Eina_Bool changed)
 void
 edit_line_number_toggle(edit_data *ed)
 {
-   Eina_Bool linenumber = option_linenumber_get(ed->od);
+   Eina_Bool linenumber = config_linenumber_get(ed->cd);
    if (ed->linenumber == linenumber) return;
    ed->linenumber = linenumber;
 
@@ -548,7 +548,7 @@ edit_new(edit_data *ed)
 {
    elm_entry_entry_set(ed->en_edit, "");
    elm_entry_entry_set(ed->en_line, "");
-   edit_edc_read(ed, option_edc_path_get(ed->od));
+   edit_edc_read(ed, config_edc_path_get(ed->cd));
    ed->edit_changed = EINA_TRUE;
 }
 
@@ -561,11 +561,11 @@ edit_group_name_get(edit_data *ed)
 void
 edit_font_size_update(edit_data *ed)
 {
-   elm_object_scale_set(ed->en_edit, option_font_size_get(ed->od));
-   elm_object_scale_set(ed->en_line, option_font_size_get(ed->od));
+   elm_object_scale_set(ed->en_edit, config_font_size_get(ed->cd));
+   elm_object_scale_set(ed->en_line, config_font_size_get(ed->cd));
 
    char buf[128];
    snprintf(buf, sizeof(buf), "Font Size: %1.1fx",
-            option_font_size_get(ed->od));
+            config_font_size_get(ed->cd));
    stats_info_msg_update(ed->sd, buf);
 }

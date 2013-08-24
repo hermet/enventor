@@ -11,7 +11,7 @@ struct app_s
    view_data *vd;
    menu_data *md;
    stats_data *sd;
-   option_data *od;
+   config_data *cd;
 
    Evas_Object *layout;
    Evas_Object *panes;
@@ -41,7 +41,7 @@ edc_changed_cb(void *data, int type EINA_UNUSED, void *event)
 
    if (!edit_changed_get(ad->ed)) return ECORE_CALLBACK_RENEW;
 
-   if (strcmp(ev->filename, option_edc_path_get(ad->od)))
+   if (strcmp(ev->filename, config_edc_path_get(ad->cd)))
      return ECORE_CALLBACK_RENEW;
 
    rebuild_edc();
@@ -51,15 +51,15 @@ edc_changed_cb(void *data, int type EINA_UNUSED, void *event)
 }
 
 static Eina_Bool
-edje_cc_cmd_set(option_data *od)
+edje_cc_cmd_set(config_data *cd)
 {
    Eina_Strbuf *buf = eina_strbuf_new();
    if (!buf) return EINA_FALSE;
    eina_strbuf_append_printf(buf, "edje_cc -fastcomp %s %s %s %s",
-                             option_edc_path_get(od),
-                             option_edj_path_get(od),
-                             option_edc_img_path_get(od),
-                             option_edc_snd_path_get(od));
+                             config_edc_path_get(cd),
+                             config_edj_path_get(cd),
+                             config_edc_img_path_get(cd),
+                             config_edc_snd_path_get(cd));
    eina_strbuf_append(buf, " > /dev/null");
    EDJE_CC_CMD = eina_strbuf_string_steal(buf);
    eina_strbuf_free(buf);
@@ -115,7 +115,7 @@ base_gui_construct(app_data *ad)
 }
 
 static Eina_Bool
-edc_proto_setup(option_data *od)
+edc_proto_setup(config_data *cd)
 {
    Eina_Bool success = EINA_TRUE;
 
@@ -123,11 +123,11 @@ edc_proto_setup(option_data *od)
    snprintf(buf, sizeof(buf), "%s/.proto/proto.edc",
             elm_app_data_dir_get());
 
-   if (!ecore_file_exists(option_edc_path_get(od)))
+   if (!ecore_file_exists(config_edc_path_get(cd)))
      {
         EINA_LOG_INFO("No working edc file exists. Copy a proto.edc");
         success = eina_file_copy(buf,
-                                 option_edc_path_get(od),
+                                 config_edc_path_get(cd),
                                  EINA_FILE_COPY_DATA, NULL, NULL);
      }
 
@@ -160,7 +160,7 @@ main_key_up_cb(void *data, int type EINA_UNUSED, void *ev)
 static void
 statusbar_toggle(app_data *ad)
 {
-   if (option_stats_bar_get(ad->od))
+   if (config_stats_bar_get(ad->cd))
      elm_object_signal_emit(ad->layout, "elm,state,statusbar,show", "");
    else
      elm_object_signal_emit(ad->layout, "elm,state,statusbar,hide", "");
@@ -169,7 +169,7 @@ statusbar_toggle(app_data *ad)
 static void
 part_highlight_toggle(app_data *ad)
 {
-   Eina_Bool highlight = option_part_highlight_get(ad->od);
+   Eina_Bool highlight = config_part_highlight_get(ad->cd);
    if (highlight) edit_cur_part_update(ad->ed);
    else view_part_highlight_set(ad->vd, NULL);
 
@@ -211,16 +211,16 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
         //Part Highlight
         if (!strcmp(event->keyname, "h") || !strcmp(event->keyname, "H"))
           {
-             option_part_highlight_set(ad->od,
-                                       !option_part_highlight_get(ad->od));
+             config_part_highlight_set(ad->cd,
+                                       !config_part_highlight_get(ad->cd));
              part_highlight_toggle(ad);
              return ECORE_CALLBACK_DONE;
           }
         //Part Highlight
         if (!strcmp(event->keyname, "w") || !strcmp(event->keyname, "W"))
           {
-             option_dummy_swallow_set(ad->od,
-                                     !option_dummy_swallow_get(ad->od));
+             config_dummy_swallow_set(ad->cd,
+                                     !config_dummy_swallow_get(ad->cd));
              view_dummy_toggle(ad->vd);
              return ECORE_CALLBACK_DONE;
           }
@@ -231,7 +231,7 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
              return ECORE_CALLBACK_DONE;
           }
         //Full Edje View
-        if (!strcmp(event->keyname, "period"))
+        if (!strcmp(event->keyname, "pericd"))
           {
              panes_full_view_right(ad->panes);
              return ECORE_CALLBACK_DONE;
@@ -239,14 +239,14 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
         //Font Size Up
         if (!strcmp(event->keyname, "equal"))
           {
-             option_font_size_set(ad->od, option_font_size_get(ad->od) + 0.1f);
+             config_font_size_set(ad->cd, config_font_size_get(ad->cd) + 0.1f);
              edit_font_size_update(ad->ed);
              return ECORE_CALLBACK_DONE;
           }
         //Font Size Down
         if (!strcmp(event->keyname, "minus"))
           {
-             option_font_size_set(ad->od, option_font_size_get(ad->od) - 0.1f);
+             config_font_size_set(ad->cd, config_font_size_get(ad->cd) - 0.1f);
              edit_font_size_update(ad->ed);
              return ECORE_CALLBACK_DONE;
           }
@@ -258,7 +258,7 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    //Main Menu
    if (!strcmp(event->keyname, "Escape"))
      {
-        ad->menu_opened = menu_option_toggle();
+        ad->menu_opened = menu_toggle();
         if (!ad->menu_opened)
           edit_focus_set(ad->ed);
         return ECORE_CALLBACK_DONE;
@@ -280,14 +280,14 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    //Line Number
    else if (!strcmp(event->keyname, "F5"))
      {
-        option_linenumber_set(ad->od, !option_linenumber_get(ad->od));
+        config_linenumber_set(ad->cd, !config_linenumber_get(ad->cd));
         edit_line_number_toggle(ad->ed);
         return ECORE_CALLBACK_DONE;
      }
    //Statusbar
    else if (!strcmp(event->keyname, "F6"))
      {
-        option_stats_bar_set(ad->od, !option_stats_bar_get(ad->od));
+        config_stats_bar_set(ad->cd, !config_stats_bar_get(ad->cd));
         statusbar_toggle(ad);
         return ECORE_CALLBACK_DONE;
      }
@@ -303,40 +303,40 @@ part_changed_cb(void *data, const char *part_name)
 }
 
 static void
-edc_edit_set(app_data *ad, stats_data *sd, option_data *od)
+edc_edit_set(app_data *ad, stats_data *sd, config_data *cd)
 {
-   edit_data *ed = edit_init(ad->panes, sd, od);
-   edit_edc_read(ed, option_edc_path_get(od));
+   edit_data *ed = edit_init(ad->panes, sd, cd);
+   edit_edc_read(ed, config_edc_path_get(cd));
    elm_object_part_content_set(ad->panes, "right", edit_obj_get(ed));
    edit_part_changed_cb_set(ed, part_changed_cb, ad);
    ad->ed = ed;
 }
 
 static void
-edc_view_set(app_data *ad, option_data *od, stats_data *sd)
+edc_view_set(app_data *ad, config_data *cd, stats_data *sd)
 {
    const char *group = edit_group_name_get(ad->ed);
-   view_data *vd = view_init(ad->panes, group, sd, od);
+   view_data *vd = view_init(ad->panes, group, sd, cd);
    elm_object_part_content_set(ad->panes, "left", view_obj_get(vd));
    ad->vd = vd;
 }
 
 static void
-statusbar_set(app_data *ad, option_data *od)
+statusbar_set(app_data *ad, config_data *cd)
 {
-   stats_data *sd = stats_init(ad->layout, od);
+   stats_data *sd = stats_init(ad->layout, cd);
    elm_object_part_content_set(ad->layout, "elm.swallow.statusbar",
                                stats_obj_get(sd));
    ad->sd = sd;
-   option_stats_bar_set(ad->od, EINA_TRUE);
+   config_stats_bar_set(ad->cd, EINA_TRUE);
    statusbar_toggle(ad);
 }
 
 static void
-option_update_cb(void *data, option_data *od)
+config_update_cb(void *data, config_data *cd)
 {
    app_data *ad = data;
-   edje_cc_cmd_set(od);
+   edje_cc_cmd_set(cd);
    edit_line_number_toggle(ad->ed);
    edit_font_size_update(ad->ed);
    statusbar_toggle(ad);
@@ -351,7 +351,7 @@ option_update_cb(void *data, option_data *od)
         view_new(ad->vd, edit_group_name_get(ad->ed));
         part_changed_cb(ad, NULL);
         if (ad->edc_monitor) eio_monitor_del(ad->edc_monitor);
-        ad->edc_monitor = eio_monitor_add(option_edc_path_get(ad->od));
+        ad->edc_monitor = eio_monitor_add(config_edc_path_get(ad->cd));
      }
    //If the edc is reloaded, then rebuild it!
    else if (edit_changed_get(ad->ed))
@@ -422,9 +422,9 @@ config_data_set(app_data *ad, int argc, char **argv)
    char snd_path[PATH_MAX];
 
    args_dispatch(argc, argv, edc_path, img_path, snd_path);
-   option_data *od = option_init(edc_path, img_path, snd_path);
-   option_update_cb_set(od, option_update_cb, ad);
-   ad->od = od;
+   config_data *cd = config_init(edc_path, img_path, snd_path);
+   config_update_cb_set(cd, config_update_cb, ad);
+   ad->cd = cd;
 }
 
 static void
@@ -467,16 +467,16 @@ init(app_data *ad, int argc, char **argv)
    elm_setup();
    config_data_set(ad, argc, argv);
 
-   if (!edje_cc_cmd_set(ad->od)) return EINA_FALSE;
-   if (!edc_proto_setup(ad->od)) return EINA_FALSE;
+   if (!edje_cc_cmd_set(ad->cd)) return EINA_FALSE;
+   if (!edc_proto_setup(ad->cd)) return EINA_FALSE;
    if (!base_gui_construct(ad)) return EINA_FALSE;
 
-   statusbar_set(ad, ad->od);
-   edc_edit_set(ad, ad->sd, ad->od);
-   edc_view_set(ad, ad->od, ad->sd);
-   ad->md = menu_init(ad->win, ad->ed, ad->od, ad->vd, menu_close_cb, ad);
+   statusbar_set(ad, ad->cd);
+   edc_edit_set(ad, ad->sd, ad->cd);
+   edc_view_set(ad, ad->cd, ad->sd);
+   ad->md = menu_init(ad->win, ad->ed, ad->cd, ad->vd, menu_close_cb, ad);
 
-   ad->edc_monitor = eio_monitor_add(option_edc_path_get(ad->od));
+   ad->edc_monitor = eio_monitor_add(config_edc_path_get(ad->cd));
    ecore_event_handler_add(EIO_MONITOR_FILE_MODIFIED, edc_changed_cb, ad);
 
    return EINA_TRUE;
@@ -489,7 +489,7 @@ term(app_data *ad)
    view_term(ad->vd);
    edit_term(ad->ed);
    stats_term(ad->sd);
-   option_term(ad->od);
+   config_term(ad->cd);
 
    elm_shutdown();
    ecore_event_shutdown();

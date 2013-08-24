@@ -4,7 +4,7 @@
 struct statusbar_s
 {
    Evas_Object *layout;
-   option_data *od;
+   config_data *cd;
 };
 
 void
@@ -20,13 +20,13 @@ void
 stats_edc_file_set(stats_data *sd, const char *group_name)
 {
    char buf[PATH_MAX];
-   const char *filename = ecore_file_file_get(option_edc_path_get(sd->od));
+   const char *filename = ecore_file_file_get(config_edc_path_get(sd->cd));
    snprintf(buf, sizeof(buf), "<align=right>File [<color=#000000>%s</color>]    Group [<color=#000000>%s</color>]</align>", filename, group_name);
    elm_object_part_text_set(sd->layout, "elm.text.file_group_name", buf);
 }
 
 stats_data *
-stats_init(Evas_Object *parent, option_data *od)
+stats_init(Evas_Object *parent, config_data *cd)
 {
    stats_data *sd = calloc(1, sizeof(stats_data));
 
@@ -39,7 +39,7 @@ stats_init(Evas_Object *parent, option_data *od)
                             "Cursor [<color=#000000>0</color>,<color=#000000>0</color>] [<color=#000000>0.00</color>,<color=#000000>0.00</color>]");
 
    sd->layout = layout;
-   sd->od = od;
+   sd->cd = cd;
 
    stats_edc_file_set(sd, NULL);
 
@@ -62,7 +62,7 @@ stats_term(stats_data *sd)
 void
 stats_info_msg_update(stats_data *sd, const char *msg)
 {
-   if (!option_stats_bar_get(sd->od)) return;
+   if (!config_stats_bar_get(sd->cd)) return;
 
    elm_object_part_text_set(sd->layout, "elm.text.info_msg", msg);
    elm_object_signal_emit(sd->layout, "elm,action,info_msg,show", "");
@@ -72,7 +72,7 @@ void
 stats_view_size_update(stats_data *sd)
 {
    Evas_Coord w, h;
-   option_view_size_get(sd->od, &w, &h);
+   config_view_size_get(sd->cd, &w, &h);
 
    char buf[128];
    snprintf(buf, sizeof(buf),

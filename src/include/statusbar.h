@@ -1,4 +1,4 @@
-stats_data *stats_init(Evas_Object *parent, option_data *od);
+stats_data *stats_init(Evas_Object *parent, config_data *cd);
 void stats_term(stats_data *sd);
 void stats_view_size_update(stats_data *sd);
 void stats_cursor_pos_update(stats_data *sd, Evas_Coord x, Evas_Coord y,

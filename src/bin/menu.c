@@ -23,7 +23,7 @@ struct menu_s
    void (*close_cb)(void *data);
    void *close_cb_data;
 
-   option_data *od;
+   config_data *cd;
    edit_data *ed;
    view_data *vd;
 
@@ -196,18 +196,18 @@ setting_apply_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
                      void *event_info EINA_UNUSED)
 {
    menu_data *md = data;
-   option_data *od = md->od;
+   config_data *cd = md->cd;
 
-   option_edc_img_path_set(od, elm_object_text_get(md->img_path_entry));
-   option_edc_snd_path_set(od, elm_object_text_get(md->snd_path_entry));
-   option_font_size_set(od, (float) elm_slider_value_get(md->slider_font));
-   option_stats_bar_set(od, elm_check_state_get(md->toggle_stats));
-   option_linenumber_set(od, elm_check_state_get(md->toggle_linenumber));
-   option_part_highlight_set(od, elm_check_state_get(md->toggle_highlight));
-   option_dummy_swallow_set(od, elm_check_state_get(md->toggle_swallow));
-   option_auto_indent_set(od, elm_check_state_get(md->toggle_indent));
+   config_edc_img_path_set(cd, elm_object_text_get(md->img_path_entry));
+   config_edc_snd_path_set(cd, elm_object_text_get(md->snd_path_entry));
+   config_font_size_set(cd, (float) elm_slider_value_get(md->slider_font));
+   config_stats_bar_set(cd, elm_check_state_get(md->toggle_stats));
+   config_linenumber_set(cd, elm_check_state_get(md->toggle_linenumber));
+   config_part_highlight_set(cd, elm_check_state_get(md->toggle_highlight));
+   config_dummy_swallow_set(cd, elm_check_state_get(md->toggle_swallow));
+   config_auto_indent_set(cd, elm_check_state_get(md->toggle_indent));
 
-   option_apply(od);
+   config_apply(cd);
 
    setting_close(md);
 }
@@ -245,19 +245,19 @@ setting_reset_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
                       void *event_info EINA_UNUSED)
 {
    menu_data *md = data;
-   option_data *od = md->od;
+   config_data *cd = md->cd;
 
    img_path_entry_update(md->img_path_entry,
-                         (Eina_List *)option_edc_img_path_list_get(md->od));
+                         (Eina_List *)config_edc_img_path_list_get(md->cd));
    snd_path_entry_update(md->snd_path_entry,
-                         (Eina_List *)option_edc_snd_path_list_get(md->od));
-   elm_slider_value_set(md->slider_font, (double) option_font_size_get(od));
+                         (Eina_List *)config_edc_snd_path_list_get(md->cd));
+   elm_slider_value_set(md->slider_font, (double) config_font_size_get(cd));
 
-   elm_check_state_set(md->toggle_stats, option_stats_bar_get(od));
-   elm_check_state_set(md->toggle_linenumber, option_linenumber_get(od));
-   elm_check_state_set(md->toggle_highlight, option_part_highlight_get(od));
-   elm_check_state_set(md->toggle_swallow, option_dummy_swallow_get(od));
-   elm_check_state_set(md->toggle_indent, option_auto_indent_get(od));
+   elm_check_state_set(md->toggle_stats, config_stats_bar_get(cd));
+   elm_check_state_set(md->toggle_linenumber, config_linenumber_get(cd));
+   elm_check_state_set(md->toggle_highlight, config_part_highlight_get(cd));
+   elm_check_state_set(md->toggle_swallow, config_dummy_swallow_get(cd));
+   elm_check_state_set(md->toggle_indent, config_auto_indent_get(cd));
 }
 
 static void
@@ -278,7 +278,7 @@ setting_open(menu_data *md)
    elm_entry_single_line_set(img_path_entry, EINA_TRUE);
    elm_entry_scrollable_set(img_path_entry, EINA_TRUE);
    img_path_entry_update(img_path_entry,
-                         (Eina_List *)option_edc_img_path_list_get(md->od));
+                         (Eina_List *)config_edc_img_path_list_get(md->cd));
    evas_object_show(img_path_entry);
    elm_object_focus_set(img_path_entry, EINA_TRUE);
 
@@ -291,7 +291,7 @@ setting_open(menu_data *md)
    elm_entry_single_line_set(snd_path_entry, EINA_TRUE);
    elm_entry_scrollable_set(snd_path_entry, EINA_TRUE);
    snd_path_entry_update(snd_path_entry,
-                         (Eina_List *)option_edc_snd_path_list_get(md->od));
+                         (Eina_List *)config_edc_snd_path_list_get(md->cd));
    evas_object_show(snd_path_entry);
 
    elm_object_part_content_set(layout, "elm.swallow.snd_path_entry",
@@ -337,7 +337,7 @@ setting_open(menu_data *md)
    elm_slider_indicator_show_set(slider, EINA_FALSE);
    elm_slider_unit_format_set(slider, "%1.1fx");
    elm_slider_min_max_set(slider, MIN_FONT_SIZE, MAX_FONT_SIZE);
-   elm_slider_value_set(slider, (double) option_font_size_get(md->od));
+   elm_slider_value_set(slider, (double) config_font_size_get(md->cd));
    evas_object_show(slider);
 
    elm_box_pack_end(box2, slider);
@@ -369,7 +369,7 @@ setting_open(menu_data *md)
    //Toggle (Status bar)
    Evas_Object *toggle_stats = elm_check_add(box);
    elm_object_style_set(toggle_stats, "toggle");
-   elm_check_state_set(toggle_stats, option_stats_bar_get(md->od));
+   elm_check_state_set(toggle_stats, config_stats_bar_get(md->cd));
    evas_object_size_hint_weight_set(toggle_stats, EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(toggle_stats, EVAS_HINT_FILL,
@@ -382,7 +382,7 @@ setting_open(menu_data *md)
    //Toggle (Line Number)
    Evas_Object *toggle_linenumber = elm_check_add(box);
    elm_object_style_set(toggle_linenumber, "toggle");
-   elm_check_state_set(toggle_linenumber, option_linenumber_get(md->od));
+   elm_check_state_set(toggle_linenumber, config_linenumber_get(md->cd));
    evas_object_size_hint_weight_set(toggle_linenumber, EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(toggle_linenumber, EVAS_HINT_FILL,
@@ -395,7 +395,7 @@ setting_open(menu_data *md)
    //Toggle (Part Highlighting)
    Evas_Object *toggle_highlight = elm_check_add(box);
    elm_object_style_set(toggle_highlight, "toggle");
-   elm_check_state_set(toggle_highlight, option_part_highlight_get(md->od));
+   elm_check_state_set(toggle_highlight, config_part_highlight_get(md->cd));
    evas_object_size_hint_weight_set(toggle_highlight, EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(toggle_highlight, EVAS_HINT_FILL,
@@ -408,7 +408,7 @@ setting_open(menu_data *md)
    //Toggle (Dummy Swallow)
    Evas_Object *toggle_swallow = elm_check_add(box);
    elm_object_style_set(toggle_swallow, "toggle");
-   elm_check_state_set(toggle_swallow, option_dummy_swallow_get(md->od));
+   elm_check_state_set(toggle_swallow, config_dummy_swallow_get(md->cd));
    evas_object_size_hint_weight_set(toggle_swallow, EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(toggle_swallow, EVAS_HINT_FILL,
@@ -421,7 +421,7 @@ setting_open(menu_data *md)
    //Toggle (Auto Indentation)
    Evas_Object *toggle_indent = elm_check_add(box);
    elm_object_style_set(toggle_indent, "toggle");
-   elm_check_state_set(toggle_indent, option_auto_indent_get(md->od));
+   elm_check_state_set(toggle_indent, config_auto_indent_get(md->cd));
    evas_object_size_hint_weight_set(toggle_indent, EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(toggle_indent, EVAS_HINT_FILL,
@@ -519,7 +519,7 @@ help_open(menu_data *md)
 
    EINA_ITERATOR_FOREACH(itr, line)
      {
-        //Append edc code
+        //Append edc ccde
         if (line_num > 0)
           {
              if (!eina_strbuf_append(strbuf, "<br/>")) goto err;
@@ -635,10 +635,10 @@ btn_effect_timer_cb(void *data)
 static void
 edc_reload(menu_data *md, const char *edc_path)
 {
-   option_edc_path_set(md->od, edc_path);
+   config_edc_path_set(md->cd, edc_path);
    edit_new(md->ed);
    view_reload_need_set(md->vd, EINA_TRUE);
-   option_apply(md->od);
+   config_apply(md->cd);
 }
 
 static void
@@ -720,10 +720,10 @@ fileselector_save_done_cb(void *data, Evas_Object *obj EINA_UNUSED,
      }
 
    //Update the edc file and try to save.
-   if (strcmp(option_edc_path_get(md->od), selected))
+   if (strcmp(config_edc_path_get(md->cd), selected))
      edit_changed_set(md->ed, EINA_TRUE);
 
-   option_edc_path_set(md->od, selected);
+   config_edc_path_set(md->cd, selected);
 
    if (!edit_save(md->ed))
      {
@@ -737,7 +737,7 @@ fileselector_save_done_cb(void *data, Evas_Object *obj EINA_UNUSED,
      }
 
    view_reload_need_set(md->vd, EINA_TRUE);
-   option_apply(md->od);
+   config_apply(md->cd);
 
    fileselector_close(md);
    menu_close(md, EINA_FALSE);
@@ -969,13 +969,13 @@ menu_open(menu_data *md)
 }
 
 menu_data *
-menu_init(Evas_Object *win, edit_data *ed, option_data *od, view_data *vd,
+menu_init(Evas_Object *win, edit_data *ed, config_data *cd, view_data *vd,
           void (*close_cb)(void *data), void *data)
 {
    menu_data *md = calloc(1, sizeof(menu_data));
    md->win = win;
    md->ed = ed;
-   md->od = od;
+   md->cd = cd;
    md->vd = vd;
    md->close_cb = close_cb;
    md->close_cb_data = data;
@@ -991,7 +991,7 @@ menu_term(menu_data *md)
 }
 
 Eina_Bool
-menu_option_toggle()
+menu_toggle()
 {
    menu_data *md = g_md;
 

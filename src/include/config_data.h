@@ -1,30 +1,30 @@
-option_data *option_init(const char *edc_path, const char *edc_img_path,
+config_data *config_init(const char *edc_path, const char *edc_img_path,
                          const char *edc_snd_path);
-void option_term(option_data *od);
-const char *option_edc_path_get(option_data *od);
-const char *option_edj_path_get(option_data *od);
-const char *option_edc_img_path_get(option_data *od);
-const char *option_edc_snd_path_get(option_data *od);
-void option_edc_img_path_set(option_data *od, const char *edc_img_path);
-void option_edc_snd_path_set(option_data *od, const char *edc_snd_path);
-const Eina_List *option_edc_img_path_list_get(option_data *od);
-const Eina_List *option_edc_snd_path_list_get(option_data *od);
-void option_update_cb_set(option_data *od,
-                          void (*cb)(void *data, option_data *od),
+void config_term(config_data *cd);
+const char *config_edc_path_get(config_data *cd);
+const char *config_edj_path_get(config_data *cd);
+const char *config_edc_img_path_get(config_data *cd);
+const char *config_edc_snd_path_get(config_data *cd);
+void config_edc_img_path_set(config_data *cd, const char *edc_img_path);
+void config_edc_snd_path_set(config_data *cd, const char *edc_snd_path);
+const Eina_List *config_edc_img_path_list_get(config_data *cd);
+const Eina_List *config_edc_snd_path_list_get(config_data *cd);
+void config_update_cb_set(config_data *cd,
+                          void (*cb)(void *data, config_data *cd),
                           void *data);
-void option_stats_bar_set(option_data *od, Eina_Bool enabled);
-void option_linenumber_set(option_data *od, Eina_Bool enabled);
-Eina_Bool option_stats_bar_get(option_data *od);
-Eina_Bool option_linenumber_get(option_data *od);
-void option_apply(option_data *od);
-void option_edc_path_set(option_data *od, const char *edc_path);
-void option_view_size_get(option_data *od, Evas_Coord *w, Evas_Coord *h);
-void option_view_size_set(option_data *od, Evas_Coord w, Evas_Coord h);
-Eina_Bool option_part_highlight_get(option_data *od);
-void option_part_highlight_set(option_data *od, Eina_Bool highlight);
-Eina_Bool option_dummy_swallow_get(option_data *od);
-void option_dummy_swallow_set(option_data *od, Eina_Bool dummy_swallow);
-void option_auto_indent_set(option_data *od, Eina_Bool auto_indent);
-Eina_Bool option_auto_indent_get(option_data *od);
-void option_font_size_set(option_data *od, float font_size);
-float option_font_size_get(option_data *od);
+void config_stats_bar_set(config_data *cd, Eina_Bool enabled);
+void config_linenumber_set(config_data *cd, Eina_Bool enabled);
+Eina_Bool config_stats_bar_get(config_data *cd);
+Eina_Bool config_linenumber_get(config_data *cd);
+void config_apply(config_data *cd);
+void config_edc_path_set(config_data *cd, const char *edc_path);
+void config_view_size_get(config_data *cd, Evas_Coord *w, Evas_Coord *h);
+void config_view_size_set(config_data *cd, Evas_Coord w, Evas_Coord h);
+Eina_Bool config_part_highlight_get(config_data *cd);
+void config_part_highlight_set(config_data *cd, Eina_Bool highlight);
+Eina_Bool config_dummy_swallow_get(config_data *cd);
+void config_dummy_swallow_set(config_data *cd, Eina_Bool dummy_swallow);
+void config_auto_indent_set(config_data *cd, Eina_Bool auto_indent);
+Eina_Bool config_auto_indent_get(config_data *cd);
+void config_font_size_set(config_data *cd, float font_size);
+float config_font_size_get(config_data *cd);
