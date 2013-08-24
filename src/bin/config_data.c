@@ -301,6 +301,11 @@ option_auto_indent_get(option_data *od)
 void
 option_font_size_set(option_data *od, float font_size)
 {
+   if (font_size > MAX_FONT_SIZE)
+     font_size = MAX_FONT_SIZE;
+   else if (font_size < MIN_FONT_SIZE)
+     font_size = MIN_FONT_SIZE;
+
    od->font_size = font_size;
 }
 

@@ -336,7 +336,7 @@ setting_open(menu_data *md)
    elm_slider_span_size_set(slider, 300);
    elm_slider_indicator_show_set(slider, EINA_FALSE);
    elm_slider_unit_format_set(slider, "%1.1fx");
-   elm_slider_min_max_set(slider, 0.5, 10.0);
+   elm_slider_min_max_set(slider, MIN_FONT_SIZE, MAX_FONT_SIZE);
    elm_slider_value_set(slider, (double) option_font_size_get(md->od));
    evas_object_show(slider);
 

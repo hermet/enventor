@@ -54,7 +54,8 @@ Ctrl+H = Part Highlighting
 Ctrl+, = Full Edit View / Split View
 Ctrl+. = Full Edje View / Split View
 Ctrl+W = Show/Hide Dummy Swallow Object
- 
+Ctrl++ = Font Size Up
+Ctrl+- = Font Size Down
  
 --------------------------------------------------------------------------------
 Command Line Usage:

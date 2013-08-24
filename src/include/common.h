@@ -13,6 +13,9 @@
   #define DFUNC_NAME()
 #endif
 
+#define MAX_FONT_SIZE 10.0
+#define MIN_FONT_SIZE 0.5
+
 extern const char *PROTO_EDC_PATH;
 extern char EDJE_PATH[PATH_MAX];
 

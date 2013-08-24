@@ -563,4 +563,9 @@ edit_font_size_update(edit_data *ed)
 {
    elm_object_scale_set(ed->en_edit, option_font_size_get(ed->od));
    elm_object_scale_set(ed->en_line, option_font_size_get(ed->od));
+
+   char buf[128];
+   snprintf(buf, sizeof(buf), "Font Size: %1.1fx",
+            option_font_size_get(ed->od));
+   stats_info_msg_update(ed->sd, buf);
 }

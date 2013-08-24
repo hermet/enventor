@@ -236,6 +236,21 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
              panes_full_view_right(ad->panes);
              return ECORE_CALLBACK_DONE;
           }
+        //Font Size Up
+        if (!strcmp(event->keyname, "equal"))
+          {
+             option_font_size_set(ad->od, option_font_size_get(ad->od) + 0.1f);
+             edit_font_size_update(ad->ed);
+             return ECORE_CALLBACK_DONE;
+          }
+        //Font Size Down
+        if (!strcmp(event->keyname, "minus"))
+          {
+             option_font_size_set(ad->od, option_font_size_get(ad->od) - 0.1f);
+             edit_font_size_update(ad->ed);
+             return ECORE_CALLBACK_DONE;
+          }
+
 
         return ECORE_CALLBACK_DONE;
      }
