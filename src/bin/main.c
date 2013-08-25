@@ -195,12 +195,6 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
              edit_save(ad->ed);
              return ECORE_CALLBACK_DONE;
           }
-        //Load
-        if (!strcmp(event->keyname, "l") || !strcmp(event->keyname, "L"))
-          {
-             ad->menu_opened = menu_edc_load(ad->md);
-             return ECORE_CALLBACK_DONE;
-          }
         //Copy
         if (!strcmp(event->keyname, "c") || !strcmp(event->keyname, "C"))
           return ECORE_CALLBACK_PASS_ON;
@@ -277,6 +271,12 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    else if (!strcmp(event->keyname, "F1"))
      {
         ad->menu_opened = menu_help(ad->md);
+        return ECORE_CALLBACK_DONE;
+     }
+   //Load
+   if (!strcmp(event->keyname, "F3"))
+     {
+        ad->menu_opened = menu_edc_load(ad->md);
         return ECORE_CALLBACK_DONE;
      }
    //Line Number
