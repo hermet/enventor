@@ -182,74 +182,73 @@ part_highlight_toggle(app_data *ad, Eina_Bool msg)
 }
 
 static Eina_Bool
+ctrl_func(app_data *ad, const char *keyname)
+{
+   //Save
+   if (!strcmp(keyname, "s") || !strcmp(keyname, "S"))
+     {
+        edit_save(ad->ed);
+        return ECORE_CALLBACK_DONE;
+     }
+   //Copy
+   if (!strcmp(keyname, "c") || !strcmp(keyname, "C"))
+     return ECORE_CALLBACK_PASS_ON;
+   //Paste
+   if (!strcmp(keyname, "v") || !strcmp(keyname, "V"))
+     return ECORE_CALLBACK_PASS_ON;
+   //Select All
+   if (!strcmp(keyname, "a") || !strcmp(keyname, "A"))
+     return ECORE_CALLBACK_PASS_ON;
+   //Part Highlight
+   if (!strcmp(keyname, "h") || !strcmp(keyname, "H"))
+     {
+        config_part_highlight_set(ad->cd, !config_part_highlight_get(ad->cd));
+        part_highlight_toggle(ad, EINA_TRUE);
+        return ECORE_CALLBACK_DONE;
+     }
+   //Part Highlight
+   if (!strcmp(keyname, "w") || !strcmp(keyname, "W"))
+     {
+        config_dummy_swallow_set(ad->cd, !config_dummy_swallow_get(ad->cd));
+        view_dummy_toggle(ad->vd, EINA_TRUE);
+        return ECORE_CALLBACK_DONE;
+     }
+   //Full Edit View
+   if (!strcmp(keyname, "comma"))
+     {
+        panes_full_view_left(ad->panes);
+        return ECORE_CALLBACK_DONE;
+     }
+   //Full Edje View
+   if (!strcmp(keyname, "period"))
+     {
+        panes_full_view_right(ad->panes);
+        return ECORE_CALLBACK_DONE;
+     }
+   //Font Size Up
+   if (!strcmp(keyname, "equal"))
+     {
+        config_font_size_set(ad->cd, config_font_size_get(ad->cd) + 0.1f);
+        edit_font_size_update(ad->ed, EINA_TRUE);
+        return ECORE_CALLBACK_DONE;
+     }
+   //Font Size Down
+   if (!strcmp(keyname, "minus"))
+     {
+        config_font_size_set(ad->cd, config_font_size_get(ad->cd) - 0.1f);
+        edit_font_size_update(ad->ed, EINA_TRUE);
+        return ECORE_CALLBACK_DONE;
+     }
+   return ECORE_CALLBACK_DONE;
+}
+
+static Eina_Bool
 main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
 {
    Ecore_Event_Key *event = ev;
    app_data *ad = data;
 
-   if (ad->ctrl_pressed)
-     {
-        //Save
-        if (!strcmp(event->keyname, "s") || !strcmp(event->keyname, "S"))
-          {
-             edit_save(ad->ed);
-             return ECORE_CALLBACK_DONE;
-          }
-        //Copy
-        if (!strcmp(event->keyname, "c") || !strcmp(event->keyname, "C"))
-          return ECORE_CALLBACK_PASS_ON;
-        //Paste
-        if (!strcmp(event->keyname, "v") || !strcmp(event->keyname, "V"))
-          return ECORE_CALLBACK_PASS_ON;
-        //Select All
-        if (!strcmp(event->keyname, "a") || !strcmp(event->keyname, "A"))
-          return ECORE_CALLBACK_PASS_ON;
-        //Part Highlight
-        if (!strcmp(event->keyname, "h") || !strcmp(event->keyname, "H"))
-          {
-             config_part_highlight_set(ad->cd,
-                                       !config_part_highlight_get(ad->cd));
-             part_highlight_toggle(ad, EINA_TRUE);
-             return ECORE_CALLBACK_DONE;
-          }
-        //Part Highlight
-        if (!strcmp(event->keyname, "w") || !strcmp(event->keyname, "W"))
-          {
-             config_dummy_swallow_set(ad->cd,
-                                     !config_dummy_swallow_get(ad->cd));
-             view_dummy_toggle(ad->vd, EINA_TRUE);
-             return ECORE_CALLBACK_DONE;
-          }
-        //Full Edit View
-        if (!strcmp(event->keyname, "comma"))
-          {
-             panes_full_view_left(ad->panes);
-             return ECORE_CALLBACK_DONE;
-          }
-        //Full Edje View
-        if (!strcmp(event->keyname, "period"))
-          {
-             panes_full_view_right(ad->panes);
-             return ECORE_CALLBACK_DONE;
-          }
-        //Font Size Up
-        if (!strcmp(event->keyname, "equal"))
-          {
-             config_font_size_set(ad->cd, config_font_size_get(ad->cd) + 0.1f);
-             edit_font_size_update(ad->ed, EINA_TRUE);
-             return ECORE_CALLBACK_DONE;
-          }
-        //Font Size Down
-        if (!strcmp(event->keyname, "minus"))
-          {
-             config_font_size_set(ad->cd, config_font_size_get(ad->cd) - 0.1f);
-             edit_font_size_update(ad->ed, EINA_TRUE);
-             return ECORE_CALLBACK_DONE;
-          }
-
-
-        return ECORE_CALLBACK_DONE;
-     }
+   if (ad->ctrl_pressed) return ctrl_func(ad, event->keyname);
 
    //Main Menu
    if (!strcmp(event->keyname, "Escape"))
@@ -266,15 +265,16 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    if (!strcmp("Control_L", event->keyname))
      {
         ad->ctrl_pressed = EINA_TRUE;
+        return ECORE_CALLBACK_DONE;
      }
    //README
-   else if (!strcmp(event->keyname, "F1"))
+   if (!strcmp(event->keyname, "F1"))
      {
         ad->menu_opened = menu_help(ad->md);
         return ECORE_CALLBACK_DONE;
      }
    //Load
-   if (!strcmp(event->keyname, "F3"))
+   if (!strcmp(event->keyname, "F4"))
      {
         ad->menu_opened = menu_edc_load(ad->md);
         return ECORE_CALLBACK_DONE;
