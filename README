@@ -35,11 +35,14 @@ Once you have met requirements, compiling and installing is simple:
 - Short Cut Keys:
  
 Esc = Open/Close Menu
-F1 = Show README
+F1 = Help
+//F2 = New
+//F3 = Save
+//F4 = Load
 F5 = Show/Hide Line Number
 F6 = Show/Hide Status
-Ctrl+S = Save / Compile EDC
-Ctrl+L = Load EDC
+//F12 = Setting
+Ctrl+S = Quick Save & Compile EDC
 Ctrl+A = Select Text All
 Ctrl+Double Click = Select a word
 Ctrl+C = Copy Selected Text
