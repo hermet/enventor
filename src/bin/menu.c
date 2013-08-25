@@ -665,14 +665,7 @@ new_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
            void *event_info EINA_UNUSED)
 {
    menu_data *md = data;
-
-   if (edit_changed_get(md->ed))
-     warning_layout_create(md, new_yes_btn_cb, new_save_btn_cb);
-   else
-     {
-        edc_reload(md, PROTO_EDC_PATH);
-        menu_close(md, EINA_FALSE);
-     }
+   menu_edc_new(md);
 }
 
 static void
@@ -908,10 +901,14 @@ Eina_Bool
 menu_edc_new(menu_data *md)
 {
    if (edit_changed_get(md->ed))
-     warning_layout_create(md, new_yes_btn_cb, new_save_btn_cb);
-   else
-     edc_reload(md, PROTO_EDC_PATH);
-   return EINA_TRUE;
+     {
+        warning_layout_create(md, new_yes_btn_cb, new_save_btn_cb);
+        return EINA_TRUE;
+     }
+   edc_reload(md, PROTO_EDC_PATH);
+   menu_close(md, EINA_TRUE);
+
+   return EINA_FALSE;
 }
 
 Eina_Bool
