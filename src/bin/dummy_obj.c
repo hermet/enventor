@@ -14,6 +14,7 @@ struct dummy_obj_s
 {
    Evas_Object *layout;
    Eina_List *swallows;
+   Ecore_Animator *animator;
 };
 
 const char *DUMMYOBJ = "dummy_obj";
@@ -93,6 +94,7 @@ animator_cb(void *data)
 {
    dummy_obj *dummy = data;
    dummy_objs_update(dummy);
+   dummy->animator = NULL;
    return ECORE_CALLBACK_CANCEL;
 }
 
@@ -123,13 +125,14 @@ void dummy_obj_new(Evas_Object *layout)
                                    "edje,change,file", "edje",
                                    edje_change_file_cb, dummy);
 
-   ecore_animator_add(animator_cb, dummy);
+   Ecore_Animator *animator = ecore_animator_add(animator_cb, dummy);
    evas_object_data_set(layout, DUMMYOBJ, dummy);
 
    evas_object_event_callback_add(layout, EVAS_CALLBACK_DEL, layout_del_cb,
                                   dummy);
 
    dummy->layout = layout;
+   dummy->animator = animator;
 }
 
 void dummy_obj_del(Evas_Object *layout)
@@ -146,6 +149,8 @@ void dummy_obj_del(Evas_Object *layout)
         free(po);
      }
    eina_list_free(dummy->swallows);
+
+   if (dummy->animator) ecore_animator_del(dummy->animator);
    free(dummy);
 
    evas_object_data_set(layout, DUMMYOBJ, NULL);
