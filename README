@@ -29,11 +29,12 @@ Please see http://www.enlightenment.org for information on these.
 Compiling:
 --------------------------------------------------------------------------------
  
-Once you have met requirements, copiling and installing is simple:
+Once you have met requirements, compiling and installing is simple:
  
-  ./build.sh
- 
- 
+  $ ./autogen.sh
+  $ make
+  $ sudo make install
+
 --------------------------------------------------------------------------------
 Short Cut Keys:
 --------------------------------------------------------------------------------
