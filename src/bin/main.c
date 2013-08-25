@@ -233,7 +233,7 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
              return ECORE_CALLBACK_DONE;
           }
         //Full Edje View
-        if (!strcmp(event->keyname, "pericd"))
+        if (!strcmp(event->keyname, "period"))
           {
              panes_full_view_right(ad->panes);
              return ECORE_CALLBACK_DONE;
