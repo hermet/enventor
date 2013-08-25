@@ -66,7 +66,8 @@ warning_close(menu_data *md)
 static void
 menu_close(menu_data *md, Eina_Bool toggled)
 {
-   elm_object_signal_emit(md->menu_layout, "elm,state,dismiss", "");
+   if (md->menu_layout)
+     elm_object_signal_emit(md->menu_layout, "elm,state,dismiss", "");
 
    if (!toggled)
      md->close_cb(md->close_cb_data);
@@ -95,6 +96,7 @@ setting_dismiss_done(void *data, Evas_Object *obj EINA_UNUSED,
    menu_data *md = data;
    evas_object_del(md->setting_layout);
    md->setting_layout = NULL;
+   if (!md->menu_layout) return;
    elm_object_disabled_set(md->menu_layout, EINA_FALSE);
    elm_object_focus_set(md->menu_layout, EINA_TRUE);
 }
@@ -107,11 +109,9 @@ help_dismiss_done(void *data, Evas_Object *obj EINA_UNUSED,
    menu_data *md = data;
    evas_object_del(md->help_layout);
    md->help_layout = NULL;
-   if (md->menu_layout)
-     {
-        elm_object_disabled_set(md->menu_layout, EINA_FALSE);
-        elm_object_focus_set(md->menu_layout, EINA_TRUE);
-     }
+   if (!md->menu_layout) return;
+   elm_object_disabled_set(md->menu_layout, EINA_FALSE);
+   elm_object_focus_set(md->menu_layout, EINA_TRUE);
 }
 
 static void
@@ -133,11 +133,9 @@ warning_dismiss_done(void *data, Evas_Object *obj EINA_UNUSED,
    menu_data *md = data;
    evas_object_del(md->warning_layout);
    md->warning_layout = NULL;
-   if (md->menu_layout)
-     {
-        elm_object_disabled_set(md->menu_layout, EINA_FALSE);
-        elm_object_focus_set(md->menu_layout, EINA_TRUE);
-     }
+   if (!md->menu_layout) return;
+   elm_object_disabled_set(md->menu_layout, EINA_FALSE);
+   elm_object_focus_set(md->menu_layout, EINA_TRUE);
 }
 
 static void
@@ -462,7 +460,8 @@ setting_open(menu_data *md)
 
    elm_object_part_content_set(layout, "elm.swallow.reset_btn", btn);
 
-   elm_object_disabled_set(md->menu_layout, EINA_TRUE);
+   if (md->menu_layout)
+     elm_object_disabled_set(md->menu_layout, EINA_TRUE);
 
    md->setting_layout = layout;
    md->img_path_entry = img_path_entry;
@@ -899,6 +898,30 @@ menu_help(menu_data *md)
 }
 
 Eina_Bool
+menu_setting(menu_data *md)
+{
+   setting_open(md);
+   return EINA_TRUE;
+}
+
+Eina_Bool
+menu_edc_new(menu_data *md)
+{
+   if (edit_changed_get(md->ed))
+     warning_layout_create(md, new_yes_btn_cb, new_save_btn_cb);
+   else
+     edc_reload(md, PROTO_EDC_PATH);
+   return EINA_TRUE;
+}
+
+Eina_Bool
+menu_edc_save(menu_data *md)
+{
+   edc_file_save(md);
+   return EINA_TRUE;
+}
+
+Eina_Bool
 menu_edc_load(menu_data *md)
 {
    if (edit_changed_get(md->ed))
@@ -1019,11 +1042,22 @@ menu_toggle()
              return EINA_TRUE;
           }
      }
+   //Short Cut Key Open Case
    else
      {
         if (md->help_layout)
           {
              help_close(md);
+             return EINA_FALSE;
+          }
+        if (md->fileselector_layout)
+          {
+             fileselector_close(md);
+             return EINA_FALSE;
+          }
+        if (md->setting_layout)
+          {
+             setting_close(md);
              return EINA_FALSE;
           }
      }
@@ -1032,12 +1066,6 @@ menu_toggle()
    if (md->ctxpopup)
      {
         elm_ctxpopup_dismiss(md->ctxpopup);
-        return EINA_FALSE;
-     }
-   //FileSelector
-   if (md->fileselector_layout)
-     {
-        fileselector_close(md);
         return EINA_FALSE;
      }
    //Warning

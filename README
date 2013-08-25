@@ -36,12 +36,12 @@ Once you have met requirements, compiling and installing is simple:
  
 Esc = Open/Close Menu
 F1 = Help
-//F2 = New
-//F3 = Save
+F2 = New
+F3 = Save
 F4 = Load
 F5 = Show/Hide Line Number
 F6 = Show/Hide Status
-//F12 = Setting
+F12 = Setting
 Ctrl+S = Quick Save + Compile EDC
 Ctrl+A = Select Text All
 Ctrl+Double Click = Select a word

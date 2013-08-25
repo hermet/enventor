@@ -273,6 +273,18 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
         ad->menu_opened = menu_help(ad->md);
         return ECORE_CALLBACK_DONE;
      }
+   //New
+   if (!strcmp(event->keyname, "F2"))
+     {
+        ad->menu_opened = menu_edc_new(ad->md);
+        return ECORE_CALLBACK_DONE;
+     }
+   //Save
+   if (!strcmp(event->keyname, "F3"))
+     {
+        ad->menu_opened = menu_edc_save(ad->md);
+        return ECORE_CALLBACK_DONE;
+     }
    //Load
    if (!strcmp(event->keyname, "F4"))
      {
@@ -280,17 +292,23 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
         return ECORE_CALLBACK_DONE;
      }
    //Line Number
-   else if (!strcmp(event->keyname, "F5"))
+   if (!strcmp(event->keyname, "F5"))
      {
         config_linenumber_set(ad->cd, !config_linenumber_get(ad->cd));
         edit_line_number_toggle(ad->ed);
         return ECORE_CALLBACK_DONE;
      }
    //Statusbar
-   else if (!strcmp(event->keyname, "F6"))
+   if (!strcmp(event->keyname, "F6"))
      {
         config_stats_bar_set(ad->cd, !config_stats_bar_get(ad->cd));
         statusbar_toggle(ad);
+        return ECORE_CALLBACK_DONE;
+     }
+   //Setting
+   if (!strcmp(event->keyname, "F12"))
+     {
+        ad->menu_opened = menu_setting(ad->md);
         return ECORE_CALLBACK_DONE;
      }
 
