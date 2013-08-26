@@ -1,9 +1,15 @@
 #include <Elementary.h>
 #include <Eio.h>
+#include "config.h"
 #include "common.h"
 
+const char *BIN_DIR = PACKAGE_BIN_DIR;
+const char *LIB_DIR = PACKAGE_LIB_DIR;
+const char *DATA_DIR = PACKAGE_DATA_DIR;
 const char *PROTO_EDC_PATH = "/tmp/.proto.edc";
 char EDJE_PATH[PATH_MAX];
+
+int main(int argc, char **argv);
 
 struct app_s
 {
@@ -450,6 +456,7 @@ config_data_set(app_data *ad, int argc, char **argv)
 static void
 elm_setup()
 {
+    int main(int , char **);
     elm_config_profile_set("standard");
 
     //Recover the scale since it will be reset by elm_config_profile_set()
@@ -458,8 +465,11 @@ elm_setup()
 
    elm_config_scroll_bounce_enabled_set(EINA_FALSE);
    elm_policy_set(ELM_POLICY_QUIT, ELM_POLICY_QUIT_LAST_WINDOW_CLOSED);
-   elm_app_info_set("/usr/local/bin", "enventor",
-                    "/usr/local/share/enventor");
+   elm_app_compile_bin_dir_set(PACKAGE_BIN_DIR);
+   elm_app_compile_data_dir_set(PACKAGE_DATA_DIR);
+   elm_app_compile_lib_dir_set(PACKAGE_LIB_DIR);
+   elm_app_info_set(main, "enventor",
+                    "images/logo.png");
 
    snprintf(EDJE_PATH, sizeof(EDJE_PATH), "%s/themes/enventor.edj",
             elm_app_data_dir_get());

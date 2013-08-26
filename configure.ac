@@ -41,6 +41,7 @@ AC_DEFINE_UNQUOTED(VMAJ, [v_maj], [Major version])
 AC_DEFINE_UNQUOTED(VMIN, [v_min], [Minor version])
 AC_DEFINE_UNQUOTED(VMIC, [v_mic], [Micro version])
 AC_DEFINE_UNQUOTED(VREV, [v_rev], [Revison])
+
 version_info="lt_cur:lt_rev:lt_age"
 release_info="v_rel"
 AC_SUBST(version_info)
@@ -60,6 +61,7 @@ PKG_CHECK_MODULES([ENVENTOR],
    ecore-ipc >= 1.7.99
    edje >= 1.7.99
    eo >= 1.7.99
+   eio >= 1.7.99
    ]
  )
 
