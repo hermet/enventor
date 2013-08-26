@@ -456,7 +456,6 @@ config_data_set(app_data *ad, int argc, char **argv)
 static void
 elm_setup()
 {
-    int main(int , char **);
     elm_config_profile_set("standard");
 
     //Recover the scale since it will be reset by elm_config_profile_set()
