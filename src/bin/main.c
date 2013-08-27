@@ -3,9 +3,6 @@
 #include "config.h"
 #include "common.h"
 
-const char *BIN_DIR = PACKAGE_BIN_DIR;
-const char *LIB_DIR = PACKAGE_LIB_DIR;
-const char *DATA_DIR = PACKAGE_DATA_DIR;
 const char *PROTO_EDC_PATH = "/tmp/.proto.edc";
 char EDJE_PATH[PATH_MAX];
 
