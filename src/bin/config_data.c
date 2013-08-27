@@ -111,6 +111,10 @@ config_term(config_data *cd)
      eina_stringshare_del(str);
    eina_list_free(cd->edc_fnt_path_list);
 
+   if (cd->edc_img_path_buf) eina_strbuf_free(cd->edc_img_path_buf);
+   if (cd->edc_snd_path_buf) eina_strbuf_free(cd->edc_snd_path_buf);
+   if (cd->edc_fnt_path_buf) eina_strbuf_free(cd->edc_fnt_path_buf);
+
    free(cd);
 }
 
