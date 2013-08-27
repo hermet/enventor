@@ -11,6 +11,7 @@ struct menu_s
    Evas_Object *help_layout;
    Evas_Object *img_path_entry;
    Evas_Object *snd_path_entry;
+   Evas_Object *fnt_path_entry;
    Evas_Object *slider_font;
    Evas_Object *toggle_stats;
    Evas_Object *toggle_linenumber;
@@ -198,6 +199,7 @@ setting_apply_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
 
    config_edc_img_path_set(cd, elm_object_text_get(md->img_path_entry));
    config_edc_snd_path_set(cd, elm_object_text_get(md->snd_path_entry));
+   config_edc_fnt_path_set(cd, elm_object_text_get(md->fnt_path_entry));
    config_font_size_set(cd, (float) elm_slider_value_get(md->slider_font));
    config_stats_bar_set(cd, elm_check_state_get(md->toggle_stats));
    config_linenumber_set(cd, elm_check_state_get(md->toggle_linenumber));
@@ -220,6 +222,20 @@ img_path_entry_update(Evas_Object *entry, Eina_List *edc_img_paths)
    EINA_LIST_FOREACH(edc_img_paths, l, edc_img_path)
      {
         elm_entry_entry_append(entry, edc_img_path);
+        elm_entry_entry_append(entry, ";");
+     }
+}
+
+static void
+fnt_path_entry_update(Evas_Object *entry, Eina_List *edc_fnt_paths)
+{
+   elm_entry_entry_set(entry, NULL);
+
+   Eina_List *l;
+   char *edc_fnt_path;
+   EINA_LIST_FOREACH(edc_fnt_paths, l, edc_fnt_path)
+     {
+        elm_entry_entry_append(entry, edc_fnt_path);
         elm_entry_entry_append(entry, ";");
      }
 }
@@ -249,6 +265,9 @@ setting_reset_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
                          (Eina_List *)config_edc_img_path_list_get(md->cd));
    snd_path_entry_update(md->snd_path_entry,
                          (Eina_List *)config_edc_snd_path_list_get(md->cd));
+   fnt_path_entry_update(md->fnt_path_entry,
+                         (Eina_List *)config_edc_fnt_path_list_get(md->cd));
+
    elm_slider_value_set(md->slider_font, (double) config_font_size_get(cd));
 
    elm_check_state_set(md->toggle_stats, config_stats_bar_get(cd));
@@ -294,7 +313,17 @@ setting_open(menu_data *md)
 
    elm_object_part_content_set(layout, "elm.swallow.snd_path_entry",
                                snd_path_entry);
+   //Font Path Entry
+   Evas_Object *fnt_path_entry = elm_entry_add(layout);
+   elm_object_style_set(fnt_path_entry, elm_app_name_get());
+   elm_entry_single_line_set(fnt_path_entry, EINA_TRUE);
+   elm_entry_scrollable_set(fnt_path_entry, EINA_TRUE);
+   fnt_path_entry_update(fnt_path_entry,
+                         (Eina_List *)config_edc_fnt_path_list_get(md->cd));
+   evas_object_show(fnt_path_entry);
 
+   elm_object_part_content_set(layout, "elm.swallow.fnt_path_entry",
+                               fnt_path_entry);
    //Preference
    Evas_Object *scroller = elm_scroller_add(layout);
    elm_object_part_content_set(layout, "elm.swallow.preference", scroller);
@@ -466,6 +495,7 @@ setting_open(menu_data *md)
    md->setting_layout = layout;
    md->img_path_entry = img_path_entry;
    md->snd_path_entry = snd_path_entry;
+   md->fnt_path_entry = fnt_path_entry;
    md->slider_font = slider;
    md->toggle_stats = toggle_stats;
    md->toggle_linenumber = toggle_linenumber;

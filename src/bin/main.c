@@ -58,11 +58,12 @@ edje_cc_cmd_set(config_data *cd)
 {
    Eina_Strbuf *buf = eina_strbuf_new();
    if (!buf) return EINA_FALSE;
-   eina_strbuf_append_printf(buf, "edje_cc -fastcomp %s %s %s %s",
+   eina_strbuf_append_printf(buf, "edje_cc -fastcomp %s %s %s %s %s",
                              config_edc_path_get(cd),
                              config_edj_path_get(cd),
                              config_edc_img_path_get(cd),
-                             config_edc_snd_path_get(cd));
+                             config_edc_snd_path_get(cd),
+                             config_edc_fnt_path_get(cd));
    eina_strbuf_append(buf, " > /dev/null");
    EDJE_CC_CMD = eina_strbuf_string_steal(buf);
    eina_strbuf_free(buf);
@@ -386,11 +387,12 @@ config_update_cb(void *data, config_data *cd)
 
 static void
 args_dispatch(int argc, char **argv, char *edc_path, char *img_path,
-              char *snd_path)
+              char *snd_path, char *fnt_path)
 {
    Eina_Bool default_edc = EINA_TRUE;
    Eina_Bool default_img = EINA_TRUE;
    Eina_Bool default_snd = EINA_TRUE;
+   Eina_Bool default_fnt = EINA_TRUE;
 
    //No arguments. set defaults
    if (argc == 1) goto defaults;
@@ -398,7 +400,7 @@ args_dispatch(int argc, char **argv, char *edc_path, char *img_path,
    //Help
    if ((argc >=2 ) && !strcmp(argv[1], "--help"))
      {
-        fprintf(stdout, "Usage: enventor [input file] [-id image path] [-sd sound path]\n");
+        fprintf(stdout, "Usage: enventor [input file] [-id image path] [-sd sound path] [-fd font path]\n");
         exit(0);
      }
 
@@ -427,6 +429,11 @@ args_dispatch(int argc, char **argv, char *edc_path, char *img_path,
                   sprintf(snd_path, "%s", argv[cur_arg + 1]);
                   default_snd = EINA_FALSE;
                }
+             else if (!strcmp("-fd", argv[cur_arg]))
+               {
+                  sprintf(fnt_path, "%s", argv[cur_arg + 1]);
+                  default_fnt = EINA_FALSE;
+               }
           }
         cur_arg += 2;
      }
@@ -435,6 +442,7 @@ defaults:
    if (default_edc) sprintf(edc_path, "%s", PROTO_EDC_PATH);
    if (default_img) sprintf(img_path, "%s/images", elm_app_data_dir_get());
    if (default_snd) sprintf(snd_path, "%s/sounds", elm_app_data_dir_get());
+   if (default_fnt) sprintf(fnt_path, "%s/fonts", elm_app_data_dir_get());
 }
 
 static void
@@ -443,9 +451,10 @@ config_data_set(app_data *ad, int argc, char **argv)
    char edc_path[PATH_MAX];
    char img_path[PATH_MAX];
    char snd_path[PATH_MAX];
+   char fnt_path[PATH_MAX];
 
-   args_dispatch(argc, argv, edc_path, img_path, snd_path);
-   config_data *cd = config_init(edc_path, img_path, snd_path);
+   args_dispatch(argc, argv, edc_path, img_path, snd_path, fnt_path);
+   config_data *cd = config_init(edc_path, img_path, snd_path, fnt_path);
    config_update_cb_set(cd, config_update_cb, ad);
    ad->cd = cd;
 }
