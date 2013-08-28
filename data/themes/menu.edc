@@ -1134,31 +1134,45 @@ group { name: "setting_layout";
             rel2.to: "preference_frame";
          }
       }
-      part { name: "elm.swallow.reset_btn";
-         type: SWALLOW;
-         scale: 1;
-         clip_to: "clipper";
-         description {
-            align: 0 1;
-            min: 70 35;
-            fixed: 1 1;
-            rel1.to: "base_frame";
-            rel1.relative: 0 1;
-            rel2.to: "base_frame";
-            rel2.relative: 0 1;
-         }
-      }
       part { name: "elm.swallow.apply_btn";
          type: SWALLOW;
          scale: 1;
          clip_to: "clipper";
          description {
-            align: 1 1;
-            min: 70 35;
+            align: 1 0.5;
+            min: 50 25;
+            fixed: 1 1;
+            rel1.to: "elm.swallow.reset_btn";
+            rel1.relative: 0 0;
+            rel2.to: "elm.swallow.reset_btn";
+            rel2.relative: 0 1;
+         }
+      }
+      part { name: "elm.swallow.reset_btn";
+         type: SWALLOW;
+         scale: 1;
+         clip_to: "clipper";
+         description {
+            align: 0.5 1;
+            min: 50 25;
             fixed: 1 1;
             rel1.to: "base_frame";
-            rel1.relative: 1 1;
+            rel1.relative: 0.5 0.99;
             rel2.to: "base_frame";
+            rel2.relative: 0.5 0.99;
+         }
+      }
+      part { name: "elm.swallow.cancel_btn";
+         type: SWALLOW;
+         scale: 1;
+         clip_to: "clipper";
+         description {
+            align: 0 0.5;
+            min: 50 25;
+            fixed: 1 1;
+            rel1.to: "elm.swallow.reset_btn";
+            rel1.relative: 1 0;
+            rel2.to: "elm.swallow.reset_btn";
             rel2.relative: 1 1;
          }
       }

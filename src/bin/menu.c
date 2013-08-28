@@ -271,6 +271,14 @@ snd_path_entry_update(Evas_Object *entry, Eina_List *edc_snd_paths)
 }
 
 static void
+setting_cancel_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                      void *event_info EINA_UNUSED)
+{
+   menu_data *md = data;
+   setting_close(md);
+}
+
+static void
 setting_reset_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
                       void *event_info EINA_UNUSED)
 {
@@ -511,7 +519,7 @@ setting_open(menu_data *md)
 
    elm_object_part_content_set(layout, "elm.swallow.apply_btn", btn);
 
-   //Cancel Button
+   //Reset Button
    btn = elm_button_add(layout);
    elm_object_style_set(btn, elm_app_name_get());
    elm_object_text_set(btn, "Reset");
@@ -519,6 +527,15 @@ setting_open(menu_data *md)
    evas_object_show(btn);
 
    elm_object_part_content_set(layout, "elm.swallow.reset_btn", btn);
+
+   //Cancel Button
+   btn = elm_button_add(layout);
+   elm_object_style_set(btn, elm_app_name_get());
+   elm_object_text_set(btn, "Cancel");
+   evas_object_smart_callback_add(btn, "clicked", setting_cancel_btn_cb, md);
+   evas_object_show(btn);
+
+   elm_object_part_content_set(layout, "elm.swallow.cancel_btn", btn);
 
    if (md->menu_layout)
      elm_object_disabled_set(md->menu_layout, EINA_TRUE);
@@ -877,6 +894,7 @@ edc_file_save(menu_data *md)
 
    Evas_Object *fs = elm_fileselector_add(layout);
    elm_object_part_text_set(fs, "ok", "Save");
+   elm_object_part_text_set(fs, "cancel", "Close");
    elm_fileselector_path_set(fs, getenv("HOME"));
    elm_fileselector_expandable_set(fs, EINA_FALSE);
    elm_fileselector_is_save_set(fs, EINA_TRUE);
@@ -910,6 +928,7 @@ edc_file_load(menu_data *md)
    Evas_Object *fs = elm_fileselector_add(layout);
    elm_fileselector_path_set(fs, getenv("HOME"));
    elm_object_part_text_set(fs, "ok", "Load");
+   elm_object_part_text_set(fs, "cancel", "Close");
    elm_fileselector_expandable_set(fs, EINA_FALSE);
    elm_fileselector_is_save_set(fs, EINA_TRUE);
    evas_object_smart_callback_add(fs, "done", fileselector_load_done_cb, md);
