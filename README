@@ -47,6 +47,7 @@ Ctrl+A = Select Text All
 Ctrl+Double Click = Select a word
 Ctrl+C = Copy Selected Text
 Ctrl+V = Paste Copied Text
+Ctrl+I = On/Off Auto Indentation
 Ctrl+Home = Go to the Top line
 Ctrl+End = Go to the Bottom line
 Ctrl+H = Part Highlighting

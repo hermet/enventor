@@ -186,6 +186,15 @@ part_highlight_toggle(app_data *ad, Eina_Bool msg)
      stats_info_msg_update(ad->sd, "Part Highlighting Disabled");
 }
 
+static void
+auto_indentation_toggle(app_data *ad)
+{
+   Eina_Bool toggle = !config_auto_indent_get(ad->cd);
+   if (toggle) stats_info_msg_update(ad->sd, "Auto Indentation enabled.");
+   else stats_info_msg_update(ad->sd, "Auto Indentation disabled.");
+   config_auto_indent_set(ad->cd, toggle);
+}
+
 static Eina_Bool
 ctrl_func(app_data *ad, const char *keyname)
 {
@@ -211,7 +220,7 @@ ctrl_func(app_data *ad, const char *keyname)
         part_highlight_toggle(ad, EINA_TRUE);
         return ECORE_CALLBACK_DONE;
      }
-   //Part Highlight
+   //Swallow Dummy Object
    if (!strcmp(keyname, "w") || !strcmp(keyname, "W"))
      {
         config_dummy_swallow_set(ad->cd, !config_dummy_swallow_get(ad->cd));
@@ -228,6 +237,12 @@ ctrl_func(app_data *ad, const char *keyname)
    if (!strcmp(keyname, "period"))
      {
         panes_full_view_right(ad->panes);
+        return ECORE_CALLBACK_DONE;
+     }
+   //Auto Indentation
+   if (!strcmp(keyname, "i") || !strcmp(keyname, "I"))
+     {
+        auto_indentation_toggle(ad);
         return ECORE_CALLBACK_DONE;
      }
    //Font Size Up
