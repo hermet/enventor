@@ -1,6 +1,6 @@
-#define TEMPLATE_RECT_LINE_CNT 11
+#define TEMPLATE_PART_LINE_CNT 11
 
-const char *TEMPLATE_RECT[TEMPLATE_RECT_LINE_CNT] =
+const char *TEMPLATE_PART[TEMPLATE_PART_LINE_CNT] =
 {
    "part { name: \"template\";\n",
    "   type: RECT;\n",
@@ -12,5 +12,27 @@ const char *TEMPLATE_RECT[TEMPLATE_RECT_LINE_CNT] =
    "      color: 255 255 255 255;\n",
    "      align: 0.5 0.5;\n",
    "   }\n",
+   "}\n"
+};
+
+#define TEMPLATE_DESC_LINE_CNT 4
+
+const char *TEMPLATE_DESC[TEMPLATE_DESC_LINE_CNT] =
+{
+   "description { state: \"template\" 0.0;\n",
+   "   inherit: \"default\" 0.0;\n",
+   "   visible: 1;\n",
+   "}\n"
+};
+
+#define TEMPLATE_PROG_LINE_CNT 6
+
+const char *TEMPLATE_PROG[TEMPLATE_PROG_LINE_CNT] =
+{
+   "program { name: \"template\";\n",
+   "   signal: \"*\";\n",
+   "   source: \"*\";\n",
+   "   action: STATE_SET \"default\" 0.0;\n",
+   "   target: \"template\";\n",
    "}\n"
 };
