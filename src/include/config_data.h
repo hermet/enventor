@@ -1,17 +1,21 @@
 config_data *config_init(const char *edc_path, const char *edc_img_path,
-                         const char *edc_snd_path, const char *edc_fnt_path);
+                         const char *edc_snd_path, const char *edc_fnt_path,
+                         const char *edc_data_path);
 void config_term(config_data *cd);
 const char *config_edc_path_get(config_data *cd);
 const char *config_edj_path_get(config_data *cd);
 const char *config_edc_img_path_get(config_data *cd);
 const char *config_edc_snd_path_get(config_data *cd);
 const char *config_edc_fnt_path_get(config_data *cd);
+const char *config_edc_data_path_get(config_data *cd);
 void config_edc_img_path_set(config_data *cd, const char *edc_img_path);
 void config_edc_snd_path_set(config_data *cd, const char *edc_snd_path);
 void config_edc_fnt_path_set(config_data *cd, const char *edc_fnt_path);
+void config_edc_data_path_set(config_data *cd, const char *edc_fnt_path);
 const Eina_List *config_edc_img_path_list_get(config_data *cd);
 const Eina_List *config_edc_snd_path_list_get(config_data *cd);
 const Eina_List *config_edc_fnt_path_list_get(config_data *cd);
+const Eina_List *config_edc_data_path_list_get(config_data *cd);
 void config_update_cb_set(config_data *cd,
                           void (*cb)(void *data, config_data *cd),
                           void *data);

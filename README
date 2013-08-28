@@ -60,7 +60,7 @@ Ctrl+- = Font Size Down
 - Command Line Usage:
  
 enventor --help
-enventor [input file] [-id image path] [-sd sound path] [-fd font path]
+enventor [input file] [-id image path] [-sd sound path] [-fd font path] [-dd data path]
  
   
 * FOR ANY ISSUES PLEASE EMAIL *
