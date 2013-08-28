@@ -987,7 +987,7 @@ menu_edc_new(menu_data *md)
         return EINA_TRUE;
      }
    edc_reload(md, PROTO_EDC_PATH);
-   menu_close(md, EINA_TRUE);
+   menu_close(md, EINA_FALSE);
 
    return EINA_FALSE;
 }
