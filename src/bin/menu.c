@@ -410,24 +410,13 @@ setting_open(menu_data *md)
 
    Evas_Object *toggle;
 
-   //Toggle (Tab bar)
+   //Toggle (File Tab)
    toggle = elm_check_add(box);
    elm_object_style_set(toggle, "toggle");
    elm_object_disabled_set(toggle, EINA_TRUE);
    evas_object_size_hint_weight_set(toggle, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(toggle, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_object_text_set(toggle, "Tab Bar");
-   evas_object_show(toggle);
-
-   elm_box_pack_end(box, toggle);
-
-   //Toggle (Tools)
-   toggle = elm_check_add(box);
-   elm_object_style_set(toggle, "toggle");
-   elm_object_disabled_set(toggle, EINA_TRUE);
-   evas_object_size_hint_weight_set(toggle, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(toggle, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_object_text_set(toggle, "Tool Bar");
+   elm_object_text_set(toggle, "File Tab");
    evas_object_show(toggle);
 
    elm_box_pack_end(box, toggle);
@@ -496,17 +485,6 @@ setting_open(menu_data *md)
    evas_object_show(toggle_indent);
 
    elm_box_pack_end(box, toggle_indent);
-
-   //Toggle (Separate Window)
-   toggle = elm_check_add(box);
-   elm_object_style_set(toggle, "toggle");
-   elm_object_disabled_set(toggle, EINA_TRUE);
-   evas_object_size_hint_weight_set(toggle, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(toggle, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_object_text_set(toggle, "Separate Window");
-   evas_object_show(toggle);
-
-   elm_box_pack_end(box, toggle);
 
    Evas_Object *btn;
 
