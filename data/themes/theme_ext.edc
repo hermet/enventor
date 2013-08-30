@@ -105,7 +105,7 @@ styles
 */
   }
 
-group { name: "elm/scroller/entry/help";
+group { name: "elm/scroller/entry/about";
    script {
       public sbvis_v, sbvis_h, sbalways_v, sbalways_h, sbvis_timer;
       public timer0(val) {
@@ -624,7 +624,7 @@ group { name: "elm/scroller/entry/help";
 }
 
 group { name: "elm/entry/base/enventor";
-   alias: "elm/entry/base/help";
+   alias: "elm/entry/base/about";
    parts {
       part { name: "elm.text";
          type: TEXTBLOCK;

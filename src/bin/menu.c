@@ -8,7 +8,7 @@ struct menu_s
    Evas_Object *setting_layout;
    Evas_Object *warning_layout;
    Evas_Object *fileselector_layout;
-   Evas_Object *help_layout;
+   Evas_Object *about_layout;
    Evas_Object *img_path_entry;
    Evas_Object *snd_path_entry;
    Evas_Object *fnt_path_entry;
@@ -48,9 +48,9 @@ fileselector_close(menu_data *md)
 }
 
 static void
-help_close(menu_data *md)
+about_close(menu_data *md)
 {
-   elm_object_signal_emit(md->help_layout, "elm,state,dismiss", "");
+   elm_object_signal_emit(md->about_layout, "elm,state,dismiss", "");
 }
 
 static void
@@ -104,13 +104,13 @@ setting_dismiss_done(void *data, Evas_Object *obj EINA_UNUSED,
 }
 
 static void
-help_dismiss_done(void *data, Evas_Object *obj EINA_UNUSED,
+about_dismiss_done(void *data, Evas_Object *obj EINA_UNUSED,
                   const char *emission EINA_UNUSED,
                   const char *source EINA_UNUSED)
 {
    menu_data *md = data;
-   evas_object_del(md->help_layout);
-   md->help_layout = NULL;
+   evas_object_del(md->about_layout);
+   md->about_layout = NULL;
    if (!md->menu_layout) return;
    elm_object_disabled_set(md->menu_layout, EINA_FALSE);
    elm_object_focus_set(md->menu_layout, EINA_TRUE);
@@ -532,20 +532,20 @@ setting_open(menu_data *md)
 }
 
 static void
-help_open(menu_data *md)
+about_open(menu_data *md)
 {
    //Layout
    Evas_Object *layout = elm_layout_add(md->win);
-   elm_layout_file_set(layout, EDJE_PATH, "help_layout");
+   elm_layout_file_set(layout, EDJE_PATH, "about_layout");
    elm_object_signal_callback_add(layout, "elm,state,dismiss,done", "",
-                                  help_dismiss_done, md);
+                                  about_dismiss_done, md);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    elm_win_resize_object_add(md->win, layout);
    evas_object_show(layout);
 
    //Entry
    Evas_Object *entry = elm_entry_add(layout);
-   elm_object_style_set(entry, "help");
+   elm_object_style_set(entry, "about");
    elm_entry_scrollable_set(entry, EINA_TRUE);
    elm_entry_line_wrap_set(entry, EINA_TRUE);
    elm_entry_editable_set(entry, EINA_FALSE);
@@ -591,7 +591,7 @@ help_open(menu_data *md)
    if (md->menu_layout)
      elm_object_disabled_set(md->menu_layout, EINA_TRUE);
 
-   md->help_layout = layout;
+   md->about_layout = layout;
 
 err:
    if (strbuf) eina_strbuf_free(strbuf);
@@ -600,11 +600,11 @@ err:
 }
 
 static void
-help_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
+about_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
             void *event_info EINA_UNUSED)
 {
    menu_data *md = data;
-   help_open(md);
+   about_open(md);
 }
 
 static void
@@ -943,9 +943,9 @@ load_save_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 }
 
 Eina_Bool
-menu_help(menu_data *md)
+menu_about(menu_data *md)
 {
-   help_open(md);
+   about_open(md);
    return EINA_TRUE;
 }
 
@@ -1032,9 +1032,9 @@ menu_open(menu_data *md)
    elm_object_part_content_set(layout, "elm.swallow.setting_btn", btn);
    ecore_timer_add(0.09, btn_effect_timer_cb, btn);
 
-   //Button(Help)
-   btn = btn_create(layout, "Help", help_btn_cb, md);
-   elm_object_part_content_set(layout, "elm.swallow.help_btn", btn);
+   //Button(About)
+   btn = btn_create(layout, "About", about_btn_cb, md);
+   elm_object_part_content_set(layout, "elm.swallow.about_btn", btn);
    ecore_timer_add(0.12, btn_effect_timer_cb, btn);
 
    //Button(Exit)
@@ -1092,18 +1092,18 @@ menu_toggle()
              fileselector_close(md);
              return EINA_TRUE;
           }
-        else if (md->help_layout)
+        else if (md->about_layout)
           {
-             help_close(md);
+             about_close(md);
              return EINA_TRUE;
           }
      }
    //Short Cut Key Open Case
    else
      {
-        if (md->help_layout)
+        if (md->about_layout)
           {
-             help_close(md);
+             about_close(md);
              return EINA_FALSE;
           }
         if (md->fileselector_layout)

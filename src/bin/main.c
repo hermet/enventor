@@ -290,7 +290,7 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    //README
    if (!strcmp(event->keyname, "F1"))
      {
-        ad->menu_opened = menu_help(ad->md);
+        ad->menu_opened = menu_about(ad->md);
         return ECORE_CALLBACK_DONE;
      }
    //New
