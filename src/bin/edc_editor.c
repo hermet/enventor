@@ -89,8 +89,10 @@ syntax_color_apply(edit_data *ed)
    utf8 = strdup(utf8);
    const char *translated = color_apply(syntax_color_data_get(ed->sh), utf8,
                                         strlen(utf8), EINA_TRUE);
-
-   elm_entry_entry_set(ed->en_edit, translated);
+   elm_entry_entry_set(ed->en_edit, NULL);
+   elm_entry_entry_append(ed->en_edit, translated);
+//FIXME: don't know why this api reset the entry cursor.
+//   elm_entry_entry_set(ed->en_edit, translated);
    elm_entry_cursor_pos_set(ed->en_edit, pos);
 DFUNC_NAME();
    free(utf8);
