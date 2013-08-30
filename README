@@ -1,4 +1,4 @@
-- Enventor v0.1
+[Enventor v0.1]
  
 This is an EDC editor with some convenient functions. It's brand new and was
 only started near the begining of June 2013, so expecting it to do everything a
@@ -6,7 +6,7 @@ mature script editor does is a bit premature, but considering it's young age,
 it does a lot.
  
  
-- Requirements:
+[Requirements]
   
   eina (>= 1.7.0)
   eet (>= 1.7.0)
@@ -23,7 +23,7 @@ EFL 1.7, and 1.8 or newer would be better.
 Please see http://www.enlightenment.org for information on these.
   
  
-- Compiling:
+[Compiling]
  
 Once you have met requirements, compiling and installing is simple:
  
@@ -32,7 +32,7 @@ Once you have met requirements, compiling and installing is simple:
   $ sudo make install
  
  
-- Short Cut Keys:
+[Short Cut Keys]
  
 Esc = Open/Close Menu
 F1 = Help
@@ -58,7 +58,7 @@ Ctrl++ = Font Size Up
 Ctrl+- = Font Size Down
  
  
-- Command Line Usage:
+[Command Line Usage]
  
 enventor --help
 enventor [input file] [-id image path] [-sd sound path] [-fd font path] [-dd data path]
