@@ -235,7 +235,7 @@ static void
 edit_attr_candidate_show(edit_data *ed, attr_value *attr, int x, int y, const char *selected)
 {
    //Show up the list of the types
-   Evas_Object *ctxpopup = ctxpopup_create(ed->layout, attr, atof(selected),
+   Evas_Object *ctxpopup = ctxpopup_create(ed->parent, attr, atof(selected),
                                            ctxpopup_dismiss_cb,
                                            ctxpopup_selected_cb, ed);
    if (!ctxpopup) return;
