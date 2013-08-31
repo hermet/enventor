@@ -194,7 +194,8 @@ group { name: "fileselector_layout";
                align: 0.5 0.5;
                min: 1 0;
             }
-            color2: 255 255 255 127;
+            color2: 255 255 255 24;
+            color3: 255 255 255 18;
          }
       }
       part { name: "elm.swallow.fileselector";
@@ -596,7 +597,8 @@ group { name: "menu_layout";
                align: 0.5 1;
                min: 1 0;
             }
-            color2: 255 255 255 127;
+            color2: 255 255 255 24;
+            color3: 255 255 255 18;
          }
       }
       part { name: "padding1";
@@ -877,7 +879,8 @@ group { name: "setting_layout";
                align: 0.5 0.5;
                min: 1 0;
             }
-            color2: 255 255 255 127;
+            color2: 255 255 255 24;
+            color3: 255 255 255 18;
          }
       }
       part { name: "img_path_frame";
