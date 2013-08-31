@@ -56,9 +56,20 @@ Ctrl+. = Full Edje View / Split View
 Ctrl+W = Show/Hide Dummy Swallow Object
 Ctrl++ = Font Size Up
 Ctrl+- = Font Size Down
-Ctrl+T = Insert Template Code
- 
- 
+Ctrl+T = Insert Defaut Template Code
+Ctrl+Shift+A = Insert Part Template Code: Table
+Ctrl+Shift+B = Insert Part Template Code: Textblock
+Ctrl+Shift+E = Insert Part Template Code: External
+Ctrl+Shift+G = Insert Part Template Code: Gradient
+Ctrl+Shift+I = Insert Part Template Code: Image
+Ctrl+Shift+O = Insert Part Template Code: Group
+Ctrl+Shift+P = Insert Part Template Code: Proxy
+Ctrl+Shift+R = Insert Part Template Code: Rectangle
+Ctrl+Shift+T = Insert Part Template Code: Text
+Ctrl+Shift+S = Insert Part Template Code: Spacer
+Ctrl+Shift+W = Insert Part Template Code: Swallow
+Ctrl+Shift+X = Insert Part Template Code: Box
+
 [Command Line Usage]
  
 enventor --help

@@ -350,6 +350,33 @@ part_name_thread_cancel(void *data, Ecore_Thread *thread EINA_UNUSED)
 }
 
 void
+parser_current_paragh_name_get(parser_data *pd, Evas_Object *entry)
+{
+   const char *PARTS = "parts";
+   const char *PART = "part";
+   const char *DESC = "description";
+   const char *PROGS = "programs";
+
+   Evas_Object *tb = elm_entry_textblock_get(entry);
+   char *text = (char *) evas_object_textblock_text_markup_get(tb);
+   if (!text) return;
+
+   char *utf8 = elm_entry_markup_to_utf8(text);
+   if (!utf8) return;
+
+   int cur_pos = elm_entry_cursor_pos_get(entry);
+
+   char *p = utf8;
+   char *end = utf8 + cur_pos;
+
+   while (p <= end)
+     {
+
+
+     }
+}
+
+void
 parser_part_name_get(parser_data *pd, Evas_Object *entry, void (*cb)(void *data, Eina_Stringshare *part_name), void *data)
 {
    if (pd->thread) ecore_thread_cancel(pd->thread);

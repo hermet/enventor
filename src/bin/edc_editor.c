@@ -4,6 +4,7 @@
 
 //FIXME: Make flexible
 const int MAX_LINE_DIGIT_CNT = 10;
+const double SYNTAX_COLOR_TIME = 0.25;
 
 struct editor_s
 {
@@ -178,7 +179,8 @@ edit_changed_cb(void *data, Evas_Object *obj, void *event_info)
    if (!syntax_color) return;
 
    if (ed->syntax_color_timer) ecore_timer_del(ed->syntax_color_timer);
-     ed->syntax_color_timer = ecore_timer_add(0.25, syntax_color_timer_cb, ed);
+     ed->syntax_color_timer = ecore_timer_add(SYNTAX_COLOR_TIME,
+                                              syntax_color_timer_cb, ed);
 }
 
 static void
@@ -260,8 +262,10 @@ edit_attr_candidate_show(edit_data *ed, attr_value *attr, int x, int y, const ch
 }
 
 void
-edit_template_insert(edit_data *ed)
+edit_template_insert(edit_data *ed, Edje_Part_Type type)
 {
+   if (type == EDJE_PART_TYPE_NONE) return;
+
    int cursor_pos = elm_entry_cursor_pos_get(ed->en_edit);
    elm_entry_cursor_line_begin_set(ed->en_edit);
    int space = indent_space_get(ed);
@@ -271,18 +275,50 @@ edit_template_insert(edit_data *ed)
    memset(p, ' ', space);
    p[space] = '\0';
 
-   int line_cnt = TEMPLATE_PART_LINE_CNT;
+   int line_cnt;
+   char **t;
+
+   switch(type)
+     {
+        case EDJE_PART_TYPE_RECTANGLE:
+           line_cnt = TEMPLATE_PART_RECT_LINE_CNT;
+           t = (char **) &TEMPLATE_PART_RECT;
+           break;
+        case EDJE_PART_TYPE_TEXT:
+           line_cnt = TEMPLATE_PART_TEXT_LINE_CNT;
+           t = (char **) &TEMPLATE_PART_TEXT;
+           break;
+        case EDJE_PART_TYPE_SWALLOW:
+           line_cnt = TEMPLATE_PART_SWALLOW_LINE_CNT;
+           t = (char **) &TEMPLATE_PART_SWALLOW;
+           break;
+        case EDJE_PART_TYPE_TEXTBLOCK:
+           line_cnt = TEMPLATE_PART_TEXTBLOCK_LINE_CNT;
+           t = (char **) &TEMPLATE_PART_TEXTBLOCK;
+           break;
+        case EDJE_PART_TYPE_SPACER:
+           line_cnt = TEMPLATE_PART_SPACER_LINE_CNT;
+           t = (char **) &TEMPLATE_PART_SPACER;
+           break;
+        case EDJE_PART_TYPE_IMAGE:
+        defaut:
+           line_cnt = TEMPLATE_PART_IMAGE_LINE_CNT;
+           t = (char **) &TEMPLATE_PART_IMAGE;
+           break;
+     }
+
    int i;
    for (i = 0; i < line_cnt; i++)
      {
         elm_entry_entry_insert(ed->en_edit, p);
-        elm_entry_entry_insert(ed->en_edit, TEMPLATE_PART[i]);
+        elm_entry_entry_insert(ed->en_edit, t[i]);
      }
 
    elm_entry_cursor_pos_set(ed->en_edit, cursor_pos);
 
    if (ed->syntax_color_timer) ecore_timer_del(ed->syntax_color_timer);
-     ed->syntax_color_timer = ecore_timer_add(0.25, syntax_color_timer_cb, ed);
+     ed->syntax_color_timer = ecore_timer_add(SYNTAX_COLOR_TIME,
+                                              syntax_color_timer_cb, ed);
 }
 
 static void

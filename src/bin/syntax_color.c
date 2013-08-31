@@ -407,10 +407,12 @@ color_apply(color_data *cd, const char *src, int length, Eina_Bool realtime)
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "mouse_events", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "name", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "normal", col3);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "offset", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "on", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "scale", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "signal", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "state", col3);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "style", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "relative", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "repeat_events", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "source", col3);
