@@ -1,5 +1,6 @@
 #include <Elementary.h>
 #include "common.h"
+#include "template_code.h"
 
 //FIXME: Make flexible
 const int MAX_LINE_DIGIT_CNT = 10;
@@ -31,6 +32,21 @@ struct editor_s
    Eina_Bool linenumber : 1;
    Eina_Bool ctrl_pressed : 1;
 };
+
+static int
+indent_space_get(edit_data *ed)
+{
+   const int TAB_SPACE = 3;
+
+   //Get the indentation depth
+   int pos = elm_entry_cursor_pos_get(ed->en_edit);
+   char *src = elm_entry_markup_to_utf8(elm_entry_entry_get(ed->en_edit));
+   int space = indent_depth_get(syntax_indent_data_get(ed->sh), src, pos);
+   space *= TAB_SPACE;
+   free(src);
+
+   return space;
+}
 
 static void
 last_line_inc(edit_data *ed)
@@ -117,14 +133,7 @@ syntax_color_animator_cb(void *data)
 static void
 indent_apply(edit_data *ed)
 {
-   const int TAB_SPACE = 3;
-
-   //Get the indentation depth
-   int pos = elm_entry_cursor_pos_get(ed->en_edit);
-   char *src = elm_entry_markup_to_utf8(elm_entry_entry_get(ed->en_edit));
-   int space = indent_depth_get(syntax_indent_data_get(ed->sh), src, pos);
-   space *= TAB_SPACE;
-   free(src);
+   int space = indent_space_get(ed);
 
    //Alloc Empty spaces
    char *p = alloca(space) + 1;
@@ -250,12 +259,37 @@ edit_attr_candidate_show(edit_data *ed, attr_value *attr, int x, int y, const ch
    elm_object_disabled_set(ed->layout, EINA_TRUE);
 }
 
+void
+edit_template_insert(edit_data *ed)
+{
+   int cursor_pos = elm_entry_cursor_pos_get(ed->en_edit);
+   elm_entry_cursor_line_begin_set(ed->en_edit);
+   int space = indent_space_get(ed);
+
+   //Alloc Empty spaces
+   char *p = alloca(space) + 1;
+   memset(p, ' ', space);
+   p[space] = '\0';
+
+   int line_cnt = TEMPLATE_PART_LINE_CNT;
+   int i;
+   for (i = 0; i < line_cnt; i++)
+     {
+        elm_entry_entry_insert(ed->en_edit, p);
+        elm_entry_entry_insert(ed->en_edit, TEMPLATE_PART[i]);
+     }
+
+   elm_entry_cursor_pos_set(ed->en_edit, cursor_pos);
+
+   if (ed->syntax_color_timer) ecore_timer_del(ed->syntax_color_timer);
+     ed->syntax_color_timer = ecore_timer_add(0.25, syntax_color_timer_cb, ed);
+}
+
 static void
 edit_mouse_down_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
                    Evas_Object *obj, void *event_info EINA_UNUSED)
 {
    Evas_Event_Mouse_Down *ev = event_info;
-
    if (ev->button == 1)
      {
         elm_entry_select_none(obj);

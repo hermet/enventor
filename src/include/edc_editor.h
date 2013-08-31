@@ -14,4 +14,4 @@ void edit_new(edit_data* ed);
 void edit_part_changed_cb_set(edit_data *ed, void (*cb)(void *data, const char *part_name), void *data);
 void edit_cur_part_update(edit_data *ed);
 void edit_font_size_update(edit_data *ed, Eina_Bool msg);
-
+void edit_template_insert(edit_data *ed);

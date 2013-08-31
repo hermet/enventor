@@ -22,8 +22,8 @@ enventor_SOURCES = \
 	syntax_color.c \
 	ctxpopup.c \
 	syntax_helper.c \
-	indent.c \
-	template_code.c
+	indent.c
+#   template_code.c
 
 # QuickLaunch                                                
 enventorql_SOURCES = $(enventor_SOURCES)

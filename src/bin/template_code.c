@@ -1,3 +1,6 @@
+#ifndef __TEMPLATE_CODE_H__
+#define __TEMPLATE_CODE_H__
+
 #define TEMPLATE_PART_LINE_CNT 11
 
 const char *TEMPLATE_PART[TEMPLATE_PART_LINE_CNT] =
@@ -36,3 +39,5 @@ const char *TEMPLATE_PROG[TEMPLATE_PROG_LINE_CNT] =
    "   target: \"template\";\n",
    "}\n"
 };
+
+#endif
