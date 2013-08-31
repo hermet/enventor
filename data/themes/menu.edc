@@ -592,7 +592,7 @@ group { name: "menu_layout";
             text {
                font: FN;
                text: "Enventor Menu";
-               size: 30;
+               size: 28;
                align: 0.5 1;
                min: 1 0;
             }
