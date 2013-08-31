@@ -60,21 +60,32 @@ parser_type_init(parser_data *pd)
    attr->value.strs = comps;
    pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
 
-   Eina_List *transit = NULL;
-   transit = eina_list_append(transit, eina_stringshare_add("LINEAR"));
-   transit = eina_list_append(transit, eina_stringshare_add("ACCELERATE"));
-   transit = eina_list_append(transit, eina_stringshare_add("DECELERATE"));
-   transit = eina_list_append(transit, eina_stringshare_add("SINUSOIDAL"));
-   transit = eina_list_append(transit, eina_stringshare_add("ACCELERATE_FACTOR"));
-   transit = eina_list_append(transit, eina_stringshare_add("DECELERATE_FACTOR"));
-   transit = eina_list_append(transit, eina_stringshare_add("SINUSOIDAL_FACTOR"));
-   transit = eina_list_append(transit, eina_stringshare_add("DIVISOR_INTERP"));
-   transit = eina_list_append(transit, eina_stringshare_add("BOUNCE"));
-   transit = eina_list_append(transit, eina_stringshare_add("SPRING"));
+   Eina_List *trans = NULL;
+   trans = eina_list_append(trans, eina_stringshare_add("LINEAR"));
+   trans = eina_list_append(trans, eina_stringshare_add("ACCELERATE"));
+   trans = eina_list_append(trans, eina_stringshare_add("DECELERATE"));
+   trans = eina_list_append(trans, eina_stringshare_add("SINUSOIDAL"));
+   trans = eina_list_append(trans, eina_stringshare_add("ACCELERATE_FACTOR"));
+   trans = eina_list_append(trans, eina_stringshare_add("DECELERATE_FACTOR"));
+   trans = eina_list_append(trans, eina_stringshare_add("SINUSOIDAL_FACTOR"));
+   trans = eina_list_append(trans, eina_stringshare_add("DIVISOR_INTERP"));
+   trans = eina_list_append(trans, eina_stringshare_add("BOUNCE"));
+   trans = eina_list_append(trans, eina_stringshare_add("SPRING"));
 
    attr = calloc(1, sizeof(parser_attr));
    attr->keyword = eina_stringshare_add("transition");
-   attr->value.strs = transit;
+   attr->value.strs = trans;
+   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
+
+   Eina_List *aspect = NULL;
+   aspect = eina_list_append(aspect, eina_stringshare_add("NONE"));
+   aspect = eina_list_append(aspect, eina_stringshare_add("VERTICAL"));
+   aspect = eina_list_append(aspect, eina_stringshare_add("HORIZONTAL"));
+   aspect = eina_list_append(aspect, eina_stringshare_add("BOTH"));
+
+   attr = calloc(1, sizeof(parser_attr));
+   attr->keyword = eina_stringshare_add("aspect_preference");
+   attr->value.strs = aspect;
    pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
 
    attr = calloc(1, sizeof(parser_attr));

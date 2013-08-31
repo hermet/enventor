@@ -393,6 +393,7 @@ color_apply(color_data *cd, const char *src, int length, Eina_Bool realtime)
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "action", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "after", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "align", col3);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "aspect_preference", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "aspect", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "border_scale", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "border", col3);
@@ -424,6 +425,7 @@ color_apply(color_data *cd, const char *src, int length, Eina_Bool realtime)
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "ACCELERATE_FACTOR",
                      col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "ACCELERATE", col4);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "BOTH", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "BOUNCE", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "BOX", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "COMP", col4);
@@ -434,9 +436,11 @@ color_apply(color_data *cd, const char *src, int length, Eina_Bool realtime)
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "EXTERNAL", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "GRADIENT", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "GROUP", col4);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "HORIZONTAL", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "IMAGE", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "LINEAR", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "LOSSY", col4);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "NONE", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "PROXY", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "RAW", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "RECT", col4);
@@ -451,6 +455,7 @@ color_apply(color_data *cd, const char *src, int length, Eina_Bool realtime)
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "TEXTBLOCK", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "TEXT", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "USER", col4);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "VERTICAL", col4);
 
         //duplicated groups 1
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "image:", col3);

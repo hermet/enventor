@@ -151,6 +151,10 @@ edit_changed_cb(void *data, Evas_Object *obj, void *event_info)
              if (config_auto_indent_get(ed->cd)) indent_apply(ed);
              syntax_color = EINA_FALSE;
           }
+        else if (info->change.insert.content[0] == '}')
+          {
+             //TODO: auto indent.
+          }
      }
    else
      {
