@@ -311,8 +311,8 @@ group { name: "warning_layout";
          scale: 1;
          clip_to: "clipper";
          description {
-            min: 300 150;
-            max: 300 150;
+            min: 300 140;
+            max: 300 140;
             fixed: 1 1;
             color: 255 255 255 255;
             image.normal: "menu_layout.png";
@@ -324,7 +324,7 @@ group { name: "warning_layout";
          type: RECT;
          clip_to: "clipper";
          description {
-            rel1 { to: "base_frame_img"; offset: 10 10; }
+            rel1 { to: "base_frame_img"; offset: 10 5; }
             rel2 { to: "base_frame_img"; offset: -11 -11; }
             visible: 0;
          }
