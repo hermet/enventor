@@ -261,8 +261,15 @@ edit_attr_candidate_show(edit_data *ed, attr_value *attr, int x, int y, const ch
    elm_object_disabled_set(ed->layout, EINA_TRUE);
 }
 
+
 void
-edit_template_insert(edit_data *ed, Edje_Part_Type type)
+edit_template_insert(edit_data *ed)
+{
+   //1. Find out Current paragraph
+}
+
+void
+edit_template_part_insert(edit_data *ed, Edje_Part_Type type)
 {
    if (type == EDJE_PART_TYPE_NONE) return;
 

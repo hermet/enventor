@@ -230,7 +230,7 @@ template_insert(app_data *ad, const char *keyname)
    else
      type = EDJE_PART_TYPE_NONE;
 
-   edit_template_insert(ad->ed, type);
+   edit_template_part_insert(ad->ed, type);
 
    return ECORE_CALLBACK_DONE;
 }
@@ -253,6 +253,12 @@ ctrl_func(app_data *ad, const char *keyname)
    //Select All
    if (!strcmp(keyname, "a") || !strcmp(keyname, "A"))
      return ECORE_CALLBACK_PASS_ON;
+   //Template Code
+   if (!strcmp(keyname, "t") || !strcmp(keyname, "T"))
+     {
+        edit_template_insert(ad->ed);
+        return ECORE_CALLBACK_DONE;
+     }
    //Part Highlight
    if (!strcmp(keyname, "h") || !strcmp(keyname, "H"))
      {
