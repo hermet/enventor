@@ -333,11 +333,13 @@ group { name: "warning_layout";
          type: RECT;
          scale: 1;
          description {
-            rel1.to_y: "elm.text.title";
-            rel1.to_x: "base_frame";
-            rel2.to_y: "elm.text.title";
-            rel2.to_x: "base_frame";
-            color: 25 25 25 25;
+            rel1.to: "base_frame";
+            rel2.to: "base_frame";
+            rel2.relative: 1 0;
+            align: 0.5 0;
+            min: 0 25;
+            fixed: 0 1;
+            color: 0 0 0 125;
          }
       }
       part { name: "warning_img";
@@ -347,12 +349,10 @@ group { name: "warning_layout";
             min: 20 20;
             max: 20 20;
             fixed: 1 1;
-            align: 1 0.5;
-            rel1.to: "elm.text.title";
-            rel2.to: "elm.text.title";
-            rel2.offset: -8 -1;
-            rel1.relative: 0 0.5;
-            rel2.relative: 0 0.5;
+            align: 0 0.5;
+            rel1.to: "title_bg";
+            rel2.to: "title_bg";
+            rel1.offset: 5 0;
             image.normal: "warning.png";
          }
       }
@@ -360,21 +360,21 @@ group { name: "warning_layout";
          type: TEXT;
          clip_to: "clipper";
          scale: 1;
+         effect: GLOW;
          description {
-            rel1.to: "base_frame";
-            rel2.to: "base_frame";
-            rel1.relative: 0.5 0;
-            rel2.relative: 0.5 0;
+            rel1.to: "title_bg";
+            rel2.to: "title_bg";
             text.text: "EDC has been changed";
             text {
                font: FN;
-               size: 14;
-               align: 0.5 0;
+               size: 12;
+               align: 0.5 0.5;
                min: 1 1;
             }
             fixed: 1 1;
-            color: 30 30 30 255;
-            align: 0.5 0;
+            align: 0.5 0.5;
+            color2: 255 255 255 24;
+            color3: 255 255 255 18;
          }
       }
       part { name: "elm.text.desc";
@@ -401,7 +401,7 @@ group { name: "warning_layout";
          clip_to: "clipper";
          scale: 1;
          description {
-            rel1 { to: "elm.text.desc"; relative: 0.5 1; offset: 0 10; }
+            rel1 { to: "elm.text.desc"; relative: 0.5 1; }
             rel2 { to: "elm.text.desc"; relative: 0.5 1; }
             text.text: "Are you sure you want to do this?";
             text {
@@ -420,29 +420,13 @@ group { name: "warning_layout";
          clip_to: "clipper";
          scale: 1;
          description {
-            rel1.to: "base_frame";
-            rel2.to: "base_frame";
-            rel1.relative: 0 1;
+            rel1.to: "elm.swallow.yes";
+            rel2.to: "elm.swallow.yes";
+            rel1.relative: 0 0;
             rel2.relative: 0 1;
-            rel1.offset: 20 0;
-            rel2.offset: -1 -10;
-            min: 70 35;
-            align: 0 1;
-            fixed: 1 1;
-         }
-      }
-      part { name: "elm.swallow.no";
-         type: SWALLOW;
-         clip_to: "clipper";
-         scale: 1;
-         description {
-            rel1.to: "elm.swallow.save";
-            rel2.to: "elm.swallow.save";
-            rel1.relative: 1 0;
-            rel2.relative: 1 1;
-            rel1.offset: 15 0;
-            min: 70 35;
-            align: 0 0.5;
+            rel2.offset: -10 -1;
+            min: 50 25;
+            align: 1 1;
             fixed: 1 1;
          }
       }
@@ -451,12 +435,27 @@ group { name: "warning_layout";
          clip_to: "clipper";
          scale: 1;
          description {
-            rel1.to: "elm.swallow.no";
-            rel2.to: "elm.swallow.no";
+            rel1.to: "base_frame";
+            rel2.to: "base_frame";
+            rel1.relative: 0.5 1;
+            rel2.relative: 0.5 1;
+            rel2.offset: -1 -8;
+            min: 50 25;
+            align: 0.5 1;
+            fixed: 1 1;
+         }
+      }
+      part { name: "elm.swallow.no";
+         type: SWALLOW;
+         clip_to: "clipper";
+         scale: 1;
+         description {
+            rel1.to: "elm.swallow.yes";
+            rel2.to: "elm.swallow.yes";
             rel1.relative: 1 0;
             rel2.relative: 1 1;
-            rel1.offset: 15 0;
-            min: 70 35;
+            rel1.offset: 10 0;
+            min: 50 25;
             align: 0 0.5;
             fixed: 1 1;
             color: 0 0 0 255;
