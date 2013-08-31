@@ -23,7 +23,6 @@ enventor_SOURCES = \
 	ctxpopup.c \
 	syntax_helper.c \
 	indent.c
-#   template_code.c
 
 # QuickLaunch                                                
 enventorql_SOURCES = $(enventor_SOURCES)

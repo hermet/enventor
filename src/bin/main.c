@@ -213,7 +213,7 @@ ctrl_func(app_data *ad, const char *keyname)
    //Select All
    if (!strcmp(keyname, "a") || !strcmp(keyname, "A"))
      return ECORE_CALLBACK_PASS_ON;
-   //Select All
+   //Template Code
    if (!strcmp(keyname, "t") || !strcmp(keyname, "T"))
      {
         edit_template_insert(ad->ed);
