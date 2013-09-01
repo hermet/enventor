@@ -67,8 +67,8 @@ layout_resize_cb(void *data, Evas *e EINA_UNUSED,
 }
 
 static void
-layout_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
-                     Evas_Object *obj EINA_UNUSED, void *event_info)
+rect_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
+                   Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    view_data *vd = data;
    if (!config_stats_bar_get(vd->cd)) return;
@@ -104,6 +104,43 @@ edje_change_file_cb(void *data, Evas_Object *obj EINA_UNUSED,
    view_part_highlight_set(vd, vd->part_name);
 }
 
+static void
+layout_geom_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
+               void *event_info EINA_UNUSED)
+{
+   Evas_Coord x, y, w, h;
+   Evas_Object *rect = data;
+   evas_object_geometry_get(obj, &x, &y, &w, &h);
+   evas_object_move(rect, x, y);
+   evas_object_resize(rect, w, h);
+}
+
+static void
+layout_del_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+               void *event_info EINA_UNUSED)
+{
+   Evas_Object *rect = data;
+   evas_object_del(rect);
+}
+static Evas_Object *
+event_layer_set(view_data *vd)
+{
+   Evas *e = evas_object_evas_get(vd->layout);
+   Evas_Object *rect = evas_object_rectangle_add(e);
+   evas_object_repeat_events_set(rect, EINA_TRUE);
+   evas_object_color_set(rect, 0, 0, 0, 0);
+   evas_object_show(rect);
+
+   evas_object_event_callback_add(vd->layout, EVAS_CALLBACK_RESIZE,
+                                  layout_geom_cb, rect);
+   evas_object_event_callback_add(vd->layout, EVAS_CALLBACK_MOVE,
+                                  layout_geom_cb, rect);
+   evas_object_event_callback_add(vd->layout, EVAS_CALLBACK_DEL,
+                                  layout_del_cb, rect);
+   evas_object_event_callback_add(rect, EVAS_CALLBACK_MOUSE_MOVE,
+                                  rect_mouse_move_cb, vd);
+}
+
 static Evas_Object *
 view_obj_create(view_data *vd, const char *file_path, const char *group)
 {
@@ -113,8 +150,6 @@ view_obj_create(view_data *vd, const char *file_path, const char *group)
                                     EVAS_HINT_EXPAND);
    evas_object_event_callback_add(layout, EVAS_CALLBACK_RESIZE,
                                   layout_resize_cb, vd);
-   evas_object_event_callback_add(layout, EVAS_CALLBACK_MOUSE_MOVE,
-                                  layout_mouse_move_cb, vd);
    edje_object_signal_callback_add(elm_layout_edje_get(layout),
                                    "edje,change,file", "edje",
                                    edje_change_file_cb, vd);
@@ -129,6 +164,7 @@ view_obj_idler_cb(void *data)
    view_data *vd = data;
    vd->layout = view_obj_create(vd, config_edj_path_get(vd->cd),
                                 vd->group_name);
+   event_layer_set(vd);
    elm_object_content_set(vd->scroller, vd->layout);
 
    if (vd->dummy_obj)

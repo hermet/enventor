@@ -59,9 +59,17 @@ edje_cc_cmd_set(config_data *cd)
 {
    Eina_Strbuf *buf = eina_strbuf_new();
    if (!buf) return EINA_FALSE;
-   eina_strbuf_append_printf(buf, "edje_cc -fastcomp %s %s %s %s %s %s",
+
+   char default_path[PATH_MAX * 4];
+   sprintf(default_path, "-id %s/images -sd %s/sounds -fd %s/fonts -dd %s/data",
+           elm_app_data_dir_get(), elm_app_data_dir_get(),
+           elm_app_data_dir_get(), elm_app_data_dir_get());
+
+   eina_strbuf_append_printf(buf,
+                             "edje_cc -fastcomp %s %s %s %s %s %s %s",
                              config_edc_path_get(cd),
                              config_edj_path_get(cd),
+                             default_path,
                              config_edc_img_path_get(cd),
                              config_edc_snd_path_get(cd),
                              config_edc_fnt_path_get(cd),
