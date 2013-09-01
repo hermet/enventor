@@ -57,8 +57,6 @@ last_line_inc(edit_data *ed)
    ed->line_max++;
    snprintf(buf, sizeof(buf), "%d<br/>", ed->line_max);
    elm_entry_entry_append(ed->en_line, buf);
-DFUNC_NAME();
-
 }
 
 static void
