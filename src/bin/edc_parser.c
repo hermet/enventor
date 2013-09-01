@@ -365,15 +365,30 @@ parser_current_paragh_name_get(parser_data *pd, Evas_Object *entry)
    if (!utf8) return;
 
    int cur_pos = elm_entry_cursor_pos_get(entry);
+   if (cur_pos < 1) return 0;
 
-   char *p = utf8;
-   char *end = utf8 + cur_pos;
-
-   while (p <= end)
+   const char *quot = "\"";
+   int quot_len = 1; // strlen("&quot;");
+   char *cur = utf8;
+   char *end = cur + cur_pos;
+/*
+   while (cur <= end)
      {
+        //Skip "" range
+        if (*cur == *quot)
+          {
+             cur += quot_len;
+             cur = strstr(cur, quot);
+             if (!cur) return depth;
+             cur += quot_len;
+          }
 
+        if (*cur == '{') depth++;
+        else if (*cur == '}') depth--;
+        cur++;
 
      }
+*/
 }
 
 void
