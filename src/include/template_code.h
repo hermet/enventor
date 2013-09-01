@@ -142,7 +142,7 @@ const char *TEMPLATE_DESC[TEMPLATE_DESC_LINE_CNT] =
    "   visible: 1;<br/>",
    "   //image.normal: \"*.*\";<br/>",
    "   //aspect: 1 1;<br/>",
-   "}<br/>",
+   "}",
 };
 
 #define TEMPLATE_PROG_LINE_CNT 6
@@ -155,4 +155,11 @@ const char *TEMPLATE_PROG[TEMPLATE_PROG_LINE_CNT] =
    "   action: STATE_SET \"default\" 0.0;<br/>",
    "   target: \"template\";<br/>",
    "}"
+};
+
+#define TEMPLATE_IMG_LINE_CNT 1
+
+const char *TEMPLATE_IMG[TEMPLATE_IMG_LINE_CNT] =
+{
+   "image: \"*.*\" COMP;"
 };

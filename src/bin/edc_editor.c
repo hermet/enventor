@@ -259,11 +259,61 @@ edit_attr_candidate_show(edit_data *ed, attr_value *attr, int x, int y, const ch
    elm_object_disabled_set(ed->layout, EINA_TRUE);
 }
 
-
 void
 edit_template_insert(edit_data *ed)
 {
-   //1. Find out Current paragraph
+   const char *paragh = parser_paragh_name_get(ed->pd, ed->en_edit);
+   if (!paragh) return;
+
+   if (!strcmp(paragh, "parts"))
+     {
+        edit_template_part_insert(ed, EDJE_PART_TYPE_IMAGE);
+        return;
+     }
+
+   int line_cnt;
+   char **t = NULL;
+
+   if (!strcmp(paragh, "part"))
+     {
+        line_cnt = TEMPLATE_DESC_LINE_CNT;
+        t = (char **) &TEMPLATE_DESC;
+     }
+   else if (!strcmp(paragh, "programs"))
+     {
+        line_cnt = TEMPLATE_PROG_LINE_CNT;
+        t = (char **) &TEMPLATE_PROG;
+     }
+   else if (!strcmp(paragh, "images"))
+     {
+        line_cnt = TEMPLATE_IMG_LINE_CNT;
+        t = (char **) &TEMPLATE_IMG;
+     }
+
+   if (!t) return;
+
+   int cursor_pos = elm_entry_cursor_pos_get(ed->en_edit);
+   elm_entry_cursor_line_begin_set(ed->en_edit);
+   int space = indent_space_get(ed);
+
+   //Alloc Empty spaces
+   char *p = alloca(space) + 1;
+   memset(p, ' ', space);
+   p[space] = '\0';
+
+   int i;
+   for (i = 0; i < line_cnt; i++)
+     {
+        elm_entry_entry_insert(ed->en_edit, p);
+        elm_entry_entry_insert(ed->en_edit, t[i]);
+        last_line_inc(ed);
+     }
+
+   elm_entry_cursor_pos_set(ed->en_edit, cursor_pos);
+
+   if (ed->syntax_color_timer) ecore_timer_del(ed->syntax_color_timer);
+     ed->syntax_color_timer = ecore_timer_add(SYNTAX_COLOR_TIME,
+                                              syntax_color_timer_cb, ed);
 }
 
 void

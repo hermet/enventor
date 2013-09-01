@@ -5,5 +5,6 @@ void parser_part_name_get(parser_data *pd, Evas_Object *entry, void (*cb)(void *
 Eina_Bool parser_type_name_compare(parser_data *pd, const char *str);
 const char *parser_markup_escape(parser_data *pd EINA_UNUSED, const char *str);
 attr_value *parser_attribute_get(parser_data *pd, const char *text, const char *cur);
+const char * parser_paragh_name_get(parser_data *pd, Evas_Object *entry);
 
 

@@ -349,13 +349,33 @@ part_name_thread_cancel(void *data, Ecore_Thread *thread EINA_UNUSED)
    free(td);
 }
 
-void
-parser_current_paragh_name_get(parser_data *pd, Evas_Object *entry)
+const char *
+parser_paragh_name_get(parser_data *pd, Evas_Object *entry)
 {
-   const char *PARTS = "parts";
-   const char *PART = "part";
-   const char *DESC = "description";
-   const char *PROGS = "programs";
+   //FIXME: list up groups
+#define GROUP_CNT 13
+   typedef struct _group_info
+   {
+      char *str;
+      int len;
+   } group_info;
+
+   group_info group_list[GROUP_CNT] =
+     {
+        { "collections", 11 },
+        { "description", 11 },
+        { "fill", 4 },
+        { "group", 5 },
+        { "images", 6 },
+        { "map", 3 },
+        { "origin", 6 },
+        { "parts", 5 },
+        { "part", 4 },
+        { "programs", 8 },
+        { "program", 7 },
+        { "rel1", 4 },
+        { "rel2", 4 }
+     };
 
    Evas_Object *tb = elm_entry_textblock_get(entry);
    char *text = (char *) evas_object_textblock_text_markup_get(tb);
@@ -371,7 +391,10 @@ parser_current_paragh_name_get(parser_data *pd, Evas_Object *entry)
    int quot_len = 1; // strlen("&quot;");
    char *cur = utf8;
    char *end = cur + cur_pos;
-/*
+   char *stack[20];
+   int depth = 0;
+
+   //1. Figure out depth.
    while (cur <= end)
      {
         //Skip "" range
@@ -379,16 +402,39 @@ parser_current_paragh_name_get(parser_data *pd, Evas_Object *entry)
           {
              cur += quot_len;
              cur = strstr(cur, quot);
-             if (!cur) return depth;
+             if (!cur) return NULL;
              cur += quot_len;
           }
 
-        if (*cur == '{') depth++;
-        else if (*cur == '}') depth--;
+        if (*cur == '{')
+          {
+             stack[depth] = cur;
+             depth++;
+          }
+        else if (*cur == '}')
+          {
+             if (depth > 0) depth--;
+          }
         cur++;
-
      }
-*/
+
+   if (depth == 0) return NULL;
+
+   //2. Parse the paragraph Name
+   cur = stack[depth - 1];
+   int i;
+   while (cur > utf8)
+     {
+        cur--;
+        for (i = 0; i < GROUP_CNT; i++)
+          {
+             group_info *gi = &group_list[i];
+             if (!strncmp(cur, gi->str, gi->len))
+               return gi->str;
+          }
+     }
+
+   return NULL;
 }
 
 void
