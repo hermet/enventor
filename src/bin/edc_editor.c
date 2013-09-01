@@ -319,6 +319,7 @@ edit_template_part_insert(edit_data *ed, Edje_Part_Type type)
      {
         elm_entry_entry_insert(ed->en_edit, p);
         elm_entry_entry_insert(ed->en_edit, t[i]);
+        last_line_inc(ed);
      }
 
    elm_entry_cursor_pos_set(ed->en_edit, cursor_pos);
