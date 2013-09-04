@@ -26,8 +26,8 @@ indent_depth_get(indent_data *id, char *src, int pos)
    if (!src || (pos < 1)) return 0;
 
    int depth = 0;
-   const char *quot = "\"";
-   int quot_len = 1; // strlen("&quot;");
+   const char *quot = QUOT;
+   int quot_len = QUOT_LEN;
    char *cur = (char *) src;
    char *end = ((char *) src) + pos;
 
