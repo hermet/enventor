@@ -145,7 +145,7 @@ const char *TEMPLATE_DESC[TEMPLATE_DESC_LINE_CNT] =
    "}",
 };
 
-#define TEMPLATE_PROG_LINE_CNT 6
+#define TEMPLATE_PROG_LINE_CNT 7
 
 const char *TEMPLATE_PROG[TEMPLATE_PROG_LINE_CNT] =
 {
@@ -154,6 +154,7 @@ const char *TEMPLATE_PROG[TEMPLATE_PROG_LINE_CNT] =
    "   source: \"*\";<br/>",
    "   action: STATE_SET \"default\" 0.0;<br/>",
    "   target: \"template\";<br/>",
+   "   //transition: LINEAR 1.0;<br/>",
    "}"
 };
 
