@@ -331,12 +331,12 @@ color_apply(color_data *cd, const char *src, int length, Eina_Bool realtime)
 
         if (realtime)
           {
-             //escape string: \" ~ \"
-             if (!strncmp(cur, QUOT, QUOT_LEN))
+             //escape string: &quot; ~ &quot;
+             if (!strncmp(cur, "&quot;", strlen("&quot;")))
                {
                   eina_strbuf_append_length(strbuf, prev, cur - prev);
-                  eina_strbuf_append(strbuf, QUOT);
-                  cur += QUOT_LEN;
+                  eina_strbuf_append(strbuf, "&quot;");
+                  cur += strlen("&quot;");
                   prev = cur;
                   inside_string = !inside_string;
                   continue;
@@ -345,10 +345,10 @@ color_apply(color_data *cd, const char *src, int length, Eina_Bool realtime)
         else
           {
              //escape string: " ~ "
-             if (cur[0] == QUOT_S)
+             if (cur[0] == '\"')
                {
                   eina_strbuf_append_length(strbuf, prev, cur - prev);
-                  eina_strbuf_append_char(strbuf, QUOT_S);
+                  eina_strbuf_append_char(strbuf, '\"');
                   cur++;
                   prev = cur;
                   inside_string = !inside_string;

@@ -252,8 +252,8 @@ part_name_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    char *p = utf8;
    char *end = utf8 + cur_pos;
 
-   const char *quot = QUOT;
-   int quot_len = QUOT_LEN;
+   const char *quot = "\"";
+   int quot_len = 1; // strlen("&quot;");
    const char *part = "part";
    int part_len = 4; //strlen("part");
    const char *parts = "parts";
@@ -387,8 +387,8 @@ parser_paragh_name_get(parser_data *pd, Evas_Object *entry)
    int cur_pos = elm_entry_cursor_pos_get(entry);
    if (cur_pos < 1) return 0;
 
-   const char *quot = QUOT;
-   int quot_len = QUOT_LEN;
+   const char *quot = "\"";
+   int quot_len = 1; // strlen("&quot;");
    char *cur = utf8;
    char *end = cur + cur_pos;
    char *stack[20];
@@ -471,8 +471,8 @@ Eina_Stringshare
    char *text = (char *) evas_object_textblock_text_markup_get(tb);
    char *p = text;
 
-   const char *quot = QUOT;
-   int quot_len = QUOT_LEN; // strlen("\"");
+   const char *quot = "&quot;";
+   int quot_len = 6; // strlen("&quot;");
    const char *group = "group";
    int group_len = 5; //strlen("group");
 
