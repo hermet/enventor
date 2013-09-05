@@ -15,7 +15,7 @@ collections {
             }
             description { state: "hide" 0.0;
                inherit: "default" 0.0;
-               color: 127 127 127 127;
+               color: 255 255 255 127;
             }
          }
          part { name: "rect";
