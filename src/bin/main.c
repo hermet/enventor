@@ -390,6 +390,11 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
         statusbar_toggle(ad);
         return ECORE_CALLBACK_DONE;
      }
+   if (!strcmp(event->keyname, "F7"))
+     {
+        view_program_signal_emit(ad->vd, "test");
+        return ECORE_CALLBACK_DONE;
+     }
    //Setting
    if (!strcmp(event->keyname, "F12"))
      {

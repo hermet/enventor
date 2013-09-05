@@ -1,4 +1,7 @@
+#define EDJE_EDIT_IS_UNSTABLE_AND_I_KNOW_ABOUT_IT 1
+
 #include <Elementary.h>
+#include <Edje_Edit.h>
 #include "common.h"
 
 struct viewer_s
@@ -246,6 +249,16 @@ Evas_Object *
 view_obj_get(view_data *vd)
 {
    return vd->scroller;
+}
+
+void
+view_program_signal_emit(view_data *vd, const char *program)
+{
+   if (!program || !vd->layout) return;
+
+   Evas_Object *edje = elm_layout_edje_get(vd->layout);
+   printf("%s - %s\n", __func__, program);
+   edje_edit_program_run(edje, program);
 }
 
 void
