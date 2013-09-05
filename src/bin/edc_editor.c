@@ -273,24 +273,34 @@ edit_template_insert(edit_data *ed)
 
    int line_cnt;
    char **t = NULL;
+   char buf[64];
+   char buf2[12];
 
    if (!strcmp(paragh, "part"))
      {
         line_cnt = TEMPLATE_DESC_LINE_CNT;
         t = (char **) &TEMPLATE_DESC;
+        strcpy(buf2, "Description");
      }
    else if (!strcmp(paragh, "programs"))
      {
         line_cnt = TEMPLATE_PROG_LINE_CNT;
         t = (char **) &TEMPLATE_PROG;
+        strcpy(buf2, "Program");
      }
    else if (!strcmp(paragh, "images"))
      {
         line_cnt = TEMPLATE_IMG_LINE_CNT;
         t = (char **) &TEMPLATE_IMG;
+        strcpy(buf2, "Image File");
      }
 
-   if (!t) return;
+   if (!t)
+     {
+        stats_info_msg_update(ed->sd,
+                              "Can't insert template code here. Move the cursor inside the \"Images|Parts|Part\" scope.");
+        return;
+     }
 
    int cursor_pos = elm_entry_cursor_pos_get(ed->en_edit);
    elm_entry_cursor_line_begin_set(ed->en_edit);
@@ -314,6 +324,9 @@ edit_template_insert(edit_data *ed)
    if (ed->syntax_color_timer) ecore_timer_del(ed->syntax_color_timer);
      ed->syntax_color_timer = ecore_timer_add(SYNTAX_COLOR_TIME,
                                               syntax_color_timer_cb, ed);
+
+     snprintf(buf, sizeof(buf), "Template code inserted (%s)", buf2);
+     stats_info_msg_update(ed->sd, buf);
 }
 
 void
@@ -332,33 +345,41 @@ edit_template_part_insert(edit_data *ed, Edje_Part_Type type)
 
    int line_cnt;
    char **t;
+   char buf[64];
+   char part[20];
 
    switch(type)
      {
         case EDJE_PART_TYPE_RECTANGLE:
            line_cnt = TEMPLATE_PART_RECT_LINE_CNT;
            t = (char **) &TEMPLATE_PART_RECT;
+           strcpy(part, "Rect");
            break;
         case EDJE_PART_TYPE_TEXT:
            line_cnt = TEMPLATE_PART_TEXT_LINE_CNT;
            t = (char **) &TEMPLATE_PART_TEXT;
+           strcpy(part, "Text");
            break;
         case EDJE_PART_TYPE_SWALLOW:
            line_cnt = TEMPLATE_PART_SWALLOW_LINE_CNT;
            t = (char **) &TEMPLATE_PART_SWALLOW;
+           strcpy(part, "Swallow");
            break;
         case EDJE_PART_TYPE_TEXTBLOCK:
            line_cnt = TEMPLATE_PART_TEXTBLOCK_LINE_CNT;
            t = (char **) &TEMPLATE_PART_TEXTBLOCK;
+           strcpy(part, "Textblock");
            break;
         case EDJE_PART_TYPE_SPACER:
            line_cnt = TEMPLATE_PART_SPACER_LINE_CNT;
            t = (char **) &TEMPLATE_PART_SPACER;
+           strcpy(part, "Spacer");
            break;
         case EDJE_PART_TYPE_IMAGE:
         defaut:
            line_cnt = TEMPLATE_PART_IMAGE_LINE_CNT;
            t = (char **) &TEMPLATE_PART_IMAGE;
+           strcpy(part, "Image");
            break;
      }
 
@@ -375,6 +396,9 @@ edit_template_part_insert(edit_data *ed, Edje_Part_Type type)
    if (ed->syntax_color_timer) ecore_timer_del(ed->syntax_color_timer);
      ed->syntax_color_timer = ecore_timer_add(SYNTAX_COLOR_TIME,
                                               syntax_color_timer_cb, ed);
+
+     snprintf(buf, sizeof(buf), "Template code inserted (%s Part)", part);
+     stats_info_msg_update(ed->sd, buf);
 }
 
 static void

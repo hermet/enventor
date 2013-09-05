@@ -13,7 +13,7 @@ const char *TEMPLATE_PART_IMAGE[TEMPLATE_PART_IMAGE_LINE_CNT] =
    "      fixed: 0 0;<br/>",
    "      min: 0 0;<br/>",
    "      visible: 1;<br/>",
-   "      //image.normal: \"*.*\";<br/>",
+   "      image.normal: \"logo.png\";<br/>",
    "      //aspect: 1 1;<br/>",
    "   }<br/>",
    "}"
@@ -140,7 +140,7 @@ const char *TEMPLATE_DESC[TEMPLATE_DESC_LINE_CNT] =
    "   fixed: 0 0;<br/>",
    "   min: 0 0;<br/>",
    "   visible: 1;<br/>",
-   "   //image.normal: \"*.*\";<br/>",
+   "   image.normal: \"logo.png\";<br/>",
    "   //aspect: 1 1;<br/>",
    "}",
 };
@@ -161,5 +161,5 @@ const char *TEMPLATE_PROG[TEMPLATE_PROG_LINE_CNT] =
 
 const char *TEMPLATE_IMG[TEMPLATE_IMG_LINE_CNT] =
 {
-   "image: \"*.*\" COMP;"
+   "image: \"logo.png\" COMP;"
 };
