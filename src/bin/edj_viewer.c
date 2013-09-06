@@ -125,7 +125,7 @@ layout_del_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
    Evas_Object *rect = data;
    evas_object_del(rect);
 }
-static Evas_Object *
+static void
 event_layer_set(view_data *vd)
 {
    Evas *e = evas_object_evas_get(vd->layout);
