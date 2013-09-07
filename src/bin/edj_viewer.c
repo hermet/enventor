@@ -147,13 +147,14 @@ event_layer_set(view_data *vd)
 static Evas_Object *
 view_obj_create(view_data *vd, const char *file_path, const char *group)
 {
-   Evas_Object *layout = elm_layout_add(vd->scroller);
-   vd->view_reload = !elm_layout_file_set(layout, file_path, group);
+   Evas *e = evas_object_evas_get(vd->scroller);
+   Evas_Object *layout = edje_edit_object_add(e);
+   vd->view_reload = !edje_object_file_set(layout, file_path, group);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
    evas_object_event_callback_add(layout, EVAS_CALLBACK_RESIZE,
                                   layout_resize_cb, vd);
-   edje_object_signal_callback_add(elm_layout_edje_get(layout),
+   edje_object_signal_callback_add(layout,
                                    "edje,change,file", "edje",
                                    edje_change_file_cb, vd);
    evas_object_show(layout);
@@ -255,10 +256,7 @@ void
 view_program_signal_emit(view_data *vd, const char *program)
 {
    if (!program || !vd->layout) return;
-
-   Evas_Object *edje = elm_layout_edje_get(vd->layout);
-   printf("%s - %s\n", __func__, program);
-   edje_edit_program_run(edje, program);
+   edje_edit_program_run(vd->layout, program);
 }
 
 void
@@ -292,10 +290,8 @@ view_part_highlight_set(view_data *vd, const char *part_name)
         evas_object_event_callback_del(vd->part_obj, EVAS_CALLBACK_DEL,
                                        part_obj_del_cb);
      }
-   Evas_Object *edje = elm_layout_edje_get(vd->layout);
-
    Evas_Object *part_obj =
-      (Evas_Object *) edje_object_part_object_get(edje, part_name);
+      (Evas_Object *) edje_object_part_object_get(vd->layout, part_name);
    if (!part_obj) return;
    evas_object_event_callback_add(part_obj, EVAS_CALLBACK_RESIZE,
                                   part_obj_geom_cb, vd);
@@ -306,5 +302,5 @@ view_part_highlight_set(view_data *vd, const char *part_name)
 
    vd->part_obj = part_obj;
    eina_stringshare_replace(&vd->part_name, part_name);
-   part_obj_geom_cb(vd, evas_object_evas_get(edje), part_obj, NULL);
+   part_obj_geom_cb(vd, evas_object_evas_get(vd->layout), part_obj, NULL);
 }

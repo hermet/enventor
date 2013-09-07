@@ -22,8 +22,7 @@ const char *DUMMYOBJ = "dummy_obj";
 void
 dummy_objs_update(dummy_obj *dummy)
 {
-   Evas_Object *edje = elm_layout_edje_get(dummy->layout);
-   Eina_List *parts = edje_edit_parts_list_get(edje);
+   Eina_List *parts = edje_edit_parts_list_get(dummy->layout);
    Eina_List *l, *l_next, *l2;
    char *part_name;
    Edje_Part_Type type;
@@ -47,7 +46,7 @@ dummy_objs_update(dummy_obj *dummy)
                   if (strcmp(part_name, po->name)) continue;
                }
 
-             if (edje_edit_part_type_get(edje, part_name) !=
+             if (edje_edit_part_type_get(dummy->layout, part_name) !=
                  EDJE_PART_TYPE_SWALLOW)
                {
                   removed = EINA_TRUE;
@@ -66,21 +65,22 @@ dummy_objs_update(dummy_obj *dummy)
    //Add new part object or Update changed part.
    EINA_LIST_FOREACH(parts, l, part_name)
      {
-        type = edje_edit_part_type_get(edje, part_name);
+        type = edje_edit_part_type_get(dummy->layout, part_name);
 
         if (type == EDJE_PART_TYPE_SWALLOW)
           {
              //Check this part is exist 
-             if (edje_object_part_swallow_get(edje, part_name)) continue;
+             if (edje_object_part_swallow_get(dummy->layout, part_name))
+               continue;
 
              part_obj *po = malloc(sizeof(part_obj));
              if (!po) continue;
 
              //New part. Add fake object.
-             Evas_Object *obj = elm_layout_add(dummy->layout);
-             elm_layout_file_set(obj, EDJE_PATH, "swallow");
+             Evas_Object *obj = edje_object_add(dummy->layout);
+             edje_object_file_set(obj, EDJE_PATH, "swallow");
              evas_object_show(obj);
-             elm_object_part_content_set(dummy->layout, part_name, obj);
+             edje_object_part_swallow(dummy->layout, part_name, obj);
 
              po->obj = obj;
              po->name = eina_stringshare_add(part_name);
@@ -121,7 +121,7 @@ void dummy_obj_new(Evas_Object *layout)
 
    dummy = calloc(1, sizeof(dummy_obj));
 
-   edje_object_signal_callback_add(elm_layout_edje_get(layout),
+   edje_object_signal_callback_add(layout,
                                    "edje,change,file", "edje",
                                    edje_change_file_cb, dummy);
 
@@ -155,7 +155,7 @@ void dummy_obj_del(Evas_Object *layout)
 
    evas_object_data_set(layout, DUMMYOBJ, NULL);
    evas_object_event_callback_del(layout, EVAS_CALLBACK_DEL, layout_del_cb);
-   edje_object_signal_callback_del(elm_layout_edje_get(layout),
+   edje_object_signal_callback_del(layout,
                                    "edje,change,file", "edje",
                                    edje_change_file_cb);
 
