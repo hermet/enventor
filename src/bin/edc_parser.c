@@ -156,6 +156,23 @@ parser_type_init(parser_data *pd)
    pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
 }
 
+char *parser_program_name_get(parser_data *pd EINA_UNUSED, const char *cur)
+{
+   if (!cur) return;
+
+   char *p = (char *) cur;
+   char *end;
+
+   p = strstr(p, "name");
+   if (!p) return NULL;
+   p = strstr(p, "\"");
+   if (!p) return NULL;
+   p++;
+   end = strstr(p, "\"");
+   if (!end) return NULL;
+   return strndup(p, (end - p));
+}
+
 attr_value *
 parser_attribute_get(parser_data *pd, const char *text, const char *cur)
 {

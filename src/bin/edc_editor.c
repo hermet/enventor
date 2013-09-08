@@ -18,6 +18,7 @@ struct editor_s
    stats_data *sd;
    config_data *cd;
    parser_data *pd;
+   view_data *vd;
    menu_data *md;
 
    int line_max;
@@ -33,6 +34,12 @@ struct editor_s
    Eina_Bool linenumber : 1;
    Eina_Bool ctrl_pressed : 1;
 };
+
+void
+edit_vd_set(edit_data *ed, view_data *vd)
+{
+   ed->vd = vd;
+}
 
 static int
 indent_space_get(edit_data *ed)
@@ -441,14 +448,26 @@ edit_cursor_double_clicked_cb(void *data, Evas_Object *obj,
    char *text = elm_entry_markup_to_utf8(str);
    char *cur = strstr(text, selected);
 
-   //Get the attribute values
-   attr_value * attr = parser_attribute_get(ed->pd, text, cur);
-   if (!attr) goto end;
+   //If the selected text is "program" then just launch the program.
+   if (!strcmp(selected, "program"))
+     {
+        char *prog = parser_program_name_get(ed->pd, cur);
+        if (prog)
+          {
+             view_program_run(ed->vd, prog);
+             free(prog);
+          }
+     }
+   //Show the candidates list. 
+   else
+     {
+        attr_value * attr = parser_attribute_get(ed->pd, text, cur);
+        if (!attr) goto end;
 
-   int x, y;
-   evas_pointer_output_xy_get(evas_object_evas_get(obj), &x, &y);
-   edit_attr_candidate_show(ed, attr, x, y, selected);
-
+        int x, y;
+        evas_pointer_output_xy_get(evas_object_evas_get(obj), &x, &y);
+        edit_attr_candidate_show(ed, attr, x, y, selected);
+     }
 end:
    free(text);
 }

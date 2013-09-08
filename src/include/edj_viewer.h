@@ -7,5 +7,5 @@ void view_part_highlight_set(view_data *vd, const char *part_name);
 Eina_Bool view_reload_need_get(view_data *vd);
 void view_reload_need_set(view_data *vd, Eina_Bool reload);
 void view_dummy_toggle(view_data *vd, Eina_Bool msg);
-void view_program_signal_emit(view_data *vd, const char *program);
+void view_program_run(view_data *vd, const char *program);
 

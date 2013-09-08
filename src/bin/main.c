@@ -390,11 +390,6 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
         statusbar_toggle(ad);
         return ECORE_CALLBACK_DONE;
      }
-   if (!strcmp(event->keyname, "F7"))
-     {
-        view_program_signal_emit(ad->vd, "test");
-        return ECORE_CALLBACK_DONE;
-     }
    //Setting
    if (!strcmp(event->keyname, "F12"))
      {
@@ -604,6 +599,7 @@ init(app_data *ad, int argc, char **argv)
    statusbar_set(ad, ad->cd);
    edc_edit_set(ad, ad->sd, ad->cd);
    edc_view_set(ad, ad->cd, ad->sd);
+   edit_vd_set(ad->ed, ad->vd);
    ad->md = menu_init(ad->win, ad->ed, ad->cd, ad->vd, menu_close_cb, ad);
 
    ad->edc_monitor = eio_monitor_add(config_edc_path_get(ad->cd));

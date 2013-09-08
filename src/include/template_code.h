@@ -140,7 +140,7 @@ const char *TEMPLATE_DESC[TEMPLATE_DESC_LINE_CNT] =
    "   fixed: 0 0;<br/>",
    "   min: 0 0;<br/>",
    "   visible: 1;<br/>",
-   "   image.normal: \"logo.png\";<br/>",
+   "   //image.normal: \"logo.png\";<br/>",
    "   //aspect: 1 1;<br/>",
    "}",
 };
