@@ -250,21 +250,6 @@ ctxpopup_selected_cb(void *data, Evas_Object *obj, void *event_info)
    edit_save(ed);
 }
 
-static void
-edit_attr_candidate_show(edit_data *ed, attr_value *attr, int x, int y, const char *selected)
-{
-   //Show up the list of the types
-   Evas_Object *ctxpopup = ctxpopup_create(ed->parent, attr, atof(selected),
-                                           ctxpopup_dismiss_cb,
-                                           ctxpopup_selected_cb, ed);
-   if (!ctxpopup) return;
-
-   evas_object_move(ctxpopup, x, y);
-   evas_object_show(ctxpopup);
-   menu_ctxpopup_register(ctxpopup);
-   elm_object_disabled_set(ed->layout, EINA_TRUE);
-}
-
 void
 edit_template_insert(edit_data *ed)
 {
@@ -441,7 +426,7 @@ program_run(edit_data *ed, char *cur)
 }
 
 static void
-popup_image_show(edit_data *ed, char *cur)
+image_preview_show(edit_data *ed, char *cur)
 {
    char *img_path = parser_name_get(ed->pd, cur);
    if (img_path)
@@ -456,9 +441,20 @@ candidate_list_show(edit_data *ed, char *text, char *cur, char *selected)
    attr_value * attr = parser_attribute_get(ed->pd, text, cur);
    if (!attr) return;
 
+   //Show up the list of the types
+   Evas_Object *ctxpopup =
+      ctxpopup_candidate_list_create(ed->parent, attr,
+                                     atof(selected),
+                                     ctxpopup_dismiss_cb,
+                                     ctxpopup_selected_cb, ed);
+   if (!ctxpopup) return;
+
    int x, y;
    evas_pointer_output_xy_get(evas_object_evas_get(ed->en_edit), &x, &y);
-   edit_attr_candidate_show(ed, attr, x, y, selected);
+   evas_object_move(ctxpopup, x, y);
+   evas_object_show(ctxpopup);
+   menu_ctxpopup_register(ctxpopup);
+   elm_object_disabled_set(ed->layout, EINA_TRUE);
 }
 
 static void
@@ -485,7 +481,7 @@ edit_cursor_double_clicked_cb(void *data, Evas_Object *obj,
      }
    else if (!strncmp(selected, "image", 5))   //5: sizeof("image")
      {
-        popup_image_show(ed, cur);
+        image_preview_show(ed, cur);
      }
    else
      {
