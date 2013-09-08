@@ -430,6 +430,38 @@ cur_line_pos_set(edit_data *ed)
 }
 
 static void
+program_run(edit_data *ed, char *cur)
+{
+   char *program = parser_name_get(ed->pd, cur);
+   if (program)
+     {
+        view_program_run(ed->vd, program);
+        free(program);
+     }
+}
+
+static void
+popup_image_show(edit_data *ed, char *cur)
+{
+   char *img_path = parser_name_get(ed->pd, cur);
+   if (img_path)
+     {
+        free(img_path);
+     }
+}
+
+static void
+candidate_list_show(edit_data *ed, char *text, char *cur, char *selected)
+{
+   attr_value * attr = parser_attribute_get(ed->pd, text, cur);
+   if (!attr) return;
+
+   int x, y;
+   evas_pointer_output_xy_get(evas_object_evas_get(ed->en_edit), &x, &y);
+   edit_attr_candidate_show(ed, attr, x, y, selected);
+}
+
+static void
 edit_cursor_double_clicked_cb(void *data, Evas_Object *obj,
                               void *event_info EINA_UNUSED)
 {
@@ -437,9 +469,9 @@ edit_cursor_double_clicked_cb(void *data, Evas_Object *obj,
 
    if (ed->ctrl_pressed) return;
 
-   const char *selected = elm_entry_selection_get(obj);
+   char *selected = (char *) elm_entry_selection_get(obj);
    if (!selected) return;
-   selected = parser_markup_escape(ed->pd, selected);
+   selected = elm_entry_markup_to_utf8(selected);
 
    Evas_Object *textblock = elm_entry_textblock_get(obj);
    Evas_Textblock_Cursor *cursor = evas_object_textblock_cursor_get(textblock);
@@ -447,28 +479,21 @@ edit_cursor_double_clicked_cb(void *data, Evas_Object *obj,
    char *text = elm_entry_markup_to_utf8(str);
    char *cur = strstr(text, selected);
 
-   //If the selected text is "program" then just launch the program.
    if (!strcmp(selected, "program"))
      {
-        char *prog = parser_program_name_get(ed->pd, cur);
-        if (prog)
-          {
-             view_program_run(ed->vd, prog);
-             free(prog);
-          }
+        program_run(ed, cur);
      }
-   //Show the candidates list. 
+   else if (!strncmp(selected, "image", 5))   //5: sizeof("image")
+     {
+        popup_image_show(ed, cur);
+     }
    else
      {
-        attr_value * attr = parser_attribute_get(ed->pd, text, cur);
-        if (!attr) goto end;
-
-        int x, y;
-        evas_pointer_output_xy_get(evas_object_evas_get(obj), &x, &y);
-        edit_attr_candidate_show(ed, attr, x, y, selected);
+        candidate_list_show(ed, text, cur, selected);
      }
 end:
-   free(text);
+   if (selected) free(selected);
+   if (text) free(text);
 }
 
 static void
