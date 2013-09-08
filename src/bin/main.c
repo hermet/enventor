@@ -261,6 +261,9 @@ ctrl_func(app_data *ad, const char *keyname)
    //Select All
    if (!strcmp(keyname, "a") || !strcmp(keyname, "A"))
      return ECORE_CALLBACK_PASS_ON;
+   //Go to Begin/End
+   if (!strcmp(keyname, "Home") || !strcmp(keyname, "End"))
+     return ECORE_CALLBACK_PASS_ON;
    //Template Code
    if (!strcmp(keyname, "t") || !strcmp(keyname, "T"))
      {
@@ -313,7 +316,7 @@ ctrl_func(app_data *ad, const char *keyname)
         edit_font_size_update(ad->ed, EINA_TRUE);
         return ECORE_CALLBACK_DONE;
      }
-   return ECORE_CALLBACK_PASS_ON;
+   return ECORE_CALLBACK_DONE;
 }
 
 static Eina_Bool
