@@ -527,7 +527,8 @@ edit_cursor_double_clicked_cb(void *data, Evas_Object *obj,
      {
         program_run(ed, cur);
      }
-   else if (!strncmp(selected, "image", 5))   //5: sizeof("image")
+   else if ((!strncmp(selected, "image", 5)) ||  //5: sizeof("image")
+            (!strcmp(selected, "normal")))
      {
         image_preview_show(ed, cur);
      }
