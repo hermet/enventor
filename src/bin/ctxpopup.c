@@ -171,3 +171,32 @@ ctxpopup_candidate_list_create(Evas_Object *parent, attr_value *attr,
                                   data);
    return ctxpopup;
 }
+
+Evas_Object *
+ctxpopup_img_preview_create(Evas_Object *parent, const char *imgpath,
+                            Evas_Smart_Cb ctxpopup_dismiss_cb,
+                            Evas_Smart_Cb ctxpopup_selected_cb, void *data)
+{
+   //create ctxpopup
+   Evas_Object *ctxpopup = elm_ctxpopup_add(parent);
+   if (!ctxpopup) return NULL;
+
+   elm_object_style_set(ctxpopup, elm_app_name_get());
+
+   //Layout
+   Evas_Object *layout = elm_layout_add(ctxpopup);
+   elm_layout_file_set(layout, EDJE_PATH, "preview_layout");
+   evas_object_show(layout);
+
+   elm_object_content_set(ctxpopup, layout);
+
+   Evas *e = evas_object_evas_get(ctxpopup);
+   Evas_Object *img = evas_object_image_filled_add(e);
+   evas_object_image_file_set(img, imgpath, NULL);
+   evas_object_show(img);
+   elm_object_part_content_set(layout, "elm.swallow.img", img);
+
+   evas_object_smart_callback_add(ctxpopup, "dismissed", ctxpopup_dismiss_cb,
+                                  data);
+   return ctxpopup;
+}

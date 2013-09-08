@@ -306,25 +306,25 @@ config_apply(config_data *cd)
    if (cd->update_cb) cd->update_cb(cd->update_cb_data, cd);
 }
 
-const Eina_List *
+Eina_List *
 config_edc_img_path_list_get(config_data *cd)
 {
    return cd->edc_img_path_list;
 }
 
-const Eina_List *
+Eina_List *
 config_edc_snd_path_list_get(config_data *cd)
 {
    return cd->edc_snd_path_list;
 }
 
-const Eina_List *
+Eina_List *
 config_edc_data_path_list_get(config_data *cd)
 {
    return cd->edc_data_path_list;
 }
 
-const Eina_List *
+Eina_List *
 config_edc_fnt_path_list_get(config_data *cd)
 {
    return cd->edc_fnt_path_list;

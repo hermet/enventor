@@ -231,7 +231,7 @@ edit_save(edit_data *ed)
 }
 
 static void
-ctxpopup_dismiss_cb(void *data, Evas_Object *obj, void *event_info)
+ctxpopup_candidate_dismiss_cb(void *data, Evas_Object *obj, void *event_info)
 {
    edit_data *ed = data;
    evas_object_del(obj);
@@ -240,7 +240,7 @@ ctxpopup_dismiss_cb(void *data, Evas_Object *obj, void *event_info)
 }
 
 static void
-ctxpopup_selected_cb(void *data, Evas_Object *obj, void *event_info)
+ctxpopup_candidate_selected_cb(void *data, Evas_Object *obj, void *event_info)
 {
    edit_data *ed = data;
    const char *text = event_info;
@@ -248,6 +248,22 @@ ctxpopup_selected_cb(void *data, Evas_Object *obj, void *event_info)
    elm_ctxpopup_dismiss(obj);
    ed->edit_changed = EINA_TRUE;
    edit_save(ed);
+}
+
+static void
+ctxpopup_preview_dismiss_cb(void *data, Evas_Object *obj, void *event_info)
+{
+   edit_data *ed = data;
+   evas_object_del(obj);
+   elm_object_disabled_set(ed->layout, EINA_FALSE);
+   elm_object_focus_set(ed->en_edit, EINA_TRUE);
+}
+
+static void
+ctxpopup_preview_selected_cb(void *data, Evas_Object *obj, void *event_info)
+{
+   edit_data *ed = data;
+   elm_ctxpopup_dismiss(obj);
 }
 
 void
@@ -428,11 +444,43 @@ program_run(edit_data *ed, char *cur)
 static void
 image_preview_show(edit_data *ed, char *cur)
 {
-   char *img_path = parser_name_get(ed->pd, cur);
-   if (img_path)
+   char *filename = parser_name_get(ed->pd, cur);
+   if (!filename) return;
+
+   char fullpath[PATH_MAX];
+
+   //1.Find the image path.
+   Eina_List *list = config_edc_img_path_list_get(ed->cd);
+   Eina_List *l;
+   char *path;
+   Eina_Bool found = EINA_FALSE;
+
+   EINA_LIST_FOREACH(list, l, path)
      {
-        free(img_path);
+        snprintf(fullpath, sizeof(fullpath), "%s/%s", path, filename);
+        if (!ecore_file_exists(fullpath)) continue;
+        found = EINA_TRUE;
+        break;
      }
+
+   if (found)
+     {
+        Evas_Object *ctxpopup =
+           ctxpopup_img_preview_create(ed->parent,
+                                       fullpath,
+                                       ctxpopup_preview_dismiss_cb,
+                                       NULL,
+                                       ed);
+        if (!ctxpopup) return;
+
+        int x, y;
+        evas_pointer_output_xy_get(evas_object_evas_get(ed->en_edit), &x, &y);
+        evas_object_move(ctxpopup, x, y);
+        evas_object_show(ctxpopup);
+        menu_ctxpopup_register(ctxpopup);
+        elm_object_disabled_set(ed->layout, EINA_TRUE);
+     }
+   free(filename);
 }
 
 static void
@@ -445,8 +493,8 @@ candidate_list_show(edit_data *ed, char *text, char *cur, char *selected)
    Evas_Object *ctxpopup =
       ctxpopup_candidate_list_create(ed->parent, attr,
                                      atof(selected),
-                                     ctxpopup_dismiss_cb,
-                                     ctxpopup_selected_cb, ed);
+                                     ctxpopup_candidate_dismiss_cb,
+                                     ctxpopup_candidate_selected_cb, ed);
    if (!ctxpopup) return;
 
    int x, y;
