@@ -19,7 +19,6 @@ struct editor_s
    config_data *cd;
    parser_data *pd;
    view_data *vd;
-   menu_data *md;
 
    int line_max;
    Eina_Stringshare *group_name;
