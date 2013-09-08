@@ -192,17 +192,17 @@ part_highlight_toggle(app_data *ad, Eina_Bool msg)
    if (!msg) return;
 
    if (highlight)
-     stats_info_msg_update(ad->sd, "Part Highlighting Enabled");
+     stats_info_msg_update(ad->sd, "Part Highlighting Enabled.");
    else
-     stats_info_msg_update(ad->sd, "Part Highlighting Disabled");
+     stats_info_msg_update(ad->sd, "Part Highlighting Disabled.");
 }
 
 static void
 auto_indentation_toggle(app_data *ad)
 {
    Eina_Bool toggle = !config_auto_indent_get(ad->cd);
-   if (toggle) stats_info_msg_update(ad->sd, "Auto Indentation enabled");
-   else stats_info_msg_update(ad->sd, "Auto Indentation disabled");
+   if (toggle) stats_info_msg_update(ad->sd, "Auto Indentation Enabled.");
+   else stats_info_msg_update(ad->sd, "Auto Indentation Disabled.");
    config_auto_indent_set(ad->cd, toggle);
 }
 

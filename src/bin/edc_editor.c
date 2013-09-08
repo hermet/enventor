@@ -332,7 +332,7 @@ edit_template_insert(edit_data *ed)
      ed->syntax_color_timer = ecore_timer_add(SYNTAX_COLOR_TIME,
                                               syntax_color_timer_cb, ed);
 
-     snprintf(buf, sizeof(buf), "Template code inserted (%s)", buf2);
+     snprintf(buf, sizeof(buf), "Template code inserted. (%s)", buf2);
      stats_info_msg_update(ed->sd, buf);
 }
 
@@ -404,7 +404,7 @@ edit_template_part_insert(edit_data *ed, Edje_Part_Type type)
      ed->syntax_color_timer = ecore_timer_add(SYNTAX_COLOR_TIME,
                                               syntax_color_timer_cb, ed);
 
-     snprintf(buf, sizeof(buf), "Template code inserted (%s Part)", part);
+     snprintf(buf, sizeof(buf), "Template code inserted. (%s Part)", part);
      stats_info_msg_update(ed->sd, buf);
 }
 
