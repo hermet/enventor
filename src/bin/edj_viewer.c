@@ -259,6 +259,9 @@ view_program_run(view_data *vd, const char *program)
 {
    if (!program || !vd->layout) return;
    edje_edit_program_run(vd->layout, program);
+   char buf[256];
+   snprintf(buf, sizeof(buf), "Program Run: \"%s\"", program);
+   stats_info_msg_update(vd->sd, buf);
 }
 
 void
