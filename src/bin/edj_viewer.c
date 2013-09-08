@@ -104,6 +104,8 @@ edje_change_file_cb(void *data, Evas_Object *obj EINA_UNUSED,
                     const char *source EINA_UNUSED)
 {
    view_data *vd = data;
+   edje_object_file_set(vd->layout, config_edj_path_get(vd->cd),
+                        vd->group_name);
    view_part_highlight_set(vd, vd->part_name);
 }
 
