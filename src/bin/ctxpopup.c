@@ -193,6 +193,9 @@ ctxpopup_img_preview_create(Evas_Object *parent, const char *imgpath,
    Evas *e = evas_object_evas_get(ctxpopup);
    Evas_Object *img = evas_object_image_filled_add(e);
    evas_object_image_file_set(img, imgpath, NULL);
+   Evas_Coord w, h;
+   evas_object_image_size_get(img, &w, &h);
+   evas_object_size_hint_aspect_set(img, EVAS_ASPECT_CONTROL_BOTH, w, h);
    evas_object_show(img);
    elm_object_part_content_set(layout, "elm.swallow.img", img);
 
