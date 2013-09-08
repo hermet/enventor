@@ -313,7 +313,7 @@ ctrl_func(app_data *ad, const char *keyname)
         edit_font_size_update(ad->ed, EINA_TRUE);
         return ECORE_CALLBACK_DONE;
      }
-   return ECORE_CALLBACK_DONE;
+   return ECORE_CALLBACK_PASS_ON;
 }
 
 static Eina_Bool
