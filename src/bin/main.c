@@ -350,7 +350,7 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    if (!strcmp("Control_L", event->keyname))
      {
         ad->ctrl_pressed = EINA_TRUE;
-        return ECORE_CALLBACK_DONE;
+        return ECORE_CALLBACK_PASS_ON;
      }
    //README
    if (!strcmp(event->keyname, "F1"))
