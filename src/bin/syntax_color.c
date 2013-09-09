@@ -426,6 +426,7 @@ color_apply(color_data *cd, const char *src, int length, Eina_Bool realtime)
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "to", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "transition", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "type", col3);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "tween", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "visible", col3);
 
         //syntax group 4

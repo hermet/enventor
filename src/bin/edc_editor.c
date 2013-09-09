@@ -528,7 +528,8 @@ edit_cursor_double_clicked_cb(void *data, Evas_Object *obj,
         program_run(ed, cur);
      }
    else if ((!strncmp(selected, "image", 5)) ||  //5: sizeof("image")
-            (!strcmp(selected, "normal")))
+            (!strcmp(selected, "normal")) ||
+            (!strcmp(selected, "tween")))
      {
         image_preview_show(ed, cur);
      }
