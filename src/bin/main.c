@@ -258,6 +258,9 @@ ctrl_func(app_data *ad, const char *keyname)
    //Paste
    if (!strcmp(keyname, "v") || !strcmp(keyname, "V"))
      return ECORE_CALLBACK_PASS_ON;
+   //Cut
+   if (!strcmp(keyname, "x") || !strcmp(keyname, "X"))
+     return ECORE_CALLBACK_PASS_ON;
    //Select All
    if (!strcmp(keyname, "a") || !strcmp(keyname, "A"))
      return ECORE_CALLBACK_PASS_ON;
