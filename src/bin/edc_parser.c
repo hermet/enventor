@@ -88,6 +88,24 @@ parser_type_init(parser_data *pd)
    attr->value.strs = aspect;
    pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
 
+   Eina_List *effect = NULL;
+   effect = eina_list_append(effect, eina_stringshare_add("NONE"));
+   effect = eina_list_append(effect, eina_stringshare_add("PLAIN"));
+   effect = eina_list_append(effect, eina_stringshare_add("OUTLINE"));
+   effect = eina_list_append(effect, eina_stringshare_add("SOFT_OUTLINE"));
+   effect = eina_list_append(effect, eina_stringshare_add("SHADOW"));
+   effect = eina_list_append(effect, eina_stringshare_add("SOFT_SHADOW"));
+   effect = eina_list_append(effect, eina_stringshare_add("OUTLINE_SHADOW"));
+   effect = eina_list_append(effect, eina_stringshare_add("OUTLINE_SOFT_SHADOW"));
+   effect = eina_list_append(effect, eina_stringshare_add("FAR_SHADOW"));
+   effect = eina_list_append(effect, eina_stringshare_add("FAR_SOFT_SHADOW"));
+   effect = eina_list_append(effect, eina_stringshare_add("GLOW"));
+
+   attr = calloc(1, sizeof(parser_attr));
+   attr->keyword = eina_stringshare_add("effect");
+   attr->value.strs = effect;
+   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
+
    attr = calloc(1, sizeof(parser_attr));
    attr->keyword = eina_stringshare_add("color");
    attr->value.min = 0;
