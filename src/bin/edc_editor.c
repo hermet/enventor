@@ -480,6 +480,13 @@ image_preview_show(edit_data *ed, char *cur)
         menu_ctxpopup_register(ctxpopup);
         elm_object_disabled_set(ed->layout, EINA_TRUE);
      }
+   else
+     {
+        char buf[PATH_MAX];
+        snprintf(buf, sizeof(buf), "Failed to load the image. \"%s\"",
+                 filename);
+        stats_info_msg_update(ed->sd, buf);
+     }
    free(filename);
 }
 
