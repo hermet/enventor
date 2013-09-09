@@ -2,6 +2,7 @@ menu_data *menu_init(Evas_Object *win, edit_data *ed, config_data *cd, view_data
 void menu_term(menu_data *md);
 Eina_Bool menu_toggle();
 void menu_ctxpopup_register(Evas_Object *ctxpopup);
+void menu_ctxpopup_unregister(Evas_Object *ctxpopup);
 Eina_Bool menu_edc_new(menu_data *md);
 Eina_Bool menu_edc_save(menu_data *md);
 Eina_Bool menu_edc_load(menu_data *md);

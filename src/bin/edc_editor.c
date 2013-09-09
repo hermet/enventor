@@ -34,6 +34,9 @@ struct editor_s
    Eina_Bool ctrl_pressed : 1;
 };
 
+static Eina_Bool image_preview_show(edit_data *ed, char *cur, Evas_Coord x, Evas_Coord y);
+
+
 void
 edit_vd_set(edit_data *ed, view_data *vd)
 {
@@ -254,7 +257,11 @@ static void
 ctxpopup_preview_dismiss_cb(void *data, Evas_Object *obj, void *event_info)
 {
    edit_data *ed = data;
+   int skip_focus = (int) evas_object_data_get(obj, "continue");
    evas_object_del(obj);
+
+   //Since the ctxpopup will be shown again, Don't revert the focus.
+   if (skip_focus) return;
    elm_object_disabled_set(ed->layout, EINA_FALSE);
    elm_object_focus_set(ed->en_edit, EINA_TRUE);
 }
@@ -441,11 +448,58 @@ program_run(edit_data *ed, char *cur)
      }
 }
 
+
+//This function is called when user press up/down key or mouse wheel up/down
 static void
-image_preview_show(edit_data *ed, char *cur)
+preview_img_relay_show(edit_data *ed, Evas_Object *ctxpopup, Eina_Bool next)
+{
+   if (next) elm_entry_cursor_down(ed->en_edit);
+   else elm_entry_cursor_up(ed->en_edit);
+
+   Evas_Object *textblock = elm_entry_textblock_get(ed->en_edit);
+   Evas_Textblock_Cursor *cursor = evas_object_textblock_cursor_get(textblock);
+   const char *str = evas_textblock_cursor_paragraph_text_get(cursor);
+   char *text = elm_entry_markup_to_utf8(str);
+
+   //Compute current ctxpopup position.
+   Evas_Coord x, y, h;
+   evas_object_geometry_get(ctxpopup, &x, &y, NULL, NULL);
+   elm_entry_cursor_geometry_get(ed->en_edit, NULL, NULL, NULL, &h);
+
+   if (next) y += h;
+   else y -= h;
+
+   //Limit the ctxpopup position in the scroller vertical zone.
+   Evas_Coord scrl_y, scrl_h;
+   evas_object_geometry_get(ed->scroller, NULL, &scrl_y, NULL, &scrl_h);
+
+   if (y > (scrl_y + scrl_h)) y = (scrl_y + scrl_h);
+   else if (y < scrl_y) y = scrl_y;
+
+   if (image_preview_show(ed, text, x, y))
+     {
+        /* Since the ctxpopup will be shown again,
+           Don't revert the focus in the dismiss cb. */
+        evas_object_data_set(ctxpopup, "continue", (void *) 1);
+     }
+
+   menu_ctxpopup_unregister(ctxpopup);
+   elm_ctxpopup_dismiss(ctxpopup);
+}
+
+static void
+ctxpopup_preview_relay_cb(void *data, Evas_Object *obj, void *event_info)
+{
+   edit_data *ed = data;
+   int next = (int) event_info;
+   preview_img_relay_show(ed, obj, (Eina_Bool) next);
+}
+
+static Eina_Bool
+image_preview_show(edit_data *ed, char *cur, Evas_Coord x, Evas_Coord y)
 {
    char *filename = parser_name_get(ed->pd, cur);
-   if (!filename) return;
+   if (!filename) return EINA_FALSE;
 
    char fullpath[PATH_MAX];
 
@@ -463,22 +517,24 @@ image_preview_show(edit_data *ed, char *cur)
         break;
      }
 
+   Eina_Bool succeed;
+
    if (found)
      {
+        //FIXME: When resize the window, ->  CRASH!
         Evas_Object *ctxpopup =
            ctxpopup_img_preview_create(ed->parent,
                                        fullpath,
                                        ctxpopup_preview_dismiss_cb,
-                                       NULL,
+                                       ctxpopup_preview_relay_cb,
                                        ed);
-        if (!ctxpopup) return;
+        if (!ctxpopup) return EINA_FALSE;
 
-        int x, y;
-        evas_pointer_output_xy_get(evas_object_evas_get(ed->en_edit), &x, &y);
         evas_object_move(ctxpopup, x, y);
         evas_object_show(ctxpopup);
         menu_ctxpopup_register(ctxpopup);
         elm_object_disabled_set(ed->layout, EINA_TRUE);
+        succeed = EINA_TRUE;
      }
    else
      {
@@ -486,8 +542,12 @@ image_preview_show(edit_data *ed, char *cur)
         snprintf(buf, sizeof(buf), "Failed to load the image. \"%s\"",
                  filename);
         stats_info_msg_update(ed->sd, buf);
+        succeed = EINA_FALSE;
      }
+
    free(filename);
+
+   return succeed;
 }
 
 static void
@@ -538,7 +598,9 @@ edit_cursor_double_clicked_cb(void *data, Evas_Object *obj,
             (!strcmp(selected, "normal")) ||
             (!strcmp(selected, "tween")))
      {
-        image_preview_show(ed, cur);
+        int x, y;
+        evas_pointer_output_xy_get(evas_object_evas_get(ed->en_edit), &x, &y);
+        image_preview_show(ed, cur, x, y);
      }
    else
      {

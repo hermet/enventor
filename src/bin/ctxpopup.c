@@ -3,6 +3,8 @@
 
 struct ctxpopup_data_s {
    Evas_Smart_Cb selected_cb;
+   Evas_Smart_Cb relay_cb;
+   Evas_Object *ctxpopup;
    void *data;
 };
 
@@ -172,16 +174,36 @@ ctxpopup_candidate_list_create(Evas_Object *parent, attr_value *attr,
    return ctxpopup;
 }
 
+static void
+ctxpopup_key_down_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+   Evas_Event_Key_Down *ev = event_info;
+   ctxpopup_data *ctxdata = data;
+
+   if (!strcmp(ev->keyname, "Down"))
+     ctxdata->relay_cb(ctxdata->data, ctxdata->ctxpopup, (void *) 1);
+   else if (!strcmp(ev->keyname, "Up"))
+     ctxdata->relay_cb(ctxdata->data, ctxdata->ctxpopup, (void *) 0);
+}
+
 Evas_Object *
 ctxpopup_img_preview_create(Evas_Object *parent, const char *imgpath,
                             Evas_Smart_Cb ctxpopup_dismiss_cb,
-                            Evas_Smart_Cb ctxpopup_selected_cb, void *data)
+                            Evas_Smart_Cb ctxpopup_relay_cb, void *data)
 {
    //create ctxpopup
    Evas_Object *ctxpopup = elm_ctxpopup_add(parent);
    if (!ctxpopup) return NULL;
 
    elm_object_style_set(ctxpopup, elm_app_name_get());
+
+   //ctxpopup data
+   ctxpopup_data *ctxdata = malloc(sizeof(ctxpopup_data));
+   if (!ctxdata) return NULL;
+   ctxdata->relay_cb = ctxpopup_relay_cb;
+   ctxdata->data = data;
+   ctxdata->ctxpopup = ctxpopup;
+   evas_object_data_set(ctxpopup, "ctxpopup_data", ctxdata);
 
    //Layout
    Evas_Object *layout = elm_layout_add(ctxpopup);
@@ -201,5 +223,10 @@ ctxpopup_img_preview_create(Evas_Object *parent, const char *imgpath,
 
    evas_object_smart_callback_add(ctxpopup, "dismissed", ctxpopup_dismiss_cb,
                                   data);
+   evas_object_event_callback_add(ctxpopup, EVAS_CALLBACK_DEL, ctxpopup_del_cb,
+                                  ctxdata);
+   evas_object_event_callback_add(img, EVAS_CALLBACK_KEY_DOWN,
+                                  ctxpopup_key_down_cb, ctxdata);
+   evas_object_focus_set(img, EINA_TRUE);
    return ctxpopup;
 }

@@ -1152,6 +1152,14 @@ ctxpopup_del_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 }
 
 void
+menu_ctxpopup_unregister(Evas_Object *ctxpopup)
+{
+   menu_data *md = g_md;
+   evas_object_event_callback_del(ctxpopup, EVAS_CALLBACK_DEL, ctxpopup_del_cb);
+   if (ctxpopup == md->ctxpopup) md->ctxpopup = NULL;
+}
+
+void
 menu_ctxpopup_register(Evas_Object *ctxpopup)
 {
    menu_data *md = g_md;
