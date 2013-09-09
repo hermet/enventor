@@ -225,8 +225,8 @@ ctxpopup_img_preview_create(Evas_Object *parent, const char *imgpath,
                                   data);
    evas_object_event_callback_add(ctxpopup, EVAS_CALLBACK_DEL, ctxpopup_del_cb,
                                   ctxdata);
-   evas_object_event_callback_add(img, EVAS_CALLBACK_KEY_DOWN,
+   evas_object_event_callback_add(ctxpopup, EVAS_CALLBACK_KEY_DOWN,
                                   ctxpopup_key_down_cb, ctxdata);
-   evas_object_focus_set(img, EINA_TRUE);
+   evas_object_focus_set(ctxpopup, EINA_TRUE);
    return ctxpopup;
 }
