@@ -69,7 +69,8 @@ Ctrl+Shift+T = Insert Part Template Code: Text
 Ctrl+Shift+S = Insert Part Template Code: Spacer
 Ctrl+Shift+W = Insert Part Template Code: Swallow
 Ctrl+Shift+X = Insert Part Template Code: Box
-
+ 
+ 
 [Command Line Usage]
  
 enventor --help
