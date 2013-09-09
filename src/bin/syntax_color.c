@@ -398,6 +398,8 @@ color_apply(color_data *cd, const char *src, int length, Eina_Bool realtime)
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "border_scale", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "border", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "clip_to", col3);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "color2", col3);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "color3", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "color", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "effect", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "fixed", col3);
