@@ -29,10 +29,13 @@ collections {
          part { name: "text";
             type: TEXT;
             scale: 1;
+            effect: FAR_SOFT_SHADOW;
             description { state: "default" 0.0;
                rel1.relative: 0.0 0.5;
                rel2.relative: 0.5 1.0;
-               color: 50 150 150 255;
+               color: 0 136 170 255;
+               color2: 0 136 170 50;
+               color3: 0 136 170 25;
                text {
                   size: 25;
                   font: "Sans";
