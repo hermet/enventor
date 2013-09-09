@@ -399,6 +399,7 @@ color_apply(color_data *cd, const char *src, int length, Eina_Bool realtime)
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "border", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "clip_to", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "color", col3);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "effect", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "fixed", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "font", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "inherit", col3);
@@ -415,8 +416,11 @@ color_apply(color_data *cd, const char *src, int length, Eina_Bool realtime)
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "style", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "relative", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "repeat_events", col3);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "smooth", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "source", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "target", col3);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "to_x", col3);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "to_y", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "to", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "transition", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "type", col3);
@@ -436,6 +440,10 @@ color_apply(color_data *cd, const char *src, int length, Eina_Bool realtime)
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "DECELERATE", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "DIVISOR_INTERP", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "EXTERNAL", col4);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "FAR_SHADOW", col4);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "FAR_SOFT_SHADOW",
+                     col4);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "GLOW", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "GRADIENT", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "GROUP", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "HORIZONTAL", col4);
@@ -443,12 +451,20 @@ color_apply(color_data *cd, const char *src, int length, Eina_Bool realtime)
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "LINEAR", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "LOSSY", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "NONE", col4);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "OUTLINE_SOFT_SHADOW",
+                     col4);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "OUTLINE_SHADOW", col4);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "OUTLINE", col4);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "PLAIN", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "PROXY", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "RAW", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "RECT", col4);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "SHADOW", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "SINUSOIDAL_FACTOR",
                      col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "SINUSOIDAL", col4);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "SOFT_OUTLINE", col4);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "SOFT_SHADOW", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "SPACER", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "SPRING", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "STATE_SET", col4);
@@ -466,8 +482,8 @@ color_apply(color_data *cd, const char *src, int length, Eina_Bool realtime)
 
         //duplicated groups 2
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "image", col2);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "text", col2);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "size", col2);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "text", col2);
 
         cur++;
      }
