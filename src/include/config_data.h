@@ -1,6 +1,4 @@
-config_data *config_init(const char *edc_path, const char *edc_img_path,
-                         const char *edc_snd_path, const char *edc_fnt_path,
-                         const char *edc_data_path);
+config_data *config_init(const char *edc_path, const char *edc_img_path, const char *edc_snd_path, const char *edc_fnt_path, const char *edc_data_path);
 void config_term(config_data *cd);
 const char *config_edc_path_get(config_data *cd);
 const char *config_edj_path_get(config_data *cd);
@@ -16,9 +14,7 @@ Eina_List *config_edc_img_path_list_get(config_data *cd);
 Eina_List *config_edc_snd_path_list_get(config_data *cd);
 Eina_List *config_edc_fnt_path_list_get(config_data *cd);
 Eina_List *config_edc_data_path_list_get(config_data *cd);
-void config_update_cb_set(config_data *cd,
-                          void (*cb)(void *data, config_data *cd),
-                          void *data);
+void config_update_cb_set(config_data *cd, void (*cb)(void *data, config_data *cd), void *data);
 void config_stats_bar_set(config_data *cd, Eina_Bool enabled);
 void config_linenumber_set(config_data *cd, Eina_Bool enabled);
 Eina_Bool config_stats_bar_get(config_data *cd);

@@ -90,9 +90,6 @@ line_decrease(edit_data *ed, int cnt)
    elm_entry_calc_force(ed->en_line);
 
    ed->line_max -= cnt;
-
-DFUNC_NAME();
-
 }
 
 static void
@@ -118,7 +115,6 @@ syntax_color_apply(edit_data *ed)
 //FIXME: don't know why this api reset the entry cursor.
 //   elm_entry_entry_set(ed->en_edit, translated);
    elm_entry_cursor_pos_set(ed->en_edit, pos);
-DFUNC_NAME();
    free(utf8);
 }
 

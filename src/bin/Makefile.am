@@ -22,7 +22,8 @@ enventor_SOURCES = \
 	syntax_color.c \
 	ctxpopup.c \
 	syntax_helper.c \
-	indent.c
+	indent.c \
+	shared_res.c
 
 # QuickLaunch                                                
 enventorql_SOURCES = $(enventor_SOURCES)

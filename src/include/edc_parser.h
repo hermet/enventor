@@ -1,7 +1,3 @@
-#define QUOT "\""
-#define QUOT_C '\"'
-#define QUOT_LEN 1
-
 parser_data *parser_init();
 void parser_term(parser_data *pd);
 Eina_Stringshare *parser_group_name_get(parser_data *pd, Evas_Object *entry);
