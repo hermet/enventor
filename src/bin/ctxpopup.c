@@ -196,7 +196,10 @@ ctxpopup_img_preview_create(Evas_Object *parent, const char *imgpath,
    if (!ctxpopup) return NULL;
 
    elm_object_style_set(ctxpopup, elm_app_name_get());
-
+   elm_ctxpopup_direction_priority_set(ctxpopup, ELM_CTXPOPUP_DIRECTION_LEFT,
+                                       ELM_CTXPOPUP_DIRECTION_UP,
+                                       ELM_CTXPOPUP_DIRECTION_DOWN,
+                                       ELM_CTXPOPUP_DIRECTION_RIGHT);
    //ctxpopup data
    ctxpopup_data *ctxdata = malloc(sizeof(ctxpopup_data));
    if (!ctxdata) return NULL;
