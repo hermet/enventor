@@ -17,6 +17,7 @@ struct syntax_color_s
    Eina_Stringshare *col3;
    Eina_Stringshare *col4;
    Eina_Stringshare *col5;
+   Eina_Stringshare *col6;
 };
 
 color_data *
@@ -29,6 +30,7 @@ color_init(Eina_Strbuf *strbuf)
    cd->col3 = eina_stringshare_add("0000a0");
    cd->col4 = eina_stringshare_add("969600");
    cd->col5 = eina_stringshare_add("009600");
+   cd->col6 = eina_stringshare_add("00C0C0");
 
    return cd;
 }
@@ -41,6 +43,7 @@ color_term(color_data *cd)
    eina_stringshare_del(cd->col3);
    eina_stringshare_del(cd->col4);
    eina_stringshare_del(cd->col5);
+   eina_stringshare_del(cd->col6);
 
    free(cd);
 }
@@ -236,6 +239,63 @@ comment2_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
    return -1;
 }
 
+static int
+sharp_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
+            char **prev, const Eina_Stringshare *color,
+            Eina_Bool *inside_comment)
+{
+   if (*inside_comment) return 0;
+   if ((*cur)[0] != '#') return 0;
+
+   eina_strbuf_append_length(strbuf, *prev, (*cur - *prev));
+
+   char buf[128];
+   snprintf(buf, sizeof(buf), "<color=#%s>#", color);
+   eina_strbuf_append(strbuf, buf);
+
+   int cmp_size = 1;    //strlen("#");
+   *cur += cmp_size;
+
+   if (*cur > (*src + length))
+     {
+        eina_strbuf_append(strbuf, "</color>");
+        return -1;
+     }
+
+   *prev = *cur;
+
+   char *space = strstr(*prev, " ");
+   char *eol = strstr(*prev, "<br/>");
+
+   if (space < eol)
+     {
+        *cur = space;
+        cmp_size = strlen(" ");
+     }
+   else
+     {
+        *cur = eol;
+        cmp_size = strlen("<br/>");
+     }
+
+   if (*cur)
+     {
+        eina_strbuf_append_length(strbuf, *prev, (*cur - *prev));
+        if (space < eol) eina_strbuf_append(strbuf, "</color> ");
+        else eina_strbuf_append(strbuf, "</color><br/>");
+        *cur += cmp_size;
+        *prev = *cur;
+        return 1;
+     }
+
+   eina_strbuf_append(strbuf, *prev);
+   *prev = *cur;
+
+   eina_strbuf_append(strbuf, "</color>");
+   return -1;
+}
+
+
 const char *
 color_cancel(color_data *cd, const char *src, int length)
 {
@@ -319,6 +379,12 @@ color_apply(color_data *cd, const char *src, int length)
         //handle comment: //
         ret = comment2_apply(strbuf, &src, length, &cur, &prev, cd->col5,
                              &inside_comment);
+        if (ret == 1) continue;
+        else if (ret == -1) goto finished;
+
+        //handle comment: #
+        ret = sharp_apply(strbuf, &src, length, &cur, &prev, cd->col6,
+                          &inside_comment);
         if (ret == 1) continue;
         else if (ret == -1) goto finished;
 
