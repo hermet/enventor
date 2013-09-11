@@ -220,7 +220,7 @@ comment2_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
 
    *prev = *cur;
 
-   cmp_size = strlen("<br/>");
+   cmp_size = 5;   //strlen("<br/>");
    *cur = strstr(*prev, "<br/>");
 
    if (*cur)
@@ -241,10 +241,8 @@ comment2_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
 
 static int
 sharp_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
-            char **prev, const Eina_Stringshare *color,
-            Eina_Bool *inside_comment)
+            char **prev, const Eina_Stringshare *color)
 {
-   if (*inside_comment) return 0;
    if ((*cur)[0] != '#') return 0;
 
    eina_strbuf_append_length(strbuf, *prev, (*cur - *prev));
@@ -270,12 +268,12 @@ sharp_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
    if (space < eol)
      {
         *cur = space;
-        cmp_size = strlen(" ");
+        cmp_size = 1; //strlen(" ");
      }
    else
      {
         *cur = eol;
-        cmp_size = strlen("<br/>");
+        cmp_size = 5;  //strlen("<br/>");
      }
 
    if (*cur)
@@ -337,6 +335,31 @@ color_cancel(color_data *cd, const char *src, int length)
    return str;
 }
 
+static int
+bracket_escape(Eina_Strbuf *strbuf, char **cur, char **prev)
+{
+   if ((*cur)[0] != '&') return 0;
+   int cmp_size = 4;
+
+   if (!strncmp(*cur, "&lt;", cmp_size))
+     {
+        eina_strbuf_append_length(strbuf, *prev, *cur - *prev);
+        eina_strbuf_append(strbuf, "&lt;");
+        *cur += cmp_size;
+        *prev = *cur;
+        return 1;
+     }
+   else if (!strncmp(*cur, "&gt;", cmp_size))
+     {
+        eina_strbuf_append_length(strbuf, *prev, *cur - *prev);
+        eina_strbuf_append(strbuf, "&gt;");
+        *cur += cmp_size;
+        *prev = *cur;
+        return 1;
+     }
+   return 0;
+}
+
 /* 
 	OPTIMIZATION POINT 
 	1. Use Hash
@@ -382,12 +405,6 @@ color_apply(color_data *cd, const char *src, int length)
         if (ret == 1) continue;
         else if (ret == -1) goto finished;
 
-        //handle comment: #
-        ret = sharp_apply(strbuf, &src, length, &cur, &prev, cd->col6,
-                          &inside_comment);
-        if (ret == 1) continue;
-        else if (ret == -1) goto finished;
-
         //escape string: " ~ "
         if (cur[0] == QUOT_C)
           {
@@ -398,12 +415,21 @@ color_apply(color_data *cd, const char *src, int length)
              inside_string = !inside_string;
              continue;
           }
-
         if (inside_string || inside_comment)
           {
              cur++;
              continue;
           }
+
+        //FIXME: This might be textblock problem. should be removed here.
+        //escape <> bracket.
+        ret = bracket_escape(strbuf, &cur, &prev);
+        if (ret == 1) continue;
+
+        //handle comment: #
+        ret = sharp_apply(strbuf, &src, length, &cur, &prev, cd->col6);
+        if (ret == 1) continue;
+        else if (ret == -1) goto finished;
 
         //FIXME: construct from the configuration file
         //syntax group 1
