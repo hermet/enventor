@@ -44,6 +44,6 @@ typedef struct indent_s indent_data;
 #include "dummy_obj.h"
 #include "ctxpopup.h"
 #include "indent.h"
-#include "shared_res.h"
+//#include "shared_res.h"
 
 #endif
