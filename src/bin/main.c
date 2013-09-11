@@ -3,9 +3,6 @@
 #include "config.h"
 #include "common.h"
 
-const char *PROTO_EDC_PATH = "/tmp/.proto.edc";
-char EDJE_PATH[PATH_MAX];
-
 int main(int argc, char **argv);
 
 struct app_s
