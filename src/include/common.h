@@ -1,16 +1,6 @@
 #ifndef __COMMON_H__
 #define __COMMON_H__
 
-#define MAX_FONT_SIZE 5.0
-#define MIN_FONT_SIZE 0.5
-#define QUOT "\""
-#define QUOT_C '\"'
-#define QUOT_LEN 1
-#define SHARED_BUF_SIZE 1024
-
-extern const char *PROTO_EDC_PATH;
-extern char EDJE_PATH[PATH_MAX];
-
 struct attr_value_s
 {
    Eina_List *strs;
@@ -44,6 +34,6 @@ typedef struct indent_s indent_data;
 #include "dummy_obj.h"
 #include "ctxpopup.h"
 #include "indent.h"
-//#include "shared_res.h"
+#include "globals.h"
 
 #endif

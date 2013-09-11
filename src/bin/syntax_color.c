@@ -283,17 +283,10 @@ color_cancel(color_data *cd, const char *src, int length)
 	2. Apply Color only changed line.
 */
 const char *
-color_apply(color_data *cd, const char *src, int length, Eina_Bool realtime)
+color_apply(color_data *cd, const char *src, int length)
 {
-   static Eina_Bool inside_string = EINA_FALSE;
-   static Eina_Bool inside_comment = EINA_FALSE;
-
-   //workaround code. need to improve it later.
-   if (realtime)
-     {
-        inside_string = EINA_FALSE;
-        inside_comment = EINA_FALSE;
-     }
+   Eina_Bool inside_string = EINA_FALSE;
+   Eina_Bool inside_comment = EINA_FALSE;
 
    if (!src || (length < 1)) return NULL;
 
@@ -329,31 +322,15 @@ color_apply(color_data *cd, const char *src, int length, Eina_Bool realtime)
         if (ret == 1) continue;
         else if (ret == -1) goto finished;
 
-        if (realtime)
+        //escape string: " ~ "
+        if (cur[0] == QUOT_C)
           {
-             //escape string: &quot; ~ &quot;
-             if (!strncmp(cur, QUOT, QUOT_LEN))
-               {
-                  eina_strbuf_append_length(strbuf, prev, cur - prev);
-                  eina_strbuf_append(strbuf, QUOT);
-                  cur += QUOT_LEN;
-                  prev = cur;
-                  inside_string = !inside_string;
-                  continue;
-               }
-          }
-        else
-          {
-             //escape string: " ~ "
-             if (cur[0] == QUOT_C)
-               {
-                  eina_strbuf_append_length(strbuf, prev, cur - prev);
-                  eina_strbuf_append_char(strbuf, QUOT_C);
-                  cur++;
-                  prev = cur;
-                  inside_string = !inside_string;
-                  continue;
-               }
+             eina_strbuf_append_length(strbuf, prev, cur - prev);
+             eina_strbuf_append_char(strbuf, QUOT_C);
+             cur++;
+             prev = cur;
+             inside_string = !inside_string;
+             continue;
           }
 
         if (inside_string || inside_comment)
