@@ -627,7 +627,8 @@ term(app_data *ad)
 int
 main(int argc, char **argv)
 {
-   app_data ad = { 0 };
+   app_data ad;
+   memset(&ad, 0x00, sizeof(ad));
 
    if (!init(&ad, argc, argv))
      {

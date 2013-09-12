@@ -35,7 +35,7 @@ btn_minus_cb(void *data, Evas_Object *obj EINA_UNUSED,
 }
 
 static void
-ctxpopup_it_cb(void *data, Evas_Object *obj, void *event_info)
+ctxpopup_it_cb(void *data EINA_UNUSED, Evas_Object *obj, void *event_info)
 {
    Elm_Object_Item *it = event_info;
    ctxpopup_data *ctxdata = evas_object_data_get(obj, "ctxpopup_data");
@@ -44,7 +44,8 @@ ctxpopup_it_cb(void *data, Evas_Object *obj, void *event_info)
 }
 
 static void
-slider_dismiss_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
+slider_dismiss_cb(void *data EINA_UNUSED, Evas_Object *obj,
+                  void *event_info EINA_UNUSED)
 {
    Evas_Object *layout = elm_object_content_get(obj);
    Evas_Object *slider = elm_object_part_content_get(layout,
@@ -75,7 +76,8 @@ slider_dismiss_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
 }
 
 static void
-ctxpopup_del_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
+ctxpopup_del_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+                void *event_info EINA_UNUSED)
 {
    free(data);
 }
@@ -175,7 +177,8 @@ ctxpopup_candidate_list_create(Evas_Object *parent, attr_value *attr,
 }
 
 static void
-ctxpopup_key_down_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
+ctxpopup_key_down_cb(void *data, Evas *e EINA_UNUSED,
+                     Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    Evas_Event_Key_Down *ev = event_info;
    ctxpopup_data *ctxdata = data;

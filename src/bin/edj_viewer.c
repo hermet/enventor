@@ -20,7 +20,7 @@ struct viewer_s
    Eina_Stringshare *part_name;
 
    Eina_Bool view_reload;
-   Eina_Bool dummy_obj;
+   Eina_Bool dummy_on;
 };
 
 static void
@@ -173,7 +173,7 @@ view_obj_idler_cb(void *data)
    event_layer_set(vd);
    elm_object_content_set(vd->scroller, vd->layout);
 
-   if (vd->dummy_obj)
+   if (vd->dummy_on)
      dummy_obj_new(vd->layout);
 
    return ECORE_CALLBACK_CANCEL;
@@ -182,9 +182,9 @@ view_obj_idler_cb(void *data)
 void
 view_dummy_toggle(view_data *vd, Eina_Bool msg)
 {
-   Eina_Bool dummy_obj = config_dummy_swallow_get(vd->cd);
-   if (dummy_obj == vd->dummy_obj) return;
-   if (dummy_obj)
+   Eina_Bool dummy_on = config_dummy_swallow_get(vd->cd);
+   if (dummy_on == vd->dummy_on) return;
+   if (dummy_on)
      {
         if (msg) stats_info_msg_update(vd->sd, "Dummy Swallow Enabled.");
         dummy_obj_new(vd->layout);
@@ -195,7 +195,7 @@ view_dummy_toggle(view_data *vd, Eina_Bool msg)
         dummy_obj_del(vd->layout);
      }
 
-   vd->dummy_obj = dummy_obj;
+   vd->dummy_on = dummy_on;
 }
 
 void
@@ -226,7 +226,7 @@ view_init(Evas_Object *parent, const char *group, stats_data *sd,
    vd->sd = sd;
    vd->cd = cd;
    vd->scroller = view_scroller_create(parent);
-   vd->dummy_obj = config_dummy_swallow_get(cd);
+   vd->dummy_on = config_dummy_swallow_get(cd);
 
    view_new(vd, group);
 

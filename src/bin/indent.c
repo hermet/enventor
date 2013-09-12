@@ -11,6 +11,7 @@ indent_data *
 indent_init(Eina_Strbuf *strbuf)
 {
    indent_data *id = malloc(sizeof(indent_data));
+   id->strbuf = strbuf;
    return id;
 }
 
@@ -21,7 +22,7 @@ indent_term(indent_data *id)
 }
 
 int
-indent_depth_get(indent_data *id, char *src, int pos)
+indent_depth_get(indent_data *id EINA_UNUSED, char *src, int pos)
 {
    if (!src || (pos < 1)) return 0;
 

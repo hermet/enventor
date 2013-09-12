@@ -140,7 +140,7 @@ indent_apply(edit_data *ed)
    int space = indent_space_get(ed);
 
    //Alloc Empty spaces
-   char *p = alloca(space) + 1;
+   char *p = alloca(space + 1);
    memset(p, ' ', space);
    p[space] = '\0';
 
@@ -148,7 +148,7 @@ indent_apply(edit_data *ed)
 }
 
 static void
-edit_changed_cb(void *data, Evas_Object *obj, void *event_info)
+edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    Elm_Entry_Change_Info *info = event_info;
    edit_data *ed = data;
@@ -230,7 +230,8 @@ edit_save(edit_data *ed)
 }
 
 static void
-ctxpopup_candidate_dismiss_cb(void *data, Evas_Object *obj, void *event_info)
+ctxpopup_candidate_dismiss_cb(void *data, Evas_Object *obj,
+                              void *event_info EINA_UNUSED)
 {
    edit_data *ed = data;
    evas_object_del(obj);
@@ -250,7 +251,8 @@ ctxpopup_candidate_selected_cb(void *data, Evas_Object *obj, void *event_info)
 }
 
 static void
-ctxpopup_preview_dismiss_cb(void *data, Evas_Object *obj, void *event_info)
+ctxpopup_preview_dismiss_cb(void *data, Evas_Object *obj,
+                            void *event_info EINA_UNUSED)
 {
    edit_data *ed = data;
    int skip_focus = (int) evas_object_data_get(obj, "continue");
@@ -260,13 +262,6 @@ ctxpopup_preview_dismiss_cb(void *data, Evas_Object *obj, void *event_info)
    if (skip_focus) return;
    elm_object_disabled_set(ed->layout, EINA_FALSE);
    elm_object_focus_set(ed->en_edit, EINA_TRUE);
-}
-
-static void
-ctxpopup_preview_selected_cb(void *data, Evas_Object *obj, void *event_info)
-{
-   edit_data *ed = data;
-   elm_ctxpopup_dismiss(obj);
 }
 
 void
@@ -317,7 +312,7 @@ edit_template_insert(edit_data *ed)
    int space = indent_space_get(ed);
 
    //Alloc Empty spaces
-   char *p = alloca(space) + 1;
+   char *p = alloca(space + 1);
    memset(p, ' ', space);
    p[space] = '\0';
 
@@ -349,7 +344,7 @@ edit_template_part_insert(edit_data *ed, Edje_Part_Type type)
    int space = indent_space_get(ed);
 
    //Alloc Empty spaces
-   char *p = alloca(space) + 1;
+   char *p = alloca(space + 1);
    memset(p, ' ', space);
    p[space] = '\0';
 
@@ -386,7 +381,14 @@ edit_template_part_insert(edit_data *ed, Edje_Part_Type type)
            strcpy(part, "Spacer");
            break;
         case EDJE_PART_TYPE_IMAGE:
-        defaut:
+        case EDJE_PART_TYPE_NONE:
+        case EDJE_PART_TYPE_GRADIENT:
+        case EDJE_PART_TYPE_GROUP:
+        case EDJE_PART_TYPE_BOX:
+        case EDJE_PART_TYPE_TABLE:
+        case EDJE_PART_TYPE_EXTERNAL:
+        case EDJE_PART_TYPE_PROXY:
+        case EDJE_PART_TYPE_LAST:
            line_cnt = TEMPLATE_PART_IMAGE_LINE_CNT;
            t = (char **) &TEMPLATE_PART_IMAGE;
            strcpy(part, "Image");
@@ -599,10 +601,8 @@ edit_cursor_double_clicked_cb(void *data, Evas_Object *obj,
         image_preview_show(ed, cur, x, y);
      }
    else
-     {
-        candidate_list_show(ed, text, cur, selected);
-     }
-end:
+     candidate_list_show(ed, text, cur, selected);
+
    if (selected) free(selected);
    if (text) free(text);
 }

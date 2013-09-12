@@ -73,7 +73,7 @@ dummy_objs_update(dummy_obj *dummy)
              if (edje_object_part_swallow_get(dummy->layout, part_name))
                continue;
 
-             part_obj *po = malloc(sizeof(part_obj));
+             po = malloc(sizeof(part_obj));
              if (!po) continue;
 
              //New part. Add fake object.

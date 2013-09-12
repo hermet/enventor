@@ -176,7 +176,7 @@ parser_type_init(parser_data *pd)
 
 char *parser_name_get(parser_data *pd EINA_UNUSED, const char *cur)
 {
-   if (!cur) return;
+   if (!cur) return NULL;
 
    char *p = (char *) cur;
    char *end;
@@ -382,7 +382,7 @@ part_name_thread_cancel(void *data, Ecore_Thread *thread EINA_UNUSED)
 }
 
 const char *
-parser_paragh_name_get(parser_data *pd, Evas_Object *entry)
+parser_paragh_name_get(parser_data *pd EINA_UNUSED, Evas_Object *entry)
 {
    //FIXME: list up groups
 #define GROUP_CNT 13
@@ -411,13 +411,13 @@ parser_paragh_name_get(parser_data *pd, Evas_Object *entry)
 
    Evas_Object *tb = elm_entry_textblock_get(entry);
    char *text = (char *) evas_object_textblock_text_markup_get(tb);
-   if (!text) return;
+   if (!text) return NULL;
 
    char *utf8 = elm_entry_markup_to_utf8(text);
-   if (!utf8) return;
+   if (!utf8) return NULL;
 
    int cur_pos = elm_entry_cursor_pos_get(entry);
-   if (cur_pos < 1) return 0;
+   if (cur_pos < 1) return NULL;
 
    const char *quot = QUOT;
    int quot_len = QUOT_LEN;
