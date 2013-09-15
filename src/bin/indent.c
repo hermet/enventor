@@ -141,6 +141,41 @@ indent_insert_bracket_case(indent_data *id, Evas_Object *entry, int cur_line)
 }
 
 void
+indent_delete_apply(indent_data *id, Evas_Object *entry, const char *insert,
+                    int cur_line)
+{
+   if (insert[0] != ' ') return;
+
+   Evas_Object *tb = elm_entry_textblock_get(entry);
+   Evas_Textblock_Cursor *cur = evas_object_textblock_cursor_new(tb);
+   evas_textblock_cursor_line_set(cur, cur_line - 1);
+   const char *text = evas_textblock_cursor_paragraph_text_get(cur);
+   char *utf8 = elm_entry_markup_to_utf8(text);
+
+   int len = strlen(utf8);
+   if (len < 0) return;
+
+   evas_textblock_cursor_paragraph_char_last(cur);
+
+   while (len > 0)
+     {
+        if ((utf8[(len - 1)] == ' '))
+          {
+             evas_textblock_cursor_char_prev(cur);
+             evas_textblock_cursor_char_delete(cur);
+          }
+        else break;
+        len--;
+     }
+
+   if (len == 0) evas_textblock_cursor_char_delete(cur);
+   elm_entry_calc_force(entry);
+   evas_textblock_cursor_free(cur);
+   free(utf8);
+   if (len == 0) elm_entry_cursor_prev(entry);
+}
+
+void
 indent_insert_apply(indent_data *id, Evas_Object *entry, const char *insert,
                     int cur_line)
 {
