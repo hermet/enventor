@@ -64,80 +64,88 @@ indent_space_get(indent_data *id, Evas_Object *entry)
    return space;
 }
 
+static void
+indent_insert_br_case(indent_data *id, Evas_Object *entry)
+{
+   Evas_Object *tb = elm_entry_textblock_get(entry);
+   Evas_Textblock_Cursor *cur = evas_object_textblock_cursor_get(tb);
+   const char *text = evas_textblock_cursor_paragraph_text_get(cur);
+   char *utf8 = elm_entry_markup_to_utf8(text);
+   if (strstr(utf8, "}"))
+     {
+        //FIXME: ..
+        return;
+     }
+
+   int space = indent_space_get(id, entry);
+   //Alloc Empty spaces
+   char *p = alloca(space + 1);
+   memset(p, ' ', space);
+   p[space] = '\0';
+
+   elm_entry_entry_insert(entry, p);
+}
+
+static void
+indent_insert_bracket_case(indent_data *id, Evas_Object *entry, int cur_line)
+{
+   Evas_Object *tb = elm_entry_textblock_get(entry);
+   Evas_Textblock_Cursor *cur = evas_object_textblock_cursor_new(tb);
+   evas_textblock_cursor_line_set(cur, cur_line - 1);
+   const char *text = evas_textblock_cursor_paragraph_text_get(cur);
+   char *utf8 = elm_entry_markup_to_utf8(text);
+
+   int len = strlen(utf8) - 1;
+   if (len < 0) return;
+
+   while (len)
+     {
+        if (utf8[len] == '}') break;
+        len--;
+     }
+
+   int space = indent_space_get(id, entry);
+   if (space == len) return;
+
+   int i = 0;
+   if (len > space)
+     {
+        evas_textblock_cursor_paragraph_char_last(cur);
+        evas_textblock_cursor_char_prev(cur);
+
+        while (i < (len - space))
+          {
+             if ((utf8[(len - 1) - i] == ' ') &&
+                 (utf8[(len - 2) - i] == ' '))
+               {
+                  evas_textblock_cursor_char_prev(cur);
+                  evas_textblock_cursor_char_delete(cur);
+               }
+             else break;
+             i++;
+          }
+     }
+   else
+     {
+        //Alloc Empty spaces
+        space = (space - len);
+        char *p = alloca(space + 1);
+        memset(p, ' ', space);
+        p[space] = '\0';
+        evas_textblock_cursor_text_prepend(cur, p);
+     }
+
+   elm_entry_calc_force(entry);
+   evas_textblock_cursor_free(cur);
+   free(utf8);
+}
+
 void
 indent_insert_apply(indent_data *id, Evas_Object *entry, const char *insert,
                     int cur_line)
 {
-   Evas_Object *tb = elm_entry_textblock_get(entry);
-
    if (!strcmp(insert, "<br/>"))
-     {
-        Evas_Textblock_Cursor *cur = evas_object_textblock_cursor_get(tb);
-        const char *text = evas_textblock_cursor_paragraph_text_get(cur);
-        char *utf8 = elm_entry_markup_to_utf8(text);
-        if (strstr(utf8, "}"))
-          {
-             //FIXME: ..
-             return;
-          }
-
-        int space = indent_space_get(id, entry);
-        //Alloc Empty spaces
-        char *p = alloca(space + 1);
-        memset(p, ' ', space);
-        p[space] = '\0';
-
-        elm_entry_entry_insert(entry, p);
-     }
+     indent_insert_br_case(id, entry);
    else if (insert[0] == '}')
-     {
-        Evas_Textblock_Cursor *cur = evas_object_textblock_cursor_new(tb);
-        evas_textblock_cursor_line_set(cur, cur_line - 1);
-        const char *text = evas_textblock_cursor_paragraph_text_get(cur);
-        char *utf8 = elm_entry_markup_to_utf8(text);
-
-        int len = strlen(utf8) - 1;
-        if (len < 0) return;
-
-        while (len)
-          {
-             if (utf8[len] == '}') break;
-             len--;
-          }
-
-        int space = indent_space_get(id, entry);
-        if (space == len) return;
-
-        int i = 0;
-        if (len > space)
-          {
-             evas_textblock_cursor_paragraph_char_last(cur);
-             evas_textblock_cursor_char_prev(cur);
-
-             while (i < (len - space))
-               {
-                  if ((utf8[(len - 1) - i] == ' ') &&
-                      (utf8[(len - 2) - i] == ' '))
-                    {
-                       evas_textblock_cursor_char_prev(cur);
-                       evas_textblock_cursor_char_delete(cur);
-                    }
-                  else break;
-                  i++;
-               }
-          }
-        else
-          {
-             //Alloc Empty spaces
-             space = (space - len);
-             char *p = alloca(space + 1);
-             memset(p, ' ', space);
-             p[space] = '\0';
-             evas_textblock_cursor_text_prepend(cur, p);
-          }
-
-        elm_entry_calc_force(entry);
-        evas_textblock_cursor_free(cur);
-        free(utf8);
-     }
+     indent_insert_bracket_case(id, entry, cur_line);
 }
