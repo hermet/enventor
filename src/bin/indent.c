@@ -152,10 +152,10 @@ indent_insert_bracket_case(indent_data *id, Evas_Object *entry, int cur_line)
 }
 
 void
-indent_delete_apply(indent_data *id, Evas_Object *entry, const char *insert,
+indent_delete_apply(indent_data *id, Evas_Object *entry, const char *del,
                     int cur_line)
 {
-   if (insert[0] != ' ') return;
+   if (del[0] != ' ') return;
 
    Evas_Object *tb = elm_entry_textblock_get(entry);
    Evas_Textblock_Cursor *cur = evas_object_textblock_cursor_new(tb);
