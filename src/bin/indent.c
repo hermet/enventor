@@ -152,8 +152,8 @@ indent_insert_bracket_case(indent_data *id, Evas_Object *entry, int cur_line)
 }
 
 Eina_Bool
-indent_delete_apply(indent_data *id, Evas_Object *entry, const char *del,
-                    int cur_line)
+indent_delete_apply(indent_data *id EINA_UNUSED, Evas_Object *entry,
+                    const char *del, int cur_line)
 {
    if (del[0] != ' ') return EINA_FALSE;
 
