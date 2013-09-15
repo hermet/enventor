@@ -65,10 +65,22 @@ indent_space_get(indent_data *id, Evas_Object *entry)
 }
 
 void
-indent_insert_apply(indent_data *id, Evas_Object *entry, const char *insert, int cur_line)
+indent_insert_apply(indent_data *id, Evas_Object *entry, const char *insert,
+                    int cur_line)
 {
+   Evas_Object *tb = elm_entry_textblock_get(entry);
+
    if (!strcmp(insert, "<br/>"))
      {
+        Evas_Textblock_Cursor *cur = evas_object_textblock_cursor_get(tb);
+        const char *text = evas_textblock_cursor_paragraph_text_get(cur);
+        char *utf8 = elm_entry_markup_to_utf8(text);
+        if (strstr(utf8, "}"))
+          {
+             //FIXME: ..
+             return;
+          }
+
         int space = indent_space_get(id, entry);
         //Alloc Empty spaces
         char *p = alloca(space + 1);
@@ -79,7 +91,6 @@ indent_insert_apply(indent_data *id, Evas_Object *entry, const char *insert, int
      }
    else if (insert[0] == '}')
      {
-        Evas_Object *tb = elm_entry_textblock_get(entry);
         Evas_Textblock_Cursor *cur = evas_object_textblock_cursor_new(tb);
         evas_textblock_cursor_line_set(cur, cur_line - 1);
         const char *text = evas_textblock_cursor_paragraph_text_get(cur);
@@ -105,7 +116,8 @@ indent_insert_apply(indent_data *id, Evas_Object *entry, const char *insert, int
 
              while (i < (len - space))
                {
-                  if (utf8[(len - 1) - i] == ' ')
+                  if ((utf8[(len - 1) - i] == ' ') &&
+                      (utf8[(len - 2) - i] == ' '))
                     {
                        evas_textblock_cursor_char_prev(cur);
                        evas_textblock_cursor_char_delete(cur);
