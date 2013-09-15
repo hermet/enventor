@@ -124,6 +124,12 @@ indent_insert_bracket_case(indent_data *id, Evas_Object *entry, int cur_line)
              else break;
              i++;
           }
+        //leftover
+        if (space == 0 && utf8[0] ==  ' ')
+          {
+             evas_textblock_cursor_char_prev(cur);
+             evas_textblock_cursor_char_delete(cur);
+          }
      }
    else
      {
