@@ -71,7 +71,7 @@ indent_insert_br_case(indent_data *id, Evas_Object *entry)
    Evas_Textblock_Cursor *cur = evas_object_textblock_cursor_get(tb);
    const char *text = evas_textblock_cursor_paragraph_text_get(cur);
    char *utf8 = elm_entry_markup_to_utf8(text);
-   if (strstr(utf8, "}"))
+   if (strlen(utf8) > 0)
      {
         //FIXME: ..
         return;
