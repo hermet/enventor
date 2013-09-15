@@ -145,16 +145,22 @@ edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
      }
    else
      {
+        int decrease = 0;
         if (!strcmp(info->change.del.content, "<br/>"))
           {
-             line_decrease(ed, 1);
+             decrease++;
              syntax_color = EINA_FALSE;
           }
 
         if (config_auto_indent_get(ed->cd))
-          indent_delete_apply(syntax_indent_data_get(ed->sh), ed->en_edit,
-                              info->change.del.content, ed->cur_line);
+          {
+             if (indent_delete_apply(syntax_indent_data_get(ed->sh),
+                                     ed->en_edit, info->change.del.content,
+                                     ed->cur_line))
+               decrease++;
+          }
 
+        line_decrease(ed, decrease);
         if (info->change.del.content[0] == ' ') return;
      }
 
