@@ -1,14 +1,6 @@
 #ifndef __COMMON_H__
 #define __COMMON_H__
 
-struct attr_value_s
-{
-   Eina_List *strs;
-   float min;
-   float max;
-   Eina_Bool integer : 1;
-};
-
 typedef struct menu_s menu_data;
 typedef struct viewer_s view_data;
 typedef struct app_s app_data;

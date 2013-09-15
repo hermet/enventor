@@ -20,6 +20,7 @@ struct editor_s
    parser_data *pd;
    view_data *vd;
 
+   int cur_line;
    int line_max;
    Eina_Stringshare *group_name;
    Eina_Stringshare *part_name;
@@ -46,8 +47,6 @@ edit_vd_set(edit_data *ed, view_data *vd)
 static int
 indent_space_get(edit_data *ed)
 {
-   const int TAB_SPACE = 3;
-
    //Get the indentation depth
    int pos = elm_entry_cursor_pos_get(ed->en_edit);
    char *src = elm_entry_markup_to_utf8(elm_entry_entry_get(ed->en_edit));
@@ -59,7 +58,7 @@ indent_space_get(edit_data *ed)
 }
 
 static void
-last_line_inc(edit_data *ed)
+line_increase(edit_data *ed)
 {
    char buf[MAX_LINE_DIGIT_CNT];
 
@@ -135,16 +134,51 @@ syntax_color_animator_cb(void *data)
 }
 
 static void
-indent_apply(edit_data *ed)
+indent_apply(edit_data *ed, const char *insert)
 {
-   int space = indent_space_get(ed);
+   if (!strcmp(insert, "<br/>"))
+     {
+        int space = indent_space_get(ed);
 
-   //Alloc Empty spaces
-   char *p = alloca(space + 1);
-   memset(p, ' ', space);
-   p[space] = '\0';
+        //Alloc Empty spaces
+        char *p = alloca(space + 1);
+        memset(p, ' ', space);
+        p[space] = '\0';
 
-   elm_entry_entry_insert(ed->en_edit, p);
+        elm_entry_entry_insert(ed->en_edit, p);
+     }
+   else if (insert[0] == '}')
+     {
+        int space = indent_space_get(ed);
+
+        Evas_Object *tb = elm_entry_textblock_get(ed->en_edit);
+        Evas_Textblock_Cursor *cur = evas_object_textblock_cursor_new(tb);
+        evas_textblock_cursor_line_set(cur, ed->cur_line - 1);
+        const char *p = evas_textblock_cursor_paragraph_text_get(cur);
+        char *utf8 = elm_entry_markup_to_utf8(p);
+
+        int len = strlen(utf8) - 2;
+        if (len < 1) return;
+        int i = 0;
+
+        evas_textblock_cursor_paragraph_char_last(cur);
+        evas_textblock_cursor_char_prev(cur);
+
+        while (i < TAB_SPACE)
+          {
+             if (utf8[len - i] == ' ')
+               {
+                  evas_textblock_cursor_char_prev(cur);
+                  evas_textblock_cursor_char_delete(cur);
+               }
+             else
+               break;
+             i++;
+          }
+        elm_entry_calc_force(ed->en_edit);
+        evas_textblock_cursor_free(cur);
+        free(utf8);
+     }
 }
 
 static void
@@ -158,16 +192,15 @@ edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 
    if (info->insert)
      {
+        //Check the deleted line
         if (!strcmp(info->change.insert.content, "<br/>"))
           {
-             last_line_inc(ed);
-             if (config_auto_indent_get(ed->cd)) indent_apply(ed);
+             line_increase(ed);
              syntax_color = EINA_FALSE;
           }
-        else if (info->change.insert.content[0] == '}')
-          {
-             //TODO: auto indent.
-          }
+
+        if (config_auto_indent_get(ed->cd))
+          indent_apply(ed, info->change.insert.content);
      }
    else
      {
@@ -213,14 +246,15 @@ edit_save(edit_data *ed)
      }
 
    const char *text = elm_entry_entry_get(ed->en_edit);
-   Evas_Object *tb = elm_entry_textblock_get(ed->en_edit);
-   const char *text2 = evas_textblock_text_markup_to_utf8(tb, text);
+   char *utf8 = elm_entry_markup_to_utf8(text);
 
    FILE *fp = fopen(config_edc_path_get(ed->cd), "w");
    if (!fp) return EINA_FALSE;
 
-   fputs(text2, fp);
+   fputs(utf8, fp);
    fclose(fp);
+
+   free(utf8);
 
    save_msg_show(ed);
    //FIXME: If compile edc here? we can edit_changed FALSE;
@@ -321,7 +355,7 @@ edit_template_insert(edit_data *ed)
      {
         elm_entry_entry_insert(ed->en_edit, p);
         elm_entry_entry_insert(ed->en_edit, t[i]);
-        last_line_inc(ed);
+        line_increase(ed);
      }
 
    elm_entry_cursor_pos_set(ed->en_edit, cursor_pos);
@@ -400,7 +434,7 @@ edit_template_part_insert(edit_data *ed, Edje_Part_Type type)
      {
         elm_entry_entry_insert(ed->en_edit, p);
         elm_entry_entry_insert(ed->en_edit, t[i]);
-        last_line_inc(ed);
+        line_increase(ed);
      }
 
    elm_entry_cursor_pos_set(ed->en_edit, cursor_pos);
@@ -432,7 +466,8 @@ cur_line_pos_set(edit_data *ed)
 
    Evas_Coord y, h;
    elm_entry_cursor_geometry_get(ed->en_edit, NULL, &y, NULL, &h);
-   stats_line_num_update(ed->sd, (y / h) + 1, ed->line_max);
+   ed->cur_line = (y / h) + 1;
+   stats_line_num_update(ed->sd, ed->cur_line, ed->line_max);
 }
 
 static void
