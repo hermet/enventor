@@ -131,6 +131,7 @@ edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 
    if (info->insert)
      {
+        if (info->change.insert.content[0] == ' ') return;
         //Check the deleted line
         if (!strcmp(info->change.insert.content, "<br/>"))
           {
@@ -144,6 +145,8 @@ edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
      }
    else
      {
+        if (info->change.del.content[0] == ' ') return;
+
         //Check the deleted line
         if (!strcmp(info->change.del.content, "<br/>"))
           {
