@@ -3,4 +3,6 @@
 indent_data *indent_init(Eina_Strbuf *strbuf);
 void indent_term(indent_data *id);
 indent_data * syntax_indent_data_get(syntax_helper *sh);
-int indent_depth_get(indent_data *id, char *src, int pos);
+int indent_space_get(indent_data *id, Evas_Object *entry);
+void indent_insert_apply(indent_data *id, Evas_Object *entry, const char *insert, int cur_line);
+
