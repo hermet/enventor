@@ -23,7 +23,6 @@ struct editor_s
    int cur_line;
    int line_max;
    Eina_Stringshare *group_name;
-   Eina_Stringshare *part_name;
 
    Ecore_Idler *syntax_color_timer;
 
@@ -594,35 +593,20 @@ edit_cursor_double_clicked_cb(void *data, Evas_Object *obj,
 }
 
 static void
-part_name_get_cb(void *data, Eina_Stringshare *part_name)
+cur_name_get_cb(void *data, Eina_Stringshare *part_name,
+                 Eina_Stringshare *group_name)
 {
    edit_data *ed = data;
-   ed->part_name = part_name;
    if (ed->part_changed_cb)
-     ed->part_changed_cb(ed->part_changed_cb_data, ed->part_name);
-}
-
-static void
-group_name_get_cb(void *data, Eina_Stringshare *part_name)
-{
-   edit_data *ed = data;
-/*   ed->part_name = part_name;
-   if (ed->part_changed_cb)
-     ed->part_changed_cb(ed->part_changed_cb_data, ed->part_name); */
+     ed->part_changed_cb(ed->part_changed_cb_data, part_name);
 }
 
 void
-edit_cur_part_update(edit_data *ed)
+edit_view_sync(edit_data *ed)
 {
    if (!config_part_highlight_get(ed->cd)) return;
 
-   parser_part_name_get(ed->pd, ed->en_edit, part_name_get_cb, ed);
-}
-
-static void
-edit_cur_group_update(edit_data *ed)
-{
-   parser_group_name_get(ed->pd, ed->en_edit, group_name_get_cb, ed);
+   parser_cur_name_get(ed->pd, ed->en_edit, cur_name_get_cb, ed);
 }
 
 static void
@@ -631,8 +615,7 @@ edit_cursor_changed_cb(void *data, Evas_Object *obj EINA_UNUSED,
 {
    edit_data *ed = data;
    cur_line_pos_set(ed);
-   edit_cur_group_update(ed);
-   edit_cur_part_update(ed);
+   edit_view_sync(ed);
 }
 
 void

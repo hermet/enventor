@@ -19,8 +19,10 @@ typedef struct cur_name_thread_data_s
    parser_data *pd;
    char *utf8;
    int cur_pos;
-   const char *cur_name;
-   void (*cb)(void *data, Eina_Stringshare *cur_name);
+   const char *part_name;
+   const char *group_name;
+   void (*cb)(void *data, Eina_Stringshare *part_name,
+              Eina_Stringshare *group_name);
    void *cb_data;
 } cur_name_td;
 
@@ -359,15 +361,14 @@ end:
         free(utf8);
         td->utf8 = NULL;
      }
-   td->cur_name = part_name;
+   td->part_name = part_name;
 }
 
 static void
 part_name_thread_end(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
    cur_name_td *td = data;
-   Eina_Stringshare *part_name = td->cur_name;
-   td->cb(td->cb_data, part_name);
+   td->cb(td->cb_data, td->part_name, td->group_name);
    td->pd->thread = NULL;
    free(td);
 }
@@ -470,14 +471,7 @@ parser_paragh_name_get(parser_data *pd EINA_UNUSED, Evas_Object *entry)
 }
 
 void
-parser_group_name_get(parser_data *pd, Evas_Object *entry, void (*cb)(void *data, Eina_Stringshare *group_name), void *data)
-{
-
-
-}
-
-void
-parser_part_name_get(parser_data *pd, Evas_Object *entry, void (*cb)(void *data, Eina_Stringshare *part_name), void *data)
+parser_cur_name_get(parser_data *pd, Evas_Object *entry, void (*cb)(void *data, Eina_Stringshare *part_name, Eina_Stringshare *group_name), void *data)
 {
    if (pd->thread) ecore_thread_cancel(pd->thread);
 

@@ -183,7 +183,7 @@ static void
 part_highlight_toggle(app_data *ad, Eina_Bool msg)
 {
    Eina_Bool highlight = config_part_highlight_get(ad->cd);
-   if (highlight) edit_cur_part_update(ad->ed);
+   if (highlight) edit_view_sync(ad->ed);
    else view_part_highlight_set(ad->vd, NULL);
 
    if (!msg) return;
