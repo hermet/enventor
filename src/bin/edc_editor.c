@@ -433,7 +433,6 @@ program_run(edit_data *ed, char *cur)
      }
 }
 
-
 //This function is called when user press up/down key or mouse wheel up/down
 static void
 preview_img_relay_show(edit_data *ed, Evas_Object *ctxpopup, Eina_Bool next)
@@ -603,6 +602,15 @@ part_name_get_cb(void *data, Eina_Stringshare *part_name)
      ed->part_changed_cb(ed->part_changed_cb_data, ed->part_name);
 }
 
+static void
+group_name_get_cb(void *data, Eina_Stringshare *part_name)
+{
+   edit_data *ed = data;
+/*   ed->part_name = part_name;
+   if (ed->part_changed_cb)
+     ed->part_changed_cb(ed->part_changed_cb_data, ed->part_name); */
+}
+
 void
 edit_cur_part_update(edit_data *ed)
 {
@@ -612,11 +620,18 @@ edit_cur_part_update(edit_data *ed)
 }
 
 static void
+edit_cur_group_update(edit_data *ed)
+{
+   parser_group_name_get(ed->pd, ed->en_edit, group_name_get_cb, ed);
+}
+
+static void
 edit_cursor_changed_cb(void *data, Evas_Object *obj EINA_UNUSED,
                        void *event_info EINA_UNUSED)
 {
    edit_data *ed = data;
    cur_line_pos_set(ed);
+   edit_cur_group_update(ed);
    edit_cur_part_update(ed);
 }
 
@@ -798,7 +813,7 @@ edit_edc_read(edit_data *ed, const char *file_path)
 
    ed->line_max = line_num;
    if (ed->group_name) eina_stringshare_del(ed->group_name);
-   ed->group_name = parser_group_name_get(ed->pd, ed->en_edit);
+   ed->group_name = parser_first_group_name_get(ed->pd, ed->en_edit);
 
    stats_edc_file_set(ed->sd, ed->group_name);
    ecore_animator_add(syntax_color_animator_cb, ed);

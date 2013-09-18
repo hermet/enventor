@@ -14,15 +14,15 @@ typedef struct parser_attr_s
    attr_value value;
 } parser_attr;
 
-typedef struct part_name_thread_data_s
+typedef struct cur_name_thread_data_s
 {
    parser_data *pd;
    char *utf8;
    int cur_pos;
-   const char *part_name;
-   void (*cb)(void *data, Eina_Stringshare *part_name);
+   const char *cur_name;
+   void (*cb)(void *data, Eina_Stringshare *cur_name);
    void *cb_data;
-} part_name_td;
+} cur_name_td;
 
 static void
 parser_type_init(parser_data *pd)
@@ -276,7 +276,7 @@ parser_markup_escape(parser_data *pd EINA_UNUSED, const char *str)
 static void
 part_name_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
-   part_name_td *td = data;
+   cur_name_td *td = data;
 
    char *utf8 = td->utf8;
    int cur_pos = td->cur_pos;
@@ -359,14 +359,14 @@ end:
         free(utf8);
         td->utf8 = NULL;
      }
-   td->part_name = part_name;
+   td->cur_name = part_name;
 }
 
 static void
 part_name_thread_end(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
-   part_name_td *td = data;
-   Eina_Stringshare *part_name = td->part_name;
+   cur_name_td *td = data;
+   Eina_Stringshare *part_name = td->cur_name;
    td->cb(td->cb_data, part_name);
    td->pd->thread = NULL;
    free(td);
@@ -375,7 +375,7 @@ part_name_thread_end(void *data, Ecore_Thread *thread EINA_UNUSED)
 static void
 part_name_thread_cancel(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
-   part_name_td *td = data;
+   cur_name_td *td = data;
    td->pd->thread = NULL;
    if (td->utf8) free(td->utf8);
    free(td);
@@ -470,11 +470,18 @@ parser_paragh_name_get(parser_data *pd EINA_UNUSED, Evas_Object *entry)
 }
 
 void
+parser_group_name_get(parser_data *pd, Evas_Object *entry, void (*cb)(void *data, Eina_Stringshare *group_name), void *data)
+{
+
+
+}
+
+void
 parser_part_name_get(parser_data *pd, Evas_Object *entry, void (*cb)(void *data, Eina_Stringshare *part_name), void *data)
 {
    if (pd->thread) ecore_thread_cancel(pd->thread);
 
-   part_name_td *td = calloc(1, sizeof(part_name_td));
+   cur_name_td *td = calloc(1, sizeof(cur_name_td));
    if (!td) return;
 
    Evas_Object *tb = elm_entry_textblock_get(entry);
@@ -497,7 +504,7 @@ parser_part_name_get(parser_data *pd, Evas_Object *entry, void (*cb)(void *data,
 }
 
 Eina_Stringshare
-*parser_group_name_get(parser_data *pd EINA_UNUSED, Evas_Object *entry)
+*parser_first_group_name_get(parser_data *pd EINA_UNUSED, Evas_Object *entry)
 {
    Evas_Object *tb = elm_entry_textblock_get(entry);
    char *text = (char *) evas_object_textblock_text_markup_get(tb);

@@ -244,7 +244,6 @@ view_term(view_data *vd)
    if (vd->part_obj)
      evas_object_event_callback_del(vd->part_obj, EVAS_CALLBACK_DEL,
                                     part_obj_del_cb);
-
    free(vd);
 }
 
@@ -308,4 +307,10 @@ view_part_highlight_set(view_data *vd, const char *part_name)
    vd->part_obj = part_obj;
    eina_stringshare_replace(&vd->part_name, part_name);
    part_obj_geom_cb(vd, evas_object_evas_get(vd->layout), part_obj, NULL);
+}
+
+Eina_Stringshare *
+view_group_name_get(view_data *vd)
+{
+   return vd->group_name;
 }
