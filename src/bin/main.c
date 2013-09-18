@@ -404,7 +404,8 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
 }
 
 static void
-part_changed_cb(void *data, const char *part_name)
+view_sync_cb(void *data, Eina_Stringshare *part_name,
+             Eina_Stringshare *group_name)
 {
    app_data *ad = data;
    view_part_highlight_set(ad->vd, part_name);
@@ -416,7 +417,7 @@ edc_edit_set(app_data *ad, stats_data *sd, config_data *cd)
    edit_data *ed = edit_init(ad->panes, sd, cd);
    edit_edc_read(ed, config_edc_path_get(cd));
    elm_object_part_content_set(ad->panes, "right", edit_obj_get(ed));
-   edit_part_changed_cb_set(ed, part_changed_cb, ad);
+   edit_view_sync_cb_set(ed, view_sync_cb, ad);
    ad->ed = ed;
 }
 
@@ -457,7 +458,7 @@ config_update_cb(void *data, config_data *cd)
         rebuild_edc();
         edit_changed_set(ad->ed, EINA_FALSE);
         view_new(ad->vd, stats_group_name_get(ad->sd));
-        part_changed_cb(ad, NULL);
+        view_sync_cb(ad, NULL, NULL);
         if (ad->edc_monitor) eio_monitor_del(ad->edc_monitor);
         ad->edc_monitor = eio_monitor_add(config_edc_path_get(ad->cd));
      }

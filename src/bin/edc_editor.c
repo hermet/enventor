@@ -25,8 +25,9 @@ struct editor_s
 
    Ecore_Idler *syntax_color_timer;
 
-   void (*part_changed_cb)(void *data, const char *part_name);
-   void *part_changed_cb_data;
+   void (*view_sync_cb)(void *data, Eina_Stringshare *part_name,
+                         Eina_Stringshare *group_name);
+   void *view_sync_cb_data;
 
    Eina_Bool edit_changed : 1;
    Eina_Bool linenumber : 1;
@@ -596,8 +597,9 @@ cur_name_get_cb(void *data, Eina_Stringshare *part_name,
                  Eina_Stringshare *group_name)
 {
    edit_data *ed = data;
-   if (ed->part_changed_cb)
-     ed->part_changed_cb(ed->part_changed_cb_data, part_name);
+
+   if (ed->view_sync_cb)
+     ed->view_sync_cb(ed->view_sync_cb_data, part_name, group_name);
 }
 
 void
@@ -618,10 +620,12 @@ edit_cursor_changed_cb(void *data, Evas_Object *obj EINA_UNUSED,
 }
 
 void
-edit_part_changed_cb_set(edit_data *ed, void (*cb)(void *data, const char *part_name), void *data)
+edit_view_sync_cb_set(edit_data *ed,
+                      void (*cb)(void *data, Eina_Stringshare *part_name,
+                                 Eina_Stringshare *group_name), void *data)
 {
-   ed->part_changed_cb = cb;
-   ed->part_changed_cb_data = data;
+   ed->view_sync_cb = cb;
+   ed->view_sync_cb_data = data;
 }
 
 static Eina_Bool
