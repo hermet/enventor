@@ -423,7 +423,7 @@ edc_edit_set(app_data *ad, stats_data *sd, config_data *cd)
 static void
 edc_view_set(app_data *ad, config_data *cd, stats_data *sd)
 {
-   const char *group = edit_group_name_get(ad->ed);
+   const char *group = stats_group_name_get(ad->sd);
    view_data *vd = view_init(ad->panes, group, sd, cd);
    elm_object_part_content_set(ad->panes, "left", view_obj_get(vd));
    ad->vd = vd;
@@ -456,7 +456,7 @@ config_update_cb(void *data, config_data *cd)
      {
         rebuild_edc();
         edit_changed_set(ad->ed, EINA_FALSE);
-        view_new(ad->vd, edit_group_name_get(ad->ed));
+        view_new(ad->vd, stats_group_name_get(ad->sd));
         part_changed_cb(ad, NULL);
         if (ad->edc_monitor) eio_monitor_del(ad->edc_monitor);
         ad->edc_monitor = eio_monitor_add(config_edc_path_get(ad->cd));

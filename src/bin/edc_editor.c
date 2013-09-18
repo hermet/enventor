@@ -22,7 +22,6 @@ struct editor_s
 
    int cur_line;
    int line_max;
-   Eina_Stringshare *group_name;
 
    Ecore_Idler *syntax_color_timer;
 
@@ -750,7 +749,6 @@ edit_term(edit_data *ed)
    syntax_helper *sh = ed->sh;
    parser_data *pd = ed->pd;
 
-   if (ed->group_name) eina_stringshare_del(ed->group_name);
    if (ed->syntax_color_timer) ecore_timer_del(ed->syntax_color_timer);
    free(ed);
 
@@ -795,10 +793,10 @@ edit_edc_read(edit_data *ed, const char *file_path)
    elm_entry_entry_append(ed->en_edit, eina_strbuf_string_get(strbuf));
 
    ed->line_max = line_num;
-   if (ed->group_name) eina_stringshare_del(ed->group_name);
-   ed->group_name = parser_first_group_name_get(ed->pd, ed->en_edit);
+   Eina_Stringshare *group_name =
+      parser_first_group_name_get(ed->pd, ed->en_edit);
 
-   stats_edc_file_set(ed->sd, ed->group_name);
+   stats_edc_file_set(ed->sd, group_name);
    ecore_animator_add(syntax_color_animator_cb, ed);
 
 err:
@@ -850,12 +848,6 @@ edit_new(edit_data *ed)
    snprintf(buf, sizeof(buf), "File Path: \"%s\"",
             config_edc_path_get(ed->cd));
    stats_info_msg_update(ed->sd, buf);
-}
-
-const char *
-edit_group_name_get(edit_data *ed)
-{
-   return ed->group_name;
 }
 
 void

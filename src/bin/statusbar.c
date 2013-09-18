@@ -4,6 +4,7 @@
 struct statusbar_s
 {
    Evas_Object *layout;
+   Eina_Stringshare *group_name;
    config_data *cd;
 };
 
@@ -17,12 +18,14 @@ stats_line_num_update(stats_data *sd, int cur_line, int max_line)
 }
 
 void
-stats_edc_file_set(stats_data *sd, const char *group_name)
+stats_edc_file_set(stats_data *sd, Eina_Stringshare *group_name)
 {
    char buf[PATH_MAX];
    const char *filename = ecore_file_file_get(config_edc_path_get(sd->cd));
    snprintf(buf, sizeof(buf), "<align=right>File [<color=#000000>%s</color>]    Group [<color=#000000>%s</color>]</align>", filename, group_name);
    elm_object_part_text_set(sd->layout, "elm.text.file_group_name", buf);
+
+   sd->group_name = eina_stringshare_add(group_name);
 }
 
 stats_data *
@@ -52,10 +55,16 @@ stats_obj_get(stats_data *sd)
    return sd->layout;
 }
 
+Eina_Stringshare *stats_group_name_get(stats_data *sd)
+{
+   return sd->group_name;
+}
+
 void
 stats_term(stats_data *sd)
 {
    if (!sd) return;
+   eina_stringshare_del(sd->group_name);
    free(sd);
 }
 

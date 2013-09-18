@@ -298,8 +298,6 @@ part_name_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    const char *part_name = NULL;
    int group_name_len = 0;
    int part_name_len = 0;
-   Eina_Bool group_in = EINA_FALSE;
-   Eina_Bool part_in = EINA_FALSE;
 
    while (p <= end)
      {
@@ -325,16 +323,8 @@ part_name_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
              bracket--;
              p++;
 
-             if (bracket == 1)
-               {
-                  group_name = NULL;
-                  group_in = EINA_FALSE;
-               }
-             else if (bracket == 3)
-               {
-                  part_name = NULL;
-                  part_in = EINA_FALSE;
-               }
+             if (bracket == 1) group_name = NULL;
+             else if (bracket == 3) part_name = NULL;
 
              continue;
           }
@@ -353,7 +343,6 @@ part_name_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
                   part_name = name_begin;
                   part_name_len = name_end - name_begin;
                   p = name_end + quot_len;
-                  part_in = EINA_TRUE;
                   bracket++;
                   continue;
                }
@@ -371,7 +360,6 @@ part_name_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
              group_name = name_begin;
              group_name_len = name_end - name_begin;
              p = name_end + quot_len;
-             group_in = EINA_TRUE;
              bracket++;
              continue;
           }
