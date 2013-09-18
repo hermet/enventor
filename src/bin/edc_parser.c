@@ -19,8 +19,8 @@ typedef struct cur_name_thread_data_s
    parser_data *pd;
    char *utf8;
    int cur_pos;
-   const char *part_name;
    const char *group_name;
+   const char *part_name;
    void (*cb)(void *data, Eina_Stringshare *part_name,
               Eina_Stringshare *group_name);
    void *cb_data;
@@ -278,24 +278,27 @@ parser_markup_escape(parser_data *pd EINA_UNUSED, const char *str)
 static void
 part_name_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
-   cur_name_td *td = data;
+   const char *quot = QUOT;
+   const char *part = "part";
+   const char *parts = "parts";
+   const char *group = "group";
+   const int quot_len = QUOT_LEN;
+   const int part_len = 4; //strlen("part");
+   const int parts_len = 5; //strlen("parts");
+   const int group_len = 5;  //strlen("group");
 
+   cur_name_td *td = data;
    char *utf8 = td->utf8;
    int cur_pos = td->cur_pos;
-
    char *p = utf8;
    char *end = utf8 + cur_pos;
 
-   const char *quot = QUOT;
-   int quot_len = QUOT_LEN;
-   const char *part = "part";
-   int part_len = 4; //strlen("part");
-   const char *parts = "parts";
-   int parts_len = 5; //strlen("parts");
-
    int bracket = 0;
+   const char *group_name = NULL;
    const char *part_name = NULL;
+   int group_name_len = 0;
    int part_name_len = 0;
+   Eina_Bool group_in = EINA_FALSE;
    Eina_Bool part_in = EINA_FALSE;
 
    while (p <= end)
@@ -309,20 +312,33 @@ part_name_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
              p += quot_len;
           }
 
-        if (part_in && (*p == '{'))
+        if (*p == '{')
           {
              bracket++;
              p++;
              continue;
           }
 
-        if (part_in && (*p == '}') && (p < end))
+        //Check whether outside of part or group
+        if ((*p == '}') && (p < end))
           {
              bracket--;
              p++;
-             if (bracket == 0) part_in = EINA_FALSE;
+
+             if (bracket == 1)
+               {
+                  group_name = NULL;
+                  group_in = EINA_FALSE;
+               }
+             else if (bracket == 3)
+               {
+                  part_name = NULL;
+                  part_in = EINA_FALSE;
+               }
+
              continue;
           }
+        //Check Part in
         if (strncmp(p, parts, parts_len))
           {
              if (!strncmp(p, part, part_len))
@@ -337,23 +353,34 @@ part_name_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
                   part_name = name_begin;
                   part_name_len = name_end - name_begin;
                   p = name_end + quot_len;
-                  bracket = 1;
                   part_in = EINA_TRUE;
+                  bracket++;
                   continue;
                }
+          }
+        //Check Group in
+        if (!strncmp(p, group, group_len))
+          {
+             p += group_len;
+             char *name_begin = strstr(p, quot);
+             if (!name_begin) goto end;
+             name_begin += quot_len;
+             p = name_begin;
+             char *name_end = strstr(p, quot);
+             if (!name_end) goto end;
+             group_name = name_begin;
+             group_name_len = name_end - name_begin;
+             p = name_end + quot_len;
+             group_in = EINA_TRUE;
+             bracket++;
+             continue;
           }
         p++;
      }
    if (part_name)
-     {
-        if (bracket == 0)
-          {
-             part_name = NULL;
-             goto end;
-          }
-        else
-          part_name = eina_stringshare_add_length(part_name, part_name_len);
-     }
+     part_name = eina_stringshare_add_length(part_name, part_name_len);
+   if (group_name)
+     group_name = eina_stringshare_add_length(group_name, group_name_len);
 
 end:
    if (utf8)
@@ -362,6 +389,7 @@ end:
         td->utf8 = NULL;
      }
    td->part_name = part_name;
+   td->group_name = group_name;
 }
 
 static void
