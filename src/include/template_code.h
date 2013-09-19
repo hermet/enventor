@@ -1,3 +1,38 @@
+#define TEMPLATE_GROUP_LINE_CNT 28
+
+const char *TEMPLATE_GROUP[TEMPLATE_GROUP_LINE_CNT] =
+{
+   "group { name: \"XXX\";<br/>",
+   "   parts {<br/>",
+   "      part { name: \"XXX\";<br/>",
+   "         type: IMAGE;<br/>",
+   "         scale: 1;<br/>",
+   "         mouse_events: 1;<br/>",
+   "         description { state: \"default\" 0.0;<br/>",
+   "            rel1 { relative: 0.0 0.0; offset: 0 0; /*to: \"XXX\";*/ }<br/>",
+   "            rel2 { relative: 1.0 1.0; offset: -1 -1; /*to: \"XXX\";*/ }<br/>",
+   "            align: 0.5 0.5;<br/>",
+   "            fixed: 0 0;<br/>",
+   "            min: 0 0;<br/>",
+   "            visible: 1;<br/>",
+   "            image.normal: \"logo.png\";<br/>",
+   "            //aspect: 1 1;<br/>",
+   "         }<br/>",
+   "      }<br/>",
+   "   }<br/>",
+   "   programs {<br/>",
+   "      program { name: \"XXX\";<br/>",
+   "         //signal: \"XXX\";<br/>",
+   "         //source: \"XXX\";<br/>",
+   "         action: STATE_SET \"default\" 0.0;<br/>",
+   "         target: \"XXX\";<br/>",
+   "         //transition: LINEAR 1.0;<br/>",
+   "      }<br/>",
+   "   }<br/>",
+   "}"
+};
+
+
 #define TEMPLATE_PART_IMAGE_LINE_CNT 15
 
 const char *TEMPLATE_PART_IMAGE[TEMPLATE_PART_IMAGE_LINE_CNT] =

@@ -271,6 +271,12 @@ edit_template_insert(edit_data *ed)
         t = (char **) &TEMPLATE_IMG;
         strcpy(buf2, "Image File");
      }
+   else if (!strcmp(paragh, "collections"))
+     {
+        line_cnt = TEMPLATE_GROUP_LINE_CNT;
+        t = (char **) &TEMPLATE_GROUP;
+        strcpy(buf2, "Group");
+     }
 
    if (!t)
      {
