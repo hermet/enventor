@@ -115,10 +115,9 @@ static int
 br_skip(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
         char **prev)
 {
-   int cmp_size = 5;    //strlen("<br/>");
-   if (strncmp(*cur, "<br/>", cmp_size)) return 0;
-   eina_strbuf_append_length(strbuf, *prev, (*cur - *prev + cmp_size));
-   *cur += cmp_size;
+   if (strncmp(*cur, EOL, EOL_LEN)) return 0;
+   eina_strbuf_append_length(strbuf, *prev, (*cur - *prev + EOL_LEN));
+   *cur += EOL_LEN;
    if (*cur > (*src + length)) return -1;
    *prev = *cur;
 
@@ -220,14 +219,13 @@ comment2_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
 
    *prev = *cur;
 
-   cmp_size = 5;   //strlen("<br/>");
-   *cur = strstr(*prev, "<br/>");
+   *cur = strstr(*prev, EOL);
 
    if (*cur)
      {
         eina_strbuf_append_length(strbuf, *prev, (*cur - *prev));
         eina_strbuf_append(strbuf, "</color><br/>");
-        *cur += cmp_size;
+        *cur += EOL_LEN;
         *prev = *cur;
         return 1;
      }
@@ -263,7 +261,7 @@ sharp_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
    *prev = *cur;
 
    char *space = strstr(*prev, " ");
-   char *eol = strstr(*prev, "<br/>");
+   char *eol = strstr(*prev, EOL);
 
    if (space < eol)
      {
@@ -273,7 +271,7 @@ sharp_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
    else
      {
         *cur = eol;
-        cmp_size = 5;  //strlen("<br/>");
+        cmp_size = EOL_LEN;
      }
 
    if (*cur)

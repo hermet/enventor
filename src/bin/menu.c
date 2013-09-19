@@ -577,7 +577,7 @@ about_open(menu_data *md)
         //Append edc ccde
         if (line_num > 0)
           {
-             if (!eina_strbuf_append(strbuf, "<br/>")) goto err;
+             if (!eina_strbuf_append(strbuf, EOL)) goto err;
           }
 
         if (!eina_strbuf_append_length(strbuf, line->start, line->length))

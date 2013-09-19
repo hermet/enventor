@@ -195,7 +195,7 @@ void
 indent_insert_apply(indent_data *id, Evas_Object *entry, const char *insert,
                     int cur_line)
 {
-   if (!strcmp(insert, "<br/>"))
+   if (!strcmp(insert, EOL))
      indent_insert_br_case(id, entry);
    else if (insert[0] == '}')
      indent_insert_bracket_case(id, entry, cur_line);

@@ -525,12 +525,11 @@ parser_line_cnt_get(parser_data *pd EINA_UNUSED, const char *src)
    if (!src) return 0;
 
    int cnt = 0;
-   int br_len = 5;    //srtlen("<br/>");
 
-   while ((src = strstr(src, "<br/>")))
+   while ((src = strstr(src, EOL)))
      {
         cnt++;
-        src += br_len;
+        src += EOL_LEN;
      }
 
    return cnt;
