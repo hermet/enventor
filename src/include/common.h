@@ -13,6 +13,7 @@ typedef struct attr_value_s attr_value;
 typedef struct dummy_obj_s dummy_obj;
 typedef struct syntax_helper_s syntax_helper;
 typedef struct indent_s indent_data;
+typedef struct edj_mgr_s edj_mgr;
 
 #include "edc_editor.h"
 #include "menu.h"
@@ -26,6 +27,7 @@ typedef struct indent_s indent_data;
 #include "dummy_obj.h"
 #include "ctxpopup.h"
 #include "indent.h"
+#include "edj_mgr.h"
 #include "globals.h"
 
 #endif

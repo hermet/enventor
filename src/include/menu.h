@@ -1,4 +1,6 @@
-menu_data *menu_init(Evas_Object *win, edit_data *ed, config_data *cd, view_data *vd, void (*close_cb)(void *data), void *data);
+#define VIEW_DATA edj_mgr_view_get(NULL, NULL)
+
+menu_data *menu_init(Evas_Object *win, edit_data *ed, config_data *cd, void (*close_cb)(void *data), void *data);
 void menu_term(menu_data *md);
 Eina_Bool menu_toggle();
 void menu_ctxpopup_register(Evas_Object *ctxpopup);

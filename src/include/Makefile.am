@@ -9,4 +9,5 @@ EXTRA_DIST = common.h \
 	menu.h \
 	panes.h \
 	statusbar.h \
-	syntax_color.h
+	edj_mgr.h \
+   syntax_color.h

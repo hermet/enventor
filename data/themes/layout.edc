@@ -1,7 +1,70 @@
 styles {
      style { name: "entry_statusbar_style";
-        base: "font="FN" font_size=11 color=#000000 text_class=entry color=#606060";
+        base: "font="FN" font_size=11 color=#000000 text_class=entry color=#606060 align=center";
      }
+}
+
+group { name: "viewer_layout";
+   parts {
+      part { name: "prev_clipper";
+         type: RECT;
+         description { state: "default" 0.0;
+         }
+         description { state: "switched" 0.0;
+            color: 255 255 255 0;
+         }
+      }
+      part { name: "cur_clipper";
+         type: RECT;
+         description { state: "default" 0.0;
+            rel1.relative: -1 0;
+            rel2.relative: 0 1;
+            color: 255 255 255 0;
+         }
+         description { state: "switched" 0.0;
+            rel1.relative: 0 0;
+            rel2.relative: 1 1;
+            color: 255 255 255 255;
+         }
+      }
+      part { name: "elm.swallow.prev";
+         type: SWALLOW;
+         clip_to: "prev_clipper";
+         description { state: "default" 0.0;
+         }
+      }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         clip_to: "cur_clipper";
+         description { state: "default" 0.0;
+            rel1.to: "cur_clipper";
+            rel2.to: "cur_clipper";
+         }
+      }
+   }
+   programs {
+      program { name: "switch_instant";
+         signal: "elm,view,switch,instant";
+         source: "";
+         action: STATE_SET "switched" 0.0;
+         target: "prev_clipper";
+         target: "cur_clipper";
+      }
+      program { name: "switch";
+         signal: "elm,view,switch";
+         source: "";
+         action: STATE_SET "default" 0.0;
+         target: "prev_clipper";
+         target: "cur_clipper";
+         after: "switched";
+      }
+      program { name: "switched";
+         action: STATE_SET "switched" 0.0;
+         target: "prev_clipper";
+         target: "cur_clipper";
+         transition: DECELERATE 0.25;
+      }
+   }
 }
 
 group { name: "preview_layout";
