@@ -55,8 +55,12 @@ view_data *
 edj_mgr_view_new(edj_mgr *em, Evas_Object *parent, const char *group,
                  stats_data *sd, config_data *cd)
 {
-   view_data *vd = view_init(parent, group, sd, cd);
+   view_data *vd = edj_mgr_view_get(em, group);
+
+   if (!vd) vd = view_init(parent, group, sd, cd);
    if (!vd) return NULL;
+
+   if (em->vd) evas_object_hide(view_obj_get(em->vd));
 
    em->vds = eina_list_append(em->vds, vd);
    em->vd = vd;
@@ -64,3 +68,13 @@ edj_mgr_view_new(edj_mgr *em, Evas_Object *parent, const char *group,
    return vd;
 }
 
+view_data *
+edj_mgr_view_switch_to(edj_mgr *em, const char *group)
+{
+   view_data *vd = edj_mgr_view_get(em, group);
+   if (!vd) return NULL;
+
+   em->vd  = vd;
+
+   return vd;
+}

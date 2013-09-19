@@ -404,9 +404,26 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
 }
 
 static void
+edc_view_set(app_data *ad, config_data *cd, stats_data *sd,
+             Eina_Stringshare *group)
+{
+   const char *LEFT_PART = "left";
+   view_data *vd = edj_mgr_view_switch_to(ad->em, group);
+   if (!vd) vd = edj_mgr_view_new(ad->em, ad->panes, group, sd, cd);
+   if (!vd) return;
+
+   Evas_Object *o = elm_object_part_content_unset(ad->panes, LEFT_PART);
+   elm_object_part_content_set(ad->panes, LEFT_PART, view_obj_get(vd));
+   evas_object_hide(o);
+   stats_edc_file_set(sd, group);
+}
+
+static void
 view_sync_cb(void *data, Eina_Stringshare *part_name,
              Eina_Stringshare *group_name)
 {
+   app_data *ad = data;
+   edc_view_set(ad, ad->cd, ad->sd, group_name);
    view_part_highlight_set(VIEW_DATA, part_name);
 }
 
@@ -418,14 +435,6 @@ edc_edit_set(app_data *ad, stats_data *sd, config_data *cd)
    elm_object_part_content_set(ad->panes, "right", edit_obj_get(ed));
    edit_view_sync_cb_set(ed, view_sync_cb, ad);
    ad->ed = ed;
-}
-
-static void
-edc_view_set(app_data *ad, config_data *cd, stats_data *sd)
-{
-   const char *group = stats_group_name_get(ad->sd);
-   view_data *vd = edj_mgr_view_new(ad->em, ad->panes, group, sd, cd);
-   elm_object_part_content_set(ad->panes, "left", view_obj_get(vd));
 }
 
 static void
@@ -602,7 +611,7 @@ init(app_data *ad, int argc, char **argv)
    ad->em = edj_mgr_init();
    statusbar_set(ad, ad->cd);
    edc_edit_set(ad, ad->sd, ad->cd);
-   edc_view_set(ad, ad->cd, ad->sd);
+   edc_view_set(ad, ad->cd, ad->sd, stats_group_name_get(ad->sd));
    ad->md = menu_init(ad->win, ad->ed, ad->cd, menu_close_cb, ad);
 
    ad->edc_monitor = eio_monitor_add(config_edc_path_get(ad->cd));
