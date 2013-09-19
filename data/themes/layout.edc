@@ -1,6 +1,6 @@
 styles {
      style { name: "entry_statusbar_style";
-        base: "font="FN" font_size=11 color=#000000 text_class=entry color=#606060 align=center";
+        base: "font="FN" font_size=11 color=#000000 text_class=entry color=#606060";
      }
 }
 

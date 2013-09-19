@@ -19,6 +19,8 @@ struct viewer_s
    Eina_Stringshare *group_name;
    Eina_Stringshare *part_name;
 
+   void *data;
+
    Eina_Bool view_reload;
    Eina_Bool dummy_on;
 };
@@ -314,4 +316,16 @@ Eina_Stringshare *
 view_group_name_get(view_data *vd)
 {
    return vd->group_name;
+}
+
+void
+view_data_set(view_data *vd, void *data)
+{
+   vd->data = data;
+}
+
+void *
+view_data_get(view_data *vd)
+{
+   return vd->data;
 }

@@ -465,7 +465,7 @@ config_update_cb(void *data, config_data *cd)
         rebuild_edc();
         edit_changed_set(ad->ed, EINA_FALSE);
         view_new(VIEW_DATA, stats_group_name_get(ad->sd));
-        view_sync_cb(VIEW_DATA, NULL, NULL);
+        view_sync_cb(ad, NULL, NULL);
         if (ad->edc_monitor) eio_monitor_del(ad->edc_monitor);
         ad->edc_monitor = eio_monitor_add(config_edc_path_get(ad->cd));
      }
