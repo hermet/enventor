@@ -170,6 +170,7 @@ static Eina_Bool
 view_obj_idler_cb(void *data)
 {
    view_data *vd = data;
+
    vd->layout = view_obj_create(vd, config_edj_path_get(vd->cd),
                                 vd->group_name);
    event_layer_set(vd);
@@ -205,6 +206,7 @@ view_new(view_data *vd, const char *group)
 {
    eina_stringshare_replace(&vd->group_name, group);
    ecore_idler_add(view_obj_idler_cb, vd);
+   view_part_highlight_set(vd, NULL);
 }
 
 void
