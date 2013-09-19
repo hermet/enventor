@@ -19,6 +19,8 @@ struct viewer_s
    Eina_Stringshare *group_name;
    Eina_Stringshare *part_name;
 
+   Ecore_Idler *idler;
+
    void *data;
 
    Eina_Bool dummy_on;
@@ -179,6 +181,9 @@ view_obj_idler_cb(void *data)
    if (vd->dummy_on)
      dummy_obj_new(vd->layout);
 
+   vd->idler = NULL;
+   if (vd->part_name) view_part_highlight_set(vd, vd->part_name);
+
    return ECORE_CALLBACK_CANCEL;
 }
 
@@ -213,7 +218,7 @@ view_init(Evas_Object *parent, const char *group, stats_data *sd,
    vd->dummy_on = config_dummy_swallow_get(cd);
 
    eina_stringshare_replace(&vd->group_name, group);
-   ecore_idler_add(view_obj_idler_cb, vd);
+   vd->idler = ecore_idler_add(view_obj_idler_cb, vd);
    view_part_highlight_set(vd, NULL);
 
    return vd;
@@ -232,6 +237,8 @@ view_term(view_data *vd)
                                     part_obj_del_cb);
 
    evas_object_del(vd->scroller);
+
+   if (vd->idler) ecore_idler_del(vd->idler);
 
    free(vd);
 }
@@ -256,7 +263,11 @@ view_program_run(view_data *vd, const char *program)
 void
 view_part_highlight_set(view_data *vd, const char *part_name)
 {
-   if (!vd->layout) return;
+   if (!vd->layout)
+     {
+        if (vd->idler) vd->part_name = eina_stringshare_add(part_name);
+        return;
+     }
 
    if (!part_name)
      {
