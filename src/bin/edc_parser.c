@@ -519,6 +519,23 @@ parser_cur_name_get(parser_data *pd, Evas_Object *entry, void (*cb)(void *data, 
                                  td);
 }
 
+int
+parser_line_cnt_get(parser_data *pd EINA_UNUSED, const char *src)
+{
+   if (!src) return 0;
+
+   int cnt = 0;
+   int br_len = 5;    //srtlen("<br/>");
+
+   while ((src = strstr(src, "<br/>")))
+     {
+        cnt++;
+        src += br_len;
+     }
+
+   return cnt;
+}
+
 Eina_Stringshare
 *parser_first_group_name_get(parser_data *pd EINA_UNUSED, Evas_Object *entry)
 {

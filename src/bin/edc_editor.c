@@ -136,12 +136,7 @@ edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
      }
    else
      {
-        int decrease = 0;
-        if (!strcmp(info->change.del.content, "<br/>"))
-          {
-             decrease++;
-             syntax_color = EINA_FALSE;
-          }
+        int decrease = parser_line_cnt_get(ed->pd, info->change.del.content);
 
         if (config_auto_indent_get(ed->cd))
           {
