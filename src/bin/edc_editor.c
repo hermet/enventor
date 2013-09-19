@@ -837,6 +837,7 @@ edit_line_number_toggle(edit_data *ed)
 void
 edit_new(edit_data *ed)
 {
+   parser_cancel(ed->pd);
    elm_entry_entry_set(ed->en_edit, "");
    elm_entry_entry_set(ed->en_line, "");
    edit_edc_read(ed, config_edc_path_get(ed->cd));

@@ -26,6 +26,12 @@ typedef struct cur_name_thread_data_s
    void *cb_data;
 } cur_name_td;
 
+void
+parser_cancel(parser_data *pd)
+{
+   if (pd->thread) ecore_thread_cancel(pd->thread);
+}
+
 static void
 parser_type_init(parser_data *pd)
 {
