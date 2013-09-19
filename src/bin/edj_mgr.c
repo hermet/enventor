@@ -88,24 +88,34 @@ edj_mgr_view_del(edj_mgr *em, view_data *vd)
    free(edj);
 }
 
+static void
+view_del_cb(void *data)
+{
+   edj_mgr *em = g_em;
+   edj_data *edj = data;
+   em->edjs = eina_list_remove(em->edjs, edj);
+   if (edj->timer) ecore_timer_del(edj->timer);
+   if (em->edj == edj) em->edj = NULL;
+   free(edj);
+}
+
 view_data *
 edj_mgr_view_new(edj_mgr *em, const char *group, stats_data *sd,
                  config_data *cd)
 {
+   edj_data *edj = calloc(1, sizeof(edj_data));
+   if (!edj) return NULL;
+
    view_data *vd = edj_mgr_view_get(em, group);
 
-   if (!vd) vd = view_init(em->layout, group, sd, cd);
-   if (!vd) return NULL;
-
-   edj_data *edj = calloc(1, sizeof(edj_data));
-   if (!edj)
+   if (!vd) vd = view_init(em->layout, group, sd, cd, view_del_cb, edj);
+   if (!vd)
      {
-        view_term(vd);
+        free(edj);
         return NULL;
      }
 
    edj->vd = vd;
-   view_data_set(vd, edj);
    edj_mgr_view_switch_to(em, vd);
 
    em->edjs = eina_list_append(em->edjs, edj);

@@ -22,10 +22,31 @@ struct viewer_s
    Ecore_Idler *idler;
    Ecore_Timer *timer;
 
+   void (*del_cb)(void *data);
    void *data;
 
    Eina_Bool dummy_on;
 };
+
+static Eina_Bool
+file_set_timer_cb(void *data)
+{
+   view_data *vd = data;
+   if (!vd->layout)
+     {
+        vd->timer = NULL;
+        return ECORE_CALLBACK_CANCEL;
+     }
+
+   if (edje_object_file_set(vd->layout, config_edj_path_get(vd->cd),
+                            vd->group_name))
+     {
+        vd->timer = NULL;
+        return ECORE_CALLBACK_CANCEL;
+     }
+
+   return ECORE_CALLBACK_RENEW;
+}
 
 static void
 part_obj_geom_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
@@ -108,8 +129,13 @@ edje_change_file_cb(void *data, Evas_Object *obj EINA_UNUSED,
                     const char *source EINA_UNUSED)
 {
    view_data *vd = data;
-   edje_object_file_set(vd->layout, config_edj_path_get(vd->cd),
-                        vd->group_name);
+   if (!edje_object_file_set(vd->layout, config_edj_path_get(vd->cd),
+                        vd->group_name))
+     {
+        vd->del_cb(vd->data);
+        view_term(vd);
+        return;
+     }
    view_part_highlight_set(vd, vd->part_name);
 }
 
@@ -148,19 +174,6 @@ event_layer_set(view_data *vd)
                                   layout_del_cb, rect);
    evas_object_event_callback_add(rect, EVAS_CALLBACK_MOUSE_MOVE,
                                   rect_mouse_move_cb, vd);
-}
-
-static Eina_Bool
-file_set_timer_cb(void *data)
-{
-   view_data *vd = data;
-   if (!vd->layout) return ECORE_CALLBACK_CANCEL;
-
-   if (edje_object_file_set(vd->layout, config_edj_path_get(vd->cd),
-                            vd->group_name))
-     return ECORE_CALLBACK_CANCEL;
-
-   return ECORE_CALLBACK_RENEW;
 }
 
 static Evas_Object *
@@ -225,7 +238,7 @@ view_dummy_toggle(view_data *vd, Eina_Bool msg)
 
 view_data *
 view_init(Evas_Object *parent, const char *group, stats_data *sd,
-          config_data *cd)
+          config_data *cd, void (*del_cb)(void *data), void *data)
 {
    view_data *vd = calloc(1, sizeof(view_data));
    vd->parent = parent;
@@ -236,6 +249,8 @@ view_init(Evas_Object *parent, const char *group, stats_data *sd,
 
    vd->group_name = eina_stringshare_add(group);
    vd->idler = ecore_idler_add(view_obj_idler_cb, vd);
+   vd->del_cb = del_cb;
+   vd->data = data;
    view_part_highlight_set(vd, NULL);
    return vd;
 }
@@ -331,12 +346,6 @@ Eina_Stringshare *
 view_group_name_get(view_data *vd)
 {
    return vd->group_name;
-}
-
-void
-view_data_set(view_data *vd, void *data)
-{
-   vd->data = data;
 }
 
 void *
