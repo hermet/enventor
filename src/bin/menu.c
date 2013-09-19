@@ -692,9 +692,7 @@ edc_reload(menu_data *md, const char *edc_path)
 {
    config_edc_path_set(md->cd, edc_path);
    edit_new(md->ed);
-   edj_mgr *em = edj_mgr_get();
-   view_data *vd = edj_mgr_view_get(em, NULL);
-   view_reload_need_set(vd, EINA_TRUE);
+   view_reload_need_set(VIEW_DATA, EINA_TRUE);
    config_apply(md->cd);
 }
 
@@ -786,9 +784,7 @@ fileselector_save_done_cb(void *data, Evas_Object *obj EINA_UNUSED,
         return;
      }
 
-   edj_mgr *em = edj_mgr_get();
-   view_data *vd = edj_mgr_view_get(em, NULL);
-   view_reload_need_set(vd, EINA_TRUE);
+   view_reload_need_set(VIEW_DATA, EINA_TRUE);
    config_apply(md->cd);
 
    fileselector_close(md);

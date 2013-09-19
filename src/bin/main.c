@@ -184,11 +184,7 @@ part_highlight_toggle(app_data *ad, Eina_Bool msg)
 {
    Eina_Bool highlight = config_part_highlight_get(ad->cd);
    if (highlight) edit_view_sync(ad->ed);
-   else
-     {
-        view_data *vd = edj_mgr_view_get(ad->em, NULL);
-        view_part_highlight_set(vd, NULL);
-     }
+   else view_part_highlight_set(VIEW_DATA, NULL);
 
    if (!msg) return;
 
@@ -285,8 +281,7 @@ ctrl_func(app_data *ad, const char *keyname)
    if (!strcmp(keyname, "w") || !strcmp(keyname, "W"))
      {
         config_dummy_swallow_set(ad->cd, !config_dummy_swallow_get(ad->cd));
-        view_data *vd = edj_mgr_view_get(ad->em, NULL);
-        view_dummy_toggle(vd, EINA_TRUE);
+        view_dummy_toggle(VIEW_DATA, EINA_TRUE);
         return ECORE_CALLBACK_DONE;
      }
    //Full Edit View
@@ -412,9 +407,7 @@ static void
 view_sync_cb(void *data, Eina_Stringshare *part_name,
              Eina_Stringshare *group_name)
 {
-   app_data *ad = data;
-   view_data *vd = edj_mgr_view_get(ad->em, NULL);
-   view_part_highlight_set(vd, part_name);
+   view_part_highlight_set(VIEW_DATA, part_name);
 }
 
 static void
@@ -456,16 +449,15 @@ config_update_cb(void *data, config_data *cd)
    statusbar_toggle(ad);
    part_highlight_toggle(ad, EINA_FALSE);
 
-   view_data *vd = edj_mgr_view_get(ad->em, NULL);
-   view_dummy_toggle(vd, EINA_FALSE);
+   view_dummy_toggle(VIEW_DATA, EINA_FALSE);
 
    //previous build was failed, Need to rebuild then reload the edj.
-   if (view_reload_need_get(vd))
+   if (view_reload_need_get(VIEW_DATA))
      {
         rebuild_edc();
         edit_changed_set(ad->ed, EINA_FALSE);
-        view_new(vd, stats_group_name_get(ad->sd));
-        view_sync_cb(ad, NULL, NULL);
+        view_new(VIEW_DATA, stats_group_name_get(ad->sd));
+        view_sync_cb(VIEW_DATA, NULL, NULL);
         if (ad->edc_monitor) eio_monitor_del(ad->edc_monitor);
         ad->edc_monitor = eio_monitor_add(config_edc_path_get(ad->cd));
      }
