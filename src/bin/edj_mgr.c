@@ -106,7 +106,6 @@ edj_mgr_view_new(edj_mgr *em, const char *group, stats_data *sd,
 
    edj->vd = vd;
    view_data_set(vd, edj);
-
    edj_mgr_view_switch_to(em, vd);
 
    em->edjs = eina_list_append(em->edjs, edj);

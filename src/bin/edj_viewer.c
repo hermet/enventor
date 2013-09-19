@@ -20,6 +20,7 @@ struct viewer_s
    Eina_Stringshare *part_name;
 
    Ecore_Idler *idler;
+   Ecore_Timer *timer;
 
    void *data;
 
@@ -149,13 +150,29 @@ event_layer_set(view_data *vd)
                                   rect_mouse_move_cb, vd);
 }
 
+static Eina_Bool
+file_set_timer_cb(void *data)
+{
+   view_data *vd = data;
+   if (!vd->layout) return ECORE_CALLBACK_CANCEL;
+
+   if (edje_object_file_set(vd->layout, config_edj_path_get(vd->cd),
+                            vd->group_name))
+     return ECORE_CALLBACK_CANCEL;
+
+   return ECORE_CALLBACK_RENEW;
+}
+
 static Evas_Object *
 view_obj_create(view_data *vd, const char *file_path, const char *group)
 {
    Evas *e = evas_object_evas_get(vd->scroller);
    Evas_Object *layout = edje_edit_object_add(e);
    if (!edje_object_file_set(layout, file_path, group))
-     edj_mgr_reload_need_set(edj_mgr_get(), EINA_TRUE);
+     {
+        //FIXME: more optimized way?
+        vd->timer = ecore_timer_add(1, file_set_timer_cb, vd);
+     }
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
    evas_object_event_callback_add(layout, EVAS_CALLBACK_RESIZE,
@@ -217,10 +234,9 @@ view_init(Evas_Object *parent, const char *group, stats_data *sd,
    vd->scroller = view_scroller_create(parent);
    vd->dummy_on = config_dummy_swallow_get(cd);
 
-   eina_stringshare_replace(&vd->group_name, group);
+   vd->group_name = eina_stringshare_add(group);
    vd->idler = ecore_idler_add(view_obj_idler_cb, vd);
    view_part_highlight_set(vd, NULL);
-
    return vd;
 }
 
@@ -239,6 +255,7 @@ view_term(view_data *vd)
    evas_object_del(vd->scroller);
 
    if (vd->idler) ecore_idler_del(vd->idler);
+   if (vd->timer) ecore_timer_del(vd->timer);
 
    free(vd);
 }
