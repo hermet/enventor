@@ -8,7 +8,7 @@ int main(int argc, char **argv);
 struct app_s
 {
    edit_data *ed;
-   view_data *vd;
+   edj_mgr *em;
    menu_data *md;
    stats_data *sd;
    config_data *cd;
@@ -184,7 +184,11 @@ part_highlight_toggle(app_data *ad, Eina_Bool msg)
 {
    Eina_Bool highlight = config_part_highlight_get(ad->cd);
    if (highlight) edit_view_sync(ad->ed);
-   else view_part_highlight_set(ad->vd, NULL);
+   else
+     {
+        view_data *vd = edj_mgr_view_get(ad->em, NULL);
+        view_part_highlight_set(vd, NULL);
+     }
 
    if (!msg) return;
 
@@ -281,7 +285,8 @@ ctrl_func(app_data *ad, const char *keyname)
    if (!strcmp(keyname, "w") || !strcmp(keyname, "W"))
      {
         config_dummy_swallow_set(ad->cd, !config_dummy_swallow_get(ad->cd));
-        view_dummy_toggle(ad->vd, EINA_TRUE);
+        view_data *vd = edj_mgr_view_get(ad->em, NULL);
+        view_dummy_toggle(vd, EINA_TRUE);
         return ECORE_CALLBACK_DONE;
      }
    //Full Edit View
@@ -408,7 +413,8 @@ view_sync_cb(void *data, Eina_Stringshare *part_name,
              Eina_Stringshare *group_name)
 {
    app_data *ad = data;
-   view_part_highlight_set(ad->vd, part_name);
+   view_data *vd = edj_mgr_view_get(ad->em, NULL);
+   view_part_highlight_set(vd, part_name);
 }
 
 static void
@@ -425,9 +431,8 @@ static void
 edc_view_set(app_data *ad, config_data *cd, stats_data *sd)
 {
    const char *group = stats_group_name_get(ad->sd);
-   view_data *vd = view_init(ad->panes, group, sd, cd);
+   view_data *vd = edj_mgr_view_new(ad->em, ad->panes, group, sd, cd);
    elm_object_part_content_set(ad->panes, "left", view_obj_get(vd));
-   ad->vd = vd;
 }
 
 static void
@@ -450,14 +455,16 @@ config_update_cb(void *data, config_data *cd)
    edit_font_size_update(ad->ed, EINA_FALSE);
    statusbar_toggle(ad);
    part_highlight_toggle(ad, EINA_FALSE);
-   view_dummy_toggle(ad->vd, EINA_FALSE);
+
+   view_data *vd = edj_mgr_view_get(ad->em, NULL);
+   view_dummy_toggle(vd, EINA_FALSE);
 
    //previous build was failed, Need to rebuild then reload the edj.
-   if (view_reload_need_get(ad->vd))
+   if (view_reload_need_get(vd))
      {
         rebuild_edc();
         edit_changed_set(ad->ed, EINA_FALSE);
-        view_new(ad->vd, stats_group_name_get(ad->sd));
+        view_new(vd, stats_group_name_get(ad->sd));
         view_sync_cb(ad, NULL, NULL);
         if (ad->edc_monitor) eio_monitor_del(ad->edc_monitor);
         ad->edc_monitor = eio_monitor_add(config_edc_path_get(ad->cd));
@@ -600,11 +607,11 @@ init(app_data *ad, int argc, char **argv)
    if (!edc_proto_setup(ad->cd)) return EINA_FALSE;
    if (!base_gui_construct(ad)) return EINA_FALSE;
 
+   ad->em = edj_mgr_init();
    statusbar_set(ad, ad->cd);
    edc_edit_set(ad, ad->sd, ad->cd);
    edc_view_set(ad, ad->cd, ad->sd);
-   edit_vd_set(ad->ed, ad->vd);
-   ad->md = menu_init(ad->win, ad->ed, ad->cd, ad->vd, menu_close_cb, ad);
+   ad->md = menu_init(ad->win, ad->ed, ad->cd, menu_close_cb, ad);
 
    ad->edc_monitor = eio_monitor_add(config_edc_path_get(ad->cd));
    ecore_event_handler_add(EIO_MONITOR_FILE_MODIFIED, edc_changed_cb, ad);
@@ -616,8 +623,8 @@ static void
 term(app_data *ad)
 {
    menu_term(ad->md);
-   view_term(ad->vd);
    edit_term(ad->ed);
+   edj_mgr_term(ad->em);
    stats_term(ad->sd);
    config_term(ad->cd);
 

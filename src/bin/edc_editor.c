@@ -18,7 +18,6 @@ struct editor_s
    stats_data *sd;
    config_data *cd;
    parser_data *pd;
-   view_data *vd;
 
    int cur_line;
    int line_max;
@@ -35,13 +34,6 @@ struct editor_s
 };
 
 static Eina_Bool image_preview_show(edit_data *ed, char *cur, Evas_Coord x, Evas_Coord y);
-
-
-void
-edit_vd_set(edit_data *ed, view_data *vd)
-{
-   ed->vd = vd;
-}
 
 static void
 line_increase(edit_data *ed)
@@ -427,7 +419,9 @@ program_run(edit_data *ed, char *cur)
    char *program = parser_name_get(ed->pd, cur);
    if (program)
      {
-        view_program_run(ed->vd, program);
+        edj_mgr *em = edj_mgr_get();
+        view_data *vd = edj_mgr_view_get(em, NULL);
+        view_program_run(vd, program);
         free(program);
      }
 }

@@ -27,7 +27,6 @@ struct menu_s
 
    config_data *cd;
    edit_data *ed;
-   view_data *vd;
 
    Eina_Bool menu_open : 1;
 };
@@ -693,7 +692,9 @@ edc_reload(menu_data *md, const char *edc_path)
 {
    config_edc_path_set(md->cd, edc_path);
    edit_new(md->ed);
-   view_reload_need_set(md->vd, EINA_TRUE);
+   edj_mgr *em = edj_mgr_get();
+   view_data *vd = edj_mgr_view_get(em, NULL);
+   view_reload_need_set(vd, EINA_TRUE);
    config_apply(md->cd);
 }
 
@@ -785,7 +786,9 @@ fileselector_save_done_cb(void *data, Evas_Object *obj EINA_UNUSED,
         return;
      }
 
-   view_reload_need_set(md->vd, EINA_TRUE);
+   edj_mgr *em = edj_mgr_get();
+   view_data *vd = edj_mgr_view_get(em, NULL);
+   view_reload_need_set(vd, EINA_TRUE);
    config_apply(md->cd);
 
    fileselector_close(md);
@@ -1048,14 +1051,13 @@ menu_open(menu_data *md)
 }
 
 menu_data *
-menu_init(Evas_Object *win, edit_data *ed, config_data *cd, view_data *vd,
+menu_init(Evas_Object *win, edit_data *ed, config_data *cd,
           void (*close_cb)(void *data), void *data)
 {
    menu_data *md = calloc(1, sizeof(menu_data));
    md->win = win;
    md->ed = ed;
    md->cd = cd;
-   md->vd = vd;
    md->close_cb = close_cb;
    md->close_cb_data = data;
    g_md = md;
