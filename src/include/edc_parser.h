@@ -11,3 +11,4 @@ const char *parser_markup_escape(parser_data *pd EINA_UNUSED, const char *str);
 attr_value *parser_attribute_get(parser_data *pd, const char *text, const char *cur);
 const char * parser_paragh_name_get(parser_data *pd, Evas_Object *entry);
 char *parser_name_get(parser_data *pd, const char *cur);
+void parser_cancel(parser_data *pd);

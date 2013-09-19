@@ -21,7 +21,6 @@ struct viewer_s
 
    void *data;
 
-   Eina_Bool view_reload;
    Eina_Bool dummy_on;
 };
 
@@ -153,7 +152,8 @@ view_obj_create(view_data *vd, const char *file_path, const char *group)
 {
    Evas *e = evas_object_evas_get(vd->scroller);
    Evas_Object *layout = edje_edit_object_add(e);
-   vd->view_reload = !edje_object_file_set(layout, file_path, group);
+   if (!edje_object_file_set(layout, file_path, group))
+     edj_mgr_reload_need_set(edj_mgr_get(), EINA_TRUE);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
    evas_object_event_callback_add(layout, EVAS_CALLBACK_RESIZE,
@@ -201,26 +201,6 @@ view_dummy_toggle(view_data *vd, Eina_Bool msg)
    vd->dummy_on = dummy_on;
 }
 
-void
-view_new(view_data *vd, const char *group)
-{
-   eina_stringshare_replace(&vd->group_name, group);
-   ecore_idler_add(view_obj_idler_cb, vd);
-   view_part_highlight_set(vd, NULL);
-}
-
-void
-view_reload_need_set(view_data *vd, Eina_Bool reload)
-{
-   vd->view_reload = reload;
-}
-
-Eina_Bool
-view_reload_need_get(view_data *vd)
-{
-   return vd->view_reload;
-}
-
 view_data *
 view_init(Evas_Object *parent, const char *group, stats_data *sd,
           config_data *cd)
@@ -232,7 +212,9 @@ view_init(Evas_Object *parent, const char *group, stats_data *sd,
    vd->scroller = view_scroller_create(parent);
    vd->dummy_on = config_dummy_swallow_get(cd);
 
-   view_new(vd, group);
+   eina_stringshare_replace(&vd->group_name, group);
+   ecore_idler_add(view_obj_idler_cb, vd);
+   view_part_highlight_set(vd, NULL);
 
    return vd;
 }
@@ -248,6 +230,9 @@ view_term(view_data *vd)
    if (vd->part_obj)
      evas_object_event_callback_del(vd->part_obj, EVAS_CALLBACK_DEL,
                                     part_obj_del_cb);
+
+   evas_object_del(vd->scroller);
+
    free(vd);
 }
 

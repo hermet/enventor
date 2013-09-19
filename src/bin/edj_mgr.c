@@ -16,7 +16,25 @@ struct edj_mgr_s
    Eina_List *edjs;
    edj_data *edj;
    Evas_Object *layout;
+
+   Eina_Bool reload_need : 1;
 };
+
+void
+edj_mgr_clear(edj_mgr *em)
+{
+   edj_data *edj;
+
+   EINA_LIST_FREE(em->edjs, edj)
+     {
+        if (edj->timer) ecore_timer_del(edj->timer);
+        view_term(edj->vd);
+        free(edj);
+     }
+   em->edjs = NULL;
+   em->edj = NULL;
+   em->reload_need = EINA_FALSE;
+}
 
 edj_mgr *
 edj_mgr_init(Evas_Object *parent)
@@ -39,13 +57,7 @@ edj_mgr_get()
 void
 edj_mgr_term(edj_mgr *em)
 {
-   edj_data *edj;
-
-   EINA_LIST_FREE(em->edjs, edj)
-     {
-        if (edj->timer) ecore_timer_del(edj->timer);
-        view_term(edj->vd);
-     }
+   edj_mgr_clear(em);
    evas_object_del(em->layout);
    free(em);
 }
@@ -158,4 +170,16 @@ Evas_Object *
 edj_mgr_obj_get(edj_mgr *em)
 {
    return em->layout;
+}
+
+void
+edj_mgr_reload_need_set(edj_mgr *em, Eina_Bool reload)
+{
+   em->reload_need = reload;
+}
+
+Eina_Bool
+edj_mgr_reload_need_get(edj_mgr *em)
+{
+   return em->reload_need;
 }

@@ -460,11 +460,12 @@ config_update_cb(void *data, config_data *cd)
    view_dummy_toggle(VIEW_DATA, EINA_FALSE);
 
    //previous build was failed, Need to rebuild then reload the edj.
-   if (view_reload_need_get(VIEW_DATA))
+   if (edj_mgr_reload_need_get(ad->em))
      {
         rebuild_edc();
         edit_changed_set(ad->ed, EINA_FALSE);
-        view_new(VIEW_DATA, stats_group_name_get(ad->sd));
+        edj_mgr_clear(ad->em);
+        edc_view_set(ad, ad->cd, ad->sd, stats_group_name_get(ad->sd));
         if (ad->edc_monitor) eio_monitor_del(ad->edc_monitor);
         ad->edc_monitor = eio_monitor_add(config_edc_path_get(ad->cd));
      }
