@@ -413,7 +413,7 @@ edc_view_set(app_data *ad, config_data *cd, stats_data *sd,
 
    if (!vd) return;
 
-   stats_edc_file_set(sd, group);
+   if (group) stats_edc_file_set(sd, group);
 }
 
 static void
