@@ -12,8 +12,12 @@ void
 stats_line_num_update(stats_data *sd, int cur_line, int max_line)
 {
    char buf[128];
-   snprintf(buf, sizeof(buf),
-            "<align=right>Line [<color=#000000>%d</color>:<color=#000000>%d</color>]</align>", cur_line, max_line);
+   if (DARK_THEME)
+     snprintf(buf, sizeof(buf),
+              "<align=right>Line [<color=#008bac>%d</color>:<color=#008bac>%d</color>]</align>", cur_line, max_line);
+   else
+     snprintf(buf, sizeof(buf),
+              "<align=right>Line [<color=#000000>%d</color>:<color=#000000>%d</color>]</align>", cur_line, max_line);
    elm_object_part_text_set(sd->layout, "elm.text.line", buf);
 }
 
@@ -22,7 +26,11 @@ stats_edc_file_set(stats_data *sd, Eina_Stringshare *group_name)
 {
    char buf[PATH_MAX];
    const char *filename = ecore_file_file_get(config_edc_path_get(sd->cd));
-   snprintf(buf, sizeof(buf), "<align=right>File [<color=#000000>%s</color>]    Group [<color=#000000>%s</color>]</align>", filename, group_name);
+   if (DARK_THEME)
+     snprintf(buf, sizeof(buf), "<align=right>File [<color=#008bac>%s</color>]    Group [<color=#008bac>%s</color>]</align>", filename, group_name);
+   else
+     snprintf(buf, sizeof(buf), "<align=right>File [<color=#000000>%s</color>]    Group [<color=#000000>%s</color>]</align>", filename, group_name);
+
    elm_object_part_text_set(sd->layout, "elm.text.file_group_name", buf);
 
    sd->group_name = eina_stringshare_add(group_name);
@@ -38,8 +46,13 @@ stats_init(Evas_Object *parent, config_data *cd)
    evas_object_show(layout);
 
    //FIXME: temporarily setup
-   elm_object_part_text_set(layout, "elm.text.cur_pos",
-                            "Cursor [<color=#000000>0</color>,<color=#000000>0</color>] [<color=#000000>0.00</color>,<color=#000000>0.00</color>]");
+   if (DARK_THEME)
+     elm_object_part_text_set(layout, "elm.text.cur_pos",
+                              "Cursor [<color=#008bac>0</color>,<color=#008bac>0</color>] [<color=#008bac>0.00</color>,<color=#008bac>0.00</color>]");
+   else
+     elm_object_part_text_set(layout, "elm.text.cur_pos",
+                              "Cursor [<color=#000000>0</color>,<color=#000000>0</color>] [<color=#000000>0.00</color>,<color=#000000>0.00</color>]");
+
 
    sd->layout = layout;
    sd->cd = cd;
@@ -84,8 +97,13 @@ stats_view_size_update(stats_data *sd)
    config_view_size_get(sd->cd, &w, &h);
 
    char buf[128];
-   snprintf(buf, sizeof(buf),
-            "Size [<color=#000000>%d</color>x<color=#000000>%d</color>]", w, h);
+   if (DARK_THEME)
+     snprintf(buf, sizeof(buf),
+              "Size [<color=#008bac>%d</color>x<color=#008bac>%d</color>]", w, h);
+   else
+     snprintf(buf, sizeof(buf),
+              "Size [<color=#000000>%d</color>x<color=#000000>%d</color>]", w, h);
+
    elm_object_part_text_set(sd->layout, "elm.text.view_size", buf);
 }
 
@@ -93,7 +111,12 @@ void
 stats_cursor_pos_update(stats_data *sd, Evas_Coord x, Evas_Coord y, float rel_x, float rel_y)
 {
    char buf[128];
-   snprintf(buf, sizeof(buf),
-            "Cursor [<color=#000000>%d</color>,<color=#000000>%d</color>] [<color=#000000>%0.2f</color>,<color=#000000>%0.2f</color>]", x, y, rel_x, rel_y);
+   if (DARK_THEME)
+     snprintf(buf, sizeof(buf),
+              "Cursor [<color=#008bac>%d</color>,<color=#008bac>%d</color>] [<color=#008bac>%0.2f</color>,<color=#008bac>%0.2f</color>]", x, y, rel_x, rel_y);
+   else
+     snprintf(buf, sizeof(buf),
+              "Cursor [<color=#000000>%d</color>,<color=#000000>%d</color>] [<color=#000000>%0.2f</color>,<color=#000000>%0.2f</color>]", x, y, rel_x, rel_y);
+
    elm_object_part_text_set(sd->layout, "elm.text.cur_pos", buf);
 }

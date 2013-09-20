@@ -25,12 +25,25 @@ color_init(Eina_Strbuf *strbuf)
 {
    color_data *cd = malloc(sizeof(color_data));
    cd->strbuf = strbuf;
-   cd->col1 = eina_stringshare_add("424242");
-   cd->col2 = eina_stringshare_add("a000a0");
-   cd->col3 = eina_stringshare_add("0000a0");
-   cd->col4 = eina_stringshare_add("969600");
-   cd->col5 = eina_stringshare_add("009600");
-   cd->col6 = eina_stringshare_add("00C0C0");
+
+   if (DARK_THEME)
+     {
+        cd->col1 = eina_stringshare_add("A6A6A6");
+        cd->col2 = eina_stringshare_add("00BBBC");
+        cd->col3 = eina_stringshare_add("C8C600");
+        cd->col4 = eina_stringshare_add("C000C0");
+        cd->col5 = eina_stringshare_add("00D000");
+        cd->col6 = eina_stringshare_add("0000FF");
+     }
+   else
+     {
+        cd->col1 = eina_stringshare_add("424242");
+        cd->col2 = eina_stringshare_add("A000A0");
+        cd->col3 = eina_stringshare_add("0000A0");
+        cd->col4 = eina_stringshare_add("969600");
+        cd->col5 = eina_stringshare_add("009600");
+        cd->col6 = eina_stringshare_add("00C0C0");
+     }
 
    return cd;
 }

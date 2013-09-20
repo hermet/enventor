@@ -6,7 +6,6 @@ images {
    image: "setting_icon.png" COMP;
    image: "fileselect.png" COMP;
    image: "logo.png" COMP;
-   image: "logo_reflect.png" COMP;
 }
 
 group { name: "about_layout";
@@ -133,10 +132,9 @@ group { name: "fileselector_layout";
          scale: 1;
          clip_to: "clipper";
          description {
-            min: 600 425;
-            max: 600 425;
+            min: 600 400;
+            max: 600 400;
             fixed: 1 1;
-            color: 255 255 255 255;
             image.normal: "menu_layout.png";
             image.border: 20 20 20 20;
             image.border_scale: 1;
@@ -309,10 +307,9 @@ group { name: "warning_layout";
          scale: 1;
          clip_to: "clipper";
          description {
-            min: 300 165;
-            max: 300 165;
+            min: 300 145;
+            max: 300 145;
             fixed: 1 1;
-            color: 255 255 255 255;
             image.normal: "menu_layout.png";
             image.border: 20 20 20 20;
             image.border_scale: 1;
@@ -800,10 +797,9 @@ group { name: "setting_layout";
          scale: 1;
          clip_to: "clipper";
          description {
-            min: 600 425;
-            max: 600 425;
+            min: 600 400;
+            max: 600 400;
             fixed: 1 1;
-            color: 255 255 255 255;
             image.normal: "menu_layout.png";
             image.border: 20 20 20 20;
             image.border_scale: 1;
@@ -910,7 +906,7 @@ group { name: "setting_layout";
             rel1 {to: "data_path_frame"; relative: 0 1;}
             rel2 {to: "data_path_frame"; relative: 1 1;}
             align: 0.5 0;
-            min: 0 205;
+            min: 0 185;
             fixed: 0 1;
          }
       }
