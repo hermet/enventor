@@ -90,15 +90,6 @@ group { name: "preview_layout";
 
 group { name: "slider_layout";
    parts {
-      part { name: "bg";
-         type: RECT;
-         description { state: "default" 0.0;
-            min: 100 25;
-            color: 225 225 225 255;
-            rel1.offset: 2 2;
-            rel2.offset: -3 -3;
-         }
-      }
       part { name: "elm.swallow.plus";
          type: SWALLOW;
          description { state: "default" 0.0;
@@ -127,7 +118,7 @@ group { name: "slider_layout";
          type: SWALLOW;
          description { state: "default" 0.0;
             rel1.to_x: "elm.swallow.minus";
-            rel1.offset: 10 0;
+            rel1.relative: 1 0;
          }
       }
    }
