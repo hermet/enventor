@@ -153,6 +153,8 @@ group { name: "statusbar_layout";
             align: 0 0.5;
             min: 120 18;
             fixed: 1 1;
+            rel1.offset: 0 -1;
+            rel2.offset: -1 -2;
             text.style: "entry_statusbar_style";
          }
       }
@@ -190,6 +192,8 @@ group { name: "statusbar_layout";
          clip_to: "base_clip";
          description {
             rel1.relative: 1 0;
+            rel1.offset: 0 -1;
+            rel2.offset: -1 -2;
             align: 1 0.5;
             min: 100 18;
             fixed: 1 1;
@@ -202,6 +206,8 @@ group { name: "statusbar_layout";
          description { state: "default" 0.0;
             align: 0 0.5;
             color: 0 0 0 0;
+            rel1.offset: 0 -1;
+            rel2.offset: -1 -2;
             text {
                font: FN;
                size: 11;

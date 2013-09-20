@@ -2162,8 +2162,8 @@ group { name: "elm/panes/vertical/enventor";
             y: 0 0 0;
          }
          description { state: "default" 0.0;
-            max: 15 9999;
-            min: 15 100;
+            max: 18 9999;
+            min: 18 100;
             fixed: 1 1;
             rel1.relative: 0.0 0.5;
             rel2.relative: 1.0 0.5;
