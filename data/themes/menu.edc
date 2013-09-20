@@ -2,7 +2,6 @@ images {
    image: "menu_layout.png" COMP;
    image: "folder.png" COMP;
    image: "preference.png" COMP;
-   image: "content_glow.png" COMP;
    image: "warning.png" COMP;
    image: "setting_icon.png" COMP;
    image: "fileselect.png" COMP;
@@ -31,11 +30,11 @@ group { name: "about_layout";
       part { name: "logo";
          scale: 1;
          description { state: "default" 0.0;
-            min: 120 120;
-            max: 120 120;
+            min: 100 100;
+            max: 100 100;
             image.normal: "logo.png";
             align: 1 1;
-            color: 255 255 255 175;
+            color: 255 255 255 205;
          }
       }
       part { name: "left_top_padding";
@@ -126,7 +125,7 @@ group { name: "fileselector_layout";
          type: RECT;
          clip_to: "clipper";
          description { state: "default" 0.0;
-            color: 50 50 50 175;
+            color: 0 0 0 175;
          }
       }
       part { name: "base_frame_img";
@@ -134,22 +133,20 @@ group { name: "fileselector_layout";
          scale: 1;
          clip_to: "clipper";
          description {
-            min: 600 400;
-            max: 600 400;
+            min: 600 425;
+            max: 600 425;
             fixed: 1 1;
             color: 255 255 255 255;
             image.normal: "menu_layout.png";
-            image.border: 8 8 8 8;
+            image.border: 20 20 20 20;
             image.border_scale: 1;
          }
       }
       part { name: "base_frame";
-         type: RECT;
-         clip_to: "clipper";
+         type: SPACER;
          description {
-            rel1 { to: "base_frame_img"; offset: 10 5; }
-            rel2 { to: "base_frame_img"; offset: -11 -11; }
-            visible: 0;
+            rel1 { to: "base_frame_img"; offset: 20 20; }
+            rel2 { to: "base_frame_img"; offset: -21 -21; }
          }
       }
       part { name: "title_frame";
@@ -159,7 +156,7 @@ group { name: "fileselector_layout";
             rel1 { to: "base_frame"; }
             rel2 { to: "base_frame"; relative: 1 0; }
             align: 0.5 0;
-            min: 0 25;
+            min: 0 23;
             fixed: 0 1;
             color: 100 100 100 255;
          }
@@ -304,7 +301,7 @@ group { name: "warning_layout";
          type: RECT;
          clip_to: "clipper";
          description { state: "default" 0.0;
-            color: 50 50 50 100;
+            color: 0 0 0 175;
          }
       }
       part { name: "base_frame_img";
@@ -312,22 +309,20 @@ group { name: "warning_layout";
          scale: 1;
          clip_to: "clipper";
          description {
-            min: 300 140;
-            max: 300 140;
+            min: 300 165;
+            max: 300 165;
             fixed: 1 1;
             color: 255 255 255 255;
             image.normal: "menu_layout.png";
-            image.border: 8 8 8 8;
+            image.border: 20 20 20 20;
             image.border_scale: 1;
          }
       }
       part { name: "base_frame";
-         type: RECT;
-         clip_to: "clipper";
+         type: SPACER;
          description {
-            rel1 { to: "base_frame_img"; offset: 10 5; }
-            rel2 { to: "base_frame_img"; offset: -11 -11; }
-            visible: 0;
+            rel1 { to: "base_frame_img"; offset: 20 20; }
+            rel2 { to: "base_frame_img"; offset: -21 -21; }
          }
       }
       part { name: "title_bg";
@@ -338,7 +333,7 @@ group { name: "warning_layout";
             rel2.to: "base_frame";
             rel2.relative: 1 0;
             align: 0.5 0;
-            min: 0 25;
+            min: 0 23;
             fixed: 0 1;
             color: 100 100 100 255;
          }
@@ -440,7 +435,6 @@ group { name: "warning_layout";
             rel2.to: "base_frame";
             rel1.relative: 0.5 1;
             rel2.relative: 0.5 1;
-            rel2.offset: -1 -8;
             min: 50 25;
             align: 0.5 1;
             fixed: 1 1;
@@ -540,7 +534,7 @@ group { name: "menu_layout";
             color: 0 0 0 0;
          }
          description { state: "show" 0.0;
-            color: 0 0 0 200;
+            color: 0 0 0 175;
          }
       }
       part { name: "clipper";
@@ -793,11 +787,12 @@ group { name: "setting_layout";
          description { state: "show" 0.0;
             color: 255 255 255 255;
          }
+      }
       part { name: "bg";
          type: RECT;
          clip_to: "clipper";
          description { state: "default" 0.0;
-            color: 50 50 50 175;
+            color: 0 0 0 175;
          }
       }
       part { name: "base_frame_img";
@@ -805,22 +800,20 @@ group { name: "setting_layout";
          scale: 1;
          clip_to: "clipper";
          description {
-            min: 600 400;
-            max: 600 400;
+            min: 600 425;
+            max: 600 425;
             fixed: 1 1;
             color: 255 255 255 255;
             image.normal: "menu_layout.png";
-            image.border: 8 8 8 8;
+            image.border: 20 20 20 20;
             image.border_scale: 1;
          }
       }
       part { name: "base_frame";
-         type: RECT;
-         clip_to: "clipper";
+         type: SPACER;
          description {
-            rel1 {to: "base_frame_img"; offset: 10 5;}
-            rel2 {to: "base_frame_img"; offset: -11 -11;}
-            visible: 0;
+            rel1 {to: "base_frame_img"; offset: 20 20;}
+            rel2 {to: "base_frame_img"; offset: -21 -21;}
          }
       }
       part { name: "title_frame";
@@ -830,7 +823,7 @@ group { name: "setting_layout";
             rel1 {to: "base_frame"; relative: 0 0;}
             rel2 {to: "base_frame"; relative: 1 0;}
             align: 0.5 0;
-            min: 0 25;
+            min: 0 23;
             fixed: 0 1;
             color: 100 100 100 255;
          }
@@ -927,7 +920,7 @@ group { name: "setting_layout";
             rel2 {to: "data_path_frame"; relative: 1 1;}
             align: 0.5 0;
             visible: 0;
-            min: 0 200;
+            min: 0 205;
             fixed: 0 1;
          }
       }
@@ -1187,9 +1180,9 @@ group { name: "setting_layout";
             min: 50 25;
             fixed: 1 1;
             rel1.to: "base_frame";
-            rel1.relative: 0.5 0.99;
+            rel1.relative: 0.5 1;
             rel2.to: "base_frame";
-            rel2.relative: 0.5 0.99;
+            rel2.relative: 0.5 1;
          }
       }
       part { name: "elm.swallow.cancel_btn";
