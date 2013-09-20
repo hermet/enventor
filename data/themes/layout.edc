@@ -258,11 +258,10 @@ group { name: "statusbar_layout";
 group { name: "main_layout";
    parts {
       part { name: "base";
-         type: RECT;
+         type: SPACER;
          scale: 1;
          description {
             min: 640 440;
-            visible: 0;
          }
       }
       part { name: "elm.swallow.panes";
