@@ -48,11 +48,10 @@ stats_init(Evas_Object *parent, config_data *cd)
    //FIXME: temporarily setup
    if (DARK_THEME)
      elm_object_part_text_set(layout, "elm.text.cur_pos",
-                              "Cursor [<style=glow><color=#3399ff>0</color></style>,<style=glow><color=#3399ff>0</color></style>], [<style=glow><color=#3399ff>0.00</color></style>,<style=glow><color=#3399ff>0.00</color></style>]");
+                              "Cursor [<style=glow><color=#3399ff>0</color></style>,<style=glow><color=#3399ff>0</color></style>] [<style=glow><color=#3399ff>0.00</color></style>,<style=glow><color=#3399ff>0.00</color></style>]");
    else
      elm_object_part_text_set(layout, "elm.text.cur_pos",
                               "Cursor [<color=#000000>0</color>,<color=#000000>0</color>] [<color=#000000>0.00</color>,<color=#000000>0.00</color>]");
-
 
    sd->layout = layout;
    sd->cd = cd;
@@ -110,10 +109,10 @@ stats_view_size_update(stats_data *sd)
 void
 stats_cursor_pos_update(stats_data *sd, Evas_Coord x, Evas_Coord y, float rel_x, float rel_y)
 {
-   char buf[128];
+   char buf[250];
    if (DARK_THEME)
      snprintf(buf, sizeof(buf),
-              "Cursor [<style=glow><color=#3399ff>%d</color>,<color=#3399ff>%d</color>] [<color=#3399ff>%0.2f</color>,<color=#3399ff>%0.2f</color>]", x, y, rel_x, rel_y);
+              "Cursor [<style=glow><color=#3399ff>%d</color></style>,<style=glow><color=#3399ff>%d</color></style>] [<style=glow><color=#3399ff>%0.2f</color></style>,<style=glow><color=#3399ff>%0.2f</color></style>]", x, y, rel_x, rel_y);
    else
      snprintf(buf, sizeof(buf),
               "Cursor [<color=#000000>%d</color>,<color=#000000>%d</color>] [<color=#000000>%0.2f</color>,<color=#000000>%0.2f</color>]", x, y, rel_x, rel_y);
