@@ -2110,15 +2110,15 @@ group { name: "elm/panes/vertical/enventor";
       part { name: "whole_left"; type: RECT;
          description { state: "default" 0.0;
             rel2.to_x: "elm.bar";
-            rel2.relative: 1.0 1.0;
-            rel2.offset: -4 -1;
+            rel2.relative: 0.0 1.0;
+            fixed: 1 0;
          }
       }
       part { name: "whole_right"; type: RECT;
          description { state: "default" 0.0;
             rel1.to_x: "elm.bar";
-            rel1.relative: 0.0 0.0;
-            rel1.offset: 3 0;
+            rel1.relative: 1.0 0.0;
+            fixed: 1 0;
          }
       }
       part { name: "right_bg"; type: RECT;
@@ -2133,7 +2133,6 @@ group { name: "elm/panes/vertical/enventor";
          description { state: "default" 0.0;
             rel2.to_x: "elm.bar";
             rel2.relative: 0.0 1.0;
-            rel2.offset: -4 -1;
             fixed: 1 0;
          }
       }
@@ -2142,7 +2141,6 @@ group { name: "elm/panes/vertical/enventor";
          description { state: "default" 0.0;
             rel1.to_x: "elm.bar";
             rel1.relative: 1.0 0.0;
-            rel1.offset: 3 0;
             fixed: 1 0;
          }
       }

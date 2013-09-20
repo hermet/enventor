@@ -182,6 +182,8 @@ group { name: "statusbar_layout";
             rel1.relative: 1 0.0;
             rel2.to: "elm.text.line";
             rel2.relative: 0 1.0;
+            min: 180 18;
+            fixed: 1 1;
             align: 1 0.5;
             text.style: "entry_statusbar_style";
          }
@@ -216,7 +218,7 @@ group { name: "statusbar_layout";
          }
          description { state: "show" 0.0;
             inherit: "default" 0.0;
-            color: 255 0 0 255;
+            color: 0 0 0 255;
          }
       }
       program { name: "info_msg_show";
