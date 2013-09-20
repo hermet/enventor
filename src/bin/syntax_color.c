@@ -28,12 +28,12 @@ color_init(Eina_Strbuf *strbuf)
 
    if (DARK_THEME)
      {
-        cd->col1 = eina_stringshare_add("FFFFFF");
+        cd->col1 = eina_stringshare_add("A0A0A0");
         cd->col2 = eina_stringshare_add("00FFFF");
         cd->col3 = eina_stringshare_add("FFFF00");
         cd->col4 = eina_stringshare_add("FF00FF");
         cd->col5 = eina_stringshare_add("00FF00");
-        cd->col6 = eina_stringshare_add("0000FF");
+        cd->col6 = eina_stringshare_add("FF0000");
      }
    else
      {
