@@ -990,10 +990,12 @@ group { name: "setting_layout";
          type: TEXT;
          scale: 1;
          clip_to: "clipper";
+         effect: SHADOW BOTTOM;
          description {
             rel1 {to: "img_path_icon"; relative: 1 0; offset: 5 1;}
             rel2 {to: "img_path_icon"; relative: 1 1;}
             color: 255 255 255 255;
+            color3: 0 0 0 128;
             align: 0 0.5;
             fixed: 1 1;
             text {
@@ -1035,12 +1037,14 @@ group { name: "setting_layout";
       }
       part { name: "snd_path_guide";
          type: TEXT;
+         effect: SHADOW BOTTOM;
          scale: 1;
          clip_to: "clipper";
          description {
             rel1 {to: "snd_path_icon"; relative: 1 0; offset: 5 1;}
             rel2 {to: "snd_path_icon"; relative: 1 1;}
             color: 255 255 255 255;
+            color3: 0 0 0 128;
             align: 0 0.5;
             fixed: 1 1;
             text {
@@ -1082,12 +1086,14 @@ group { name: "setting_layout";
       }
       part { name: "fnt_path_guide";
          type: TEXT;
+         effect: SHADOW BOTTOM;
          scale: 1;
          clip_to: "clipper";
          description {
             rel1 {to: "fnt_path_icon"; relative: 1 0; offset: 5 1;}
             rel2 {to: "fnt_path_icon"; relative: 1 1;}
             color: 255 255 255 255;
+            color3: 0 0 0 128;
             align: 0 0.5;
             fixed: 1 1;
             text {
@@ -1129,12 +1135,14 @@ group { name: "setting_layout";
       }
       part { name: "data_path_guide";
          type: TEXT;
+         effect: SHADOW BOTTOM;
          scale: 1;
          clip_to: "clipper";
          description {
             rel1 {to: "data_path_icon"; relative: 1 0; offset: 5 1;}
             rel2 {to: "data_path_icon"; relative: 1 1;}
             color: 255 255 255 255;
+            color3: 0 0 0 128;
             align: 0 0.5;
             fixed: 1 1;
             text {
@@ -1176,12 +1184,14 @@ group { name: "setting_layout";
       }
       part { name: "preference_guide";
          type: TEXT;
+         effect: SHADOW BOTTOM;
          scale: 1;
          clip_to: "clipper";
          description {
             rel1 {to: "preference_icon"; relative: 1 0; offset: 5 1;}
             rel2 {to: "preference_icon"; relative: 1 1;}
             color: 255 255 255 255;
+            color3: 0 0 0 128;
             align: 0 0;
             fixed: 1 1;
             text {

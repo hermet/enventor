@@ -16,11 +16,6 @@ styles
         tag:  "preedit" "+ underline=on underline_color=#000";
         tag:  "preedit_sel" "+ backing=on backing_color=#000 color=#FFFFFF";
      }
-     style { name: "entry_textblock_guide_style";
-        base: "font="FN" font_size=10 color=#00000040 wrap=word text_class=entry ellipsis=0.0";
-        tag:  "em" "+ font_style=Oblique";
-        tag:  "hilight" "+ font_weight=Bold";
-     }
      style { name: "entry_single_textblock_style";
         base: "font="FN" font_size=12 color=#323232 wrap=none text_class=entry left_margin=2 right_margin=2";
         tag:  "br" "";
