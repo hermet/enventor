@@ -937,7 +937,7 @@ group { name: "setting_layout";
             text {
                font: FN;
                text: "Image Paths:";
-               size: 12;
+               size: 11;
                align: 0 0.5;
                min: 1 0;
             }
@@ -984,7 +984,7 @@ group { name: "setting_layout";
             text {
                font: FN;
                text: "Sound Paths:";
-               size: 12;
+               size: 11;
                align: 0 0.5;
                min: 1 0;
             }
@@ -1031,7 +1031,7 @@ group { name: "setting_layout";
             text {
                font: FN;
                text: "Font Paths:";
-               size: 12;
+               size: 11;
                align: 0 0.5;
                min: 1 0;
             }
@@ -1078,7 +1078,7 @@ group { name: "setting_layout";
             text {
                font: FN;
                text: "Data Paths:";
-               size: 12;
+               size: 11;
                align: 0 0.5;
                min: 1 0;
             }
@@ -1125,7 +1125,7 @@ group { name: "setting_layout";
             text {
                font: FN;
                text: "Preferences:";
-               size: 12;
+               size: 11;
                align: 0 0;
                min: 1 0;
             }

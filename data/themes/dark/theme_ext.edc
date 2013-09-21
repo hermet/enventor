@@ -17,7 +17,7 @@ styles
         tag:  "preedit_sel" "+ backing=on backing_color=#000 color=#FFFFFF";
      }
      style { name: "entry_single_textblock_style";
-        base: "font="FN" font_size=12 color=#ffffff wrap=none text_class=entry left_margin=2 right_margin=2 shadow_color=#00000080 style=shadow,bottom";
+        base: "font="FN" font_size=11 color=#ffffff wrap=none text_class=entry left_margin=2 right_margin=2 shadow_color=#00000080 style=shadow,bottom";
         tag:  "br" "";
         tag:  "ps" "";
         tag:  "em" "+ font_style=Oblique";

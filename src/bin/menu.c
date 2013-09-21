@@ -395,7 +395,6 @@ setting_open(menu_data *md)
 
    //Font Size (Slider)
    Evas_Object *slider = elm_slider_add(box2);
-   elm_object_scale_set(slider, 1.2125);
    evas_object_size_hint_weight_set(label, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(slider, 1, EVAS_HINT_FILL);
    elm_slider_span_size_set(slider, 300);

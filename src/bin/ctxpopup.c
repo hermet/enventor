@@ -122,7 +122,6 @@ ctxpopup_candidate_list_create(Evas_Object *parent, attr_value *attr,
 
         //Slider
         Evas_Object *slider = elm_slider_add(layout);
-        elm_object_scale_set(slider, 1.2125);
         if (attr->integer) elm_slider_unit_format_set(slider, "%1.0f");
         else elm_slider_unit_format_set(slider, "%1.2f");
         elm_slider_span_size_set(slider, 120);
