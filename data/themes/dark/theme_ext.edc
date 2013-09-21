@@ -1109,7 +1109,7 @@ group { name: "elm/entry/selection/enventor";
    parts {
       part { name: "base"; type: RECT;
          description { state: "default" 0.0;
-            color: 0 0 255 255;
+            color: 100 100 100 255;
          }
       }
    }
