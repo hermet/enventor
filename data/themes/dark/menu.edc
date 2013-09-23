@@ -334,8 +334,8 @@ group { name: "warning_layout";
          scale: 1;
          clip_to: "clipper";
          description {
-            min: 300 145;
-            max: 300 145;
+            min: 300 135;
+            max: 300 135;
             fixed: 1 1;
             image.normal: "menu_layout.png";
             image.border: 10 10 10 10;
@@ -421,7 +421,7 @@ group { name: "warning_layout";
             text.text: "Without save, you will lost last changes!";
             text {
                font: FN;
-               size: 12;
+               size: 11;
                align: 0.5 0;
                min: 1 1;
             }
@@ -439,7 +439,7 @@ group { name: "warning_layout";
             text.text: "Are you sure you want to do this?";
             text {
                font: FN;
-               size: 12;
+               size: 11;
                align: 0.5 0;
                min: 1 1;
             }
