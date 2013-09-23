@@ -34,3 +34,6 @@ void config_auto_indent_set(config_data *cd, Eina_Bool auto_indent);
 Eina_Bool config_auto_indent_get(config_data *cd);
 void config_font_size_set(config_data *cd, float font_size);
 float config_font_size_get(config_data *cd);
+void config_dark_theme_set(config_data *cd, Eina_Bool dark_theme);
+Eina_Bool config_dark_theme_get(config_data *cd);
+

@@ -9,16 +9,40 @@
       else if (ret == -1) goto finished; \
    } \
 
+#define COL_NUM 6
+
 struct syntax_color_s
 {
    Eina_Strbuf *strbuf;
-   Eina_Stringshare *col1;
-   Eina_Stringshare *col2;
-   Eina_Stringshare *col3;
-   Eina_Stringshare *col4;
-   Eina_Stringshare *col5;
-   Eina_Stringshare *col6;
+   Eina_Stringshare *cols[COL_NUM];
 };
+
+void
+color_theme_change(color_data *cd, Eina_Bool dark)
+{
+   int i;
+   for(i = 0; i < COL_NUM; i++)
+     eina_stringshare_del(cd->cols[i]);
+
+   if (dark)
+     {
+        cd->cols[0] = eina_stringshare_add("A0A0A0");
+        cd->cols[1] = eina_stringshare_add("00FFFF");
+        cd->cols[2] = eina_stringshare_add("FFFF00");
+        cd->cols[3] = eina_stringshare_add("FF00FF");
+        cd->cols[4] = eina_stringshare_add("00FF00");
+        cd->cols[5] = eina_stringshare_add("FF0000");
+     }
+   else
+     {
+        cd->cols[0] = eina_stringshare_add("424242");
+        cd->cols[1] = eina_stringshare_add("A000A0");
+        cd->cols[2] = eina_stringshare_add("0000A0");
+        cd->cols[3] = eina_stringshare_add("969600");
+        cd->cols[4] = eina_stringshare_add("009600");
+        cd->cols[5] = eina_stringshare_add("00C0C0");
+     }
+}
 
 color_data *
 color_init(Eina_Strbuf *strbuf)
@@ -26,24 +50,12 @@ color_init(Eina_Strbuf *strbuf)
    color_data *cd = malloc(sizeof(color_data));
    cd->strbuf = strbuf;
 
-   if (DARK_THEME)
-     {
-        cd->col1 = eina_stringshare_add("A0A0A0");
-        cd->col2 = eina_stringshare_add("00FFFF");
-        cd->col3 = eina_stringshare_add("FFFF00");
-        cd->col4 = eina_stringshare_add("FF00FF");
-        cd->col5 = eina_stringshare_add("00FF00");
-        cd->col6 = eina_stringshare_add("FF0000");
-     }
-   else
-     {
-        cd->col1 = eina_stringshare_add("424242");
-        cd->col2 = eina_stringshare_add("A000A0");
-        cd->col3 = eina_stringshare_add("0000A0");
-        cd->col4 = eina_stringshare_add("969600");
-        cd->col5 = eina_stringshare_add("009600");
-        cd->col6 = eina_stringshare_add("00C0C0");
-     }
+   cd->cols[0] = eina_stringshare_add("424242");
+   cd->cols[1] = eina_stringshare_add("A000A0");
+   cd->cols[2] = eina_stringshare_add("0000A0");
+   cd->cols[3] = eina_stringshare_add("969600");
+   cd->cols[4] = eina_stringshare_add("009600");
+   cd->cols[5] = eina_stringshare_add("00C0C0");
 
    return cd;
 }
@@ -51,12 +63,9 @@ color_init(Eina_Strbuf *strbuf)
 void
 color_term(color_data *cd)
 {
-   eina_stringshare_del(cd->col1);
-   eina_stringshare_del(cd->col2);
-   eina_stringshare_del(cd->col3);
-   eina_stringshare_del(cd->col4);
-   eina_stringshare_del(cd->col5);
-   eina_stringshare_del(cd->col6);
+   int i;
+   for(i = 0; i < COL_NUM; i++)
+     eina_stringshare_del(cd->cols[i]);
 
    free(cd);
 }
@@ -405,13 +414,13 @@ color_apply(color_data *cd, const char *src, int length)
           }
 
         //handle comment: /* ~ */
-        ret = comment_apply(strbuf, &src, length, &cur, &prev, cd->col5,
+        ret = comment_apply(strbuf, &src, length, &cur, &prev, cd->cols[4],
                             &inside_comment);
         if (ret == 1) continue;
         else if (ret == -1) goto finished;
 
         //handle comment: //
-        ret = comment2_apply(strbuf, &src, length, &cur, &prev, cd->col5,
+        ret = comment2_apply(strbuf, &src, length, &cur, &prev, cd->cols[4],
                              &inside_comment);
         if (ret == 1) continue;
         else if (ret == -1) goto finished;
@@ -438,13 +447,13 @@ color_apply(color_data *cd, const char *src, int length)
         if (ret == 1) continue;
 
         //handle comment: #
-        ret = sharp_apply(strbuf, &src, length, &cur, &prev, cd->col6);
+        ret = sharp_apply(strbuf, &src, length, &cur, &prev, cd->cols[5]);
         if (ret == 1) continue;
         else if (ret == -1) goto finished;
 
         //FIXME: construct from the configuration file
         //syntax group 1
-        Eina_Stringshare *col1 = cd->col1;
+        Eina_Stringshare *col1 = cd->cols[0];
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "{", col1);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "}", col1);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "[", col1);
@@ -453,7 +462,7 @@ color_apply(color_data *cd, const char *src, int length)
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, ":", col1);
 
         //syntax group 2
-        Eina_Stringshare *col2 = cd->col2;
+        Eina_Stringshare *col2 = cd->cols[1];
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "collections", col2);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "description", col2);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "fill", col2);
@@ -469,7 +478,7 @@ color_apply(color_data *cd, const char *src, int length)
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "rel2", col2);
 
         //syntax group 3
-        Eina_Stringshare *col3 = cd->col3;
+        Eina_Stringshare *col3 = cd->cols[2];
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "action", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "after", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "align", col3);
@@ -510,7 +519,7 @@ color_apply(color_data *cd, const char *src, int length)
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "visible", col3);
 
         //syntax group 4
-        Eina_Stringshare *col4 = cd->col4;
+        Eina_Stringshare *col4 = cd->cols[3];
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "ACCELERATE_FACTOR",
                      col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "ACCELERATE", col4);

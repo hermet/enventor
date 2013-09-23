@@ -19,6 +19,7 @@ struct menu_s
    Evas_Object *toggle_highlight;
    Evas_Object *toggle_swallow;
    Evas_Object *toggle_indent;
+   Evas_Object *toggle_theme;
 
    Evas_Object *ctxpopup;
 
@@ -207,6 +208,7 @@ setting_apply_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
    config_part_highlight_set(cd, elm_check_state_get(md->toggle_highlight));
    config_dummy_swallow_set(cd, elm_check_state_get(md->toggle_swallow));
    config_auto_indent_set(cd, elm_check_state_get(md->toggle_indent));
+   config_dark_theme_set(cd, elm_check_state_get(md->toggle_theme));
 
    config_apply(cd);
 
@@ -300,6 +302,7 @@ setting_reset_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
    elm_check_state_set(md->toggle_highlight, config_part_highlight_get(cd));
    elm_check_state_set(md->toggle_swallow, config_dummy_swallow_get(cd));
    elm_check_state_set(md->toggle_indent, config_auto_indent_get(cd));
+   elm_check_state_set(md->toggle_theme, config_dark_theme_get(cd));
 }
 
 static void
@@ -484,6 +487,21 @@ setting_open(menu_data *md)
 
    elm_box_pack_end(box, toggle_indent);
 
+   //Toggle (Theme)
+   Evas_Object *toggle_theme = elm_check_add(box);
+   elm_object_style_set(toggle_theme, "toggle");
+   elm_object_part_text_set(toggle_theme, "on", "Dark");
+   elm_object_part_text_set(toggle_theme, "off", "Light");
+   elm_check_state_set(toggle_theme, config_dark_theme_get(md->cd));
+   evas_object_size_hint_weight_set(toggle_theme, EVAS_HINT_EXPAND,
+                                    EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(toggle_theme, EVAS_HINT_FILL,
+                                   EVAS_HINT_FILL);
+   elm_object_text_set(toggle_theme, "Theme");
+   evas_object_show(toggle_theme);
+
+   elm_box_pack_end(box, toggle_theme);
+
    Evas_Object *btn;
 
    //Apply Button
@@ -527,6 +545,7 @@ setting_open(menu_data *md)
    md->toggle_highlight = toggle_highlight;
    md->toggle_swallow = toggle_swallow;
    md->toggle_indent = toggle_indent;
+   md->toggle_theme = toggle_theme;
 }
 
 static void
@@ -992,6 +1011,12 @@ load_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
 {
    menu_data *md = data;
    menu_edc_load(md);
+}
+
+void
+menu_theme_change(menu_data *md)
+{
+   elm_layout_file_set(md->menu_layout, EDJE_PATH, "menu_layout");
 }
 
 static void

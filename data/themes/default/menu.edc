@@ -579,6 +579,12 @@ group { name: "menu_layout";
             color2: 255 255 255 24;
             color3: 255 255 255 18;
          }
+         description { state: "anim" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 255;
+            color2: 255 255 255 58;
+            color3: 255 255 255 46;
+         }
       }
       part { name: "padding1";
          type: SPACER;
@@ -751,6 +757,19 @@ group { name: "menu_layout";
          target: "bg";
          target: "clipper";
          after: "event_blocker_hide";
+         after: "title_anim";
+      }
+      program { name: "title_anim";
+         action: STATE_SET "anim" 0.0;
+         target: "title";
+         transition: LINEAR 2;
+         after: "title_anim2";
+      }
+      program { name: "title_anim2";
+         action: STATE_SET "default" 0.0;
+         target: "title";
+         transition: LINEAR 2;
+         after: "title_anim";
       }
       program { name: "event_blocker_hide";
          signal: "elm,state,event_blocker,hide";

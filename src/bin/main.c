@@ -3,8 +3,6 @@
 #include "config.h"
 #include "common.h"
 
-int main(int argc, char **argv);
-
 struct app_s
 {
    edit_data *ed;
@@ -24,6 +22,38 @@ struct app_s
 };
 
 static const char *EDJE_CC_CMD;
+static Eina_Bool DARK_THEME = EINA_FALSE;
+
+int main(int argc, char **argv);
+
+static void
+theme_change(app_data *ad)
+{
+   if (DARK_THEME == config_dark_theme_get(ad->cd)) return;
+
+   elm_theme_extension_del(NULL, EDJE_PATH);
+
+   if (config_dark_theme_get(ad->cd))
+     {
+        snprintf(EDJE_PATH, sizeof(EDJE_PATH), "%s/themes/enventor_dark.edj",
+                 elm_app_data_dir_get());
+        elm_theme_set(NULL, "dark");
+     }
+   else
+     {
+        snprintf(EDJE_PATH, sizeof(EDJE_PATH), "%s/themes/enventor.edj",
+                 elm_app_data_dir_get());
+        elm_theme_set(NULL, "default");
+     }
+
+   elm_theme_extension_add(NULL, EDJE_PATH);
+
+   menu_theme_change(ad->md);
+   stats_theme_change(ad->sd);
+   edit_theme_change(ad->ed);
+
+   DARK_THEME = config_dark_theme_get(ad->cd);
+}
 
 static Eina_Bool
 rebuild_edc()
@@ -451,12 +481,12 @@ static void
 config_update_cb(void *data, config_data *cd)
 {
    app_data *ad = data;
+   theme_change(ad);
    edje_cc_cmd_set(cd);
    edit_line_number_toggle(ad->ed);
    edit_font_size_update(ad->ed, EINA_FALSE);
    statusbar_toggle(ad);
    part_highlight_toggle(ad, EINA_FALSE);
-
    view_dummy_toggle(VIEW_DATA, EINA_FALSE);
 
    //previous build was failed, Need to rebuild then reload the edj.
@@ -570,10 +600,6 @@ elm_setup()
    char *scale = getenv("ELM_SCALE");
    if (scale) elm_config_scale_set(atof(scale));
 
-   const char *theme = getenv("ELM_THEME");
-   if (theme) elm_theme_set(NULL, theme);
-   else theme = elm_theme_get(NULL);
-
    elm_config_scroll_bounce_enabled_set(EINA_FALSE);
    elm_policy_set(ELM_POLICY_QUIT, ELM_POLICY_QUIT_LAST_WINDOW_CLOSED);
    elm_app_compile_bin_dir_set(PACKAGE_BIN_DIR);
@@ -582,16 +608,8 @@ elm_setup()
    elm_app_info_set(main, "enventor",
                     "images/logo.png");
 
-   if (theme && !strncmp(theme, "dark", 4))
-     {
-        DARK_THEME = EINA_TRUE;
-        snprintf(EDJE_PATH, sizeof(EDJE_PATH), "%s/themes/enventor_dark.edj",
-                 elm_app_data_dir_get());
-     }
-   else
-     snprintf(EDJE_PATH, sizeof(EDJE_PATH), "%s/themes/enventor.edj",
-              elm_app_data_dir_get());
-
+   snprintf(EDJE_PATH, sizeof(EDJE_PATH), "%s/themes/enventor.edj",
+            elm_app_data_dir_get());
    elm_theme_extension_add(NULL, EDJE_PATH);
 }
 

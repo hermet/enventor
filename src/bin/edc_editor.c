@@ -95,6 +95,16 @@ syntax_color_apply(edit_data *ed)
    free(utf8);
 }
 
+void
+edit_theme_change(edit_data *ed)
+{
+   if (ed->syntax_color_timer) ecore_timer_del(ed->syntax_color_timer);
+   ed->syntax_color_timer = NULL;
+   color_theme_change(syntax_color_data_get(ed->sh),
+                      config_dark_theme_get(ed->cd));
+   syntax_color_apply(ed);
+}
+
 static Eina_Bool
 syntax_color_timer_cb(void *data)
 {

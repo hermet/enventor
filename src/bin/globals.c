@@ -3,4 +3,3 @@
 
 const char *PROTO_EDC_PATH = "/tmp/.proto.edc";
 char EDJE_PATH[PATH_MAX];
-Eina_Bool DARK_THEME = EINA_FALSE;
