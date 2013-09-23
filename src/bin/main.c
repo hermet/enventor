@@ -570,8 +570,9 @@ elm_setup()
    char *scale = getenv("ELM_SCALE");
    if (scale) elm_config_scale_set(atof(scale));
 
-   char *theme = getenv("ELM_THEME");
+   const char *theme = getenv("ELM_THEME");
    if (theme) elm_theme_set(NULL, theme);
+   else theme = elm_theme_get(NULL);
 
    elm_config_scroll_bounce_enabled_set(EINA_FALSE);
    elm_policy_set(ELM_POLICY_QUIT, ELM_POLICY_QUIT_LAST_WINDOW_CLOSED);
@@ -581,7 +582,7 @@ elm_setup()
    elm_app_info_set(main, "enventor",
                     "images/logo.png");
 
-   if (theme && !strcmp(theme, "dark"))
+   if (theme && !strncmp(theme, "dark", 4))
      {
         DARK_THEME = EINA_TRUE;
         snprintf(EDJE_PATH, sizeof(EDJE_PATH), "%s/themes/enventor_dark.edj",
