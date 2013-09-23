@@ -563,15 +563,15 @@ config_data_set(app_data *ad, int argc, char **argv)
 static void
 elm_setup()
 {
-    elm_config_profile_set("standard");
+   elm_config_profile_set("standard");
 
-    /* Recover the scale & theme since it will be reset by
-       elm_config_profile_set() */
-    char *scale = getenv("ELM_SCALE");
-    if (scale) elm_config_scale_set(atof(scale));
+   /* Recover the scale & theme since it will be reset by
+      elm_config_profile_set() */
+   char *scale = getenv("ELM_SCALE");
+   if (scale) elm_config_scale_set(atof(scale));
 
-    char *theme = getenv("ELM_THEME");
-    if (theme) elm_theme_set(NULL, theme);
+   char *theme = getenv("ELM_THEME");
+   if (theme) elm_theme_set(NULL, theme);
 
    elm_config_scroll_bounce_enabled_set(EINA_FALSE);
    elm_policy_set(ELM_POLICY_QUIT, ELM_POLICY_QUIT_LAST_WINDOW_CLOSED);
