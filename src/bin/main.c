@@ -21,7 +21,6 @@ struct app_s
    Eina_Bool menu_opened : 1;
 };
 
-static const char *EDJE_CC_CMD;
 static Eina_Bool DARK_THEME = EINA_FALSE;
 
 int main(int argc, char **argv);
@@ -56,14 +55,6 @@ theme_change(app_data *ad)
 }
 
 static Eina_Bool
-rebuild_edc()
-{
-   int ret = system(EDJE_CC_CMD);
-   if (ret == -1) return EINA_FALSE;
-   else return EINA_TRUE;
-}
-
-static Eina_Bool
 edc_changed_cb(void *data, int type EINA_UNUSED, void *event)
 {
    //FIXME: Why does this callback called multiple times?
@@ -75,37 +66,10 @@ edc_changed_cb(void *data, int type EINA_UNUSED, void *event)
    if (strcmp(ev->filename, config_edc_path_get(ad->cd)))
      return ECORE_CALLBACK_RENEW;
 
-   rebuild_edc();
+   build_edc();
    edit_changed_set(ad->ed, EINA_FALSE);
 
    return ECORE_CALLBACK_RENEW;
-}
-
-static Eina_Bool
-edje_cc_cmd_set(config_data *cd)
-{
-   Eina_Strbuf *buf = eina_strbuf_new();
-   if (!buf) return EINA_FALSE;
-
-   char default_path[PATH_MAX * 4];
-   sprintf(default_path, "-id %s/images -sd %s/sounds -fd %s/fonts -dd %s/data",
-           elm_app_data_dir_get(), elm_app_data_dir_get(),
-           elm_app_data_dir_get(), elm_app_data_dir_get());
-
-   eina_strbuf_append_printf(buf,
-                             "edje_cc -fastcomp %s %s %s %s %s %s %s",
-                             config_edc_path_get(cd),
-                             config_edj_path_get(cd),
-                             default_path,
-                             config_edc_img_path_get(cd),
-                             config_edc_snd_path_get(cd),
-                             config_edc_fnt_path_get(cd),
-                             config_edc_data_path_get(cd));
-   eina_strbuf_append(buf, " > /dev/null");
-   EDJE_CC_CMD = eina_strbuf_string_steal(buf);
-   eina_strbuf_free(buf);
-
-   return EINA_TRUE;
 }
 
 static void
@@ -178,7 +142,7 @@ edc_proto_setup(config_data *cd)
         return EINA_FALSE;
      }
 
-   rebuild_edc();
+   build_edc();
 
    return EINA_TRUE;
 }
@@ -482,7 +446,7 @@ config_update_cb(void *data, config_data *cd)
 {
    app_data *ad = data;
    theme_change(ad);
-   edje_cc_cmd_set(cd);
+   build_cmd_set(cd);
    edit_line_number_toggle(ad->ed);
    edit_font_size_update(ad->ed, EINA_FALSE);
    statusbar_toggle(ad);
@@ -492,7 +456,7 @@ config_update_cb(void *data, config_data *cd)
    //previous build was failed, Need to rebuild then reload the edj.
    if (edj_mgr_reload_need_get(ad->em))
      {
-        rebuild_edc();
+        build_edc();
         edit_changed_set(ad->ed, EINA_FALSE);
         edj_mgr_clear(ad->em);
         edc_view_set(ad, ad->cd, ad->sd, stats_group_name_get(ad->sd));
@@ -502,7 +466,6 @@ config_update_cb(void *data, config_data *cd)
    //If the edc is reloaded, then rebuild it!
    else if (edit_changed_get(ad->ed))
      {
-        rebuild_edc();
         edit_changed_set(ad->ed, EINA_FALSE);
      }
 }
@@ -640,7 +603,7 @@ init(app_data *ad, int argc, char **argv)
    elm_setup();
    config_data_set(ad, argc, argv);
 
-   if (!edje_cc_cmd_set(ad->cd)) return EINA_FALSE;
+   if (!build_init(ad->cd)) return EINA_FALSE;
    if (!edc_proto_setup(ad->cd)) return EINA_FALSE;
    if (!base_gui_construct(ad)) return EINA_FALSE;
 
@@ -659,6 +622,7 @@ init(app_data *ad, int argc, char **argv)
 static void
 term(app_data *ad)
 {
+   build_term();
    menu_term(ad->md);
    edit_term(ad->ed);
    edj_mgr_term(ad->em);

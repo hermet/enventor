@@ -29,5 +29,6 @@ typedef struct edj_mgr_s edj_mgr;
 #include "indent.h"
 #include "edj_mgr.h"
 #include "globals.h"
+#include "build.h"
 
 #endif

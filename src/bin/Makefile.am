@@ -24,6 +24,7 @@ enventor_SOURCES = \
 	syntax_helper.c \
 	indent.c \
    edj_mgr.c \
+   build.c \
    globals.c
 
 # QuickLaunch                                                

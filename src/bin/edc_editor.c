@@ -100,6 +100,7 @@ edit_theme_change(edit_data *ed)
 {
    if (ed->syntax_color_timer) ecore_timer_del(ed->syntax_color_timer);
    ed->syntax_color_timer = NULL;
+
    color_theme_change(syntax_color_data_get(ed->sh),
                       config_dark_theme_get(ed->cd));
    syntax_color_apply(ed);
@@ -676,7 +677,6 @@ edit_init(Evas_Object *parent, stats_data *sd, config_data *cd)
 
    //Scroller
    Evas_Object *scroller = elm_scroller_add(parent);
-   //FIXME: Scroller bars doesn't appeard?
    elm_scroller_policy_set(scroller, ELM_SCROLLER_POLICY_AUTO,
                            ELM_SCROLLER_POLICY_AUTO);
    elm_object_focus_allow_set(scroller, EINA_FALSE);

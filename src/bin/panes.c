@@ -195,4 +195,3 @@ panes_create(Evas_Object *parent)
 
    return panes;
 }
-

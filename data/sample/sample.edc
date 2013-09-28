@@ -5,6 +5,7 @@ collections {
       image: "clouds.png" COMP;
       image: "input_bg.png" COMP;
    }
+	adfads
    group { name: "etyper";
       parts {
          part { name: "bg";
