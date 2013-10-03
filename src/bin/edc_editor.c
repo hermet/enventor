@@ -75,7 +75,7 @@ syntax_color_apply(edit_data *ed)
    //FIXME: Optimize here by applying color syntax for only changed lines 
    ed->syntax_color_timer = NULL;
 
-   char *text = elm_entry_entry_get(ed->en_edit);
+   char *text = (char *) elm_entry_entry_get(ed->en_edit);
    int pos = elm_entry_cursor_pos_get(ed->en_edit);
    char *utf8 = (char *) color_cancel(syntax_color_data_get(ed->sh), text,
                                       strlen(text));
