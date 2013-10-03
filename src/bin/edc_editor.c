@@ -73,7 +73,6 @@ static void
 syntax_color_apply(edit_data *ed)
 {
    //FIXME: Optimize here by applying color syntax for only changed lines 
-   ed->syntax_color_timer = NULL;
 
    char *text = (char *) elm_entry_entry_get(ed->en_edit);
    int pos = elm_entry_cursor_pos_get(ed->en_edit);
@@ -91,31 +90,29 @@ syntax_color_apply(edit_data *ed)
    free(utf8);
 }
 
-void
-edit_theme_change(edit_data *ed)
-{
-   if (ed->syntax_color_timer) ecore_timer_del(ed->syntax_color_timer);
-   ed->syntax_color_timer = NULL;
-
-   color_theme_change(syntax_color_data_get(ed->sh),
-                      config_dark_theme_get(ed->cd));
-   syntax_color_apply(ed);
-}
-
 static Eina_Bool
 syntax_color_timer_cb(void *data)
 {
    edit_data *ed = data;
    syntax_color_apply(ed);
+   ed->syntax_color_timer = NULL;
    return ECORE_CALLBACK_CANCEL;
 }
 
-static Eina_Bool
-syntax_color_animator_cb(void *data)
+static void
+syntax_color_timer_update(edit_data *ed)
 {
-   edit_data *ed = data;
-   syntax_color_apply(ed);
-   return ECORE_CALLBACK_CANCEL;
+   if (ed->syntax_color_timer) ecore_timer_del(ed->syntax_color_timer);
+     ed->syntax_color_timer = ecore_timer_add(SYNTAX_COLOR_TIME,
+                                              syntax_color_timer_cb, ed);
+}
+
+void
+edit_theme_change(edit_data *ed)
+{
+   color_theme_change(syntax_color_data_get(ed->sh),
+                      config_dark_theme_get(ed->cd));
+   syntax_color_timer_update(ed);
 }
 
 static void
@@ -158,10 +155,7 @@ edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
      }
 
    if (!syntax_color) return;
-
-   if (ed->syntax_color_timer) ecore_timer_del(ed->syntax_color_timer);
-     ed->syntax_color_timer = ecore_timer_add(SYNTAX_COLOR_TIME,
-                                              syntax_color_timer_cb, ed);
+   syntax_color_timer_update(ed);
 }
 
 static void
@@ -311,12 +305,9 @@ edit_template_insert(edit_data *ed)
 
    elm_entry_cursor_pos_set(ed->en_edit, cursor_pos);
 
-   if (ed->syntax_color_timer) ecore_timer_del(ed->syntax_color_timer);
-     ed->syntax_color_timer = ecore_timer_add(SYNTAX_COLOR_TIME,
-                                              syntax_color_timer_cb, ed);
-
-     snprintf(buf, sizeof(buf), "Template code inserted. (%s)", buf2);
-     stats_info_msg_update(ed->sd, buf);
+   syntax_color_timer_update(ed);
+   snprintf(buf, sizeof(buf), "Template code inserted. (%s)", buf2);
+   stats_info_msg_update(ed->sd, buf);
 }
 
 void
@@ -390,12 +381,9 @@ edit_template_part_insert(edit_data *ed, Edje_Part_Type type)
 
    elm_entry_cursor_pos_set(ed->en_edit, cursor_pos);
 
-   if (ed->syntax_color_timer) ecore_timer_del(ed->syntax_color_timer);
-     ed->syntax_color_timer = ecore_timer_add(SYNTAX_COLOR_TIME,
-                                              syntax_color_timer_cb, ed);
-
-     snprintf(buf, sizeof(buf), "Template code inserted. (%s Part)", part);
-     stats_info_msg_update(ed->sd, buf);
+   syntax_color_timer_update(ed);
+   snprintf(buf, sizeof(buf), "Template code inserted. (%s Part)", part);
+   stats_info_msg_update(ed->sd, buf);
 }
 
 static void
@@ -802,7 +790,7 @@ edit_edc_read(edit_data *ed, const char *file_path)
 
    stats_edc_file_set(ed->sd, group_name);
 
-   ecore_animator_add(syntax_color_animator_cb, ed);
+   ecore_animator_add(syntax_color_timer_cb, ed);
 
 err:
    if (strbuf) eina_strbuf_free(strbuf);
