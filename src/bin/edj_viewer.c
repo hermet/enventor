@@ -45,6 +45,8 @@ file_set_timer_cb(void *data)
         return ECORE_CALLBACK_CANCEL;
      }
 
+   edj_mgr_reload_need_set(edj_mgr_get(), EINA_TRUE);
+
    return ECORE_CALLBACK_RENEW;
 }
 

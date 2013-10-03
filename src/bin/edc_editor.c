@@ -75,15 +75,11 @@ syntax_color_apply(edit_data *ed)
    //FIXME: Optimize here by applying color syntax for only changed lines 
    ed->syntax_color_timer = NULL;
 
-   Evas_Object *tb = elm_entry_textblock_get(ed->en_edit);
-   char *text = (char *) evas_object_textblock_text_markup_get(tb);
-
+   char *text = elm_entry_entry_get(ed->en_edit);
    int pos = elm_entry_cursor_pos_get(ed->en_edit);
-
    char *utf8 = (char *) color_cancel(syntax_color_data_get(ed->sh), text,
                                       strlen(text));
    if (!utf8) return;
-
    utf8 = strdup(utf8);
    const char *translated = color_apply(syntax_color_data_get(ed->sh), utf8,
                                         strlen(utf8));
@@ -781,7 +777,6 @@ edit_edc_read(edit_data *ed, const char *file_path)
 
    Eina_File_Line *line;
    int line_num = 0;
-
    EINA_ITERATOR_FOREACH(itr, line)
      {
         //Append edc ccde
@@ -806,6 +801,7 @@ edit_edc_read(edit_data *ed, const char *file_path)
       parser_first_group_name_get(ed->pd, ed->en_edit);
 
    stats_edc_file_set(ed->sd, group_name);
+
    ecore_animator_add(syntax_color_animator_cb, ed);
 
 err:
