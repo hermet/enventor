@@ -83,6 +83,8 @@ indent_insert_br_case(indent_data *id, Evas_Object *entry)
      }
 
    int space = indent_space_get(id, entry);
+   if (space <= 0) return;
+
    //Alloc Empty spaces
    char *p = alloca(space + 1);
    memset(p, ' ', space);
