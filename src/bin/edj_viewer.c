@@ -297,6 +297,8 @@ view_program_run(view_data *vd, const char *program)
 void
 view_part_highlight_set(view_data *vd, const char *part_name)
 {
+   if (!vd) return;
+
    if (!vd->layout)
      {
         if (vd->idler) vd->part_name = eina_stringshare_add(part_name);
