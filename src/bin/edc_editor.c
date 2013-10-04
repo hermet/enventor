@@ -73,7 +73,6 @@ static void
 syntax_color_apply(edit_data *ed)
 {
    //FIXME: Optimize here by applying color syntax for only changed lines 
-
    char *text = (char *) elm_entry_entry_get(ed->en_edit);
    int pos = elm_entry_cursor_pos_get(ed->en_edit);
    char *utf8 = (char *) color_cancel(syntax_color_data_get(ed->sh), text,
@@ -84,8 +83,6 @@ syntax_color_apply(edit_data *ed)
                                         strlen(utf8));
    elm_entry_entry_set(ed->en_edit, NULL);
    elm_entry_entry_append(ed->en_edit, translated);
-//FIXME: don't know why this api reset the entry cursor.
-//   elm_entry_entry_set(ed->en_edit, translated);
    elm_entry_cursor_pos_set(ed->en_edit, pos);
    free(utf8);
 }
