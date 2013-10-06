@@ -491,7 +491,6 @@ image_preview_show(edit_data *ed, char *cur, Evas_Coord x, Evas_Coord y)
 
    if (found)
      {
-        //FIXME: When resize the window, ->  CRASH!
         Evas_Object *ctxpopup =
            ctxpopup_img_preview_create(ed->parent,
                                        fullpath,
