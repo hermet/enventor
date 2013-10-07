@@ -33,23 +33,17 @@ dummy_objs_update(dummy_obj *dummy)
    //Remove the fake swallow objects that parts are removed.
    EINA_LIST_FOREACH_SAFE(dummy->swallows, l, l_next, po)
      {
-        removed = EINA_FALSE;
+        removed = EINA_TRUE;
 
         EINA_LIST_FOREACH(parts, l2, part_name)
           {
-             if (strlen(po->name) > strlen(part_name))
+             if (po->name[0] != part_name[0]) continue;
+             if (strlen(po->name) != strlen(part_name)) continue;
+             if (!strcmp(po->name, part_name))
                {
-                  if (strcmp(po->name, part_name)) continue;
-               }
-             else
-               {
-                  if (strcmp(part_name, po->name)) continue;
-               }
-
-             if (edje_edit_part_type_get(dummy->layout, part_name) !=
-                 EDJE_PART_TYPE_SWALLOW)
-               {
-                  removed = EINA_TRUE;
+                  if (edje_edit_part_type_get(dummy->layout, part_name) ==
+                      EDJE_PART_TYPE_SWALLOW)
+                    removed = EINA_FALSE;
                   break;
                }
           }

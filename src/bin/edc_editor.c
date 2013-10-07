@@ -489,6 +489,7 @@ image_preview_show(edit_data *ed, char *cur, Evas_Coord x, Evas_Coord y)
 
    Eina_Bool succeed;
 
+   //Create Ctxpopup with the image pathes.
    if (found)
      {
         Evas_Object *ctxpopup =
