@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Application
+Name=Enventor
+Comment=Enlightenment EDC Editor
+Icon=enventor
+Exec=enventor
+Terminal=false
+#MimeType=text/edc
+Categories=Utility;EdcEditor;

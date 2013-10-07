@@ -90,6 +90,8 @@ src/Makefile
 src/include/Makefile
 src/bin/Makefile
 data/Makefile
+data/desktop/Makefile
+data/icon/Makefile
 data/images/Makefile
 data/themes/Makefile
 data/themes/default/Makefile
