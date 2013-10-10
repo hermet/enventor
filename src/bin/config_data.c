@@ -87,7 +87,7 @@ config_init(const char *edc_path, const char *edc_img_path,
    cd->linenumber = EINA_TRUE;
    cd->part_highlight = EINA_TRUE;
    cd->dummy_swallow = EINA_TRUE;
-   cd->auto_indent = EINA_TRUE;
+   cd->auto_indent = EINA_FALSE;
 
    return cd;
 }
