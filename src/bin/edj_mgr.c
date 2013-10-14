@@ -106,9 +106,7 @@ edj_mgr_view_new(edj_mgr *em, const char *group, stats_data *sd,
    edj_data *edj = calloc(1, sizeof(edj_data));
    if (!edj) return NULL;
 
-   view_data *vd = edj_mgr_view_get(em, group);
-
-   if (!vd) vd = view_init(em->layout, group, sd, cd, view_del_cb, edj);
+   view_data *vd = view_init(em->layout, group, sd, cd, view_del_cb, edj);
    if (!vd)
      {
         free(edj);
