@@ -268,7 +268,6 @@ view_term(view_data *vd)
    if (vd->part_obj)
      evas_object_event_callback_del(vd->part_obj, EVAS_CALLBACK_DEL,
                                     part_obj_del_cb);
-
    evas_object_del(vd->scroller);
 
    if (vd->idler) ecore_idler_del(vd->idler);

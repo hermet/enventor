@@ -145,6 +145,9 @@ edj_mgr_view_switch_to(edj_mgr *em, view_data *vd)
    //Switching effect
    if (prev && (prev != view_obj_get(vd)))
      {
+        Evas_Object *tmp =
+           elm_object_part_content_unset(em->layout, "elm.swallow.prev");
+        if (tmp) evas_object_hide(tmp);
         elm_object_part_content_set(em->layout, "elm.swallow.prev", prev);
         elm_object_signal_emit(em->layout, "elm,view,switch", "");
      }
