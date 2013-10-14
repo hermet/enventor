@@ -402,7 +402,9 @@ cur_line_pos_set(edit_data *ed)
 
    Evas_Coord y, h;
    elm_entry_cursor_geometry_get(ed->en_edit, NULL, &y, NULL, &h);
-   ed->cur_line = (y / h) + 1;
+   int line = (y / h) + 1;
+   if (ed->cur_line == line) return;
+   ed->cur_line = line;
    stats_line_num_update(ed->sd, ed->cur_line, ed->line_max);
 }
 
