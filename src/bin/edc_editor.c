@@ -287,12 +287,16 @@ edit_template_insert(edit_data *ed)
    p[space] = '\0';
 
    int i;
-   for (i = 0; i < line_cnt; i++)
+   for (i = 0; i < (line_cnt - 1); i++)
      {
         elm_entry_entry_insert(ed->en_edit, p);
         elm_entry_entry_insert(ed->en_edit, t[i]);
+        //Incease line by (line count - 1)
         line_increase(ed);
      }
+
+   elm_entry_entry_insert(ed->en_edit, p);
+   elm_entry_entry_insert(ed->en_edit, t[i]);
 
    elm_entry_cursor_pos_set(ed->en_edit, cursor_pos);
 
@@ -363,12 +367,16 @@ edit_template_part_insert(edit_data *ed, Edje_Part_Type type)
      }
 
    int i;
-   for (i = 0; i < line_cnt; i++)
+   for (i = 0; i < (line_cnt - 1); i++)
      {
         elm_entry_entry_insert(ed->en_edit, p);
         elm_entry_entry_insert(ed->en_edit, t[i]);
+        //Incease line by (line count - 1)
         line_increase(ed);
      }
+
+   elm_entry_entry_insert(ed->en_edit, p);
+   elm_entry_entry_insert(ed->en_edit, t[i]);
 
    elm_entry_cursor_pos_set(ed->en_edit, cursor_pos);
 
