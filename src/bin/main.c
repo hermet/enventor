@@ -21,38 +21,7 @@ struct app_s
    Eina_Bool menu_opened : 1;
 };
 
-static Eina_Bool DARK_THEME = EINA_FALSE;
-
 int main(int argc, char **argv);
-
-static void
-theme_change(app_data *ad)
-{
-   if (DARK_THEME == config_dark_theme_get(ad->cd)) return;
-
-   elm_theme_extension_del(NULL, EDJE_PATH);
-
-   if (config_dark_theme_get(ad->cd))
-     {
-        snprintf(EDJE_PATH, sizeof(EDJE_PATH), "%s/themes/enventor_dark.edj",
-                 elm_app_data_dir_get());
-        elm_theme_set(NULL, "dark");
-     }
-   else
-     {
-        snprintf(EDJE_PATH, sizeof(EDJE_PATH), "%s/themes/enventor.edj",
-                 elm_app_data_dir_get());
-        elm_theme_set(NULL, "default");
-     }
-
-   elm_theme_extension_add(NULL, EDJE_PATH);
-
-   menu_theme_change(ad->md);
-   stats_theme_change(ad->sd);
-   edit_theme_change(ad->ed);
-
-   DARK_THEME = config_dark_theme_get(ad->cd);
-}
 
 static Eina_Bool
 edc_changed_cb(void *data, int type EINA_UNUSED, void *event)
@@ -445,7 +414,6 @@ static void
 config_update_cb(void *data, config_data *cd)
 {
    app_data *ad = data;
-   theme_change(ad);
    build_cmd_set(cd);
    edit_line_number_toggle(ad->ed);
    edit_font_size_update(ad->ed, EINA_FALSE);
@@ -560,6 +528,7 @@ elm_setup()
 
    /* Recover the scale & theme since it will be reset by
       elm_config_profile_set() */
+   elm_theme_set(NULL, "default");
    char *scale = getenv("ELM_SCALE");
    if (scale) elm_config_scale_set(atof(scale));
 

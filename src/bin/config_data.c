@@ -27,7 +27,6 @@ struct config_s
    Eina_Bool part_highlight : 1;
    Eina_Bool dummy_swallow : 1;
    Eina_Bool auto_indent : 1;
-   Eina_Bool dark_theme : 1;
 };
 
 void
@@ -305,18 +304,6 @@ void
 config_apply(config_data *cd)
 {
    if (cd->update_cb) cd->update_cb(cd->update_cb_data, cd);
-}
-
-void
-config_dark_theme_set(config_data *cd, Eina_Bool dark_theme)
-{
-   cd->dark_theme = dark_theme;
-}
-
-Eina_Bool
-config_dark_theme_get(config_data *cd)
-{
-   return cd->dark_theme;
 }
 
 Eina_List *

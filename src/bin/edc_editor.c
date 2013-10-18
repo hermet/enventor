@@ -104,14 +104,6 @@ syntax_color_timer_update(edit_data *ed)
                                               syntax_color_timer_cb, ed);
 }
 
-void
-edit_theme_change(edit_data *ed)
-{
-   color_theme_change(syntax_color_data_get(ed->sh),
-                      config_dark_theme_get(ed->cd));
-   syntax_color_timer_update(ed);
-}
-
 static void
 edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 {

@@ -95,7 +95,6 @@ data/icon/Makefile
 data/images/Makefile
 data/themes/Makefile
 data/themes/default/Makefile
-data/themes/dark/Makefile
 data/.proto/Makefile
 ])
 

@@ -11,4 +11,3 @@ Eina_Bool menu_edc_load(menu_data *md);
 void menu_exit(menu_data *md);
 Eina_Bool menu_about(menu_data *md);
 Eina_Bool menu_setting(menu_data *md);
-void menu_theme_change(menu_data *md);

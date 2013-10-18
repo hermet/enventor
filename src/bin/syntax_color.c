@@ -17,33 +17,6 @@ struct syntax_color_s
    Eina_Stringshare *cols[COL_NUM];
 };
 
-void
-color_theme_change(color_data *cd, Eina_Bool dark)
-{
-   int i;
-   for(i = 0; i < COL_NUM; i++)
-     eina_stringshare_del(cd->cols[i]);
-
-   if (dark)
-     {
-        cd->cols[0] = eina_stringshare_add("A0A0A0");
-        cd->cols[1] = eina_stringshare_add("00FFFF");
-        cd->cols[2] = eina_stringshare_add("FFFF00");
-        cd->cols[3] = eina_stringshare_add("FF00FF");
-        cd->cols[4] = eina_stringshare_add("00FF00");
-        cd->cols[5] = eina_stringshare_add("FF0000");
-     }
-   else
-     {
-        cd->cols[0] = eina_stringshare_add("424242");
-        cd->cols[1] = eina_stringshare_add("A000A0");
-        cd->cols[2] = eina_stringshare_add("0000A0");
-        cd->cols[3] = eina_stringshare_add("969600");
-        cd->cols[4] = eina_stringshare_add("009600");
-        cd->cols[5] = eina_stringshare_add("00C0C0");
-     }
-}
-
 color_data *
 color_init(Eina_Strbuf *strbuf)
 {
