@@ -26,7 +26,7 @@ color_init(Eina_Strbuf *strbuf)
    cd->cols[0] = eina_stringshare_add("656565");
    cd->cols[1] = eina_stringshare_add("2070D0");
    cd->cols[2] = eina_stringshare_add("72AAD4");
-   cd->cols[3] = eina_stringshare_add("D47F00");
+   cd->cols[3] = eina_stringshare_add("D4D42A");
    cd->cols[4] = eina_stringshare_add("00B000");
    cd->cols[5] = eina_stringshare_add("D42A2A");
 

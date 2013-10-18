@@ -97,7 +97,6 @@ group { name: "slider_layout";
             fixed: 1 1;
             align: 0 0.5;
             rel1.relative: 0.0 0.5;
-            rel1.offset: 5 0;
             rel2.relative: 0.0 0.5;
          }
       }
