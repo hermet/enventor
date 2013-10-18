@@ -320,6 +320,10 @@ view_part_highlight_set(view_data *vd, const char *part_name)
      }
    if (vd->part_obj && (vd->part_name == part_name)) return;
 
+   Evas_Object *part_obj =
+      (Evas_Object *) edje_object_part_object_get(vd->layout, part_name);
+   if (!part_obj) return;
+
    //Delete the previous part callbacks
    if (vd->part_obj)
      {
@@ -330,9 +334,6 @@ view_part_highlight_set(view_data *vd, const char *part_name)
         evas_object_event_callback_del(vd->part_obj, EVAS_CALLBACK_DEL,
                                        part_obj_del_cb);
      }
-   Evas_Object *part_obj =
-      (Evas_Object *) edje_object_part_object_get(vd->layout, part_name);
-   if (!part_obj) return;
    evas_object_event_callback_add(part_obj, EVAS_CALLBACK_RESIZE,
                                   part_obj_geom_cb, vd);
    evas_object_event_callback_add(part_obj, EVAS_CALLBACK_MOVE,
