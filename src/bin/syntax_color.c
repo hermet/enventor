@@ -23,12 +23,12 @@ color_init(Eina_Strbuf *strbuf)
    color_data *cd = malloc(sizeof(color_data));
    cd->strbuf = strbuf;
 
-   cd->cols[0] = eina_stringshare_add("424242");
-   cd->cols[1] = eina_stringshare_add("A000A0");
-   cd->cols[2] = eina_stringshare_add("0000A0");
-   cd->cols[3] = eina_stringshare_add("969600");
-   cd->cols[4] = eina_stringshare_add("009600");
-   cd->cols[5] = eina_stringshare_add("00C0C0");
+   cd->cols[0] = eina_stringshare_add("656565");
+   cd->cols[1] = eina_stringshare_add("2070D0");
+   cd->cols[2] = eina_stringshare_add("72AAD4");
+   cd->cols[3] = eina_stringshare_add("D47F00");
+   cd->cols[4] = eina_stringshare_add("00B000");
+   cd->cols[5] = eina_stringshare_add("D42A2A");
 
    return cd;
 }
