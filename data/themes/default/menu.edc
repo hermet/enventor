@@ -350,7 +350,7 @@ group { name: "warning_layout";
             rel1 { to: "base_frame_img"; relative: 0 0; }
             rel2 { to: "base_frame_img"; relative: 1 0; }
             align: 0.5 0;
-            min: 600 3;
+            min: 300 3;
             fixed: 1 1;
             image.normal: "shine.png";
          }
