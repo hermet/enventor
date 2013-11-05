@@ -8,14 +8,14 @@ it does a lot.
  
 [Requirements]
   
-  eina (>= 1.8)
-  eet (>= 1.8)
-  evas (>= 1.8)
-  embryo (>= 1.8)
-  ecore (>= 1.8)
-  edje (>= 1.8)
-  eio (>= 1.8)
-  elementary (>= 1.8)
+  eina (>= 1.8.0)
+  eet (>= 1.8.0)
+  evas (>= 1.8.0)
+  embryo (>= 1.8.0)
+  ecore (>= 1.8.0)
+  edje (>= 1.8.0)
+  eio (>= 1.8.0)
+  elementary (>= 1.8.0)
   
 Please note that some features may not quite function correctly or completely on
 EFL 1.7.8 and 1.8 or newer would be better.
