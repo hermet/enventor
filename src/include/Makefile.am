@@ -10,4 +10,10 @@ EXTRA_DIST = common.h \
 	panes.h \
 	statusbar.h \
 	edj_mgr.h \
-   syntax_color.h
+	syntax_color.h \
+	build.h \
+	ctxpopup.h \
+	globals.h \
+	indent.h \
+	syntax_helper.h \
+	template_code.h
