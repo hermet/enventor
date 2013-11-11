@@ -480,6 +480,8 @@ color_apply(color_data *cd, const char *src, int length)
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "style", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "relative", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "repeat_events", col3);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "rotation", col3);
+
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "smooth", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "source", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "target", col3);
