@@ -449,6 +449,7 @@ color_apply(color_data *cd, const char *src, int length)
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "program", col2);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "rel1", col2);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "rel2", col2);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "styles", col2);
 
         //syntax group 3
         Eina_Stringshare *col3 = cd->cols[2];
