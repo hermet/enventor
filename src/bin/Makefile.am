@@ -1,6 +1,6 @@
 MAINTAINERCLEANFILES = Makefile.in
 
-bin_PROGRAMS = enventor enventorql
+bin_PROGRAMS = enventor
 
 AM_CPPFLAGS = -DPACKAGE_DATA_DIR=\"$(pkgdatadir)\" \
 	-DPACKAGE_BIN_DIR=\"$(bindir)\" \
@@ -26,18 +26,6 @@ enventor_SOURCES = \
    edj_mgr.c \
    build.c \
    globals.c
-
-# QuickLaunch                                                
-enventorql_SOURCES = $(enventor_SOURCES)
-enventorql_LTLIBRARIES = enventorql.la
-enventorql_CFLAGS = -DELM_LIB_QUICKLAUNCH=1
-enventorql_LDFLAGS = @ENVENTOR_LIBS@
-
-enventorqldir = $(libdir)
-enventorql_la_LIBADD = @ENVENTOR_LIBS@
-enventorql_la_CFLAGS =
-enventorql_la_LDFLAGS = -module -avoid-version -no-undefined
-enventorql_la_SOURCES = $(enventor_SOURCES)
 
 enventor_LDADD = @ENVENTOR_LIBS@
 enventor_LDFLAGS = $(LTLIBINTL)

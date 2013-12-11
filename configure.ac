@@ -32,6 +32,7 @@ AC_CONFIG_HEADERS(config.h)
 AC_GNU_SOURCE
 AC_PROG_LIBTOOL
 AM_PROG_CC_C_O
+ELM_QUICKLAUNCH
 
 ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
 ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
