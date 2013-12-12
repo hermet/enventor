@@ -738,7 +738,7 @@ fileselector_save_done_cb(void *data, Evas_Object *obj, void *event_info)
    menu_data *md = data;
    const char *selected = event_info;
 
-   eina_stringshare_replace(&(md->last_accessed_path),
+   eina_stringshare_refplace(&(md->last_accessed_path),
                             elm_fileselector_path_get(obj));
 
    if (!selected)
@@ -805,8 +805,8 @@ fileselector_load_done_cb(void *data, Evas_Object *obj, void *event_info)
    menu_data *md = data;
    const char *selected = event_info;
 
-   eina_stringshare_replace(&(md->last_accessed_path),
-                            elm_fileselector_path_get(obj));
+   eina_stringshare_refplace(&(md->last_accessed_path),
+                             elm_fileselector_path_get(obj));
 
    if (!selected)
      {
