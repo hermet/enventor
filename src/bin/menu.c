@@ -22,6 +22,8 @@ struct menu_s
 
    Evas_Object *ctxpopup;
 
+   const char *last_accessed_path;
+
    void (*close_cb)(void *data);
    void *close_cb_data;
 
@@ -731,11 +733,14 @@ save_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
 }
 
 static void
-fileselector_save_done_cb(void *data, Evas_Object *obj EINA_UNUSED,
-                          void *event_info)
+fileselector_save_done_cb(void *data, Evas_Object *obj, void *event_info)
 {
    menu_data *md = data;
    const char *selected = event_info;
+
+   if (md->last_accessed_path)
+     eina_stringshare_del(md->last_accessed_path);
+   md->last_accessed_path = eina_stringshare_add(elm_fileselector_path_get(obj));
 
    if (!selected)
      {
@@ -796,11 +801,14 @@ fileselector_save_selected_cb(void *data, Evas_Object *obj, void *event_info)
 }
 
 static void
-fileselector_load_done_cb(void *data, Evas_Object *obj EINA_UNUSED,
-                          void *event_info)
+fileselector_load_done_cb(void *data, Evas_Object *obj, void *event_info)
 {
    menu_data *md = data;
    const char *selected = event_info;
+
+   if (md->last_accessed_path)
+     eina_stringshare_del(md->last_accessed_path);
+   md->last_accessed_path = eina_stringshare_add(elm_fileselector_path_get(obj));
 
    if (!selected)
      {
@@ -870,7 +878,7 @@ edc_file_save(menu_data *md)
    Evas_Object *fs = elm_fileselector_add(layout);
    elm_object_part_text_set(fs, "ok", "Save");
    elm_object_part_text_set(fs, "cancel", "Close");
-   elm_fileselector_path_set(fs, getenv("HOME"));
+   elm_fileselector_path_set(fs, md->last_accessed_path ? md->last_accessed_path : getenv("HOME"));
    elm_fileselector_expandable_set(fs, EINA_FALSE);
    elm_fileselector_is_save_set(fs, EINA_TRUE);
    evas_object_smart_callback_add(fs, "done", fileselector_save_done_cb, md);
@@ -901,7 +909,7 @@ edc_file_load(menu_data *md)
    evas_object_show(layout);
 
    Evas_Object *fs = elm_fileselector_add(layout);
-   elm_fileselector_path_set(fs, getenv("HOME"));
+   elm_fileselector_path_set(fs, md->last_accessed_path ? md->last_accessed_path : getenv("HOME"));
    elm_object_part_text_set(fs, "ok", "Load");
    elm_object_part_text_set(fs, "cancel", "Close");
    elm_fileselector_expandable_set(fs, EINA_FALSE);
