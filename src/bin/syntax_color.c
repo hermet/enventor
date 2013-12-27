@@ -458,6 +458,7 @@ color_apply(color_data *cd, const char *src, int length)
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "align", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "aspect_preference", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "aspect", col3);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "backface_cull", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "border_scale", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "border", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "clip_to", col3);
@@ -475,6 +476,8 @@ color_apply(color_data *cd, const char *src, int length)
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "normal", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "offset", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "on", col3);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "perspective:", col3);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "perspective_on", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "scale", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "signal", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "state", col3);
@@ -493,12 +496,14 @@ color_apply(color_data *cd, const char *src, int length)
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "type", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "tween", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "visible", col3);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "zplane", col3);
 
         //syntax group 4
         Eina_Stringshare *col4 = cd->cols[3];
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "ACCELERATE_FACTOR",
                      col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "ACCELERATE", col4);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "ACTION_STOP", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "BOTH", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "BOUNCE", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "BOX", col4);
@@ -552,6 +557,8 @@ color_apply(color_data *cd, const char *src, int length)
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "image", col2);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "size", col2);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "text", col2);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "perspective", col2);
+
 
         cur++;
      }
