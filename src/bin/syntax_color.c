@@ -449,6 +449,7 @@ color_apply(color_data *cd, const char *src, int length)
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "program", col2);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "rel1", col2);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "rel2", col2);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "rotation", col2);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "styles", col2);
 
         //syntax group 3
@@ -461,6 +462,7 @@ color_apply(color_data *cd, const char *src, int length)
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "backface_cull", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "border_scale", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "border", col3);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "center", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "clip_to", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "color2", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "color3", col3);
@@ -484,8 +486,6 @@ color_apply(color_data *cd, const char *src, int length)
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "style", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "relative", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "repeat_events", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "rotation", col3);
-
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "smooth", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "source", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "target", col3);
@@ -496,6 +496,9 @@ color_apply(color_data *cd, const char *src, int length)
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "type", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "tween", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "visible", col3);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "x:", col3);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "y:", col3);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "z:", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "zplane", col3);
 
         //syntax group 4
