@@ -55,4 +55,7 @@ EXTRA_DIST = \
    sym_up_light_normal.png \
    vgrad_med_lighter.png \
    warning.png \
-   white_bar_vert_glow.png
+   white_bar_vert_glow.png \
+   panes_left_arrow.png \
+   panes_right_arrow.png \
+   panes_recover_arrow.png

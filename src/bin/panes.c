@@ -76,7 +76,8 @@ left_clicked_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
    if (pd->state == PANES_FULL_VIEW_LEFT)
      {
         panes_full_view_cancel(pd);
-        elm_object_text_set(obj, "<");
+        Evas_Object *left_arrow_img = elm_object_content_get(obj);
+        elm_image_file_set(left_arrow_img, EDJE_PATH, "panes_left_arrow");
         return;
      }
 
@@ -93,8 +94,11 @@ left_clicked_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
    elm_transit_go(transit);
 
    pd->state = PANES_FULL_VIEW_LEFT;
-   elm_object_text_set(pd->right_arrow, ">");
-   elm_object_text_set(obj, "|");
+   Evas_Object *right_arrow_img = elm_object_content_get(pd->right_arrow);
+   elm_image_file_set(right_arrow_img, EDJE_PATH, "panes_right_arrow");
+
+   Evas_Object *left_arrow_img = elm_object_content_get(obj);
+   elm_image_file_set(left_arrow_img, EDJE_PATH, "panes_recover_arrow");
 }
 
 static void
@@ -108,7 +112,8 @@ right_clicked_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
    if (pd->state == PANES_FULL_VIEW_RIGHT)
      {
         panes_full_view_cancel(pd);
-        elm_object_text_set(obj, ">");
+        Evas_Object *right_arrow_img = elm_object_content_get(obj);
+        elm_image_file_set(right_arrow_img, EDJE_PATH, "panes_right_arrow");
         return;
      }
 
@@ -125,8 +130,11 @@ right_clicked_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
    elm_transit_go(transit);
 
    pd->state = PANES_FULL_VIEW_RIGHT;
-   elm_object_text_set(pd->left_arrow, "<");
-   elm_object_text_set(obj, "|");
+   Evas_Object *left_arrow_img = elm_object_content_get(pd->left_arrow);
+   elm_image_file_set(left_arrow_img, EDJE_PATH, "panes_left_arrow");
+
+   Evas_Object *right_arrow_img = elm_object_content_get(obj);
+   elm_image_file_set(right_arrow_img, EDJE_PATH, "panes_recover_arrow");
 }
 
 void
@@ -154,6 +162,9 @@ panes_del_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 Evas_Object *
 panes_create(Evas_Object *parent)
 {
+   Evas_Object *img;
+   char buf[PATH_MAX];
+
    panes_data *pd = malloc(sizeof(panes_data));
 
    //Panes
@@ -170,19 +181,31 @@ panes_create(Evas_Object *parent)
 
    //Left Button
    Evas_Object *left_arrow = elm_button_add(panes);
-   elm_object_text_set(left_arrow, "<");
    elm_object_focus_allow_set(left_arrow, EINA_FALSE);
    evas_object_smart_callback_add(left_arrow, "clicked", left_clicked_cb, pd);
    evas_object_show(left_arrow);
+
+   //Left Arrow Image
+   img = elm_image_add(left_arrow);
+   elm_image_file_set(img, EDJE_PATH, "panes_left_arrow");
+   evas_object_show(img);
+
+   elm_object_content_set(left_arrow, img);
 
    elm_object_part_content_set(panes, "elm.swallow.left_arrow", left_arrow);
 
    //Right Button
    Evas_Object *right_arrow = elm_button_add(panes);
-   elm_object_text_set(right_arrow, ">");
    elm_object_focus_allow_set(right_arrow, EINA_FALSE);
    evas_object_smart_callback_add(right_arrow, "clicked", right_clicked_cb, pd);
    evas_object_show(right_arrow);
+
+   //Right Arrow Image
+   img = elm_image_add(right_arrow);
+   elm_image_file_set(img, EDJE_PATH, "panes_right_arrow");
+   evas_object_show(img);
+
+   elm_object_content_set(right_arrow, img);
 
    elm_object_part_content_set(panes, "elm.swallow.right_arrow", right_arrow);
 
