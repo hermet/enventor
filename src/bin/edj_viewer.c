@@ -357,3 +357,14 @@ view_data_get(view_data *vd)
 {
    return vd->data;
 }
+
+void
+view_scale_set(view_data *vd, double scale)
+{
+   if (!vd->layout) return;
+   edje_object_scale_set(vd->layout, scale);
+
+   char buf[256];
+   snprintf(buf, sizeof(buf), "View Scale: %2.1fx", scale);
+   stats_info_msg_update(vd->sd, buf);
+}

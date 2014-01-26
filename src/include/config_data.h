@@ -1,5 +1,7 @@
 #define MAX_FONT_SIZE 5.0
 #define MIN_FONT_SIZE 0.5
+#define MAX_VIEW_SCALE 10
+#define MIN_VIEW_SCALE 0.1
 
 config_data *config_init(const char *edc_path, const char *edc_img_path, const char *edc_snd_path, const char *edc_fnt_path, const char *edc_data_path);
 void config_term(config_data *cd);
@@ -34,4 +36,6 @@ void config_auto_indent_set(config_data *cd, Eina_Bool auto_indent);
 Eina_Bool config_auto_indent_get(config_data *cd);
 void config_font_size_set(config_data *cd, float font_size);
 float config_font_size_get(config_data *cd);
+void config_view_scale_set(config_data *cd, double view_scale);
+double config_view_scale_get(config_data *cd);
 

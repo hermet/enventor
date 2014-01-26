@@ -16,11 +16,11 @@ struct config_s
    Eina_Strbuf *edc_data_path_buf; //pre-stored data paths for edc compile.
 
    float font_size;
+   double view_scale;
 
    void (*update_cb)(void *data, config_data *cd);
    void *update_cb_data;
    Evas_Coord_Size view_size;
-
 
    Eina_Bool stats_bar : 1;
    Eina_Bool linenumber : 1;
@@ -83,6 +83,7 @@ config_init(const char *edc_path, const char *edc_img_path,
    config_edc_data_path_set(cd, edc_data_path);
 
    cd->font_size = 1.0f;
+   cd->view_scale = 1;
    cd->linenumber = EINA_TRUE;
    cd->part_highlight = EINA_TRUE;
    cd->dummy_swallow = EINA_TRUE;
@@ -453,4 +454,20 @@ void
 config_auto_indent_set(config_data *cd, Eina_Bool auto_indent)
 {
    cd->auto_indent = auto_indent;
+}
+
+void
+config_view_scale_set(config_data *cd, double view_scale)
+{
+   if (view_scale > MAX_VIEW_SCALE)
+     view_scale = MAX_VIEW_SCALE;
+   else if (view_scale < MIN_VIEW_SCALE)
+     view_scale = MIN_VIEW_SCALE;
+   cd->view_scale = view_scale;
+}
+
+double
+config_view_scale_get(config_data *cd)
+{
+   return cd->view_scale;
 }

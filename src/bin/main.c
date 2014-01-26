@@ -366,6 +366,27 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    return ECORE_CALLBACK_PASS_ON;
 }
 
+static Eina_Bool
+main_mouse_wheel_cb(void *data, int type EINA_UNUSED, void *ev)
+{
+   Ecore_Event_Mouse_Wheel *event = ev;
+   app_data *ad = data;
+
+   if (!ad->ctrl_pressed) return ECORE_CALLBACK_PASS_ON;
+
+   //Scale up/down layout
+   view_data *vd = edj_mgr_view_get(ad->em, NULL);
+   double scale = config_view_scale_get(ad->cd);
+
+   if (event->z < 0) scale += 0.1;
+   else scale -= 0.1;
+
+   config_view_scale_set(ad->cd, scale);
+   view_scale_set(vd, config_view_scale_get(ad->cd));
+
+   return ECORE_CALLBACK_PASS_ON;
+}
+
 static void
 edc_view_set(app_data *ad, config_data *cd, stats_data *sd,
              Eina_Stringshare *group)
@@ -567,6 +588,7 @@ init(app_data *ad, int argc, char **argv)
    ecore_event_init();
    ecore_event_handler_add(ECORE_EVENT_KEY_DOWN, main_key_down_cb, ad);
    ecore_event_handler_add(ECORE_EVENT_KEY_UP, main_key_up_cb, ad);
+   ecore_event_handler_add(ECORE_EVENT_MOUSE_WHEEL, main_mouse_wheel_cb, ad);
 
    elm_init(argc, argv);
    elm_setup();

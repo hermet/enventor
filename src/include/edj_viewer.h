@@ -7,3 +7,4 @@ void view_dummy_toggle(view_data *vd, Eina_Bool msg);
 void view_program_run(view_data *vd, const char *program);
 Eina_Stringshare *view_group_name_get(view_data *vd);
 void *view_data_get(view_data *vd);
+void view_scale_set(view_data *vd, double scale);
