@@ -438,6 +438,7 @@ config_update_cb(void *data, config_data *cd)
    build_cmd_set(cd);
    edit_line_number_toggle(ad->ed);
    edit_font_size_update(ad->ed, EINA_FALSE);
+
    statusbar_toggle(ad);
    part_highlight_toggle(ad, EINA_FALSE);
    view_dummy_toggle(VIEW_DATA, EINA_FALSE);
@@ -457,6 +458,9 @@ config_update_cb(void *data, config_data *cd)
      {
         edit_changed_set(ad->ed, EINA_FALSE);
      }
+
+   view_scale_set(edj_mgr_view_get(ad->em, NULL),
+                  config_view_scale_get(ad->cd));
 }
 
 static void

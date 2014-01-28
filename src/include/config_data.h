@@ -1,7 +1,7 @@
 #define MAX_FONT_SIZE 5.0
 #define MIN_FONT_SIZE 0.5
-#define MAX_VIEW_SCALE 10
-#define MIN_VIEW_SCALE 0.1
+#define MAX_VIEW_SCALE 5.0
+#define MIN_VIEW_SCALE 0.5
 
 config_data *config_init(const char *edc_path, const char *edc_img_path, const char *edc_snd_path, const char *edc_fnt_path, const char *edc_data_path);
 void config_term(config_data *cd);

@@ -14,6 +14,7 @@ struct menu_s
    Evas_Object *fnt_path_entry;
    Evas_Object *data_path_entry;
    Evas_Object *slider_font;
+   Evas_Object *slider_view;
    Evas_Object *toggle_stats;
    Evas_Object *toggle_linenumber;
    Evas_Object *toggle_highlight;
@@ -204,6 +205,7 @@ setting_apply_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
    config_edc_fnt_path_set(cd, elm_object_text_get(md->fnt_path_entry));
    config_edc_data_path_set(cd, elm_object_text_get(md->data_path_entry));
    config_font_size_set(cd, (float) elm_slider_value_get(md->slider_font));
+   config_view_scale_set(cd, elm_slider_value_get(md->slider_view));
    config_stats_bar_set(cd, elm_check_state_get(md->toggle_stats));
    config_linenumber_set(cd, elm_check_state_get(md->toggle_linenumber));
    config_part_highlight_set(cd, elm_check_state_get(md->toggle_highlight));
@@ -296,6 +298,7 @@ setting_reset_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
                          (Eina_List *)config_edc_data_path_list_get(md->cd));
 
    elm_slider_value_set(md->slider_font, (double) config_font_size_get(cd));
+   elm_slider_value_set(md->slider_view, (double) config_view_scale_get(cd));
 
    elm_check_state_set(md->toggle_stats, config_stats_bar_get(cd));
    elm_check_state_set(md->toggle_linenumber, config_linenumber_get(cd));
@@ -376,8 +379,10 @@ setting_open(menu_data *md)
 
    elm_object_content_set(scroller, box);
 
+   Evas_Object *label, *box2;
+
    //Font Size
-   Evas_Object *box2 = elm_box_add(box);
+   box2 = elm_box_add(box);
    elm_box_horizontal_set(box2, EINA_TRUE);
    evas_object_size_hint_weight_set(box2, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(box2, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -386,7 +391,7 @@ setting_open(menu_data *md)
    elm_box_pack_end(box, box2);
 
    //Font Size (Label)
-   Evas_Object *label = elm_label_add(box2);
+   label = elm_label_add(box2);
    evas_object_size_hint_weight_set(label, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(label, 0, EVAS_HINT_FILL);
 
@@ -396,17 +401,49 @@ setting_open(menu_data *md)
    elm_box_pack_end(box2, label);
 
    //Font Size (Slider)
-   Evas_Object *slider = elm_slider_add(box2);
+   Evas_Object *slider_font = elm_slider_add(box2);
    evas_object_size_hint_weight_set(label, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(slider, 1, EVAS_HINT_FILL);
-   elm_slider_span_size_set(slider, 300);
-   elm_slider_indicator_show_set(slider, EINA_FALSE);
-   elm_slider_unit_format_set(slider, "%1.1fx");
-   elm_slider_min_max_set(slider, MIN_FONT_SIZE, MAX_FONT_SIZE);
-   elm_slider_value_set(slider, (double) config_font_size_get(md->cd));
-   evas_object_show(slider);
+   evas_object_size_hint_align_set(slider_font, 1, EVAS_HINT_FILL);
+   elm_slider_span_size_set(slider_font, 400);
+   elm_slider_indicator_show_set(slider_font, EINA_FALSE);
+   elm_slider_unit_format_set(slider_font, "%1.1fx");
+   elm_slider_min_max_set(slider_font, MIN_FONT_SIZE, MAX_FONT_SIZE);
+   elm_slider_value_set(slider_font, (double) config_font_size_get(md->cd));
+   evas_object_show(slider_font);
 
-   elm_box_pack_end(box2, slider);
+   elm_box_pack_end(box2, slider_font);
+
+   //View Scale
+   box2 = elm_box_add(box);
+   elm_box_horizontal_set(box2, EINA_TRUE);
+   evas_object_size_hint_weight_set(box2, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(box2, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_show(box2);
+
+   elm_box_pack_end(box, box2);
+
+   //View Scale (Label)
+   label = elm_label_add(box2);
+   evas_object_size_hint_weight_set(label, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(label, 0, EVAS_HINT_FILL);
+
+   elm_object_text_set(label, "View Scale");
+   evas_object_show(label);
+
+   elm_box_pack_end(box2, label);
+
+   //View Scale (Slider)
+   Evas_Object *slider_view = elm_slider_add(box2);
+   evas_object_size_hint_weight_set(label, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(slider_view, 1, EVAS_HINT_FILL);
+   elm_slider_span_size_set(slider_view, 394);
+   elm_slider_indicator_show_set(slider_view, EINA_FALSE);
+   elm_slider_unit_format_set(slider_view, "%1.2fx");
+   elm_slider_min_max_set(slider_view, MIN_VIEW_SCALE, MAX_VIEW_SCALE);
+   elm_slider_value_set(slider_view, (double) config_view_scale_get(md->cd));
+   evas_object_show(slider_view);
+
+   elm_box_pack_end(box2, slider_view);
 
    Evas_Object *toggle;
 
@@ -523,7 +560,8 @@ setting_open(menu_data *md)
    md->snd_path_entry = snd_path_entry;
    md->fnt_path_entry = fnt_path_entry;
    md->data_path_entry = data_path_entry;
-   md->slider_font = slider;
+   md->slider_font = slider_font;
+   md->slider_view = slider_view;
    md->toggle_stats = toggle_stats;
    md->toggle_linenumber = toggle_linenumber;
    md->toggle_highlight = toggle_highlight;
