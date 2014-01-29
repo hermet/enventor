@@ -129,15 +129,6 @@ main_key_up_cb(void *data, int type EINA_UNUSED, void *ev)
 }
 
 static void
-statusbar_toggle(app_data *ad)
-{
-   if (config_stats_bar_get())
-     elm_object_signal_emit(ad->layout, "elm,state,statusbar,show", "");
-   else
-     elm_object_signal_emit(ad->layout, "elm,state,statusbar,hide", "");
-}
-
-static void
 part_highlight_toggle(app_data *ad, Eina_Bool msg)
 {
    Eina_Bool highlight = config_part_highlight_get();
@@ -573,6 +564,13 @@ edj_mgr_set(app_data *ad)
    elm_object_part_content_set(ad->panes, "left", edj_mgr_obj_get(ad->em));
 }
 
+static void
+hotkeys_set(Evas_Object *layout, app_data *ad, edit_data *ed)
+{
+   Evas_Object *hotkeys = hotkeys_create(layout, ad, ed);
+   elm_object_part_content_set(layout, "elm.swallow.hotkeys", hotkeys);
+}
+
 static Eina_Bool
 init(app_data *ad, int argc, char **argv)
 {
@@ -596,9 +594,7 @@ init(app_data *ad, int argc, char **argv)
    edc_edit_set(ad, ad->sd);
    edc_view_set(ad, ad->sd, stats_group_name_get(ad->sd));
    menu_init(ad->win, ad->ed);
-
-   Evas_Object *hotkeys = hotkeys_create(ad->layout);
-   elm_object_part_content_set(ad->layout, "elm.swallow.hotkeys", hotkeys);
+   hotkeys_set(ad->layout, ad, ad->ed);
 
    ad->edc_monitor = eio_monitor_add(config_edc_path_get());
    ecore_event_handler_add(EIO_MONITOR_FILE_MODIFIED, edc_changed_cb, ad);
@@ -618,6 +614,16 @@ term(app_data *ad)
 
    elm_shutdown();
    ecore_event_shutdown();
+}
+
+//This function is used in hotkey. Maybe layout should be separated from main.
+void
+statusbar_toggle(app_data *ad)
+{
+   if (config_stats_bar_get())
+     elm_object_signal_emit(ad->layout, "elm,state,statusbar,show", "");
+   else
+     elm_object_signal_emit(ad->layout, "elm,state,statusbar,hide", "");
 }
 
 int

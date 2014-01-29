@@ -827,6 +827,7 @@ edit_changed_set(edit_data *ed, Eina_Bool changed)
 void
 edit_line_number_toggle(edit_data *ed)
 {
+   //FIXME: edit & config toogle should be handled in one place.
    Eina_Bool linenumber = config_linenumber_get();
    if (ed->linenumber == linenumber) return;
    ed->linenumber = linenumber;

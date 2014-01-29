@@ -34,18 +34,19 @@ static void
 f5_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
       void *event_info EINA_UNUSED)
 {
-/*   app_data *ad = data;
-   config_linenumber_set(ad->cd, !config_linenumber_get(ad->cd));
-   edit_line_number_toggle(ad->ed); */
+   edit_data *ed = data;
+   config_linenumber_set(!config_linenumber_get());
+   edit_line_number_toggle(ed);
 }
 
 static void
 f6_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
       void *event_info EINA_UNUSED)
 {
-/*   app_data *ad = data;
-   config_stats_bar_set(ad->cd, !config_stats_bar_get(ad->cd));
-   statusbar_toggle(ad); */
+   //FIXME: ... how ad can be passed here? should be cut off from here.
+   app_data *ad = data;
+   config_stats_bar_set(!config_stats_bar_get());
+   statusbar_toggle(ad);
 }
 
 static void
@@ -71,7 +72,7 @@ btn_create(Evas_Object *parent, const char *text, Evas_Smart_Cb cb, void *data)
 }
 
 Evas_Object *
-hotkeys_create(Evas_Object *parent)
+hotkeys_create(Evas_Object *parent, app_data *ad, edit_data *ed)
 {
    Evas_Object *box = elm_box_add(parent);
    elm_box_horizontal_set(box, EINA_TRUE);
@@ -91,12 +92,10 @@ hotkeys_create(Evas_Object *parent)
    btn = btn_create(box, "F4: Load", f4_cb, NULL);
    elm_box_pack_end(box, btn);
 
-   btn = btn_create(box, "F5: ---", f5_cb, NULL);
-   elm_object_disabled_set(btn, EINA_TRUE);
+   btn = btn_create(box, "F5: Line Num", f5_cb, ed);
    elm_box_pack_end(box, btn);
 
-   btn = btn_create(box, "F6: ---", f6_cb, NULL);
-   elm_object_disabled_set(btn, EINA_TRUE);
+   btn = btn_create(box, "F6: Status", f6_cb, ad);
    elm_box_pack_end(box, btn);
 
    btn = btn_create(box, "F7: ---", NULL, NULL);
