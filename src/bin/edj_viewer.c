@@ -362,6 +362,8 @@ void
 view_scale_set(view_data *vd, double scale)
 {
    if (!vd->layout) return;
+   if (scale == edje_object_scale_get(vd->layout)) return;
+
    edje_object_scale_set(vd->layout, scale);
 
    char buf[256];
