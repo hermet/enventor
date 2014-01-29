@@ -29,20 +29,6 @@ struct config_s
    Eina_Bool auto_indent : 1;
 };
 
-void
-config_view_size_set(config_data *cd, Evas_Coord w, Evas_Coord h)
-{
-   cd->view_size.w = w;
-   cd->view_size.h = h;
-}
-
-void
-config_view_size_get(config_data *cd, Evas_Coord *w, Evas_Coord *h)
-{
-   if (w) *w = cd->view_size.w;
-   if (h) *h = cd->view_size.h;
-}
-
 static void
 config_edj_path_update(config_data *cd)
 {
@@ -470,4 +456,18 @@ double
 config_view_scale_get(config_data *cd)
 {
    return cd->view_scale;
+}
+
+void
+config_view_size_set(config_data *cd, Evas_Coord w, Evas_Coord h)
+{
+   cd->view_size.w = w;
+   cd->view_size.h = h;
+}
+
+void
+config_view_size_get(config_data *cd, Evas_Coord *w, Evas_Coord *h)
+{
+   if (w) *w = cd->view_size.w;
+   if (h) *h = cd->view_size.h;
 }
