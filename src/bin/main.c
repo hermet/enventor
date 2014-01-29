@@ -605,6 +605,9 @@ init(app_data *ad, int argc, char **argv)
    edc_view_set(ad, ad->cd, ad->sd, stats_group_name_get(ad->sd));
    ad->md = menu_init(ad->win, ad->ed, ad->cd);
 
+   Evas_Object *hotkeys = hotkeys_create(ad->layout, ad->md);
+   elm_object_part_content_set(ad->layout, "elm.swallow.hotkeys", hotkeys);
+
    ad->edc_monitor = eio_monitor_add(config_edc_path_get(ad->cd));
    ecore_event_handler_add(EIO_MONITOR_FILE_MODIFIED, edc_changed_cb, ad);
 

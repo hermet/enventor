@@ -261,12 +261,24 @@ group { name: "main_layout";
             min: 640 440;
          }
       }
+      part { name: "elm.swallow.hotkeys";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1.relative: 0 0;
+            rel2.relative: 1 0;
+            min: 0 30;
+            fixed: 0 1;
+            align: 0.5 0;
+         }
+      }
       part { name: "elm.swallow.panes";
          type: SWALLOW;
          scale: 1;
-         description {
-            rel1.relative: 0 0;
+         description { state: "default" 0.0;
+            rel1.relative: 0 1;
             rel2.relative: 1 0;
+            rel1.to_y: "elm.swallow.hotkeys";
             rel2.to_y: "elm.swallow.statusbar";
          }
       }

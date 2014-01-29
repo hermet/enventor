@@ -7,7 +7,7 @@ AM_CPPFLAGS = -DPACKAGE_DATA_DIR=\"$(pkgdatadir)\" \
 	-DPACKAGE_LIB_DIR=\"$(libdir)\" \
 	-I$(top_srcdir)/src/bin \
 	-I$(top_srcdir)/src/include \
-        @ENVENTOR_CFLAGS@
+	@ENVENTOR_CFLAGS@
 
 enventor_SOURCES = \
 	config_data.c \
@@ -23,9 +23,10 @@ enventor_SOURCES = \
 	ctxpopup.c \
 	syntax_helper.c \
 	indent.c \
-   edj_mgr.c \
-   build.c \
-   globals.c
+	edj_mgr.c \
+	build.c \
+	hotkeys.c \
+	globals.c
 
 enventor_LDADD = @ENVENTOR_LIBS@
 enventor_LDFLAGS = $(LTLIBINTL)

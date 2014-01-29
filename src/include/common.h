@@ -30,5 +30,6 @@ typedef struct edj_mgr_s edj_mgr;
 #include "edj_mgr.h"
 #include "globals.h"
 #include "build.h"
+#include "hotkeys.h"
 
 #endif
