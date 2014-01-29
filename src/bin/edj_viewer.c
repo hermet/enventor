@@ -207,6 +207,8 @@ view_obj_idler_cb(void *data)
 
    vd->layout = view_obj_create(vd, config_edj_path_get(vd->cd),
                                 vd->group_name);
+   view_scale_set(vd, config_view_scale_get(vd->cd));
+
    event_layer_set(vd);
    elm_object_content_set(vd->scroller, vd->layout);
 
@@ -365,8 +367,4 @@ view_scale_set(view_data *vd, double scale)
    if (scale == edje_object_scale_get(vd->layout)) return;
 
    edje_object_scale_set(vd->layout, scale);
-
-   char buf[256];
-   snprintf(buf, sizeof(buf), "View Scale: %2.2fx", scale);
-   stats_info_msg_update(vd->sd, buf);
 }

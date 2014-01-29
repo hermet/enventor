@@ -382,7 +382,12 @@ main_mouse_wheel_cb(void *data, int type EINA_UNUSED, void *ev)
    else scale -= 0.1;
 
    config_view_scale_set(ad->cd, scale);
-   view_scale_set(vd, config_view_scale_get(ad->cd));
+   scale = config_view_scale_get(ad->cd);
+   view_scale_set(vd, scale);
+
+   char buf[256];
+   snprintf(buf, sizeof(buf), "View Scale: %2.2fx", scale);
+   stats_info_msg_update(ad->sd, buf);
 
    return ECORE_CALLBACK_PASS_ON;
 }
@@ -393,7 +398,7 @@ edc_view_set(app_data *ad, config_data *cd, stats_data *sd,
 {
    view_data *vd = edj_mgr_view_get(ad->em, group);
    if (vd) edj_mgr_view_switch_to(ad->em, vd);
-   else vd = edj_mgr_view_new(ad->em, group, sd, cd);
+   else vd = edj_mgr_view_new(ad->em, group, sd);
 
    if (!vd) return;
 
@@ -578,9 +583,9 @@ menu_close_cb(void *data)
 }
 
 static void
-edj_mgr_set(app_data *ad)
+edj_mgr_set(app_data *ad, config_data *cd)
 {
-   ad->em = edj_mgr_init(ad->panes);
+   ad->em = edj_mgr_init(ad->panes, cd);
    elm_object_part_content_set(ad->panes, "left", edj_mgr_obj_get(ad->em));
 }
 
@@ -602,7 +607,7 @@ init(app_data *ad, int argc, char **argv)
    if (!edc_proto_setup(ad->cd)) return EINA_FALSE;
    if (!base_gui_construct(ad)) return EINA_FALSE;
 
-   edj_mgr_set(ad);
+   edj_mgr_set(ad, ad->cd);
    statusbar_set(ad, ad->cd);
    edc_edit_set(ad, ad->sd, ad->cd);
    edc_view_set(ad, ad->cd, ad->sd, stats_group_name_get(ad->sd));

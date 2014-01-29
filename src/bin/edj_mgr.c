@@ -16,6 +16,7 @@ struct edj_mgr_s
    Eina_List *edjs;
    edj_data *edj;
    Evas_Object *layout;
+   config_data *cd;
 
    Eina_Bool reload_need : 1;
 };
@@ -37,13 +38,14 @@ edj_mgr_clear(edj_mgr *em)
 }
 
 edj_mgr *
-edj_mgr_init(Evas_Object *parent)
+edj_mgr_init(Evas_Object *parent, config_data *cd)
 {
    edj_mgr *em = calloc(1, sizeof(edj_mgr));
    Evas_Object *layout = elm_layout_add(parent);
    elm_layout_file_set(layout, EDJE_PATH, "viewer_layout");
    evas_object_show(layout);
    em->layout = layout;
+   em->cd = cd;
    g_em = em;
    return em;
 }
@@ -100,13 +102,12 @@ view_del_cb(void *data)
 }
 
 view_data *
-edj_mgr_view_new(edj_mgr *em, const char *group, stats_data *sd,
-                 config_data *cd)
+edj_mgr_view_new(edj_mgr *em, const char *group, stats_data *sd)
 {
    edj_data *edj = calloc(1, sizeof(edj_data));
    if (!edj) return NULL;
 
-   view_data *vd = view_init(em->layout, group, sd, cd, view_del_cb, edj);
+   view_data *vd = view_init(em->layout, group, sd, em->cd, view_del_cb, edj);
    if (!vd)
      {
         free(edj);
@@ -141,6 +142,8 @@ edj_mgr_view_switch_to(edj_mgr *em, view_data *vd)
       elm_object_part_content_unset(em->layout, "elm.swallow.content");
    elm_object_part_content_set(em->layout, "elm.swallow.content",
                                view_obj_get(vd));
+
+   view_scale_set(vd, config_view_scale_get(em->cd));
 
    //Switching effect
    if (prev && (prev != view_obj_get(vd)))
