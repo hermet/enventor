@@ -18,7 +18,6 @@ struct app_s
 
    Eina_Bool ctrl_pressed : 1;
    Eina_Bool shift_pressed : 1;
-   Eina_Bool menu_opened : 1;
 };
 
 int main(int argc, char **argv);
@@ -304,13 +303,13 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    //Main Menu
    if (!strcmp(event->keyname, "Escape"))
      {
-        ad->menu_opened = menu_toggle();
-        if (!ad->menu_opened)
+        menu_toggle();
+        if (menu_open_depth(ad->md) == 0)
           edit_focus_set(ad->ed);
         return ECORE_CALLBACK_DONE;
      }
 
-   if (ad->menu_opened) return ECORE_CALLBACK_PASS_ON;
+   if (menu_open_depth(ad->md) > 0) return ECORE_CALLBACK_PASS_ON;
 
    //Control Key
    if (!strcmp("Control_L", event->keyname))
@@ -321,25 +320,25 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    //README
    if (!strcmp(event->keyname, "F1"))
      {
-        ad->menu_opened = menu_about(ad->md);
+        menu_about(ad->md);
         return ECORE_CALLBACK_DONE;
      }
    //New
    if (!strcmp(event->keyname, "F2"))
      {
-        ad->menu_opened = menu_edc_new(ad->md);
+        menu_edc_new(ad->md);
         return ECORE_CALLBACK_DONE;
      }
    //Save
    if (!strcmp(event->keyname, "F3"))
      {
-        ad->menu_opened = menu_edc_save(ad->md);
+        menu_edc_save(ad->md);
         return ECORE_CALLBACK_DONE;
      }
    //Load
    if (!strcmp(event->keyname, "F4"))
      {
-        ad->menu_opened = menu_edc_load(ad->md);
+        menu_edc_load(ad->md);
         return ECORE_CALLBACK_DONE;
      }
    //Line Number
@@ -359,7 +358,7 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    //Setting
    if (!strcmp(event->keyname, "F12"))
      {
-        ad->menu_opened = menu_setting(ad->md);
+        menu_setting(ad->md);
         return ECORE_CALLBACK_DONE;
      }
 
@@ -576,13 +575,6 @@ elm_setup()
 }
 
 static void
-menu_close_cb(void *data)
-{
-   app_data *ad = data;
-   ad->menu_opened = EINA_FALSE;
-}
-
-static void
 edj_mgr_set(app_data *ad, config_data *cd)
 {
    ad->em = edj_mgr_init(ad->panes, cd);
@@ -611,7 +603,7 @@ init(app_data *ad, int argc, char **argv)
    statusbar_set(ad, ad->cd);
    edc_edit_set(ad, ad->sd, ad->cd);
    edc_view_set(ad, ad->cd, ad->sd, stats_group_name_get(ad->sd));
-   ad->md = menu_init(ad->win, ad->ed, ad->cd, menu_close_cb, ad);
+   ad->md = menu_init(ad->win, ad->ed, ad->cd);
 
    ad->edc_monitor = eio_monitor_add(config_edc_path_get(ad->cd));
    ecore_event_handler_add(EIO_MONITOR_FILE_MODIFIED, edc_changed_cb, ad);
