@@ -55,6 +55,20 @@ f12_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
    menu_setting();
 }
 
+static Evas_Object *
+btn_create(Evas_Object *parent, const char *text, Evas_Smart_Cb cb, void *data)
+{
+   Evas_Object *btn = elm_button_add(parent);
+   elm_object_style_set(btn, "anchor");
+   elm_object_text_set(btn, text);
+   evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn, 0.5, 0);
+   elm_object_focus_allow_set(btn, EINA_FALSE);
+   evas_object_smart_callback_add(btn, "clicked", cb, data);
+   evas_object_show(btn);
+
+   return btn;
+}
 
 Evas_Object *
 hotkeys_create(Evas_Object *parent)
@@ -65,140 +79,47 @@ hotkeys_create(Evas_Object *parent)
 
    Evas_Object *btn;
 
-   //F1 - About
-   btn = elm_button_add(box);
-   elm_object_style_set(btn, "anchor");
-   elm_object_text_set(btn, "F1: About");
-   evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(btn, 0.5, 0);
-   elm_object_focus_allow_set(btn, EINA_FALSE);
-   evas_object_smart_callback_add(btn, "clicked", f1_cb, NULL);
-   evas_object_show(btn);
+   btn = btn_create(box, "F1: About", f1_cb, NULL);
    elm_box_pack_end(box, btn);
 
-   //F2 - New
-   btn = elm_button_add(box);
-   elm_object_style_set(btn, "anchor");
-   elm_object_text_set(btn, "F2: New");
-   evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(btn, 0.5, 0);
-   elm_object_focus_allow_set(btn, EINA_FALSE);
-   evas_object_smart_callback_add(btn, "clicked", f2_cb, NULL);
-   evas_object_show(btn);
+   btn = btn_create(box, "F2: New", f2_cb, NULL);
    elm_box_pack_end(box, btn);
 
-   //F3 - Save
-   btn = elm_button_add(box);
-   elm_object_style_set(btn, "anchor");
-   elm_object_text_set(btn, "F3: Save");
-   evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(btn, 0.5, 0);
-   elm_object_focus_allow_set(btn, EINA_FALSE);
-   evas_object_smart_callback_add(btn, "clicked", f3_cb, NULL);
-   evas_object_show(btn);
+   btn = btn_create(box, "F3: Save", f3_cb, NULL);
    elm_box_pack_end(box, btn);
 
-   //F4 - Load
-   btn = elm_button_add(box);
-   elm_object_style_set(btn, "anchor");
-   elm_object_text_set(btn, "F4: Load");
-   evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(btn, 0.5, 0);
-   elm_object_focus_allow_set(btn, EINA_FALSE);
-   evas_object_smart_callback_add(btn, "clicked", f4_cb, NULL);
-   evas_object_show(btn);
+   btn = btn_create(box, "F4: Load", f4_cb, NULL);
    elm_box_pack_end(box, btn);
 
-   //F5 - Line Number
-   btn = elm_button_add(box);
-   elm_object_style_set(btn, "anchor");
-   //elm_object_text_set(btn, "F5: Line Num");
-   elm_object_text_set(btn, "F5: --");
-   evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(btn, 0.5, 0);
-   elm_object_focus_allow_set(btn, EINA_FALSE);
+   btn = btn_create(box, "F5: ---", f5_cb, NULL);
    elm_object_disabled_set(btn, EINA_TRUE);
-   evas_object_smart_callback_add(btn, "clicked", f5_cb, NULL);
-   evas_object_show(btn);
    elm_box_pack_end(box, btn);
 
-   //F6 - Status
-   btn = elm_button_add(box);
-   elm_object_style_set(btn, "anchor");
-   //elm_object_text_set(btn, "F6: Status");
-   elm_object_text_set(btn, "F6: --");
-   evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(btn, 0.5, 0);
-   elm_object_focus_allow_set(btn, EINA_FALSE);
+   btn = btn_create(box, "F6: ---", f6_cb, NULL);
    elm_object_disabled_set(btn, EINA_TRUE);
-   evas_object_smart_callback_add(btn, "clicked", f6_cb, NULL);
-   evas_object_show(btn);
    elm_box_pack_end(box, btn);
 
-   //F7 - File Tab
-   btn = elm_button_add(box);
-   elm_object_style_set(btn, "anchor");
-   elm_object_text_set(btn, "F7: --");
-   evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(btn, 0.5, 0);
-   elm_object_focus_allow_set(btn, EINA_FALSE);
+   btn = btn_create(box, "F7: ---", NULL, NULL);
    elm_object_disabled_set(btn, EINA_TRUE);
-   evas_object_show(btn);
    elm_box_pack_end(box, btn);
 
-   //F8 - Console
-   btn = elm_button_add(box);
-   elm_object_style_set(btn, "anchor");
-   elm_object_text_set(btn, "F8: --");
-   evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(btn, 0.5, 0);
-   elm_object_focus_allow_set(btn, EINA_FALSE);
+   btn = btn_create(box, "F8: ---", NULL, NULL);
    elm_object_disabled_set(btn, EINA_TRUE);
-   evas_object_show(btn);
    elm_box_pack_end(box, btn);
 
-   //F9 -
-   btn = elm_button_add(box);
-   elm_object_style_set(btn, "anchor");
-   elm_object_text_set(btn, "F9: --");
-   evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(btn, 0.5, 0);
-   elm_object_focus_allow_set(btn, EINA_FALSE);
+   btn = btn_create(box, "F9: ---", NULL, NULL);
    elm_object_disabled_set(btn, EINA_TRUE);
-   evas_object_show(btn);
    elm_box_pack_end(box, btn);
 
-   //F10 -
-   btn = elm_button_add(box);
-   elm_object_style_set(btn, "anchor");
-   elm_object_text_set(btn, "F10: --");
-   evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(btn, 0.5, 0);
-   elm_object_focus_allow_set(btn, EINA_FALSE);
+   btn = btn_create(box, "F10: ---", NULL, NULL);
    elm_object_disabled_set(btn, EINA_TRUE);
-   evas_object_show(btn);
    elm_box_pack_end(box, btn);
 
-   //F11 - 
-   btn = elm_button_add(box);
-   elm_object_style_set(btn, "anchor");
-   elm_object_text_set(btn, "F11: --");
-   evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(btn, 0.5, 0);
-   elm_object_focus_allow_set(btn, EINA_FALSE);
+   btn = btn_create(box, "F11: ---", NULL, NULL);
    elm_object_disabled_set(btn, EINA_TRUE);
-   evas_object_show(btn);
    elm_box_pack_end(box, btn);
 
-   //F12 - Setting
-   btn = elm_button_add(box);
-   elm_object_style_set(btn, "anchor");
-   elm_object_text_set(btn, "F12: Setting");
-   evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(btn, 0.5, 0);
-   elm_object_focus_allow_set(btn, EINA_FALSE);
-   evas_object_smart_callback_add(btn, "clicked", f12_cb, NULL);
-   evas_object_show(btn);
+   btn = btn_create(box, "F12: Setting", f12_cb, NULL);
    elm_box_pack_end(box, btn);
 
    return box;
