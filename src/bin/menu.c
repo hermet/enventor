@@ -685,16 +685,6 @@ exit_save_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
    elm_exit();
 }
 
-void
-menu_exit()
-{
-      menu_data *md = g_md;
-   if (edit_changed_get(md->ed))
-     warning_layout_create(md, exit_yes_btn_cb, exit_save_btn_cb);
-   else
-     elm_exit();
-}
-
 static void
 exit_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
             void *event_info EINA_UNUSED)
@@ -990,52 +980,6 @@ load_save_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
    warning_close(md);
 }
 
-void
-menu_about()
-{
-   menu_data *md = g_md;
-   about_open(md);
-}
-
-void
-menu_setting()
-{
-   menu_data *md = g_md;
-   setting_open(md);
-}
-
-Eina_Bool
-menu_edc_new()
-{
-   menu_data *md = g_md;
-   if (edit_changed_get(md->ed))
-     {
-        warning_layout_create(md, new_yes_btn_cb, new_save_btn_cb);
-        return EINA_TRUE;
-     }
-   edc_reload(md, PROTO_EDC_PATH);
-   menu_close(md);
-
-   return EINA_FALSE;
-}
-
-void
-menu_edc_save()
-{
-   menu_data *md = g_md;
-   edc_file_save(md);
-}
-
-void
-menu_edc_load()
-{
-   menu_data *md = g_md;
-   if (edit_changed_get(md->ed))
-     warning_layout_create(md, load_yes_btn_cb, load_save_btn_cb);
-   else
-     edc_file_load(md);
-}
-
 static void
 load_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
             void *event_info EINA_UNUSED)
@@ -1093,6 +1037,14 @@ menu_open(menu_data *md)
    md->open_depth++;
 }
 
+static void
+ctxpopup_del_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+                void *event_info EINA_UNUSED)
+{
+   menu_data *md = data;
+   md->ctxpopup = NULL;
+}
+
 void
 menu_init(Evas_Object *win, edit_data *ed, config_data *cd)
 {
@@ -1109,6 +1061,52 @@ menu_term()
    menu_data *md = g_md;
    if (!md) return;
    free(md);
+}
+
+void
+menu_about()
+{
+   menu_data *md = g_md;
+   about_open(md);
+}
+
+void
+menu_setting()
+{
+   menu_data *md = g_md;
+   setting_open(md);
+}
+
+Eina_Bool
+menu_edc_new()
+{
+   menu_data *md = g_md;
+   if (edit_changed_get(md->ed))
+     {
+        warning_layout_create(md, new_yes_btn_cb, new_save_btn_cb);
+        return EINA_TRUE;
+     }
+   edc_reload(md, PROTO_EDC_PATH);
+   menu_close(md);
+
+   return EINA_FALSE;
+}
+
+void
+menu_edc_save()
+{
+   menu_data *md = g_md;
+   edc_file_save(md);
+}
+
+void
+menu_edc_load()
+{
+   menu_data *md = g_md;
+   if (edit_changed_get(md->ed))
+     warning_layout_create(md, load_yes_btn_cb, load_save_btn_cb);
+   else
+     edc_file_load(md);
 }
 
 void
@@ -1147,14 +1145,6 @@ menu_toggle()
    else menu_open(md);
 }
 
-static void
-ctxpopup_del_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
-                void *event_info EINA_UNUSED)
-{
-   menu_data *md = data;
-   md->ctxpopup = NULL;
-}
-
 void
 menu_ctxpopup_unregister(Evas_Object *ctxpopup)
 {
@@ -1178,4 +1168,14 @@ menu_open_depth()
 {
    menu_data *md = g_md;
    return md->open_depth;
+}
+
+void
+menu_exit()
+{
+   menu_data *md = g_md;
+   if (edit_changed_get(md->ed))
+     warning_layout_create(md, exit_yes_btn_cb, exit_save_btn_cb);
+   else
+     elm_exit();
 }
