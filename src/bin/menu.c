@@ -1004,9 +1004,10 @@ void
 menu_init(Evas_Object *win, edit_data *ed)
 {
    menu_data *md = calloc(1, sizeof(menu_data));
+   g_md = md;
+
    md->win = win;
    md->ed = ed;
-   g_md = md;
 }
 
 void
