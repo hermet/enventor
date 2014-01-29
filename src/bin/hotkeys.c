@@ -3,35 +3,36 @@
 
 
 static void
-f1_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
+f1_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+      void *event_info EINA_UNUSED)
 {
-   menu_data *md = data;
-   menu_about(md);
+   menu_about();
 }
 
 static void
-f2_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
+f2_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+      void *event_info EINA_UNUSED)
 {
-   menu_data *md = data;
-   menu_edc_new(md);
+   menu_edc_new();
 }
 
 static void
-f3_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
+f3_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+      void *event_info EINA_UNUSED)
 {
-   menu_data *md = data;
-   menu_edc_save(md);
+   menu_edc_save();
 }
 
 static void
-f4_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
+f4_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+      void *event_info EINA_UNUSED)
 {
-   menu_data *md = data;
-   menu_edc_load(md);
+   menu_edc_load();
 }
 
 static void
-f5_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
+f5_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+      void *event_info EINA_UNUSED)
 {
 /*   app_data *ad = data;
    config_linenumber_set(ad->cd, !config_linenumber_get(ad->cd));
@@ -39,7 +40,8 @@ f5_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 }
 
 static void
-f6_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
+f6_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+      void *event_info EINA_UNUSED)
 {
 /*   app_data *ad = data;
    config_stats_bar_set(ad->cd, !config_stats_bar_get(ad->cd));
@@ -47,15 +49,15 @@ f6_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 }
 
 static void
-f12_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
+f12_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+       void *event_info EINA_UNUSED)
 {
-   menu_data *md = data;
-   menu_setting(md);
+   menu_setting();
 }
 
 
 Evas_Object *
-hotkeys_create(Evas_Object *parent, menu_data *md)
+hotkeys_create(Evas_Object *parent)
 {
    Evas_Object *box = elm_box_add(parent);
    elm_box_horizontal_set(box, EINA_TRUE);
@@ -70,7 +72,7 @@ hotkeys_create(Evas_Object *parent, menu_data *md)
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 0.5, 0);
    elm_object_focus_allow_set(btn, EINA_FALSE);
-   evas_object_smart_callback_add(btn, "clicked", f1_cb, md);
+   evas_object_smart_callback_add(btn, "clicked", f1_cb, NULL);
    evas_object_show(btn);
    elm_box_pack_end(box, btn);
 
@@ -81,7 +83,7 @@ hotkeys_create(Evas_Object *parent, menu_data *md)
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 0.5, 0);
    elm_object_focus_allow_set(btn, EINA_FALSE);
-   evas_object_smart_callback_add(btn, "clicked", f2_cb, md);
+   evas_object_smart_callback_add(btn, "clicked", f2_cb, NULL);
    evas_object_show(btn);
    elm_box_pack_end(box, btn);
 
@@ -92,7 +94,7 @@ hotkeys_create(Evas_Object *parent, menu_data *md)
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 0.5, 0);
    elm_object_focus_allow_set(btn, EINA_FALSE);
-   evas_object_smart_callback_add(btn, "clicked", f3_cb, md);
+   evas_object_smart_callback_add(btn, "clicked", f3_cb, NULL);
    evas_object_show(btn);
    elm_box_pack_end(box, btn);
 
@@ -103,7 +105,7 @@ hotkeys_create(Evas_Object *parent, menu_data *md)
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 0.5, 0);
    elm_object_focus_allow_set(btn, EINA_FALSE);
-   evas_object_smart_callback_add(btn, "clicked", f4_cb, md);
+   evas_object_smart_callback_add(btn, "clicked", f4_cb, NULL);
    evas_object_show(btn);
    elm_box_pack_end(box, btn);
 
@@ -116,7 +118,7 @@ hotkeys_create(Evas_Object *parent, menu_data *md)
    evas_object_size_hint_align_set(btn, 0.5, 0);
    elm_object_focus_allow_set(btn, EINA_FALSE);
    elm_object_disabled_set(btn, EINA_TRUE);
-   evas_object_smart_callback_add(btn, "clicked", f5_cb, md);
+   evas_object_smart_callback_add(btn, "clicked", f5_cb, NULL);
    evas_object_show(btn);
    elm_box_pack_end(box, btn);
 
@@ -129,7 +131,7 @@ hotkeys_create(Evas_Object *parent, menu_data *md)
    evas_object_size_hint_align_set(btn, 0.5, 0);
    elm_object_focus_allow_set(btn, EINA_FALSE);
    elm_object_disabled_set(btn, EINA_TRUE);
-   evas_object_smart_callback_add(btn, "clicked", f6_cb, md);
+   evas_object_smart_callback_add(btn, "clicked", f6_cb, NULL);
    evas_object_show(btn);
    elm_box_pack_end(box, btn);
 
@@ -195,7 +197,7 @@ hotkeys_create(Evas_Object *parent, menu_data *md)
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 0.5, 0);
    elm_object_focus_allow_set(btn, EINA_FALSE);
-   evas_object_smart_callback_add(btn, "clicked", f12_cb, md);
+   evas_object_smart_callback_add(btn, "clicked", f12_cb, NULL);
    evas_object_show(btn);
    elm_box_pack_end(box, btn);
 

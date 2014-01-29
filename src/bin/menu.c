@@ -30,7 +30,7 @@ struct menu_s
    edit_data *ed;
 };
 
-static menu_data *g_md;
+static menu_data *g_md = NULL;
 
 static void warning_no_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
                               void *event_info EINA_UNUSED);
@@ -40,32 +40,37 @@ static void edc_reload(menu_data *md, const char *edc_path);
 static void edc_file_save(menu_data *md);
 
 static void
-fileselector_close(menu_data *md)
+fileselector_close()
 {
+   menu_data *md = g_md;
    elm_object_signal_emit(md->fileselector_layout, "elm,state,dismiss", "");
 }
 
 static void
-about_close(menu_data *md)
+about_close()
 {
+   menu_data *md = g_md;
    elm_object_signal_emit(md->about_layout, "elm,state,dismiss", "");
 }
 
 static void
-setting_close(menu_data *md)
+setting_close()
 {
+   menu_data *md = g_md;
    elm_object_signal_emit(md->setting_layout, "elm,state,dismiss", "");
 }
 
 static void
-warning_close(menu_data *md)
+warning_close()
 {
+   menu_data *md = g_md;
    elm_object_signal_emit(md->warning_layout, "elm,state,dismiss", "");
 }
 
 static void
-menu_close(menu_data *md)
+menu_close()
 {
+   menu_data *md = g_md;
    if (!md->menu_layout) return;
    elm_object_signal_emit(md->menu_layout, "elm,state,dismiss", "");
 }
@@ -681,8 +686,9 @@ exit_save_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
 }
 
 void
-menu_exit(menu_data *md)
+menu_exit()
 {
+      menu_data *md = g_md;
    if (edit_changed_get(md->ed))
      warning_layout_create(md, exit_yes_btn_cb, exit_save_btn_cb);
    else
@@ -693,8 +699,7 @@ static void
 exit_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
             void *event_info EINA_UNUSED)
 {
-   menu_data *md = data;
-   menu_exit(md);
+   menu_exit();
 }
 
 static Evas_Object *
@@ -986,20 +991,23 @@ load_save_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 }
 
 void
-menu_about(menu_data *md)
+menu_about()
 {
+   menu_data *md = g_md;
    about_open(md);
 }
 
 void
-menu_setting(menu_data *md)
+menu_setting()
 {
+   menu_data *md = g_md;
    setting_open(md);
 }
 
 Eina_Bool
-menu_edc_new(menu_data *md)
+menu_edc_new()
 {
+   menu_data *md = g_md;
    if (edit_changed_get(md->ed))
      {
         warning_layout_create(md, new_yes_btn_cb, new_save_btn_cb);
@@ -1012,14 +1020,16 @@ menu_edc_new(menu_data *md)
 }
 
 void
-menu_edc_save(menu_data *md)
+menu_edc_save()
 {
+   menu_data *md = g_md;
    edc_file_save(md);
 }
 
 void
-menu_edc_load(menu_data *md)
+menu_edc_load()
 {
+   menu_data *md = g_md;
    if (edit_changed_get(md->ed))
      warning_layout_create(md, load_yes_btn_cb, load_save_btn_cb);
    else
@@ -1027,11 +1037,10 @@ menu_edc_load(menu_data *md)
 }
 
 static void
-load_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
+load_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
             void *event_info EINA_UNUSED)
 {
-   menu_data *md = data;
-   menu_edc_load(md);
+   menu_edc_load();
 }
 
 static void
@@ -1096,8 +1105,9 @@ menu_init(Evas_Object *win, edit_data *ed, config_data *cd)
 }
 
 void
-menu_term(menu_data *md)
+menu_term()
 {
+   menu_data *md = g_md;
    if (!md) return;
    free(md);
 }
@@ -1165,7 +1175,8 @@ menu_ctxpopup_register(Evas_Object *ctxpopup)
 }
 
 int
-menu_open_depth(menu_data *md)
+menu_open_depth()
 {
+   menu_data *md = g_md;
    return md->open_depth;
 }

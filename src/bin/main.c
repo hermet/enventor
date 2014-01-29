@@ -7,7 +7,6 @@ struct app_s
 {
    edit_data *ed;
    edj_mgr *em;
-   menu_data *md;
    stats_data *sd;
    config_data *cd;
 
@@ -41,11 +40,10 @@ edc_changed_cb(void *data, int type EINA_UNUSED, void *event)
 }
 
 static void
-win_delete_request_cb(void *data, Evas_Object *obj EINA_UNUSED,
+win_delete_request_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
                       void *event_info EINA_UNUSED)
 {
-  app_data *ad = data;
-  menu_exit(ad->md);
+  menu_exit();
 }
 
 static Eina_Bool
@@ -304,12 +302,12 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    if (!strcmp(event->keyname, "Escape"))
      {
         menu_toggle();
-        if (menu_open_depth(ad->md) == 0)
+        if (menu_open_depth() == 0)
           edit_focus_set(ad->ed);
         return ECORE_CALLBACK_DONE;
      }
 
-   if (menu_open_depth(ad->md) > 0) return ECORE_CALLBACK_PASS_ON;
+   if (menu_open_depth() > 0) return ECORE_CALLBACK_PASS_ON;
 
    //Control Key
    if (!strcmp("Control_L", event->keyname))
@@ -320,25 +318,25 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    //README
    if (!strcmp(event->keyname, "F1"))
      {
-        menu_about(ad->md);
+        menu_about();
         return ECORE_CALLBACK_DONE;
      }
    //New
    if (!strcmp(event->keyname, "F2"))
      {
-        menu_edc_new(ad->md);
+        menu_edc_new();
         return ECORE_CALLBACK_DONE;
      }
    //Save
    if (!strcmp(event->keyname, "F3"))
      {
-        menu_edc_save(ad->md);
+        menu_edc_save();
         return ECORE_CALLBACK_DONE;
      }
    //Load
    if (!strcmp(event->keyname, "F4"))
      {
-        menu_edc_load(ad->md);
+        menu_edc_load();
         return ECORE_CALLBACK_DONE;
      }
    //Line Number
@@ -358,7 +356,7 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    //Setting
    if (!strcmp(event->keyname, "F12"))
      {
-        menu_setting(ad->md);
+        menu_setting();
         return ECORE_CALLBACK_DONE;
      }
 
@@ -603,9 +601,9 @@ init(app_data *ad, int argc, char **argv)
    statusbar_set(ad, ad->cd);
    edc_edit_set(ad, ad->sd, ad->cd);
    edc_view_set(ad, ad->cd, ad->sd, stats_group_name_get(ad->sd));
-   ad->md = menu_init(ad->win, ad->ed, ad->cd);
+   menu_init(ad->win, ad->ed, ad->cd);
 
-   Evas_Object *hotkeys = hotkeys_create(ad->layout, ad->md);
+   Evas_Object *hotkeys = hotkeys_create(ad->layout);
    elm_object_part_content_set(ad->layout, "elm.swallow.hotkeys", hotkeys);
 
    ad->edc_monitor = eio_monitor_add(config_edc_path_get(ad->cd));
@@ -618,7 +616,7 @@ static void
 term(app_data *ad)
 {
    build_term();
-   menu_term(ad->md);
+   menu_term();
    edit_term(ad->ed);
    edj_mgr_term(ad->em);
    stats_term(ad->sd);
