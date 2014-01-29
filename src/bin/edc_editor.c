@@ -16,7 +16,6 @@ struct editor_s
 
    syntax_helper *sh;
    stats_data *sd;
-   config_data *cd;
    parser_data *pd;
 
    int cur_line;
@@ -123,7 +122,7 @@ edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
              syntax_color = EINA_FALSE;
           }
 
-        if (config_auto_indent_get(ed->cd))
+        if (config_auto_indent_get())
           indent_insert_apply(syntax_indent_data_get(ed->sh), ed->en_edit,
                               info->change.insert.content, ed->cur_line);
      }
@@ -131,7 +130,7 @@ edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
      {
         int decrease = parser_line_cnt_get(ed->pd, info->change.del.content);
 
-        if (config_auto_indent_get(ed->cd))
+        if (config_auto_indent_get())
           {
              if (indent_delete_apply(syntax_indent_data_get(ed->sh),
                                      ed->en_edit, info->change.del.content,
@@ -150,16 +149,14 @@ edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 static void
 save_msg_show(edit_data *ed)
 {
-   if (!config_stats_bar_get(ed->cd)) return;
+   if (!config_stats_bar_get()) return;
 
    char buf[PATH_MAX];
 
    if (ed->edit_changed)
-     snprintf(buf, sizeof(buf), "File saved. \"%s\"",
-              config_edc_path_get(ed->cd));
+     snprintf(buf, sizeof(buf), "File saved. \"%s\"", config_edc_path_get());
    else
-     snprintf(buf, sizeof(buf), "Already saved. \"%s\"",
-              config_edc_path_get(ed->cd));
+     snprintf(buf, sizeof(buf), "Already saved. \"%s\"", config_edc_path_get());
 
    stats_info_msg_update(ed->sd, buf);
 }
@@ -176,7 +173,7 @@ edit_save(edit_data *ed)
    const char *text = elm_entry_entry_get(ed->en_edit);
    char *utf8 = elm_entry_markup_to_utf8(text);
 
-   FILE *fp = fopen(config_edc_path_get(ed->cd), "w");
+   FILE *fp = fopen(config_edc_path_get(), "w");
    if (!fp) return EINA_FALSE;
 
    fputs(utf8, fp);
@@ -400,7 +397,7 @@ edit_mouse_down_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
 static void
 cur_line_pos_set(edit_data *ed)
 {
-   if (!config_stats_bar_get(ed->cd)) return;
+   if (!config_stats_bar_get()) return;
 
    Evas_Coord y, h;
    elm_entry_cursor_geometry_get(ed->en_edit, NULL, &y, NULL, &h);
@@ -479,7 +476,7 @@ image_preview_show(edit_data *ed, char *cur, Evas_Coord x, Evas_Coord y)
    char fullpath[PATH_MAX];
 
    //1.Find the image path.
-   Eina_List *list = config_edc_img_path_list_get(ed->cd);
+   Eina_List *list = config_edc_img_path_list_get();
    Eina_List *l;
    char *path;
    Eina_Bool found = EINA_FALSE;
@@ -597,7 +594,7 @@ cur_name_get_cb(void *data, Eina_Stringshare *part_name,
 void
 edit_view_sync(edit_data *ed)
 {
-   if (!config_part_highlight_get(ed->cd)) return;
+   if (!config_part_highlight_get()) return;
 
    parser_cur_name_get(ed->pd, ed->en_edit, cur_name_get_cb, ed);
 }
@@ -654,7 +651,7 @@ key_up_cb(void *data, int type EINA_UNUSED, void *ev)
 }
 
 edit_data *
-edit_init(Evas_Object *parent, stats_data *sd, config_data *cd)
+edit_init(Evas_Object *parent, stats_data *sd)
 {
    parser_data *pd = parser_init();
    syntax_helper *sh = syntax_init();
@@ -663,7 +660,6 @@ edit_init(Evas_Object *parent, stats_data *sd, config_data *cd)
    ed->sd = sd;
    ed->pd = pd;
    ed->sh = sh;
-   ed->cd = cd;
 
    ecore_event_handler_add(ECORE_EVENT_KEY_DOWN, key_down_cb, ed);
    ecore_event_handler_add(ECORE_EVENT_KEY_UP, key_up_cb, ed);
@@ -831,7 +827,7 @@ edit_changed_set(edit_data *ed, Eina_Bool changed)
 void
 edit_line_number_toggle(edit_data *ed)
 {
-   Eina_Bool linenumber = config_linenumber_get(ed->cd);
+   Eina_Bool linenumber = config_linenumber_get();
    if (ed->linenumber == linenumber) return;
    ed->linenumber = linenumber;
 
@@ -847,25 +843,23 @@ edit_new(edit_data *ed)
    parser_cancel(ed->pd);
    elm_entry_entry_set(ed->en_edit, "");
    elm_entry_entry_set(ed->en_line, "");
-   edit_edc_read(ed, config_edc_path_get(ed->cd));
+   edit_edc_read(ed, config_edc_path_get());
    ed->edit_changed = EINA_TRUE;
 
    char buf[PATH_MAX];
-   snprintf(buf, sizeof(buf), "File Path: \"%s\"",
-            config_edc_path_get(ed->cd));
+   snprintf(buf, sizeof(buf), "File Path: \"%s\"", config_edc_path_get());
    stats_info_msg_update(ed->sd, buf);
 }
 
 void
 edit_font_size_update(edit_data *ed, Eina_Bool msg)
 {
-   elm_object_scale_set(ed->en_edit, config_font_size_get(ed->cd));
-   elm_object_scale_set(ed->en_line, config_font_size_get(ed->cd));
+   elm_object_scale_set(ed->en_edit, config_font_size_get());
+   elm_object_scale_set(ed->en_line, config_font_size_get());
 
    if (!msg) return;
 
    char buf[128];
-   snprintf(buf, sizeof(buf), "Font Size: %1.1fx",
-            config_font_size_get(ed->cd));
+   snprintf(buf, sizeof(buf), "Font Size: %1.1fx", config_font_size_get());
    stats_info_msg_update(ed->sd, buf);
 }

@@ -8,7 +8,6 @@ struct app_s
    edit_data *ed;
    edj_mgr *em;
    stats_data *sd;
-   config_data *cd;
 
    Evas_Object *layout;
    Evas_Object *panes;
@@ -30,7 +29,7 @@ edc_changed_cb(void *data, int type EINA_UNUSED, void *event)
 
    if (!edit_changed_get(ad->ed)) return ECORE_CALLBACK_RENEW;
 
-   if (strcmp(ev->filename, config_edc_path_get(ad->cd)))
+   if (strcmp(ev->filename, config_edc_path_get()))
      return ECORE_CALLBACK_RENEW;
 
    build_edc();
@@ -86,7 +85,7 @@ base_gui_construct(app_data *ad)
 }
 
 static Eina_Bool
-edc_proto_setup(config_data *cd)
+edc_proto_setup()
 {
    Eina_Bool success = EINA_TRUE;
 
@@ -94,11 +93,10 @@ edc_proto_setup(config_data *cd)
    snprintf(buf, sizeof(buf), "%s/.proto/proto.edc",
             elm_app_data_dir_get());
 
-   if (!ecore_file_exists(config_edc_path_get(cd)))
+   if (!ecore_file_exists(config_edc_path_get()))
      {
         EINA_LOG_INFO("No working edc file exists. Copy a proto.edc");
-        success = eina_file_copy(buf,
-                                 config_edc_path_get(cd),
+        success = eina_file_copy(buf, config_edc_path_get(),
                                  EINA_FILE_COPY_DATA, NULL, NULL);
      }
 
@@ -133,7 +131,7 @@ main_key_up_cb(void *data, int type EINA_UNUSED, void *ev)
 static void
 statusbar_toggle(app_data *ad)
 {
-   if (config_stats_bar_get(ad->cd))
+   if (config_stats_bar_get())
      elm_object_signal_emit(ad->layout, "elm,state,statusbar,show", "");
    else
      elm_object_signal_emit(ad->layout, "elm,state,statusbar,hide", "");
@@ -142,7 +140,7 @@ statusbar_toggle(app_data *ad)
 static void
 part_highlight_toggle(app_data *ad, Eina_Bool msg)
 {
-   Eina_Bool highlight = config_part_highlight_get(ad->cd);
+   Eina_Bool highlight = config_part_highlight_get();
    if (highlight) edit_view_sync(ad->ed);
    else view_part_highlight_set(VIEW_DATA, NULL);
 
@@ -157,10 +155,10 @@ part_highlight_toggle(app_data *ad, Eina_Bool msg)
 static void
 auto_indentation_toggle(app_data *ad)
 {
-   Eina_Bool toggle = !config_auto_indent_get(ad->cd);
+   Eina_Bool toggle = !config_auto_indent_get();
    if (toggle) stats_info_msg_update(ad->sd, "Auto Indentation Enabled.");
    else stats_info_msg_update(ad->sd, "Auto Indentation Disabled.");
-   config_auto_indent_set(ad->cd, toggle);
+   config_auto_indent_set(toggle);
 }
 
 static Eina_Bool
@@ -233,14 +231,14 @@ ctrl_func(app_data *ad, const char *keyname)
    //Part Highlight
    if (!strcmp(keyname, "h") || !strcmp(keyname, "H"))
      {
-        config_part_highlight_set(ad->cd, !config_part_highlight_get(ad->cd));
+        config_part_highlight_set(!config_part_highlight_get());
         part_highlight_toggle(ad, EINA_TRUE);
         return ECORE_CALLBACK_DONE;
      }
    //Swallow Dummy Object
    if (!strcmp(keyname, "w") || !strcmp(keyname, "W"))
      {
-        config_dummy_swallow_set(ad->cd, !config_dummy_swallow_get(ad->cd));
+        config_dummy_swallow_set(!config_dummy_swallow_get());
         view_dummy_toggle(VIEW_DATA, EINA_TRUE);
         return ECORE_CALLBACK_DONE;
      }
@@ -265,14 +263,14 @@ ctrl_func(app_data *ad, const char *keyname)
    //Font Size Up
    if (!strcmp(keyname, "equal"))
      {
-        config_font_size_set(ad->cd, config_font_size_get(ad->cd) + 0.1f);
+        config_font_size_set(config_font_size_get() + 0.1f);
         edit_font_size_update(ad->ed, EINA_TRUE);
         return ECORE_CALLBACK_DONE;
      }
    //Font Size Down
    if (!strcmp(keyname, "minus"))
      {
-        config_font_size_set(ad->cd, config_font_size_get(ad->cd) - 0.1f);
+        config_font_size_set(config_font_size_get() - 0.1f);
         edit_font_size_update(ad->ed, EINA_TRUE);
         return ECORE_CALLBACK_DONE;
      }
@@ -342,14 +340,14 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    //Line Number
    if (!strcmp(event->keyname, "F5"))
      {
-        config_linenumber_set(ad->cd, !config_linenumber_get(ad->cd));
+        config_linenumber_set(!config_linenumber_get());
         edit_line_number_toggle(ad->ed);
         return ECORE_CALLBACK_DONE;
      }
    //Statusbar
    if (!strcmp(event->keyname, "F6"))
      {
-        config_stats_bar_set(ad->cd, !config_stats_bar_get(ad->cd));
+        config_stats_bar_set(!config_stats_bar_get());
         statusbar_toggle(ad);
         return ECORE_CALLBACK_DONE;
      }
@@ -373,13 +371,13 @@ main_mouse_wheel_cb(void *data, int type EINA_UNUSED, void *ev)
 
    //Scale up/down layout
    view_data *vd = edj_mgr_view_get(ad->em, NULL);
-   double scale = config_view_scale_get(ad->cd);
+   double scale = config_view_scale_get();
 
    if (event->z < 0) scale += 0.1;
    else scale -= 0.1;
 
-   config_view_scale_set(ad->cd, scale);
-   scale = config_view_scale_get(ad->cd);
+   config_view_scale_set(scale);
+   scale = config_view_scale_get();
    view_scale_set(vd, scale);
 
    char buf[256];
@@ -390,8 +388,7 @@ main_mouse_wheel_cb(void *data, int type EINA_UNUSED, void *ev)
 }
 
 static void
-edc_view_set(app_data *ad, config_data *cd, stats_data *sd,
-             Eina_Stringshare *group)
+edc_view_set(app_data *ad, stats_data *sd, Eina_Stringshare *group)
 {
    view_data *vd = edj_mgr_view_get(ad->em, group);
    if (vd) edj_mgr_view_switch_to(ad->em, vd);
@@ -408,36 +405,36 @@ view_sync_cb(void *data, Eina_Stringshare *part_name,
 {
    app_data *ad = data;
    if (stats_group_name_get(ad->sd) != group_name)
-     edc_view_set(ad, ad->cd, ad->sd, group_name);
+     edc_view_set(ad, ad->sd, group_name);
    view_part_highlight_set(VIEW_DATA, part_name);
 }
 
 static void
-edc_edit_set(app_data *ad, stats_data *sd, config_data *cd)
+edc_edit_set(app_data *ad, stats_data *sd)
 {
-   edit_data *ed = edit_init(ad->panes, sd, cd);
-   edit_edc_read(ed, config_edc_path_get(cd));
+   edit_data *ed = edit_init(ad->panes, sd);
+   edit_edc_read(ed, config_edc_path_get());
    elm_object_part_content_set(ad->panes, "right", edit_obj_get(ed));
    edit_view_sync_cb_set(ed, view_sync_cb, ad);
    ad->ed = ed;
 }
 
 static void
-statusbar_set(app_data *ad, config_data *cd)
+statusbar_set(app_data *ad)
 {
-   stats_data *sd = stats_init(ad->layout, cd);
+   stats_data *sd = stats_init(ad->layout);
    elm_object_part_content_set(ad->layout, "elm.swallow.statusbar",
                                stats_obj_get(sd));
    ad->sd = sd;
-   config_stats_bar_set(ad->cd, EINA_TRUE);
+   config_stats_bar_set(EINA_TRUE);
    statusbar_toggle(ad);
 }
 
 static void
-config_update_cb(void *data, config_data *cd)
+config_update_cb(void *data)
 {
    app_data *ad = data;
-   build_cmd_set(cd);
+   build_cmd_set();
    edit_line_number_toggle(ad->ed);
    edit_font_size_update(ad->ed, EINA_FALSE);
 
@@ -451,9 +448,9 @@ config_update_cb(void *data, config_data *cd)
         build_edc();
         edit_changed_set(ad->ed, EINA_FALSE);
         edj_mgr_clear(ad->em);
-        edc_view_set(ad, ad->cd, ad->sd, stats_group_name_get(ad->sd));
+        edc_view_set(ad, ad->sd, stats_group_name_get(ad->sd));
         if (ad->edc_monitor) eio_monitor_del(ad->edc_monitor);
-        ad->edc_monitor = eio_monitor_add(config_edc_path_get(ad->cd));
+        ad->edc_monitor = eio_monitor_add(config_edc_path_get());
      }
    //If the edc is reloaded, then rebuild it!
    else if (edit_changed_get(ad->ed))
@@ -461,8 +458,7 @@ config_update_cb(void *data, config_data *cd)
         edit_changed_set(ad->ed, EINA_FALSE);
      }
 
-   view_scale_set(edj_mgr_view_get(ad->em, NULL),
-                  config_view_scale_get(ad->cd));
+   view_scale_set(edj_mgr_view_get(ad->em, NULL), config_view_scale_get());
 }
 
 static void
@@ -542,10 +538,8 @@ config_data_set(app_data *ad, int argc, char **argv)
    char data_path[PATH_MAX];
 
    args_dispatch(argc, argv, edc_path, img_path, snd_path, fnt_path, data_path);
-   config_data *cd = config_init(edc_path, img_path, snd_path, fnt_path,
-                                 data_path);
-   config_update_cb_set(cd, config_update_cb, ad);
-   ad->cd = cd;
+   config_init(edc_path, img_path, snd_path, fnt_path, data_path);
+   config_update_cb_set(config_update_cb, ad);
 }
 
 static void
@@ -573,9 +567,9 @@ elm_setup()
 }
 
 static void
-edj_mgr_set(app_data *ad, config_data *cd)
+edj_mgr_set(app_data *ad)
 {
-   ad->em = edj_mgr_init(ad->panes, cd);
+   ad->em = edj_mgr_init(ad->panes);
    elm_object_part_content_set(ad->panes, "left", edj_mgr_obj_get(ad->em));
 }
 
@@ -593,20 +587,20 @@ init(app_data *ad, int argc, char **argv)
    elm_setup();
    config_data_set(ad, argc, argv);
 
-   if (!build_init(ad->cd)) return EINA_FALSE;
-   if (!edc_proto_setup(ad->cd)) return EINA_FALSE;
+   if (!build_init()) return EINA_FALSE;
+   if (!edc_proto_setup()) return EINA_FALSE;
    if (!base_gui_construct(ad)) return EINA_FALSE;
 
-   edj_mgr_set(ad, ad->cd);
-   statusbar_set(ad, ad->cd);
-   edc_edit_set(ad, ad->sd, ad->cd);
-   edc_view_set(ad, ad->cd, ad->sd, stats_group_name_get(ad->sd));
-   menu_init(ad->win, ad->ed, ad->cd);
+   edj_mgr_set(ad);
+   statusbar_set(ad);
+   edc_edit_set(ad, ad->sd);
+   edc_view_set(ad, ad->sd, stats_group_name_get(ad->sd));
+   menu_init(ad->win, ad->ed);
 
    Evas_Object *hotkeys = hotkeys_create(ad->layout);
    elm_object_part_content_set(ad->layout, "elm.swallow.hotkeys", hotkeys);
 
-   ad->edc_monitor = eio_monitor_add(config_edc_path_get(ad->cd));
+   ad->edc_monitor = eio_monitor_add(config_edc_path_get());
    ecore_event_handler_add(EIO_MONITOR_FILE_MODIFIED, edc_changed_cb, ad);
 
    return EINA_TRUE;
@@ -620,7 +614,7 @@ term(app_data *ad)
    edit_term(ad->ed);
    edj_mgr_term(ad->em);
    stats_term(ad->sd);
-   config_term(ad->cd);
+   config_term();
 
    elm_shutdown();
    ecore_event_shutdown();

@@ -1,4 +1,5 @@
-view_data * view_init(Evas_Object *parent, const char *group, stats_data *sd, config_data *cd, void (*del_cb)(void *data), void *data);
+view_data * view_init(Evas_Object *parent, const char *group, stats_data *sd,
+                      void (*del_cb)(void *data), void *data);
 void view_term(view_data *vd);
 Evas_Object *view_obj_get(view_data *vd);
 void view_new(view_data *vd, const char *group);

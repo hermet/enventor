@@ -7,7 +7,6 @@
 struct viewer_s
 {
    stats_data *sd;
-   config_data *cd;
 
    Evas_Object *parent;
    Evas_Object *layout;
@@ -38,7 +37,7 @@ file_set_timer_cb(void *data)
         return ECORE_CALLBACK_CANCEL;
      }
 
-   if (edje_object_file_set(vd->layout, config_edj_path_get(vd->cd),
+   if (edje_object_file_set(vd->layout, config_edj_path_get(),
                             vd->group_name))
      {
         vd->timer = NULL;
@@ -88,11 +87,11 @@ layout_resize_cb(void *data, Evas *e EINA_UNUSED,
                  Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 {
    view_data *vd = data;
-   if (!config_stats_bar_get(vd->cd)) return;
+   if (!config_stats_bar_get()) return;
 
    Evas_Coord w, h;
    evas_object_geometry_get(obj, NULL, NULL, &w, &h);
-   config_view_size_set(vd->cd, w, h);
+   config_view_size_set(w, h);
    stats_view_size_update(vd->sd);
 }
 
@@ -101,7 +100,7 @@ rect_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
                    Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    view_data *vd = data;
-   if (!config_stats_bar_get(vd->cd)) return;
+   if (!config_stats_bar_get()) return;
 
    Evas_Event_Mouse_Move *ev = event_info;
 
@@ -131,7 +130,7 @@ edje_change_file_cb(void *data, Evas_Object *obj EINA_UNUSED,
                     const char *source EINA_UNUSED)
 {
    view_data *vd = data;
-   if (!edje_object_file_set(vd->layout, config_edj_path_get(vd->cd),
+   if (!edje_object_file_set(vd->layout, config_edj_path_get(),
                         vd->group_name))
      {
         vd->del_cb(vd->data);
@@ -205,9 +204,8 @@ view_obj_idler_cb(void *data)
 {
    view_data *vd = data;
 
-   vd->layout = view_obj_create(vd, config_edj_path_get(vd->cd),
-                                vd->group_name);
-   view_scale_set(vd, config_view_scale_get(vd->cd));
+   vd->layout = view_obj_create(vd, config_edj_path_get(), vd->group_name);
+   view_scale_set(vd, config_view_scale_get());
 
    event_layer_set(vd);
    elm_object_content_set(vd->scroller, vd->layout);
@@ -224,7 +222,7 @@ view_obj_idler_cb(void *data)
 void
 view_dummy_toggle(view_data *vd, Eina_Bool msg)
 {
-   Eina_Bool dummy_on = config_dummy_swallow_get(vd->cd);
+   Eina_Bool dummy_on = config_dummy_swallow_get();
    if (dummy_on == vd->dummy_on) return;
    if (dummy_on)
      {
@@ -242,14 +240,13 @@ view_dummy_toggle(view_data *vd, Eina_Bool msg)
 
 view_data *
 view_init(Evas_Object *parent, const char *group, stats_data *sd,
-          config_data *cd, void (*del_cb)(void *data), void *data)
+          void (*del_cb)(void *data), void *data)
 {
    view_data *vd = calloc(1, sizeof(view_data));
    vd->parent = parent;
    vd->sd = sd;
-   vd->cd = cd;
    vd->scroller = view_scroller_create(parent);
-   vd->dummy_on = config_dummy_swallow_get(cd);
+   vd->dummy_on = config_dummy_swallow_get();
 
    vd->group_name = eina_stringshare_add(group);
    vd->idler = ecore_idler_add(view_obj_idler_cb, vd);

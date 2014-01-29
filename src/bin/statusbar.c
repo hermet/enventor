@@ -7,7 +7,6 @@ struct statusbar_s
    Eina_Stringshare *group_name;
    int cur_line;
    int max_line;
-   config_data *cd;
 };
 
 void
@@ -25,14 +24,14 @@ void
 stats_edc_file_set(stats_data *sd, Eina_Stringshare *group_name)
 {
    char buf[PATH_MAX];
-   const char *filename = ecore_file_file_get(config_edc_path_get(sd->cd));
+   const char *filename = ecore_file_file_get(config_edc_path_get());
    snprintf(buf, sizeof(buf), "<align=right>File [<style=glow><color=#3399ff>%s</color></style>]    Group [<style=glow><color=#3399ff>%s</color></style>]</align>", filename, group_name);
    elm_object_part_text_set(sd->layout, "elm.text.file_group_name", buf);
    sd->group_name = eina_stringshare_add(group_name);
 }
 
 stats_data *
-stats_init(Evas_Object *parent, config_data *cd)
+stats_init(Evas_Object *parent)
 {
    stats_data *sd = calloc(1, sizeof(stats_data));
 
@@ -44,7 +43,6 @@ stats_init(Evas_Object *parent, config_data *cd)
    elm_object_part_text_set(layout, "elm.text.cur_pos",
                             "Cursor [<style=glow><color=#3399ff>0</color></style>,<style=glow><color=#3399ff>0</color></style>] [<style=glow><color=#3399ff>0.00</color></style>,<style=glow><color=#3399ff>0.00</color></style>]");
    sd->layout = layout;
-   sd->cd = cd;
 
    stats_edc_file_set(sd, NULL);
 
@@ -73,7 +71,7 @@ stats_term(stats_data *sd)
 void
 stats_info_msg_update(stats_data *sd, const char *msg)
 {
-   if (!config_stats_bar_get(sd->cd)) return;
+   if (!config_stats_bar_get()) return;
 
    elm_object_part_text_set(sd->layout, "elm.text.info_msg", msg);
    elm_object_signal_emit(sd->layout, "elm,action,info_msg,show", "");
@@ -83,7 +81,7 @@ void
 stats_view_size_update(stats_data *sd)
 {
    Evas_Coord w, h;
-   config_view_size_get(sd->cd, &w, &h);
+   config_view_size_get(&w, &h);
 
    char buf[128];
    snprintf(buf, sizeof(buf),
