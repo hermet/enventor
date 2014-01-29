@@ -1093,7 +1093,7 @@ menu_open(menu_data *md)
    md->open_depth++;
 }
 
-menu_data *
+void
 menu_init(Evas_Object *win, edit_data *ed, config_data *cd)
 {
    menu_data *md = calloc(1, sizeof(menu_data));
@@ -1101,7 +1101,6 @@ menu_init(Evas_Object *win, edit_data *ed, config_data *cd)
    md->ed = ed;
    md->cd = cd;
    g_md = md;
-   return md;
 }
 
 void
