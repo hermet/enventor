@@ -30,6 +30,8 @@ struct config_s
    Eina_Bool hotkeys : 1;
 };
 
+typedef struct config_s config_data;
+
 static config_data *g_cd = NULL;
 
 static void

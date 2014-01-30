@@ -29,6 +29,8 @@ struct menu_s
    edit_data *ed;
 };
 
+typedef struct menu_s menu_data;
+
 static menu_data *g_md = NULL;
 
 static void warning_no_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,

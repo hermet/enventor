@@ -1,13 +1,11 @@
 #ifndef __COMMON_H__
 #define __COMMON_H__
 
-typedef struct menu_s menu_data;
 typedef struct viewer_s view_data;
 typedef struct app_s app_data;
 typedef struct statusbar_s stats_data;
 typedef struct editor_s edit_data;
 typedef struct syntax_color_s color_data;
-typedef struct config_s config_data;
 typedef struct parser_s parser_data;
 typedef struct attr_value_s attr_value;
 typedef struct dummy_obj_s dummy_obj;
