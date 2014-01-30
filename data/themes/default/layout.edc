@@ -286,8 +286,8 @@ group { name: "main_layout";
             rel2.to_y: "elm.swallow.statusbar";
          }
       }
-      part { name: "statusbar_clip";
-         type: RECT;
+      part { name: "elm.swallow.statusbar";
+         type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
             rel1.relative: 0 1;
@@ -301,27 +301,18 @@ group { name: "main_layout";
             align: 0.5 0;
          }
       }
-      part { name: "elm.swallow.statusbar";
-         type: SWALLOW;
-         scale: 1;
-         clip_to: "statusbar_clip";
-         description { state: "default" 0.0;
-            rel1.to: "statusbar_clip";
-            rel2.to: "statusbar_clip";
-         }
-      }
    }
    programs {
       program { name: "statusbar_show";
          signal: "elm,state,statusbar,show";
          action: STATE_SET "default" 0.0;
-         target: "statusbar_clip";
+         target: "elm.swallow.statusbar";
          transition: DECELERATE 0.35;
       }
       program { name: "statusbar_hide";
          signal: "elm,state,statusbar,hide";
          action: STATE_SET "hide" 0.0;
-         target: "statusbar_clip";
+         target: "elm.swallow.statusbar";
          transition: DECELERATE 0.35;
       }
       program { name: "hotkeys_show";
