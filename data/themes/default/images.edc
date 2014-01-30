@@ -4,6 +4,18 @@ images {
    image: "panes_left_arrow.png" COMP;
    image: "panes_right_arrow.png" COMP;
    image: "panes_recover_arrow.png" COMP;
+   image: "hotkeys.png" COMP;
+}
+
+group { name: "hotkeys";
+   parts {
+      part { name: "img";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            image.normal: "hotkeys.png";
+         }
+      }
+   }
 }
 
 group { name: "plus_img";

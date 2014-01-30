@@ -271,6 +271,10 @@ group { name: "main_layout";
             fixed: 0 1;
             align: 0.5 0;
          }
+         description { state: "hide" 0.0;
+            inherit: "default";
+            align: 0.5 1;
+         }
       }
       part { name: "elm.swallow.panes";
          type: SWALLOW;
@@ -320,6 +324,19 @@ group { name: "main_layout";
          target: "statusbar_clip";
          transition: DECELERATE 0.35;
       }
+      program { name: "hotkeys_show";
+         signal: "elm,state,hotkeys,show";
+         action: STATE_SET "default" 0.0;
+         target: "elm.swallow.hotkeys";
+         transition: DECELERATE 0.35;
+      }
+      program { name: "hotkeys_hide";
+         signal: "elm,state,hotkeys,hide";
+         action: STATE_SET "hide" 0.0;
+         target: "elm.swallow.hotkeys";
+         transition: DECELERATE 0.35;
+      }
+
    }
 }
 

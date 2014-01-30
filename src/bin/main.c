@@ -74,7 +74,7 @@ base_gui_construct(app_data *ad)
    evas_object_show(layout);
 
    //Panes
-   Evas_Object *panes = panes_create(layout);
+   Evas_Object *panes = panes_create(layout, ad);
    elm_object_part_content_set(layout, "elm.swallow.panes", panes);
 
    ad->win = win;
@@ -624,6 +624,18 @@ statusbar_toggle(app_data *ad)
      elm_object_signal_emit(ad->layout, "elm,state,statusbar,show", "");
    else
      elm_object_signal_emit(ad->layout, "elm,state,statusbar,hide", "");
+}
+
+//This function is used in panes. Maybe layout should be separated from main.
+void
+hotkey_toggle(app_data *ad)
+{
+   config_hotkeys_set(!config_hotkeys_get());
+
+   if (config_hotkeys_get())
+     elm_object_signal_emit(ad->layout, "elm,state,hotkeys,show", "");
+   else
+     elm_object_signal_emit(ad->layout, "elm,state,hotkeys,hide", "");
 }
 
 int

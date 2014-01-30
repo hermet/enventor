@@ -38,4 +38,6 @@ void config_font_size_set(float font_size);
 float config_font_size_get();
 void config_view_scale_set(double view_scale);
 double config_view_scale_get();
+Eina_Bool config_hotkeys_get();
+void config_hotkeys_set(Eina_Bool enabled);
 

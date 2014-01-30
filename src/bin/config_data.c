@@ -27,6 +27,7 @@ struct config_s
    Eina_Bool part_highlight : 1;
    Eina_Bool dummy_swallow : 1;
    Eina_Bool auto_indent : 1;
+   Eina_Bool hotkeys : 1;
 };
 
 static config_data *g_cd = NULL;
@@ -78,6 +79,7 @@ config_init(const char *edc_path, const char *edc_img_path,
    cd->part_highlight = EINA_TRUE;
    cd->dummy_swallow = EINA_TRUE;
    cd->auto_indent = EINA_TRUE;
+   cd->hotkeys = EINA_TRUE;
 }
 
 void
@@ -513,4 +515,18 @@ config_view_size_get(Evas_Coord *w, Evas_Coord *h)
 
    if (w) *w = cd->view_size.w;
    if (h) *h = cd->view_size.h;
+}
+
+Eina_Bool
+config_hotkeys_get()
+{
+   config_data *cd = g_cd;
+   return cd->hotkeys;
+}
+
+void
+config_hotkeys_set(Eina_Bool enabled)
+{
+   config_data *cd = g_cd;
+   cd->hotkeys = enabled;
 }

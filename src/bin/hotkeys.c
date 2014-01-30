@@ -99,23 +99,18 @@ hotkeys_create(Evas_Object *parent, app_data *ad, edit_data *ed)
    elm_box_pack_end(box, btn);
 
    btn = btn_create(box, "F7: ---", NULL, NULL);
-   elm_object_disabled_set(btn, EINA_TRUE);
    elm_box_pack_end(box, btn);
 
    btn = btn_create(box, "F8: ---", NULL, NULL);
-   elm_object_disabled_set(btn, EINA_TRUE);
    elm_box_pack_end(box, btn);
 
    btn = btn_create(box, "F9: ---", NULL, NULL);
-   elm_object_disabled_set(btn, EINA_TRUE);
    elm_box_pack_end(box, btn);
 
    btn = btn_create(box, "F10: ---", NULL, NULL);
-   elm_object_disabled_set(btn, EINA_TRUE);
    elm_box_pack_end(box, btn);
 
    btn = btn_create(box, "F11: ---", NULL, NULL);
-   elm_object_disabled_set(btn, EINA_TRUE);
    elm_box_pack_end(box, btn);
 
    btn = btn_create(box, "F12: Setting", f12_cb, NULL);
