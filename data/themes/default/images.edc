@@ -18,7 +18,7 @@ group { name: "hotkeys";
    }
 }
 
-group { name: "plus_img";
+group { name: "plus";
    parts {
       part { name: "img";
          type: IMAGE;
@@ -29,7 +29,7 @@ group { name: "plus_img";
    }
 }
 
-group { name: "minus_img";
+group { name: "minus";
    parts {
       part { name: "img";
          type: IMAGE;

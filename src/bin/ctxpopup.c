@@ -145,7 +145,7 @@ ctxpopup_candidate_list_create(Evas_Object *parent, attr_value *attr,
 
         //Minus Image
         img = elm_image_add(btn);
-        elm_image_file_set(img, EDJE_PATH, "minus_img");
+        elm_image_file_set(img, EDJE_PATH, "minus");
         evas_object_show(img);
 
         elm_object_content_set(btn, img);
@@ -159,7 +159,7 @@ ctxpopup_candidate_list_create(Evas_Object *parent, attr_value *attr,
 
         //Plus Image
         img = elm_image_add(btn);
-        elm_image_file_set(img, EDJE_PATH, "plus_img");
+        elm_image_file_set(img, EDJE_PATH, "plus");
         evas_object_show(img);
 
         elm_object_content_set(btn, img);
