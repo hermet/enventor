@@ -162,7 +162,6 @@ warning_layout_create(menu_data *md, Evas_Smart_Cb yes_cb,
 
    //Save Button
    btn = elm_button_add(layout);
-   elm_object_style_set(btn, elm_app_name_get());
    elm_object_text_set(btn, "Save");
    evas_object_smart_callback_add(btn, "clicked", save_cb, md);
    evas_object_show(btn);
@@ -172,7 +171,6 @@ warning_layout_create(menu_data *md, Evas_Smart_Cb yes_cb,
 
    //No Button
    btn = elm_button_add(layout);
-   elm_object_style_set(btn, elm_app_name_get());
    elm_object_text_set(btn, "No");
    evas_object_smart_callback_add(btn, "clicked", warning_no_btn_cb, md);
    evas_object_show(btn);
@@ -181,7 +179,6 @@ warning_layout_create(menu_data *md, Evas_Smart_Cb yes_cb,
 
    //Yes Button
    btn = elm_button_add(layout);
-   elm_object_style_set(btn, elm_app_name_get());
    elm_object_text_set(btn, "Yes");
    evas_object_smart_callback_add(btn, "clicked", yes_cb, md);
    evas_object_show(btn);
@@ -485,7 +482,6 @@ setting_open(menu_data *md)
 
    //Apply Button
    btn = elm_button_add(layout);
-   elm_object_style_set(btn, elm_app_name_get());
    elm_object_text_set(btn, "Apply");
    evas_object_smart_callback_add(btn, "clicked", setting_apply_btn_cb, md);
    evas_object_show(btn);
@@ -494,7 +490,6 @@ setting_open(menu_data *md)
 
    //Reset Button
    btn = elm_button_add(layout);
-   elm_object_style_set(btn, elm_app_name_get());
    elm_object_text_set(btn, "Reset");
    evas_object_smart_callback_add(btn, "clicked", setting_reset_btn_cb, md);
    evas_object_show(btn);
@@ -503,7 +498,6 @@ setting_open(menu_data *md)
 
    //Cancel Button
    btn = elm_button_add(layout);
-   elm_object_style_set(btn, elm_app_name_get());
    elm_object_text_set(btn, "Cancel");
    evas_object_smart_callback_add(btn, "clicked", setting_cancel_btn_cb, md);
    evas_object_show(btn);
