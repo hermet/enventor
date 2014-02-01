@@ -631,7 +631,7 @@ key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    edit_data *ed = data;
 
    //Control Key
-   if (!strcmp("Control_L", event->keyname))
+   if (!strcmp("Control_L", event->key))
      ed->ctrl_pressed = EINA_TRUE;
 
    return ECORE_CALLBACK_PASS_ON;
@@ -644,7 +644,7 @@ key_up_cb(void *data, int type EINA_UNUSED, void *ev)
    edit_data *ed = data;
 
    //Control Key
-   if (!strcmp("Control_L", event->keyname))
+   if (!strcmp("Control_L", event->key))
      ed->ctrl_pressed = EINA_FALSE;
 
    return ECORE_CALLBACK_PASS_ON;

@@ -117,12 +117,12 @@ main_key_up_cb(void *data, int type EINA_UNUSED, void *ev)
    Ecore_Event_Key *event = ev;
    app_data *ad = data;
 
-   if (!strcmp("Control_L", event->keyname))
+   if (!strcmp("Control_L", event->key))
      {
         edit_editable_set(ad->ed, EINA_TRUE);
         ad->ctrl_pressed = EINA_FALSE;
      }
-   else if (!strcmp("Shift_L", event->keyname))
+   else if (!strcmp("Shift_L", event->key))
      ad->shift_pressed = EINA_FALSE;
 
    return ECORE_CALLBACK_PASS_ON;
@@ -153,33 +153,33 @@ auto_indentation_toggle(app_data *ad)
 }
 
 static Eina_Bool
-template_insert(app_data *ad, const char *keyname)
+template_insert(app_data *ad, const char *key)
 {
    Edje_Part_Type type;
 
-   if (!strcmp(keyname, "a") || !strcmp(keyname, "A"))
+   if (!strcmp(key, "a") || !strcmp(key, "A"))
      type = EDJE_PART_TYPE_TABLE;
-   else if (!strcmp(keyname, "b") || !strcmp(keyname, "B"))
+   else if (!strcmp(key, "b") || !strcmp(key, "B"))
      type = EDJE_PART_TYPE_TEXTBLOCK;
-   else if (!strcmp(keyname, "e") || !strcmp(keyname, "E"))
+   else if (!strcmp(key, "e") || !strcmp(key, "E"))
      type = EDJE_PART_TYPE_EXTERNAL;
-   else if (!strcmp(keyname, "g") || !strcmp(keyname, "G"))
+   else if (!strcmp(key, "g") || !strcmp(key, "G"))
      type = EDJE_PART_TYPE_GRADIENT;
-   else if (!strcmp(keyname, "i") || !strcmp(keyname, "I"))
+   else if (!strcmp(key, "i") || !strcmp(key, "I"))
      type = EDJE_PART_TYPE_IMAGE;
-   else if (!strcmp(keyname, "o") || !strcmp(keyname, "O"))
+   else if (!strcmp(key, "o") || !strcmp(key, "O"))
      type = EDJE_PART_TYPE_GROUP;
-   else if (!strcmp(keyname, "p") || !strcmp(keyname, "P"))
+   else if (!strcmp(key, "p") || !strcmp(key, "P"))
      type = EDJE_PART_TYPE_PROXY;
-   else if (!strcmp(keyname, "r") || !strcmp(keyname, "R"))
+   else if (!strcmp(key, "r") || !strcmp(key, "R"))
      type = EDJE_PART_TYPE_RECTANGLE;
-   else if (!strcmp(keyname, "t") || !strcmp(keyname, "T"))
+   else if (!strcmp(key, "t") || !strcmp(key, "T"))
      type = EDJE_PART_TYPE_TEXT;
-   else if (!strcmp(keyname, "s") || !strcmp(keyname, "S"))
+   else if (!strcmp(key, "s") || !strcmp(key, "S"))
      type = EDJE_PART_TYPE_SPACER;
-   else if (!strcmp(keyname, "w") || !strcmp(keyname, "W"))
+   else if (!strcmp(key, "w") || !strcmp(key, "W"))
      type = EDJE_PART_TYPE_SWALLOW;
-   else if (!strcmp(keyname, "x") || !strcmp(keyname, "X"))
+   else if (!strcmp(key, "x") || !strcmp(key, "X"))
      type = EDJE_PART_TYPE_BOX;
    else
      type = EDJE_PART_TYPE_NONE;
@@ -190,76 +190,76 @@ template_insert(app_data *ad, const char *keyname)
 }
 
 static Eina_Bool
-ctrl_func(app_data *ad, const char *keyname)
+ctrl_func(app_data *ad, const char *key)
 {
    //Save
-   if (!strcmp(keyname, "s") || !strcmp(keyname, "S"))
+   if (!strcmp(key, "s") || !strcmp(key, "S"))
      {
         edit_save(ad->ed);
         return ECORE_CALLBACK_DONE;
      }
    //Copy
-   if (!strcmp(keyname, "c") || !strcmp(keyname, "C"))
+   if (!strcmp(key, "c") || !strcmp(key, "C"))
      return ECORE_CALLBACK_PASS_ON;
    //Paste
-   if (!strcmp(keyname, "v") || !strcmp(keyname, "V"))
+   if (!strcmp(key, "v") || !strcmp(key, "V"))
      return ECORE_CALLBACK_PASS_ON;
    //Cut
-   if (!strcmp(keyname, "x") || !strcmp(keyname, "X"))
+   if (!strcmp(key, "x") || !strcmp(key, "X"))
      return ECORE_CALLBACK_PASS_ON;
    //Select All
-   if (!strcmp(keyname, "a") || !strcmp(keyname, "A"))
+   if (!strcmp(key, "a") || !strcmp(key, "A"))
      return ECORE_CALLBACK_PASS_ON;
    //Go to Begin/End
-   if (!strcmp(keyname, "Home") || !strcmp(keyname, "End"))
+   if (!strcmp(key, "Home") || !strcmp(key, "End"))
      return ECORE_CALLBACK_PASS_ON;
    //Template Code
-   if (!strcmp(keyname, "t") || !strcmp(keyname, "T"))
+   if (!strcmp(key, "t") || !strcmp(key, "T"))
      {
         edit_template_insert(ad->ed);
         return ECORE_CALLBACK_DONE;
      }
    //Part Highlight
-   if (!strcmp(keyname, "h") || !strcmp(keyname, "H"))
+   if (!strcmp(key, "h") || !strcmp(key, "H"))
      {
         config_part_highlight_set(!config_part_highlight_get());
         part_highlight_toggle(ad, EINA_TRUE);
         return ECORE_CALLBACK_DONE;
      }
    //Swallow Dummy Object
-   if (!strcmp(keyname, "w") || !strcmp(keyname, "W"))
+   if (!strcmp(key, "w") || !strcmp(key, "W"))
      {
         config_dummy_swallow_set(!config_dummy_swallow_get());
         view_dummy_toggle(VIEW_DATA, EINA_TRUE);
         return ECORE_CALLBACK_DONE;
      }
    //Full Edit View
-   if (!strcmp(keyname, "comma"))
+   if (!strcmp(key, "comma"))
      {
         panes_full_view_left(ad->panes);
         return ECORE_CALLBACK_DONE;
      }
    //Full Edje View
-   if (!strcmp(keyname, "period"))
+   if (!strcmp(key, "period"))
      {
         panes_full_view_right(ad->panes);
         return ECORE_CALLBACK_DONE;
      }
    //Auto Indentation
-   if (!strcmp(keyname, "i") || !strcmp(keyname, "I"))
+   if (!strcmp(key, "i") || !strcmp(key, "I"))
      {
         auto_indentation_toggle(ad);
         return ECORE_CALLBACK_DONE;
      }
    //Font Size Up
-   if (!strcmp(keyname, "equal"))
+   if (!strcmp(key, "equal"))
      {
         config_font_size_set(config_font_size_get() + 0.1f);
         edit_font_size_update(ad->ed, EINA_TRUE);
         return ECORE_CALLBACK_DONE;
      }
    //Font Size Down
-   if (!strcmp(keyname, "minus"))
+   if (!strcmp(key, "minus"))
      {
         config_font_size_set(config_font_size_get() - 0.1f);
         edit_font_size_update(ad->ed, EINA_TRUE);
@@ -275,7 +275,7 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    app_data *ad = data;
 
    //Shift Key
-   if (!strcmp("Shift_L", event->keyname))
+   if (!strcmp("Shift_L", event->key))
      {
         ad->shift_pressed = EINA_TRUE;
         return ECORE_CALLBACK_DONE;
@@ -283,12 +283,12 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
 
    if (ad->ctrl_pressed)
      {
-        if (ad->shift_pressed) return template_insert(ad, event->keyname);
-        else return ctrl_func(ad, event->keyname);
+        if (ad->shift_pressed) return template_insert(ad, event->key);
+        else return ctrl_func(ad, event->key);
      }
 
    //Main Menu
-   if (!strcmp(event->keyname, "Escape"))
+   if (!strcmp(event->key, "Escape"))
      {
         menu_toggle();
         if (menu_open_depth() == 0)
@@ -299,51 +299,51 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    if (menu_open_depth() > 0) return ECORE_CALLBACK_PASS_ON;
 
    //Control Key
-   if (!strcmp("Control_L", event->keyname))
+   if (!strcmp("Control_L", event->key))
      {
         ad->ctrl_pressed = EINA_TRUE;
         return ECORE_CALLBACK_PASS_ON;
      }
    //README
-   if (!strcmp(event->keyname, "F1"))
+   if (!strcmp(event->key, "F1"))
      {
         menu_about();
         return ECORE_CALLBACK_DONE;
      }
    //New
-   if (!strcmp(event->keyname, "F2"))
+   if (!strcmp(event->key, "F2"))
      {
         menu_edc_new();
         return ECORE_CALLBACK_DONE;
      }
    //Save
-   if (!strcmp(event->keyname, "F3"))
+   if (!strcmp(event->key, "F3"))
      {
         menu_edc_save();
         return ECORE_CALLBACK_DONE;
      }
    //Load
-   if (!strcmp(event->keyname, "F4"))
+   if (!strcmp(event->key, "F4"))
      {
         menu_edc_load();
         return ECORE_CALLBACK_DONE;
      }
    //Line Number
-   if (!strcmp(event->keyname, "F5"))
+   if (!strcmp(event->key, "F5"))
      {
         config_linenumber_set(!config_linenumber_get());
         edit_line_number_toggle(ad->ed);
         return ECORE_CALLBACK_DONE;
      }
    //Statusbar
-   if (!strcmp(event->keyname, "F6"))
+   if (!strcmp(event->key, "F6"))
      {
         config_stats_bar_set(!config_stats_bar_get());
         statusbar_toggle(ad);
         return ECORE_CALLBACK_DONE;
      }
    //Setting
-   if (!strcmp(event->keyname, "F12"))
+   if (!strcmp(event->key, "F12"))
      {
         menu_setting();
         return ECORE_CALLBACK_DONE;

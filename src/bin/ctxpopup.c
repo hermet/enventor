@@ -182,9 +182,9 @@ ctxpopup_key_down_cb(void *data, Evas *e EINA_UNUSED,
    Evas_Event_Key_Down *ev = event_info;
    ctxpopup_data *ctxdata = data;
 
-   if (!strcmp(ev->keyname, "Down"))
+   if (!strcmp(ev->key, "Down"))
      ctxdata->relay_cb(ctxdata->data, ctxdata->ctxpopup, (void *) 1);
-   else if (!strcmp(ev->keyname, "Up"))
+   else if (!strcmp(ev->key, "Up"))
      ctxdata->relay_cb(ctxdata->data, ctxdata->ctxpopup, (void *) 0);
 }
 
