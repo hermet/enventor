@@ -35,9 +35,9 @@ build_edc()
 {
    char *bp = NULL;
    size_t size;
-   FILE *stream = open_memstream(&bp, &size);
+   /*FILE *stream =*/ open_memstream(&bp, &size);
    //stderr = &(*stream);
-   int ret = system(EDJE_CC_CMD);
+   /*int ret =*/ system(EDJE_CC_CMD);
 
   // if (bp)
   // printf("@@@@ buf = %s, size = %d\n", bp, size);

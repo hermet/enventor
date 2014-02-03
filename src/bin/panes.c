@@ -66,7 +66,8 @@ panes_full_view_cancel(panes_data *pd)
 }
 
 static void
-hotkeys_clicked_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
+hotkeys_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                   void *event_info EINA_UNUSED)
 {
    app_data *ad = data;
    hotkey_toggle(ad);
@@ -170,7 +171,6 @@ Evas_Object *
 panes_create(Evas_Object *parent, app_data *ad)
 {
    Evas_Object *img;
-   char buf[PATH_MAX];
 
    panes_data *pd = malloc(sizeof(panes_data));
 

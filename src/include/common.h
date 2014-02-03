@@ -13,6 +13,7 @@ typedef struct syntax_helper_s syntax_helper;
 typedef struct indent_s indent_data;
 typedef struct edj_mgr_s edj_mgr;
 
+#include "main.h"
 #include "edc_editor.h"
 #include "menu.h"
 #include "edj_viewer.h"
