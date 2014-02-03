@@ -2045,6 +2045,7 @@ group { name: "elm/list/base/enventor";
 
 group { name: "elm/panes/vertical/enventor";
    images.image: "holes_vert.png" COMP;
+   images.image: "pm_fill.png" COMP;
    parts {
       part { name: "whole"; type: SPACER;
          description { state: "default" 0.0;
@@ -2062,6 +2063,17 @@ group { name: "elm/panes/vertical/enventor";
             rel1.to_x: "elm.bar";
             rel1.relative: 1.0 0.0;
             fixed: 1 0;
+         }
+      }
+      part { name: "left_bg"; type: IMAGE;
+         description { state: "default" 0.0;
+            rel1.to: "elm.swallow.left";
+            rel2.to: "elm.swallow.left";
+            image.normal: "pm_fill.png";
+            fill {
+               size.relative: 0 0;
+               size.offset: 64 64;
+            }
          }
       }
       part { name: "right_bg"; type: RECT;
