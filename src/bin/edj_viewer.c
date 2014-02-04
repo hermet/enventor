@@ -6,8 +6,6 @@
 
 struct viewer_s
 {
-   stats_data *sd;
-
    Evas_Object *parent;
    Evas_Object *layout;
    Evas_Object *scroller;
@@ -92,7 +90,7 @@ layout_resize_cb(void *data, Evas *e EINA_UNUSED,
    Evas_Coord w, h;
    evas_object_geometry_get(obj, NULL, NULL, &w, &h);
    config_view_size_set(w, h);
-   stats_view_size_update(vd->sd);
+   stats_view_size_update();
 }
 
 static void
@@ -106,7 +104,7 @@ rect_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
 
    Evas_Coord x, y, w, h;
    evas_object_geometry_get(obj, &x, &y, &w, &h);
-   stats_cursor_pos_update(vd->sd, ev->cur.canvas.x - x, ev->cur.canvas.y - y,
+   stats_cursor_pos_update(ev->cur.canvas.x - x, ev->cur.canvas.y - y,
                            (float) (ev->cur.canvas.x - x) / (float) w,
                            (float) (ev->cur.canvas.y - y) / (float) h);
 }
@@ -226,12 +224,12 @@ view_dummy_toggle(view_data *vd, Eina_Bool msg)
    if (dummy_on == vd->dummy_on) return;
    if (dummy_on)
      {
-        if (msg) stats_info_msg_update(vd->sd, "Dummy Swallow Enabled.");
+        if (msg) stats_info_msg_update("Dummy Swallow Enabled.");
         dummy_obj_new(vd->layout);
      }
    else
      {
-        if (msg) stats_info_msg_update(vd->sd, "Dummy Swallow Disabled.");
+        if (msg) stats_info_msg_update("Dummy Swallow Disabled.");
         dummy_obj_del(vd->layout);
      }
 
@@ -239,12 +237,11 @@ view_dummy_toggle(view_data *vd, Eina_Bool msg)
 }
 
 view_data *
-view_init(Evas_Object *parent, const char *group, stats_data *sd,
+view_init(Evas_Object *parent, const char *group,
           void (*del_cb)(void *data), void *data)
 {
    view_data *vd = calloc(1, sizeof(view_data));
    vd->parent = parent;
-   vd->sd = sd;
    vd->scroller = view_scroller_create(parent);
    vd->dummy_on = config_dummy_swallow_get();
 
@@ -289,7 +286,7 @@ view_program_run(view_data *vd, const char *program)
    edje_edit_program_run(vd->layout, program);
    char buf[256];
    snprintf(buf, sizeof(buf), "Program Run: \"%s\"", program);
-   stats_info_msg_update(vd->sd, buf);
+   stats_info_msg_update(buf);
 }
 
 void

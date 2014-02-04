@@ -15,7 +15,6 @@ struct editor_s
    Evas_Object *parent;
 
    syntax_helper *sh;
-   stats_data *sd;
    parser_data *pd;
 
    int cur_line;
@@ -158,7 +157,7 @@ save_msg_show(edit_data *ed)
    else
      snprintf(buf, sizeof(buf), "Already saved. \"%s\"", config_edc_path_get());
 
-   stats_info_msg_update(ed->sd, buf);
+   stats_info_msg_update(buf);
 }
 
 Eina_Bool
@@ -269,8 +268,7 @@ edit_template_insert(edit_data *ed)
 
    if (!t)
      {
-        stats_info_msg_update(ed->sd,
-                              "Can't insert template code here. Move the cursor inside the \"Images|Parts|Part\" scope.");
+        stats_info_msg_update("Can't insert template code here. Move the cursor inside the \"Images|Parts|Part\" scope.");
         return;
      }
 
@@ -299,7 +297,7 @@ edit_template_insert(edit_data *ed)
 
    syntax_color_timer_update(ed);
    snprintf(buf, sizeof(buf), "Template code inserted. (%s)", buf2);
-   stats_info_msg_update(ed->sd, buf);
+   stats_info_msg_update(buf);
 }
 
 void
@@ -379,7 +377,7 @@ edit_template_part_insert(edit_data *ed, Edje_Part_Type type)
 
    syntax_color_timer_update(ed);
    snprintf(buf, sizeof(buf), "Template code inserted. (%s Part)", part);
-   stats_info_msg_update(ed->sd, buf);
+   stats_info_msg_update(buf);
 }
 
 static void
@@ -405,7 +403,7 @@ cur_line_pos_set(edit_data *ed)
    if (line < 0) line = 0;
    if (ed->cur_line == line) return;
    ed->cur_line = line;
-   stats_line_num_update(ed->sd, ed->cur_line, ed->line_max);
+   stats_line_num_update(ed->cur_line, ed->line_max);
 }
 
 static void
@@ -512,7 +510,7 @@ image_preview_show(edit_data *ed, char *cur, Evas_Coord x, Evas_Coord y)
         char buf[PATH_MAX];
         snprintf(buf, sizeof(buf), "Failed to load the image. \"%s\"",
                  filename);
-        stats_info_msg_update(ed->sd, buf);
+        stats_info_msg_update(buf);
         succeed = EINA_FALSE;
      }
 
@@ -650,13 +648,12 @@ key_up_cb(void *data, int type EINA_UNUSED, void *ev)
 }
 
 edit_data *
-edit_init(Evas_Object *parent, stats_data *sd)
+edit_init(Evas_Object *parent)
 {
    parser_data *pd = parser_init();
    syntax_helper *sh = syntax_init();
 
    edit_data *ed = calloc(1, sizeof(edit_data));
-   ed->sd = sd;
    ed->pd = pd;
    ed->sh = sh;
 
@@ -795,7 +792,7 @@ edit_edc_read(edit_data *ed, const char *file_path)
    Eina_Stringshare *group_name =
       parser_first_group_name_get(ed->pd, ed->en_edit);
 
-   stats_edc_group_set(ed->sd, group_name);
+   stats_edc_group_set(group_name);
    base_title_set(config_edc_path_get());
 
    ecore_animator_add(syntax_color_timer_cb, ed);
@@ -849,7 +846,7 @@ edit_new(edit_data *ed)
 
    char buf[PATH_MAX];
    snprintf(buf, sizeof(buf), "File Path: \"%s\"", config_edc_path_get());
-   stats_info_msg_update(ed->sd, buf);
+   stats_info_msg_update(buf);
 }
 
 void
@@ -862,5 +859,5 @@ edit_font_size_update(edit_data *ed, Eina_Bool msg)
 
    char buf[128];
    snprintf(buf, sizeof(buf), "Font Size: %1.1fx", config_font_size_get());
-   stats_info_msg_update(ed->sd, buf);
+   stats_info_msg_update(buf);
 }

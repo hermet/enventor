@@ -110,14 +110,14 @@ edj_mgr_view_del(view_data *vd)
 }
 
 view_data *
-edj_mgr_view_new(const char *group, stats_data *sd)
+edj_mgr_view_new(const char *group)
 {
    edj_mgr *em = g_em;
 
    edj_data *edj = calloc(1, sizeof(edj_data));
    if (!edj) return NULL;
 
-   view_data *vd = view_init(em->layout, group, sd, view_del_cb, edj);
+   view_data *vd = view_init(em->layout, group, view_del_cb, edj);
    if (!vd)
      {
         free(edj);

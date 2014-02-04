@@ -6,7 +6,6 @@
 typedef struct app_s
 {
    edit_data *ed;
-   stats_data *sd;
 
    Eio_Monitor *edc_monitor;
 
@@ -88,17 +87,17 @@ part_highlight_toggle(app_data *ad, Eina_Bool msg)
    if (!msg) return;
 
    if (highlight)
-     stats_info_msg_update(ad->sd, "Part Highlighting Enabled.");
+     stats_info_msg_update("Part Highlighting Enabled.");
    else
-     stats_info_msg_update(ad->sd, "Part Highlighting Disabled.");
+     stats_info_msg_update("Part Highlighting Disabled.");
 }
 
 static void
 auto_indentation_toggle(app_data *ad)
 {
    Eina_Bool toggle = !config_auto_indent_get();
-   if (toggle) stats_info_msg_update(ad->sd, "Auto Indentation Enabled.");
-   else stats_info_msg_update(ad->sd, "Auto Indentation Disabled.");
+   if (toggle) stats_info_msg_update("Auto Indentation Enabled.");
+   else stats_info_msg_update("Auto Indentation Disabled.");
    config_auto_indent_set(toggle);
 }
 
@@ -323,21 +322,21 @@ main_mouse_wheel_cb(void *data, int type EINA_UNUSED, void *ev)
 
    char buf[256];
    snprintf(buf, sizeof(buf), "View Scale: %2.2fx", scale);
-   stats_info_msg_update(ad->sd, buf);
+   stats_info_msg_update(buf);
 
    return ECORE_CALLBACK_PASS_ON;
 }
 
 static void
-edc_view_set(app_data *ad, stats_data *sd, Eina_Stringshare *group)
+edc_view_set(app_data *ad, Eina_Stringshare *group)
 {
    view_data *vd = edj_mgr_view_get(group);
    if (vd) edj_mgr_view_switch_to(vd);
-   else vd = edj_mgr_view_new(group, sd);
+   else vd = edj_mgr_view_new(group);
 
    if (!vd) return;
 
-   if (group) stats_edc_group_set(sd, group);
+   if (group) stats_edc_group_set(group);
 }
 
 static void
@@ -345,15 +344,15 @@ view_sync_cb(void *data, Eina_Stringshare *part_name,
              Eina_Stringshare *group_name)
 {
    app_data *ad = data;
-   if (stats_group_name_get(ad->sd) != group_name)
-     edc_view_set(ad, ad->sd, group_name);
+   if (stats_group_name_get() != group_name)
+     edc_view_set(ad, group_name);
    view_part_highlight_set(VIEW_DATA, part_name);
 }
 
 static void
-edc_edit_set(app_data *ad, stats_data *sd)
+edc_edit_set(app_data *ad)
 {
-   edit_data *ed = edit_init(base_layout_get(), sd);
+   edit_data *ed = edit_init(base_layout_get());
    edit_edc_read(ed, config_edc_path_get());
    base_right_view_set(edit_obj_get(ed));
    edit_view_sync_cb_set(ed, view_sync_cb, ad);
@@ -363,10 +362,9 @@ edc_edit_set(app_data *ad, stats_data *sd)
 static void
 statusbar_set(app_data *ad)
 {
-   stats_data *sd = stats_init(base_layout_get());
+   Evas_Object *obj = stats_init(base_layout_get());
    elm_object_part_content_set(base_layout_get(), "elm.swallow.statusbar",
-                               stats_obj_get(sd));
-   ad->sd = sd;
+                              obj);
    config_stats_bar_set(EINA_TRUE);
    base_statusbar_toggle();
 }
@@ -389,7 +387,7 @@ config_update_cb(void *data)
         build_edc();
         edit_changed_set(ad->ed, EINA_FALSE);
         edj_mgr_clear();
-        edc_view_set(ad, ad->sd, stats_group_name_get(ad->sd));
+        edc_view_set(ad, stats_group_name_get());
         if (ad->edc_monitor) eio_monitor_del(ad->edc_monitor);
         ad->edc_monitor = eio_monitor_add(config_edc_path_get());
      }
@@ -541,8 +539,8 @@ init(app_data *ad, int argc, char **argv)
 
    edj_mgr_set(ad);
    statusbar_set(ad);
-   edc_edit_set(ad, ad->sd);
-   edc_view_set(ad, ad->sd, stats_group_name_get(ad->sd));
+   edc_edit_set(ad);
+   edc_view_set(ad, stats_group_name_get());
    menu_init(ad->ed);
    hotkeys_set(ad->ed);
 
@@ -559,7 +557,7 @@ term(app_data *ad)
    menu_term();
    edit_term(ad->ed);
    edj_mgr_term();
-   stats_term(ad->sd);
+   stats_term();
    base_gui_term();
    config_term();
 
