@@ -3,27 +3,49 @@
 
 const double VIEW_CACHING_TIME = 60 * 30;
 
-static edj_mgr *g_em;
-
 typedef struct edj_data_s
 {
    view_data *vd;
    Ecore_Timer *timer;
 } edj_data;
 
-struct edj_mgr_s
+typedef struct edj_mgr_s
 {
    Eina_List *edjs;
    edj_data *edj;
    Evas_Object *layout;
 
    Eina_Bool reload_need : 1;
-};
+} edj_mgr;
+
+static edj_mgr *g_em = NULL;
+
+static void
+view_del_cb(void *data)
+{
+   edj_mgr *em = g_em;
+   edj_data *edj = data;
+   em->edjs = eina_list_remove(em->edjs, edj);
+   if (edj->timer) ecore_timer_del(edj->timer);
+   if (em->edj == edj) em->edj = NULL;
+   free(edj);
+}
+
+static Eina_Bool
+view_del_timer_cb(void *data)
+{
+   view_data *vd = data;
+   edj_data *edj = view_data_get(vd);
+   edj->timer = NULL;
+   edj_mgr_view_del(vd);
+   return ECORE_CALLBACK_CANCEL;
+}
 
 void
-edj_mgr_clear(edj_mgr *em)
+edj_mgr_clear()
 {
    edj_data *edj;
+   edj_mgr *em = g_em;
 
    EINA_LIST_FREE(em->edjs, edj)
      {
@@ -36,36 +58,34 @@ edj_mgr_clear(edj_mgr *em)
    em->reload_need = EINA_FALSE;
 }
 
-edj_mgr *
+void
 edj_mgr_init(Evas_Object *parent)
 {
    edj_mgr *em = calloc(1, sizeof(edj_mgr));
+   g_em = em;
+
    Evas_Object *layout = elm_layout_add(parent);
    elm_layout_file_set(layout, EDJE_PATH, "viewer_layout");
    evas_object_show(layout);
    em->layout = layout;
-   g_em = em;
-   return em;
-}
-
-edj_mgr *
-edj_mgr_get()
-{
-   return g_em;
 }
 
 void
-edj_mgr_term(edj_mgr *em)
+edj_mgr_term()
 {
+   edj_mgr *em = g_em;
+
    edj_mgr_clear(em);
    evas_object_del(em->layout);
    free(em);
 }
 
 view_data *
-edj_mgr_view_get(edj_mgr *em, Eina_Stringshare *group)
+edj_mgr_view_get(Eina_Stringshare *group)
 {
-   if (!em) em = g_em;
+   edj_mgr *em = g_em;
+   if (!em) return NULL;
+
    if (!group && em->edj) return em->edj->vd;
 
    edj_data *edj;
@@ -79,8 +99,9 @@ edj_mgr_view_get(edj_mgr *em, Eina_Stringshare *group)
 }
 
 void
-edj_mgr_view_del(edj_mgr *em, view_data *vd)
+edj_mgr_view_del(view_data *vd)
 {
+   edj_mgr *em = g_em;
    edj_data *edj = view_data_get(vd);
    em->edjs = eina_list_remove(em->edjs, edj);
    if (edj->timer) ecore_timer_del(edj->timer);
@@ -88,20 +109,11 @@ edj_mgr_view_del(edj_mgr *em, view_data *vd)
    free(edj);
 }
 
-static void
-view_del_cb(void *data)
+view_data *
+edj_mgr_view_new(const char *group, stats_data *sd)
 {
    edj_mgr *em = g_em;
-   edj_data *edj = data;
-   em->edjs = eina_list_remove(em->edjs, edj);
-   if (edj->timer) ecore_timer_del(edj->timer);
-   if (em->edj == edj) em->edj = NULL;
-   free(edj);
-}
 
-view_data *
-edj_mgr_view_new(edj_mgr *em, const char *group, stats_data *sd)
-{
    edj_data *edj = calloc(1, sizeof(edj_data));
    if (!edj) return NULL;
 
@@ -113,26 +125,18 @@ edj_mgr_view_new(edj_mgr *em, const char *group, stats_data *sd)
      }
 
    edj->vd = vd;
-   edj_mgr_view_switch_to(em, vd);
+   edj_mgr_view_switch_to(vd);
 
    em->edjs = eina_list_append(em->edjs, edj);
 
    return vd;
 }
 
-static Eina_Bool
-view_del_timer_cb(void *data)
-{
-   view_data *vd = data;
-   edj_data *edj = view_data_get(vd);
-   edj->timer = NULL;
-   edj_mgr_view_del(g_em, vd);
-   return ECORE_CALLBACK_CANCEL;
-}
-
 view_data *
-edj_mgr_view_switch_to(edj_mgr *em, view_data *vd)
+edj_mgr_view_switch_to(view_data *vd)
 {
+   edj_mgr *em = g_em;
+
    if (em->edj && (em->edj->vd == vd)) return vd;
 
    //Switch views
@@ -178,19 +182,22 @@ edj_mgr_view_switch_to(edj_mgr *em, view_data *vd)
 }
 
 Evas_Object *
-edj_mgr_obj_get(edj_mgr *em)
+edj_mgr_obj_get()
 {
+   edj_mgr *em = g_em;
    return em->layout;
 }
 
 void
-edj_mgr_reload_need_set(edj_mgr *em, Eina_Bool reload)
+edj_mgr_reload_need_set(Eina_Bool reload)
 {
+   edj_mgr *em = g_em;
    em->reload_need = reload;
 }
 
 Eina_Bool
-edj_mgr_reload_need_get(edj_mgr *em)
+edj_mgr_reload_need_get()
 {
+   edj_mgr *em = g_em;
    return em->reload_need;
 }

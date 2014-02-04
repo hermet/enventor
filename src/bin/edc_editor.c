@@ -414,8 +414,7 @@ program_run(edit_data *ed, char *cur)
    char *program = parser_name_get(ed->pd, cur);
    if (program)
      {
-        edj_mgr *em = edj_mgr_get();
-        view_data *vd = edj_mgr_view_get(em, NULL);
+        view_data *vd = edj_mgr_view_get(NULL);
         view_program_run(vd, program);
         free(program);
      }

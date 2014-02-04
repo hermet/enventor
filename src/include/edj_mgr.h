@@ -1,14 +1,14 @@
-edj_mgr *edj_mgr_get();
-edj_mgr *edj_mgr_init(Evas_Object *parent);
-void edj_mgr_term(edj_mgr *em);
-view_data * edj_mgr_view_new(edj_mgr *em, const char *group, stats_data *sd);
-view_data *edj_mgr_view_get(edj_mgr *em, Eina_Stringshare *group);
-Evas_Object * edj_mgr_obj_get(edj_mgr *em);
-view_data *edj_mgr_view_switch_to(edj_mgr *em, view_data *vd);
-void edj_mgr_view_del(edj_mgr *em, view_data *vd);
+#define VIEW_DATA edj_mgr_view_get(NULL)
 
-void edj_mgr_reload_need_set(edj_mgr *em, Eina_Bool reload);
-Eina_Bool edj_mgr_reload_need_get(edj_mgr *em);
-void edj_mgr_clear(edj_mgr *em);
+void edj_mgr_init(Evas_Object *parent);
+void edj_mgr_term();
+view_data * edj_mgr_view_new(const char *group, stats_data *sd);
+view_data *edj_mgr_view_get(Eina_Stringshare *group);
+Evas_Object * edj_mgr_obj_get();
+view_data *edj_mgr_view_switch_to(view_data *vd);
+void edj_mgr_view_del(view_data *vd);
+void edj_mgr_reload_need_set(Eina_Bool reload);
+Eina_Bool edj_mgr_reload_need_get();
+void edj_mgr_clear();
 
 

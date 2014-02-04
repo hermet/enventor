@@ -9,7 +9,6 @@ typedef struct parser_s parser_data;
 typedef struct attr_value_s attr_value;
 typedef struct syntax_helper_s syntax_helper;
 typedef struct indent_s indent_data;
-typedef struct edj_mgr_s edj_mgr;
 
 #include "edc_editor.h"
 #include "menu.h"

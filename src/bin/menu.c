@@ -675,7 +675,7 @@ edc_reload(menu_data *md, const char *edc_path)
 {
    config_edc_path_set(edc_path);
    edit_new(md->ed);
-   edj_mgr_reload_need_set(edj_mgr_get(), EINA_TRUE);
+   edj_mgr_reload_need_set(EINA_TRUE);
    config_apply();
 }
 
@@ -769,7 +769,7 @@ fileselector_save_done_cb(void *data, Evas_Object *obj, void *event_info)
         return;
      }
 
-   edj_mgr_reload_need_set(edj_mgr_get(), EINA_TRUE);
+   edj_mgr_reload_need_set(EINA_TRUE);
    config_apply();
 
    fileselector_close(md);

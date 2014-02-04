@@ -6,7 +6,6 @@
 typedef struct app_s
 {
    edit_data *ed;
-   edj_mgr *em;
    stats_data *sd;
 
    Eio_Monitor *edc_monitor;
@@ -312,7 +311,7 @@ main_mouse_wheel_cb(void *data, int type EINA_UNUSED, void *ev)
    if (!ad->ctrl_pressed) return ECORE_CALLBACK_PASS_ON;
 
    //Scale up/down layout
-   view_data *vd = edj_mgr_view_get(ad->em, NULL);
+   view_data *vd = edj_mgr_view_get(NULL);
    double scale = config_view_scale_get();
 
    if (event->z < 0) scale += 0.1;
@@ -332,9 +331,9 @@ main_mouse_wheel_cb(void *data, int type EINA_UNUSED, void *ev)
 static void
 edc_view_set(app_data *ad, stats_data *sd, Eina_Stringshare *group)
 {
-   view_data *vd = edj_mgr_view_get(ad->em, group);
-   if (vd) edj_mgr_view_switch_to(ad->em, vd);
-   else vd = edj_mgr_view_new(ad->em, group, sd);
+   view_data *vd = edj_mgr_view_get(group);
+   if (vd) edj_mgr_view_switch_to(vd);
+   else vd = edj_mgr_view_new(group, sd);
 
    if (!vd) return;
 
@@ -385,11 +384,11 @@ config_update_cb(void *data)
    view_dummy_toggle(VIEW_DATA, EINA_FALSE);
 
    //previous build was failed, Need to rebuild then reload the edj.
-   if (edj_mgr_reload_need_get(ad->em))
+   if (edj_mgr_reload_need_get())
      {
         build_edc();
         edit_changed_set(ad->ed, EINA_FALSE);
-        edj_mgr_clear(ad->em);
+        edj_mgr_clear();
         edc_view_set(ad, ad->sd, stats_group_name_get(ad->sd));
         if (ad->edc_monitor) eio_monitor_del(ad->edc_monitor);
         ad->edc_monitor = eio_monitor_add(config_edc_path_get());
@@ -400,7 +399,7 @@ config_update_cb(void *data)
         edit_changed_set(ad->ed, EINA_FALSE);
      }
 
-   view_scale_set(edj_mgr_view_get(ad->em, NULL), config_view_scale_get());
+   view_scale_set(edj_mgr_view_get(NULL), config_view_scale_get());
 }
 
 static void
@@ -511,8 +510,8 @@ elm_setup()
 static void
 edj_mgr_set(app_data *ad)
 {
-   ad->em = edj_mgr_init(base_layout_get());
-   base_left_view_set(edj_mgr_obj_get(ad->em));
+   edj_mgr_init(base_layout_get());
+   base_left_view_set(edj_mgr_obj_get());
 }
 
 static void
@@ -559,7 +558,7 @@ term(app_data *ad)
    build_term();
    menu_term();
    edit_term(ad->ed);
-   edj_mgr_term(ad->em);
+   edj_mgr_term();
    stats_term(ad->sd);
    base_gui_term();
    config_term();
