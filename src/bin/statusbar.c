@@ -38,11 +38,9 @@ stats_init(Evas_Object *parent)
    elm_layout_file_set(layout, EDJE_PATH, "statusbar_layout");
    evas_object_show(layout);
 
-   //FIXME: temporarily setup
-   elm_object_part_text_set(layout, "elm.text.cur_pos",
-                            "Cursor [<style=glow><color=#3399ff>0</color></style>,<style=glow><color=#3399ff>0</color></style>] [<style=glow><color=#3399ff>0.00</color></style>,<style=glow><color=#3399ff>0.00</color></style>]");
    sd->layout = layout;
 
+   stats_cursor_pos_update(sd, 0, 0, 0, 0);
    stats_edc_group_set(sd, NULL);
 
    return sd;
