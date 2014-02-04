@@ -3,7 +3,7 @@
 #include "config.h"
 #include "common.h"
 
-struct app_s
+typedef struct app_s
 {
    edit_data *ed;
    edj_mgr *em;
@@ -13,7 +13,7 @@ struct app_s
 
    Eina_Bool ctrl_pressed : 1;
    Eina_Bool shift_pressed : 1;
-};
+} app_data;
 
 int main(int argc, char **argv);
 

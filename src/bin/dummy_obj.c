@@ -10,12 +10,12 @@ typedef struct part_obj_s
    Eina_Stringshare *name;
 } part_obj;
 
-struct dummy_obj_s
+typedef struct dummy_obj_s
 {
    Evas_Object *layout;
    Eina_List *swallows;
    Ecore_Animator *animator;
-};
+} dummy_obj;
 
 const char *DUMMYOBJ = "dummy_obj";
 

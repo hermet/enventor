@@ -253,4 +253,6 @@ panes_init(Evas_Object *parent)
    pd->state = PANES_SPLIT_VIEW;
 
    evas_object_data_set(panes, PANES_DATA, pd);
+
+   return panes;
 }

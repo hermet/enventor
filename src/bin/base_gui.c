@@ -1,11 +1,11 @@
 #include <Elementary.h>
 #include "common.h"
 
-struct base_s
+typedef struct base_s
 {
    Evas_Object *win;
    Evas_Object *layout;
-};
+} base_data;
 
 static base_data *g_bd = NULL;
 

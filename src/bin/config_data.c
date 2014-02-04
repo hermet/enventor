@@ -1,7 +1,7 @@
 #include <Elementary.h>
 #include "common.h"
 
-struct config_s
+typedef struct config_s
 {
    const char *edc_path;
    const char *edj_path;
@@ -28,9 +28,7 @@ struct config_s
    Eina_Bool dummy_swallow : 1;
    Eina_Bool auto_indent : 1;
    Eina_Bool hotkeys : 1;
-};
-
-typedef struct config_s config_data;
+} config_data;
 
 static config_data *g_cd = NULL;
 

@@ -1,14 +1,12 @@
 #include <Elementary.h>
 #include "common.h"
 
-struct ctxpopup_data_s {
+typedef struct ctxpopup_data_s {
    Evas_Smart_Cb selected_cb;
    Evas_Smart_Cb relay_cb;
    Evas_Object *ctxpopup;
    void *data;
-};
-
-typedef struct ctxpopup_data_s ctxpopup_data;
+} ctxpopup_data;
 
 static void
 btn_plus_cb(void *data, Evas_Object *obj EINA_UNUSED,
