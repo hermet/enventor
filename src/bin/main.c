@@ -338,7 +338,7 @@ edc_view_set(app_data *ad, stats_data *sd, Eina_Stringshare *group)
 
    if (!vd) return;
 
-   if (group) stats_edc_file_set(sd, group);
+   if (group) stats_edc_group_set(sd, group);
 }
 
 static void

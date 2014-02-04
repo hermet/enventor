@@ -21,11 +21,10 @@ stats_line_num_update(stats_data *sd, int cur_line, int max_line)
 }
 
 void
-stats_edc_file_set(stats_data *sd, Eina_Stringshare *group_name)
+stats_edc_group_set(stats_data *sd, Eina_Stringshare *group_name)
 {
-   char buf[PATH_MAX];
-   const char *filename = ecore_file_file_get(config_edc_path_get());
-   snprintf(buf, sizeof(buf), "<align=right>File [<style=glow><color=#3399ff>%s</color></style>]    Group [<style=glow><color=#3399ff>%s</color></style>]</align>", filename, group_name);
+   char buf[1028];
+   snprintf(buf, sizeof(buf), "<align=right>Group [<style=glow><color=#3399ff>%s</color></style>]</align>", group_name);
    elm_object_part_text_set(sd->layout, "elm.text.file_group_name", buf);
    sd->group_name = eina_stringshare_add(group_name);
 }
@@ -44,7 +43,7 @@ stats_init(Evas_Object *parent)
                             "Cursor [<style=glow><color=#3399ff>0</color></style>,<style=glow><color=#3399ff>0</color></style>] [<style=glow><color=#3399ff>0.00</color></style>,<style=glow><color=#3399ff>0.00</color></style>]");
    sd->layout = layout;
 
-   stats_edc_file_set(sd, NULL);
+   stats_edc_group_set(sd, NULL);
 
    return sd;
 }

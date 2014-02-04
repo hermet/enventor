@@ -18,6 +18,15 @@ win_delete_request_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 }
 
 void
+base_title_set(const char *path)
+{
+   base_data *bd = g_bd;
+   char buf[PATH_MAX];
+   snprintf(buf, sizeof(buf), "%s - Enventor", path);
+   elm_win_title_set(bd->win, buf);
+}
+
+void
 base_statusbar_toggle()
 {
    base_data *bd = g_bd;
