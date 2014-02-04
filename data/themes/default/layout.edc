@@ -1,6 +1,6 @@
 styles {
      style { name: "entry_statusbar_style";
-        base: "font="FN" font_size=11 text_class=entry color=#ffffff style=shadow,bottom shadow_color=#00000080 glow_color=#3399ff18 valign=0.5";
+        base: "font="FN" font_size=11 text_class=entry color=#ffffff style=shadow,bottom shadow_color=#00000080 glow_color=#3399ff18 valign=0.5 ellipsis=1.0 wrap=none";
      }
 }
 
@@ -163,7 +163,7 @@ group { name: "statusbar_layout";
             text.style: "entry_statusbar_style";
          }
       }
-      part { name: "elm.text.file_group_name";
+      part { name: "elm.text.group_name";
          type: TEXTBLOCK;
          scale: 1;
          clip_to: "base_clip";
@@ -176,6 +176,22 @@ group { name: "statusbar_layout";
             align: 1 0.5;
             fixed: 1 1;
             text.style: "entry_statusbar_style";
+         }
+      }
+      part { name: "elm.text.group_name_bracket";
+         type: TEXTBLOCK;
+         scale: 1;
+         clip_to: "base_clip";
+         description {
+            rel1.to_x: "elm.text.group_name";
+            rel1.relative: 1 0.0;
+            rel2.to_x: "elm.text.group_name";
+            rel2.relative: 1 1.0;
+            min: 3 14;
+            align: 0 0.5;
+            fixed: 1 1;
+            text.style: "entry_statusbar_style";
+            text.text: "]";
          }
       }
       part { name: "elm.text.line";
