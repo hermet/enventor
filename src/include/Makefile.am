@@ -1,7 +1,7 @@
 MAINTAINERCLEANFILES = Makefile.in
 
 EXTRA_DIST = common.h \
-	main.h \
+	base_gui.h \
 	config_data.h \
 	dummy_obj.h \
 	edc_editor.h \

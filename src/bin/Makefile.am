@@ -10,6 +10,7 @@ AM_CPPFLAGS = -DPACKAGE_DATA_DIR=\"$(pkgdatadir)\" \
 	@ENVENTOR_CFLAGS@
 
 enventor_SOURCES = \
+	base_gui.c \
 	config_data.c \
 	dummy_obj.c \
 	edc_editor.c \

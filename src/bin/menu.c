@@ -3,7 +3,6 @@
 
 struct menu_s
 {
-   Evas_Object *win;
    Evas_Object *menu_layout;
    Evas_Object *setting_layout;
    Evas_Object *warning_layout;
@@ -152,13 +151,13 @@ warning_layout_create(menu_data *md, Evas_Smart_Cb yes_cb,
    if (md->warning_layout) return;
 
    //Layout
-   Evas_Object *layout = elm_layout_add(md->win);
+   Evas_Object *layout = elm_layout_add(base_win_get());
    elm_layout_file_set(layout, EDJE_PATH, "warning_layout");
    elm_object_signal_callback_add(layout, "elm,state,dismiss,done", "",
                                   warning_dismiss_done, md);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_win_resize_object_add(md->win, layout);
    evas_object_show(layout);
+   base_win_resize_object_add(layout);
 
    Evas_Object *btn;
 
@@ -336,13 +335,13 @@ static void
 setting_open(menu_data *md)
 {
    //Layout
-   Evas_Object *layout = elm_layout_add(md->win);
+   Evas_Object *layout = elm_layout_add(base_win_get());
    elm_layout_file_set(layout, EDJE_PATH, "setting_layout");
    elm_object_signal_callback_add(layout, "elm,state,dismiss,done", "",
                                   setting_dismiss_done, md);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_win_resize_object_add(md->win, layout);
    evas_object_show(layout);
+   base_win_resize_object_add(layout);
 
    //Image Path Entry
    Evas_Object *img_path_entry = entry_create(layout);
@@ -528,13 +527,13 @@ static void
 about_open(menu_data *md)
 {
    //Layout
-   Evas_Object *layout = elm_layout_add(md->win);
+   Evas_Object *layout = elm_layout_add(base_win_get());
    elm_layout_file_set(layout, EDJE_PATH, "about_layout");
    elm_object_signal_callback_add(layout, "elm,state,dismiss,done", "",
                                   about_dismiss_done, md);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_win_resize_object_add(md->win, layout);
    evas_object_show(layout);
+   base_win_resize_object_add(layout);
 
    //Entry
    Evas_Object *entry = elm_entry_add(layout);
@@ -848,14 +847,14 @@ static void
 edc_file_save(menu_data *md)
 {
    //Layout
-   Evas_Object *layout = elm_layout_add(md->win);
+   Evas_Object *layout = elm_layout_add(base_win_get());
    elm_layout_file_set(layout, EDJE_PATH, "fileselector_layout");
    elm_object_part_text_set(layout, "elm.text.title", "Save");
    elm_object_signal_callback_add(layout, "elm,state,dismiss,done", "",
                                   fileselector_dismiss_done, md);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_win_resize_object_add(md->win, layout);
    evas_object_show(layout);
+   base_win_resize_object_add(layout);
 
    Evas_Object *fs = elm_fileselector_add(layout);
    elm_object_part_text_set(fs, "ok", "Save");
@@ -882,14 +881,14 @@ static void
 edc_file_load(menu_data *md)
 {
    //Layout
-   Evas_Object *layout = elm_layout_add(md->win);
+   Evas_Object *layout = elm_layout_add(base_win_get());
    elm_layout_file_set(layout, EDJE_PATH, "fileselector_layout");
    elm_object_part_text_set(layout, "elm.text.title", "Load");
    elm_object_signal_callback_add(layout, "elm,state,dismiss,done", "",
                                   fileselector_dismiss_done, md);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_win_resize_object_add(md->win, layout);
    evas_object_show(layout);
+   base_win_resize_object_add(layout);
 
    Evas_Object *fs = elm_fileselector_add(layout);
    elm_fileselector_path_set(fs, md->last_accessed_path ? md->last_accessed_path : getenv("HOME"));
@@ -942,13 +941,13 @@ static void
 menu_open(menu_data *md)
 {
    //Layout
-   Evas_Object *layout = elm_layout_add(md->win);
+   Evas_Object *layout = elm_layout_add(base_win_get());
    elm_layout_file_set(layout, EDJE_PATH, "menu_layout");
    elm_object_signal_callback_add(layout, "elm,state,dismiss,done", "",
                                   menu_dismiss_done, md);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_win_resize_object_add(md->win, layout);
    evas_object_show(layout);
+   base_win_resize_object_add(layout);
 
    //Button
    Evas_Object *btn;
@@ -997,12 +996,11 @@ ctxpopup_del_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 }
 
 void
-menu_init(Evas_Object *win, edit_data *ed)
+menu_init(edit_data *ed)
 {
    menu_data *md = calloc(1, sizeof(menu_data));
    g_md = md;
 
-   md->win = win;
    md->ed = ed;
 }
 

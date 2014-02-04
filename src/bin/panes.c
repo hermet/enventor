@@ -23,6 +23,7 @@ typedef struct _panes_data
 
 static double panes_last_right_size1 = 0.5;  //when down the panes bar
 static double panes_last_right_size2 = 0.5;  //when up the panes bar
+static panes_data *g_pd = NULL;
 
 static void
 transit_op(void *data, Elm_Transit *transit EINA_UNUSED, double progress)
@@ -66,11 +67,10 @@ panes_full_view_cancel(panes_data *pd)
 }
 
 static void
-hotkeys_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
+hotkeys_clicked_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
                    void *event_info EINA_UNUSED)
 {
-   app_data *ad = data;
-   hotkey_toggle(ad);
+   base_hotkey_toggle();
 }
 
 static void
@@ -145,6 +145,14 @@ right_clicked_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
    elm_image_file_set(right_arrow_img, EDJE_PATH, "panes_recover_arrow");
 }
 
+static void
+panes_del_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+             void *event_info EINA_UNUSED)
+{
+   panes_data *pd = data;
+   free(pd);
+}
+
 void
 panes_full_view_right(Evas_Object *panes)
 {
@@ -159,20 +167,13 @@ panes_full_view_left(Evas_Object *panes)
    left_clicked_cb(pd, pd->left_arrow, NULL);
 }
 
-static void
-panes_del_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
-             void *event_info EINA_UNUSED)
-{
-   panes_data *pd = data;
-   free(pd);
-}
-
 Evas_Object *
-panes_create(Evas_Object *parent, app_data *ad)
+panes_create(Evas_Object *parent)
 {
    Evas_Object *img;
 
    panes_data *pd = malloc(sizeof(panes_data));
+   g_pd = pd;
 
    //Panes
    Evas_Object *panes = elm_panes_add(parent);
@@ -189,7 +190,7 @@ panes_create(Evas_Object *parent, app_data *ad)
    Evas_Object *hotkeys_btn = elm_button_add(panes);
    elm_object_focus_allow_set(hotkeys_btn, EINA_FALSE);
    evas_object_smart_callback_add(hotkeys_btn, "clicked", hotkeys_clicked_cb,
-                                  ad);
+                                  NULL);
    evas_object_show(hotkeys_btn);
 
    //Hotkey Image

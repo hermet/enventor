@@ -9,9 +9,6 @@ struct app_s
    edj_mgr *em;
    stats_data *sd;
 
-   Evas_Object *layout;
-   Evas_Object *panes;
-   Evas_Object *win;
    Eio_Monitor *edc_monitor;
 
    Eina_Bool ctrl_pressed : 1;
@@ -36,52 +33,6 @@ edc_changed_cb(void *data, int type EINA_UNUSED, void *event)
    edit_changed_set(ad->ed, EINA_FALSE);
 
    return ECORE_CALLBACK_RENEW;
-}
-
-static void
-win_delete_request_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
-                      void *event_info EINA_UNUSED)
-{
-  menu_exit();
-}
-
-static Eina_Bool
-base_gui_construct(app_data *ad)
-{
-   char buf[PATH_MAX];
-
-   //Window
-   Evas_Object *win = elm_win_util_standard_add(elm_app_name_get(),
-                                                "Enventor");
-   elm_win_focus_highlight_enabled_set(win, EINA_TRUE);
-   evas_object_smart_callback_add(win, "delete,request", win_delete_request_cb,
-                                  ad);
-   evas_object_show(win);
-
-   //Window icon
-   Evas_Object *icon = evas_object_image_add(evas_object_evas_get(win));
-   snprintf(buf, sizeof(buf), "%s/images/logo.png", elm_app_data_dir_get());
-   evas_object_image_file_set(icon, buf, NULL);
-   evas_object_show(icon);
-   elm_win_icon_object_set(win, icon);
-
-   //Base Layout
-   Evas_Object *layout = elm_layout_add(win);
-   elm_layout_file_set(layout, EDJE_PATH,  "main_layout");
-   evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND,
-                                    EVAS_HINT_EXPAND);
-   elm_win_resize_object_add(win, layout);
-   evas_object_show(layout);
-
-   //Panes
-   Evas_Object *panes = panes_create(layout, ad);
-   elm_object_part_content_set(layout, "elm.swallow.panes", panes);
-
-   ad->win = win;
-   ad->layout = layout;
-   ad->panes = panes;
-
-   return EINA_TRUE;
 }
 
 static Eina_Bool
@@ -236,13 +187,13 @@ ctrl_func(app_data *ad, const char *key)
    //Full Edit View
    if (!strcmp(key, "comma"))
      {
-        panes_full_view_left(ad->panes);
+        base_full_view_left();
         return ECORE_CALLBACK_DONE;
      }
    //Full Edje View
    if (!strcmp(key, "period"))
      {
-        panes_full_view_right(ad->panes);
+        base_full_view_right();
         return ECORE_CALLBACK_DONE;
      }
    //Auto Indentation
@@ -339,7 +290,7 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    if (!strcmp(event->key, "F6"))
      {
         config_stats_bar_set(!config_stats_bar_get());
-        statusbar_toggle(ad);
+        base_statusbar_toggle();
         return ECORE_CALLBACK_DONE;
      }
    //Setting
@@ -403,9 +354,9 @@ view_sync_cb(void *data, Eina_Stringshare *part_name,
 static void
 edc_edit_set(app_data *ad, stats_data *sd)
 {
-   edit_data *ed = edit_init(ad->panes, sd);
+   edit_data *ed = edit_init(base_layout_get(), sd);
    edit_edc_read(ed, config_edc_path_get());
-   elm_object_part_content_set(ad->panes, "right", edit_obj_get(ed));
+   base_right_view_set(edit_obj_get(ed));
    edit_view_sync_cb_set(ed, view_sync_cb, ad);
    ad->ed = ed;
 }
@@ -413,12 +364,12 @@ edc_edit_set(app_data *ad, stats_data *sd)
 static void
 statusbar_set(app_data *ad)
 {
-   stats_data *sd = stats_init(ad->layout);
-   elm_object_part_content_set(ad->layout, "elm.swallow.statusbar",
+   stats_data *sd = stats_init(base_layout_get());
+   elm_object_part_content_set(base_layout_get(), "elm.swallow.statusbar",
                                stats_obj_get(sd));
    ad->sd = sd;
    config_stats_bar_set(EINA_TRUE);
-   statusbar_toggle(ad);
+   base_statusbar_toggle();
 }
 
 static void
@@ -429,7 +380,7 @@ config_update_cb(void *data)
    edit_line_number_toggle(ad->ed);
    edit_font_size_update(ad->ed, EINA_FALSE);
 
-   statusbar_toggle(ad);
+   base_statusbar_toggle();
    part_highlight_toggle(ad, EINA_FALSE);
    view_dummy_toggle(VIEW_DATA, EINA_FALSE);
 
@@ -560,15 +511,15 @@ elm_setup()
 static void
 edj_mgr_set(app_data *ad)
 {
-   ad->em = edj_mgr_init(ad->panes);
-   elm_object_part_content_set(ad->panes, "left", edj_mgr_obj_get(ad->em));
+   ad->em = edj_mgr_init(base_layout_get());
+   base_left_view_set(edj_mgr_obj_get(ad->em));
 }
 
 static void
-hotkeys_set(Evas_Object *layout, app_data *ad, edit_data *ed)
+hotkeys_set(edit_data *ed)
 {
-   Evas_Object *hotkeys = hotkeys_create(layout, ad, ed);
-   elm_object_part_content_set(layout, "elm.swallow.hotkeys", hotkeys);
+   Evas_Object *hotkeys = hotkeys_create(base_layout_get(), ed);
+   base_hotkeys_set(hotkeys);
 }
 
 static Eina_Bool
@@ -587,14 +538,14 @@ init(app_data *ad, int argc, char **argv)
 
    if (!build_init()) return EINA_FALSE;
    if (!edc_proto_setup()) return EINA_FALSE;
-   if (!base_gui_construct(ad)) return EINA_FALSE;
+   if (!base_gui_init()) return EINA_FALSE;
 
    edj_mgr_set(ad);
    statusbar_set(ad);
    edc_edit_set(ad, ad->sd);
    edc_view_set(ad, ad->sd, stats_group_name_get(ad->sd));
-   menu_init(ad->win, ad->ed);
-   hotkeys_set(ad->layout, ad, ad->ed);
+   menu_init(ad->ed);
+   hotkeys_set(ad->ed);
 
    ad->edc_monitor = eio_monitor_add(config_edc_path_get());
    ecore_event_handler_add(EIO_MONITOR_FILE_MODIFIED, edc_changed_cb, ad);
@@ -610,32 +561,11 @@ term(app_data *ad)
    edit_term(ad->ed);
    edj_mgr_term(ad->em);
    stats_term(ad->sd);
+   base_gui_term();
    config_term();
 
    elm_shutdown();
    ecore_event_shutdown();
-}
-
-//This function is used in hotkey. Maybe layout should be separated from main.
-void
-statusbar_toggle(app_data *ad)
-{
-   if (config_stats_bar_get())
-     elm_object_signal_emit(ad->layout, "elm,state,statusbar,show", "");
-   else
-     elm_object_signal_emit(ad->layout, "elm,state,statusbar,hide", "");
-}
-
-//This function is used in panes. Maybe layout should be separated from main.
-void
-hotkey_toggle(app_data *ad)
-{
-   config_hotkeys_set(!config_hotkeys_get());
-
-   if (config_hotkeys_get())
-     elm_object_signal_emit(ad->layout, "elm,state,hotkeys,show", "");
-   else
-     elm_object_signal_emit(ad->layout, "elm,state,hotkeys,hide", "");
 }
 
 int

@@ -43,10 +43,8 @@ static void
 f6_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
       void *event_info EINA_UNUSED)
 {
-   //FIXME: ... how ad can be passed here? should be cut off from here.
-   app_data *ad = data;
    config_stats_bar_set(!config_stats_bar_get());
-   statusbar_toggle(ad);
+   base_statusbar_toggle();
 }
 
 static void
@@ -72,7 +70,7 @@ btn_create(Evas_Object *parent, const char *text, Evas_Smart_Cb cb, void *data)
 }
 
 Evas_Object *
-hotkeys_create(Evas_Object *parent, app_data *ad, edit_data *ed)
+hotkeys_create(Evas_Object *parent, edit_data *ed)
 {
    Evas_Object *box = elm_box_add(parent);
    elm_box_horizontal_set(box, EINA_TRUE);
@@ -95,7 +93,7 @@ hotkeys_create(Evas_Object *parent, app_data *ad, edit_data *ed)
    btn = btn_create(box, "F5: Line Num", f5_cb, ed);
    elm_box_pack_end(box, btn);
 
-   btn = btn_create(box, "F6: Status", f6_cb, ad);
+   btn = btn_create(box, "F6: Status", f6_cb, NULL);
    elm_box_pack_end(box, btn);
 
    btn = btn_create(box, "F7: ---", NULL, NULL);

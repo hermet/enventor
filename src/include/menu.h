@@ -1,6 +1,6 @@
 #define VIEW_DATA edj_mgr_view_get(NULL, NULL)
 
-void menu_init(Evas_Object *win, edit_data *ed);
+void menu_init(edit_data *ed);
 void menu_term();
 void menu_toggle();
 void menu_ctxpopup_register(Evas_Object *ctxpopup);

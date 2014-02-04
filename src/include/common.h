@@ -12,8 +12,8 @@ typedef struct dummy_obj_s dummy_obj;
 typedef struct syntax_helper_s syntax_helper;
 typedef struct indent_s indent_data;
 typedef struct edj_mgr_s edj_mgr;
+typedef struct base_s base_data;
 
-#include "main.h"
 #include "edc_editor.h"
 #include "menu.h"
 #include "edj_viewer.h"
@@ -30,5 +30,6 @@ typedef struct edj_mgr_s edj_mgr;
 #include "globals.h"
 #include "build.h"
 #include "hotkeys.h"
+#include "base_gui.h"
 
 #endif
