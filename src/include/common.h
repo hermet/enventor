@@ -22,7 +22,6 @@ typedef struct base_s base_data;
 #include "syntax_color.h"
 #include "config_data.h"
 #include "edc_parser.h"
-#include "panes.h"
 #include "dummy_obj.h"
 #include "ctxpopup.h"
 #include "indent.h"

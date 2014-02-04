@@ -5,7 +5,6 @@ struct base_s
 {
    Evas_Object *win;
    Evas_Object *layout;
-   Evas_Object *panes;
 };
 
 static base_data *g_bd = NULL;
@@ -37,7 +36,6 @@ base_statusbar_toggle()
      elm_object_signal_emit(bd->layout, "elm,state,statusbar,hide", "");
 }
 
-//This function is used in panes. Maybe layout should be separated from main.
 void
 base_hotkey_toggle()
 {
@@ -82,34 +80,35 @@ void
 base_full_view_left()
 {
    base_data *bd = g_bd;
-   panes_full_view_left(bd->panes);
+   panes_full_view_left();
 }
 
 void
 base_full_view_right()
 {
    base_data *bd = g_bd;
-   panes_full_view_right(bd->panes);
+   panes_full_view_right();
 }
 
 void
 base_right_view_set(Evas_Object *right)
 {
    base_data *bd = g_bd;
-   elm_object_part_content_set(bd->panes, "right", right);
+   panes_content_set("right", right);
 }
 
 void
 base_left_view_set(Evas_Object *left)
 {
    base_data *bd = g_bd;
-   elm_object_part_content_set(bd->panes, "left", left);
+   panes_content_set("left", left);
 }
 
 void
 base_gui_term()
 {
    base_data *bd = g_bd;
+   panes_term();
    free(bd);
 }
 
@@ -145,12 +144,11 @@ base_gui_init()
    evas_object_show(layout);
 
    //Panes
-   Evas_Object *panes = panes_create(layout);
+   Evas_Object *panes = panes_init(layout);
    elm_object_part_content_set(layout, "elm.swallow.panes", panes);
 
    bd->win = win;
    bd->layout = layout;
-   bd->panes = panes;
 
    return EINA_TRUE;
 }

@@ -1,3 +1,5 @@
+#include "panes.h"
+
 Eina_Bool base_gui_init();
 Evas_Object *base_win_get();
 Evas_Object *base_layout_get();

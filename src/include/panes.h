@@ -1,3 +1,5 @@
-Evas_Object *panes_create(Evas_Object *parent);
-void panes_full_view_right(Evas_Object *panes);
-void panes_full_view_left(Evas_Object *panes);
+Evas_Object *panes_init(Evas_Object *parent);
+void panes_term();
+void panes_full_view_right();
+void panes_full_view_left();
+void panes_content_set(const char *part, Evas_Object *content);

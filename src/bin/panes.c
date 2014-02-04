@@ -156,19 +156,34 @@ panes_del_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 void
 panes_full_view_right(Evas_Object *panes)
 {
-   panes_data *pd = evas_object_data_get(panes, PANES_DATA);
+   panes_data *pd = g_pd;
    right_clicked_cb(pd, pd->right_arrow, NULL);
 }
 
 void
 panes_full_view_left(Evas_Object *panes)
 {
-   panes_data *pd = evas_object_data_get(panes, PANES_DATA);
+   panes_data *pd = g_pd;
    left_clicked_cb(pd, pd->left_arrow, NULL);
 }
 
+void
+panes_content_set(const char *part, Evas_Object *content)
+{
+   panes_data *pd = g_pd;
+   elm_object_part_content_set(pd->panes, part, content);
+}
+
+void
+panes_term()
+{
+   panes_data *pd = g_pd;
+   evas_object_del(pd->panes);
+   free(pd);
+}
+
 Evas_Object *
-panes_create(Evas_Object *parent)
+panes_init(Evas_Object *parent)
 {
    Evas_Object *img;
 
@@ -238,6 +253,4 @@ panes_create(Evas_Object *parent)
    pd->state = PANES_SPLIT_VIEW;
 
    evas_object_data_set(panes, PANES_DATA, pd);
-
-   return panes;
 }
