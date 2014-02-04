@@ -145,14 +145,6 @@ right_clicked_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
    elm_image_file_set(right_arrow_img, EDJE_PATH, "panes_recover_arrow");
 }
 
-static void
-panes_del_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
-             void *event_info EINA_UNUSED)
-{
-   panes_data *pd = data;
-   free(pd);
-}
-
 void
 panes_full_view_right(Evas_Object *panes)
 {
@@ -198,7 +190,6 @@ panes_init(Evas_Object *parent)
                                   press_cb, NULL);
    evas_object_smart_callback_add(panes, "unpress",
                                   unpress_cb, NULL);
-   evas_object_event_callback_add(panes, EVAS_CALLBACK_DEL, panes_del_cb, pd);
    evas_object_show(panes);
 
    //Hotkey Button
