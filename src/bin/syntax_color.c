@@ -468,6 +468,7 @@ color_apply(color_data *cd, const char *src, int length)
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "color3", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "color", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "effect", col3);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "ellipsis", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "fixed", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "font", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "inherit", col3);
