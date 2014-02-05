@@ -1,4 +1,4 @@
-edit_data *edit_init(Evas_Object *win, stats_data *sd);
+edit_data *edit_init(Evas_Object *win);
 void edit_term(edit_data *ed);
 void edit_edc_read(edit_data *ed, const char *file_path);
 void edit_focus_set(edit_data *ed);

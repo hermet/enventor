@@ -93,7 +93,7 @@ part_highlight_toggle(app_data *ad, Eina_Bool msg)
 }
 
 static void
-auto_indentation_toggle(app_data *ad)
+auto_indentation_toggle(void)
 {
    Eina_Bool toggle = !config_auto_indent_get();
    if (toggle) stats_info_msg_update("Auto Indentation Enabled.");
@@ -197,7 +197,7 @@ ctrl_func(app_data *ad, const char *key)
    //Auto Indentation
    if (!strcmp(key, "i") || !strcmp(key, "I"))
      {
-        auto_indentation_toggle(ad);
+        auto_indentation_toggle();
         return ECORE_CALLBACK_DONE;
      }
    //Font Size Up
@@ -328,7 +328,7 @@ main_mouse_wheel_cb(void *data, int type EINA_UNUSED, void *ev)
 }
 
 static void
-edc_view_set(app_data *ad, Eina_Stringshare *group)
+edc_view_set(Eina_Stringshare *group)
 {
    view_data *vd = edj_mgr_view_get(group);
    if (vd) edj_mgr_view_switch_to(vd);
@@ -340,12 +340,11 @@ edc_view_set(app_data *ad, Eina_Stringshare *group)
 }
 
 static void
-view_sync_cb(void *data, Eina_Stringshare *part_name,
+view_sync_cb(void *data EINA_UNUSED, Eina_Stringshare *part_name,
              Eina_Stringshare *group_name)
 {
-   app_data *ad = data;
    if (stats_group_name_get() != group_name)
-     edc_view_set(ad, group_name);
+     edc_view_set(group_name);
    view_part_highlight_set(VIEW_DATA, part_name);
 }
 
@@ -360,7 +359,7 @@ edc_edit_set(app_data *ad)
 }
 
 static void
-statusbar_set(app_data *ad)
+statusbar_set(void)
 {
    Evas_Object *obj = stats_init(base_layout_get());
    elm_object_part_content_set(base_layout_get(), "elm.swallow.statusbar",
@@ -387,7 +386,7 @@ config_update_cb(void *data)
         build_edc();
         edit_changed_set(ad->ed, EINA_FALSE);
         edj_mgr_clear();
-        edc_view_set(ad, stats_group_name_get());
+        edc_view_set(stats_group_name_get());
         if (ad->edc_monitor) eio_monitor_del(ad->edc_monitor);
         ad->edc_monitor = eio_monitor_add(config_edc_path_get());
      }
@@ -506,7 +505,7 @@ elm_setup()
 }
 
 static void
-edj_mgr_set(app_data *ad)
+edj_mgr_set(void)
 {
    edj_mgr_init(base_layout_get());
    base_left_view_set(edj_mgr_obj_get());
@@ -537,10 +536,10 @@ init(app_data *ad, int argc, char **argv)
    if (!edc_proto_setup()) return EINA_FALSE;
    if (!base_gui_init()) return EINA_FALSE;
 
-   edj_mgr_set(ad);
-   statusbar_set(ad);
+   edj_mgr_set();
+   statusbar_set();
    edc_edit_set(ad);
-   edc_view_set(ad, stats_group_name_get());
+   edc_view_set(stats_group_name_get());
    menu_init(ad->ed);
    hotkeys_set(ad->ed);
 

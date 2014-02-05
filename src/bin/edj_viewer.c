@@ -81,10 +81,9 @@ part_obj_del_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 }
 
 static void
-layout_resize_cb(void *data, Evas *e EINA_UNUSED,
+layout_resize_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
                  Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 {
-   view_data *vd = data;
    if (!config_stats_bar_get()) return;
 
    Evas_Coord w, h;
@@ -94,10 +93,9 @@ layout_resize_cb(void *data, Evas *e EINA_UNUSED,
 }
 
 static void
-rect_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
+rect_mouse_move_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
                    Evas_Object *obj EINA_UNUSED, void *event_info)
 {
-   view_data *vd = data;
    if (!config_stats_bar_get()) return;
 
    Evas_Event_Mouse_Move *ev = event_info;

@@ -2,7 +2,7 @@
 
 void edj_mgr_init(Evas_Object *parent);
 void edj_mgr_term();
-view_data * edj_mgr_view_new(const char *group, stats_data *sd);
+view_data * edj_mgr_view_new(const char *group);
 view_data *edj_mgr_view_get(Eina_Stringshare *group);
 Evas_Object * edj_mgr_obj_get();
 view_data *edj_mgr_view_switch_to(view_data *vd);

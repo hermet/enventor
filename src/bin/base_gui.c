@@ -79,28 +79,24 @@ void base_hotkeys_set(Evas_Object *hotkeys)
 void
 base_full_view_left()
 {
-   base_data *bd = g_bd;
    panes_full_view_left();
 }
 
 void
 base_full_view_right()
 {
-   base_data *bd = g_bd;
    panes_full_view_right();
 }
 
 void
 base_right_view_set(Evas_Object *right)
 {
-   base_data *bd = g_bd;
    panes_content_set("right", right);
 }
 
 void
 base_left_view_set(Evas_Object *left)
 {
-   base_data *bd = g_bd;
    panes_content_set("left", left);
 }
 
