@@ -359,4 +359,10 @@ view_scale_set(view_data *vd, double scale)
    if (scale == edje_object_scale_get(vd->layout)) return;
 
    edje_object_scale_set(vd->layout, scale);
+
+   //FIXME: Update the size for weird text ellipsis.
+   Evas_Coord w, h;
+   evas_object_geometry_get(vd->layout, NULL, NULL, &w, &h);
+   evas_object_resize(vd->layout, 0, 0);
+   evas_object_resize(vd->layout, w, h);
 }
