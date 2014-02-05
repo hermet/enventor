@@ -25,6 +25,14 @@ struct viewer_s
    Eina_Bool dummy_on;
 };
 
+static void
+view_obj_min_update(Evas_Object *obj)
+{
+   Evas_Coord w, h;
+   edje_object_size_min_calc(obj, &w, &h);
+   evas_object_size_hint_min_set(obj, w, h);
+}
+
 static Eina_Bool
 file_set_timer_cb(void *data)
 {
@@ -42,6 +50,7 @@ file_set_timer_cb(void *data)
         return ECORE_CALLBACK_CANCEL;
      }
 
+   view_obj_min_update(vd->layout);
    edj_mgr_reload_need_set(EINA_TRUE);
 
    return ECORE_CALLBACK_RENEW;
@@ -121,7 +130,7 @@ view_scroller_create(Evas_Object *parent)
 }
 
 static void
-edje_change_file_cb(void *data, Evas_Object *obj EINA_UNUSED,
+edje_change_file_cb(void *data, Evas_Object *obj,
                     const char *emission EINA_UNUSED,
                     const char *source EINA_UNUSED)
 {
@@ -133,6 +142,7 @@ edje_change_file_cb(void *data, Evas_Object *obj EINA_UNUSED,
         view_term(vd);
         return;
      }
+   view_obj_min_update(obj);
    view_part_highlight_set(vd, vd->part_name);
 }
 
@@ -191,6 +201,8 @@ view_obj_create(view_data *vd, const char *file_path, const char *group)
                                    "edje,change,file", "edje",
                                    edje_change_file_cb, vd);
    evas_object_show(layout);
+
+   view_obj_min_update(layout);
 
    return layout;
 }
