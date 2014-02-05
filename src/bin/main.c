@@ -93,7 +93,7 @@ part_highlight_toggle(app_data *ad, Eina_Bool msg)
 }
 
 static void
-auto_indentation_toggle(void)
+auto_indentation_toggle()
 {
    Eina_Bool toggle = !config_auto_indent_get();
    if (toggle) stats_info_msg_update("Auto Indentation Enabled.");
@@ -359,7 +359,7 @@ edc_edit_set(app_data *ad)
 }
 
 static void
-statusbar_set(void)
+statusbar_set()
 {
    Evas_Object *obj = stats_init(base_layout_get());
    elm_object_part_content_set(base_layout_get(), "elm.swallow.statusbar",
@@ -505,7 +505,7 @@ elm_setup()
 }
 
 static void
-edj_mgr_set(void)
+edj_mgr_set()
 {
    edj_mgr_init(base_layout_get());
    base_left_view_set(edj_mgr_obj_get());

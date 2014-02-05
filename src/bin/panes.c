@@ -146,14 +146,14 @@ right_clicked_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
 }
 
 void
-panes_full_view_right(void)
+panes_full_view_right()
 {
    panes_data *pd = g_pd;
    right_clicked_cb(pd, pd->right_arrow, NULL);
 }
 
 void
-panes_full_view_left(void)
+panes_full_view_left()
 {
    panes_data *pd = g_pd;
    left_clicked_cb(pd, pd->left_arrow, NULL);
