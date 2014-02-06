@@ -1,6 +1,18 @@
 #include <Elementary.h>
 #include "common.h"
 
+const char *IMGPATH = "imgpath";
+const char *SNDPATH = "sndpath";
+const char *FNTPATH = "fntpath";
+const char *DATPATH = "datpath";
+const char *FNTSIZE = "fntsize";
+const char *VIEWSCALE = "viewscale";
+const char *STATSBAR = "statsbar";
+const char *LINENUM = "linenum";
+const char *HIGHLIGHT = "highlight";
+const char *SWALLOW = "swallow";
+const char *INDENT = "indent";
+
 typedef struct config_s
 {
    const char *edc_path;
@@ -22,12 +34,12 @@ typedef struct config_s
    void *update_cb_data;
    Evas_Coord_Size view_size;
 
-   Eina_Bool stats_bar : 1;
-   Eina_Bool linenumber : 1;
-   Eina_Bool part_highlight : 1;
-   Eina_Bool dummy_swallow : 1;
-   Eina_Bool auto_indent : 1;
-   Eina_Bool hotkeys : 1;
+   Eina_Bool stats_bar;
+   Eina_Bool linenumber;
+   Eina_Bool part_highlight;
+   Eina_Bool dummy_swallow;
+   Eina_Bool auto_indent;
+   Eina_Bool hotkeys;
 } config_data;
 
 static config_data *g_cd = NULL;
@@ -50,6 +62,127 @@ config_edj_path_update(config_data *cd)
    eina_stringshare_replace(&cd->edj_path, edj_path);
 }
 
+
+static Eina_Bool
+config_load(config_data *cd)
+{
+   char buf[PATH_MAX];
+   snprintf(buf, sizeof(buf), "%s/.enventor/config.eet", getenv("HOME"));
+   Eet_File *ef = eet_open(buf, EET_FILE_MODE_READ);
+   if (!ef)
+      {
+         EINA_LOG_ERR("Cannot load a config file \"%s\"", buf);
+         return EINA_FALSE;
+      }
+
+   int size;
+   char *ret;
+
+   ret = eet_read(ef, IMGPATH, &size);
+   if (size > 0) { config_edc_img_path_set(ret); free(ret); }
+   ret = eet_read(ef, SNDPATH, &size);
+   if (size > 0) { config_edc_snd_path_set(ret); free(ret); }
+   ret = eet_read(ef, FNTPATH, &size);
+   if (size > 0) { config_edc_fnt_path_set(ret); free(ret); }
+   ret = eet_read(ef, DATPATH, &size);
+   if (size > 0) { config_edc_data_path_set(ret); free(ret); }
+   ret = eet_read(ef, FNTSIZE, &size);
+   if (size > 0) { cd->font_size = atof(ret); free(ret); }
+   ret = eet_read(ef, VIEWSCALE, &size);
+   if (size > 0) { cd->view_scale = atof(ret); free(ret); }
+   ret = eet_read(ef, STATSBAR, &size);
+   if (size > 0) { cd->stats_bar = (Eina_Bool) atoi(ret); free(ret); }
+   ret = eet_read(ef, LINENUM, &size);
+   if (size > 0) { cd->linenumber = (Eina_Bool) atoi(ret); free(ret); }
+   ret = eet_read(ef, HIGHLIGHT, &size);
+   if (size > 0) { cd->part_highlight = (Eina_Bool) atoi(ret); free(ret); }
+   ret = eet_read(ef, SWALLOW, &size);
+   if (size > 0) { cd->dummy_swallow = (Eina_Bool) atoi(ret); free(ret); }
+   ret = eet_read(ef, INDENT, &size);
+   if (size > 0) { cd->auto_indent = (Eina_Bool) atoi(ret); free(ret); }
+
+   eet_close(ef);
+
+   return EINA_TRUE;
+}
+
+static void
+edc_paths_write(Eet_File *ef, const char *key, Eina_List *paths,
+              Eina_Strbuf *strbuf)
+{
+   Eina_List *l;
+   char *path;
+
+   eina_strbuf_reset(strbuf);
+
+   EINA_LIST_FOREACH(paths, l, path)
+     {
+        eina_strbuf_append(strbuf, path);
+        eina_strbuf_append(strbuf, ";");
+     }
+
+   const char *str = eina_strbuf_string_get(strbuf);
+   eet_write(ef, key, str, strlen(str) + 1, 0);
+}
+
+static void
+config_save(config_data *cd)
+{
+   char buf[PATH_MAX];
+   snprintf(buf, sizeof(buf), "%s/.enventor", getenv("HOME"));
+
+   //Create config folder if it doesn't exist.
+   if (!ecore_file_exists(buf))
+     {
+        Eina_Bool success = ecore_file_mkdir(buf);
+        if (!success)
+          {
+             EINA_LOG_ERR("Cannot create a config folder \"%s\"", buf);
+             return;
+          }
+     }
+
+   //Save config file.
+   snprintf(buf, sizeof(buf), "%s/.enventor/config.eet", getenv("HOME"));
+   Eet_File *ef = eet_open(buf, EET_FILE_MODE_WRITE);
+   if (!ef)
+     {
+        EINA_LOG_ERR("Cannot save a config file \"%s\"", buf);
+        return;
+     }
+
+   //TODO: Use Eet Descriptor if the attributes are getting bigger and bigger
+   Eina_Strbuf *strbuf = eina_strbuf_new();
+   edc_paths_write(ef, IMGPATH, cd->edc_img_path_list, strbuf);
+   edc_paths_write(ef, SNDPATH, cd->edc_snd_path_list, strbuf);
+   edc_paths_write(ef, FNTPATH, cd->edc_fnt_path_list, strbuf);
+   edc_paths_write(ef, DATPATH, cd->edc_data_path_list, strbuf);
+   eina_strbuf_free(strbuf);
+
+   snprintf(buf, sizeof(buf), "%f", cd->font_size);
+   eet_write(ef, FNTSIZE, buf, strlen(buf) + 1, 0);
+
+   snprintf(buf, sizeof(buf), "%f", cd->view_scale);
+   eet_write(ef, VIEWSCALE, buf, strlen(buf) + 1, 0);
+
+   snprintf(buf, sizeof(buf), "%d", cd->stats_bar);
+   eet_write(ef, STATSBAR, buf, strlen(buf) + 1, 0);
+
+   snprintf(buf, sizeof(buf), "%d", cd->linenumber);
+   eet_write(ef, LINENUM, buf, strlen(buf) + 1, 0);
+
+   snprintf(buf, sizeof(buf), "%d", cd->part_highlight);
+   eet_write(ef, HIGHLIGHT, buf, strlen(buf) + 1, 0);
+
+   snprintf(buf, sizeof(buf), "%d", cd->dummy_swallow);
+   eet_write(ef, SWALLOW, buf, strlen(buf) + 1, 0);
+
+   snprintf(buf, sizeof(buf), "%d", cd->auto_indent);
+   eet_write(ef, INDENT, buf, strlen(buf) + 1, 0);
+
+   eet_close(ef);
+}
+
 void
 config_edc_path_set(const char *edc_path)
 {
@@ -68,17 +201,23 @@ config_init(const char *edc_path, const char *edc_img_path,
 
    cd->edc_path = eina_stringshare_add(edc_path);
    config_edj_path_update(cd);
-   config_edc_img_path_set(edc_img_path);
-   config_edc_snd_path_set(edc_snd_path);
-   config_edc_fnt_path_set(edc_fnt_path);
-   config_edc_data_path_set(edc_data_path);
 
-   cd->font_size = 1.0f;
-   cd->view_scale = 1;
-   cd->linenumber = EINA_TRUE;
-   cd->part_highlight = EINA_TRUE;
-   cd->dummy_swallow = EINA_TRUE;
-   cd->auto_indent = EINA_TRUE;
+   if (!config_load(cd))
+     {
+        //failed to load config file. set default values.
+        config_edc_img_path_set(edc_img_path);
+        config_edc_snd_path_set(edc_snd_path);
+        config_edc_fnt_path_set(edc_fnt_path);
+        config_edc_data_path_set(edc_data_path);
+
+        cd->font_size = 1.0f;
+        cd->view_scale = 1;
+        cd->linenumber = EINA_TRUE;
+        cd->part_highlight = EINA_TRUE;
+        cd->dummy_swallow = EINA_TRUE;
+        cd->auto_indent = EINA_TRUE;
+     }
+   //hotkey is not decided yet to keep the function or not.
    cd->hotkeys = EINA_TRUE;
 }
 
@@ -86,6 +225,8 @@ void
 config_term()
 {
    config_data *cd = g_cd;
+
+   config_save(cd);
 
    eina_stringshare_del(cd->edc_path);
    eina_stringshare_del(cd->edj_path);
