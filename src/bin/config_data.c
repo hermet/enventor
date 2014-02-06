@@ -34,12 +34,12 @@ typedef struct config_s
    void *update_cb_data;
    Evas_Coord_Size view_size;
 
-   Eina_Bool stats_bar;
-   Eina_Bool linenumber;
-   Eina_Bool part_highlight;
-   Eina_Bool dummy_swallow;
-   Eina_Bool auto_indent;
-   Eina_Bool hotkeys;
+   Eina_Bool stats_bar : 1;
+   Eina_Bool linenumber : 1;
+   Eina_Bool part_highlight : 1;
+   Eina_Bool dummy_swallow : 1;
+   Eina_Bool auto_indent : 1;
+   Eina_Bool hotkeys : 1;
 } config_data;
 
 static config_data *g_cd = NULL;
