@@ -205,11 +205,6 @@ config_init(const char *edc_path, const char *edc_img_path,
    if (!config_load(cd))
      {
         //failed to load config file. set default values.
-        config_edc_img_path_set(edc_img_path);
-        config_edc_snd_path_set(edc_snd_path);
-        config_edc_fnt_path_set(edc_fnt_path);
-        config_edc_data_path_set(edc_data_path);
-
         cd->font_size = 1.0f;
         cd->view_scale = 1;
         cd->linenumber = EINA_TRUE;
@@ -217,6 +212,12 @@ config_init(const char *edc_path, const char *edc_img_path,
         cd->dummy_swallow = EINA_TRUE;
         cd->auto_indent = EINA_TRUE;
      }
+
+   if (edc_img_path) config_edc_img_path_set(edc_img_path);
+   if (edc_snd_path) config_edc_snd_path_set(edc_snd_path);
+   if (edc_fnt_path) config_edc_fnt_path_set(edc_fnt_path);
+   if (edc_data_path) config_edc_data_path_set(edc_data_path);
+
    //hotkey is not decided yet to keep the function or not.
    cd->hotkeys = EINA_TRUE;
 }
