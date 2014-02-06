@@ -10,6 +10,6 @@ void base_hotkey_toggle();
 void base_hotkeys_set(Evas_Object *hotkeys);
 void base_full_view_left();
 void base_full_view_right();
-void base_left_view_set();
+void base_left_view_set(Evas_Object *left);
+void base_right_view_set(Evas_Object *right);
 void base_gui_term();
-void base_right_view_set();
