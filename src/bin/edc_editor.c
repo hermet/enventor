@@ -722,6 +722,7 @@ edit_init(Evas_Object *parent)
    ed->cur_line = -1;
 
    edit_line_number_toggle(ed);
+   edit_font_size_update(ed, EINA_FALSE);
 
    return ed;
 }
