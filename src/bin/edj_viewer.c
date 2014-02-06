@@ -30,7 +30,8 @@ view_obj_min_update(Evas_Object *obj)
 {
    Evas_Coord w, h;
    edje_object_size_min_calc(obj, &w, &h);
-   evas_object_size_hint_min_set(obj, w, h);
+   double scale = edje_object_scale_get(obj);
+   evas_object_size_hint_min_set(obj, ((double)w * scale), ((double)h * scale));
 }
 
 static Eina_Bool
@@ -371,10 +372,13 @@ view_scale_set(view_data *vd, double scale)
    if (scale == edje_object_scale_get(vd->layout)) return;
 
    edje_object_scale_set(vd->layout, scale);
+   view_obj_min_update(vd->layout);
 
    //FIXME: Update the size for weird text ellipsis.
    Evas_Coord w, h;
    evas_object_geometry_get(vd->layout, NULL, NULL, &w, &h);
    evas_object_resize(vd->layout, 0, 0);
    evas_object_resize(vd->layout, w, h);
+
+
 }
