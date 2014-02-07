@@ -490,6 +490,12 @@ elm_setup()
    char *scale = getenv("ELM_SCALE");
    if (scale) elm_config_scale_set(atof(scale));
 
+   /* Recover the current engine since it will be reset by
+      elm_config_profiel_set() */
+   char *engine = getenv("ELM_ENGINE");
+   if (engine && !strncmp(engine, "gl", strlen("gl")))
+     elm_config_preferred_engine_set("opengl_x11");
+
    elm_config_scroll_bounce_enabled_set(EINA_FALSE);
    elm_policy_set(ELM_POLICY_QUIT, ELM_POLICY_QUIT_LAST_WINDOW_CLOSED);
    elm_app_compile_bin_dir_set(PACKAGE_BIN_DIR);
