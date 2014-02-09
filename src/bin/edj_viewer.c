@@ -371,14 +371,32 @@ view_scale_set(view_data *vd, double scale)
    if (!vd->layout) return;
    if (scale == edje_object_scale_get(vd->layout)) return;
 
+   int pminw, pminh;
+   evas_object_size_hint_min_get(vd->layout, &pminw, &pminh);
+   Evas_Coord sx, sy, sw, sh;
+   elm_scroller_region_get(vd->scroller, &sx, &sy, &sw, &sh);
+
    edje_object_scale_set(vd->layout, scale);
    view_obj_min_update(vd->layout);
+
+   //adjust scroller position according to the scale change.
+   int minw, minh;
+   evas_object_size_hint_min_get(vd->layout, &minw, &minh);
+
+   //a. center position of the scroller
+   double cx = ((double)sx + ((double)sw * 0.5));
+   double cy = ((double)sy + ((double)sh * 0.5));
+
+   //b. multiply scale value
+   cx *= (1 + (((double)(minw - pminw))/pminw));
+   cy *= (1 + (((double)(minh - pminh))/pminh));
+
+   elm_scroller_region_show(vd->scroller, ((Evas_Coord) cx) - (sw / 2),
+                            ((Evas_Coord) cy) - (sh / 2), sw, sh);
 
    //FIXME: Update the size for weird text ellipsis.
    Evas_Coord w, h;
    evas_object_geometry_get(vd->layout, NULL, NULL, &w, &h);
    evas_object_resize(vd->layout, 0, 0);
    evas_object_resize(vd->layout, w, h);
-
-
 }
