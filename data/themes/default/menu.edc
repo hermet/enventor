@@ -165,6 +165,7 @@ group { name: "fileselector_layout";
       }
       part { name: "title_frame";
          type: RECT;
+         scale: 1;
          clip_to: "clipper";
          description {
             rel1 { to: "base_frame"; }
@@ -898,6 +899,7 @@ group { name: "setting_layout";
       part { name: "title_frame";
          type: RECT;
          clip_to: "clipper";
+         scale: 1;
          description {
             rel1 {to: "base_frame"; relative: 0 0;}
             rel2 {to: "base_frame"; relative: 1 0;}
@@ -985,6 +987,7 @@ group { name: "setting_layout";
       }
       part { name: "preference_frame";
          type: SPACER;
+         scale: 1;
          description {
             rel1 {to: "data_path_frame"; relative: 0 1;}
             rel2 {to: "data_path_frame"; relative: 1 1;}
