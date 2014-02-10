@@ -957,6 +957,7 @@ group { name: "setting_layout";
       }
       part { name: "snd_path_frame";
          type: SPACER;
+         scale: 1;
          description {
             rel1 {to: "img_path_frame"; relative: 0 1;}
             rel2 {to: "img_path_frame"; relative: 1 1;}
@@ -967,6 +968,7 @@ group { name: "setting_layout";
       }
       part { name: "fnt_path_frame";
          type: SPACER;
+         scale: 1;
          description {
             rel1 {to: "snd_path_frame"; relative: 0 1;}
             rel2 {to: "snd_path_frame"; relative: 1 1;}
@@ -977,6 +979,7 @@ group { name: "setting_layout";
       }
       part { name: "data_path_frame";
          type: SPACER;
+         scale: 1;
          description {
             rel1 {to: "fnt_path_frame"; relative: 0 1;}
             rel2 {to: "fnt_path_frame"; relative: 1 1;}
