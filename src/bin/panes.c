@@ -67,10 +67,17 @@ panes_full_view_cancel(panes_data *pd)
 }
 
 static void
-hotkeys_clicked_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+hotkeys_clicked_cb(void *data EINA_UNUSED, Evas_Object *obj,
                    void *event_info EINA_UNUSED)
 {
    base_hotkey_toggle();
+
+   Evas_Object *img = elm_object_content_get(obj);
+
+   if (config_hotkeys_get())
+     elm_image_file_set(img, EDJE_PATH, "hotkeys_close");
+   else
+     elm_image_file_set(img, EDJE_PATH, "hotkeys_open");
 }
 
 static void
@@ -201,7 +208,7 @@ panes_init(Evas_Object *parent)
 
    //Hotkey Image
    img = elm_image_add(hotkeys_btn);
-   elm_image_file_set(img, EDJE_PATH, "hotkeys");
+   elm_image_file_set(img, EDJE_PATH, "hotkeys_close");
    evas_object_show(img);
 
    elm_object_content_set(hotkeys_btn, img);

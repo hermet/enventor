@@ -4,15 +4,27 @@ images {
    image: "panes_left_arrow.png" COMP;
    image: "panes_right_arrow.png" COMP;
    image: "panes_recover_arrow.png" COMP;
-   image: "hotkeys.png" COMP;
+   image: "hotkeys_open.png" COMP;
+   image: "hotkeys_close.png" COMP;
 }
 
-group { name: "hotkeys";
+group { name: "hotkeys_open";
    parts {
       part { name: "img";
          type: IMAGE;
          description { state: "default" 0.0;
-            image.normal: "hotkeys.png";
+            image.normal: "hotkeys_open.png";
+         }
+      }
+   }
+}
+
+group { name: "hotkeys_close";
+   parts {
+      part { name: "img";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            image.normal: "hotkeys_close.png";
          }
       }
    }
