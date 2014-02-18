@@ -82,6 +82,23 @@ config_save(config_data *cd)
    eet_close(ef);
 }
 
+static Eina_Strbuf *
+config_paths_buf_load_set(Eina_List *paths)
+{
+   Eina_List *l;
+   const char *s;
+
+   Eina_Strbuf *buf = eina_strbuf_new();
+
+   EINA_LIST_FOREACH(paths, l, s)
+     {
+        eina_strbuf_append(buf, " -fd ");
+        eina_strbuf_append(buf, s);
+     }
+
+   return buf;
+}
+
 static config_data *
 config_load()
 {
@@ -102,16 +119,6 @@ config_load()
    if (!cd)
      {
         cd = calloc(1, sizeof(config_data));
-        g_cd = cd;
-
-        sprintf(buf, "%s/images", elm_app_data_dir_get());
-        config_edc_img_path_set(buf);
-        sprintf(buf, "%s/sounds", elm_app_data_dir_get());
-        config_edc_snd_path_set(buf);
-        sprintf(buf, "%s/fonts", elm_app_data_dir_get());
-        config_edc_fnt_path_set(buf);
-        sprintf(buf, "%s/data", elm_app_data_dir_get());
-        config_edc_data_path_set(buf);
 
         cd->font_size = 1.0f;
         cd->view_scale = 1;
@@ -122,6 +129,37 @@ config_load()
         cd->auto_indent = EINA_TRUE;
         cd->hotkeys = EINA_TRUE;
      }
+
+   g_cd = cd;
+
+   if (!cd->edc_img_path_list)
+     {
+        sprintf(buf, "%s/images", elm_app_data_dir_get());
+        config_edc_img_path_set(buf);
+     }
+   else cd->edc_img_path_buf = config_paths_buf_set(cd->edc_img_path_list);
+
+   if (!cd->edc_snd_path_list)
+     {
+        sprintf(buf, "%s/sounds", elm_app_data_dir_get());
+        config_edc_snd_path_set(buf);
+     }
+   else cd->edc_snd_path_buf = config_paths_buf_set(cd->edc_snd_path_list);
+
+   if (!cd->edc_fnt_path_list)
+     {
+        sprintf(buf, "%s/fonts", elm_app_data_dir_get());
+        config_edc_fnt_path_set(buf);
+     }
+   else cd->edc_fnt_path_buf = config_paths_buf_set(cd->edc_fnt_path_list);
+
+   if (!cd->edc_data_path_list)
+     {
+        sprintf(buf, "%s/data", elm_app_data_dir_get());
+        config_edc_data_path_set(buf);
+     }
+   else cd->edc_data_path_buf = config_paths_buf_set(cd->edc_data_path_list);
+
    return cd;
 }
 
