@@ -147,6 +147,7 @@ config_load()
         cd->part_highlight = EINA_TRUE;
         cd->dummy_swallow = EINA_TRUE;
         cd->auto_indent = EINA_TRUE;
+        cd->hotkeys = EINA_TRUE;
      }
    else
      {
