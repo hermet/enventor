@@ -212,9 +212,7 @@ config_init(const char *edc_path, const char *edc_img_path,
 
    config_data *cd = config_load();
 
-   cd->edc_path = eina_stringshare_add(edc_path);
-   config_edj_path_update(cd);
-
+   if (edc_path) config_edc_path_set(edc_path);
    if (edc_img_path) config_edc_img_path_set(edc_img_path);
    if (edc_snd_path) config_edc_snd_path_set(edc_snd_path);
    if (edc_fnt_path) config_edc_fnt_path_set(edc_fnt_path);
