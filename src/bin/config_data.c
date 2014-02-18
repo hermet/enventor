@@ -193,6 +193,8 @@ eddc_init()
                                  dummy_swallow, EET_T_UCHAR);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "auto_indent",
                                  auto_indent, EET_T_UCHAR);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "hotkeys",
+                                 hotkeys, EET_T_UCHAR);
 }
 
 void
@@ -217,9 +219,6 @@ config_init(const char *edc_path, const char *edc_img_path,
    if (edc_snd_path) config_edc_snd_path_set(edc_snd_path);
    if (edc_fnt_path) config_edc_fnt_path_set(edc_fnt_path);
    if (edc_data_path) config_edc_data_path_set(edc_data_path);
-
-   //hotkey is not decided yet to keep the function or not.
-   cd->hotkeys = EINA_TRUE;
 }
 
 void

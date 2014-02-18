@@ -74,6 +74,11 @@ void base_hotkeys_set(Evas_Object *hotkeys)
 {
    base_data *bd = g_bd;
    elm_object_part_content_set(bd->layout, "elm.swallow.hotkeys", hotkeys);
+
+   if (config_hotkeys_get())
+     elm_object_signal_emit(bd->layout, "elm,state,hotkeys,show", "");
+   else
+     elm_object_signal_emit(bd->layout, "elm,state,hotkeys,hide", "");
 }
 
 void
