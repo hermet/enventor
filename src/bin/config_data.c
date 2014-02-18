@@ -83,7 +83,7 @@ config_save(config_data *cd)
 }
 
 static Eina_Strbuf *
-config_paths_buf_load_set(Eina_List *paths)
+config_paths_buf_set(Eina_List *paths, const char *prefix)
 {
    Eina_List *l;
    const char *s;
@@ -92,7 +92,7 @@ config_paths_buf_load_set(Eina_List *paths)
 
    EINA_LIST_FOREACH(paths, l, s)
      {
-        eina_strbuf_append(buf, " -fd ");
+        eina_strbuf_append(buf, prefix);
         eina_strbuf_append(buf, s);
      }
 
@@ -137,28 +137,32 @@ config_load()
         sprintf(buf, "%s/images", elm_app_data_dir_get());
         config_edc_img_path_set(buf);
      }
-   else cd->edc_img_path_buf = config_paths_buf_set(cd->edc_img_path_list);
+   else cd->edc_img_path_buf =
+     config_paths_buf_set(cd->edc_img_path_list, " -id ");
 
    if (!cd->edc_snd_path_list)
      {
         sprintf(buf, "%s/sounds", elm_app_data_dir_get());
         config_edc_snd_path_set(buf);
      }
-   else cd->edc_snd_path_buf = config_paths_buf_set(cd->edc_snd_path_list);
+   else cd->edc_snd_path_buf =
+     config_paths_buf_set(cd->edc_snd_path_list, " -sd ");
 
    if (!cd->edc_fnt_path_list)
      {
         sprintf(buf, "%s/fonts", elm_app_data_dir_get());
         config_edc_fnt_path_set(buf);
      }
-   else cd->edc_fnt_path_buf = config_paths_buf_set(cd->edc_fnt_path_list);
+   else cd->edc_fnt_path_buf =
+     config_paths_buf_set(cd->edc_fnt_path_list, " -fd ");
 
    if (!cd->edc_data_path_list)
      {
         sprintf(buf, "%s/data", elm_app_data_dir_get());
         config_edc_data_path_set(buf);
      }
-   else cd->edc_data_path_buf = config_paths_buf_set(cd->edc_data_path_list);
+   else cd->edc_data_path_buf =
+     config_paths_buf_set(cd->edc_data_path_list, " -dd ");
 
    return cd;
 }
