@@ -131,6 +131,15 @@ config_load()
         cd = calloc(1, sizeof(config_data));
         g_cd = cd;
 
+        sprintf(buf, "%s/images", elm_app_data_dir_get());
+        config_edc_img_path_set(buf);
+        sprintf(buf, "%s/sounds", elm_app_data_dir_get());
+        config_edc_snd_path_set(buf);
+        sprintf(buf, "%s/fonts", elm_app_data_dir_get());
+        config_edc_fnt_path_set(buf);
+        sprintf(buf, "%s/data", elm_app_data_dir_get());
+        config_edc_data_path_set(buf);
+
         cd->font_size = 1.0f;
         cd->view_scale = 1;
         cd->stats_bar = EINA_TRUE;
@@ -214,11 +223,11 @@ config_init(const char *edc_path, const char *edc_img_path,
 
    config_data *cd = config_load();
 
-   if (edc_path) config_edc_path_set(edc_path);
-   if (edc_img_path) config_edc_img_path_set(edc_img_path);
-   if (edc_snd_path) config_edc_snd_path_set(edc_snd_path);
-   if (edc_fnt_path) config_edc_fnt_path_set(edc_fnt_path);
-   if (edc_data_path) config_edc_data_path_set(edc_data_path);
+   if (edc_path[0]) config_edc_path_set(edc_path);
+   if (edc_img_path[0]) config_edc_img_path_set(edc_img_path);
+   if (edc_snd_path[0]) config_edc_snd_path_set(edc_snd_path);
+   if (edc_fnt_path[0]) config_edc_fnt_path_set(edc_fnt_path);
+   if (edc_data_path[0]) config_edc_data_path_set(edc_data_path);
 }
 
 void
