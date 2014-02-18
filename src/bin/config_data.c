@@ -52,25 +52,6 @@ config_edj_path_update(config_data *cd)
 }
 
 static void
-edc_paths_write(Eet_File *ef, const char *key, Eina_List *paths,
-              Eina_Strbuf *strbuf)
-{
-   Eina_List *l;
-   char *path;
-
-   eina_strbuf_reset(strbuf);
-
-   EINA_LIST_FOREACH(paths, l, path)
-     {
-        eina_strbuf_append(strbuf, path);
-        eina_strbuf_append(strbuf, ";");
-     }
-
-   const char *str = eina_strbuf_string_get(strbuf);
-   eet_write(ef, key, str, strlen(str) + 1, 0);
-}
-
-static void
 config_save(config_data *cd)
 {
    char buf[PATH_MAX];
@@ -97,15 +78,7 @@ config_save(config_data *cd)
         return;
      }
 
-   //TODO: Use Eet Descriptor if the attributes are getting bigger and bigger
    eet_data_write(ef, edd_base, "config", cd, 1);
-   Eina_Strbuf *strbuf = eina_strbuf_new();
-   edc_paths_write(ef, "imgpath", cd->edc_img_path_list, strbuf);
-   edc_paths_write(ef, "sndpath", cd->edc_snd_path_list, strbuf);
-   edc_paths_write(ef, "fntpath", cd->edc_fnt_path_list, strbuf);
-   edc_paths_write(ef, "datpath", cd->edc_data_path_list, strbuf);
-   eina_strbuf_free(strbuf);
-
    eet_close(ef);
 }
 
@@ -149,36 +122,6 @@ config_load()
         cd->auto_indent = EINA_TRUE;
         cd->hotkeys = EINA_TRUE;
      }
-   else
-     {
-        g_cd = cd;
-        int size;
-        char *ret;
-        ret = eet_read(ef, "imgpath", &size);
-        if (size > 0)
-          {
-             config_edc_img_path_set(ret);
-             free(ret);
-          }
-        ret = eet_read(ef, "sndpath", &size);
-        if (size > 0)
-          {
-             config_edc_snd_path_set(ret);
-             free(ret);
-          }
-        ret = eet_read(ef, "fntpath", &size);
-        if (size > 0)
-          {
-             config_edc_fnt_path_set(ret);
-             free(ret);
-          }
-        ret = eet_read(ef, "datpath", &size);
-        if (size > 0)
-          {
-             config_edc_data_path_set(ret);
-             free(ret);
-          }
-     }
    return cd;
 }
 
@@ -189,6 +132,16 @@ eddc_init()
    eet_eina_stream_data_descriptor_class_set(&eddc, sizeof(eddc),
                                              "config", sizeof(config_data));
    edd_base = eet_data_descriptor_stream_new(&eddc);
+
+   EET_DATA_DESCRIPTOR_ADD_LIST_STRING(edd_base, config_data,
+                                       "edc_img_path_list", edc_img_path_list);
+   EET_DATA_DESCRIPTOR_ADD_LIST_STRING(edd_base, config_data,
+                                       "edc_snd_path_list", edc_snd_path_list);
+   EET_DATA_DESCRIPTOR_ADD_LIST_STRING(edd_base, config_data,
+                                       "edc_fnt_path_list", edc_fnt_path_list);
+   EET_DATA_DESCRIPTOR_ADD_LIST_STRING(edd_base, config_data,
+                                       "edc_data_path_list",
+                                       edc_data_path_list);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "font_size", font_size,
                                  EET_T_FLOAT);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "view_scale",
@@ -223,6 +176,7 @@ config_init(const char *edc_path, const char *edc_img_path,
    eddc_init();
 
    config_data *cd = config_load();
+   g_cd = cd;
 
    if (edc_path[0]) config_edc_path_set(edc_path);
    if (edc_img_path[0]) config_edc_img_path_set(edc_img_path);
