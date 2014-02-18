@@ -793,7 +793,7 @@ edit_edc_read(edit_data *ed, const char *file_path)
    Eina_Stringshare *group_name =
       parser_first_group_name_get(ed->pd, ed->en_edit);
 
-   stats_edc_group_set(group_name);
+   stats_edc_group_update(group_name);
    stats_line_num_update(0, ed->line_max);
    base_title_set(config_edc_path_get());
 

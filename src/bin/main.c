@@ -336,7 +336,7 @@ edc_view_set(Eina_Stringshare *group)
 
    if (!vd) return;
 
-   if (group) stats_edc_group_set(group);
+   if (group) stats_edc_group_update(group);
 }
 
 static void

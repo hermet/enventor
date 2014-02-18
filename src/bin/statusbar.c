@@ -25,7 +25,7 @@ stats_line_num_update(int cur_line, int max_line)
 }
 
 void
-stats_edc_group_set(Eina_Stringshare *group_name)
+stats_edc_group_update(Eina_Stringshare *group_name)
 {
    stats_data *sd = g_sd;
 
@@ -48,7 +48,7 @@ stats_init(Evas_Object *parent)
    sd->layout = layout;
 
    stats_cursor_pos_update(0, 0, 0, 0);
-   stats_edc_group_set(NULL);
+   stats_edc_group_update(NULL);
 
    return layout;
 }
