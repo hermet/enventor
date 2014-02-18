@@ -109,14 +109,6 @@ config_save(config_data *cd)
    eet_close(ef);
 }
 
-void
-config_edc_path_set(const char *edc_path)
-{
-   config_data *cd = g_cd;
-   eina_stringshare_replace(&cd->edc_path, edc_path);
-   config_edj_path_update(cd);
-}
-
 static config_data *
 config_load()
 {
@@ -180,8 +172,6 @@ config_load()
    return cd;
 }
 
-
-
 static void
 eddc_init()
 {
@@ -203,6 +193,14 @@ eddc_init()
                                  dummy_swallow, EET_T_UCHAR);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "auto_indent",
                                  auto_indent, EET_T_UCHAR);
+}
+
+void
+config_edc_path_set(const char *edc_path)
+{
+   config_data *cd = g_cd;
+   eina_stringshare_replace(&cd->edc_path, edc_path);
+   config_edj_path_update(cd);
 }
 
 void
