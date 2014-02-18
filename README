@@ -15,6 +15,7 @@ it does a lot.
   ecore (>= 1.8.0)
   edje (>= 1.8.0)
   eio (>= 1.8.0)
+  efreet (>= 1.8.0)
   elementary (>= 1.8.0)
   
 Please note that some features may not quite function correctly or completely on

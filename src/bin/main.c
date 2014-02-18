@@ -482,6 +482,7 @@ config_data_set(app_data *ad, int argc, char **argv)
 static void
 elm_setup()
 {
+   elm_need_efreet();
    elm_config_profile_set("standard");
 
    /* Recover the scale & theme since it will be reset by

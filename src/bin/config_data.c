@@ -67,7 +67,8 @@ static Eina_Bool
 config_load(config_data *cd)
 {
    char buf[PATH_MAX];
-   snprintf(buf, sizeof(buf), "%s/.enventor/config.eet", getenv("HOME"));
+   snprintf(buf, sizeof(buf), "%s/enventor/config.eet",
+            efreet_config_home_get());
    Eet_File *ef = eet_open(buf, EET_FILE_MODE_READ);
    if (!ef)
       {
@@ -129,7 +130,7 @@ static void
 config_save(config_data *cd)
 {
    char buf[PATH_MAX];
-   snprintf(buf, sizeof(buf), "%s/.enventor", getenv("HOME"));
+   snprintf(buf, sizeof(buf), "%s/enventor", efreet_config_home_get());
 
    //Create config folder if it doesn't exist.
    if (!ecore_file_exists(buf))
@@ -143,7 +144,8 @@ config_save(config_data *cd)
      }
 
    //Save config file.
-   snprintf(buf, sizeof(buf), "%s/.enventor/config.eet", getenv("HOME"));
+   snprintf(buf, sizeof(buf), "%s/enventor/config.eet",
+            efreet_config_home_get());
    Eet_File *ef = eet_open(buf, EET_FILE_MODE_WRITE);
    if (!ef)
      {
