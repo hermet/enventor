@@ -2199,4 +2199,18 @@ group { name: "elm/panes/vertical/enventor";
          }
       }
    }
+   programs {
+      program { signal: "mouse,down,1"; source: "bar";
+         action: SIGNAL_EMIT "elm,action,press" "elm";
+      }
+      program { signal: "mouse,up,1"; source: "bar";
+         action: SIGNAL_EMIT "elm,action,unpress" "elm";
+      }
+      program { signal: "mouse,clicked,1"; source: "bar";
+         action: SIGNAL_EMIT "elm,action,click" "elm";
+      }
+      program { signal: "mouse,down,1,double"; source: "bar";
+         action: SIGNAL_EMIT "elm,action,click,double" "elm";
+      }
+   }
 }
