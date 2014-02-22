@@ -60,4 +60,11 @@ EXTRA_DIST = \
    panes_right_arrow.png \
    panes_recover_arrow.png \
    hotkeys.png \
-   pm_fill.png
+   pm_fill.png \
+   logo_s.png \
+   new.png \
+   load.png \
+	save.png \
+   lines.png \
+   setting.png \
+   status.png
