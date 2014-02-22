@@ -67,4 +67,5 @@ EXTRA_DIST = \
 	save.png \
    lines.png \
    setting.png \
-   status.png
+   status.png \
+   hotkey_inset_light.png
