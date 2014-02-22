@@ -18,4 +18,5 @@ EXTRA_DIST = common.h \
 	indent.h \
 	syntax_helper.h \
 	template_code.h \
-	hotkeys.h
+	hotkeys.h \
+	search.h

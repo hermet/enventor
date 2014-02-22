@@ -162,6 +162,12 @@ ctrl_func(app_data *ad, const char *key)
    //Go to Begin/End
    if (!strcmp(key, "Home") || !strcmp(key, "End"))
      return ECORE_CALLBACK_PASS_ON;
+   //Find/Replace
+   if (!strcmp(key, "f") || !strcmp(key, "F"))
+     {
+        search_edit_word(ad->ed, "RECT");
+        return ECORE_CALLBACK_DONE;
+     }
    //Template Code
    if (!strcmp(key, "t") || !strcmp(key, "T"))
      {

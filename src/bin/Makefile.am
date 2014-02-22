@@ -27,6 +27,7 @@ enventor_SOURCES = \
 	edj_mgr.c \
 	build.c \
 	hotkeys.c \
+	search.c \
 	globals.c
 
 enventor_LDADD = @ENVENTOR_LIBS@
