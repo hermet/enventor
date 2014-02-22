@@ -4,6 +4,10 @@ styles {
      }
 }
 
+images {
+   image: "hotkey_inset_light.png" COMP;
+}
+
 group { name: "viewer_layout";
    parts {
       part { name: "prev_clipper";
@@ -93,7 +97,7 @@ group { name: "slider_layout";
       part { name: "elm.swallow.plus";
          type: SWALLOW;
          description { state: "default" 0.0;
-            min: 20 20;
+            min: 24 24;
             fixed: 1 1;
             align: 0 0.5;
             rel1.relative: 0.0 0.5;
@@ -103,14 +107,13 @@ group { name: "slider_layout";
       part { name: "elm.swallow.minus";
          type: SWALLOW;
          description { state: "default" 0.0;
-            min: 20 20;
+            min: 24 24;
             fixed: 1 1;
             align: 0 0.5;
             rel1.to: "elm.swallow.plus";
             rel2.to: "elm.swallow.plus";
             rel1.relative: 1.0 0.5;
             rel2.relative: 1.0 0.5;
-            rel1.offset: 1 0;
          }
       }
       part { name: "elm.swallow.slider";
@@ -285,13 +288,25 @@ group { name: "main_layout";
          description { state: "default" 0.0;
             rel1.relative: 0 0;
             rel2.relative: 1 0;
-            min: 0 30;
+            min: 0 26;
             fixed: 0 1;
             align: 0.5 0;
          }
          description { state: "hide" 0.0;
             inherit: "default";
             align: 0.5 1;
+         }
+      }
+      part { name: "hotkey_overlay";
+         type: IMAGE;
+         scale: 1;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            rel1.to: "elm.swallow.hotkeys";
+            rel2.to: "elm.swallow.hotkeys";
+            image.normal: "hotkey_inset_light.png";
+            image.border: 0 0 0 1;
+            image.border_scale: 1;
          }
       }
       part { name: "elm.swallow.panes";

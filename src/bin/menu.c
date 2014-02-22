@@ -547,7 +547,7 @@ about_open(menu_data *md)
 
    elm_object_part_content_set(layout, "elm.swallow.entry", entry);
 
-   elm_entry_entry_append(entry, "<color=#ffffff><font_size=12>");
+   elm_entry_entry_append(entry, "<color=#ffffff>");
 
    //Read README
    char buf[PATH_MAX];

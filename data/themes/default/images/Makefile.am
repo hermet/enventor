@@ -61,4 +61,12 @@ EXTRA_DIST = \
    panes_recover_arrow.png \
    hotkeys_close.png \
    hotkeys_open.png \
-   pm_fill.png
+   pm_fill.png \
+   logo_s.png \
+   new.png \
+   load.png \
+	save.png \
+   lines.png \
+   setting.png \
+   status.png \
+   hotkey_inset_light.png

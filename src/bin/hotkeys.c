@@ -55,7 +55,7 @@ f12_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 }
 
 static Evas_Object *
-btn_create(Evas_Object *parent, const char *text, Evas_Smart_Cb cb, void *data)
+btn_create(Evas_Object *parent, const char *text, Evas_Smart_Cb cb, void *data, const char *img_name)
 {
    Evas_Object *btn = elm_button_add(parent);
    elm_object_style_set(btn, "anchor");
@@ -65,6 +65,10 @@ btn_create(Evas_Object *parent, const char *text, Evas_Smart_Cb cb, void *data)
    elm_object_focus_allow_set(btn, EINA_FALSE);
    evas_object_smart_callback_add(btn, "clicked", cb, data);
    evas_object_show(btn);
+
+   Evas_Object *img = elm_image_add(btn);
+   elm_image_file_set(img, EDJE_PATH, img_name);
+   elm_object_content_set(btn, img);
 
    return btn;
 }
@@ -78,40 +82,40 @@ hotkeys_create(Evas_Object *parent, edit_data *ed)
 
    Evas_Object *btn;
 
-   btn = btn_create(box, "F1: About", f1_cb, NULL);
+   btn = btn_create(box, "About", f1_cb, NULL, "logo");
    elm_box_pack_end(box, btn);
 
-   btn = btn_create(box, "F2: New", f2_cb, NULL);
+   btn = btn_create(box, "New", f2_cb, NULL, "new");
    elm_box_pack_end(box, btn);
 
-   btn = btn_create(box, "F3: Save", f3_cb, NULL);
+   btn = btn_create(box, "Save", f3_cb, NULL, "save");
    elm_box_pack_end(box, btn);
 
-   btn = btn_create(box, "F4: Load", f4_cb, NULL);
+   btn = btn_create(box, "Load", f4_cb, NULL, "load");
    elm_box_pack_end(box, btn);
 
-   btn = btn_create(box, "F5: Line Num", f5_cb, ed);
+   btn = btn_create(box, "Lines", f5_cb, ed, "lines");
    elm_box_pack_end(box, btn);
 
-   btn = btn_create(box, "F6: Status", f6_cb, NULL);
+   btn = btn_create(box, "Status", f6_cb, NULL, "status");
    elm_box_pack_end(box, btn);
 
-   btn = btn_create(box, "F7: ---", NULL, NULL);
+   btn = btn_create(box, "---", NULL, NULL, NULL);
    elm_box_pack_end(box, btn);
 
-   btn = btn_create(box, "F8: ---", NULL, NULL);
+   btn = btn_create(box, "---", NULL, NULL, NULL);
    elm_box_pack_end(box, btn);
 
-   btn = btn_create(box, "F9: ---", NULL, NULL);
+   btn = btn_create(box, "---", NULL, NULL, NULL);
    elm_box_pack_end(box, btn);
 
-   btn = btn_create(box, "F10: ---", NULL, NULL);
+   btn = btn_create(box, "---", NULL, NULL, NULL);
    elm_box_pack_end(box, btn);
 
-   btn = btn_create(box, "F11: ---", NULL, NULL);
+   btn = btn_create(box, "---", NULL, NULL, NULL);
    elm_box_pack_end(box, btn);
 
-   btn = btn_create(box, "F12: Setting", f12_cb, NULL);
+   btn = btn_create(box, "Setting", f12_cb, NULL, "setting");
    elm_box_pack_end(box, btn);
 
    return box;

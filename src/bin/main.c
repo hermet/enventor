@@ -162,6 +162,12 @@ ctrl_func(app_data *ad, const char *key)
    //Go to Begin/End
    if (!strcmp(key, "Home") || !strcmp(key, "End"))
      return ECORE_CALLBACK_PASS_ON;
+   //Find/Replace
+   if (!strcmp(key, "f") || !strcmp(key, "F"))
+     {
+        search_edit_word(ad->ed, "RECT");
+        return ECORE_CALLBACK_DONE;
+     }
    //Template Code
    if (!strcmp(key, "t") || !strcmp(key, "T"))
      {
@@ -336,7 +342,7 @@ edc_view_set(Eina_Stringshare *group)
 
    if (!vd) return;
 
-   if (group) stats_edc_group_set(group);
+   if (group) stats_edc_group_update(group);
 }
 
 static void
@@ -403,10 +409,6 @@ args_dispatch(int argc, char **argv, char *edc_path, char *img_path,
               char *snd_path, char *fnt_path, char *data_path)
 {
    Eina_Bool default_edc = EINA_TRUE;
-   Eina_Bool default_img = EINA_TRUE;
-   Eina_Bool default_snd = EINA_TRUE;
-   Eina_Bool default_fnt = EINA_TRUE;
-   Eina_Bool default_data = EINA_TRUE;
 
    //No arguments. set defaults
    if (argc == 1) goto defaults;
@@ -434,45 +436,29 @@ args_dispatch(int argc, char **argv, char *edc_path, char *img_path,
         if (argc > (cur_arg + 1))
           {
              if (!strcmp("-id", argv[cur_arg]))
-               {
-                  sprintf(img_path, "%s", argv[cur_arg + 1]);
-                  default_img = EINA_FALSE;
-               }
+               sprintf(img_path, "%s", argv[cur_arg + 1]);
              else if (!strcmp("-sd", argv[cur_arg]))
-               {
-                  sprintf(snd_path, "%s", argv[cur_arg + 1]);
-                  default_snd = EINA_FALSE;
-               }
+               sprintf(snd_path, "%s", argv[cur_arg + 1]);
              else if (!strcmp("-fd", argv[cur_arg]))
-               {
-                  sprintf(fnt_path, "%s", argv[cur_arg + 1]);
-                  default_fnt = EINA_FALSE;
-               }
+               sprintf(fnt_path, "%s", argv[cur_arg + 1]);
              else if (!strcmp("-dd", argv[cur_arg]))
-               {
-                  sprintf(data_path, "%s", argv[cur_arg + 1]);
-                  default_data = EINA_FALSE;
-               }
+               sprintf(data_path, "%s", argv[cur_arg + 1]);
           }
         cur_arg += 2;
      }
 
 defaults:
    if (default_edc) sprintf(edc_path, "%s", PROTO_EDC_PATH);
-   if (default_img) sprintf(img_path, "%s/images", elm_app_data_dir_get());
-   if (default_snd) sprintf(snd_path, "%s/sounds", elm_app_data_dir_get());
-   if (default_fnt) sprintf(fnt_path, "%s/fonts", elm_app_data_dir_get());
-   if (default_data) sprintf(data_path, "%s/data", elm_app_data_dir_get());
 }
 
 static void
 config_data_set(app_data *ad, int argc, char **argv)
 {
-   char edc_path[PATH_MAX];
-   char img_path[PATH_MAX];
-   char snd_path[PATH_MAX];
-   char fnt_path[PATH_MAX];
-   char data_path[PATH_MAX];
+   char edc_path[PATH_MAX] = { 0, };
+   char img_path[PATH_MAX] = { 0, };
+   char snd_path[PATH_MAX] = { 0, };
+   char fnt_path[PATH_MAX] = { 0, };
+   char data_path[PATH_MAX] = { 0, };
 
    args_dispatch(argc, argv, edc_path, img_path, snd_path, fnt_path, data_path);
    config_init(edc_path, img_path, snd_path, fnt_path, data_path);
@@ -482,6 +468,7 @@ config_data_set(app_data *ad, int argc, char **argv)
 static void
 elm_setup()
 {
+   elm_need_efreet();
    elm_config_profile_set("standard");
 
    /* Recover the scale & theme since it will be reset by
