@@ -100,21 +100,6 @@ hotkeys_create(Evas_Object *parent, edit_data *ed)
    btn = btn_create(box, "Status", f6_cb, NULL, "status");
    elm_box_pack_end(box, btn);
 
-   btn = btn_create(box, "---", NULL, NULL, NULL);
-   elm_box_pack_end(box, btn);
-
-   btn = btn_create(box, "---", NULL, NULL, NULL);
-   elm_box_pack_end(box, btn);
-
-   btn = btn_create(box, "---", NULL, NULL, NULL);
-   elm_box_pack_end(box, btn);
-
-   btn = btn_create(box, "---", NULL, NULL, NULL);
-   elm_box_pack_end(box, btn);
-
-   btn = btn_create(box, "---", NULL, NULL, NULL);
-   elm_box_pack_end(box, btn);
-
    btn = btn_create(box, "Setting", f12_cb, NULL, "setting");
    elm_box_pack_end(box, btn);
 
