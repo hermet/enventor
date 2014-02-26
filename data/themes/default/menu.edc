@@ -419,7 +419,7 @@ group { name: "warning_layout";
          description {
             rel1 { to: "elm.text.title"; relative: 0.5 1; offset: 0 10; }
             rel2 { to: "elm.text.title"; relative: 0.5 1; }
-            text.text: "Without save, you will lost last changes!";
+            text.text: "Without save, you will lose last changes!";
             text {
                font: FN;
                size: 11;
