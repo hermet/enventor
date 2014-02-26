@@ -9,7 +9,7 @@
       else if (ret == -1) goto finished; \
    } \
 
-#define COL_NUM 6
+#define COL_NUM 8
 
 struct syntax_color_s
 {
@@ -29,6 +29,8 @@ color_init(Eina_Strbuf *strbuf)
    cd->cols[3] = eina_stringshare_add("D4D42A");
    cd->cols[4] = eina_stringshare_add("00B000");
    cd->cols[5] = eina_stringshare_add("D42A2A");
+   cd->cols[6] = eina_stringshare_add("00FFFF");
+   cd->cols[7] = eina_stringshare_add("D78700");
 
    return cd;
 }
@@ -450,6 +452,7 @@ color_apply(color_data *cd, const char *src, int length)
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "rel1", col2);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "rel2", col2);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "rotation", col2);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "script", col2);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "styles", col2);
 
         //syntax group 3
@@ -533,6 +536,7 @@ color_apply(color_data *cd, const char *src, int length)
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "OUTLINE_SHADOW", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "OUTLINE", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "PLAIN", col4);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "PROGRAM", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "PROXY", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "RAW", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "RECT", col4);
@@ -552,6 +556,28 @@ color_apply(color_data *cd, const char *src, int length)
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "USER", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "VERTICAL", col4);
 
+        //syntax group 7
+        Eina_Stringshare *col6 = cd->cols[6];
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "anim", col6);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "cancel_anim", col6);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "cancel_timer", col6);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "get_float", col6);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "get_int", col6);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "run_program", col6);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "set_float", col6);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "set_int", col6);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "set_state", col6);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "set_tween_state",
+                     col6);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "timer", col6);
+
+        //syntax group 8
+        Eina_Stringshare *col7 = cd->cols[7];
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "if", col7);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "else", col7);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "new", col7);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "public", col7);
+
         //duplicated groups 1
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "image:", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "size:", col3);
@@ -562,7 +588,6 @@ color_apply(color_data *cd, const char *src, int length)
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "size", col2);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "text", col2);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "perspective", col2);
-
 
         cur++;
      }
