@@ -208,7 +208,10 @@ panes_init(Evas_Object *parent)
 
    //Hotkey Image
    img = elm_image_add(hotkeys_btn);
-   elm_image_file_set(img, EDJE_PATH, "hotkeys_close");
+   if (config_hotkeys_get())
+     elm_image_file_set(img, EDJE_PATH, "hotkeys_close");
+   else
+     elm_image_file_set(img, EDJE_PATH, "hotkeys_open");
    evas_object_show(img);
 
    elm_object_content_set(hotkeys_btn, img);
