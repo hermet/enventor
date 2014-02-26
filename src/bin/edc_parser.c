@@ -432,8 +432,7 @@ parser_paragh_name_get(parser_data *pd EINA_UNUSED, Evas_Object *entry)
         { "rel2", 4 }
      };
 
-   Evas_Object *tb = elm_entry_textblock_get(entry);
-   char *text = (char *) evas_object_textblock_text_markup_get(tb);
+   const char *text = elm_entry_entry_get(entry);
    if (!text) return NULL;
 
    char *utf8 = elm_entry_markup_to_utf8(text);
@@ -500,8 +499,7 @@ parser_cur_name_get(parser_data *pd, Evas_Object *entry, void (*cb)(void *data, 
    cur_name_td *td = calloc(1, sizeof(cur_name_td));
    if (!td) return;
 
-   Evas_Object *tb = elm_entry_textblock_get(entry);
-   char *text = (char *) evas_object_textblock_text_markup_get(tb);
+   const char *text = elm_entry_entry_get(entry);
    if (!text) return;
 
    char *utf8 = elm_entry_markup_to_utf8(text);
