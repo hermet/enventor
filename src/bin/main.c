@@ -165,7 +165,7 @@ ctrl_func(app_data *ad, const char *key)
    //Find/Replace
    if (!strcmp(key, "f") || !strcmp(key, "F"))
      {
-        search_edit_word(ad->ed, "RECT");
+        edit_search(ad->ed, "part");
         return ECORE_CALLBACK_DONE;
      }
    //Template Code

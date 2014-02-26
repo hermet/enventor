@@ -863,3 +863,15 @@ edit_font_size_update(edit_data *ed, Eina_Bool msg)
    snprintf(buf, sizeof(buf), "Font Size: %1.1fx", config_font_size_get());
    stats_info_msg_update(buf);
 }
+
+void
+edit_search(edit_data *ed, const char *word)
+{
+   Eina_Bool found;
+   static search_data *sd = NULL;
+
+   sd  = search_word(sd, ed->en_edit, word, &found);
+//   search_stop(sd);
+   printf("word(%s) found(%d)\n", word, found);
+   fflush(stdout);
+}
