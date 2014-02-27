@@ -113,7 +113,8 @@ edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 
    if (info->insert)
      {
-        if (info->change.insert.content[0] == ' ') return;
+        if ((info->change.insert.plain_length == 1)&&
+            (info->change.insert.content[0] == ' ')) return;
 
         if (!strcmp(info->change.insert.content, "<br/>"))
           {
