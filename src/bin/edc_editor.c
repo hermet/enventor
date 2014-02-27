@@ -867,10 +867,8 @@ void
 edit_search(edit_data *ed, const char *word)
 {
    Eina_Bool found;
-   static search_data *sd = NULL;
-
-   sd  = search_word(sd, ed->en_edit, word, &found);
-//   search_stop(sd);
-   printf("word(%s) found(%d)\n", word, found);
-   fflush(stdout);
+   search_open();
+//   sd  = search_word(sd, ed->en_edit, word, &found);
+//   printf("word(%s) found(%d)\n", word, found);
+//   fflush(stdout);
 }
