@@ -681,7 +681,7 @@ edit_init(Evas_Object *parent)
 
    //Line Number Entry
    Evas_Object *en_line = elm_entry_add(layout);
-   elm_object_style_set(en_line, "linenumber");
+   evas_object_color_set(en_line, 101, 101, 101, 255);
    elm_entry_editable_set(en_line, EINA_FALSE);
    elm_entry_line_wrap_set(en_line, EINA_FALSE);
    evas_object_size_hint_weight_set(en_line, 0, EVAS_HINT_EXPAND);
@@ -692,7 +692,6 @@ edit_init(Evas_Object *parent)
 
    //EDC Editor Entry
    Evas_Object *en_edit = elm_entry_add(layout);
-   elm_object_style_set(en_edit, elm_app_name_get());
    elm_entry_context_menu_disabled_set(en_edit, EINA_TRUE);
    elm_entry_line_wrap_set(en_edit, EINA_FALSE);
    evas_object_smart_callback_add(en_edit, "changed,user", edit_changed_cb, ed);

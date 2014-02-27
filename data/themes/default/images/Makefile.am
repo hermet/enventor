@@ -26,7 +26,6 @@ EXTRA_DIST = \
    holes_tiny_horiz.png \
    holes_tiny_vert.png \
    holes_vert.png \
-   horizontal_separated_bar_small_glow.png \
    inset_shadow.png \
    logo.png \
    menu_layout.png \
@@ -55,7 +54,6 @@ EXTRA_DIST = \
    sym_up_light_normal.png \
    vgrad_med_lighter.png \
    warning.png \
-   white_bar_vert_glow.png \
    panes_left_arrow.png \
    panes_right_arrow.png \
    panes_recover_arrow.png \
