@@ -854,8 +854,7 @@ edit_new(edit_data *ed)
 void
 edit_font_size_update(edit_data *ed, Eina_Bool msg)
 {
-   elm_object_scale_set(ed->en_edit, config_font_size_get());
-   elm_object_scale_set(ed->en_line, config_font_size_get());
+   elm_object_scale_set(ed->layout, config_font_size_get());
 
    if (!msg) return;
 
