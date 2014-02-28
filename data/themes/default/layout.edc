@@ -8,6 +8,109 @@ images {
    image: "hotkey_inset_light.png" COMP;
 }
 
+group { name: "search";
+   parts {
+      part { name: "base";
+         type: SPACER;
+         description { state: "default" 0.0;
+            min: 300 100;
+         }
+      }
+      part { name: "left_top_padding";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1.relative: 0 0;
+            rel2.relative: 0 0;
+            fixed: 1 1;
+            align: 0 0;
+            min: 5 5;
+         }
+      }
+      part { name: "elm.text.find";
+         type: TEXT;
+         scale: 1;
+         effect: SHADOW BOTTOM;
+         description { state: "default" 0.0;
+            align: 0 0;
+            rel1.to: "left_top_padding";
+            rel2.to: "left_top_padding";
+            rel1.relative: 1 1;
+            rel2.relative: 1 1;
+            text {
+               font: FN;
+               size: 11;
+               align: 0 0;
+               text: "Find:";
+            }
+            color: 255 255 255 255;
+            color3: 0 0 0 128;
+            min: 60 20;
+            fixed: 1 1;
+         }
+      }
+      part { name: "elm.text.replace";
+         type: TEXT;
+         scale: 1;
+         effect: SHADOW BOTTOM;
+         description { state: "default" 0.0;
+            align: 0 0;
+            rel1.to: "elm.text.find";
+            rel2.to: "elm.text.find";
+            rel1.relative: 0 1;
+            rel2.relative: 0 1;
+            rel1.offset: 0 5;
+            text {
+               font: FN;
+               size: 11;
+               align: 0 0;
+               text: "Replace:";
+            }
+            color: 255 255 255 255;
+            color3: 0 0 0 128;
+            min: 60 20;
+            fixed: 1 1;
+         }
+      }
+      part { name: "elm.swallow.find_entry";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1.relative: 1 0;
+            rel2.relative: 1 1;
+            rel1.to: "elm.text.find";
+            rel2.to_y: "elm.text.find";
+            rel2.offset: -5 -1;
+            fixed: 1 1;
+         }
+      }
+      part { name: "elm.swallow.replace_entry";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1.relative: 1 0;
+            rel2.relative: 1 1;
+            rel1.to: "elm.text.replace";
+            rel2.to_y: "elm.text.replace";
+            rel2.offset: -5 -1;
+            fixed: 1 1;
+         }
+      }
+/*      part { name: "elm.swallow.find";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1.relative: 1 0;
+            rel2.relative: 1 1;
+            rel1.to: "elm.text.replace";
+            rel2.to_y: "elm.text.replace";
+            rel2.offset: -5 -1;
+            fixed: 1 1;
+         }
+      } */
+   }
+}
+
 group { name: "viewer_layout";
    parts {
       part { name: "prev_clipper";

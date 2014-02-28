@@ -20,59 +20,68 @@ win_delete_request_cb(void *data, Evas_Object *obj, void *event_info)
    search_close();
 }
 
+static void
+win_moved_cb(void *data, Evas_Object *obj, void *event_info)
+{
+   /* Move the window with the previous remembered position when the window is
+      moved by window manager first time. */
+   if ((win_x != -1) || (win_y != -1)) evas_object_move(obj, win_x, win_y);
+   evas_object_smart_callback_del(obj, "moved", win_moved_cb);
+}
+
 void
 search_open()
 {
+   if (g_sd) return;
+
    search_data *sd = calloc(1, sizeof(search_data));
    g_sd = sd;
 
    //Win
    Evas_Object *win = elm_win_add(base_win_get(), "Enventor Search",
-                                  ELM_WIN_DIALOG_BASIC);
+                                  ELM_WIN_UTILITY);
    elm_win_focus_highlight_enabled_set(win, EINA_TRUE);
    elm_win_title_set(win, "Find/Replace");
-   //FIXME: doesn't moved
-   if ((win_x == -1) && (win_y == -1)) evas_object_move(win, win_x, win_y);
+
    evas_object_resize(win, win_w, win_h);
    evas_object_smart_callback_add(win, "delete,request", win_delete_request_cb,
                                   sd);
+   evas_object_smart_callback_add(win, "moved", win_moved_cb, sd);
    evas_object_show(win);
 
-   //BG
+   //Bg
    Evas_Object *bg = elm_bg_add(win);
    evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_show(bg);
-
    elm_win_resize_object_add(win, bg);
 
-   //Box
-   Evas_Object *box = elm_box_add(win);
-   evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_show(box);
-   elm_win_resize_object_add(win, box);
+   //Layout
+   Evas_Object *layout = elm_layout_add(win);
+   elm_layout_file_set(layout, EDJE_PATH, "search");
+   evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_show(layout);
+   elm_win_resize_object_add(win, layout);
 
-   //Box 2
-   Evas_Object *box2 = elm_box_add(box);
-   evas_object_size_hint_align_set(box2, 0, 0);
-   evas_object_show(box2);
-   elm_box_pack_end(box, box2);
+   //Entry (find)
+   Evas_Object *entry_find = elm_entry_add(layout);
+   elm_object_style_set(entry_find, elm_app_name_get());
+   elm_entry_single_line_set(entry_find, EINA_TRUE);
+   elm_entry_scrollable_set(entry_find, EINA_TRUE);
+   evas_object_size_hint_weight_set(entry_find, EVAS_HINT_EXPAND, 0);
+   evas_object_size_hint_align_set(entry_find, EVAS_HINT_FILL, 0);
+   evas_object_show(entry_find);
+   elm_object_part_content_set(layout, "elm.swallow.find_entry", entry_find);
 
-   //Label (find)
-   Evas_Object *label_find;
-   label_find = elm_label_add(box2);
-   evas_object_size_hint_align_set(label_find, 0, 0);
-   elm_object_text_set(label_find, "Find:");
-   evas_object_show(label_find);
-   elm_box_pack_end(box2, label_find);
-
-   //Label (find)
-   Evas_Object *label_replace;
-   label_replace = elm_label_add(box2);
-   evas_object_size_hint_align_set(label_replace, 0, 0);
-   elm_object_text_set(label_replace, "Replace with:");
-   evas_object_show(label_replace);
-   elm_box_pack_end(box2, label_replace);
-
+   //Entry (replace)
+   Evas_Object *entry_replace = elm_entry_add(layout);
+   elm_object_style_set(entry_replace, elm_app_name_get());
+   elm_entry_single_line_set(entry_replace, EINA_TRUE);
+   elm_entry_scrollable_set(entry_replace, EINA_TRUE);
+   evas_object_size_hint_weight_set(entry_replace, EVAS_HINT_EXPAND,0);
+   evas_object_size_hint_align_set(entry_replace, EVAS_HINT_FILL, 0);
+   evas_object_show(entry_replace);
+   elm_object_part_content_set(layout, "elm.swallow.replace_entry",
+                               entry_replace);
    sd->win = win;
 }
 
@@ -84,7 +93,6 @@ search_close()
    //Save last state
    evas_object_geometry_get(sd->win, NULL, NULL, &win_w, &win_h);
    elm_win_screen_position_get(sd->win, &win_x, &win_y);
-   printf("%d %d\n", win_x, win_y);
    evas_object_del(sd->win);
    free(sd);
    g_sd = NULL;
