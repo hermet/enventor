@@ -309,7 +309,6 @@ static Evas_Object *
 entry_create(Evas_Object *parent)
 {
    Evas_Object *entry = elm_entry_add(parent);
-   elm_object_style_set(entry, elm_app_name_get());
    elm_entry_single_line_set(entry, EINA_TRUE);
    elm_entry_scrollable_set(entry, EINA_TRUE);
    evas_object_show(entry);
