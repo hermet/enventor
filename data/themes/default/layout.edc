@@ -13,7 +13,7 @@ group { name: "search";
       part { name: "base";
          type: SPACER;
          description { state: "default" 0.0;
-            min: 300 100;
+            min: 285 90;
          }
       }
       part { name: "left_top_padding";
@@ -96,18 +96,64 @@ group { name: "search";
             fixed: 1 1;
          }
       }
-/*      part { name: "elm.swallow.find";
+      part { name: "elm.swallow.find";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1.relative: 0 1;
+            rel2.relative: 0 1;
+            rel1.to_x: "elm.swallow.replace_entry";
+            rel1.to_y: "elm.swallow.replace_entry";
+            rel2.to_x: "elm.swallow.replace_entry";
+            rel2.to_y: "elm.swallow.replace_entry";
+            rel1.offset: 0 10;
+            min: 50 25;
+            align: 0 0;
+            fixed: 1 1;
+         }
+      }
+      part { name: "elm.swallow.replace/find";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
             rel1.relative: 1 0;
             rel2.relative: 1 1;
-            rel1.to: "elm.text.replace";
-            rel2.to_y: "elm.text.replace";
-            rel2.offset: -5 -1;
+            rel1.to: "elm.swallow.find";
+            rel2.to: "elm.swallow.find";
+            rel1.offset: 5 0;
+            min: 50 25;
+            align: 0 0;
             fixed: 1 1;
          }
-      } */
+      }
+      part { name: "elm.swallow.replace";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1.relative: 1 0;
+            rel2.relative: 1 1;
+            rel1.to: "elm.swallow.replace/find";
+            rel2.to: "elm.swallow.replace/find";
+            rel1.offset: 5 0;
+            min: 50 25;
+            align: 0 0;
+            fixed: 1 1;
+         }
+      }
+      part { name: "elm.swallow.replace_all";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1.relative: 1 0;
+            rel2.relative: 1 1;
+            rel1.to: "elm.swallow.replace";
+            rel2.to: "elm.swallow.replace";
+            rel1.offset: 5 0;
+            min: 50 25;
+            align: 0 0;
+            fixed: 1 1;
+         }
+      }
    }
 }
 

@@ -10,8 +10,8 @@ typedef struct search_s
 static search_data *g_sd = NULL;
 static Evas_Coord win_x = -1;
 static Evas_Coord win_y = -1;
-static Evas_Coord win_w = 300;
-static Evas_Coord win_h = 100;
+static Evas_Coord win_w = 285;
+static Evas_Coord win_h = 90;
 
 static void
 win_delete_request_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
@@ -64,7 +64,6 @@ search_open()
 
    //Entry (find)
    Evas_Object *entry_find = elm_entry_add(layout);
-   elm_object_style_set(entry_find, elm_app_name_get());
    elm_entry_single_line_set(entry_find, EINA_TRUE);
    elm_entry_scrollable_set(entry_find, EINA_TRUE);
    evas_object_size_hint_weight_set(entry_find, EVAS_HINT_EXPAND, 0);
@@ -74,7 +73,6 @@ search_open()
 
    //Entry (replace)
    Evas_Object *entry_replace = elm_entry_add(layout);
-   elm_object_style_set(entry_replace, elm_app_name_get());
    elm_entry_single_line_set(entry_replace, EINA_TRUE);
    elm_entry_scrollable_set(entry_replace, EINA_TRUE);
    evas_object_size_hint_weight_set(entry_replace, EVAS_HINT_EXPAND,0);
@@ -82,6 +80,28 @@ search_open()
    evas_object_show(entry_replace);
    elm_object_part_content_set(layout, "elm.swallow.replace_entry",
                                entry_replace);
+   //Button (find)
+   Evas_Object *btn_find = elm_button_add(layout);
+   elm_object_text_set(btn_find, "Find");
+   evas_object_show(btn_find);
+   elm_object_part_content_set(layout, "elm.swallow.find", btn_find);
+
+   //Button (find/replace)
+   Evas_Object *btn_replace_find = elm_button_add(layout);
+   elm_object_text_set(btn_replace_find, "Find/Replace");
+   evas_object_show(btn_replace_find);
+   elm_object_part_content_set(layout, "elm.swallow.replace/find",
+                               btn_replace_find);
+
+   //Button (replace)
+   Evas_Object *btn_replace = elm_button_add(layout);
+   elm_object_text_set(btn_replace, "Replace");
+   evas_object_show(btn_replace);
+   elm_object_part_content_set(layout, "elm.swallow.replace", btn_replace);
+
+   sd->win = win;
+
+
    sd->win = win;
 }
 
