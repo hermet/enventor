@@ -864,9 +864,9 @@ edit_font_size_update(edit_data *ed, Eina_Bool msg)
 }
 
 void
-edit_search(edit_data *ed, const char *word)
+edit_search(edit_data *ed EINA_UNUSED, const char *word EINA_UNUSED)
 {
-   Eina_Bool found;
+//   Eina_Bool found;
    search_open();
 //   sd  = search_word(sd, ed->en_edit, word, &found);
 //   printf("word(%s) found(%d)\n", word, found);

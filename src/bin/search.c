@@ -14,14 +14,14 @@ static Evas_Coord win_w = 300;
 static Evas_Coord win_h = 100;
 
 static void
-win_delete_request_cb(void *data, Evas_Object *obj, void *event_info)
+win_delete_request_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 {
-   search_data *sd = data;
+   //search_data *sd = data;
    search_close();
 }
 
 static void
-win_moved_cb(void *data, Evas_Object *obj, void *event_info)
+win_moved_cb(void *data EINA_UNUSED, Evas_Object *obj, void *event_info EINA_UNUSED)
 {
    /* Move the window with the previous remembered position when the window is
       moved by window manager first time. */
