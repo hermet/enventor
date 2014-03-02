@@ -165,7 +165,7 @@ ctrl_func(app_data *ad, const char *key)
    //Find/Replace
    if (!strcmp(key, "f") || !strcmp(key, "F"))
      {
-        edit_search(ad->ed, "part");
+        search_open();
         return ECORE_CALLBACK_DONE;
      }
    //Template Code
@@ -245,6 +245,12 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    //Main Menu
    if (!strcmp(event->key, "Escape"))
      {
+        if (search_is_opened())
+          {
+             search_close();
+             edit_focus_set(ad->ed);
+             return ECORE_CALLBACK_DONE;
+          }
         menu_toggle();
         if (menu_open_depth() == 0)
           edit_focus_set(ad->ed);

@@ -713,6 +713,8 @@ edit_init(Evas_Object *parent)
 
    elm_object_part_content_set(layout, "elm.swallow.edit", en_edit);
 
+   search_entry_register(en_edit);
+
    ed->scroller = scroller;
    ed->en_line = en_line;
    ed->en_edit = en_edit;
@@ -861,14 +863,4 @@ edit_font_size_update(edit_data *ed, Eina_Bool msg)
    char buf[128];
    snprintf(buf, sizeof(buf), "Font Size: %1.1fx", config_font_size_get());
    stats_info_msg_update(buf);
-}
-
-void
-edit_search(edit_data *ed EINA_UNUSED, const char *word EINA_UNUSED)
-{
-//   Eina_Bool found;
-   search_open();
-//   sd  = search_word(sd, ed->en_edit, word, &found);
-//   printf("word(%s) found(%d)\n", word, found);
-//   fflush(stdout);
 }

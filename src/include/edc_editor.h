@@ -12,6 +12,5 @@ void edit_new(edit_data* ed);
 void edit_view_sync_cb_set(edit_data *ed, void (*cb)(void *data, Eina_Stringshare *part_name, Eina_Stringshare *group_name), void *data);
 void edit_view_sync(edit_data *ed);
 void edit_font_size_update(edit_data *ed, Eina_Bool msg);
-void edit_search(edit_data *ed, const char *word);
 void edit_template_insert(edit_data *ed);
 void edit_template_part_insert(edit_data *ed, Edje_Part_Type type);

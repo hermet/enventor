@@ -13,7 +13,7 @@ group { name: "search";
       part { name: "base";
          type: SPACER;
          description { state: "default" 0.0;
-            min: 285 90;
+            min: 340 90;
          }
       }
       part { name: "left_top_padding";
@@ -45,7 +45,7 @@ group { name: "search";
             }
             color: 255 255 255 255;
             color3: 0 0 0 128;
-            min: 60 20;
+            min: 80 20;
             fixed: 1 1;
          }
       }
@@ -64,11 +64,11 @@ group { name: "search";
                font: FN;
                size: 11;
                align: 0 0;
-               text: "Replace:";
+               text: "Replace with:";
             }
             color: 255 255 255 255;
             color3: 0 0 0 128;
-            min: 60 20;
+            min: 80 20;
             fixed: 1 1;
          }
       }
