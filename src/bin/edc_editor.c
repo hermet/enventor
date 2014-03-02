@@ -82,6 +82,7 @@ syntax_color_apply(edit_data *ed)
    elm_entry_entry_set(ed->en_edit, NULL);
    elm_entry_entry_append(ed->en_edit, translated);
    elm_entry_cursor_pos_set(ed->en_edit, pos);
+   //FIXME: Need to recover selection area.
    free(utf8);
 }
 

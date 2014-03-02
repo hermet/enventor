@@ -8,6 +8,7 @@ typedef struct search_s
    Evas_Object *en_replace;
    Evas_Object *entry;
    int pos;
+   Eina_Bool found : 1;
 } search_data;
 
 static search_data *g_sd = NULL;
@@ -36,28 +37,23 @@ win_moved_cb(void *data EINA_UNUSED, Evas_Object *obj,
 }
 
 static void
-find_word(Evas_Object *entry, const char *word, Eina_Bool *found)
+find_proc(search_data *sd)
 {
-   search_data *sd = g_sd;
+   const char *find = elm_entry_entry_get(sd->en_find);
+   if (!find) return;
+
    char buf[256];
    Eina_Bool need_iterate = EINA_TRUE;
 
-   *found = EINA_FALSE;
-
-   const char *text = elm_entry_entry_get(entry);
-   const char *utf8 = elm_entry_markup_to_utf8(text);
+   const char *text = elm_entry_entry_get(sd->entry);
+   char *utf8 = elm_entry_markup_to_utf8(text);
 
    //get the character position begun with searching.
-   if (sd->pos == -1)
-      {
-         sd->pos = elm_entry_cursor_pos_get(entry);
-         need_iterate = EINA_FALSE;
-      }
+   if (sd->pos == -1) sd->pos = elm_entry_cursor_pos_get(sd->entry);
+   else if (sd->pos == 0) need_iterate = EINA_FALSE;
    else sd->pos++;
 
-   utf8 += sd->pos;
-
-   char *s = strstr(utf8, word);
+   char *s = strstr((utf8 + sd->pos), find);
 
    //No found
    if (!s)
@@ -66,25 +62,60 @@ find_word(Evas_Object *entry, const char *word, Eina_Bool *found)
         if (need_iterate)
           {
              sd->pos = 0;
-             find_word(entry, word, found);
+             find_proc(sd);
+             free(utf8);
              return;
           }
         //There are no searched words in the text
         else
           {
-             snprintf(buf, sizeof(buf), "No \"%s\" in the text", word);
+             snprintf(buf, sizeof(buf), "No \"%s\" in the text", find);
              stats_info_msg_update(buf);
              sd->pos = -1;
+             free(utf8);
              return;
           }
      }
 
    //Got you!
-   int len = strlen(word);
-   sd->pos += (s - utf8);
-   elm_entry_select_none(entry);
-   elm_entry_select_region_set(entry, sd->pos, sd->pos + len);
-   *found = EINA_TRUE;
+   int len = strlen(find);
+   sd->pos += (s - (utf8 + sd->pos));
+   elm_entry_select_none(sd->entry);
+   elm_entry_select_region_set(sd->entry, sd->pos, sd->pos + len);
+   sd->found = EINA_TRUE;
+   free(utf8);
+}
+
+static Eina_Bool
+replace_proc(search_data *sd)
+{
+   if (!sd->found) return EINA_FALSE;
+   const char *find = elm_entry_entry_get(sd->en_find);
+   const char *selection = elm_entry_selection_get(sd->entry);
+   if (!find || !selection) return EINA_FALSE;
+   char *utf8 = elm_entry_markup_to_utf8(selection);
+   if (strcmp(find, utf8)) return EINA_FALSE;
+   const char *replace = elm_entry_entry_get(sd->en_replace);
+   elm_entry_entry_insert(sd->entry, replace);
+   sd->found = EINA_FALSE;
+   free(utf8);
+   return EINA_TRUE;
+}
+
+static void
+replace_find_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                        void *event_info EINA_UNUSED)
+{
+   search_data *sd = data;
+   if (replace_proc(sd)) find_proc(sd);
+}
+
+static void
+replace_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                   void *event_info EINA_UNUSED)
+{
+   search_data *sd = data;
+   replace_proc(sd);
 }
 
 static void
@@ -92,10 +123,7 @@ find_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
                 void *event_info EINA_UNUSED)
 {
    search_data *sd = data;
-   const char *find = elm_entry_entry_get(sd->en_find);
-   if (!find) return;
-   Eina_Bool found;
-   find_word(sd->entry, find, &found);
+   find_proc(sd);
 }
 
 static void
@@ -104,20 +132,22 @@ find_key_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 {
    Evas_Event_Key_Down *ev = event_info;
    if (strcmp(ev->key, "Return")) return;
-
    search_data *sd = data;
-   const char *find = elm_entry_entry_get(sd->en_find);
-   if (!find) return;
-   Eina_Bool found;
-   find_word(sd->entry, find, &found);
+   find_proc(sd);
 }
 
 void
 search_open()
 {
-   if (g_sd) return;
+   search_data *sd = g_sd;
 
-   search_data *sd = calloc(1, sizeof(search_data));
+   if (sd)
+   {
+      elm_win_activate(sd->win);
+      return;
+   }
+
+   sd = calloc(1, sizeof(search_data));
    g_sd = sd;
 
    //Win
@@ -170,17 +200,20 @@ search_open()
    evas_object_smart_callback_add(btn_find, "clicked", find_clicked_cb, sd);
    elm_object_part_content_set(layout, "elm.swallow.find", btn_find);
 
-   //Button (find/replace)
+   //Button (replace/find)
    Evas_Object *btn_replace_find = elm_button_add(layout);
-   elm_object_text_set(btn_replace_find, "Find/Replace");
+   elm_object_text_set(btn_replace_find, "Replace/Find");
    elm_object_disabled_set(btn_replace_find, EINA_TRUE);
+   evas_object_smart_callback_add(btn_replace_find, "clicked",
+                                  replace_find_clicked_cb, sd);
    elm_object_part_content_set(layout, "elm.swallow.replace/find",
                                btn_replace_find);
 
    //Button (replace)
    Evas_Object *btn_replace = elm_button_add(layout);
    elm_object_text_set(btn_replace, "Replace");
-   elm_object_disabled_set(btn_replace, EINA_TRUE);
+   evas_object_smart_callback_add(btn_replace, "clicked",
+                                  replace_clicked_cb, sd);
    elm_object_part_content_set(layout, "elm.swallow.replace", btn_replace);
 
    //Button (replace all)
