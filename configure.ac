@@ -63,6 +63,7 @@ PKG_CHECK_MODULES([ENVENTOR],
    edje >= 1.8.0
    eo >= 1.8.0
    eio >= 1.8.0
+   efreet >= 1.8.0
    ]
  )
 
