@@ -439,11 +439,11 @@ group { name: "main_layout";
             rel2.relative: 1 0;
             min: 0 26;
             fixed: 0 1;
-            align: 0.5 0;
-         }
-         description { state: "hide" 0.0;
-            inherit: "default";
             align: 0.5 1;
+         }
+         description { state: "visible" 0.0;
+            inherit: "default";
+            align: 0.5 0;
          }
       }
       part { name: "hotkey_overlay";
@@ -474,38 +474,38 @@ group { name: "main_layout";
          description { state: "default" 0.0;
             rel1.relative: 0 1;
             rel2.relative: 1 1;
-            align: 0.5 1;
+            align: 0.5 0;
             min: 0 15;
             fixed: 0 1;
          }
-         description { state: "hide" 0.0;
+         description { state: "visible" 0.0;
             inherit: "default" 0.0;
-            align: 0.5 0;
+            align: 0.5 1;
          }
       }
    }
    programs {
       program { name: "statusbar_show";
          signal: "elm,state,statusbar,show";
-         action: STATE_SET "default" 0.0;
+         action: STATE_SET "visible" 0.0;
          target: "elm.swallow.statusbar";
          transition: DECELERATE 0.35;
       }
       program { name: "statusbar_hide";
          signal: "elm,state,statusbar,hide";
-         action: STATE_SET "hide" 0.0;
+         action: STATE_SET "default" 0.0;
          target: "elm.swallow.statusbar";
          transition: DECELERATE 0.35;
       }
       program { name: "hotkeys_show";
          signal: "elm,state,hotkeys,show";
-         action: STATE_SET "default" 0.0;
+         action: STATE_SET "visible" 0.0;
          target: "elm.swallow.hotkeys";
          transition: DECELERATE 0.35;
       }
       program { name: "hotkeys_hide";
          signal: "elm,state,hotkeys,hide";
-         action: STATE_SET "hide" 0.0;
+         action: STATE_SET "default" 0.0;
          target: "elm.swallow.hotkeys";
          transition: DECELERATE 0.35;
       }

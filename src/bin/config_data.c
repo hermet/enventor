@@ -122,12 +122,12 @@ config_load()
 
         cd->font_size = 1.0f;
         cd->view_scale = 1;
-        cd->stats_bar = EINA_TRUE;
+        cd->stats_bar = EINA_FALSE;
         cd->linenumber = EINA_TRUE;
         cd->part_highlight = EINA_TRUE;
         cd->dummy_swallow = EINA_TRUE;
         cd->auto_indent = EINA_TRUE;
-        cd->hotkeys = EINA_TRUE;
+        cd->hotkeys = EINA_FALSE;
      }
 
    g_cd = cd;
