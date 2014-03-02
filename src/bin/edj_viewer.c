@@ -125,7 +125,6 @@ view_scroller_create(Evas_Object *parent)
    evas_object_size_hint_weight_set(scroller, EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(scroller, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_show(scroller);
 
    return scroller;
 }
@@ -201,8 +200,6 @@ view_obj_create(view_data *vd, const char *file_path, const char *group)
    edje_object_signal_callback_add(layout,
                                    "edje,change,file", "edje",
                                    edje_change_file_cb, vd);
-   evas_object_show(layout);
-
    view_obj_min_update(layout);
 
    return layout;

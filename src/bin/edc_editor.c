@@ -669,15 +669,12 @@ edit_init(Evas_Object *parent)
    evas_object_size_hint_weight_set(scroller, EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(scroller, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_show(scroller);
 
    //Layout
    Evas_Object *layout = elm_layout_add(scroller);
    elm_layout_file_set(layout, EDJE_PATH,  "edit_layout");
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(layout, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_show(layout);
-
    elm_object_content_set(scroller, layout);
 
    //Line Number Entry
@@ -687,8 +684,6 @@ edit_init(Evas_Object *parent)
    elm_entry_line_wrap_set(en_line, EINA_FALSE);
    evas_object_size_hint_weight_set(en_line, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(en_line, 0, EVAS_HINT_FILL);
-   evas_object_show(en_line);
-
    elm_object_part_content_set(layout, "elm.swallow.linenumber", en_line);
 
    //EDC Editor Entry
@@ -707,10 +702,7 @@ edit_init(Evas_Object *parent)
    evas_object_size_hint_align_set(en_edit, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_event_callback_add(en_edit, EVAS_CALLBACK_MOUSE_DOWN,
                                   edit_mouse_down_cb, ed);
-   evas_object_show(en_edit);
-
    elm_object_focus_set(en_edit, EINA_TRUE);
-
    elm_object_part_content_set(layout, "elm.swallow.edit", en_edit);
 
    search_entry_register(en_edit);

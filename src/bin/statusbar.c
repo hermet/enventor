@@ -43,7 +43,6 @@ stats_init(Evas_Object *parent)
 
    Evas_Object *layout = elm_layout_add(parent);
    elm_layout_file_set(layout, EDJE_PATH, "statusbar_layout");
-   evas_object_show(layout);
 
    sd->layout = layout;
 

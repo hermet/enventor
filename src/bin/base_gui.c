@@ -133,7 +133,6 @@ base_gui_init()
    Evas_Object *icon = evas_object_image_add(evas_object_evas_get(win));
    snprintf(buf, sizeof(buf), "%s/images/logo.png", elm_app_data_dir_get());
    evas_object_image_file_set(icon, buf, NULL);
-   evas_object_show(icon);
    elm_win_icon_object_set(win, icon);
 
    //Base Layout

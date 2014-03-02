@@ -132,7 +132,6 @@ search_open()
    elm_entry_scrollable_set(entry_find, EINA_TRUE);
    evas_object_size_hint_weight_set(entry_find, EVAS_HINT_EXPAND, 0);
    evas_object_size_hint_align_set(entry_find, EVAS_HINT_FILL, 0);
-   evas_object_show(entry_find);
    elm_object_focus_set(entry_find, EINA_TRUE);
    elm_object_part_content_set(layout, "elm.swallow.find_entry", entry_find);
 
@@ -142,21 +141,18 @@ search_open()
    elm_entry_scrollable_set(entry_replace, EINA_TRUE);
    evas_object_size_hint_weight_set(entry_replace, EVAS_HINT_EXPAND,0);
    evas_object_size_hint_align_set(entry_replace, EVAS_HINT_FILL, 0);
-   evas_object_show(entry_replace);
    elm_object_part_content_set(layout, "elm.swallow.replace_entry",
                                entry_replace);
    //Button (find)
    Evas_Object *btn_find = elm_button_add(layout);
    elm_object_text_set(btn_find, "Find");
    evas_object_smart_callback_add(btn_find, "clicked", find_clicked_cb, sd);
-   evas_object_show(btn_find);
    elm_object_part_content_set(layout, "elm.swallow.find", btn_find);
 
    //Button (find/replace)
    Evas_Object *btn_replace_find = elm_button_add(layout);
    elm_object_text_set(btn_replace_find, "Find/Replace");
    elm_object_disabled_set(btn_replace_find, EINA_TRUE);
-   evas_object_show(btn_replace_find);
    elm_object_part_content_set(layout, "elm.swallow.replace/find",
                                btn_replace_find);
 
@@ -164,14 +160,12 @@ search_open()
    Evas_Object *btn_replace = elm_button_add(layout);
    elm_object_text_set(btn_replace, "Replace");
    elm_object_disabled_set(btn_replace, EINA_TRUE);
-   evas_object_show(btn_replace);
    elm_object_part_content_set(layout, "elm.swallow.replace", btn_replace);
 
    //Button (replace all)
    Evas_Object *btn_replace_all = elm_button_add(layout);
    elm_object_text_set(btn_replace_all, "Replace All");
    elm_object_disabled_set(btn_replace_all, EINA_TRUE);
-   evas_object_show(btn_replace_all);
    elm_object_part_content_set(layout, "elm.swallow.replace_all",
                                btn_replace_all);
    sd->win = win;

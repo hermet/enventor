@@ -167,23 +167,18 @@ warning_layout_create(menu_data *md, Evas_Smart_Cb yes_cb,
    evas_object_smart_callback_add(btn, "clicked", save_cb, md);
    evas_object_show(btn);
    elm_object_focus_set(btn, EINA_TRUE);
-
    elm_object_part_content_set(layout, "elm.swallow.save", btn);
 
    //No Button
    btn = elm_button_add(layout);
    elm_object_text_set(btn, "No");
    evas_object_smart_callback_add(btn, "clicked", warning_no_btn_cb, md);
-   evas_object_show(btn);
-
    elm_object_part_content_set(layout, "elm.swallow.no", btn);
 
    //Yes Button
    btn = elm_button_add(layout);
    elm_object_text_set(btn, "Yes");
    evas_object_smart_callback_add(btn, "clicked", yes_cb, md);
-   evas_object_show(btn);
-
    elm_object_part_content_set(layout, "elm.swallow.yes", btn);
 
    if (md->menu_layout)
@@ -373,7 +368,6 @@ setting_open(menu_data *md)
    //Preference
    Evas_Object *scroller = elm_scroller_add(layout);
    elm_object_part_content_set(layout, "elm.swallow.preference", scroller);
-   evas_object_show(scroller);
 
    Evas_Object *box = elm_box_add(scroller);
    evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -484,24 +478,18 @@ setting_open(menu_data *md)
    btn = elm_button_add(layout);
    elm_object_text_set(btn, "Apply");
    evas_object_smart_callback_add(btn, "clicked", setting_apply_btn_cb, md);
-   evas_object_show(btn);
-
    elm_object_part_content_set(layout, "elm.swallow.apply_btn", btn);
 
    //Reset Button
    btn = elm_button_add(layout);
    elm_object_text_set(btn, "Reset");
    evas_object_smart_callback_add(btn, "clicked", setting_reset_btn_cb, md);
-   evas_object_show(btn);
-
    elm_object_part_content_set(layout, "elm.swallow.reset_btn", btn);
 
    //Cancel Button
    btn = elm_button_add(layout);
    elm_object_text_set(btn, "Cancel");
    evas_object_smart_callback_add(btn, "clicked", setting_cancel_btn_cb, md);
-   evas_object_show(btn);
-
    elm_object_part_content_set(layout, "elm.swallow.cancel_btn", btn);
 
    if (md->menu_layout)
@@ -541,11 +529,8 @@ about_open(menu_data *md)
    elm_entry_line_wrap_set(entry, EINA_TRUE);
    elm_entry_editable_set(entry, EINA_FALSE);
    evas_object_show(entry);
-
    elm_object_focus_set(entry, EINA_TRUE);
-
    elm_object_part_content_set(layout, "elm.swallow.entry", entry);
-
    elm_entry_entry_append(entry, "<color=#ffffff>");
 
    //Read README

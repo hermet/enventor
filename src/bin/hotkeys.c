@@ -78,7 +78,6 @@ hotkeys_create(Evas_Object *parent, edit_data *ed)
 {
    Evas_Object *box = elm_box_add(parent);
    elm_box_horizontal_set(box, EINA_TRUE);
-   evas_object_show(box);
 
    Evas_Object *btn;
 

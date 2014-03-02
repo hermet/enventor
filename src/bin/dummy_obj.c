@@ -73,7 +73,6 @@ dummy_objs_update(dummy_obj *dummy)
              //New part. Add fake object.
              Evas_Object *obj = edje_object_add(dummy->layout);
              edje_object_file_set(obj, EDJE_PATH, "swallow");
-             evas_object_show(obj);
              edje_object_part_swallow(dummy->layout, part_name, obj);
 
              po->obj = obj;

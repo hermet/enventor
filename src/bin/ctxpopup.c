@@ -114,8 +114,6 @@ ctxpopup_candidate_list_create(Evas_Object *parent, attr_value *attr,
         //Layout
         Evas_Object *layout = elm_layout_add(ctxpopup);
         elm_layout_file_set(layout, EDJE_PATH, "slider_layout");
-        evas_object_show(layout);
-
         elm_object_content_set(ctxpopup, layout);
 
         //Slider
@@ -127,8 +125,6 @@ ctxpopup_candidate_list_create(Evas_Object *parent, attr_value *attr,
         elm_slider_min_max_set(slider, attr->min, attr->max);
         elm_slider_value_set(slider, slider_val);
         evas_object_data_set(slider, "attr", attr);
-        evas_object_show(slider);
-
         elm_object_part_content_set(layout, "elm.swallow.slider", slider);
 
         Evas_Object *btn;
@@ -136,30 +132,22 @@ ctxpopup_candidate_list_create(Evas_Object *parent, attr_value *attr,
 
         //Minus Button
         btn = elm_button_add(layout);
-        evas_object_show(btn);
         evas_object_smart_callback_add(btn, "clicked", btn_minus_cb, slider);
-
         elm_object_part_content_set(layout, "elm.swallow.minus", btn);
 
         //Minus Image
         img = elm_image_add(btn);
         elm_image_file_set(img, EDJE_PATH, "minus");
-        evas_object_show(img);
-
         elm_object_content_set(btn, img);
 
         //Plus Button
         btn = elm_button_add(layout);
-        evas_object_show(btn);
         evas_object_smart_callback_add(btn, "clicked", btn_plus_cb, slider);
-
         elm_object_part_content_set(layout, "elm.swallow.plus", btn);
 
         //Plus Image
         img = elm_image_add(btn);
         elm_image_file_set(img, EDJE_PATH, "plus");
-        evas_object_show(img);
-
         elm_object_content_set(btn, img);
 
         evas_object_smart_callback_add(ctxpopup, "dismissed",
@@ -211,8 +199,6 @@ ctxpopup_img_preview_create(Evas_Object *parent, const char *imgpath,
    //Layout
    Evas_Object *layout = elm_layout_add(ctxpopup);
    elm_layout_file_set(layout, EDJE_PATH, "preview_layout");
-   evas_object_show(layout);
-
    elm_object_content_set(ctxpopup, layout);
 
    Evas *e = evas_object_evas_get(ctxpopup);
@@ -221,7 +207,6 @@ ctxpopup_img_preview_create(Evas_Object *parent, const char *imgpath,
    Evas_Coord w, h;
    evas_object_image_size_get(img, &w, &h);
    evas_object_size_hint_aspect_set(img, EVAS_ASPECT_CONTROL_BOTH, w, h);
-   evas_object_show(img);
    elm_object_part_content_set(layout, "elm.swallow.img", img);
 
    evas_object_smart_callback_add(ctxpopup, "dismissed", ctxpopup_dismiss_cb,

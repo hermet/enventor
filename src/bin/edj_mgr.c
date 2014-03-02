@@ -66,7 +66,6 @@ edj_mgr_init(Evas_Object *parent)
 
    Evas_Object *layout = elm_layout_add(parent);
    elm_layout_file_set(layout, EDJE_PATH, "viewer_layout");
-   evas_object_show(layout);
    em->layout = layout;
 }
 

@@ -197,14 +197,12 @@ panes_init(Evas_Object *parent)
                                   press_cb, NULL);
    evas_object_smart_callback_add(panes, "unpress",
                                   unpress_cb, NULL);
-   evas_object_show(panes);
-
    //Hotkey Button
    Evas_Object *hotkeys_btn = elm_button_add(panes);
    elm_object_focus_allow_set(hotkeys_btn, EINA_FALSE);
    evas_object_smart_callback_add(hotkeys_btn, "clicked", hotkeys_clicked_cb,
                                   NULL);
-   evas_object_show(hotkeys_btn);
+   elm_object_part_content_set(panes, "elm.swallow.hotkeys", hotkeys_btn);
 
    //Hotkey Image
    img = elm_image_add(hotkeys_btn);
@@ -212,41 +210,29 @@ panes_init(Evas_Object *parent)
      elm_image_file_set(img, EDJE_PATH, "hotkeys_close");
    else
      elm_image_file_set(img, EDJE_PATH, "hotkeys_open");
-   evas_object_show(img);
-
    elm_object_content_set(hotkeys_btn, img);
-
-   elm_object_part_content_set(panes, "elm.swallow.hotkeys", hotkeys_btn);
 
    //Left Button
    Evas_Object *left_arrow = elm_button_add(panes);
    elm_object_focus_allow_set(left_arrow, EINA_FALSE);
    evas_object_smart_callback_add(left_arrow, "clicked", left_clicked_cb, pd);
-   evas_object_show(left_arrow);
+   elm_object_part_content_set(panes, "elm.swallow.left_arrow", left_arrow);
 
    //Left Arrow Image
    img = elm_image_add(left_arrow);
    elm_image_file_set(img, EDJE_PATH, "panes_left_arrow");
-   evas_object_show(img);
-
    elm_object_content_set(left_arrow, img);
-
-   elm_object_part_content_set(panes, "elm.swallow.left_arrow", left_arrow);
 
    //Right Button
    Evas_Object *right_arrow = elm_button_add(panes);
    elm_object_focus_allow_set(right_arrow, EINA_FALSE);
    evas_object_smart_callback_add(right_arrow, "clicked", right_clicked_cb, pd);
-   evas_object_show(right_arrow);
+   elm_object_part_content_set(panes, "elm.swallow.right_arrow", right_arrow);
 
    //Right Arrow Image
    img = elm_image_add(right_arrow);
    elm_image_file_set(img, EDJE_PATH, "panes_right_arrow");
-   evas_object_show(img);
-
    elm_object_content_set(right_arrow, img);
-
-   elm_object_part_content_set(panes, "elm.swallow.right_arrow", right_arrow);
 
    pd->panes = panes;
    pd->left_arrow = left_arrow;
