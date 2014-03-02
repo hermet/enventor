@@ -8,7 +8,6 @@ typedef struct search_s
    Evas_Object *en_replace;
    Evas_Object *entry;
    int pos;
-   Eina_Bool    need_iterate : 1;
 } search_data;
 
 static search_data *g_sd = NULL;
@@ -41,6 +40,7 @@ find_word(Evas_Object *entry, const char *word, Eina_Bool *found)
 {
    search_data *sd = g_sd;
    char buf[256];
+   Eina_Bool need_iterate = EINA_TRUE;
 
    *found = EINA_FALSE;
 
@@ -51,7 +51,7 @@ find_word(Evas_Object *entry, const char *word, Eina_Bool *found)
    if (sd->pos == -1)
       {
          sd->pos = elm_entry_cursor_pos_get(entry);
-         sd->need_iterate = EINA_FALSE;
+         need_iterate = EINA_FALSE;
       }
    else sd->pos++;
 
@@ -62,16 +62,19 @@ find_word(Evas_Object *entry, const char *word, Eina_Bool *found)
    //No found
    if (!s)
      {
-        //Need to iterate to find again?
-        if (sd->need_iterate)
+        //Need to iterate finding?
+        if (need_iterate)
           {
-
+             sd->pos = 0;
+             find_word(entry, word, found);
+             return;
           }
         //There are no searched words in the text
         else
           {
              snprintf(buf, sizeof(buf), "No \"%s\" in the text", word);
              stats_info_msg_update(buf);
+             sd->pos = -1;
              return;
           }
      }
@@ -79,6 +82,7 @@ find_word(Evas_Object *entry, const char *word, Eina_Bool *found)
    //Got you!
    int len = strlen(word);
    sd->pos += (s - utf8);
+   elm_entry_select_none(entry);
    elm_entry_select_region_set(entry, sd->pos, sd->pos + len);
    *found = EINA_TRUE;
 }
@@ -87,6 +91,20 @@ static void
 find_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
                 void *event_info EINA_UNUSED)
 {
+   search_data *sd = data;
+   const char *find = elm_entry_entry_get(sd->en_find);
+   if (!find) return;
+   Eina_Bool found;
+   find_word(sd->entry, find, &found);
+}
+
+static void
+find_key_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+                  void* event_info)
+{
+   Evas_Event_Key_Down *ev = event_info;
+   if (strcmp(ev->key, "Return")) return;
+
    search_data *sd = data;
    const char *find = elm_entry_entry_get(sd->en_find);
    if (!find) return;
@@ -130,8 +148,11 @@ search_open()
    Evas_Object *entry_find = elm_entry_add(layout);
    elm_entry_single_line_set(entry_find, EINA_TRUE);
    elm_entry_scrollable_set(entry_find, EINA_TRUE);
+   evas_object_event_callback_add(entry_find, EVAS_CALLBACK_KEY_DOWN,
+                                  find_key_down_cb, sd);
    evas_object_size_hint_weight_set(entry_find, EVAS_HINT_EXPAND, 0);
    evas_object_size_hint_align_set(entry_find, EVAS_HINT_FILL, 0);
+   evas_object_show(entry_find);
    elm_object_focus_set(entry_find, EINA_TRUE);
    elm_object_part_content_set(layout, "elm.swallow.find_entry", entry_find);
 
@@ -173,7 +194,6 @@ search_open()
    sd->en_replace = entry_replace;
    sd->entry = g_entry;
    sd->pos = -1;
-   sd->need_iterate = EINA_TRUE;
 }
 
 Eina_Bool
