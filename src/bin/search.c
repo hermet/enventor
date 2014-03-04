@@ -78,7 +78,7 @@ replace_all_proc(search_data *sd)
 }
 
 static void
-find_proc(search_data *sd)
+find_forward_proc(search_data *sd)
 {
    const char *find = elm_entry_entry_get(sd->en_find);
    if (!find) return;
@@ -103,7 +103,7 @@ find_proc(search_data *sd)
         if (need_iterate)
           {
              sd->pos = 0;
-             find_proc(sd);
+             find_forward_proc(sd);
              free(utf8);
              return;
           }
@@ -127,6 +127,12 @@ find_proc(search_data *sd)
    free(utf8);
 }
 
+static void
+find_backward_proc(search_data *sd)
+{
+   //TODO:
+}
+
 static Eina_Bool
 replace_proc(search_data *sd)
 {
@@ -144,11 +150,11 @@ replace_proc(search_data *sd)
 }
 
 static void
-replace_find_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
-                        void *event_info EINA_UNUSED)
+backward_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                    void *event_info EINA_UNUSED)
 {
    search_data *sd = data;
-   if (replace_proc(sd)) find_proc(sd);
+   find_backward_proc(sd);
 }
 
 static void
@@ -157,6 +163,7 @@ replace_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
 {
    search_data *sd = data;
    replace_proc(sd);
+   //if (replace_proc(sd)) find_forward_proc(sd);
 }
 
 static void
@@ -167,13 +174,12 @@ replace_all_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
    replace_all_proc(sd);
 }
 
-
 static void
-find_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
-                void *event_info EINA_UNUSED)
+forward_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                   void *event_info EINA_UNUSED)
 {
    search_data *sd = data;
-   find_proc(sd);
+   find_forward_proc(sd);
 }
 
 static void
@@ -183,7 +189,7 @@ find_key_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
    Evas_Event_Key_Down *ev = event_info;
    if (strcmp(ev->key, "Return")) return;
    search_data *sd = data;
-   find_proc(sd);
+   find_forward_proc(sd);
 }
 
 void
@@ -244,20 +250,20 @@ search_open()
    evas_object_size_hint_align_set(entry_replace, EVAS_HINT_FILL, 0);
    elm_object_part_content_set(layout, "elm.swallow.replace_entry",
                                entry_replace);
-   //Button (find)
-   Evas_Object *btn_find = elm_button_add(layout);
-   elm_object_text_set(btn_find, "Find");
-   evas_object_smart_callback_add(btn_find, "clicked", find_clicked_cb, sd);
-   elm_object_part_content_set(layout, "elm.swallow.find", btn_find);
+   //Button (forward)
+   Evas_Object *btn_forward = elm_button_add(layout);
+   elm_object_text_set(btn_forward, "Forward");
+   evas_object_smart_callback_add(btn_forward, "clicked", forward_clicked_cb, sd);
+   elm_object_part_content_set(layout, "elm.swallow.forward", btn_forward);
 
-   //Button (replace/find)
-   Evas_Object *btn_replace_find = elm_button_add(layout);
-   elm_object_text_set(btn_replace_find, "Replace/Find");
-   elm_object_disabled_set(btn_replace_find, EINA_TRUE);
-   evas_object_smart_callback_add(btn_replace_find, "clicked",
-                                  replace_find_clicked_cb, sd);
-   elm_object_part_content_set(layout, "elm.swallow.replace/find",
-                               btn_replace_find);
+   //Button (backward)
+   Evas_Object *btn_backward = elm_button_add(layout);
+   elm_object_text_set(btn_backward, "Backward");
+   elm_object_disabled_set(btn_backward, EINA_TRUE);
+   evas_object_smart_callback_add(btn_backward, "clicked",
+                                  backward_clicked_cb, sd);
+   elm_object_part_content_set(layout, "elm.swallow.backward",
+                               btn_backward);
 
    //Button (replace)
    Evas_Object *btn_replace = elm_button_add(layout);

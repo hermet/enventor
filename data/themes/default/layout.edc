@@ -96,7 +96,7 @@ group { name: "search";
             fixed: 1 1;
          }
       }
-      part { name: "elm.swallow.find";
+      part { name: "elm.swallow.forward";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
@@ -112,14 +112,14 @@ group { name: "search";
             fixed: 1 1;
          }
       }
-      part { name: "elm.swallow.replace/find";
+      part { name: "elm.swallow.backward";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
             rel1.relative: 1 0;
             rel2.relative: 1 1;
-            rel1.to: "elm.swallow.find";
-            rel2.to: "elm.swallow.find";
+            rel1.to: "elm.swallow.forward";
+            rel2.to: "elm.swallow.forward";
             rel1.offset: 5 0;
             min: 50 25;
             align: 0 0;
@@ -132,8 +132,8 @@ group { name: "search";
          description { state: "default" 0.0;
             rel1.relative: 1 0;
             rel2.relative: 1 1;
-            rel1.to: "elm.swallow.replace/find";
-            rel2.to: "elm.swallow.replace/find";
+            rel1.to: "elm.swallow.backward";
+            rel2.to: "elm.swallow.backward";
             rel1.offset: 5 0;
             min: 50 25;
             align: 0 0;
