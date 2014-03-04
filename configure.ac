@@ -54,16 +54,16 @@ AC_SUBST(VMAJ)
 
 PKG_CHECK_MODULES([ENVENTOR],
   [
-   eina >= 1.8.0
-   eet >= 1.8.0
-   elementary >= 1.8.0
-   evas >= 1.8.0
-   ecore >= 1.8.0
-   ecore-ipc >= 1.8.0
-   edje >= 1.8.0
-   eo >= 1.8.0
-   eio >= 1.8.0
-   efreet >= 1.8.0
+   eina >= 1.9.0
+   eet >= 1.9.0
+   elementary >= 1.9.0
+   evas >= 1.9.0
+   ecore >= 1.9.0
+   ecore-ipc >= 1.9.0
+   edje >= 1.9.0
+   eo >= 1.9.0
+   eio >= 1.9.0
+   efreet >= 1.9.0
    ]
  )
 
