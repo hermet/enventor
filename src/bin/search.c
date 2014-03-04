@@ -37,6 +37,47 @@ win_moved_cb(void *data EINA_UNUSED, Evas_Object *obj,
 }
 
 static void
+replace_all_proc(search_data *sd)
+{
+   const char *find = elm_entry_entry_get(sd->en_find);
+   if (!find) return;
+
+   int find_len = strlen(find);
+   const char *replace = elm_entry_entry_get(sd->en_replace);
+
+   //Same word. no need to replace
+   if (replace)
+     {
+        if (!strcmp(find, replace) && (find_len == strlen(replace)))
+          return;
+     }
+
+   char buf[256];
+   int replace_cnt = 0;
+
+   const char *text = elm_entry_entry_get(sd->entry);
+   char *utf8 = elm_entry_markup_to_utf8(text);
+
+   char *s = utf8;
+   int pos;
+
+   while ((s = strstr(s, find)))
+     {
+        pos = s - utf8;
+        elm_entry_select_region_set(sd->entry, pos, pos + find_len);
+        elm_entry_entry_insert(sd->entry, replace);
+        elm_entry_select_none(sd->entry);
+        replace_cnt++;
+        s++;
+     }
+
+   snprintf(buf, sizeof(buf), "%d matches replaced", replace_cnt);
+   stats_info_msg_update(buf);
+
+   free(utf8);
+}
+
+static void
 find_proc(search_data *sd)
 {
    const char *find = elm_entry_entry_get(sd->en_find);
@@ -117,6 +158,15 @@ replace_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
    search_data *sd = data;
    replace_proc(sd);
 }
+
+static void
+replace_all_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                   void *event_info EINA_UNUSED)
+{
+   search_data *sd = data;
+   replace_all_proc(sd);
+}
+
 
 static void
 find_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
@@ -219,7 +269,8 @@ search_open()
    //Button (replace all)
    Evas_Object *btn_replace_all = elm_button_add(layout);
    elm_object_text_set(btn_replace_all, "Replace All");
-   elm_object_disabled_set(btn_replace_all, EINA_TRUE);
+   evas_object_smart_callback_add(btn_replace_all, "clicked",
+                                  replace_all_clicked_cb, sd);
    elm_object_part_content_set(layout, "elm.swallow.replace_all",
                                btn_replace_all);
    sd->win = win;
