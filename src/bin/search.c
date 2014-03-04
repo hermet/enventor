@@ -41,14 +41,16 @@ replace_all_proc(search_data *sd)
 {
    const char *find = elm_entry_entry_get(sd->en_find);
    if (!find) return;
-
    int find_len = strlen(find);
+
    const char *replace = elm_entry_entry_get(sd->en_replace);
+   int replace_len = 0;
 
    //Same word. no need to replace
    if (replace)
      {
-        if (!strcmp(find, replace) && (find_len == strlen(replace)))
+        replace_len = strlen(replace);
+        if (!strcmp(find, replace) && (find_len == replace_len))
           return;
      }
 
@@ -60,10 +62,11 @@ replace_all_proc(search_data *sd)
 
    char *s = utf8;
    int pos;
+   int delta = replace_len - find_len;
 
    while ((s = strstr(s, find)))
      {
-        pos = s - utf8;
+        pos = s + (delta * replace_cnt) - utf8;
         elm_entry_select_region_set(sd->entry, pos, pos + find_len);
         elm_entry_entry_insert(sd->entry, replace);
         elm_entry_select_none(sd->entry);
