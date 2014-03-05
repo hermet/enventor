@@ -222,7 +222,6 @@ search_open()
 
    //Bg
    Evas_Object *bg = elm_bg_add(win);
-   evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_show(bg);
    elm_win_resize_object_add(win, bg);
 
