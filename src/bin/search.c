@@ -195,6 +195,16 @@ find_key_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
    find_forward_proc(sd);
 }
 
+static void
+replace_key_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+                    void* event_info)
+{
+   Evas_Event_Key_Down *ev = event_info;
+   if (strcmp(ev->key, "Return")) return;
+   search_data *sd = data;
+   replace_proc(sd);
+}
+
 void
 search_open()
 {
@@ -248,6 +258,8 @@ search_open()
    Evas_Object *entry_replace = elm_entry_add(layout);
    elm_entry_single_line_set(entry_replace, EINA_TRUE);
    elm_entry_scrollable_set(entry_replace, EINA_TRUE);
+   evas_object_event_callback_add(entry_replace, EVAS_CALLBACK_KEY_DOWN,
+                                     replace_key_down_cb, sd);
    evas_object_size_hint_weight_set(entry_replace, EVAS_HINT_EXPAND,0);
    evas_object_size_hint_align_set(entry_replace, EVAS_HINT_FILL, 0);
    elm_object_part_content_set(layout, "elm.swallow.replace_entry",
