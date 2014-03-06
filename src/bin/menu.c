@@ -1108,7 +1108,10 @@ menu_exit()
 {
    menu_data *md = g_md;
    if (edit_changed_get(md->ed))
-     warning_layout_create(md, exit_yes_btn_cb, exit_save_btn_cb);
+     {
+        search_close();
+        warning_layout_create(md, exit_yes_btn_cb, exit_save_btn_cb);
+     }
    else
      elm_exit();
 }
