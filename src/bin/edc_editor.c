@@ -99,8 +99,8 @@ static void
 syntax_color_timer_update(edit_data *ed)
 {
    if (ed->syntax_color_timer) ecore_timer_del(ed->syntax_color_timer);
-     ed->syntax_color_timer = ecore_timer_add(SYNTAX_COLOR_TIME,
-                                              syntax_color_timer_cb, ed);
+   ed->syntax_color_timer = ecore_timer_add(SYNTAX_COLOR_TIME,
+                                            syntax_color_timer_cb, ed);
 }
 
 static void
@@ -144,6 +144,7 @@ edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
      }
 
    if (!syntax_color) return;
+   if (elm_entry_selection_get(ed->en_edit)) return;
    syntax_color_timer_update(ed);
 }
 

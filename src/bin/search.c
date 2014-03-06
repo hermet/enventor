@@ -165,8 +165,9 @@ replace_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
                    void *event_info EINA_UNUSED)
 {
    search_data *sd = data;
-   replace_proc(sd);
-   //if (replace_proc(sd)) find_forward_proc(sd);
+   Eina_Bool next;
+   next = replace_proc(sd);
+   if (next) find_forward_proc(sd);
 }
 
 static void
@@ -202,7 +203,9 @@ replace_key_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSE
    Evas_Event_Key_Down *ev = event_info;
    if (strcmp(ev->key, "Return")) return;
    search_data *sd = data;
-   replace_proc(sd);
+   Eina_Bool next;
+   next = replace_proc(sd);
+   if (next) find_forward_proc(sd);
 }
 
 void
