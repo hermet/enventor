@@ -439,6 +439,7 @@ color_apply(color_data *cd, const char *src, int length)
         //syntax group 2
         Eina_Stringshare *col2 = cd->cols[1];
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "collections", col2);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "data", col2);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "description", col2);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "fill", col2);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "group", col2);
@@ -475,6 +476,7 @@ color_apply(color_data *cd, const char *src, int length)
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "fixed", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "font", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "inherit", col3);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "item", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "max", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "min", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "mouse_events", col3);
