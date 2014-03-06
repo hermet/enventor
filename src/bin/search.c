@@ -9,6 +9,7 @@ typedef struct search_s
    Evas_Object *entry;
    int pos;
    Eina_Bool found : 1;
+   Eina_Bool forward : 1;
 } search_data;
 
 static search_data *g_sd = NULL;
@@ -22,7 +23,6 @@ static void
 win_delete_request_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
                       void *event_info EINA_UNUSED)
 {
-   //search_data *sd = data;
    search_close();
 }
 
@@ -167,7 +167,9 @@ replace_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
    search_data *sd = data;
    Eina_Bool next;
    next = replace_proc(sd);
-   if (next) find_forward_proc(sd);
+   if (!next) return;
+   if (sd->forward) find_forward_proc(sd);
+   else find_backward_proc(sd);
 }
 
 static void
@@ -193,7 +195,8 @@ find_key_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
    Evas_Event_Key_Down *ev = event_info;
    if (strcmp(ev->key, "Return")) return;
    search_data *sd = data;
-   find_forward_proc(sd);
+   if (sd->forward) find_forward_proc(sd);
+   else find_backward_proc(sd);
 }
 
 static void
@@ -205,7 +208,9 @@ replace_key_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSE
    search_data *sd = data;
    Eina_Bool next;
    next = replace_proc(sd);
-   if (next) find_forward_proc(sd);
+   if (!next) return;
+   if (sd->forward) find_forward_proc(sd);
+   else find_backward_proc(sd);
 }
 
 void
@@ -301,6 +306,7 @@ search_open()
    sd->en_replace = entry_replace;
    sd->entry = g_entry;
    sd->pos = -1;
+   sd->forward = EINA_TRUE;
 }
 
 Eina_Bool
