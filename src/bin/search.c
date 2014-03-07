@@ -91,6 +91,7 @@ find_forward_proc(search_data *sd)
    Eina_Bool need_iterate = EINA_TRUE;
 
    const char *text = elm_entry_entry_get(sd->entry);
+   if (!text) return;
    char *utf8 = elm_entry_markup_to_utf8(text);
 
    //get the character position begun with searching.
@@ -142,6 +143,7 @@ find_backward_proc(search_data *sd)
    int len;
 
    const char *text = elm_entry_entry_get(sd->entry);
+   if (!text) return;
    char *utf8 = elm_entry_markup_to_utf8(text);
 
    //get the character position begun with searching.
