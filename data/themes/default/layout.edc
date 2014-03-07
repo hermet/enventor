@@ -72,6 +72,31 @@ group { name: "search";
             fixed: 1 1;
          }
       }
+      part { name: "elm.text.dir";
+         type: TEXT;
+         scale: 1;
+         effect: SHADOW BOTTOM;
+         description { state: "default" 0.0;
+            align: 0 0;
+            rel1.to: "elm.text.replace";
+            rel2.to: "elm.text.replace";
+            rel1.relative: 0 1;
+            rel2.relative: 0 1;
+            rel1.offset: 0 10;
+            text {
+               font: FN;
+               size: 10;
+               align: 0 0.5;
+               text: "Forward";
+            }
+            color: 51 153 255 255;
+            color3: 51 153 255 24;
+            color3: 51 153 255 18;
+            min: 80 30;
+            fixed: 1 1;
+         }
+      }
+
       part { name: "elm.swallow.find_entry";
          type: SWALLOW;
          scale: 1;

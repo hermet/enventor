@@ -4,6 +4,7 @@
 typedef struct search_s
 {
    Evas_Object *win;
+   Evas_Object *layout;
    Evas_Object *en_find;
    Evas_Object *en_replace;
    Evas_Object *entry;
@@ -205,6 +206,7 @@ backward_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
    search_data *sd = data;
    find_backward_proc(sd);
    sd->forward = EINA_FALSE;
+   elm_object_part_text_set(sd->layout, "elm.text.dir", "Backward");
 }
 
 static void
@@ -234,6 +236,7 @@ forward_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
    search_data *sd = data;
    find_forward_proc(sd);
    sd->forward = EINA_TRUE;
+   elm_object_part_text_set(sd->layout, "elm.text.dir", "Forward");
 }
 
 static void
@@ -346,6 +349,7 @@ search_open()
    elm_object_part_content_set(layout, "elm.swallow.replace_all",
                                btn_replace_all);
    sd->win = win;
+   sd->layout = layout;
    sd->en_find = entry_find;
    sd->en_replace = entry_replace;
    sd->entry = g_entry;
