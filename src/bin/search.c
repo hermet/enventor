@@ -189,22 +189,18 @@ forward_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
 }
 
 static void
-find_key_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
-                  void* event_info)
+find_activated_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                  void* event_info EINA_UNUSED)
 {
-   Evas_Event_Key_Down *ev = event_info;
-   if (strcmp(ev->key, "Return")) return;
    search_data *sd = data;
    if (sd->forward) find_forward_proc(sd);
    else find_backward_proc(sd);
 }
 
 static void
-replace_key_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
-                    void* event_info)
+replace_activated_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                     void* event_info EINA_UNUSED)
 {
-   Evas_Event_Key_Down *ev = event_info;
-   if (strcmp(ev->key, "Return")) return;
    search_data *sd = data;
    Eina_Bool next;
    next = replace_proc(sd);
@@ -254,8 +250,8 @@ search_open()
    Evas_Object *entry_find = elm_entry_add(layout);
    elm_entry_single_line_set(entry_find, EINA_TRUE);
    elm_entry_scrollable_set(entry_find, EINA_TRUE);
-   evas_object_event_callback_add(entry_find, EVAS_CALLBACK_KEY_DOWN,
-                                  find_key_down_cb, sd);
+   evas_object_smart_callback_add(entry_find, "activated", find_activated_cb,
+                                  sd);
    evas_object_size_hint_weight_set(entry_find, EVAS_HINT_EXPAND, 0);
    evas_object_size_hint_align_set(entry_find, EVAS_HINT_FILL, 0);
    evas_object_show(entry_find);
@@ -266,8 +262,8 @@ search_open()
    Evas_Object *entry_replace = elm_entry_add(layout);
    elm_entry_single_line_set(entry_replace, EINA_TRUE);
    elm_entry_scrollable_set(entry_replace, EINA_TRUE);
-   evas_object_event_callback_add(entry_replace, EVAS_CALLBACK_KEY_DOWN,
-                                     replace_key_down_cb, sd);
+   evas_object_smart_callback_add(entry_replace, "activated",
+                                  replace_activated_cb, sd);
    evas_object_size_hint_weight_set(entry_replace, EVAS_HINT_EXPAND,0);
    evas_object_size_hint_align_set(entry_replace, EVAS_HINT_FILL, 0);
    elm_object_part_content_set(layout, "elm.swallow.replace_entry",
@@ -275,7 +271,8 @@ search_open()
    //Button (forward)
    Evas_Object *btn_forward = elm_button_add(layout);
    elm_object_text_set(btn_forward, "Forward");
-   evas_object_smart_callback_add(btn_forward, "clicked", forward_clicked_cb, sd);
+   evas_object_smart_callback_add(btn_forward, "clicked", forward_clicked_cb,
+                                  sd);
    elm_object_part_content_set(layout, "elm.swallow.forward", btn_forward);
 
    //Button (backward)
