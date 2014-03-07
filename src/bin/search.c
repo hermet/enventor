@@ -108,8 +108,6 @@ find_forward_proc(search_data *sd)
           {
              sd->pos = 0;
              find_forward_proc(sd);
-             free(utf8);
-             return;
           }
         //There are no searched words in the text
         else
@@ -117,9 +115,9 @@ find_forward_proc(search_data *sd)
              snprintf(buf, sizeof(buf), "No \"%s\" in the text", find);
              stats_info_msg_update(buf);
              sd->pos = -1;
-             free(utf8);
-             return;
           }
+        free(utf8);
+        return;
      }
 
    //Got you!
