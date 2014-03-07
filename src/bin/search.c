@@ -133,7 +133,53 @@ find_forward_proc(search_data *sd)
 static void
 find_backward_proc(search_data *sd)
 {
-   //TODO:
+   const char *find = elm_entry_entry_get(sd->en_find);
+   if (!find) return;
+
+   char buf[256];
+   Eina_Bool need_iterate = EINA_TRUE;
+   int len;
+
+   const char *text = elm_entry_entry_get(sd->entry);
+   char *utf8 = elm_entry_markup_to_utf8(text);
+
+   //get the character position begun with searching.
+   if (sd->pos == -1)
+      {
+        sd->pos = elm_entry_cursor_pos_get(sd->entry);
+      }
+   else
+      {
+         len = strlen(utf8);
+         if (sd->pos == len) need_iterate = EINA_FALSE;
+      }
+
+   char *prev = NULL;
+   char *s = utf8;
+
+   while (s = strstr(s, find))
+     {
+        if ((s - utf8) >= sd->pos) break;
+        prev = s;
+        s++;
+     }
+
+   //No found. Need to iterate finding?
+   if ((!prev) && need_iterate)
+     {
+        sd->pos = len;
+        find_backward_proc(sd);
+        free(utf8);
+        return;
+     }
+
+   //Got you!
+   sd->pos = prev - utf8;
+   elm_entry_select_none(sd->entry);
+   elm_entry_select_region_set(sd->entry, sd->pos, sd->pos + strlen(find));
+   sd->found = EINA_TRUE;
+
+   free(utf8);
 }
 
 static Eina_Bool
@@ -158,6 +204,7 @@ backward_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
 {
    search_data *sd = data;
    find_backward_proc(sd);
+   sd->forward = EINA_FALSE;
 }
 
 static void
@@ -186,6 +233,7 @@ forward_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
 {
    search_data *sd = data;
    find_forward_proc(sd);
+   sd->forward = EINA_TRUE;
 }
 
 static void
@@ -278,7 +326,6 @@ search_open()
    //Button (backward)
    Evas_Object *btn_backward = elm_button_add(layout);
    elm_object_text_set(btn_backward, "Backward");
-   elm_object_disabled_set(btn_backward, EINA_TRUE);
    evas_object_smart_callback_add(btn_backward, "clicked",
                                   backward_clicked_cb, sd);
    elm_object_part_content_set(layout, "elm.swallow.backward",
