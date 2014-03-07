@@ -9,7 +9,6 @@ typedef struct search_s
    Evas_Object *en_replace;
    Evas_Object *entry;
    int pos;
-   Eina_Bool found : 1;
    Eina_Bool forward : 1;
 } search_data;
 
@@ -128,7 +127,6 @@ find_forward_proc(search_data *sd)
    sd->pos = s - utf8;
    elm_entry_select_none(sd->entry);
    elm_entry_select_region_set(sd->entry, sd->pos, sd->pos + len);
-   sd->found = EINA_TRUE;
    free(utf8);
 }
 
@@ -180,7 +178,6 @@ find_backward_proc(search_data *sd)
    sd->pos = prev - utf8;
    elm_entry_select_none(sd->entry);
    elm_entry_select_region_set(sd->entry, sd->pos, sd->pos + strlen(find));
-   sd->found = EINA_TRUE;
 
    free(utf8);
 }
@@ -188,7 +185,6 @@ find_backward_proc(search_data *sd)
 static Eina_Bool
 replace_proc(search_data *sd)
 {
-   if (!sd->found) return EINA_FALSE;
    const char *find = elm_entry_entry_get(sd->en_find);
    const char *selection = elm_entry_selection_get(sd->entry);
    if (!find || !selection) return EINA_FALSE;
@@ -196,7 +192,6 @@ replace_proc(search_data *sd)
    if (strcmp(find, utf8)) return EINA_FALSE;
    const char *replace = elm_entry_entry_get(sd->en_replace);
    elm_entry_entry_insert(sd->entry, replace);
-   sd->found = EINA_FALSE;
    free(utf8);
    return EINA_TRUE;
 }
