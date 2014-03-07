@@ -124,7 +124,7 @@ find_forward_proc(search_data *sd)
 
    //Got you!
    int len = strlen(find);
-   sd->pos += (s - (utf8 + sd->pos));
+   sd->pos = s - utf8;
    elm_entry_select_none(sd->entry);
    elm_entry_select_region_set(sd->entry, sd->pos, sd->pos + len);
    sd->found = EINA_TRUE;
