@@ -62,19 +62,12 @@ Ctrl+- = Font Size Down
 Ctrl+T = Insert Defaut Template Code
 Ctrl+Mouse Wheel Up = View Scale Up
 Ctrl+Mouse Wheel Down = View Scale Down
-Ctrl+Shift+A = Insert Part Template Code: Table (not implemented)
 Ctrl+Shift+B = Insert Part Template Code: Textblock
-Ctrl+Shift+E = Insert Part Template Code: External (not implemented)
-Ctrl+Shift+G = Insert Part Template Code: Gradient (not implemented)
 Ctrl+Shift+I = Insert Part Template Code: Image
-Ctrl+Shift+O = Insert Part Template Code: Group (not implemented)
-Ctrl+Shift+P = Insert Part Template Code: Proxy (not implemented)
 Ctrl+Shift+R = Insert Part Template Code: Rectangle
 Ctrl+Shift+T = Insert Part Template Code: Text
 Ctrl+Shift+S = Insert Part Template Code: Spacer
 Ctrl+Shift+W = Insert Part Template Code: Swallow
-Ctrl+Shift+X = Insert Part Template Code: Box (not implemented)
- 
  
 [Command Line Usage]
  
