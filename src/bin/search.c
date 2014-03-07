@@ -166,10 +166,19 @@ find_backward_proc(search_data *sd)
      }
 
    //No found. Need to iterate finding?
-   if ((!prev) && need_iterate)
+   if (!prev)
      {
-        sd->pos = len;
-        find_backward_proc(sd);
+        if (need_iterate)
+          {
+             sd->pos = len;
+             find_backward_proc(sd);
+          }
+        else
+          {
+             snprintf(buf, sizeof(buf), "No \"%s\" in the text", find);
+             stats_info_msg_update(buf);
+             sd->pos = -1;
+          }
         free(utf8);
         return;
      }
