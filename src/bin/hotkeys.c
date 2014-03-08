@@ -67,8 +67,7 @@ f9_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 static void
 f10_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
-   config_stats_bar_set(!config_stats_bar_get());
-   base_statusbar_toggle();
+   base_statusbar_toggle(EINA_TRUE);
    item_unselect((Elm_Object_Item *)event_info);
 }
 
@@ -118,10 +117,10 @@ hotkeys_create(Evas_Object *parent, edit_data *ed)
    it = elm_toolbar_item_append(toolbar, buf, "Swallow", f6_cb, NULL);
    snprintf(buf, sizeof(buf), "%s/images/lines.png", elm_app_data_dir_get());
    it = elm_toolbar_item_append(toolbar, buf, "Lines", f9_cb, ed);
-   snprintf(buf, sizeof(buf), "%s/images/status.png", elm_app_data_dir_get());
-   it = elm_toolbar_item_append(toolbar, buf, "Status", f10_cb, NULL);
    snprintf(buf, sizeof(buf), "%s/images/find.png", elm_app_data_dir_get());
    it = elm_toolbar_item_append(toolbar, buf, "Find", f11_cb, NULL);
+   snprintf(buf, sizeof(buf), "%s/images/status.png", elm_app_data_dir_get());
+   it = elm_toolbar_item_append(toolbar, buf, "Status", f10_cb, NULL);
    snprintf(buf, sizeof(buf), "%s/images/setting.png", elm_app_data_dir_get());
    it = elm_toolbar_item_append(toolbar, buf, "Setting", f12_cb, NULL);
 

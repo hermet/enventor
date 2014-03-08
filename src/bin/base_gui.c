@@ -26,9 +26,11 @@ base_title_set(const char *path)
 }
 
 void
-base_statusbar_toggle()
+base_statusbar_toggle(Eina_Bool config)
 {
    base_data *bd = g_bd;
+
+   if (config) config_stats_bar_set(!config_stats_bar_get());
 
    if (config_stats_bar_get())
      elm_object_signal_emit(bd->layout, "elm,state,statusbar,show", "");

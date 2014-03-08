@@ -282,10 +282,9 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
         return ECORE_CALLBACK_DONE;
      }
    //Statusbar
-   if (!strcmp(event->key, "F6"))
+   if (!strcmp(event->key, "F10"))
      {
-        config_stats_bar_set(!config_stats_bar_get());
-        base_statusbar_toggle();
+        base_statusbar_toggle(EINA_TRUE);
         return ECORE_CALLBACK_DONE;
      }
    //Tools
@@ -367,7 +366,7 @@ statusbar_set()
    Evas_Object *obj = stats_init(base_layout_get());
    elm_object_part_content_set(base_layout_get(), "elm.swallow.statusbar",
                               obj);
-   base_statusbar_toggle();
+   base_statusbar_toggle(EINA_TRUE);
 }
 
 static void
@@ -379,7 +378,7 @@ config_update_cb(void *data)
    edit_font_size_update(ad->ed, EINA_FALSE);
 
    base_hotkey_toggle(EINA_FALSE);
-   base_statusbar_toggle();
+   base_statusbar_toggle(EINA_FALSE);
    edit_part_highlight_toggle(ad->ed, EINA_TRUE);
    view_dummy_toggle(VIEW_DATA, EINA_FALSE);
 
