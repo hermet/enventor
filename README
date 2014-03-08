@@ -36,27 +36,20 @@ Once you have met requirements, compiling and installing is simple:
 [Short Cut Keys]
  
 Esc = Open/Close Menu
-F1 = Help
+F1 = About
 F2 = New
 F3 = Save
 F4 = Load
 F5 = Show/Hide Line Number
 F6 = Show/Hide Status
 F12 = Setting
+
 Ctrl+S = Quick Save + Compile EDC
-Ctrl+A = Select Text All
-Ctrl+Double Click = Select a word
-Ctrl+C = Copy Selected Text
-Ctrl+V = Paste Copied Text
-Ctrl+X = Cut Selected Text
-Ctrl+F = Find/Replace
 Ctrl+I = On/Off Auto Indentation
-Ctrl+Home = Go to the Top line
-Ctrl+End = Go to the Bottom line
-Ctrl+H = Part Highlighting
+Ctrl+W = Show/Hide Dummy Swallow
+Ctrl+H = On/Off Part Highlighting
 Ctrl+, = Full Edit View / Split View
 Ctrl+. = Full Edje View / Split View
-Ctrl+W = Show/Hide Dummy Swallow Object
 Ctrl++ = Font Size Up
 Ctrl+- = Font Size Down
 Ctrl+T = Insert Defaut Template Code
@@ -68,7 +61,17 @@ Ctrl+Shift+R = Insert Part Template Code: Rectangle
 Ctrl+Shift+T = Insert Part Template Code: Text
 Ctrl+Shift+S = Insert Part Template Code: Spacer
 Ctrl+Shift+W = Insert Part Template Code: Swallow
- 
+
+Ctrl+A = Select Text All
+Ctrl+Double Click = Select a word
+Ctrl+C = Copy Selected Text
+Ctrl+V = Paste Copied Text
+Ctrl+X = Cut Selected Text
+Ctrl+F = Find/Replace
+Ctrl+Home = Go to the Top line
+Ctrl+End = Go to the Bottom line
+
+
 [Command Line Usage]
  
 enventor --help

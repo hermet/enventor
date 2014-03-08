@@ -861,3 +861,18 @@ edit_font_size_update(edit_data *ed, Eina_Bool msg)
    snprintf(buf, sizeof(buf), "Font Size: %1.1fx", config_font_size_get());
    stats_info_msg_update(buf);
 }
+
+void
+edit_part_highlight_toggle(edit_data *ed, Eina_Bool msg)
+{
+   Eina_Bool highlight = config_part_highlight_get();
+   if (highlight) edit_view_sync(ed);
+   else view_part_highlight_set(VIEW_DATA, NULL);
+
+   if (!msg) return;
+
+   if (highlight)
+     stats_info_msg_update("Part Highlighting Enabled.");
+   else
+     stats_info_msg_update("Part Highlighting Disabled.");
+}

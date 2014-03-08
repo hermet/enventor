@@ -78,21 +78,6 @@ main_key_up_cb(void *data, int type EINA_UNUSED, void *ev)
 }
 
 static void
-part_highlight_toggle(app_data *ad, Eina_Bool msg)
-{
-   Eina_Bool highlight = config_part_highlight_get();
-   if (highlight) edit_view_sync(ad->ed);
-   else view_part_highlight_set(VIEW_DATA, NULL);
-
-   if (!msg) return;
-
-   if (highlight)
-     stats_info_msg_update("Part Highlighting Enabled.");
-   else
-     stats_info_msg_update("Part Highlighting Disabled.");
-}
-
-static void
 auto_indentation_toggle()
 {
    Eina_Bool toggle = !config_auto_indent_get();
@@ -168,17 +153,11 @@ ctrl_func(app_data *ad, const char *key)
         search_open();
         return ECORE_CALLBACK_DONE;
      }
-   //Template Code
-   if (!strcmp(key, "t") || !strcmp(key, "T"))
-     {
-        edit_template_insert(ad->ed);
-        return ECORE_CALLBACK_DONE;
-     }
    //Part Highlight
-   if (!strcmp(key, "h") || !strcmp(key, "H"))
+   if (!strcmp(key, "h") || !strcmp(key, "h"))
      {
-        config_part_highlight_set(!config_part_highlight_get());
-        part_highlight_toggle(ad, EINA_TRUE);
+       config_part_highlight_set(!config_part_highlight_get());
+       edit_part_highlight_toggle(ad->ed, EINA_TRUE);
         return ECORE_CALLBACK_DONE;
      }
    //Swallow Dummy Object
@@ -186,6 +165,12 @@ ctrl_func(app_data *ad, const char *key)
      {
         config_dummy_swallow_set(!config_dummy_swallow_get());
         view_dummy_toggle(VIEW_DATA, EINA_TRUE);
+        return ECORE_CALLBACK_DONE;
+     }
+   //Template Code
+   if (!strcmp(key, "t") || !strcmp(key, "T"))
+     {
+        edit_template_insert(ad->ed);
         return ECORE_CALLBACK_DONE;
      }
    //Full Edit View
@@ -289,6 +274,20 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
         menu_edc_load();
         return ECORE_CALLBACK_DONE;
      }
+   //Part Highlight
+   if (!strcmp(event->key, "F5"))
+     {
+        config_part_highlight_set(!config_part_highlight_get());
+        edit_part_highlight_toggle(ad->ed, EINA_TRUE);
+        return ECORE_CALLBACK_DONE;
+     }
+   //Swallow Dummy Object
+   if (!strcmp(event->key, "F6"))
+     {
+        config_dummy_swallow_set(!config_dummy_swallow_get());
+        view_dummy_toggle(VIEW_DATA, EINA_TRUE);
+        return ECORE_CALLBACK_DONE;
+     }
    //Line Number
    if (!strcmp(event->key, "F5"))
      {
@@ -388,7 +387,7 @@ config_update_cb(void *data)
    edit_font_size_update(ad->ed, EINA_FALSE);
 
    base_statusbar_toggle();
-   part_highlight_toggle(ad, EINA_FALSE);
+   edit_part_highlight_toggle(ad->ed, EINA_TRUE);
    view_dummy_toggle(VIEW_DATA, EINA_FALSE);
 
    //previous build was failed, Need to rebuild then reload the edj.
