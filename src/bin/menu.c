@@ -295,6 +295,7 @@ setting_reset_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
    elm_slider_value_set(md->slider_font, (double) config_font_size_get());
    elm_slider_value_set(md->slider_view, (double) config_view_scale_get());
 
+   elm_check_state_set(md->toggle_tools, config_tools_get());
    elm_check_state_set(md->toggle_stats, config_stats_bar_get());
    elm_check_state_set(md->toggle_linenum, config_linenumber_get());
    elm_check_state_set(md->toggle_highlight, config_part_highlight_get());
