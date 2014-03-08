@@ -14,6 +14,7 @@ struct menu_s
    Evas_Object *data_path_entry;
    Evas_Object *slider_font;
    Evas_Object *slider_view;
+   Evas_Object *toggle_tools;
    Evas_Object *toggle_stats;
    Evas_Object *toggle_linenum;
    Evas_Object *toggle_highlight;
@@ -200,6 +201,7 @@ setting_apply_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
    config_edc_data_path_set(elm_object_text_get(md->data_path_entry));
    config_font_size_set((float) elm_slider_value_get(md->slider_font));
    config_view_scale_set(elm_slider_value_get(md->slider_view));
+   config_hotkeys_set(elm_check_state_get(md->toggle_tools));
    config_stats_bar_set(elm_check_state_get(md->toggle_stats));
    config_linenumber_set(elm_check_state_get(md->toggle_linenum));
    config_part_highlight_set(elm_check_state_get(md->toggle_highlight));
@@ -442,10 +444,10 @@ setting_open(menu_data *md)
 
    elm_box_pack_end(box2, slider_view);
 
-   //Toggle (File Tab)
-   Evas_Object *toggle_filetab = toggle_create(box, "File Tab", EINA_FALSE);
-   elm_object_disabled_set(toggle_filetab, EINA_TRUE);
-   elm_box_pack_end(box, toggle_filetab);
+   //Toggle (Tool bar)
+   Evas_Object *toggle_tools = toggle_create(box, "Tools",
+                                             config_hotkeys_get());
+   elm_box_pack_end(box, toggle_tools);
 
    //Toggle (Status bar)
    Evas_Object *toggle_stats = toggle_create(box, "Status Bar",
@@ -502,6 +504,7 @@ setting_open(menu_data *md)
    md->data_path_entry = data_path_entry;
    md->slider_font = slider_font;
    md->slider_view = slider_view;
+   md->toggle_tools = toggle_tools;
    md->toggle_stats = toggle_stats;
    md->toggle_linenum = toggle_linenum;
    md->toggle_highlight = toggle_highlight;

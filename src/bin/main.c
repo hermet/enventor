@@ -288,6 +288,12 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
         base_statusbar_toggle();
         return ECORE_CALLBACK_DONE;
      }
+   //Tools
+   if (!strcmp(event->key, "F11"))
+     {
+        base_hotkey_toggle(EINA_TRUE);
+        return ECORE_CALLBACK_DONE;
+     }
    //Setting
    if (!strcmp(event->key, "F12"))
      {
@@ -372,6 +378,7 @@ config_update_cb(void *data)
    edit_line_number_toggle(ad->ed);
    edit_font_size_update(ad->ed, EINA_FALSE);
 
+   base_hotkey_toggle(EINA_FALSE);
    base_statusbar_toggle();
    edit_part_highlight_toggle(ad->ed, EINA_TRUE);
    view_dummy_toggle(VIEW_DATA, EINA_FALSE);

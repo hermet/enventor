@@ -37,11 +37,11 @@ base_statusbar_toggle()
 }
 
 void
-base_hotkey_toggle()
+base_hotkey_toggle(Eina_Bool config)
 {
    base_data *bd = g_bd;
 
-   config_hotkeys_set(!config_hotkeys_get());
+   if (config) config_hotkeys_set(!config_hotkeys_get());
 
    if (config_hotkeys_get())
      elm_object_signal_emit(bd->layout, "elm,state,hotkeys,show", "");

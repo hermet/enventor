@@ -995,18 +995,6 @@ group { name: "elm/panes/vertical/enventor";
             rel2.to: "bar";
          }
       }
-      part { name: "elm.swallow.hotkeys";
-         type: SWALLOW;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: 20 20;
-            fixed: 1 1;
-            align: 0.5 0;
-            rel1.to: "bar";
-            rel2.to: "bar";
-            rel2.relative: 1 0;
-         }
-      }
       part { name: "elm.swallow.left_arrow";
          type: SWALLOW;
          scale: 1;

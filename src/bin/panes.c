@@ -67,20 +67,6 @@ panes_full_view_cancel(panes_data *pd)
 }
 
 static void
-hotkeys_clicked_cb(void *data EINA_UNUSED, Evas_Object *obj,
-                   void *event_info EINA_UNUSED)
-{
-   base_hotkey_toggle();
-
-   Evas_Object *img = elm_object_content_get(obj);
-
-   if (config_hotkeys_get())
-     elm_image_file_set(img, EDJE_PATH, "hotkeys_close");
-   else
-     elm_image_file_set(img, EDJE_PATH, "hotkeys_open");
-}
-
-static void
 left_clicked_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
 {
    const double TRANSIT_TIME = 0.25;
@@ -197,21 +183,6 @@ panes_init(Evas_Object *parent)
                                   press_cb, NULL);
    evas_object_smart_callback_add(panes, "unpress",
                                   unpress_cb, NULL);
-   //Hotkey Button
-   Evas_Object *hotkeys_btn = elm_button_add(panes);
-   elm_object_focus_allow_set(hotkeys_btn, EINA_FALSE);
-   evas_object_smart_callback_add(hotkeys_btn, "clicked", hotkeys_clicked_cb,
-                                  NULL);
-   elm_object_part_content_set(panes, "elm.swallow.hotkeys", hotkeys_btn);
-
-   //Hotkey Image
-   img = elm_image_add(hotkeys_btn);
-   if (config_hotkeys_get())
-     elm_image_file_set(img, EDJE_PATH, "hotkeys_close");
-   else
-     elm_image_file_set(img, EDJE_PATH, "hotkeys_open");
-   elm_object_content_set(hotkeys_btn, img);
-
    //Left Button
    Evas_Object *left_arrow = elm_button_add(panes);
    elm_object_focus_allow_set(left_arrow, EINA_FALSE);
