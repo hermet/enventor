@@ -13,7 +13,7 @@ group { name: "search";
       part { name: "base";
          type: SPACER;
          description { state: "default" 0.0;
-            min: 340 90;
+            min: 330 90;
          }
       }
       part { name: "left_top_padding";
@@ -75,7 +75,7 @@ group { name: "search";
       part { name: "elm.text.dir";
          type: TEXT;
          scale: 1;
-         effect: SHADOW BOTTOM;
+         effect: GLOW;
          description { state: "default" 0.0;
             align: 0 0;
             rel1.to: "elm.text.replace";
@@ -90,8 +90,8 @@ group { name: "search";
                text: "Forward";
             }
             color: 51 153 255 255;
-            color3: 51 153 255 24;
-            color3: 51 153 255 18;
+            color2: 51 153 255 16;
+            color3: 51 153 255 8;
             min: 80 30;
             fixed: 1 1;
          }
