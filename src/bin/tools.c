@@ -87,7 +87,7 @@ f12_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
 }
 
 Evas_Object *
-hotkeys_create(Evas_Object *parent, edit_data *ed)
+tools_create(Evas_Object *parent, edit_data *ed)
 {
    Evas_Object *toolbar = elm_toolbar_add(parent);
    elm_object_style_set(toolbar, "item_horizontal");

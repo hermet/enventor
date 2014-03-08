@@ -201,7 +201,7 @@ setting_apply_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
    config_edc_data_path_set(elm_object_text_get(md->data_path_entry));
    config_font_size_set((float) elm_slider_value_get(md->slider_font));
    config_view_scale_set(elm_slider_value_get(md->slider_view));
-   config_hotkeys_set(elm_check_state_get(md->toggle_tools));
+   config_tools_set(elm_check_state_get(md->toggle_tools));
    config_stats_bar_set(elm_check_state_get(md->toggle_stats));
    config_linenumber_set(elm_check_state_get(md->toggle_linenum));
    config_part_highlight_set(elm_check_state_get(md->toggle_highlight));
@@ -446,7 +446,7 @@ setting_open(menu_data *md)
 
    //Toggle (Tool bar)
    Evas_Object *toggle_tools = toggle_create(box, "Tools",
-                                             config_hotkeys_get());
+                                             config_tools_get());
    elm_box_pack_end(box, toggle_tools);
 
    //Toggle (Status bar)

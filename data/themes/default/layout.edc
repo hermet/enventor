@@ -452,7 +452,7 @@ group { name: "main_layout";
             min: 640 440;
          }
       }
-      part { name: "elm.swallow.hotkeys";
+      part { name: "elm.swallow.tools";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
@@ -473,7 +473,7 @@ group { name: "main_layout";
          description { state: "default" 0.0;
             rel1.relative: 0 1;
             rel2.relative: 1 0;
-            rel1.to_y: "elm.swallow.hotkeys";
+            rel1.to_y: "elm.swallow.tools";
             rel2.to_y: "elm.swallow.statusbar";
          }
       }
@@ -506,16 +506,16 @@ group { name: "main_layout";
          target: "elm.swallow.statusbar";
          transition: DECELERATE 0.35;
       }
-      program { name: "hotkeys_show";
-         signal: "elm,state,hotkeys,show";
+      program { name: "tools_show";
+         signal: "elm,state,tools,show";
          action: STATE_SET "visible" 0.0;
-         target: "elm.swallow.hotkeys";
+         target: "elm.swallow.tools";
          transition: DECELERATE 0.35;
       }
-      program { name: "hotkeys_hide";
-         signal: "elm,state,hotkeys,hide";
+      program { name: "tools_hide";
+         signal: "elm,state,tools,hide";
          action: STATE_SET "default" 0.0;
-         target: "elm.swallow.hotkeys";
+         target: "elm.swallow.tools";
          transition: DECELERATE 0.35;
       }
 

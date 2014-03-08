@@ -26,7 +26,7 @@ enventor_SOURCES = \
 	indent.c \
 	edj_mgr.c \
 	build.c \
-	hotkeys.c \
+	tools.c \
 	search.c \
 	globals.c
 

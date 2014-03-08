@@ -290,7 +290,7 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    //Tools
    if (!strcmp(event->key, "F11"))
      {
-        base_hotkey_toggle(EINA_TRUE);
+        base_tools_toggle(EINA_TRUE);
         return ECORE_CALLBACK_DONE;
      }
    //Setting
@@ -377,7 +377,7 @@ config_update_cb(void *data)
    edit_line_number_toggle(ad->ed);
    edit_font_size_update(ad->ed, EINA_FALSE);
 
-   base_hotkey_toggle(EINA_FALSE);
+   base_tools_toggle(EINA_FALSE);
    base_statusbar_toggle(EINA_FALSE);
    edit_part_highlight_toggle(ad->ed, EINA_TRUE);
    view_dummy_toggle(VIEW_DATA, EINA_FALSE);
@@ -501,10 +501,10 @@ edj_mgr_set()
 }
 
 static void
-hotkeys_set(edit_data *ed)
+tools_set(edit_data *ed)
 {
-   Evas_Object *hotkeys = hotkeys_create(base_layout_get(), ed);
-   base_hotkeys_set(hotkeys);
+   Evas_Object *tools = tools_create(base_layout_get(), ed);
+   base_tools_set(tools);
 }
 
 static Eina_Bool
@@ -530,7 +530,7 @@ init(app_data *ad, int argc, char **argv)
    edc_edit_set(ad);
    edc_view_set(stats_group_name_get());
    menu_init(ad->ed);
-   hotkeys_set(ad->ed);
+   tools_set(ad->ed);
 
    ad->edc_monitor = eio_monitor_add(config_edc_path_get());
    ecore_event_handler_add(EIO_MONITOR_FILE_MODIFIED, edc_changed_cb, ad);

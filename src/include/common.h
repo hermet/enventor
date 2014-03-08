@@ -24,7 +24,7 @@ typedef struct indent_s indent_data;
 #include "edj_mgr.h"
 #include "globals.h"
 #include "build.h"
-#include "hotkeys.h"
+#include "tools.h"
 #include "base_gui.h"
 #include "search.h"
 

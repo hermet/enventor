@@ -39,16 +39,16 @@ base_statusbar_toggle(Eina_Bool config)
 }
 
 void
-base_hotkey_toggle(Eina_Bool config)
+base_tools_toggle(Eina_Bool config)
 {
    base_data *bd = g_bd;
 
-   if (config) config_hotkeys_set(!config_hotkeys_get());
+   if (config) config_tools_set(!config_tools_get());
 
-   if (config_hotkeys_get())
-     elm_object_signal_emit(bd->layout, "elm,state,hotkeys,show", "");
+   if (config_tools_get())
+     elm_object_signal_emit(bd->layout, "elm,state,tools,show", "");
    else
-     elm_object_signal_emit(bd->layout, "elm,state,hotkeys,hide", "");
+     elm_object_signal_emit(bd->layout, "elm,state,tools,hide", "");
 }
 
 Evas_Object *
@@ -72,15 +72,15 @@ base_win_resize_object_add(Evas_Object *resize_obj)
    elm_win_resize_object_add(bd->win, resize_obj);
 }
 
-void base_hotkeys_set(Evas_Object *hotkeys)
+void base_tools_set(Evas_Object *tools)
 {
    base_data *bd = g_bd;
-   elm_object_part_content_set(bd->layout, "elm.swallow.hotkeys", hotkeys);
+   elm_object_part_content_set(bd->layout, "elm.swallow.tools", tools);
 
-   if (config_hotkeys_get())
-     elm_object_signal_emit(bd->layout, "elm,state,hotkeys,show", "");
+   if (config_tools_get())
+     elm_object_signal_emit(bd->layout, "elm,state,tools,show", "");
    else
-     elm_object_signal_emit(bd->layout, "elm,state,hotkeys,hide", "");
+     elm_object_signal_emit(bd->layout, "elm,state,tools,hide", "");
 }
 
 void

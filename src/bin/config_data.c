@@ -27,7 +27,7 @@ typedef struct config_s
    Eina_Bool part_highlight;
    Eina_Bool dummy_swallow;
    Eina_Bool auto_indent;
-   Eina_Bool hotkeys;
+   Eina_Bool tools;
 } config_data;
 
 static config_data *g_cd = NULL;
@@ -127,7 +127,7 @@ config_load()
         cd->part_highlight = EINA_TRUE;
         cd->dummy_swallow = EINA_TRUE;
         cd->auto_indent = EINA_TRUE;
-        cd->hotkeys = EINA_FALSE;
+        cd->tools = EINA_FALSE;
      }
 
    g_cd = cd;
@@ -198,8 +198,8 @@ eddc_init()
                                  dummy_swallow, EET_T_UCHAR);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "auto_indent",
                                  auto_indent, EET_T_UCHAR);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "hotkeys",
-                                 hotkeys, EET_T_UCHAR);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "tools",
+                                 tools, EET_T_UCHAR);
 }
 
 void
@@ -666,15 +666,15 @@ config_view_size_get(Evas_Coord *w, Evas_Coord *h)
 }
 
 Eina_Bool
-config_hotkeys_get()
+config_tools_get()
 {
    config_data *cd = g_cd;
-   return cd->hotkeys;
+   return cd->tools;
 }
 
 void
-config_hotkeys_set(Eina_Bool enabled)
+config_tools_set(Eina_Bool enabled)
 {
    config_data *cd = g_cd;
-   cd->hotkeys = enabled;
+   cd->tools = enabled;
 }
