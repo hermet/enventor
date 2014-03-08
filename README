@@ -42,6 +42,7 @@ F3 = Save
 F4 = Load
 F5 = Show/Hide Line Number
 F10 = Show/Hide Status
+F11 = Show/Hide Tools
 F12 = Setting
 
 Ctrl+S = Quick Save + Compile EDC
