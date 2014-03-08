@@ -44,7 +44,7 @@ F5 = Show/Hide Line Number
 F10 = Show/Hide Status
 F11 = Show/Hide Tools
 F12 = Setting
-
+ 
 Ctrl+S = Quick Save + Compile EDC
 Ctrl+I = On/Off Auto Indentation
 Ctrl+W = Show/Hide Dummy Swallow
@@ -62,7 +62,7 @@ Ctrl+Shift+R = Insert Part Template Code: Rectangle
 Ctrl+Shift+T = Insert Part Template Code: Text
 Ctrl+Shift+S = Insert Part Template Code: Spacer
 Ctrl+Shift+W = Insert Part Template Code: Swallow
-
+ 
 Ctrl+A = Select Text All
 Ctrl+Double Click = Select a word
 Ctrl+C = Copy Selected Text
@@ -71,8 +71,8 @@ Ctrl+X = Cut Selected Text
 Ctrl+F = Find/Replace
 Ctrl+Home = Go to the Top line
 Ctrl+End = Go to the Bottom line
-
-
+ 
+ 
 [Command Line Usage]
  
 enventor --help
