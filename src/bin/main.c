@@ -274,20 +274,6 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
         menu_edc_load();
         return ECORE_CALLBACK_DONE;
      }
-   //Part Highlight
-   if (!strcmp(event->key, "F5"))
-     {
-        config_part_highlight_set(!config_part_highlight_get());
-        edit_part_highlight_toggle(ad->ed, EINA_TRUE);
-        return ECORE_CALLBACK_DONE;
-     }
-   //Swallow Dummy Object
-   if (!strcmp(event->key, "F6"))
-     {
-        config_dummy_swallow_set(!config_dummy_swallow_get());
-        view_dummy_toggle(VIEW_DATA, EINA_TRUE);
-        return ECORE_CALLBACK_DONE;
-     }
    //Line Number
    if (!strcmp(event->key, "F5"))
      {
