@@ -445,13 +445,13 @@ setting_open(menu_data *md)
 
    elm_box_pack_end(box2, slider_view);
 
-   //Toggle (Tool bar)
+   //Toggle (Tools)
    Evas_Object *toggle_tools = toggle_create(box, "Tools",
                                              config_tools_get());
    elm_box_pack_end(box, toggle_tools);
 
-   //Toggle (Status bar)
-   Evas_Object *toggle_stats = toggle_create(box, "Status Bar",
+   //Toggle (Status)
+   Evas_Object *toggle_stats = toggle_create(box, "Status",
                                              config_stats_bar_get());
    elm_box_pack_end(box, toggle_stats);
 
