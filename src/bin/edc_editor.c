@@ -144,6 +144,9 @@ edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
      }
 
    if (!syntax_color) return;
+   /* FIXME: after searching the text, it couldn't recover the selected text
+      right after applying syntax color. This workaround makes avoid to not
+      applying syntax color while entry has the selected text. */
    if (elm_entry_selection_get(ed->en_edit)) return;
    syntax_color_timer_update(ed);
 }
