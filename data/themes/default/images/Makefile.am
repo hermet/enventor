@@ -1,9 +1,5 @@
 MAINTAINERCLEANFILES = Makefile.in
 EXTRA_DIST = \
-   arrow_down.png \
-   arrow_left.png \
-   arrow_right.png \
-   arrow_up.png \
    bevel_in.png \
    bevel_out.png \
    bg_glow_in.png \
@@ -14,9 +10,6 @@ EXTRA_DIST = \
    bt_glow.png \
    bt_hilight.png \
    bt_shine.png \
-   bt_sm_base2.png \
-   bt_sm_hilight.png \
-   bt_sm_shine.png \
    bub_over_bot.png \
    fileselect.png \
    folder.png \
@@ -37,11 +30,8 @@ EXTRA_DIST = \
    runner_glow_vert.png \
    runner_horiz.png \
    runner_vert.png \
-   sb_runnerh.png \
-   sb_runnerv.png \
    shadow_square_tiny.png \
    shine.png \
-   sl_bt2_2.png \
    swallow.png \
    sym_down_glow_normal.png \
    sym_down_light_normal.png \
