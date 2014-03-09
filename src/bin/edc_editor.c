@@ -51,7 +51,6 @@ line_decrease(edit_data *ed, int cnt)
    Evas_Object *textblock = elm_entry_textblock_get(ed->en_line);
    Evas_Textblock_Cursor *cur1 = evas_object_textblock_cursor_new(textblock);
    evas_textblock_cursor_line_set(cur1, (ed->line_max - cnt));
-   evas_textblock_cursor_word_start(cur1);
 
    Evas_Textblock_Cursor *cur2 = evas_object_textblock_cursor_new(textblock);
    evas_textblock_cursor_line_set(cur2, ed->line_max);
@@ -625,6 +624,38 @@ edit_view_sync_cb_set(edit_data *ed,
 {
    ed->view_sync_cb = cb;
    ed->view_sync_cb_data = data;
+}
+
+void
+edit_line_delete(edit_data *ed)
+{
+   if (!elm_object_focus_get(ed->en_edit)) return;
+
+   Evas_Object *textblock = elm_entry_textblock_get(ed->en_edit);
+
+   int line1 = ed->cur_line - 1;
+   int line2 = ed->cur_line;
+
+   if (line1 < 0)
+     {
+        line1++;
+        line2++;
+     }
+
+   Evas_Textblock_Cursor *cur1 = evas_object_textblock_cursor_new(textblock);
+   evas_textblock_cursor_line_set(cur1, line1);
+
+   Evas_Textblock_Cursor *cur2 = evas_object_textblock_cursor_new(textblock);
+   evas_textblock_cursor_line_set(cur2, line2);
+
+   evas_textblock_cursor_range_delete(cur1, cur2);
+
+   evas_textblock_cursor_free(cur1);
+   evas_textblock_cursor_free(cur2);
+
+   elm_entry_calc_force(ed->en_edit);
+
+   line_decrease(ed, 1);
 }
 
 static Eina_Bool

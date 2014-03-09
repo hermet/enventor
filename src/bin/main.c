@@ -147,6 +147,12 @@ ctrl_func(app_data *ad, const char *key)
    //Go to Begin/End
    if (!strcmp(key, "Home") || !strcmp(key, "End"))
      return ECORE_CALLBACK_PASS_ON;
+   //Delete Line
+   if (!strcmp(key, "d") || !strcmp(key, "D"))
+     {
+        edit_line_delete(ad->ed);
+        return ECORE_CALLBACK_DONE;
+     }
    //Find/Replace
    if (!strcmp(key, "f") || !strcmp(key, "F"))
      {
