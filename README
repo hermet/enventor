@@ -68,6 +68,7 @@ Ctrl+Double Click = Select a word
 Ctrl+C = Copy Selected Text
 Ctrl+V = Paste Copied Text
 Ctrl+X = Cut Selected Text
+Ctrl+D = Delete a Current line
 Ctrl+F = Find/Replace
 Ctrl+Home = Go to the Top line
 Ctrl+End = Go to the Bottom line

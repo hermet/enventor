@@ -64,6 +64,8 @@ line_decrease(edit_data *ed, int cnt)
    elm_entry_calc_force(ed->en_line);
 
    ed->line_max -= cnt;
+
+   if (ed->line_max < 0) ed->line_max = 0;
 }
 
 static void
@@ -400,14 +402,14 @@ edit_mouse_down_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
 static void
 cur_line_pos_set(edit_data *ed)
 {
-   if (!config_stats_bar_get()) return;
-
    Evas_Coord y, h;
    elm_entry_cursor_geometry_get(ed->en_edit, NULL, &y, NULL, &h);
    int line = (y / h) + 1;
    if (line < 0) line = 0;
    if (ed->cur_line == line) return;
    ed->cur_line = line;
+
+   if (!config_stats_bar_get()) return;
    stats_line_num_update(ed->cur_line, ed->line_max);
 }
 
@@ -636,23 +638,41 @@ edit_line_delete(edit_data *ed)
    int line1 = ed->cur_line - 1;
    int line2 = ed->cur_line;
 
+   //min position case
    if (line1 < 0)
      {
-        line1++;
-        line2++;
+        line1 = 0;
+        line2 = 1;
+     }
+
+   //Max position case
+   Eina_Bool max = EINA_FALSE;
+   if (line2 >= ed->line_max)
+     {
+        line1 = (ed->line_max - 2);
+        line2 = (ed->line_max - 1);
+        max = EINA_TRUE;
+     }
+
+   //only one line remain. clear it.
+   if (ed->line_max == 1)
+     {
+        elm_entry_entry_set(ed->en_edit, "");
+        line_decrease(ed, 1);
+        return;
      }
 
    Evas_Textblock_Cursor *cur1 = evas_object_textblock_cursor_new(textblock);
    evas_textblock_cursor_line_set(cur1, line1);
+   if (max) evas_textblock_cursor_line_char_last(cur1);
 
    Evas_Textblock_Cursor *cur2 = evas_object_textblock_cursor_new(textblock);
    evas_textblock_cursor_line_set(cur2, line2);
+   if (max) evas_textblock_cursor_line_char_last(cur2);
 
    evas_textblock_cursor_range_delete(cur1, cur2);
-
    evas_textblock_cursor_free(cur1);
    evas_textblock_cursor_free(cur2);
-
    elm_entry_calc_force(ed->en_edit);
 
    line_decrease(ed, 1);
