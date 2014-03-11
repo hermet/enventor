@@ -518,6 +518,7 @@ color_apply(color_data *cd, const char *src, int length)
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "BOUNCE", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "BOX", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "COMP", col4);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "CURRENT", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "DECELERATE_FACTOR",
                      col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "DECELERATE", col4);
