@@ -200,12 +200,13 @@ attr_value *
 parser_attribute_get(parser_data *pd, const char *text, const char *cur)
 {
    if (!text || !cur) return NULL;
-
-   char *p = (char *) cur;
+   if ((*cur == ';') || (*cur == ':')) return NULL;
 
    parser_attr *attr;
    Eina_Bool instring = EINA_FALSE;
    Eina_Bool necessary = EINA_FALSE;
+
+   char *p = (char *) cur;
 
    while (p >= text)
      {
