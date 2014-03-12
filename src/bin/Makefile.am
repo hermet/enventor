@@ -28,6 +28,7 @@ enventor_SOURCES = \
 	build.c \
 	tools.c \
 	search.c \
+	newfile.c \
 	globals.c
 
 enventor_LDADD = @ENVENTOR_LIBS@

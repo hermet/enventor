@@ -37,7 +37,6 @@ static void warning_no_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
                               void *event_info EINA_UNUSED);
 static void new_save_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
                             void *event_info EINA_UNUSED);
-static void edc_reload(menu_data *md, const char *edc_path);
 static void edc_file_save(menu_data *md);
 
 static void
@@ -601,8 +600,7 @@ new_yes_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
                void *event_info EINA_UNUSED)
 {
    menu_data *md = data;
-
-   edc_reload(md, PROTO_EDC_PATH);
+   newfile_new(md->ed, EINA_FALSE);
    warning_close(md);
    menu_close(md);
 }
@@ -659,15 +657,6 @@ btn_effect_timer_cb(void *data)
 }
 
 static void
-edc_reload(menu_data *md, const char *edc_path)
-{
-   config_edc_path_set(edc_path);
-   edit_new(md->ed);
-   edj_mgr_reload_need_set(EINA_TRUE);
-   config_apply();
-}
-
-static void
 warning_no_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
                   void *event_info EINA_UNUSED)
 {
@@ -682,7 +671,7 @@ new_save_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
    menu_data *md = data;
 
    edit_save(md->ed);
-   edc_reload(md, PROTO_EDC_PATH);
+   newfile_new(md->ed, EINA_FALSE);
    warning_close(md);
    menu_close(md);
 }
@@ -692,7 +681,7 @@ new_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
            void *event_info EINA_UNUSED)
 {
    menu_data *md = data;
-   menu_edc_new(md);
+   menu_edc_new();
 }
 
 static void
@@ -820,7 +809,7 @@ fileselector_load_done_cb(void *data, Evas_Object *obj, void *event_info)
         return;
      }
 
-   edc_reload(md, selected);
+   edit_edc_reload(md->ed, selected);
    fileselector_close(md);
    menu_close(md);
 }
@@ -1023,7 +1012,7 @@ menu_edc_new()
         warning_layout_create(md, new_yes_btn_cb, new_save_btn_cb);
         return EINA_TRUE;
      }
-   edc_reload(md, PROTO_EDC_PATH);
+   newfile_new(md->ed, EINA_FALSE);
    menu_close(md);
 
    return EINA_FALSE;

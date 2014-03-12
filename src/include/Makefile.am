@@ -19,4 +19,5 @@ EXTRA_DIST = common.h \
 	syntax_helper.h \
 	template_code.h \
 	tools.h \
+	newfile.h \
 	search.h

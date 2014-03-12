@@ -36,25 +36,7 @@ edc_changed_cb(void *data, int type EINA_UNUSED, void *event)
 static Eina_Bool
 edc_proto_setup()
 {
-   Eina_Bool success = EINA_TRUE;
-
-   char buf[PATH_MAX];
-   snprintf(buf, sizeof(buf), "%s/.proto/proto.edc",
-            elm_app_data_dir_get());
-
-   if (!ecore_file_exists(config_edc_path_get()))
-     {
-        EINA_LOG_INFO("No working edc file exists. Copy a proto.edc");
-        success = eina_file_copy(buf, config_edc_path_get(),
-                                 EINA_FILE_COPY_DATA, NULL, NULL);
-     }
-
-   if (!success)
-     {
-        EINA_LOG_ERR("Cannot find file! \"%s\"", buf);
-        return EINA_FALSE;
-     }
-
+   newfile_new(NULL, EINA_TRUE);
    build_edc();
 
    return EINA_TRUE;

@@ -927,3 +927,12 @@ edit_part_highlight_toggle(edit_data *ed, Eina_Bool msg)
    else
      stats_info_msg_update("Part Highlighting Disabled.");
 }
+
+void
+edit_edc_reload(edit_data *ed, const char *edc_path)
+{
+   config_edc_path_set(edc_path);
+   edit_new(ed);
+   edj_mgr_reload_need_set(EINA_TRUE);
+   config_apply();
+}

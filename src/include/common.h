@@ -27,5 +27,6 @@ typedef struct indent_s indent_data;
 #include "tools.h"
 #include "base_gui.h"
 #include "search.h"
+#include "newfile.h"
 
 #endif
