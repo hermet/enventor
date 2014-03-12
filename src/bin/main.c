@@ -367,7 +367,7 @@ config_update_cb(void *data)
 
    base_tools_toggle(EINA_FALSE);
    base_statusbar_toggle(EINA_FALSE);
-   edit_part_highlight_toggle(ad->ed, EINA_TRUE);
+   edit_part_highlight_toggle(ad->ed, EINA_FALSE);
    view_dummy_toggle(VIEW_DATA, EINA_FALSE);
 
    //previous build was failed, Need to rebuild then reload the edj.
