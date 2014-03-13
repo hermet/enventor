@@ -46,4 +46,12 @@ EXTRA_DIST = \
    panes_left_arrow.png \
    panes_right_arrow.png \
    panes_recover_arrow.png \
-   pm_fill.png
+   pm_fill.png \
+   file.png \
+   find.png \
+   highlight.png \
+   lines.png \
+   new.png \
+   setting.png \
+   status.png \
+   swallow_s.png

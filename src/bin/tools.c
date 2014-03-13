@@ -102,27 +102,24 @@ tools_create(Evas_Object *parent, edit_data *ed)
    elm_object_focus_allow_set(toolbar, EINA_FALSE);
 
    Elm_Object_Item *it;
-   Evas_Object *icon;
-   char buf[PATH_MAX];
-   snprintf(buf, sizeof(buf), "%s/images/new.png", elm_app_data_dir_get());
-   it = elm_toolbar_item_append(toolbar, buf, "New", f2_cb, NULL);
-   snprintf(buf, sizeof(buf), "%s/images/file.png", elm_app_data_dir_get());
-   it = elm_toolbar_item_append(toolbar, buf, "Save", f3_cb, NULL);
-   snprintf(buf, sizeof(buf), "%s/images/file.png", elm_app_data_dir_get());
-   it = elm_toolbar_item_append(toolbar, buf, "Load", f4_cb, NULL);
-   snprintf(buf, sizeof(buf), "%s/images/highlight.png",
-            elm_app_data_dir_get());
-   it = elm_toolbar_item_append(toolbar, buf, "Highlight", f5_cb, ed);
-   snprintf(buf, sizeof(buf), "%s/images/swallow.png", elm_app_data_dir_get());
-   it = elm_toolbar_item_append(toolbar, buf, "Swallow", f6_cb, NULL);
-   snprintf(buf, sizeof(buf), "%s/images/lines.png", elm_app_data_dir_get());
-   it = elm_toolbar_item_append(toolbar, buf, "Lines", f9_cb, ed);
-   snprintf(buf, sizeof(buf), "%s/images/find.png", elm_app_data_dir_get());
-   it = elm_toolbar_item_append(toolbar, buf, "Find", f11_cb, NULL);
-   snprintf(buf, sizeof(buf), "%s/images/status.png", elm_app_data_dir_get());
-   it = elm_toolbar_item_append(toolbar, buf, "Status", f10_cb, NULL);
-   snprintf(buf, sizeof(buf), "%s/images/setting.png", elm_app_data_dir_get());
-   it = elm_toolbar_item_append(toolbar, buf, "Setting", f12_cb, NULL);
+   it = elm_toolbar_item_append(toolbar, NULL, "New", f2_cb, NULL);
+   elm_toolbar_item_icon_file_set(it, EDJE_PATH, "new");
+   it = elm_toolbar_item_append(toolbar, NULL, "Save", f3_cb, NULL);
+   elm_toolbar_item_icon_file_set(it, EDJE_PATH, "file");
+   it = elm_toolbar_item_append(toolbar, NULL, "Load", f4_cb, NULL);
+   elm_toolbar_item_icon_file_set(it, EDJE_PATH, "file");
+   it = elm_toolbar_item_append(toolbar, NULL, "Highlight", f5_cb, ed);
+   elm_toolbar_item_icon_file_set(it, EDJE_PATH, "highlight");
+   it = elm_toolbar_item_append(toolbar, NULL, "Swallow", f6_cb, NULL);
+   elm_toolbar_item_icon_file_set(it, EDJE_PATH, "swallow_s");
+   it = elm_toolbar_item_append(toolbar, NULL, "Lines", f9_cb, ed);
+   elm_toolbar_item_icon_file_set(it, EDJE_PATH, "lines");
+   it = elm_toolbar_item_append(toolbar, NULL, "Find", f11_cb, NULL);
+   elm_toolbar_item_icon_file_set(it, EDJE_PATH, "find");
+   it = elm_toolbar_item_append(toolbar, NULL, "Status", f10_cb, NULL);
+   elm_toolbar_item_icon_file_set(it, EDJE_PATH, "status");
+   it = elm_toolbar_item_append(toolbar, NULL, "Setting", f12_cb, NULL);
+   elm_toolbar_item_icon_file_set(it, EDJE_PATH, "setting");
 
    return toolbar;
 }

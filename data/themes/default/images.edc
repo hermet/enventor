@@ -4,6 +4,101 @@ images {
    image: "panes_left_arrow.png" COMP;
    image: "panes_right_arrow.png" COMP;
    image: "panes_recover_arrow.png" COMP;
+   image: "file.png" COMP;
+   image: "find.png" COMP;
+   image: "highlight.png" COMP;
+   image: "lines.png" COMP;
+   image: "new.png" COMP;
+   image: "setting.png" COMP;
+   image: "status.png" COMP;
+   image: "swallow_s.png" COMP;
+}
+
+group { name: "file";
+   parts {
+      part { name: "img";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            image.normal: "file.png";
+         }
+      }
+   }
+}
+
+group { name: "find";
+   parts {
+      part { name: "img";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            image.normal: "find.png";
+         }
+      }
+   }
+}
+
+group { name: "highlight";
+   parts {
+      part { name: "img";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            image.normal: "highlight.png";
+         }
+      }
+   }
+}
+
+group { name: "lines";
+   parts {
+      part { name: "img";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            image.normal: "lines.png";
+         }
+      }
+   }
+}
+group { name: "new";
+   parts {
+      part { name: "img";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            image.normal: "new.png";
+         }
+      }
+   }
+}
+
+group { name: "setting";
+   parts {
+      part { name: "img";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            image.normal: "setting.png";
+         }
+      }
+   }
+}
+
+group { name: "status";
+   parts {
+      part { name: "img";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            image.normal: "status.png";
+         }
+      }
+   }
+}
+
+group { name: "swallow_s";
+   parts {
+      part { name: "img";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            image.normal: "swallow_s.png";
+         }
+      }
+   }
 }
 
 group { name: "plus";
