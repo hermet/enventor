@@ -1012,7 +1012,6 @@ menu_edc_new()
         return EINA_TRUE;
      }
 
-   config_edc_path_set(PROTO_EDC_PATH);
    newfile_new(md->ed, EINA_FALSE);
    menu_close(md);
 
