@@ -354,7 +354,7 @@ statusbar_set()
    Evas_Object *obj = stats_init(base_layout_get());
    elm_object_part_content_set(base_layout_get(), "elm.swallow.statusbar",
                               obj);
-   base_statusbar_toggle(EINA_TRUE);
+   base_statusbar_toggle(EINA_FALSE);
 }
 
 static void
