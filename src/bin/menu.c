@@ -808,7 +808,6 @@ fileselector_load_done_cb(void *data, Evas_Object *obj, void *event_info)
                                "elm,action,msg,show", "");
         return;
      }
-
    edit_edc_reload(md->ed, selected);
    fileselector_close(md);
    menu_close(md);
@@ -1012,6 +1011,8 @@ menu_edc_new()
         warning_layout_create(md, new_yes_btn_cb, new_save_btn_cb);
         return EINA_TRUE;
      }
+
+   config_edc_path_set(PROTO_EDC_PATH);
    newfile_new(md->ed, EINA_FALSE);
    menu_close(md);
 
