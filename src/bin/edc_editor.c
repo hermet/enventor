@@ -815,38 +815,39 @@ edit_edc_read(edit_data *ed, const char *file_path)
    Eina_Iterator *itr = eina_file_map_lines(file);
    if (!itr) goto err;
 
-   Eina_Strbuf *strbuf = eina_strbuf_new();
-   if (!strbuf) goto err;
+   Eina_Strbuf *strbuf_line = eina_strbuf_new();
+   if (!strbuf_line) goto err;
+
+   Eina_Strbuf *strbuf_edit = eina_strbuf_new();
+   if (!strbuf_edit) goto err;
 
    Eina_File_Line *line;
 
    //Read first line specially.
    if (eina_iterator_next(itr, (void **)(void *)&(line)))
      {
-        if (!eina_strbuf_append_length(strbuf, line->start, line->length))
+        if (!eina_strbuf_append(strbuf_line, "1")) goto err;
+        if (!eina_strbuf_append_length(strbuf_edit, line->start, line->length))
            goto err;
-        elm_entry_entry_append(ed->en_line, "1");
-   }
+     }
 
    //Read last lines.
-   int line_num = 1;
+   int line_num = 2;
    EINA_ITERATOR_FOREACH(itr, line)
      {
-        //Append edc ccde
-        if (line_num > 0)
-          {
-             if (!eina_strbuf_append(strbuf, "<br/>")) goto err;
-          }
-
-        if (!eina_strbuf_append_length(strbuf, line->start, line->length))
-          goto err;
-        line_num++;
-
         //Append line number
         sprintf(buf, "<br/>%d", line_num);
-        elm_entry_entry_append(ed->en_line, buf);
+        if (!eina_strbuf_append(strbuf_line, buf)) goto err;
+
+        //Append edc ccde
+        if (!eina_strbuf_append(strbuf_edit, "<br/>")) goto err;
+        if (!eina_strbuf_append_length(strbuf_edit, line->start, line->length))
+          goto err;
+
+        line_num++;
      }
-   elm_entry_entry_append(ed->en_edit, eina_strbuf_string_get(strbuf));
+   elm_entry_entry_append(ed->en_line, eina_strbuf_string_get(strbuf_line));
+   elm_entry_entry_append(ed->en_edit, eina_strbuf_string_get(strbuf_edit));
 
    ed->line_max = line_num;
    Eina_Stringshare *group_name =
@@ -859,7 +860,8 @@ edit_edc_read(edit_data *ed, const char *file_path)
    ecore_animator_add(syntax_color_timer_cb, ed);
 
 err:
-   if (strbuf) eina_strbuf_free(strbuf);
+   if (strbuf_edit) eina_strbuf_free(strbuf_edit);
+   if (strbuf_line) eina_strbuf_free(strbuf_line);
    if (itr) eina_iterator_free(itr);
    if (file) eina_file_close(file);
 }
