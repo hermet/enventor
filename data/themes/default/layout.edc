@@ -92,7 +92,6 @@ group { name: "search";
             fixed: 1 1;
          }
       }
-
       part { name: "elm.swallow.find_entry";
          type: SWALLOW;
          scale: 1;
@@ -355,19 +354,25 @@ group { name: "statusbar_layout";
          }
       }
       part { name: "elm.text.group_name_bracket";
-         type: TEXTBLOCK;
+         type: TEXT;
          scale: 1;
+         effect: SHADOW BOTTOM;
          clip_to: "base_clip";
          description {
             rel1.to_x: "elm.text.group_name";
             rel1.relative: 1 0.0;
             rel2.to_x: "elm.text.group_name";
             rel2.relative: 1 1.0;
-            min: 3 14;
+            min: 6 14;
             align: 0 0.5;
             fixed: 1 0;
-            text.style: "entry_statusbar_style";
-            text.text: "]";
+            color: 255 255 255 255;
+            color3: 0 0 0 128;
+            text {
+               text: "]";
+               size: 11;
+               align: 0 0.5;
+            }
          }
       }
       part { name: "elm.text.line";
