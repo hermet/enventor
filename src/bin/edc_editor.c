@@ -819,7 +819,17 @@ edit_edc_read(edit_data *ed, const char *file_path)
    if (!strbuf) goto err;
 
    Eina_File_Line *line;
-   int line_num = 0;
+
+   //Read first line specially.
+   if (eina_iterator_next(itr, (void **)(void *)&(line)))
+     {
+        if (!eina_strbuf_append_length(strbuf, line->start, line->length))
+           goto err;
+        elm_entry_entry_append(ed->en_line, "1");
+   }
+
+   //Read last lines.
+   int line_num = 1;
    EINA_ITERATOR_FOREACH(itr, line)
      {
         //Append edc ccde
@@ -833,10 +843,9 @@ edit_edc_read(edit_data *ed, const char *file_path)
         line_num++;
 
         //Append line number
-        sprintf(buf, "%d<br/>", line_num);
+        sprintf(buf, "<br/>%d", line_num);
         elm_entry_entry_append(ed->en_line, buf);
      }
-
    elm_entry_entry_append(ed->en_edit, eina_strbuf_string_get(strbuf));
 
    ed->line_max = line_num;
