@@ -745,7 +745,7 @@ edit_init(Evas_Object *parent)
    //EDC Editor Entry
    Evas_Object *en_edit = elm_entry_add(layout);
    elm_entry_context_menu_disabled_set(en_edit, EINA_TRUE);
-   elm_entry_line_wrap_set(en_line, ELM_WRAP_NONE);
+   elm_entry_line_wrap_set(en_edit, ELM_WRAP_NONE);
    evas_object_smart_callback_add(en_edit, "changed,user", edit_changed_cb, ed);
    evas_object_smart_callback_add(en_edit, "cursor,changed,manual",
                                   edit_cursor_changed_manual_cb, ed);
