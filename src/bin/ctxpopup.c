@@ -16,7 +16,7 @@ btn_plus_cb(void *data, Evas_Object *obj EINA_UNUSED,
    attr_value *attr = evas_object_data_get(slider, "attr");
    double value = elm_slider_value_get(slider);
 
-   if (attr->integer) elm_slider_value_set(slider, value + 1);
+   if (attr->type & ATTR_VALUE_INTEGER) elm_slider_value_set(slider, value + 1);
    else elm_slider_value_set(slider, value + 0.01);
 }
 
@@ -28,7 +28,7 @@ btn_minus_cb(void *data, Evas_Object *obj EINA_UNUSED,
    attr_value *attr = evas_object_data_get(slider, "attr");
    double value = elm_slider_value_get(slider);
 
-   if (attr->integer) elm_slider_value_set(slider, value - 1);
+   if (attr->type & ATTR_VALUE_INTEGER) elm_slider_value_set(slider, value - 1);
    else elm_slider_value_set(slider, value - 0.01);
 }
 
@@ -50,7 +50,7 @@ slider_dismiss_cb(void *data EINA_UNUSED, Evas_Object *obj,
                                                      "elm.swallow.slider");
    char buf[128];
    attr_value *attr = evas_object_data_get(slider, "attr");
-   if (attr->integer)
+   if (attr->type & ATTR_VALUE_INTEGER)
      {
         snprintf(buf, sizeof(buf), "%d",
                  (int) roundf(elm_slider_value_get(slider)));
@@ -80,6 +80,53 @@ ctxpopup_del_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
    free(data);
 }
 
+static void
+slider_layout_create(Evas_Object *ctxpopup, attr_value *attr, double slider_val,
+                     void *slider_dismiss_cb_data, Eina_Bool integer)
+{
+   //Layout
+   Evas_Object *layout = elm_layout_add(ctxpopup);
+   elm_layout_file_set(layout, EDJE_PATH, "slider_layout");
+   elm_object_content_set(ctxpopup, layout);
+
+   //Slider
+   Evas_Object *slider = elm_slider_add(layout);
+   if (integer) elm_slider_unit_format_set(slider, "%1.0f");
+   else elm_slider_unit_format_set(slider, "%1.2f");
+   elm_slider_span_size_set(slider, 120);
+   elm_slider_indicator_show_set(slider, EINA_FALSE);
+   elm_slider_min_max_set(slider, attr->min, attr->max);
+   elm_slider_value_set(slider, slider_val);
+   evas_object_data_set(slider, "attr", attr);
+   elm_object_part_content_set(layout, "elm.swallow.slider", slider);
+
+   Evas_Object *btn;
+   Evas_Object *img;
+
+   //Minus Button
+   btn = elm_button_add(layout);
+   evas_object_smart_callback_add(btn, "clicked", btn_minus_cb, slider);
+   elm_object_part_content_set(layout, "elm.swallow.minus", btn);
+
+   //Minus Image
+   img = elm_image_add(btn);
+   elm_image_file_set(img, EDJE_PATH, "minus");
+   elm_object_content_set(btn, img);
+
+   //Plus Button
+   btn = elm_button_add(layout);
+   evas_object_smart_callback_add(btn, "clicked", btn_plus_cb, slider);
+   elm_object_part_content_set(layout, "elm.swallow.plus", btn);
+
+   //Plus Image
+   img = elm_image_add(btn);
+   elm_image_file_set(img, EDJE_PATH, "plus");
+   elm_object_content_set(btn, img);
+
+ evas_object_smart_callback_add(ctxpopup, "dismissed",
+                                slider_dismiss_cb, slider_dismiss_cb_data);
+}
+
 Evas_Object *
 ctxpopup_candidate_list_create(Evas_Object *parent, attr_value *attr,
                                double slider_val,
@@ -99,60 +146,28 @@ ctxpopup_candidate_list_create(Evas_Object *parent, attr_value *attr,
    ctxdata->data = data;
    evas_object_data_set(ctxpopup, "ctxpopup_data", ctxdata);
 
-   //case of strings
-   if (attr->strs)
+   switch (attr->type)
      {
-        Eina_List *l;
-        Eina_Stringshare *candidate;
-        EINA_LIST_FOREACH(attr->strs, l, candidate)
-          elm_ctxpopup_item_append(ctxpopup, candidate, NULL, ctxpopup_it_cb,
-                                   data);
-     }
-   //case of numbers
-   else
-     {
-        //Layout
-        Evas_Object *layout = elm_layout_add(ctxpopup);
-        elm_layout_file_set(layout, EDJE_PATH, "slider_layout");
-        elm_object_content_set(ctxpopup, layout);
-
-        //Slider
-        Evas_Object *slider = elm_slider_add(layout);
-        if (attr->integer) elm_slider_unit_format_set(slider, "%1.0f");
-        else elm_slider_unit_format_set(slider, "%1.2f");
-        elm_slider_span_size_set(slider, 120);
-        elm_slider_indicator_show_set(slider, EINA_FALSE);
-        elm_slider_min_max_set(slider, attr->min, attr->max);
-        elm_slider_value_set(slider, slider_val);
-        evas_object_data_set(slider, "attr", attr);
-        elm_object_part_content_set(layout, "elm.swallow.slider", slider);
-
-        Evas_Object *btn;
-        Evas_Object *img;
-
-        //Minus Button
-        btn = elm_button_add(layout);
-        evas_object_smart_callback_add(btn, "clicked", btn_minus_cb, slider);
-        elm_object_part_content_set(layout, "elm.swallow.minus", btn);
-
-        //Minus Image
-        img = elm_image_add(btn);
-        elm_image_file_set(img, EDJE_PATH, "minus");
-        elm_object_content_set(btn, img);
-
-        //Plus Button
-        btn = elm_button_add(layout);
-        evas_object_smart_callback_add(btn, "clicked", btn_plus_cb, slider);
-        elm_object_part_content_set(layout, "elm.swallow.plus", btn);
-
-        //Plus Image
-        img = elm_image_add(btn);
-        elm_image_file_set(img, EDJE_PATH, "plus");
-        elm_object_content_set(btn, img);
-
-        evas_object_smart_callback_add(ctxpopup, "dismissed",
-                                       slider_dismiss_cb, data);
-     }
+        case ATTR_VALUE_INTEGER:
+          {
+             slider_layout_create(ctxpopup, attr, slider_val, data, EINA_TRUE);
+             break;
+          }
+        case ATTR_VALUE_FLOAT:
+          {
+             slider_layout_create(ctxpopup, attr, slider_val, data, EINA_FALSE);
+             break;
+          }
+        case ATTR_VALUE_CONSTANT:
+          {
+             Eina_List *l;
+             Eina_Stringshare *candidate;
+             EINA_LIST_FOREACH(attr->strs, l, candidate)
+               elm_ctxpopup_item_append(ctxpopup, candidate, NULL,
+                                        ctxpopup_it_cb, data);
+             break;
+          }
+   }
 
    evas_object_event_callback_add(ctxpopup, EVAS_CALLBACK_DEL, ctxpopup_del_cb,
                                   ctxdata);
