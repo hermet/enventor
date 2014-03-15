@@ -406,7 +406,7 @@ args_dispatch(int argc, char **argv, char *edc_path, char *img_path,
      }
 
    //edc path
-   if ((argc >= 2) && ecore_file_can_read(argv[1]))
+   if ((argc >= 2) && strstr(argv[1], ".edc"))
      {
         sprintf(edc_path, "%s", argv[1]);
         default_edc = EINA_FALSE;
