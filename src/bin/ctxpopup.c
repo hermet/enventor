@@ -141,7 +141,7 @@ ctxpopup_candidate_list_create(Evas_Object *parent, attr_value *attr,
 
    //ctxpopup data
    ctxpopup_data *ctxdata = malloc(sizeof(ctxpopup_data));
-   if (!ctxdata) return NULL;
+   if (!ctxdata) goto err;
    ctxdata->selected_cb = ctxpopup_selected_cb;
    ctxdata->data = data;
    evas_object_data_set(ctxpopup, "ctxpopup_data", ctxdata);
@@ -167,6 +167,19 @@ ctxpopup_candidate_list_create(Evas_Object *parent, attr_value *attr,
                                         ctxpopup_it_cb, data);
              break;
           }
+        case ATTR_VALUE_PART:
+          {
+             view_data *vd = edj_mgr_view_get(NULL);
+             if (!vd) goto err;
+             Eina_List *parts = view_parts_list_get(vd);
+             Eina_List *l;
+             char *part;
+             EINA_LIST_FOREACH(parts, l, part)
+               elm_ctxpopup_item_append(ctxpopup, part, NULL,
+                                        ctxpopup_it_cb, data);
+             view_parts_list_free(parts);
+             break;
+          }
    }
 
    evas_object_event_callback_add(ctxpopup, EVAS_CALLBACK_DEL, ctxpopup_del_cb,
@@ -174,6 +187,10 @@ ctxpopup_candidate_list_create(Evas_Object *parent, attr_value *attr,
    evas_object_smart_callback_add(ctxpopup, "dismissed", ctxpopup_dismiss_cb,
                                   data);
    return ctxpopup;
+
+err:
+   free(ctxdata);
+   evas_object_del(ctxpopup);
 }
 
 static void

@@ -397,3 +397,15 @@ view_scale_set(view_data *vd, double scale)
    evas_object_resize(vd->layout, 0, 0);
    evas_object_resize(vd->layout, w, h);
 }
+
+Eina_List *
+view_parts_list_get(view_data *vd)
+{
+   return edje_edit_parts_list_get(vd->layout);
+}
+
+void
+view_parts_list_free(Eina_List *list)
+{
+   edje_edit_string_list_free(list);
+}

@@ -189,6 +189,24 @@ parser_type_init(parser_data *pd)
    attr->value.max = 1000;
    attr->value.type = ATTR_VALUE_INTEGER;
    pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
+
+   attr = calloc(1, sizeof(parser_attr));
+   attr->keyword = eina_stringshare_add("target");
+   attr->instring = EINA_TRUE;
+   attr->value.type = ATTR_VALUE_PART;
+   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
+
+   attr = calloc(1, sizeof(parser_attr));
+   attr->keyword = eina_stringshare_add("to");
+   attr->instring = EINA_TRUE;
+   attr->value.type = ATTR_VALUE_PART;
+   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
+
+   attr = calloc(1, sizeof(parser_attr));
+   attr->keyword = eina_stringshare_add("source");
+   attr->instring = EINA_TRUE;
+   attr->value.type = ATTR_VALUE_PART;
+   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
 }
 
 char *parser_name_get(parser_data *pd EINA_UNUSED, const char *cur)

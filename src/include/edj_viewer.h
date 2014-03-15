@@ -9,3 +9,5 @@ void view_program_run(view_data *vd, const char *program);
 Eina_Stringshare *view_group_name_get(view_data *vd);
 void *view_data_get(view_data *vd);
 void view_scale_set(view_data *vd, double scale);
+Eina_List *view_parts_list_get(view_data *vd);
+void view_parts_list_free(Eina_List *list);
