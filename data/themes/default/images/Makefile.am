@@ -52,6 +52,7 @@ EXTRA_DIST = \
    highlight.png \
    lines.png \
    new.png \
+   setting_icon.png \
    setting.png \
    status.png \
    swallow_s.png
