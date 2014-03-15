@@ -237,28 +237,11 @@ config_term()
    eina_stringshare_del(cd->edc_path);
    eina_stringshare_del(cd->edj_path);
 
-   Eina_List *l;
    Eina_Stringshare *str;
-
-   //free the image paths
-   EINA_LIST_FOREACH(cd->edc_img_path_list, l, str)
-     eina_stringshare_del(str);
-   eina_list_free(cd->edc_img_path_list);
-
-   //free the sound paths
-   EINA_LIST_FOREACH(cd->edc_snd_path_list, l, str)
-     eina_stringshare_del(str);
-   eina_list_free(cd->edc_snd_path_list);
-
-   //free the font paths
-   EINA_LIST_FOREACH(cd->edc_fnt_path_list, l, str)
-     eina_stringshare_del(str);
-   eina_list_free(cd->edc_fnt_path_list);
-
-   //free the data paths
-   EINA_LIST_FOREACH(cd->edc_data_path_list, l, str)
-     eina_stringshare_del(str);
-   eina_list_free(cd->edc_data_path_list);
+   EINA_LIST_FREE(cd->edc_img_path_list, str) eina_stringshare_del(str);
+   EINA_LIST_FREE(cd->edc_snd_path_list, str) eina_stringshare_del(str);
+   EINA_LIST_FREE(cd->edc_fnt_path_list, str) eina_stringshare_del(str);
+   EINA_LIST_FREE(cd->edc_data_path_list, str) eina_stringshare_del(str);
 
    if (cd->edc_img_path_buf) eina_strbuf_free(cd->edc_img_path_buf);
    if (cd->edc_snd_path_buf) eina_strbuf_free(cd->edc_snd_path_buf);
@@ -275,11 +258,8 @@ config_edc_snd_path_set(const char *edc_snd_path)
    config_data *cd = g_cd;
 
    //Free the existing paths
-   Eina_List *l;
    const char *s;
-   EINA_LIST_FOREACH(cd->edc_snd_path_list, l, s)
-     eina_stringshare_del(s);
-   cd->edc_snd_path_list = eina_list_free(cd->edc_snd_path_list);
+   EINA_LIST_FREE(cd->edc_snd_path_list, s) eina_stringshare_del(s);
 
    if (cd->edc_snd_path_buf) eina_strbuf_free(cd->edc_snd_path_buf);
    cd->edc_snd_path_buf = eina_strbuf_new();
@@ -320,11 +300,8 @@ config_edc_data_path_set(const char *edc_data_path)
    config_data *cd = g_cd;
 
    //Free the existing paths
-   Eina_List *l;
    const char *s;
-   EINA_LIST_FOREACH(cd->edc_data_path_list, l, s)
-     eina_stringshare_del(s);
-   cd->edc_data_path_list = eina_list_free(cd->edc_data_path_list);
+   EINA_LIST_FREE(cd->edc_data_path_list, s) eina_stringshare_del(s);
 
    if (cd->edc_data_path_buf) eina_strbuf_free(cd->edc_data_path_buf);
    cd->edc_data_path_buf = eina_strbuf_new();
@@ -365,11 +342,8 @@ config_edc_fnt_path_set(const char *edc_fnt_path)
    config_data *cd = g_cd;
 
    //Free the existing paths
-   Eina_List *l;
    const char *s;
-   EINA_LIST_FOREACH(cd->edc_fnt_path_list, l, s)
-     eina_stringshare_del(s);
-   cd->edc_fnt_path_list = eina_list_free(cd->edc_fnt_path_list);
+   EINA_LIST_FREE(cd->edc_fnt_path_list, s) eina_stringshare_del(s);
 
    if (cd->edc_fnt_path_buf) eina_strbuf_free(cd->edc_fnt_path_buf);
    cd->edc_fnt_path_buf = eina_strbuf_new();
@@ -410,11 +384,8 @@ config_edc_img_path_set(const char *edc_img_path)
    config_data *cd = g_cd;
 
    //Free the existing paths
-   Eina_List *l;
    const char *s;
-   EINA_LIST_FOREACH(cd->edc_img_path_list, l, s)
-     eina_stringshare_del(s);
-   cd->edc_img_path_list = eina_list_free(cd->edc_img_path_list);
+   EINA_LIST_FREE(cd->edc_img_path_list, s) eina_stringshare_del(s);
 
    if (cd->edc_img_path_buf) eina_strbuf_free(cd->edc_img_path_buf);
    cd->edc_img_path_buf = eina_strbuf_new();

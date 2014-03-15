@@ -278,7 +278,6 @@ parser_term(parser_data *pd)
 {
    if (pd->thread) ecore_thread_cancel(pd->thread);
 
-   Eina_List *l;
    parser_attr *attr;
    Eina_Stringshare *str;
 
@@ -288,10 +287,7 @@ parser_term(parser_data *pd)
         pd->attrs = eina_inlist_remove(pd->attrs, pd->attrs);
 
         eina_stringshare_del(attr->keyword);
-
-        EINA_LIST_FOREACH(attr->value.strs, l, str)
-           eina_stringshare_del(str);
-        eina_list_free(attr->value.strs);
+        EINA_LIST_FREE(attr->value.strs, str) eina_stringshare_del(str);
         free(attr);
      }
 

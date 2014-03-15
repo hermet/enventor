@@ -133,15 +133,13 @@ void dummy_obj_del(Evas_Object *layout)
    dummy_obj *dummy = evas_object_data_get(layout, DUMMYOBJ);
    if (!dummy) return;
 
-   Eina_List *l;
    part_obj *po;
-   EINA_LIST_FOREACH(dummy->swallows, l, po)
+   EINA_LIST_FREE(dummy->swallows, po)
      {
         evas_object_del(po->obj);
         eina_stringshare_del(po->name);
         free(po);
      }
-   eina_list_free(dummy->swallows);
 
    if (dummy->animator) ecore_animator_del(dummy->animator);
    free(dummy);
