@@ -39,7 +39,7 @@ line_increase(edit_data *ed)
    char buf[MAX_LINE_DIGIT_CNT];
 
    ed->line_max++;
-   snprintf(buf, sizeof(buf), "%d<br/>", ed->line_max);
+   snprintf(buf, sizeof(buf), "<br/>%d", ed->line_max);
    elm_entry_entry_append(ed->en_line, buf);
 }
 
@@ -832,9 +832,11 @@ edit_edc_read(edit_data *ed, const char *file_path)
      }
 
    //Read last lines.
-   int line_num = 2;
+   int line_num = 1;
    EINA_ITERATOR_FOREACH(itr, line)
      {
+        line_num++;
+
         //Append line number
         sprintf(buf, "<br/>%d", line_num);
         if (!eina_strbuf_append(strbuf_line, buf)) goto err;
@@ -843,8 +845,6 @@ edit_edc_read(edit_data *ed, const char *file_path)
         if (!eina_strbuf_append(strbuf_edit, "<br/>")) goto err;
         if (!eina_strbuf_append_length(strbuf_edit, line->start, line->length))
           goto err;
-
-        line_num++;
      }
    elm_entry_entry_append(ed->en_line, eina_strbuf_string_get(strbuf_line));
    elm_entry_entry_append(ed->en_edit, eina_strbuf_string_get(strbuf_edit));
