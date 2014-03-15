@@ -679,5 +679,3 @@ Eina_Stringshare
      }
    return NULL;
 }
-
-
