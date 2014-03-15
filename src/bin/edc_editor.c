@@ -31,7 +31,8 @@ struct editor_s
    Eina_Bool ctrl_pressed : 1;
 };
 
-static Eina_Bool image_preview_show(edit_data *ed, char *cur, Evas_Coord x, Evas_Coord y);
+static Eina_Bool
+image_preview_show(edit_data *ed, char *cur, Evas_Coord x, Evas_Coord y);
 
 static void
 line_increase(edit_data *ed)

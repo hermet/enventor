@@ -493,7 +493,9 @@ parser_paragh_name_get(parser_data *pd EINA_UNUSED, Evas_Object *entry)
 }
 
 void
-parser_cur_name_get(parser_data *pd, Evas_Object *entry, void (*cb)(void *data, Eina_Stringshare *part_name, Eina_Stringshare *group_name), void *data)
+parser_cur_name_get(parser_data *pd, Evas_Object *entry, void (*cb)(void *data,
+                    Eina_Stringshare *part_name, Eina_Stringshare *group_name),
+                    void *data)
 {
    if (pd->thread) ecore_thread_cancel(pd->thread);
 
