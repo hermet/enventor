@@ -599,9 +599,10 @@ cur_name_get_cb(void *data, Eina_Stringshare *part_name,
 void
 edit_view_sync(edit_data *ed)
 {
-   if (!config_part_highlight_get()) return;
-
-   parser_cur_name_get(ed->pd, ed->en_edit, cur_name_get_cb, ed);
+   if (!config_part_highlight_get())
+      parser_cur_group_name_get(ed->pd, ed->en_edit, cur_name_get_cb, ed);
+   else
+      parser_cur_name_get(ed->pd, ed->en_edit, cur_name_get_cb, ed);
 }
 
 static void

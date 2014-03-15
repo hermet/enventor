@@ -283,7 +283,82 @@ parser_markup_escape(parser_data *pd EINA_UNUSED, const char *str)
 }
 
 static void
-part_name_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
+group_name_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
+{
+   const char *quot = QUOT;
+   const char *group = "group";
+   const int quot_len = QUOT_LEN;
+   const int group_len = 5;  //strlen("group");
+
+   cur_name_td *td = data;
+   char *utf8 = td->utf8;
+   int cur_pos = td->cur_pos;
+   char *p = utf8;
+   char *end = utf8 + cur_pos;
+
+   int bracket = 0;
+   const char *group_name = NULL;
+   int group_name_len = 0;
+
+   while (p <= end)
+     {
+        //Skip "" range
+        if (*p == *quot)
+          {
+             p += quot_len;
+             p = strstr(p, quot);
+             if (!p) goto end;
+             p += quot_len;
+          }
+
+        if (*p == '{')
+          {
+             bracket++;
+             p++;
+             continue;
+          }
+
+        //Check whether outside of part or group
+        if ((*p == '}') && (p < end))
+          {
+             bracket--;
+             p++;
+
+             if (bracket == 1) group_name = NULL;
+             continue;
+          }
+        //Check Group in
+        if (!strncmp(p, group, group_len))
+          {
+             p += group_len;
+             char *name_begin = strstr(p, quot);
+             if (!name_begin) goto end;
+             name_begin += quot_len;
+             p = name_begin;
+             char *name_end = strstr(p, quot);
+             if (!name_end) goto end;
+             group_name = name_begin;
+             group_name_len = name_end - name_begin;
+             p = name_end + quot_len;
+             bracket++;
+             continue;
+          }
+        p++;
+     }
+   if (group_name)
+     group_name = eina_stringshare_add_length(group_name, group_name_len);
+
+end:
+   if (utf8)
+     {
+        free(utf8);
+        td->utf8 = NULL;
+     }
+   td->group_name = group_name;
+}
+
+static void
+cur_name_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
    const char *quot = QUOT;
    const char *part = "part";
@@ -388,7 +463,7 @@ end:
 }
 
 static void
-part_name_thread_end(void *data, Ecore_Thread *thread EINA_UNUSED)
+cur_name_thread_end(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
    cur_name_td *td = data;
    td->cb(td->cb_data, td->part_name, td->group_name);
@@ -397,7 +472,7 @@ part_name_thread_end(void *data, Ecore_Thread *thread EINA_UNUSED)
 }
 
 static void
-part_name_thread_cancel(void *data, Ecore_Thread *thread EINA_UNUSED)
+cur_name_thread_cancel(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
    cur_name_td *td = data;
    td->pd->thread = NULL;
@@ -493,6 +568,34 @@ parser_paragh_name_get(parser_data *pd EINA_UNUSED, Evas_Object *entry)
 }
 
 void
+parser_cur_group_name_get(parser_data *pd, Evas_Object *entry,
+                          void (*cb)(void *data, Eina_Stringshare *part_name,
+                          Eina_Stringshare *group_name), void *data)
+{
+   if (pd->thread) ecore_thread_cancel(pd->thread);
+
+   cur_name_td *td = calloc(1, sizeof(cur_name_td));
+   if (!td) return;
+
+   const char *text = elm_entry_entry_get(entry);
+   if (!text) return;
+
+   char *utf8 = elm_entry_markup_to_utf8(text);
+   if (!utf8) return;
+
+   td->pd = pd;
+   td->utf8 = utf8;
+   td->cur_pos = elm_entry_cursor_pos_get(entry);
+   td->cb = cb;
+   td->cb_data = data;
+
+   pd->thread = ecore_thread_run(group_name_thread_blocking,
+                                 cur_name_thread_end,
+                                 cur_name_thread_cancel,
+                                 td);
+}
+
+void
 parser_cur_name_get(parser_data *pd, Evas_Object *entry, void (*cb)(void *data,
                     Eina_Stringshare *part_name, Eina_Stringshare *group_name),
                     void *data)
@@ -514,9 +617,9 @@ parser_cur_name_get(parser_data *pd, Evas_Object *entry, void (*cb)(void *data,
    td->cb = cb;
    td->cb_data = data;
 
-   pd->thread = ecore_thread_run(part_name_thread_blocking,
-                                 part_name_thread_end,
-                                 part_name_thread_cancel,
+   pd->thread = ecore_thread_run(cur_name_thread_blocking,
+                                 cur_name_thread_end,
+                                 cur_name_thread_cancel,
                                  td);
 }
 
