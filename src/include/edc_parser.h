@@ -11,7 +11,6 @@ void parser_cur_name_get(parser_data *pd, Evas_Object *entry, void (*cb)(void *d
 void parser_cur_group_name_get(parser_data *pd, Evas_Object *entry, void (*cb)(void *data, Eina_Stringshare *part_name, Eina_Stringshare *group_name), void *data);
 Eina_Stringshare *parser_cur_name_fast_get(Evas_Object *entry, const char *scope);
 Eina_Bool parser_type_name_compare(parser_data *pd, const char *str);
-const char *parser_markup_escape(parser_data *pd EINA_UNUSED, const char *str);
 attr_value *parser_attribute_get(parser_data *pd, const char *text, const char *cur);
 const char * parser_paragh_name_get(parser_data *pd, Evas_Object *entry);
 char *parser_name_get(parser_data *pd, const char *cur);

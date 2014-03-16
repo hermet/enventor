@@ -97,17 +97,6 @@ parser_attribute_get(parser_data *pd, const char *text, const char *cur)
    return NULL;
 }
 
-const char *
-parser_markup_escape(parser_data *pd EINA_UNUSED, const char *str)
-{
-   const char *escaped = strchr(str, '>');
-   if (!escaped) return str;
-   if ((escaped + 1) >= (str + strlen(str))) return str;
-   escaped++;
-
-   return escaped;
-}
-
 static void
 group_name_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
