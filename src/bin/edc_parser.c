@@ -39,6 +39,8 @@ parser_type_init(parser_data *pd)
    parser_attr *attr;
 
    //FIXME: construct from the configuration file.
+
+   //Type: Constant
    Eina_List *types = NULL;
    types = eina_list_append(types, eina_stringshare_add("RECT"));
    types = eina_list_append(types, eina_stringshare_add("TEXT"));
@@ -120,18 +122,12 @@ parser_type_init(parser_data *pd)
    attr->value.type = ATTR_VALUE_CONSTANT;
    pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
 
+   //Type: Integer
    attr = calloc(1, sizeof(parser_attr));
    attr->keyword = eina_stringshare_add("color");
    attr->value.min = 0;
    attr->value.max = 255;
    attr->value.type = ATTR_VALUE_INTEGER;
-   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
-
-   attr = calloc(1, sizeof(parser_attr));
-   attr->keyword = eina_stringshare_add("relative");
-   attr->value.min = 0.0;
-   attr->value.max = 1;
-   attr->value.type = ATTR_VALUE_FLOAT;
    pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
 
    attr = calloc(1, sizeof(parser_attr));
@@ -146,20 +142,6 @@ parser_type_init(parser_data *pd)
    attr->value.min = 0;
    attr->value.max = 1;
    attr->value.type = ATTR_VALUE_INTEGER;
-   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
-
-   attr = calloc(1, sizeof(parser_attr));
-   attr->keyword = eina_stringshare_add("aspect");
-   attr->value.min = 0.0;
-   attr->value.max = 1.0;
-   attr->value.type = ATTR_VALUE_FLOAT;
-   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
-
-   attr = calloc(1, sizeof(parser_attr));
-   attr->keyword = eina_stringshare_add("align");
-   attr->value.min = 0.0;
-   attr->value.max = 1.0;
-   attr->value.type = ATTR_VALUE_FLOAT;
    pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
 
    attr = calloc(1, sizeof(parser_attr));
@@ -190,6 +172,29 @@ parser_type_init(parser_data *pd)
    attr->value.type = ATTR_VALUE_INTEGER;
    pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
 
+   //Type: Float
+   attr = calloc(1, sizeof(parser_attr));
+   attr->keyword = eina_stringshare_add("relative");
+   attr->value.min = 0.0;
+   attr->value.max = 1;
+   attr->value.type = ATTR_VALUE_FLOAT;
+   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
+
+   attr = calloc(1, sizeof(parser_attr));
+   attr->keyword = eina_stringshare_add("aspect");
+   attr->value.min = 0.0;
+   attr->value.max = 1.0;
+   attr->value.type = ATTR_VALUE_FLOAT;
+   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
+
+   attr = calloc(1, sizeof(parser_attr));
+   attr->keyword = eina_stringshare_add("align");
+   attr->value.min = 0.0;
+   attr->value.max = 1.0;
+   attr->value.type = ATTR_VALUE_FLOAT;
+   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
+
+   //Type: Part
    attr = calloc(1, sizeof(parser_attr));
    attr->keyword = eina_stringshare_add("target");
    attr->instring = EINA_TRUE;
