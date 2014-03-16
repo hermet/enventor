@@ -81,8 +81,8 @@ ctxpopup_del_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 }
 
 static void
-slider_layout_create(Evas_Object *ctxpopup, attr_value *attr, double slider_val,
-                     void *slider_dismiss_cb_data, Eina_Bool integer)
+slider_layout_set(Evas_Object *ctxpopup, attr_value *attr, double slider_val,
+                  void *data, Eina_Bool integer)
 {
    //Layout
    Evas_Object *layout = elm_layout_add(ctxpopup);
@@ -123,8 +123,63 @@ slider_layout_create(Evas_Object *ctxpopup, attr_value *attr, double slider_val,
    elm_image_file_set(img, EDJE_PATH, "plus");
    elm_object_content_set(btn, img);
 
- evas_object_smart_callback_add(ctxpopup, "dismissed",
-                                slider_dismiss_cb, slider_dismiss_cb_data);
+   evas_object_smart_callback_add(ctxpopup, "dismissed", slider_dismiss_cb,
+                                  data);
+}
+
+static void
+constant_candidate_set(Evas_Object *ctxpopup, attr_value *attr, void *data)
+{
+   Eina_List *l;
+   Eina_Stringshare *candidate;
+   EINA_LIST_FOREACH(attr->strs, l, candidate)
+     elm_ctxpopup_item_append(ctxpopup, candidate, NULL,
+                              ctxpopup_it_cb, data);
+}
+
+static Eina_Bool
+part_candidate_set(Evas_Object *ctxpopup, void *data)
+{
+   view_data *vd = edj_mgr_view_get(NULL);
+   if (!vd) return EINA_FALSE;
+   Eina_List *parts = view_parts_list_get(vd);
+   Eina_List *l;
+   char *part;
+   EINA_LIST_FOREACH(parts, l, part)
+     elm_ctxpopup_item_append(ctxpopup, part, NULL,
+                              ctxpopup_it_cb, data);
+   view_string_list_free(parts);
+   return EINA_TRUE;
+}
+
+static Eina_Bool
+image_candidate_set(Evas_Object *ctxpopup, void *data)
+{
+   view_data *vd = edj_mgr_view_get(NULL);
+   if (!vd) return EINA_FALSE;
+   Eina_List *parts = view_images_list_get(vd);
+   Eina_List *l;
+   char *part;
+   EINA_LIST_FOREACH(parts, l, part)
+     elm_ctxpopup_item_append(ctxpopup, part, NULL,
+                              ctxpopup_it_cb, data);
+   view_string_list_free(parts);
+   return EINA_TRUE;
+}
+
+static Eina_Bool
+program_candidate_set(Evas_Object *ctxpopup, void *data)
+{
+   view_data *vd = edj_mgr_view_get(NULL);
+   if (!vd) return EINA_FALSE;
+   Eina_List *parts = view_programs_list_get(vd);
+   Eina_List *l;
+   char *part;
+   EINA_LIST_FOREACH(parts, l, part)
+     elm_ctxpopup_item_append(ctxpopup, part, NULL,
+                              ctxpopup_it_cb, data);
+   view_string_list_free(parts);
+   return EINA_TRUE;
 }
 
 Evas_Object *
@@ -150,64 +205,35 @@ ctxpopup_candidate_list_create(Evas_Object *parent, attr_value *attr,
      {
         case ATTR_VALUE_INTEGER:
           {
-             slider_layout_create(ctxpopup, attr, slider_val, data, EINA_TRUE);
+             slider_layout_set(ctxpopup, attr, slider_val, data, EINA_TRUE);
              break;
           }
         case ATTR_VALUE_FLOAT:
           {
-             slider_layout_create(ctxpopup, attr, slider_val, data, EINA_FALSE);
+             slider_layout_set(ctxpopup, attr, slider_val, data, EINA_FALSE);
              break;
           }
         case ATTR_VALUE_CONSTANT:
           {
-             Eina_List *l;
-             Eina_Stringshare *candidate;
-             EINA_LIST_FOREACH(attr->strs, l, candidate)
-               elm_ctxpopup_item_append(ctxpopup, candidate, NULL,
-                                        ctxpopup_it_cb, data);
+             constant_candidate_set(ctxpopup, attr, data);
              break;
           }
         case ATTR_VALUE_PART:
           {
-             view_data *vd = edj_mgr_view_get(NULL);
-             if (!vd) goto err;
-             Eina_List *parts = view_parts_list_get(vd);
-             Eina_List *l;
-             char *part;
-             EINA_LIST_FOREACH(parts, l, part)
-               elm_ctxpopup_item_append(ctxpopup, part, NULL,
-                                        ctxpopup_it_cb, data);
-             view_string_list_free(parts);
+             if (!part_candidate_set(ctxpopup, data)) goto err;
              break;
           }
         case ATTR_VALUE_IMAGE:
           {
-             view_data *vd = edj_mgr_view_get(NULL);
-             if (!vd) goto err;
-             Eina_List *parts = view_images_list_get(vd);
-             Eina_List *l;
-             char *part;
-             EINA_LIST_FOREACH(parts, l, part)
-               elm_ctxpopup_item_append(ctxpopup, part, NULL,
-                                        ctxpopup_it_cb, data);
-             view_string_list_free(parts);
+             if (!image_candidate_set(ctxpopup, data)) goto err;
              break;
           }
         case ATTR_VALUE_PROGRAM:
           {
-             view_data *vd = edj_mgr_view_get(NULL);
-             if (!vd) goto err;
-             Eina_List *parts = view_programs_list_get(vd);
-             Eina_List *l;
-             char *part;
-             EINA_LIST_FOREACH(parts, l, part)
-               elm_ctxpopup_item_append(ctxpopup, part, NULL,
-                                        ctxpopup_it_cb, data);
-             view_string_list_free(parts);
+             if (!program_candidate_set(ctxpopup, data)) goto err;
              break;
           }
    }
-
    evas_object_event_callback_add(ctxpopup, EVAS_CALLBACK_DEL, ctxpopup_del_cb,
                                   ctxdata);
    evas_object_smart_callback_add(ctxpopup, "dismissed", ctxpopup_dismiss_cb,
