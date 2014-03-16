@@ -4,7 +4,8 @@ typedef enum attr_value_type
    ATTR_VALUE_FLOAT = 2,
    ATTR_VALUE_CONSTANT = 4,
    ATTR_VALUE_PART = 8,
-   ATTR_VALUE_IMAGE = 16
+   ATTR_VALUE_IMAGE = 16,
+   ATTR_VALUE_PROGRAM = 32
 } attr_value_type;
 
 struct attr_value_s

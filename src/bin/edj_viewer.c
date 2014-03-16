@@ -415,3 +415,9 @@ view_images_list_get(view_data *vd)
 {
    edje_edit_images_list_get(vd->layout);
 }
+
+Eina_List *
+view_programs_list_get(view_data *vd)
+{
+   edje_edit_programs_list_get(vd->layout);
+}

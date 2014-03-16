@@ -193,6 +193,19 @@ ctxpopup_candidate_list_create(Evas_Object *parent, attr_value *attr,
              view_string_list_free(parts);
              break;
           }
+        case ATTR_VALUE_PROGRAM:
+          {
+             view_data *vd = edj_mgr_view_get(NULL);
+             if (!vd) goto err;
+             Eina_List *parts = view_programs_list_get(vd);
+             Eina_List *l;
+             char *part;
+             EINA_LIST_FOREACH(parts, l, part)
+               elm_ctxpopup_item_append(ctxpopup, part, NULL,
+                                        ctxpopup_it_cb, data);
+             view_string_list_free(parts);
+             break;
+          }
    }
 
    evas_object_event_callback_add(ctxpopup, EVAS_CALLBACK_DEL, ctxpopup_del_cb,

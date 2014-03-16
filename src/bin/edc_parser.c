@@ -225,6 +225,13 @@ parser_type_init(parser_data *pd)
    attr->instring = EINA_TRUE;
    attr->value.type = ATTR_VALUE_IMAGE;
    pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
+
+   //Type: Program
+   attr = calloc(1, sizeof(parser_attr));
+   attr->keyword = eina_stringshare_add("after");
+   attr->instring = EINA_TRUE;
+   attr->value.type = ATTR_VALUE_PROGRAM;
+   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
 }
 
 char *parser_name_get(parser_data *pd EINA_UNUSED, const char *cur)
