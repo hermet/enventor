@@ -786,8 +786,8 @@ parser_line_cnt_get(parser_data *pd EINA_UNUSED, const char *src)
    return cnt;
 }
 
-Eina_Stringshare
-*parser_first_group_name_get(parser_data *pd EINA_UNUSED, Evas_Object *entry)
+Eina_Stringshare *
+parser_first_group_name_get(parser_data *pd EINA_UNUSED, Evas_Object *entry)
 {
    Evas_Object *tb = elm_entry_textblock_get(entry);
    char *text = (char *) evas_object_textblock_text_markup_get(tb);
