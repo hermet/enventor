@@ -508,11 +508,9 @@ image_preview_show(edit_data *ed, char *cur, Evas_Coord x, Evas_Coord y)
    if (found)
      {
         Evas_Object *ctxpopup =
-           ctxpopup_img_preview_create(ed->parent,
-                                       fullpath,
+           ctxpopup_img_preview_create(ed, fullpath,
                                        ctxpopup_preview_dismiss_cb,
-                                       ctxpopup_preview_relay_cb,
-                                       ed);
+                                       ctxpopup_preview_relay_cb);
         if (!ctxpopup) return EINA_FALSE;
 
         evas_object_move(ctxpopup, x, y);
@@ -543,10 +541,9 @@ candidate_list_show(edit_data *ed, char *text, char *cur, char *selected)
 
    //Show up the list of the types
    Evas_Object *ctxpopup =
-      ctxpopup_candidate_list_create(ed->parent, attr,
-                                     atof(selected),
+      ctxpopup_candidate_list_create(ed, attr, atof(selected),
                                      ctxpopup_candidate_dismiss_cb,
-                                     ctxpopup_candidate_selected_cb, ed);
+                                     ctxpopup_candidate_selected_cb);
    if (!ctxpopup) return;
 
    int x, y;
@@ -961,4 +958,16 @@ edit_edc_reload(edit_data *ed, const char *edc_path)
    edit_new(ed);
    edj_mgr_reload_need_set(EINA_TRUE);
    config_apply();
+}
+
+Eina_Stringshare *
+edit_cur_prog_name_get(edit_data *ed)
+{
+   return parser_cur_name_fast_get(ed->en_edit, "program");
+}
+
+Eina_Stringshare *
+edit_cur_part_name_get(edit_data *ed)
+{
+   return parser_cur_name_fast_get(ed->en_edit, "part");
 }

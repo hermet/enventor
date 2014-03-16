@@ -404,20 +404,32 @@ view_parts_list_get(view_data *vd)
    return edje_edit_parts_list_get(vd->layout);
 }
 
-void
-view_string_list_free(Eina_List *list)
-{
-   edje_edit_string_list_free(list);
-}
-
 Eina_List *
 view_images_list_get(view_data *vd)
 {
-   edje_edit_images_list_get(vd->layout);
+   return edje_edit_images_list_get(vd->layout);
 }
 
 Eina_List *
 view_programs_list_get(view_data *vd)
 {
-   edje_edit_programs_list_get(vd->layout);
+   return edje_edit_programs_list_get(vd->layout);
+}
+
+Eina_List *
+view_part_states_list_get(view_data *vd, const char *part)
+{
+   return edje_edit_part_states_list_get(vd->layout, part);
+}
+
+Eina_List *
+view_program_targets_get(view_data *vd, const char *prog)
+{
+   return edje_edit_program_targets_get(vd->layout, prog);
+}
+
+void
+view_string_list_free(Eina_List *list)
+{
+   edje_edit_string_list_free(list);
 }

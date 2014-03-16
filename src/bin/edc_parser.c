@@ -213,6 +213,20 @@ parser_type_init(parser_data *pd)
    attr->value.type = ATTR_VALUE_PART;
    pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
 
+   //Type: State
+   attr = calloc(1, sizeof(parser_attr));
+   attr->keyword = eina_stringshare_add("STATE_SET");
+   attr->instring = EINA_TRUE;
+   attr->value.type = ATTR_VALUE_STATE;
+   attr->value.program = EINA_TRUE;
+   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
+
+   attr = calloc(1, sizeof(parser_attr));
+   attr->keyword = eina_stringshare_add("inherit:");
+   attr->instring = EINA_TRUE;
+   attr->value.type = ATTR_VALUE_STATE;
+   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
+
    //Type: Image
    attr = calloc(1, sizeof(parser_attr));
    attr->keyword = eina_stringshare_add("normal:");
@@ -366,7 +380,7 @@ group_name_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
              continue;
           }
 
-        //Check whether outside of part or group
+        //Check whether outside of group
         if ((*p == '}') && (p < end))
           {
              bracket--;
@@ -609,6 +623,80 @@ parser_paragh_name_get(parser_data *pd EINA_UNUSED, Evas_Object *entry)
    return NULL;
 }
 
+Eina_Stringshare*
+parser_cur_name_fast_get(Evas_Object *entry, const char *scope)
+{
+   const char *quot = QUOT;
+   const int quot_len = QUOT_LEN;
+   const int scope_len = strlen(scope);
+
+   const char *text = elm_entry_entry_get(entry);
+   if (!text) return NULL;
+
+   char *utf8 = elm_entry_markup_to_utf8(text);
+   if (!utf8) return NULL;
+
+   int cur_pos = elm_entry_cursor_pos_get(entry);
+
+   char *p = utf8;
+   char *end = utf8 + cur_pos;
+
+   int bracket = 0;
+   const char *name = NULL;
+   int name_len = 0;
+
+   while (p <= end)
+     {
+        //Skip "" range
+        if (*p == *quot)
+          {
+             p += quot_len;
+             p = strstr(p, quot);
+             if (!p) goto end;
+             p += quot_len;
+          }
+
+        if (*p == '{')
+          {
+             bracket++;
+             p++;
+             continue;
+          }
+
+        //Check whether outside of scope
+        if ((*p == '}') && (p < end))
+          {
+             bracket--;
+             p++;
+
+             if (bracket == 1) name = NULL;
+             continue;
+          }
+        //Check Scope in
+        if (!strncmp(p, scope, scope_len))
+          {
+             p += scope_len;
+             char *name_begin = strstr(p, quot);
+             if (!name_begin) goto end;
+             name_begin += quot_len;
+             p = name_begin;
+             char *name_end = strstr(p, quot);
+             if (!name_end) goto end;
+             name = name_begin;
+             name_len = name_end - name_begin;
+             p = name_end + quot_len;
+             bracket++;
+             continue;
+          }
+        p++;
+     }
+   if (name) name = eina_stringshare_add_length(name, name_len);
+
+end:
+   free(utf8);
+   return name;
+}
+
 void
 parser_cur_group_name_get(parser_data *pd, Evas_Object *entry,
                           void (*cb)(void *data, Eina_Stringshare *part_name,
@@ -720,4 +808,24 @@ Eina_Stringshare
         p++;
      }
    return NULL;
+}
+
+Eina_List *
+parser_states_filtered_name_get(Eina_List *states)
+{
+   Eina_List *ret = NULL;
+   Eina_List *l;
+   char *state;
+   EINA_LIST_FOREACH(states, l, state)
+     {
+        char *p = state;
+        char *pp = state;
+        while (p = strstr(p, " "))
+           {
+              pp = p;
+              p++;
+           }
+        ret = eina_list_append(ret, strndup(state, pp - state));
+     }
+   return ret;
 }
