@@ -100,7 +100,7 @@ syntax_color_timer_cb(void *data)
 static void
 syntax_color_timer_update(edit_data *ed)
 {
-   if (ed->syntax_color_timer) ecore_timer_del(ed->syntax_color_timer);
+   ecore_timer_del(ed->syntax_color_timer);
    ed->syntax_color_timer = ecore_timer_add(SYNTAX_COLOR_TIME,
                                             syntax_color_timer_cb, ed);
 }

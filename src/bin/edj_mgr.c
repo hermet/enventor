@@ -26,7 +26,7 @@ view_del_cb(void *data)
    edj_mgr *em = g_em;
    edj_data *edj = data;
    em->edjs = eina_list_remove(em->edjs, edj);
-   if (edj->timer) ecore_timer_del(edj->timer);
+   ecore_timer_del(edj->timer);
    if (em->edj == edj) em->edj = NULL;
    free(edj);
 }
@@ -103,7 +103,7 @@ edj_mgr_view_del(view_data *vd)
    edj_mgr *em = g_em;
    edj_data *edj = view_data_get(vd);
    em->edjs = eina_list_remove(em->edjs, edj);
-   if (edj->timer) ecore_timer_del(edj->timer);
+   ecore_timer_del(edj->timer);
    view_term(vd);
    free(edj);
 }
@@ -162,16 +162,13 @@ edj_mgr_view_switch_to(view_data *vd)
 
    //Reset caching timers
    edj_data *cur_edj = view_data_get(vd);
-   if (cur_edj->timer)
-     {
-        ecore_timer_del(cur_edj->timer);
-        cur_edj->timer = NULL;
-     }
+   ecore_timer_del(cur_edj->timer);
+   cur_edj->timer = NULL;
 
    edj_data *prev_edj = em->edj;
    if (prev_edj)
      {
-        if (prev_edj->timer) ecore_timer_del(prev_edj->timer);
+        ecore_timer_del(prev_edj->timer);
         prev_edj->timer = ecore_timer_add(VIEW_CACHING_TIME, view_del_timer_cb,
                                           prev_edj->vd);
      }

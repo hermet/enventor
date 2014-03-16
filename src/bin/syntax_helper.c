@@ -42,7 +42,7 @@ syntax_term(syntax_helper *sh)
    color_term(sh->cd);
    indent_term(sh->id);
 
-   if (sh->buf_flush_timer) ecore_timer_del(sh->buf_flush_timer);
+   ecore_timer_del(sh->buf_flush_timer);
    eina_strbuf_free(sh->strbuf);
 }
 
