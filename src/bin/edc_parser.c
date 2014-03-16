@@ -115,13 +115,38 @@ parser_type_init(parser_data *pd)
    effect = eina_list_append(effect, eina_stringshare_add("FAR_SHADOW"));
    effect = eina_list_append(effect, eina_stringshare_add("FAR_SOFT_SHADOW"));
    effect = eina_list_append(effect, eina_stringshare_add("GLOW"));
+/*
+   Eina_List *action = NULL;
+   action = eina_list_append(action, eina_stringshare_add("NONE"));
+   action = eina_list_append(action, eina_stringshare_add("STATE_SET"));
+   action = eina_list_append(action, eina_stringshare_add("ACTION_STOP"));
+   action = eina_list_append(action, eina_stringshare_add("SIGNAL_EMIT"));
+   action = eina_list_append(action, eina_stringshare_add("DRAG_VAL_SET"));
+   action = eina_list_append(action, eina_stringshare_add("DRAG_VAL_STEP"));
+   action = eina_list_append(action, eina_stringshare_add("DRAG_VAL_PAGE"));
+   action = eina_list_append(action, eina_stringshare_add("SCRIPT"));
+   action = eina_list_append(action, eina_stringshare_add("FOCUS_SET"));
+   action = eina_list_append(action, eina_stringshare_add("FOCUS_OBJECT"));
+   action = eina_list_append(action, eina_stringshare_add("PARAM_COPY"));
+   action = eina_list_append(action, eina_stringshare_add("PARAM_SET"));
+   action = eina_list_append(action, eina_stringshare_add("PLAY_SAMPLE"));
+   action = eina_list_append(action, eina_stringshare_add("PLAY_TONE"));
+   action = eina_list_append(action, eina_stringshare_add("PHYSICS_IMPULSE"));
+   action = eina_list_append(action, eina_stringshare_add("PHYSICS_TORQUE_IMPULSE"));
+   action = eina_list_append(action, eina_stringshare_add("PHYSICS_FORCE"));
+   action = eina_list_append(action, eina_stringshare_add("PHYSICS_TORQUE"));
+   action = eina_list_append(action, eina_stringshare_add("PHYSICS_FORCES_CLEAR"));
+   action = eina_list_append(action, eina_stringshare_add("PHYSICS_VEL_SET"));
+   action = eina_list_append(action, eina_stringshare_add("PHYSICS_ANG_VEL_SET"));
+   action = eina_list_append(action, eina_stringshare_add("PHYSICS_STOP"));
+   action = eina_list_append(action, eina_stringshare_add("PHYSICS_ROT_SET"));
 
    attr = calloc(1, sizeof(parser_attr));
-   attr->keyword = eina_stringshare_add("effect:");
-   attr->value.strs = effect;
+   attr->keyword = eina_stringshare_add("action:");
+   attr->value.strs = action;
    attr->value.type = ATTR_VALUE_CONSTANT;
    pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
-
+*/
    //Type: Integer
    attr = calloc(1, sizeof(parser_attr));
    attr->keyword = eina_stringshare_add("color:");
