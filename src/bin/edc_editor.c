@@ -119,7 +119,7 @@ edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
         if ((info->change.insert.plain_length == 1)&&
             (info->change.insert.content[0] == ' ')) return;
 
-        if (!strcmp(info->change.insert.content, "<br/>"))
+        if (!strcmp(info->change.insert.content, EOL))
           {
              line_increase(ed);
              syntax_color = EINA_FALSE;
@@ -854,7 +854,7 @@ edit_edc_read(edit_data *ed, const char *file_path)
         if (!eina_strbuf_append(strbuf_line, buf)) goto err;
 
         //Append edc ccde
-        if (!eina_strbuf_append(strbuf_edit, "<br/>")) goto err;
+        if (!eina_strbuf_append(strbuf_edit, EOL)) goto err;
         if (!eina_strbuf_append_length(strbuf_edit, line->start, line->length))
           goto err;
      }
