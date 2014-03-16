@@ -10,4 +10,5 @@ Eina_Stringshare *view_group_name_get(view_data *vd);
 void *view_data_get(view_data *vd);
 void view_scale_set(view_data *vd, double scale);
 Eina_List *view_parts_list_get(view_data *vd);
-void view_parts_list_free(Eina_List *list);
+Eina_List *view_images_list_get(view_data *vd);
+void view_string_list_free(Eina_List *list);

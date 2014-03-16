@@ -405,7 +405,13 @@ view_parts_list_get(view_data *vd)
 }
 
 void
-view_parts_list_free(Eina_List *list)
+view_string_list_free(Eina_List *list)
 {
    edje_edit_string_list_free(list);
+}
+
+Eina_List *
+view_images_list_get(view_data *vd)
+{
+   edje_edit_images_list_get(vd->layout);
 }

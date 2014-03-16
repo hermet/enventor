@@ -177,7 +177,20 @@ ctxpopup_candidate_list_create(Evas_Object *parent, attr_value *attr,
              EINA_LIST_FOREACH(parts, l, part)
                elm_ctxpopup_item_append(ctxpopup, part, NULL,
                                         ctxpopup_it_cb, data);
-             view_parts_list_free(parts);
+             view_string_list_free(parts);
+             break;
+          }
+        case ATTR_VALUE_IMAGE:
+          {
+             view_data *vd = edj_mgr_view_get(NULL);
+             if (!vd) goto err;
+             Eina_List *parts = view_images_list_get(vd);
+             Eina_List *l;
+             char *part;
+             EINA_LIST_FOREACH(parts, l, part)
+               elm_ctxpopup_item_append(ctxpopup, part, NULL,
+                                        ctxpopup_it_cb, data);
+             view_string_list_free(parts);
              break;
           }
    }
