@@ -372,6 +372,12 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    effect = eina_list_append(effect, eina_stringshare_add("FAR_SHADOW"));
    effect = eina_list_append(effect, eina_stringshare_add("FAR_SOFT_SHADOW"));
    effect = eina_list_append(effect, eina_stringshare_add("GLOW"));
+
+   attr = calloc(1, sizeof(parser_attr));
+   attr->keyword = eina_stringshare_add("effect:");
+   attr->value.strs = effect;
+   attr->value.type = ATTR_VALUE_CONSTANT;
+   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
 /*
    Eina_List *action = NULL;
    action = eina_list_append(action, eina_stringshare_add("NONE"));
