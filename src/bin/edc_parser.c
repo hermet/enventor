@@ -372,11 +372,8 @@ group_name_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
      group_name = eina_stringshare_add_length(group_name, group_name_len);
 
 end:
-   if (utf8)
-     {
-        free(utf8);
-        td->utf8 = NULL;
-     }
+   free(utf8);
+   td->utf8 = NULL;
    td->group_name = group_name;
 }
 
@@ -476,11 +473,8 @@ cur_name_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
      group_name = eina_stringshare_add_length(group_name, group_name_len);
 
 end:
-   if (utf8)
-     {
-        free(utf8);
-        td->utf8 = NULL;
-     }
+   free(utf8);
+   td->utf8 = NULL;
    td->part_name = part_name;
    td->group_name = group_name;
 }
@@ -499,7 +493,7 @@ cur_name_thread_cancel(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
    cur_name_td *td = data;
    td->pd->thread = NULL;
-   if (td->utf8) free(td->utf8);
+   free(td->utf8);
    free(td);
 }
 

@@ -141,7 +141,7 @@ void dummy_obj_del(Evas_Object *layout)
         free(po);
      }
 
-   if (dummy->animator) ecore_animator_del(dummy->animator);
+   ecore_animator_del(dummy->animator);
    free(dummy);
 
    evas_object_data_set(layout, DUMMYOBJ, NULL);

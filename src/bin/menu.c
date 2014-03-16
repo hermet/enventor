@@ -984,7 +984,6 @@ void
 menu_term()
 {
    menu_data *md = g_md;
-   if (!md) return;
    free(md);
 }
 

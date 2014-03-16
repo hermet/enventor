@@ -9,7 +9,7 @@ build_cmd_set()
    Eina_Strbuf *buf = eina_strbuf_new();
    if (!buf) return EINA_FALSE;
 
-   if (EDJE_CC_CMD) free(EDJE_CC_CMD);
+   free(EDJE_CC_CMD);
 
    eina_strbuf_append_printf(buf,
                              "edje_cc -fastcomp %s %s -id %s/images -sd %s/sounds -fd %s/fonts -dd %s/data %s %s %s %s",

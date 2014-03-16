@@ -49,7 +49,7 @@ edj_mgr_clear()
 
    EINA_LIST_FREE(em->edjs, edj)
      {
-        if (edj->timer) ecore_timer_del(edj->timer);
+        ecore_timer_del(edj->timer);
         view_term(edj->vd);
         free(edj);
      }

@@ -582,8 +582,8 @@ edit_cursor_double_clicked_cb(void *data, Evas_Object *obj,
    else
      candidate_list_show(ed, text, cur, selected);
 
-   if (selected) free(selected);
-   if (text) free(text);
+   free(selected);
+   free(text);
 }
 
 static void
@@ -799,7 +799,7 @@ edit_term(edit_data *ed)
    syntax_helper *sh = ed->sh;
    parser_data *pd = ed->pd;
 
-   if (ed->syntax_color_timer) ecore_timer_del(ed->syntax_color_timer);
+   ecore_timer_del(ed->syntax_color_timer);
    free(ed);
 
    syntax_term(sh);
