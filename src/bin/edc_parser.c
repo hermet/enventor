@@ -5,6 +5,7 @@ struct parser_s
 {
    Eina_Inlist *attrs;
    Ecore_Thread *thread;
+   Ecore_Thread *init_thread;
 };
 
 typedef struct parser_attr_s
@@ -27,253 +28,20 @@ typedef struct cur_name_thread_data_s
    void *cb_data;
 } cur_name_td;
 
+typedef struct type_init_thread_data_s
+{
+   Eina_Inlist *attrs;
+   parser_data *pd;
+} type_init_td;
+
 void
 parser_cancel(parser_data *pd)
 {
    if (pd->thread) ecore_thread_cancel(pd->thread);
 }
 
-static void
-parser_type_init(parser_data *pd)
-{
-   parser_attr *attr;
-
-   //FIXME: construct from the configuration file.
-
-   //Type: Constant
-   Eina_List *types = NULL;
-   types = eina_list_append(types, eina_stringshare_add("RECT"));
-   types = eina_list_append(types, eina_stringshare_add("TEXT"));
-   types = eina_list_append(types, eina_stringshare_add("IMAGE"));
-   types = eina_list_append(types, eina_stringshare_add("SWALLOW"));
-   types = eina_list_append(types, eina_stringshare_add("TEXTBLOCK"));
-   types = eina_list_append(types, eina_stringshare_add("GRADIENT"));
-   types = eina_list_append(types, eina_stringshare_add("GROUP"));
-   types = eina_list_append(types, eina_stringshare_add("BOX"));
-   types = eina_list_append(types, eina_stringshare_add("TABLE"));
-   types = eina_list_append(types, eina_stringshare_add("EXTERNAL"));
-   types = eina_list_append(types, eina_stringshare_add("PROXY"));
-   types = eina_list_append(types, eina_stringshare_add("SPACER"));
-
-   attr = calloc(1, sizeof(parser_attr));
-   attr->keyword = eina_stringshare_add("type:");
-   attr->value.strs = types;
-   attr->value.type = ATTR_VALUE_CONSTANT;
-   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
-
-   Eina_List *comps = NULL;
-   comps = eina_list_append(comps, eina_stringshare_add("RAW"));
-   comps = eina_list_append(comps, eina_stringshare_add("USER"));
-   comps = eina_list_append(comps, eina_stringshare_add("COMP"));
-   comps = eina_list_append(comps, eina_stringshare_add("LOSSY"));
-
-   attr = calloc(1, sizeof(parser_attr));
-   attr->keyword = eina_stringshare_add("image:");
-   attr->value.strs = comps;
-   attr->value.type = ATTR_VALUE_CONSTANT;
-   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
-
-   Eina_List *trans = NULL;
-   trans = eina_list_append(trans, eina_stringshare_add("LINEAR"));
-   trans = eina_list_append(trans, eina_stringshare_add("ACCELERATE"));
-   trans = eina_list_append(trans, eina_stringshare_add("DECELERATE"));
-   trans = eina_list_append(trans, eina_stringshare_add("SINUSOIDAL"));
-   trans = eina_list_append(trans, eina_stringshare_add("ACCELERATE_FACTOR"));
-   trans = eina_list_append(trans, eina_stringshare_add("DECELERATE_FACTOR"));
-   trans = eina_list_append(trans, eina_stringshare_add("SINUSOIDAL_FACTOR"));
-   trans = eina_list_append(trans, eina_stringshare_add("DIVISOR_INTERP"));
-   trans = eina_list_append(trans, eina_stringshare_add("BOUNCE"));
-   trans = eina_list_append(trans, eina_stringshare_add("SPRING"));
-
-   attr = calloc(1, sizeof(parser_attr));
-   attr->keyword = eina_stringshare_add("transition:");
-   attr->value.strs = trans;
-   attr->value.type = ATTR_VALUE_CONSTANT;
-   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
-
-   Eina_List *aspect = NULL;
-   aspect = eina_list_append(aspect, eina_stringshare_add("NONE"));
-   aspect = eina_list_append(aspect, eina_stringshare_add("VERTICAL"));
-   aspect = eina_list_append(aspect, eina_stringshare_add("HORIZONTAL"));
-   aspect = eina_list_append(aspect, eina_stringshare_add("BOTH"));
-
-   attr = calloc(1, sizeof(parser_attr));
-   attr->keyword = eina_stringshare_add("aspect_preference:");
-   attr->value.strs = aspect;
-   attr->value.type = ATTR_VALUE_CONSTANT;
-   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
-
-   Eina_List *effect = NULL;
-   effect = eina_list_append(effect, eina_stringshare_add("NONE"));
-   effect = eina_list_append(effect, eina_stringshare_add("PLAIN"));
-   effect = eina_list_append(effect, eina_stringshare_add("OUTLINE"));
-   effect = eina_list_append(effect, eina_stringshare_add("SOFT_OUTLINE"));
-   effect = eina_list_append(effect, eina_stringshare_add("SHADOW"));
-   effect = eina_list_append(effect, eina_stringshare_add("SOFT_SHADOW"));
-   effect = eina_list_append(effect, eina_stringshare_add("OUTLINE_SHADOW"));
-   effect = eina_list_append(effect, eina_stringshare_add("OUTLINE_SOFT_SHADOW"));
-   effect = eina_list_append(effect, eina_stringshare_add("FAR_SHADOW"));
-   effect = eina_list_append(effect, eina_stringshare_add("FAR_SOFT_SHADOW"));
-   effect = eina_list_append(effect, eina_stringshare_add("GLOW"));
-/*
-   Eina_List *action = NULL;
-   action = eina_list_append(action, eina_stringshare_add("NONE"));
-   action = eina_list_append(action, eina_stringshare_add("STATE_SET"));
-   action = eina_list_append(action, eina_stringshare_add("ACTION_STOP"));
-   action = eina_list_append(action, eina_stringshare_add("SIGNAL_EMIT"));
-   action = eina_list_append(action, eina_stringshare_add("DRAG_VAL_SET"));
-   action = eina_list_append(action, eina_stringshare_add("DRAG_VAL_STEP"));
-   action = eina_list_append(action, eina_stringshare_add("DRAG_VAL_PAGE"));
-   action = eina_list_append(action, eina_stringshare_add("SCRIPT"));
-   action = eina_list_append(action, eina_stringshare_add("FOCUS_SET"));
-   action = eina_list_append(action, eina_stringshare_add("FOCUS_OBJECT"));
-   action = eina_list_append(action, eina_stringshare_add("PARAM_COPY"));
-   action = eina_list_append(action, eina_stringshare_add("PARAM_SET"));
-   action = eina_list_append(action, eina_stringshare_add("PLAY_SAMPLE"));
-   action = eina_list_append(action, eina_stringshare_add("PLAY_TONE"));
-   action = eina_list_append(action, eina_stringshare_add("PHYSICS_IMPULSE"));
-   action = eina_list_append(action, eina_stringshare_add("PHYSICS_TORQUE_IMPULSE"));
-   action = eina_list_append(action, eina_stringshare_add("PHYSICS_FORCE"));
-   action = eina_list_append(action, eina_stringshare_add("PHYSICS_TORQUE"));
-   action = eina_list_append(action, eina_stringshare_add("PHYSICS_FORCES_CLEAR"));
-   action = eina_list_append(action, eina_stringshare_add("PHYSICS_VEL_SET"));
-   action = eina_list_append(action, eina_stringshare_add("PHYSICS_ANG_VEL_SET"));
-   action = eina_list_append(action, eina_stringshare_add("PHYSICS_STOP"));
-   action = eina_list_append(action, eina_stringshare_add("PHYSICS_ROT_SET"));
-
-   attr = calloc(1, sizeof(parser_attr));
-   attr->keyword = eina_stringshare_add("action:");
-   attr->value.strs = action;
-   attr->value.type = ATTR_VALUE_CONSTANT;
-   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
-*/
-   //Type: Integer
-   attr = calloc(1, sizeof(parser_attr));
-   attr->keyword = eina_stringshare_add("color:");
-   attr->value.min = 0;
-   attr->value.max = 255;
-   attr->value.type = ATTR_VALUE_INTEGER;
-   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
-
-   attr = calloc(1, sizeof(parser_attr));
-   attr->keyword = eina_stringshare_add("scale:");
-   attr->value.min = 0;
-   attr->value.max = 1;
-   attr->value.type = ATTR_VALUE_INTEGER;
-   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
-
-   attr = calloc(1, sizeof(parser_attr));
-   attr->keyword = eina_stringshare_add("fixed:");
-   attr->value.min = 0;
-   attr->value.max = 1;
-   attr->value.type = ATTR_VALUE_INTEGER;
-   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
-
-   attr = calloc(1, sizeof(parser_attr));
-   attr->keyword = eina_stringshare_add("size:");
-   attr->value.min = 1;
-   attr->value.max = 255;
-   attr->value.type = ATTR_VALUE_INTEGER;
-   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
-
-   attr = calloc(1, sizeof(parser_attr));
-   attr->keyword = eina_stringshare_add("min:");
-   attr->value.min = 0;
-   attr->value.max = 1000;
-   attr->value.type = ATTR_VALUE_INTEGER;
-   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
-
-   attr = calloc(1, sizeof(parser_attr));
-   attr->keyword = eina_stringshare_add("max:");
-   attr->value.min = 0;
-   attr->value.max = 1000;
-   attr->value.type = ATTR_VALUE_INTEGER;
-   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
-
-   attr = calloc(1, sizeof(parser_attr));
-   attr->keyword = eina_stringshare_add("mouse_events:");
-   attr->value.min = 0;
-   attr->value.max = 1000;
-   attr->value.type = ATTR_VALUE_INTEGER;
-   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
-
-   //Type: Float
-   attr = calloc(1, sizeof(parser_attr));
-   attr->keyword = eina_stringshare_add("relative:");
-   attr->value.min = 0.0;
-   attr->value.max = 1;
-   attr->value.type = ATTR_VALUE_FLOAT;
-   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
-
-   attr = calloc(1, sizeof(parser_attr));
-   attr->keyword = eina_stringshare_add("aspect:");
-   attr->value.min = 0.0;
-   attr->value.max = 1.0;
-   attr->value.type = ATTR_VALUE_FLOAT;
-   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
-
-   attr = calloc(1, sizeof(parser_attr));
-   attr->keyword = eina_stringshare_add("align");
-   attr->value.min = 0.0;
-   attr->value.max = 1.0;
-   attr->value.type = ATTR_VALUE_FLOAT;
-   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
-
-   //Type: Part
-   attr = calloc(1, sizeof(parser_attr));
-   attr->keyword = eina_stringshare_add("target:");
-   attr->instring = EINA_TRUE;
-   attr->value.type = ATTR_VALUE_PART;
-   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
-
-   attr = calloc(1, sizeof(parser_attr));
-   attr->keyword = eina_stringshare_add("to:");
-   attr->instring = EINA_TRUE;
-   attr->value.type = ATTR_VALUE_PART;
-   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
-
-   attr = calloc(1, sizeof(parser_attr));
-   attr->keyword = eina_stringshare_add("source:");
-   attr->instring = EINA_TRUE;
-   attr->value.type = ATTR_VALUE_PART;
-   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
-
-   //Type: State
-   attr = calloc(1, sizeof(parser_attr));
-   attr->keyword = eina_stringshare_add("STATE_SET");
-   attr->instring = EINA_TRUE;
-   attr->value.type = ATTR_VALUE_STATE;
-   attr->value.program = EINA_TRUE;
-   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
-
-   attr = calloc(1, sizeof(parser_attr));
-   attr->keyword = eina_stringshare_add("inherit:");
-   attr->instring = EINA_TRUE;
-   attr->value.type = ATTR_VALUE_STATE;
-   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
-
-   //Type: Image
-   attr = calloc(1, sizeof(parser_attr));
-   attr->keyword = eina_stringshare_add("normal:");
-   attr->instring = EINA_TRUE;
-   attr->value.type = ATTR_VALUE_IMAGE;
-   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
-
-   attr = calloc(1, sizeof(parser_attr));
-   attr->keyword = eina_stringshare_add("tween:");
-   attr->instring = EINA_TRUE;
-   attr->value.type = ATTR_VALUE_IMAGE;
-   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
-
-   //Type: Program
-   attr = calloc(1, sizeof(parser_attr));
-   attr->keyword = eina_stringshare_add("after:");
-   attr->instring = EINA_TRUE;
-   attr->value.type = ATTR_VALUE_PROGRAM;
-   pd->attrs = eina_inlist_append(pd->attrs, (Eina_Inlist *) attr);
-}
-
-char *parser_name_get(parser_data *pd EINA_UNUSED, const char *cur)
+char *
+parser_name_get(parser_data *pd EINA_UNUSED, const char *cur)
 {
    if (!cur) return NULL;
 
@@ -327,35 +95,6 @@ parser_attribute_get(parser_data *pd, const char *text, const char *cur)
      }
 
    return NULL;
-}
-
-parser_data *
-parser_init()
-{
-   parser_data *pd = calloc(1, sizeof(parser_data));
-   parser_type_init(pd);
-   return pd;
-}
-
-void
-parser_term(parser_data *pd)
-{
-   if (pd->thread) ecore_thread_cancel(pd->thread);
-
-   parser_attr *attr;
-   Eina_Stringshare *str;
-
-   while(pd->attrs)
-     {
-        attr = EINA_INLIST_CONTAINER_GET(pd->attrs, parser_attr);
-        pd->attrs = eina_inlist_remove(pd->attrs, pd->attrs);
-
-        eina_stringshare_del(attr->keyword);
-        EINA_LIST_FREE(attr->value.strs, str) eina_stringshare_del(str);
-        free(attr);
-     }
-
-   free(pd);
 }
 
 const char *
@@ -558,6 +297,264 @@ cur_name_thread_cancel(void *data, Ecore_Thread *thread EINA_UNUSED)
    cur_name_td *td = data;
    td->pd->thread = NULL;
    free(td->utf8);
+   free(td);
+}
+
+static void
+type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
+{
+   type_init_td *td = data;
+   parser_attr *attr;
+
+   //FIXME: construct from the configuration file.
+
+   //Type: Constant
+   Eina_List *types = NULL;
+   types = eina_list_append(types, eina_stringshare_add("RECT"));
+   types = eina_list_append(types, eina_stringshare_add("TEXT"));
+   types = eina_list_append(types, eina_stringshare_add("IMAGE"));
+   types = eina_list_append(types, eina_stringshare_add("SWALLOW"));
+   types = eina_list_append(types, eina_stringshare_add("TEXTBLOCK"));
+   types = eina_list_append(types, eina_stringshare_add("GRADIENT"));
+   types = eina_list_append(types, eina_stringshare_add("GROUP"));
+   types = eina_list_append(types, eina_stringshare_add("BOX"));
+   types = eina_list_append(types, eina_stringshare_add("TABLE"));
+   types = eina_list_append(types, eina_stringshare_add("EXTERNAL"));
+   types = eina_list_append(types, eina_stringshare_add("PROXY"));
+   types = eina_list_append(types, eina_stringshare_add("SPACER"));
+
+   attr = calloc(1, sizeof(parser_attr));
+   attr->keyword = eina_stringshare_add("type:");
+   attr->value.strs = types;
+   attr->value.type = ATTR_VALUE_CONSTANT;
+   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+
+   Eina_List *comps = NULL;
+   comps = eina_list_append(comps, eina_stringshare_add("RAW"));
+   comps = eina_list_append(comps, eina_stringshare_add("USER"));
+   comps = eina_list_append(comps, eina_stringshare_add("COMP"));
+   comps = eina_list_append(comps, eina_stringshare_add("LOSSY"));
+
+   attr = calloc(1, sizeof(parser_attr));
+   attr->keyword = eina_stringshare_add("image:");
+   attr->value.strs = comps;
+   attr->value.type = ATTR_VALUE_CONSTANT;
+   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+
+   Eina_List *trans = NULL;
+   trans = eina_list_append(trans, eina_stringshare_add("LINEAR"));
+   trans = eina_list_append(trans, eina_stringshare_add("ACCELERATE"));
+   trans = eina_list_append(trans, eina_stringshare_add("DECELERATE"));
+   trans = eina_list_append(trans, eina_stringshare_add("SINUSOIDAL"));
+   trans = eina_list_append(trans, eina_stringshare_add("ACCELERATE_FACTOR"));
+   trans = eina_list_append(trans, eina_stringshare_add("DECELERATE_FACTOR"));
+   trans = eina_list_append(trans, eina_stringshare_add("SINUSOIDAL_FACTOR"));
+   trans = eina_list_append(trans, eina_stringshare_add("DIVISOR_INTERP"));
+   trans = eina_list_append(trans, eina_stringshare_add("BOUNCE"));
+   trans = eina_list_append(trans, eina_stringshare_add("SPRING"));
+
+   attr = calloc(1, sizeof(parser_attr));
+   attr->keyword = eina_stringshare_add("transition:");
+   attr->value.strs = trans;
+   attr->value.type = ATTR_VALUE_CONSTANT;
+   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+
+   Eina_List *aspect = NULL;
+   aspect = eina_list_append(aspect, eina_stringshare_add("NONE"));
+   aspect = eina_list_append(aspect, eina_stringshare_add("VERTICAL"));
+   aspect = eina_list_append(aspect, eina_stringshare_add("HORIZONTAL"));
+   aspect = eina_list_append(aspect, eina_stringshare_add("BOTH"));
+
+   attr = calloc(1, sizeof(parser_attr));
+   attr->keyword = eina_stringshare_add("aspect_preference:");
+   attr->value.strs = aspect;
+   attr->value.type = ATTR_VALUE_CONSTANT;
+   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+
+   Eina_List *effect = NULL;
+   effect = eina_list_append(effect, eina_stringshare_add("NONE"));
+   effect = eina_list_append(effect, eina_stringshare_add("PLAIN"));
+   effect = eina_list_append(effect, eina_stringshare_add("OUTLINE"));
+   effect = eina_list_append(effect, eina_stringshare_add("SOFT_OUTLINE"));
+   effect = eina_list_append(effect, eina_stringshare_add("SHADOW"));
+   effect = eina_list_append(effect, eina_stringshare_add("SOFT_SHADOW"));
+   effect = eina_list_append(effect, eina_stringshare_add("OUTLINE_SHADOW"));
+   effect = eina_list_append(effect, eina_stringshare_add("OUTLINE_SOFT_SHADOW"));
+   effect = eina_list_append(effect, eina_stringshare_add("FAR_SHADOW"));
+   effect = eina_list_append(effect, eina_stringshare_add("FAR_SOFT_SHADOW"));
+   effect = eina_list_append(effect, eina_stringshare_add("GLOW"));
+/*
+   Eina_List *action = NULL;
+   action = eina_list_append(action, eina_stringshare_add("NONE"));
+   action = eina_list_append(action, eina_stringshare_add("STATE_SET"));
+   action = eina_list_append(action, eina_stringshare_add("ACTION_STOP"));
+   action = eina_list_append(action, eina_stringshare_add("SIGNAL_EMIT"));
+   action = eina_list_append(action, eina_stringshare_add("DRAG_VAL_SET"));
+   action = eina_list_append(action, eina_stringshare_add("DRAG_VAL_STEP"));
+   action = eina_list_append(action, eina_stringshare_add("DRAG_VAL_PAGE"));
+   action = eina_list_append(action, eina_stringshare_add("SCRIPT"));
+   action = eina_list_append(action, eina_stringshare_add("FOCUS_SET"));
+   action = eina_list_append(action, eina_stringshare_add("FOCUS_OBJECT"));
+   action = eina_list_append(action, eina_stringshare_add("PARAM_COPY"));
+   action = eina_list_append(action, eina_stringshare_add("PARAM_SET"));
+   action = eina_list_append(action, eina_stringshare_add("PLAY_SAMPLE"));
+   action = eina_list_append(action, eina_stringshare_add("PLAY_TONE"));
+   action = eina_list_append(action, eina_stringshare_add("PHYSICS_IMPULSE"));
+   action = eina_list_append(action, eina_stringshare_add("PHYSICS_TORQUE_IMPULSE"));
+   action = eina_list_append(action, eina_stringshare_add("PHYSICS_FORCE"));
+   action = eina_list_append(action, eina_stringshare_add("PHYSICS_TORQUE"));
+   action = eina_list_append(action, eina_stringshare_add("PHYSICS_FORCES_CLEAR"));
+   action = eina_list_append(action, eina_stringshare_add("PHYSICS_VEL_SET"));
+   action = eina_list_append(action, eina_stringshare_add("PHYSICS_ANG_VEL_SET"));
+   action = eina_list_append(action, eina_stringshare_add("PHYSICS_STOP"));
+   action = eina_list_append(action, eina_stringshare_add("PHYSICS_ROT_SET"));
+
+   attr = calloc(1, sizeof(parser_attr));
+   attr->keyword = eina_stringshare_add("action:");
+   attr->value.strs = action;
+   attr->value.type = ATTR_VALUE_CONSTANT;
+   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+*/
+   //Type: Integer
+   attr = calloc(1, sizeof(parser_attr));
+   attr->keyword = eina_stringshare_add("color:");
+   attr->value.min = 0;
+   attr->value.max = 255;
+   attr->value.type = ATTR_VALUE_INTEGER;
+   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+
+   attr = calloc(1, sizeof(parser_attr));
+   attr->keyword = eina_stringshare_add("scale:");
+   attr->value.min = 0;
+   attr->value.max = 1;
+   attr->value.type = ATTR_VALUE_INTEGER;
+   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+
+   attr = calloc(1, sizeof(parser_attr));
+   attr->keyword = eina_stringshare_add("fixed:");
+   attr->value.min = 0;
+   attr->value.max = 1;
+   attr->value.type = ATTR_VALUE_INTEGER;
+   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+
+   attr = calloc(1, sizeof(parser_attr));
+   attr->keyword = eina_stringshare_add("size:");
+   attr->value.min = 1;
+   attr->value.max = 255;
+   attr->value.type = ATTR_VALUE_INTEGER;
+   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+
+   attr = calloc(1, sizeof(parser_attr));
+   attr->keyword = eina_stringshare_add("min:");
+   attr->value.min = 0;
+   attr->value.max = 1000;
+   attr->value.type = ATTR_VALUE_INTEGER;
+   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+
+   attr = calloc(1, sizeof(parser_attr));
+   attr->keyword = eina_stringshare_add("max:");
+   attr->value.min = 0;
+   attr->value.max = 1000;
+   attr->value.type = ATTR_VALUE_INTEGER;
+   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+
+   attr = calloc(1, sizeof(parser_attr));
+   attr->keyword = eina_stringshare_add("mouse_events:");
+   attr->value.min = 0;
+   attr->value.max = 1000;
+   attr->value.type = ATTR_VALUE_INTEGER;
+   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+
+   //Type: Float
+   attr = calloc(1, sizeof(parser_attr));
+   attr->keyword = eina_stringshare_add("relative:");
+   attr->value.min = 0.0;
+   attr->value.max = 1;
+   attr->value.type = ATTR_VALUE_FLOAT;
+   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+
+   attr = calloc(1, sizeof(parser_attr));
+   attr->keyword = eina_stringshare_add("aspect:");
+   attr->value.min = 0.0;
+   attr->value.max = 1.0;
+   attr->value.type = ATTR_VALUE_FLOAT;
+   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+
+   attr = calloc(1, sizeof(parser_attr));
+   attr->keyword = eina_stringshare_add("align");
+   attr->value.min = 0.0;
+   attr->value.max = 1.0;
+   attr->value.type = ATTR_VALUE_FLOAT;
+   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+
+   //Type: Part
+   attr = calloc(1, sizeof(parser_attr));
+   attr->keyword = eina_stringshare_add("target:");
+   attr->instring = EINA_TRUE;
+   attr->value.type = ATTR_VALUE_PART;
+   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+
+   attr = calloc(1, sizeof(parser_attr));
+   attr->keyword = eina_stringshare_add("to:");
+   attr->instring = EINA_TRUE;
+   attr->value.type = ATTR_VALUE_PART;
+   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+
+   attr = calloc(1, sizeof(parser_attr));
+   attr->keyword = eina_stringshare_add("source:");
+   attr->instring = EINA_TRUE;
+   attr->value.type = ATTR_VALUE_PART;
+   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+
+   //Type: State
+   attr = calloc(1, sizeof(parser_attr));
+   attr->keyword = eina_stringshare_add("STATE_SET");
+   attr->instring = EINA_TRUE;
+   attr->value.type = ATTR_VALUE_STATE;
+   attr->value.program = EINA_TRUE;
+   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+
+   attr = calloc(1, sizeof(parser_attr));
+   attr->keyword = eina_stringshare_add("inherit:");
+   attr->instring = EINA_TRUE;
+   attr->value.type = ATTR_VALUE_STATE;
+   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+
+   //Type: Image
+   attr = calloc(1, sizeof(parser_attr));
+   attr->keyword = eina_stringshare_add("normal:");
+   attr->instring = EINA_TRUE;
+   attr->value.type = ATTR_VALUE_IMAGE;
+   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+
+   attr = calloc(1, sizeof(parser_attr));
+   attr->keyword = eina_stringshare_add("tween:");
+   attr->instring = EINA_TRUE;
+   attr->value.type = ATTR_VALUE_IMAGE;
+   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+
+   //Type: Program
+   attr = calloc(1, sizeof(parser_attr));
+   attr->keyword = eina_stringshare_add("after:");
+   attr->instring = EINA_TRUE;
+   attr->value.type = ATTR_VALUE_PROGRAM;
+   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+}
+
+static void
+type_init_thread_end(void *data, Ecore_Thread *thread EINA_UNUSED)
+{
+   type_init_td *td = data;
+   td->pd->init_thread = NULL;
+   td->pd->attrs = td->attrs;
+   free(td);
+}
+
+static void
+type_init_thread_cancel(void *data, Ecore_Thread *thread EINA_UNUSED)
+{
+   type_init_td *td = data;
+   td->pd->init_thread = NULL;
    free(td);
 }
 
@@ -853,4 +850,39 @@ parser_states_filtered_name_get(Eina_List *states)
         ret = eina_list_append(ret, strndup(state, pp - state));
      }
    return ret;
+}
+
+parser_data *
+parser_init()
+{
+   parser_data *pd = calloc(1, sizeof(parser_data));
+
+   type_init_td *td = calloc(1, sizeof(type_init_td));
+   td->pd = pd;
+   pd->init_thread = ecore_thread_run(type_init_thread_blocking,
+                                      type_init_thread_end,
+                                      type_init_thread_cancel, td);
+   return pd;
+}
+
+void
+parser_term(parser_data *pd)
+{
+   ecore_thread_cancel(pd->thread);
+   ecore_thread_cancel(pd->init_thread);
+
+   parser_attr *attr;
+   Eina_Stringshare *str;
+
+   while(pd->attrs)
+     {
+        attr = EINA_INLIST_CONTAINER_GET(pd->attrs, parser_attr);
+        pd->attrs = eina_inlist_remove(pd->attrs, pd->attrs);
+
+        eina_stringshare_del(attr->keyword);
+        EINA_LIST_FREE(attr->value.strs, str) eina_stringshare_del(str);
+        free(attr);
+     }
+
+   free(pd);
 }

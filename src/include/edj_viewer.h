@@ -12,4 +12,6 @@ void view_scale_set(view_data *vd, double scale);
 Eina_List *view_parts_list_get(view_data *vd);
 Eina_List *view_images_list_get(view_data *vd);
 Eina_List *view_programs_list_get(view_data *vd);
+Eina_List *view_part_states_list_get(view_data *vd, const char *part);
+Eina_List *view_program_targets_get(view_data *vd, const char *prog);
 void view_string_list_free(Eina_List *list);

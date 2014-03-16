@@ -17,3 +17,5 @@ void edit_template_part_insert(edit_data *ed, Edje_Part_Type type);
 void edit_part_highlight_toggle(edit_data *ed, Eina_Bool msg);
 void edit_line_delete(edit_data *ed);
 void edit_edc_reload(edit_data *ed, const char *edc_path);
+Eina_Stringshare *edit_cur_prog_name_get(edit_data *ed);
+Eina_Stringshare *edit_cur_part_name_get(edit_data *ed);
