@@ -494,6 +494,14 @@ image_preview_show(edit_data *ed, char *cur, Evas_Coord x, Evas_Coord y)
         break;
      }
 
+   //2. Find in the default fault.
+   if (!found)
+   {
+      snprintf(fullpath, sizeof(fullpath), "%s/images/%s",
+               elm_app_data_dir_get(), filename);
+      if (ecore_file_exists(fullpath)) found = EINA_TRUE;
+   }
+
    Eina_Bool succeed;
 
    //Create Ctxpopup with the image pathes.
