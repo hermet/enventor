@@ -568,6 +568,11 @@ edit_cursor_double_clicked_cb(void *data, Evas_Object *obj,
    char *selected = (char *) elm_entry_selection_get(obj);
    if (!selected) return;
    selected = elm_entry_markup_to_utf8(selected);
+   if (selected[0] == '\"')
+     {
+        free(selected);
+        return;
+     }
 
    Evas_Object *textblock = elm_entry_textblock_get(obj);
    Evas_Textblock_Cursor *cursor = evas_object_textblock_cursor_get(textblock);
