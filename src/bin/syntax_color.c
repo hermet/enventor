@@ -464,6 +464,7 @@ color_apply(color_data *cd, const char *src, int length)
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "aspect_preference", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "aspect", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "backface_cull", col3);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "base", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "border_scale", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "border", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "center", col3);
@@ -473,14 +474,17 @@ color_apply(color_data *cd, const char *src, int length)
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "color", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "effect", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "ellipsis", col3);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "entry_mode", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "fixed", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "focal", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "font", col3);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "ignore_flags", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "inherit", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "item", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "max", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "min", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "mouse_events", col3);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "multiline", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "name", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "normal", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "offset", col3);
@@ -488,6 +492,7 @@ color_apply(color_data *cd, const char *src, int length)
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "perspective:", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "perspective_on", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "scale", col3);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "select_mode", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "signal", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "state", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "style", col3);
@@ -495,6 +500,7 @@ color_apply(color_data *cd, const char *src, int length)
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "repeat_events", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "smooth", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "source", col3);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "tag", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "target", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "to_x", col3);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "to_y", col3);
@@ -523,6 +529,8 @@ color_apply(color_data *cd, const char *src, int length)
                      col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "DECELERATE", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "DIVISOR_INTERP", col4);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "EDITABLE", col4);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "EXPLICIT", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "EXTERNAL", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "FAR_SHADOW", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "FAR_SOFT_SHADOW",
@@ -535,6 +543,7 @@ color_apply(color_data *cd, const char *src, int length)
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "LINEAR", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "LOSSY", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "NONE", col4);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "ON_HOLD", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "OUTLINE_SOFT_SHADOW",
                      col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "OUTLINE_SHADOW", col4);
@@ -545,6 +554,7 @@ color_apply(color_data *cd, const char *src, int length)
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "RAW", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "RECT", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "SHADOW", col4);
+        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "SIGNAL_EMIT", col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "SINUSOIDAL_FACTOR",
                      col4);
         COLOR_INSERT(strbuf, &src, length, &cur, &prev, "SINUSOIDAL", col4);
