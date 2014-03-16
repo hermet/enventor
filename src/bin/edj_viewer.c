@@ -274,8 +274,8 @@ view_term(view_data *vd)
                                     part_obj_del_cb);
    evas_object_del(vd->scroller);
 
-   if (vd->idler) ecore_idler_del(vd->idler);
-   if (vd->timer) ecore_timer_del(vd->timer);
+   ecore_idler_del(vd->idler);
+   ecore_timer_del(vd->timer);
 
    free(vd);
 }
