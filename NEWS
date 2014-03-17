@@ -1,0 +1,25 @@
+============
+Enventor 0.2
+============
+
+Changes since Enventor 0.1:
+---------------------------
+
+Additions:
+   * Save/Load config values (~/.config/enventor/enventor.eet)
+   * Toolbar GUI (F11)
+   * View scale change (Ctrl + Mouse Wheel)
+   * Find/Replace (Ctrl+F)
+   * Line Deletion (Ctrl+D)
+
+Improvements:
+   * Applied more syntax color keywords
+   * Display the current file path on the window title bar
+   * Support ELM_ENGINE gl set
+   * Better Pretty GUI
+   * Create a new file that is specified on the command line
+   * Support more selection keyword for candidate list display. - "action", "STATE_SET", "inherit", "image.normal", "image.tween", "target", "source" 
+
+Fixes:
+   * GUI scalability
+   * Open real "new" template code when New is requested
