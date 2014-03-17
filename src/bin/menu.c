@@ -677,10 +677,9 @@ new_save_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
 }
 
 static void
-new_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
+new_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
            void *event_info EINA_UNUSED)
 {
-   menu_data *md = data;
    menu_edc_new();
 }
 
