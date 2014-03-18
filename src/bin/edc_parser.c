@@ -378,7 +378,7 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    attr->value.strs = effect;
    attr->value.type = ATTR_VALUE_CONSTANT;
    td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
-/*
+
    Eina_List *action = NULL;
    action = eina_list_append(action, eina_stringshare_add("NONE"));
    action = eina_list_append(action, eina_stringshare_add("STATE_SET"));
@@ -409,7 +409,7 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    attr->value.strs = action;
    attr->value.type = ATTR_VALUE_CONSTANT;
    td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
-*/
+
    //Type: Integer
    attr = calloc(1, sizeof(parser_attr));
    attr->keyword = eina_stringshare_add("color:");
