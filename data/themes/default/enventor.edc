@@ -1,5 +1,7 @@
 #define FN "Sans"
 
+data.item: "version" "110";
+
 collections {
    #include "content.edc"
    #include "images.edc"
