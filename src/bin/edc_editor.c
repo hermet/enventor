@@ -20,7 +20,7 @@ struct editor_s
    int cur_line;
    int line_max;
 
-   Ecore_Idler *syntax_color_timer;
+   Ecore_Timer *syntax_color_timer;
 
    void (*view_sync_cb)(void *data, Eina_Stringshare *part_name,
                          Eina_Stringshare *group_name);
