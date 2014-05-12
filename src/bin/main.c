@@ -179,20 +179,6 @@ ctrl_func(app_data *ad, const char *key)
         auto_indentation_toggle();
         return ECORE_CALLBACK_DONE;
      }
-   //Font Size Up
-   if (!strcmp(key, "equal"))
-     {
-        config_font_size_set(config_font_size_get() + 0.1f);
-        edit_font_size_update(ad->ed, EINA_TRUE);
-        return ECORE_CALLBACK_DONE;
-     }
-   //Font Size Down
-   if (!strcmp(key, "minus"))
-     {
-        config_font_size_set(config_font_size_get() - 0.1f);
-        edit_font_size_update(ad->ed, EINA_TRUE);
-        return ECORE_CALLBACK_DONE;
-     }
    return ECORE_CALLBACK_DONE;
 }
 
@@ -296,23 +282,54 @@ main_mouse_wheel_cb(void *data, int type EINA_UNUSED, void *ev)
 {
    Ecore_Event_Mouse_Wheel *event = ev;
    app_data *ad = data;
+   Evas_Coord x, y, w, h;
 
    if (!ad->ctrl_pressed) return ECORE_CALLBACK_PASS_ON;
 
-   //Scale up/down layout
+   //View Scale
    view_data *vd = edj_mgr_view_get(NULL);
-   double scale = config_view_scale_get();
+   Evas_Object *view = view_obj_get(vd);
+   evas_object_geometry_get(view, &x, &y, &w, &h);
 
-   if (event->z < 0) scale += 0.1;
-   else scale -= 0.1;
+   if ((event->x >= x) && (event->x <= (x + w)) &&
+       (event->y >= y) && (event->y <= (y + h)))
+     {
+        double scale = config_view_scale_get();
 
-   config_view_scale_set(scale);
-   scale = config_view_scale_get();
-   view_scale_set(vd, scale);
+        if (event->z < 0) scale += 0.1;
+        else scale -= 0.1;
 
-   char buf[256];
-   snprintf(buf, sizeof(buf), "View Scale: %2.2fx", scale);
-   stats_info_msg_update(buf);
+        config_view_scale_set(scale);
+        scale = config_view_scale_get();
+        view_scale_set(vd, scale);
+
+        char buf[256];
+        snprintf(buf, sizeof(buf), "View Scale: %2.2fx", scale);
+        stats_info_msg_update(buf);
+
+        return ECORE_CALLBACK_PASS_ON;
+     }
+
+   //Font Size
+   Evas_Object *editor = edit_obj_get(ad->ed);
+   evas_object_geometry_get(editor, &x, &y, &w, &h);
+
+   if ((event->x >= x) && (event->x <= (x + w)) &&
+       (event->y >= y) && (event->y <= (y + h)))
+     {
+        if (event->z < 0)
+          {
+             config_font_size_set(config_font_size_get() + 0.1f);
+             edit_font_size_update(ad->ed, EINA_TRUE);
+          }
+        else
+          {
+             config_font_size_set(config_font_size_get() - 0.1f);
+             edit_font_size_update(ad->ed, EINA_TRUE);
+          }
+
+        return ECORE_CALLBACK_PASS_ON;
+     }
 
    return ECORE_CALLBACK_PASS_ON;
 }
