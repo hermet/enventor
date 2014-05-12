@@ -113,7 +113,7 @@ config_load()
         cd = eet_data_read(ef, edd_base, "config");
         eet_close(ef);
      }
-   else EINA_LOG_ERR("Cannot load a config file \"%s\"", buf);
+   else EINA_LOG_WARN("Cannot load a config file \"%s\"", buf);
 
    //failed to load config file. set default values.
    if (!cd)
