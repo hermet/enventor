@@ -114,22 +114,7 @@ ctrl_func(app_data *ad, const char *key)
         edit_save(ad->ed);
         return ECORE_CALLBACK_DONE;
      }
-   //Copy
-   if (!strcmp(key, "c") || !strcmp(key, "C"))
-     return ECORE_CALLBACK_PASS_ON;
-   //Paste
-   if (!strcmp(key, "v") || !strcmp(key, "V"))
-     return ECORE_CALLBACK_PASS_ON;
-   //Cut
-   if (!strcmp(key, "x") || !strcmp(key, "X"))
-     return ECORE_CALLBACK_PASS_ON;
-   //Select All
-   if (!strcmp(key, "a") || !strcmp(key, "A"))
-     return ECORE_CALLBACK_PASS_ON;
-   //Go to Begin/End
-   if (!strcmp(key, "Home") || !strcmp(key, "End"))
-     return ECORE_CALLBACK_PASS_ON;
-   //Delete Line
+  //Delete Line
    if (!strcmp(key, "d") || !strcmp(key, "D"))
      {
         edit_line_delete(ad->ed);
@@ -179,7 +164,7 @@ ctrl_func(app_data *ad, const char *key)
         auto_indentation_toggle();
         return ECORE_CALLBACK_DONE;
      }
-   return ECORE_CALLBACK_DONE;
+   return ECORE_CALLBACK_PASS_ON;
 }
 
 static Eina_Bool
@@ -515,15 +500,14 @@ tools_set(edit_data *ed)
 static Eina_Bool
 init(app_data *ad, int argc, char **argv)
 {
-   /*To add a key event handler before evas, here initialize the ecore_event
-     and add handlers. */
-   ecore_event_init();
+   elm_init(argc, argv);
+
    ecore_event_handler_add(ECORE_EVENT_KEY_DOWN, main_key_down_cb, ad);
    ecore_event_handler_add(ECORE_EVENT_KEY_UP, main_key_up_cb, ad);
    ecore_event_handler_add(ECORE_EVENT_MOUSE_WHEEL, main_mouse_wheel_cb, ad);
 
-   elm_init(argc, argv);
    elm_setup();
+
    config_data_set(ad, argc, argv);
 
    if (!build_init()) return EINA_FALSE;
@@ -557,7 +541,6 @@ term(app_data *ad)
    config_term();
 
    elm_shutdown();
-   ecore_event_shutdown();
 }
 
 int
