@@ -520,6 +520,8 @@ init(app_data *ad, int argc, char **argv)
    menu_init(ad->ed);
    tools_set(ad->ed);
 
+   base_gui_show();
+
    ad->edc_monitor = eio_monitor_add(config_edc_path_get());
    ecore_event_handler_add(EIO_MONITOR_FILE_MODIFIED, edc_changed_cb, ad);
 

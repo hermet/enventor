@@ -129,7 +129,6 @@ base_gui_init()
    elm_win_focus_highlight_enabled_set(win, EINA_TRUE);
    evas_object_smart_callback_add(win, "delete,request", win_delete_request_cb,
                                   NULL);
-   evas_object_show(win);
 
    //Window icon
    Evas_Object *icon = evas_object_image_add(evas_object_evas_get(win));
@@ -153,4 +152,10 @@ base_gui_init()
    bd->layout = layout;
 
    return EINA_TRUE;
+}
+
+void
+base_gui_show()
+{
+   evas_object_show(g_bd->win);
 }
