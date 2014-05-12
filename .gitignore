@@ -33,3 +33,6 @@ missing
 src/bin/.deps/
 src/bin/.libs/
 stamp-h1
+.project
+.cproject
+*.swp
