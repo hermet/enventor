@@ -390,12 +390,6 @@ view_scale_set(view_data *vd, double scale)
 
    elm_scroller_region_show(vd->scroller, ((Evas_Coord) cx) - (sw / 2),
                             ((Evas_Coord) cy) - (sh / 2), sw, sh);
-
-   //FIXME: Update the size for weird text ellipsis.
-   Evas_Coord w, h;
-   evas_object_geometry_get(vd->layout, NULL, NULL, &w, &h);
-   evas_object_resize(vd->layout, 0, 0);
-   evas_object_resize(vd->layout, w, h);
 }
 
 Eina_List *
