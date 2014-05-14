@@ -35,6 +35,16 @@ static Eina_Bool
 image_preview_show(edit_data *ed, char *cur, Evas_Coord x, Evas_Coord y);
 
 static void
+line_init(edit_data *ed)
+{
+   char buf[MAX_LINE_DIGIT_CNT];
+
+   ed->line_max = 1;
+   snprintf(buf, sizeof(buf), "%d", ed->line_max);
+   elm_entry_entry_set(ed->en_line, buf);
+}
+
+static void
 line_increase(edit_data *ed)
 {
    char buf[MAX_LINE_DIGIT_CNT];
@@ -670,7 +680,7 @@ edit_line_delete(edit_data *ed)
    if (ed->line_max == 1)
      {
         elm_entry_entry_set(ed->en_edit, "");
-        line_decrease(ed, 1);
+        line_init(ed);
         return;
      }
 
@@ -821,6 +831,8 @@ edit_edc_read(edit_data *ed, const char *file_path)
 {
    char buf[MAX_LINE_DIGIT_CNT];
 
+   ed->line_max = 0;
+
    Eina_File *file = eina_file_open(file_path, EINA_FALSE);
    if (!file) goto err;
 
@@ -872,6 +884,8 @@ edit_edc_read(edit_data *ed, const char *file_path)
    ecore_animator_add(syntax_color_timer_cb, ed);
 
 err:
+   //Even any text is not inserted, line number should start with 1 
+   if (ed->line_max == 0) line_init(ed);
    if (strbuf_edit) eina_strbuf_free(strbuf_edit);
    if (strbuf_line) eina_strbuf_free(strbuf_line);
    if (itr) eina_iterator_free(itr);
