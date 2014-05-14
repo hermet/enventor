@@ -61,10 +61,10 @@ line_decrease(edit_data *ed, int cnt)
 
    Evas_Object *textblock = elm_entry_textblock_get(ed->en_line);
    Evas_Textblock_Cursor *cur1 = evas_object_textblock_cursor_new(textblock);
-   evas_textblock_cursor_line_set(cur1, (ed->line_max - cnt));
+   evas_textblock_cursor_line_set(cur1, (ed->line_max - cnt - 1));
+   evas_textblock_cursor_line_char_last(cur1);
 
    Evas_Textblock_Cursor *cur2 = evas_object_textblock_cursor_new(textblock);
-   evas_textblock_cursor_line_set(cur2, ed->line_max);
    evas_textblock_cursor_paragraph_last(cur2);
 
    evas_textblock_cursor_range_delete(cur1, cur2);
@@ -76,7 +76,7 @@ line_decrease(edit_data *ed, int cnt)
 
    ed->line_max -= cnt;
 
-   if (ed->line_max < 0) ed->line_max = 0;
+   if (ed->line_max < 1) line_init(ed);
 }
 
 static void
@@ -846,17 +846,18 @@ edit_edc_read(edit_data *ed, const char *file_path)
    if (!strbuf_edit) goto err;
 
    Eina_File_Line *line;
+   int line_num = 0;
 
    //Read first line specially.
    if (eina_iterator_next(itr, (void **)(void *)&(line)))
      {
+        line_num = 1;
         if (!eina_strbuf_append(strbuf_line, "1")) goto err;
         if (!eina_strbuf_append_length(strbuf_edit, line->start, line->length))
            goto err;
      }
 
    //Read last lines.
-   int line_num = 1;
    EINA_ITERATOR_FOREACH(itr, line)
      {
         line_num++;
