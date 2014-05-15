@@ -29,6 +29,13 @@ typedef struct color_input
    int col_id;
 } color_input;
 
+struct syntax_color_s
+{
+   Eina_Strbuf *strbuf;
+   Eina_Strbuf *cachebuf;
+   Eina_Hash *color_hash;
+   Eina_Stringshare *cols[COL_NUM];
+};
 
 // Here Color Inputs should be removed here. but put in the configure file.
 static color_input color_input_a[6] = {
@@ -214,13 +221,6 @@ static color_input color_input_co[1] =
    {":", 0}
 };
 
-struct syntax_color_s
-{
-   Eina_Strbuf *strbuf;
-   Eina_Hash *color_hash;
-   Eina_Stringshare *cols[COL_NUM];
-};
-
 static void
 hash_free_cb(void *data)
 {
@@ -289,6 +289,7 @@ color_init(Eina_Strbuf *strbuf)
 {
    color_data *cd = malloc(sizeof(color_data));
    cd->strbuf = strbuf;
+   cd->cachebuf = eina_strbuf_new();
 
    cd->cols[0] = eina_stringshare_add("656565");
    cd->cols[1] = eina_stringshare_add("2070D0");
@@ -308,6 +309,7 @@ void
 color_term(color_data *cd)
 {
    eina_hash_free(cd->color_hash);
+   eina_strbuf_free(cd->cachebuf);
 
    int i;
    for(i = 0; i < COL_NUM; i++)
@@ -556,7 +558,6 @@ sharp_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
    return -1;
 }
 
-
 const char *
 color_cancel(color_data *cd, const char *src, int length)
 {
@@ -635,7 +636,7 @@ color_apply(color_data *cd, const char *src, int length)
 
    if (!src || (length < 1)) return NULL;
 
-   Eina_Strbuf *strbuf = cd->strbuf;
+   Eina_Strbuf *strbuf = cd->cachebuf;
    eina_strbuf_reset(strbuf);
 
    const char *str = NULL;

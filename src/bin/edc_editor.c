@@ -88,14 +88,12 @@ syntax_color_apply(edit_data *ed)
    char *utf8 = (char *) color_cancel(syntax_color_data_get(ed->sh), text,
                                       strlen(text));
    if (!utf8) return;
-   utf8 = strdup(utf8);
    const char *translated = color_apply(syntax_color_data_get(ed->sh), utf8,
                                         strlen(utf8));
    elm_entry_entry_set(ed->en_edit, NULL);
    elm_entry_entry_append(ed->en_edit, translated);
    elm_entry_cursor_pos_set(ed->en_edit, pos);
    //FIXME: Need to recover selection area.
-   free(utf8);
 }
 
 static Eina_Bool
