@@ -1,21 +1,288 @@
 #include <Elementary.h>
 #include "common.h"
 
-#define COLOR_INSERT(strbuf, src, length, cur, prev, cmp, color) \
+#define TUPLE_SET(table, hash_key) \
    { \
-      ret = color_markup_insert((strbuf), (src), (length), (cur), (prev), \
-                                (cmp), (color)); \
-      if (ret == 1) continue; \
-      else if (ret == -1) goto finished; \
-   } \
+      cnt = sizeof(table) / sizeof(color_input); \
+      inarray = eina_inarray_new(sizeof(color_tuple), 0); \
+      for (i = 0; i < cnt; i++) \
+        { \
+           tuple = malloc(sizeof(color_tuple)); \
+           tuple->key = eina_stringshare_add(table[i].key); \
+           tuple->col = cd->cols[table[i].col_id]; \
+           eina_inarray_push(inarray, tuple); \
+        } \
+      eina_hash_add(cd->color_hash, hash_key, inarray); \
+   }
 
 #define COL_NUM 8
+
+typedef struct color_tuple
+{
+   Eina_Stringshare *key;
+   Eina_Stringshare *col;
+} color_tuple;
+
+typedef struct color_input
+{
+   char *key;
+   int col_id;
+} color_input;
+
+
+// Here Color Inputs should be removed here. but put in the configure file.
+static color_input color_input_a[6] = {
+   {"action", 2}, {"after", 2}, {"align", 2}, {"aspect_preference", 2},
+   {"aspect", 2}, {"anim", 6}
+};
+static color_input color_input_b[4] =
+{
+   {"backface_cull", 2}, {"base", 2}, {"border_scale", 2}, {"border", 2}
+};
+static color_input color_input_c[9] =
+{
+   {"collections", 1}, {"center", 2}, {"clip_to", 2}, {"color2", 2},
+   {"color3", 2}, {"color_class", 2}, {"color", 2}, {"cancel_anim", 6},
+   {"cancel_timer", 6}
+};
+static color_input color_input_d[2] =
+{
+   {"data", 1}, {"description", 1}
+};
+static color_input color_input_e[4] =
+{
+   {"effect", 2}, {"ellipsis", 2}, {"entry_mode", 2}, {"else", 7}
+};
+static color_input color_input_f[4] =
+{
+   {"fill", 1}, {"fixed", 2}, {"focal", 2}, {"font", 2}
+};
+static color_input color_input_g[3] =
+{
+   {"group", 1}, {"get_float", 6}, {"get_int", 6}
+};
+static color_input color_input_i[7] =
+{
+   {"images", 1}, {"ignore_flags", 2}, {"inherit", 2}, {"item", 2},
+   {"if", 7}, {"image:", 2},  {"image", 1}
+};
+static color_input color_input_m[5] =
+{
+   {"map", 1}, {"max", 2}, {"min", 2}, {"mouse_events", 2}, {"multiline", 2}
+};
+static color_input color_input_n[3] =
+{
+   {"name", 2}, {"normal", 2}, {"new", 7}
+};
+static color_input color_input_o[3] =
+{
+   {"origin", 1}, {"offset", 2}, {"on", 2}
+};
+static color_input color_input_p[8] =
+{
+   {"parts", 1}, {"part", 1}, {"programs", 1}, {"program", 1},
+   {"perspective:", 2}, {"perspective_on", 2}, {"public", 7},
+   {"perspective", 1}
+};
+static color_input color_input_r[6] =
+{
+   {"rel1", 1}, {"rel2", 1}, {"rotation", 1}, {"relative", 2},
+   {"repeat_events", 2}, {"run_program", 6}
+};
+static color_input color_input_s[15] =
+{
+   {"script", 1}, {"styles", 1}, {"scale", 2}, {"select_mode", 2},
+   {"signal", 2}, {"state", 2}, {"style", 2}, {"smooth", 2}, {"source", 2},
+   {"set_float", 6}, {"set_int", 6}, {"set_state", 6}, {"set_tween_state", 6},
+   {"size:", 2}, {"size", 1}
+};
+static color_input color_input_t[11] =
+{
+   {"tag", 2}, {"target", 2}, {"to_x", 2}, {"to_y", 2}, {"to", 2},
+   {"transition", 2}, {"type", 2}, {"tween", 2}, {"timer", 6}, {"text:", 2},
+   {"text", 1}
+};
+static color_input color_input_x[1] =
+{
+   {"x:", 2}
+};
+static color_input color_input_y[1] =
+{
+   {"y:", 2}
+};
+static color_input color_input_z[2] =
+{
+   {"z:", 2}, {"zplane", 2}
+};
+static color_input color_input_A[3] =
+{
+   {"ACCELERATE_FACTOR", 3}, {"ACCELERATE", 3}, {"ACTION_STOP", 3}
+};
+static color_input color_input_B[3] =
+{
+   {"BOTH", 3}, {"BOUNCE", 3}, {"BOX", 3}
+};
+static color_input color_input_C[2] =
+{
+   {"COMP", 3}, {"CURRENT", 3}
+};
+static color_input color_input_D[3] =
+{
+   {"DECELERATE_FACTOR", 3}, {"DECELERATE", 3}, {"DIVISOR_INTERP", 3}
+};
+static color_input color_input_E[3] =
+{
+   {"EDITABLE", 3}, {"EXPLICIT", 3}, {"EXTERNAL", 3}
+};
+static color_input color_input_F[2] =
+{
+   {"FAR_SHADOW", 3}, {"FAR_SOFT_SHADOW", 3}
+};
+static color_input color_input_G[3] =
+{
+   {"GLOW", 3}, {"GRADIENT", 3}, {"GROUP", 3}
+};
+static color_input color_input_H[1] =
+{
+   {"HORIZONTAL", 1}
+};
+static color_input color_input_I[1] =
+{
+   {"IMAGE", 3}
+};
+static color_input color_input_L[2] =
+{
+   {"LINEAR", 3}, {"LOSSY", 3}
+};
+static color_input color_input_N[1] =
+{
+   {"NONE", 3}
+};
+static color_input color_input_O[4] =
+{
+   {"ON_HOLD", 3}, {"OUTLINE_SOFT_SHADOW", 3}, {"OUTLINE_SHADOW", 3},
+   {"OUTLINE", 3}
+};
+static color_input color_input_P[3] =
+{
+   {"PLAIN", 3}, {"PROGRAM", 3}, {"PROXY", 3}
+};
+static color_input color_input_R[2] =
+{
+   {"RAW", 3}, {"RECT", 3}
+};
+static color_input color_input_S[10] =
+{
+   {"SHADOW", 3}, {"SIGNAL_EMIT", 3}, {"SINUSOIDAL_FACTOR", 3},
+   {"SINUSOIDAL", 3}, {"SOFT_OUTLINE", 3}, {"SOFT_SHADOW", 3}, {"SPACER", 3},
+   {"SPRING", 3}, {"STATE_SET", 3}, {"SWALLOW", 3}
+};
+static color_input color_input_T[3] =
+{
+   {"TABLE", 3}, {"TEXTBLOCK", 3}, {"TEXT", 3}
+};
+static color_input color_input_U[1] =
+{
+   {"USER", 3}
+};
+static color_input color_input_V[1] =
+{
+   {"VERTICAL", 3}
+};
+static color_input color_input_lp[1] =
+{
+   {"{", 0}
+};
+static color_input color_input_rp[1] =
+{
+   {"}", 0}
+};
+static color_input color_input_lt[1] =
+{
+   {"[", 0}
+};
+static color_input color_input_rt[1] =
+{
+   {"]", 0}
+};
+static color_input color_input_sc[1] =
+{
+   {";", 0}
+};
+static color_input color_input_co[1] =
+{
+   {":", 0}
+};
 
 struct syntax_color_s
 {
    Eina_Strbuf *strbuf;
+   Eina_Hash *color_hash;
    Eina_Stringshare *cols[COL_NUM];
 };
+
+static void
+hash_free_cb(void *data)
+{
+   Eina_Inarray *inarray = data;
+   color_tuple *tuple;
+   EINA_INARRAY_FOREACH(inarray, tuple)
+     eina_stringshare_del(tuple->key);
+   eina_inarray_free(inarray);
+}
+
+static void
+color_table_init(color_data *cd)
+{
+   cd->color_hash = eina_hash_string_small_new(hash_free_cb);
+   color_tuple *tuple;
+   Eina_Inarray *inarray;
+   int i;
+   int cnt;
+
+   TUPLE_SET(color_input_a, "a");
+   TUPLE_SET(color_input_b, "b");
+   TUPLE_SET(color_input_c, "c");
+   TUPLE_SET(color_input_d, "d");
+   TUPLE_SET(color_input_e, "e");
+   TUPLE_SET(color_input_f, "f");
+   TUPLE_SET(color_input_g, "g");
+   TUPLE_SET(color_input_i, "i");
+   TUPLE_SET(color_input_m, "m");
+   TUPLE_SET(color_input_n, "n");
+   TUPLE_SET(color_input_o, "o");
+   TUPLE_SET(color_input_p, "p");
+   TUPLE_SET(color_input_r, "r");
+   TUPLE_SET(color_input_s, "s");
+   TUPLE_SET(color_input_t, "t");
+   TUPLE_SET(color_input_x, "x");
+   TUPLE_SET(color_input_y, "y");
+   TUPLE_SET(color_input_z, "z");
+   TUPLE_SET(color_input_A, "A");
+   TUPLE_SET(color_input_B, "B");
+   TUPLE_SET(color_input_C, "C");
+   TUPLE_SET(color_input_D, "D");
+   TUPLE_SET(color_input_E, "E");
+   TUPLE_SET(color_input_F, "F");
+   TUPLE_SET(color_input_G, "G");
+   TUPLE_SET(color_input_H, "H");
+   TUPLE_SET(color_input_I, "I");
+   TUPLE_SET(color_input_L, "L");
+   TUPLE_SET(color_input_N, "N");
+   TUPLE_SET(color_input_O, "O");
+   TUPLE_SET(color_input_P, "P");
+   TUPLE_SET(color_input_R, "R");
+   TUPLE_SET(color_input_S, "S");
+   TUPLE_SET(color_input_T, "T");
+   TUPLE_SET(color_input_U, "U");
+   TUPLE_SET(color_input_V, "V");
+   TUPLE_SET(color_input_lp, "{");
+   TUPLE_SET(color_input_rp, "}");
+   TUPLE_SET(color_input_lt, "[");
+   TUPLE_SET(color_input_rt, "]");
+   TUPLE_SET(color_input_sc, ";");
+   TUPLE_SET(color_input_co, ":");
+}
 
 color_data *
 color_init(Eina_Strbuf *strbuf)
@@ -32,12 +299,16 @@ color_init(Eina_Strbuf *strbuf)
    cd->cols[6] = eina_stringshare_add("00FFFF");
    cd->cols[7] = eina_stringshare_add("D78700");
 
+   color_table_init(cd);
+
    return cd;
 }
 
 void
 color_term(color_data *cd)
 {
+   eina_hash_free(cd->color_hash);
+
    int i;
    for(i = 0; i < COL_NUM; i++)
      eina_stringshare_del(cd->cols[i]);
@@ -45,24 +316,21 @@ color_term(color_data *cd)
    free(cd);
 }
 
-static int
+static Eina_Bool
 color_markup_insert(Eina_Strbuf *strbuf, const char **src, int length,
                     char **cur, char **prev,  const char *cmp,
                     Eina_Stringshare *color)
 {
    char buf[128];
 
-   //FIXME: compare opposite case.
-   if (strncmp(*cur, cmp, strlen(cmp))) return 0;
-
    eina_strbuf_append_length(strbuf, *prev, *cur - *prev);
    snprintf(buf, sizeof(buf), "<color=#%s>%s</color>", color, cmp);
    eina_strbuf_append(strbuf, buf);
    *cur += strlen(cmp);
-   if (*cur > (*src + length)) return -1;
+   if (*cur > (*src + length)) return EINA_FALSE;
    *prev = *cur;
 
-   return 1;
+   return EINA_TRUE;
 }
 
 static int
@@ -357,8 +625,7 @@ bracket_escape(Eina_Strbuf *strbuf, char **cur, char **prev)
 
 /* 
 	OPTIMIZATION POINT 
-	1. Use Hash
-	2. Apply Color only changed line.
+	1. Apply Color only changed line.
 */
 const char *
 color_apply(color_data *cd, const char *src, int length)
@@ -375,6 +642,8 @@ color_apply(color_data *cd, const char *src, int length)
    char *prev = (char *) src;
    char *cur = (char *) src;
    int ret;
+   Eina_Inarray *inarray;
+   color_tuple *tuple;
 
    while (cur && (cur <= (src + length)))
      {
@@ -426,194 +695,32 @@ color_apply(color_data *cd, const char *src, int length)
         if (ret == 1) continue;
         else if (ret == -1) goto finished;
 
-        //FIXME: construct from the configuration file
-        //syntax group 1
-        Eina_Stringshare *col1 = cd->cols[0];
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "{", col1);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "}", col1);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "[", col1);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "]", col1);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, ";", col1);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, ":", col1);
+        char key[2];
+        key[0] = cur[0];
+        key[1] = '\0';
+        inarray = eina_hash_find(cd->color_hash, key);
 
-        //syntax group 2
-        Eina_Stringshare *col2 = cd->cols[1];
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "collections", col2);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "data", col2);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "description", col2);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "fill", col2);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "group", col2);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "images", col2);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "map", col2);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "origin", col2);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "parts", col2);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "part", col2);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "programs", col2);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "program", col2);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "rel1", col2);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "rel2", col2);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "rotation", col2);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "script", col2);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "styles", col2);
+        //Found tuple list. Search in detail.
+        if (inarray)
+          {
+             Eina_Bool found = EINA_FALSE;
 
-        //syntax group 3
-        Eina_Stringshare *col3 = cd->cols[2];
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "action", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "after", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "alias", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "align", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "aspect_preference", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "aspect", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "backface_cull", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "base", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "border_scale", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "border", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "center", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "clip_to", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "color2", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "color3", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "color_class", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "color", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "effect", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "ellipsis", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "entry_mode", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "fixed", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "focal", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "font", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "ignore_flags", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "inherit", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "insert_before", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "item", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "in:", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "max", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "middle", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "min", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "mouse_events", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "multiline", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "name", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "normal", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "offset", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "on", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "perspective:", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "perspective_on", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "scale", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "select_mode", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "signal", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "state", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "style", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "relative", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "repeat_events", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "smooth", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "source", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "tag", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "target", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "to_x", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "to_y", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "to", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "transition", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "type", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "tween", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "visible", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "x:", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "y:", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "z:", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "zplane", col3);
-
-        //syntax group 4
-        Eina_Stringshare *col4 = cd->cols[3];
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "ACCELERATE_FACTOR",
-                     col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "ACCELERATE", col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "ACTION_STOP", col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "BOTH", col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "BOTTOM", col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "BOUNCE", col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "BOX", col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "COMP", col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "CURRENT", col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "DECELERATE_FACTOR",
-                     col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "DECELERATE", col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "DIVISOR_INTERP", col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "EDITABLE", col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "EXPLICIT", col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "EXTERNAL", col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "FAR_SHADOW", col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "FAR_SOFT_SHADOW",
-                     col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "GLOW", col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "GRADIENT", col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "GROUP", col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "HORIZONTAL", col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "IMAGE", col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "LINEAR", col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "LOSSY", col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "NONE", col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "ON_HOLD", col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "OUTLINE_SOFT_SHADOW",
-                     col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "OUTLINE_SHADOW", col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "OUTLINE", col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "PART", col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "PLAIN", col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "PROGRAM", col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "PROXY", col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "RAW", col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "RECT", col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "SHADOW", col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "SIGNAL_EMIT", col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "SINUSOIDAL_FACTOR",
-                     col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "SINUSOIDAL", col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "SOFT_OUTLINE", col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "SOFT_SHADOW", col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "SOLID", col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "SPACER", col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "SPRING", col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "STATE_SET", col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "SWALLOW", col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "TABLE", col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "TEXTBLOCK", col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "TEXT", col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "USER", col4);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "VERTICAL", col4);
-
-        //syntax group 7
-        Eina_Stringshare *col6 = cd->cols[6];
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "anim", col6);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "cancel_anim", col6);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "cancel_timer", col6);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "emit", col6);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "get_float", col6);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "get_int", col6);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "run_program", col6);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "set_float", col6);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "set_int", col6);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "set_state", col6);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "set_tween_state",
-                     col6);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "timer", col6);
-
-        //syntax group 8
-        Eina_Stringshare *col7 = cd->cols[7];
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "if", col7);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "else", col7);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "new", col7);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "public", col7);
-
-        //duplicated groups 1
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "image:", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "size:", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "text:", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "text_class", col3);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "text_source", col3);
-
-        //duplicated groups 2
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "image", col2);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "size", col2);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "text", col2);
-        COLOR_INSERT(strbuf, &src, length, &cur, &prev, "perspective", col2);
-
+             EINA_INARRAY_FOREACH(inarray, tuple)
+               {
+                  if (!strncmp(cur, tuple->key, strlen(tuple->key)))
+                    {
+                       ret = color_markup_insert(strbuf, &src, length, &cur,
+                                                 &prev, tuple->key, tuple->col);
+                       if (ret)
+                         {
+                            found = EINA_TRUE;
+                            break;
+                         }
+                       else goto finished;
+                    }
+               }
+             if (found) continue;
+          }
         cur++;
      }
 
