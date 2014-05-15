@@ -831,16 +831,19 @@ edit_edc_read(edit_data *ed, const char *file_path)
 
    ed->line_max = 0;
 
+   Eina_Iterator *itr = NULL;
+   Eina_Strbuf *strbuf_line = NULL, *strbuf_edit = NULL;
+
    Eina_File *file = eina_file_open(file_path, EINA_FALSE);
    if (!file) goto err;
 
-   Eina_Iterator *itr = eina_file_map_lines(file);
+   itr = eina_file_map_lines(file);
    if (!itr) goto err;
 
-   Eina_Strbuf *strbuf_line = eina_strbuf_new();
+   strbuf_line = eina_strbuf_new();
    if (!strbuf_line) goto err;
 
-   Eina_Strbuf *strbuf_edit = eina_strbuf_new();
+   strbuf_edit = eina_strbuf_new();
    if (!strbuf_edit) goto err;
 
    Eina_File_Line *line;
