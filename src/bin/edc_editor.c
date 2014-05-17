@@ -409,13 +409,14 @@ edit_mouse_down_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
 }
 
 static void
-cur_line_pos_set(edit_data *ed)
+cur_line_pos_set(edit_data *ed, Eina_Bool force)
 {
    Evas_Coord y, h;
    elm_entry_cursor_geometry_get(ed->en_edit, NULL, &y, NULL, &h);
    int line = (y / h) + 1;
-   if (line < 0) line = 0;
-   if (ed->cur_line == line) return;
+
+   if (line < 0) line = 1;
+   if (!force && (ed->cur_line == line)) return;
    ed->cur_line = line;
 
    if (!config_stats_bar_get()) return;
@@ -624,6 +625,14 @@ edit_view_sync(edit_data *ed)
 }
 
 static void
+edit_selection_cleared_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                          void *event_info EINA_UNUSED)
+{
+   edit_data *ed = data;
+   cur_line_pos_set(ed, EINA_TRUE);
+}
+
+static void
 edit_cursor_changed_manual_cb(void *data, Evas_Object *obj EINA_UNUSED,
                               void *event_info EINA_UNUSED)
 {
@@ -636,7 +645,7 @@ edit_cursor_changed_cb(void *data, Evas_Object *obj EINA_UNUSED,
                        void *event_info EINA_UNUSED)
 {
    edit_data *ed = data;
-   cur_line_pos_set(ed);
+   cur_line_pos_set(ed, EINA_FALSE);
 }
 
 void
@@ -696,6 +705,8 @@ edit_line_delete(edit_data *ed)
    elm_entry_calc_force(ed->en_edit);
 
    line_decrease(ed, 1);
+
+   cur_line_pos_set(ed, EINA_TRUE);
 }
 
 static Eina_Bool
@@ -773,6 +784,8 @@ edit_init(Evas_Object *parent)
                                   edit_cursor_changed_cb, ed);
    evas_object_smart_callback_add(en_edit, "clicked,double",
                                   edit_cursor_double_clicked_cb, ed);
+   evas_object_smart_callback_add(en_edit, "selection,cleared",
+                                  edit_selection_cleared_cb, ed);
    evas_object_size_hint_weight_set(en_edit, EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(en_edit, EVAS_HINT_FILL, EVAS_HINT_FILL);
