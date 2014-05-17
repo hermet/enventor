@@ -2,6 +2,8 @@
 *.lo
 *.la
 *.edj
+*.swp
+*.eet
 *~
 enventor
 enventorql
@@ -35,4 +37,3 @@ src/bin/.libs/
 stamp-h1
 .project
 .cproject
-*.swp
