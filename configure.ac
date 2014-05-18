@@ -84,6 +84,7 @@ AC_SUBST([lt_enable_auto_import])
 EFL_ATTRIBUTE_UNUSED
 
 # Check edje_cc
+EFL_WITH_BIN([eet], [eet-eet], [eet])
 EFL_WITH_BIN([edje], [edje-cc], [edje_cc])
 
 AC_CONFIG_FILES([
@@ -99,6 +100,7 @@ data/themes/Makefile
 data/themes/default/Makefile
 data/themes/default/images/Makefile
 data/.proto/Makefile
+data/color/Makefile
 ])
 
 AC_OUTPUT

@@ -1,21 +1,7 @@
 #include <Elementary.h>
 #include "common.h"
 
-#define TUPLE_SET(table, hash_key) \
-   { \
-      cnt = sizeof(table) / sizeof(color_input); \
-      inarray = eina_inarray_new(sizeof(color_tuple), 0); \
-      for (i = 0; i < cnt; i++) \
-        { \
-           tuple = malloc(sizeof(color_tuple)); \
-           tuple->key = eina_stringshare_add(table[i].key); \
-           tuple->col = cd->cols[table[i].col_id]; \
-           eina_inarray_push(inarray, tuple); \
-        } \
-      eina_hash_add(cd->color_hash, hash_key, inarray); \
-   }
-
-#define COL_NUM 8
+#define COL_NUM 6
 
 typedef struct color_tuple
 {
@@ -23,203 +9,32 @@ typedef struct color_tuple
    Eina_Stringshare *col;
 } color_tuple;
 
-typedef struct color_input
+typedef struct color
 {
-   char *key;
-   int col_id;
-} color_input;
+   char *val;
+   Eina_List *keys;
+} color;
+
+typedef struct syntax_color_group
+{
+   char *comment;
+   char *define;
+   color colors[COL_NUM];
+} syntax_color_group;
 
 struct syntax_color_s
 {
    Eina_Strbuf *strbuf;
    Eina_Strbuf *cachebuf;
    Eina_Hash *color_hash;
+   Eina_Stringshare *col_comment;
+   Eina_Stringshare *col_define;
    Eina_Stringshare *cols[COL_NUM];
+  syntax_color_group *scg;
 };
 
-// Here Color Inputs should be removed here. but put in the configure file.
-static color_input color_input_a[6] = {
-   {"action", 2}, {"after", 2}, {"align", 2}, {"aspect_preference", 2},
-   {"aspect", 2}, {"anim", 6}
-};
-static color_input color_input_b[4] =
-{
-   {"backface_cull", 2}, {"base", 2}, {"border_scale", 2}, {"border", 2}
-};
-static color_input color_input_c[9] =
-{
-   {"collections", 1}, {"center", 2}, {"clip_to", 2}, {"color2", 2},
-   {"color3", 2}, {"color_class", 2}, {"color", 2}, {"cancel_anim", 6},
-   {"cancel_timer", 6}
-};
-static color_input color_input_d[2] =
-{
-   {"data", 1}, {"description", 1}
-};
-static color_input color_input_e[4] =
-{
-   {"effect", 2}, {"ellipsis", 2}, {"entry_mode", 2}, {"else", 7}
-};
-static color_input color_input_f[4] =
-{
-   {"fill", 1}, {"fixed", 2}, {"focal", 2}, {"font", 2}
-};
-static color_input color_input_g[3] =
-{
-   {"group", 1}, {"get_float", 6}, {"get_int", 6}
-};
-static color_input color_input_i[7] =
-{
-   {"images", 1}, {"ignore_flags", 2}, {"inherit", 2}, {"item", 2},
-   {"if", 7}, {"image:", 2},  {"image", 1}
-};
-static color_input color_input_m[5] =
-{
-   {"map", 1}, {"max", 2}, {"min", 2}, {"mouse_events", 2}, {"multiline", 2}
-};
-static color_input color_input_n[3] =
-{
-   {"name", 2}, {"normal", 2}, {"new", 7}
-};
-static color_input color_input_o[3] =
-{
-   {"origin", 1}, {"offset", 2}, {"on", 2}
-};
-static color_input color_input_p[8] =
-{
-   {"parts", 1}, {"part", 1}, {"programs", 1}, {"program", 1},
-   {"perspective:", 2}, {"perspective_on", 2}, {"public", 7},
-   {"perspective", 1}
-};
-static color_input color_input_r[6] =
-{
-   {"rel1", 1}, {"rel2", 1}, {"rotation", 1}, {"relative", 2},
-   {"repeat_events", 2}, {"run_program", 6}
-};
-static color_input color_input_s[15] =
-{
-   {"script", 1}, {"styles", 1}, {"scale", 2}, {"select_mode", 2},
-   {"signal", 2}, {"state", 2}, {"style", 2}, {"smooth", 2}, {"source", 2},
-   {"set_float", 6}, {"set_int", 6}, {"set_state", 6}, {"set_tween_state", 6},
-   {"size:", 2}, {"size", 1}
-};
-static color_input color_input_t[11] =
-{
-   {"tag", 2}, {"target", 2}, {"to_x", 2}, {"to_y", 2}, {"to", 2},
-   {"transition", 2}, {"type", 2}, {"tween", 2}, {"timer", 6}, {"text:", 2},
-   {"text", 1}
-};
-static color_input color_input_x[1] =
-{
-   {"x:", 2}
-};
-static color_input color_input_y[1] =
-{
-   {"y:", 2}
-};
-static color_input color_input_z[2] =
-{
-   {"z:", 2}, {"zplane", 2}
-};
-static color_input color_input_A[3] =
-{
-   {"ACCELERATE_FACTOR", 3}, {"ACCELERATE", 3}, {"ACTION_STOP", 3}
-};
-static color_input color_input_B[3] =
-{
-   {"BOTH", 3}, {"BOUNCE", 3}, {"BOX", 3}
-};
-static color_input color_input_C[2] =
-{
-   {"COMP", 3}, {"CURRENT", 3}
-};
-static color_input color_input_D[3] =
-{
-   {"DECELERATE_FACTOR", 3}, {"DECELERATE", 3}, {"DIVISOR_INTERP", 3}
-};
-static color_input color_input_E[3] =
-{
-   {"EDITABLE", 3}, {"EXPLICIT", 3}, {"EXTERNAL", 3}
-};
-static color_input color_input_F[2] =
-{
-   {"FAR_SHADOW", 3}, {"FAR_SOFT_SHADOW", 3}
-};
-static color_input color_input_G[3] =
-{
-   {"GLOW", 3}, {"GRADIENT", 3}, {"GROUP", 3}
-};
-static color_input color_input_H[1] =
-{
-   {"HORIZONTAL", 1}
-};
-static color_input color_input_I[1] =
-{
-   {"IMAGE", 3}
-};
-static color_input color_input_L[2] =
-{
-   {"LINEAR", 3}, {"LOSSY", 3}
-};
-static color_input color_input_N[1] =
-{
-   {"NONE", 3}
-};
-static color_input color_input_O[4] =
-{
-   {"ON_HOLD", 3}, {"OUTLINE_SOFT_SHADOW", 3}, {"OUTLINE_SHADOW", 3},
-   {"OUTLINE", 3}
-};
-static color_input color_input_P[3] =
-{
-   {"PLAIN", 3}, {"PROGRAM", 3}, {"PROXY", 3}
-};
-static color_input color_input_R[2] =
-{
-   {"RAW", 3}, {"RECT", 3}
-};
-static color_input color_input_S[10] =
-{
-   {"SHADOW", 3}, {"SIGNAL_EMIT", 3}, {"SINUSOIDAL_FACTOR", 3},
-   {"SINUSOIDAL", 3}, {"SOFT_OUTLINE", 3}, {"SOFT_SHADOW", 3}, {"SPACER", 3},
-   {"SPRING", 3}, {"STATE_SET", 3}, {"SWALLOW", 3}
-};
-static color_input color_input_T[3] =
-{
-   {"TABLE", 3}, {"TEXTBLOCK", 3}, {"TEXT", 3}
-};
-static color_input color_input_U[1] =
-{
-   {"USER", 3}
-};
-static color_input color_input_V[1] =
-{
-   {"VERTICAL", 3}
-};
-static color_input color_input_lp[1] =
-{
-   {"{", 0}
-};
-static color_input color_input_rp[1] =
-{
-   {"}", 0}
-};
-static color_input color_input_lt[1] =
-{
-   {"[", 0}
-};
-static color_input color_input_rt[1] =
-{
-   {"]", 0}
-};
-static color_input color_input_sc[1] =
-{
-   {";", 0}
-};
-static color_input color_input_co[1] =
-{
-   {":", 0}
-};
+static Eet_Data_Descriptor *edd_scg = NULL;
+static Eet_Data_Descriptor *edd_color = NULL;
 
 static void
 hash_free_cb(void *data)
@@ -232,56 +47,101 @@ hash_free_cb(void *data)
 }
 
 static void
+eddc_init()
+{
+   Eet_Data_Descriptor_Class eddc;
+   eet_eina_stream_data_descriptor_class_set(&eddc, sizeof(eddc),
+                                             "syntax_color_group",
+                                             sizeof(syntax_color_group));
+   edd_scg = eet_data_descriptor_stream_new(&eddc);
+
+   eet_eina_stream_data_descriptor_class_set(&eddc, sizeof(eddc), "color",
+                                             sizeof(color));
+   edd_color = eet_data_descriptor_stream_new(&eddc);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd_scg, syntax_color_group, "comment",
+                                 comment, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd_scg, syntax_color_group, "define",
+                                 define, EET_T_STRING);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd_color, color, "val", val, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_LIST_STRING(edd_color, color, "keys", keys);
+
+   EET_DATA_DESCRIPTOR_ADD_ARRAY(edd_scg, syntax_color_group, "colors",
+                                 colors, edd_color);
+}
+
+static void
+eddc_term()
+{
+   eet_data_descriptor_free(edd_scg);
+   eet_data_descriptor_free(edd_color);
+}
+
+static void
+color_load(color_data *cd)
+{
+   char buf[PATH_MAX];
+   snprintf(buf, sizeof(buf), "%s/color/color.eet", elm_app_data_dir_get());
+
+   Eet_File *ef = eet_open(buf, EET_FILE_MODE_READ);
+   if (ef)
+     {
+        cd->scg = eet_data_read(ef, edd_scg, "color");
+        if (!cd->scg) EINA_LOG_ERR("Failed to read syntax color group.");
+        eet_close(ef);
+     }
+   else EINA_LOG_ERR("Failed to open color data file \"%s\"", buf);
+}
+
+static void
 color_table_init(color_data *cd)
 {
-   cd->color_hash = eina_hash_string_small_new(hash_free_cb);
    color_tuple *tuple;
-   Eina_Inarray *inarray;
    int i;
-   int cnt;
+   Eina_List *l;
+   char *key;
+   char tmp[2];
+   Eina_Inarray *inarray;
+   syntax_color_group *scg = cd->scg;
 
-   TUPLE_SET(color_input_a, "a");
-   TUPLE_SET(color_input_b, "b");
-   TUPLE_SET(color_input_c, "c");
-   TUPLE_SET(color_input_d, "d");
-   TUPLE_SET(color_input_e, "e");
-   TUPLE_SET(color_input_f, "f");
-   TUPLE_SET(color_input_g, "g");
-   TUPLE_SET(color_input_i, "i");
-   TUPLE_SET(color_input_m, "m");
-   TUPLE_SET(color_input_n, "n");
-   TUPLE_SET(color_input_o, "o");
-   TUPLE_SET(color_input_p, "p");
-   TUPLE_SET(color_input_r, "r");
-   TUPLE_SET(color_input_s, "s");
-   TUPLE_SET(color_input_t, "t");
-   TUPLE_SET(color_input_x, "x");
-   TUPLE_SET(color_input_y, "y");
-   TUPLE_SET(color_input_z, "z");
-   TUPLE_SET(color_input_A, "A");
-   TUPLE_SET(color_input_B, "B");
-   TUPLE_SET(color_input_C, "C");
-   TUPLE_SET(color_input_D, "D");
-   TUPLE_SET(color_input_E, "E");
-   TUPLE_SET(color_input_F, "F");
-   TUPLE_SET(color_input_G, "G");
-   TUPLE_SET(color_input_H, "H");
-   TUPLE_SET(color_input_I, "I");
-   TUPLE_SET(color_input_L, "L");
-   TUPLE_SET(color_input_N, "N");
-   TUPLE_SET(color_input_O, "O");
-   TUPLE_SET(color_input_P, "P");
-   TUPLE_SET(color_input_R, "R");
-   TUPLE_SET(color_input_S, "S");
-   TUPLE_SET(color_input_T, "T");
-   TUPLE_SET(color_input_U, "U");
-   TUPLE_SET(color_input_V, "V");
-   TUPLE_SET(color_input_lp, "{");
-   TUPLE_SET(color_input_rp, "}");
-   TUPLE_SET(color_input_lt, "[");
-   TUPLE_SET(color_input_rt, "]");
-   TUPLE_SET(color_input_sc, ";");
-   TUPLE_SET(color_input_co, ":");
+   if (!scg) return;
+
+   cd->col_comment = eina_stringshare_add(scg->comment);
+   //free(scg->comment);
+   cd->col_define = eina_stringshare_add(scg->define);
+   //free(scg->define);
+
+   cd->color_hash = eina_hash_string_small_new(hash_free_cb);
+
+   for (i = 0; i < COL_NUM; i++)
+     {
+        cd->cols[i] = eina_stringshare_add(scg->colors[i].val);
+        //free(scg->colors[i].val);
+
+        EINA_LIST_FOREACH(scg->colors[i].keys, l, key)
+          {
+             tmp[0] = key[0];
+             tmp[1] = '\0';
+
+             inarray = eina_hash_find(cd->color_hash, tmp);
+             if (!inarray)
+               {
+                  inarray = eina_inarray_new(sizeof(color_tuple), 0);
+                  eina_hash_add(cd->color_hash, tmp, inarray);
+               }
+
+             tuple = malloc(sizeof(color_tuple));
+             tuple->col = cd->cols[i];
+             tuple->key = eina_stringshare_add(key);
+             //free(key);
+             eina_inarray_push(inarray, tuple);
+          }
+        eina_list_free(scg->colors[i].keys);
+     }
+
+   free(scg);
+   cd->scg = NULL;
 }
 
 color_data *
@@ -291,14 +151,9 @@ color_init(Eina_Strbuf *strbuf)
    cd->strbuf = strbuf;
    cd->cachebuf = eina_strbuf_new();
 
-   cd->cols[0] = eina_stringshare_add("656565");
-   cd->cols[1] = eina_stringshare_add("2070D0");
-   cd->cols[2] = eina_stringshare_add("72AAD4");
-   cd->cols[3] = eina_stringshare_add("D4D42A");
-   cd->cols[4] = eina_stringshare_add("00B000");
-   cd->cols[5] = eina_stringshare_add("D42A2A");
-   cd->cols[6] = eina_stringshare_add("00FFFF");
-   cd->cols[7] = eina_stringshare_add("D78700");
+   eddc_init();
+   color_load(cd);
+   eddc_term();
 
    color_table_init(cd);
 
@@ -310,6 +165,9 @@ color_term(color_data *cd)
 {
    eina_hash_free(cd->color_hash);
    eina_strbuf_free(cd->cachebuf);
+
+   eina_stringshare_del(cd->col_comment);
+   eina_stringshare_del(cd->col_define);
 
    int i;
    for(i = 0; i < COL_NUM; i++)
@@ -659,13 +517,13 @@ color_apply(color_data *cd, const char *src, int length)
           }
 
         //handle comment: /* ~ */
-        ret = comment_apply(strbuf, &src, length, &cur, &prev, cd->cols[4],
+        ret = comment_apply(strbuf, &src, length, &cur, &prev, cd->col_comment,
                             &inside_comment);
         if (ret == 1) continue;
         else if (ret == -1) goto finished;
 
         //handle comment: //
-        ret = comment2_apply(strbuf, &src, length, &cur, &prev, cd->cols[4],
+        ret = comment2_apply(strbuf, &src, length, &cur, &prev, cd->col_comment,
                              &inside_comment);
         if (ret == 1) continue;
         else if (ret == -1) goto finished;
@@ -692,7 +550,7 @@ color_apply(color_data *cd, const char *src, int length)
         if (ret == 1) continue;
 
         //handle comment: #
-        ret = sharp_apply(strbuf, &src, length, &cur, &prev, cd->cols[5]);
+        ret = sharp_apply(strbuf, &src, length, &cur, &prev, cd->col_define);
         if (ret == 1) continue;
         else if (ret == -1) goto finished;
 
