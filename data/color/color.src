@@ -178,8 +178,6 @@ group "syntax_color_group" struct {
             value "key" string: "if";
             value "key" string: "new";
             value "key" string: "public";
-            value "key" string: ";";
-            value "key" string: ":";
          }
       }
    }
