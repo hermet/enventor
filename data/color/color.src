@@ -24,6 +24,7 @@ group "syntax_color_group" struct {
             value "key" string: "group";
             value "key" string: "images";
             value "key" string: "image ";
+            value "key" string: "image.";
             value "key" string: "map";
             value "key" string: "origin";
             value "key" string: "parts";
