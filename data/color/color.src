@@ -23,21 +23,21 @@ group "syntax_color_group" struct {
             value "key" string: "fill";
             value "key" string: "group";
             value "key" string: "images";
-            value "key" string: "image";
+            value "key" string: "image ";
             value "key" string: "map";
             value "key" string: "origin";
             value "key" string: "parts";
             value "key" string: "part";
             value "key" string: "programs";
             value "key" string: "program";
-            value "key" string: "perspective";
+            value "key" string: "perspective ";
             value "key" string: "rel1";
             value "key" string: "rel2";
             value "key" string: "rotation";
             value "key" string: "script";
             value "key" string: "styles";
-            value "key" string: "size";
-            value "key" string: "text";
+            value "key" string: "size ";
+            value "key" string: "text ";
          }
       }
       group "color" struct {
@@ -67,7 +67,7 @@ group "syntax_color_group" struct {
             value "key" string: "ignore_flags";
             value "key" string: "inherit";
             value "key" string: "item";
-            value "key" string: "image:";
+            value "key" string: "image";
             value "key" string: "max";
             value "key" string: "min";
             value "key" string: "mouse_events";
@@ -76,7 +76,7 @@ group "syntax_color_group" struct {
             value "key" string: "normal";
             value "key" string: "offset";
             value "key" string: "on";
-            value "key" string: "perspective:";
+            value "key" string: "perspective";
             value "key" string: "perspective_on";
             value "key" string: "relative";
             value "key" string: "repeat_events";
@@ -87,10 +87,10 @@ group "syntax_color_group" struct {
             value "key" string: "style";
             value "key" string: "smooth";
             value "key" string: "source";
-            value "key" string: "size:";
+            value "key" string: "size";
             value "key" string: "tag";
             value "key" string: "target";
-            value "key" string: "text:";
+            value "key" string: "text";
             value "key" string: "to_x";
             value "key" string: "to_y";
             value "key" string: "to";
