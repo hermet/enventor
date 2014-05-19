@@ -167,6 +167,7 @@ group "syntax_color_group" struct {
             value "key" string: "anim";
             value "key" string: "cancel_anim";
             value "key" string: "cancel_timer";
+            value "key" string: "emit";
             value "key" string: "get_float";
             value "key" string: "get_geometry";
             value "key" string: "get_int";
