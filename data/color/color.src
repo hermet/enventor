@@ -1,10 +1,10 @@
 group "syntax_color_group" struct {
-	value "comment" string: "00B000";
-	value "define" string: "D42A2A";
+   value "comment" string: "00B000";
+   value "define" string: "D42A2A";
    group "colors" array {
       count 6;
       group "color" struct {
-         value "val" string: "656565";
+         value "val" string: "777777";
          group "keys" list {
             value "key" string: "{";
             value "key" string: "}";
@@ -12,6 +12,10 @@ group "syntax_color_group" struct {
             value "key" string: "]";
             value "key" string: ";";
             value "key" string: ":";
+            value "key" string: ".";
+            value "key" string: "(";
+            value "key" string: ")";
+            value "key" string: "!";
          }
       }
       group "color" struct {
@@ -98,6 +102,7 @@ group "syntax_color_group" struct {
             value "key" string: "transition";
             value "key" string: "type";
             value "key" string: "tween";
+            value "key" string: "visible";
             value "key" string: "z:";
             value "key" string: "zplane";
          }
@@ -133,6 +138,7 @@ group "syntax_color_group" struct {
             value "key" string: "OUTLINE_SOFT_SHADOW";
             value "key" string: "OUTLINE_SHADOW";
             value "key" string: "OUTLINE";
+            value "key" string: "PART";
             value "key" string: "PLAIN";
             value "key" string: "PROGRAM";
             value "key" string: "PROXY";
@@ -162,12 +168,17 @@ group "syntax_color_group" struct {
             value "key" string: "cancel_anim";
             value "key" string: "cancel_timer";
             value "key" string: "get_float";
+            value "key" string: "get_geometry";
             value "key" string: "get_int";
+            value "key" string: "get_state";
+            value "key" string: "get_text";
             value "key" string: "run_program";
             value "key" string: "set_float";
             value "key" string: "set_int";
             value "key" string: "set_state";
+            value "key" string: "set_text";
             value "key" string: "set_tween_state";
+            value "key" string: "strcmp";
             value "key" string: "timer";
          }
       }
@@ -178,6 +189,7 @@ group "syntax_color_group" struct {
             value "key" string: "if";
             value "key" string: "new";
             value "key" string: "public";
+            value "key" string: "return";
          }
       }
    }
