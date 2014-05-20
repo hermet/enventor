@@ -30,7 +30,10 @@ struct syntax_color_s
    Eina_Stringshare *col_comment;
    Eina_Stringshare *col_define;
    Eina_Stringshare *cols[COL_NUM];
-  syntax_color_group *scg;
+   syntax_color_group *scg;
+   Ecore_Thread *thread;
+
+   Eina_Bool ready: 1;
 };
 
 static Eet_Data_Descriptor *edd_scg = NULL;
@@ -144,18 +147,27 @@ color_table_init(color_data *cd)
    cd->scg = NULL;
 }
 
+static void
+init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
+{
+   color_data *cd = data;
+
+   eddc_init();
+   color_load(cd);
+   eddc_term();
+   color_table_init(cd);
+
+   cd->thread = NULL;
+   cd->ready = EINA_TRUE;
+}
+
 color_data *
 color_init(Eina_Strbuf *strbuf)
 {
    color_data *cd = malloc(sizeof(color_data));
    cd->strbuf = strbuf;
    cd->cachebuf = eina_strbuf_new();
-
-   eddc_init();
-   color_load(cd);
-   eddc_term();
-
-   color_table_init(cd);
+   cd->thread = ecore_thread_run(init_thread_blocking, NULL, NULL, cd);
 
    return cd;
 }
@@ -163,6 +175,8 @@ color_init(Eina_Strbuf *strbuf)
 void
 color_term(color_data *cd)
 {
+   ecore_thread_cancel(cd->thread);
+
    eina_hash_free(cd->color_hash);
    eina_strbuf_free(cd->cachebuf);
 
@@ -596,4 +610,10 @@ finished:
      }
 
    return str;
+}
+
+Eina_Bool
+color_ready(color_data *cd)
+{
+   return cd->ready;
 }

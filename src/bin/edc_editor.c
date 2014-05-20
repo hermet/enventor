@@ -100,6 +100,7 @@ static Eina_Bool
 syntax_color_timer_cb(void *data)
 {
    edit_data *ed = data;
+   if (!color_ready(syntax_color_data_get(ed->sh))) return ECORE_CALLBACK_RENEW;
    syntax_color_apply(ed);
    ed->syntax_color_timer = NULL;
    return ECORE_CALLBACK_CANCEL;
