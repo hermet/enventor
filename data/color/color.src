@@ -1,5 +1,5 @@
 group "syntax_color_group" struct {
-   value "string" string: "999999";
+   value "string" string: "AAAAAA";
    value "comment" string: "00B000";
    value "define" string: "D42A2A";
    group "colors" array {
