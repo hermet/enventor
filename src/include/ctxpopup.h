@@ -11,7 +11,7 @@ typedef enum attr_value_type
 
 struct attr_value_s
 {
-   Eina_List *strs;
+   Eina_Array *strs;
    float min;
    float max;
    attr_value_type type;

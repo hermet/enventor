@@ -3,14 +3,13 @@
 
 struct parser_s
 {
-   Eina_Inlist *attrs;
+   Eina_Inarray *attrs;
    Ecore_Thread *thread;
    Ecore_Thread *init_thread;
 };
 
 typedef struct parser_attr_s
 {
-   EINA_INLIST;
    Eina_Stringshare *keyword;
    attr_value value;
    Eina_Bool instring : 1;
@@ -30,7 +29,7 @@ typedef struct cur_name_thread_data_s
 
 typedef struct type_init_thread_data_s
 {
-   Eina_Inlist *attrs;
+   Eina_Inarray *attrs;
    parser_data *pd;
 } type_init_td;
 
@@ -88,7 +87,7 @@ parser_attribute_get(parser_data *pd, const char *text, const char *cur)
    if (!p) return NULL;
    if (p != text) p++;
 
-   EINA_INLIST_FOREACH(pd->attrs, attr)
+   EINA_INARRAY_FOREACH(pd->attrs, attr)
      {
         if ((instring == attr->instring) && strstr(p, attr->keyword))
           return &attr->value;
@@ -295,6 +294,10 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    type_init_td *td = data;
    parser_attr *attr;
 
+   td->attrs = eina_inarray_new(sizeof(parser_attr), 24);
+   eina_inarray_step_set(td->attrs, sizeof(Eina_Inarray), sizeof(parser_attr),
+                         4);
+
    //FIXME: construct from the configuration file.
 
    //Type: Constant
@@ -316,7 +319,7 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    attr->keyword = eina_stringshare_add("type:");
    attr->value.strs = types;
    attr->value.type = ATTR_VALUE_CONSTANT;
-   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+   eina_inarray_push(td->attrs, attr);
 
    Eina_Array *comps = eina_array_new(4);
    eina_array_push(comps, eina_stringshare_add("RAW"));
@@ -328,7 +331,7 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    attr->keyword = eina_stringshare_add("image:");
    attr->value.strs = comps;
    attr->value.type = ATTR_VALUE_CONSTANT;
-   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+   eina_inarray_push(td->attrs, attr);
 
    Eina_Array *trans = eina_array_new(10);
    eina_array_push(trans, eina_stringshare_add("LINEAR"));
@@ -346,7 +349,7 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    attr->keyword = eina_stringshare_add("transition:");
    attr->value.strs = trans;
    attr->value.type = ATTR_VALUE_CONSTANT;
-   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+   eina_inarray_push(td->attrs, attr);
 
    Eina_Array *aspect = eina_array_new(4);
    eina_array_push(aspect, eina_stringshare_add("NONE"));
@@ -358,7 +361,7 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    attr->keyword = eina_stringshare_add("aspect_preference:");
    attr->value.strs = aspect;
    attr->value.type = ATTR_VALUE_CONSTANT;
-   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+   eina_inarray_push(td->attrs, attr);
 
    Eina_Array *effect = eina_array_new(11);
    eina_array_push(effect, eina_stringshare_add("NONE"));
@@ -377,7 +380,7 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    attr->keyword = eina_stringshare_add("effect:");
    attr->value.strs = effect;
    attr->value.type = ATTR_VALUE_CONSTANT;
-   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+   eina_inarray_push(td->attrs, attr);
 
    Eina_Array *action = eina_array_new(23);
    eina_array_push(action, eina_stringshare_add("NONE"));
@@ -408,7 +411,7 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    attr->keyword = eina_stringshare_add("action:");
    attr->value.strs = action;
    attr->value.type = ATTR_VALUE_CONSTANT;
-   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+   eina_inarray_push(td->attrs, attr);
 
    //Type: Integer
    attr = calloc(1, sizeof(parser_attr));
@@ -416,49 +419,49 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    attr->value.min = 0;
    attr->value.max = 255;
    attr->value.type = ATTR_VALUE_INTEGER;
-   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+   eina_inarray_push(td->attrs, attr);
 
    attr = calloc(1, sizeof(parser_attr));
    attr->keyword = eina_stringshare_add("scale:");
    attr->value.min = 0;
    attr->value.max = 1;
    attr->value.type = ATTR_VALUE_INTEGER;
-   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+   eina_inarray_push(td->attrs, attr);
 
    attr = calloc(1, sizeof(parser_attr));
    attr->keyword = eina_stringshare_add("fixed:");
    attr->value.min = 0;
    attr->value.max = 1;
    attr->value.type = ATTR_VALUE_INTEGER;
-   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+   eina_inarray_push(td->attrs, attr);
 
    attr = calloc(1, sizeof(parser_attr));
    attr->keyword = eina_stringshare_add("size:");
    attr->value.min = 1;
    attr->value.max = 255;
    attr->value.type = ATTR_VALUE_INTEGER;
-   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+   eina_inarray_push(td->attrs, attr);
 
    attr = calloc(1, sizeof(parser_attr));
    attr->keyword = eina_stringshare_add("min:");
    attr->value.min = 0;
    attr->value.max = 1000;
    attr->value.type = ATTR_VALUE_INTEGER;
-   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+   eina_inarray_push(td->attrs, attr);
 
    attr = calloc(1, sizeof(parser_attr));
    attr->keyword = eina_stringshare_add("max:");
    attr->value.min = 0;
    attr->value.max = 1000;
    attr->value.type = ATTR_VALUE_INTEGER;
-   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+   eina_inarray_push(td->attrs, attr);
 
    attr = calloc(1, sizeof(parser_attr));
    attr->keyword = eina_stringshare_add("mouse_events:");
    attr->value.min = 0;
    attr->value.max = 1000;
    attr->value.type = ATTR_VALUE_INTEGER;
-   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+   eina_inarray_push(td->attrs, attr);
 
    //Type: Float
    attr = calloc(1, sizeof(parser_attr));
@@ -466,40 +469,40 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    attr->value.min = 0.0;
    attr->value.max = 1;
    attr->value.type = ATTR_VALUE_FLOAT;
-   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+   eina_inarray_push(td->attrs, attr);
 
    attr = calloc(1, sizeof(parser_attr));
    attr->keyword = eina_stringshare_add("aspect:");
    attr->value.min = 0.0;
    attr->value.max = 1.0;
    attr->value.type = ATTR_VALUE_FLOAT;
-   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+   eina_inarray_push(td->attrs, attr);
 
    attr = calloc(1, sizeof(parser_attr));
    attr->keyword = eina_stringshare_add("align");
    attr->value.min = 0.0;
    attr->value.max = 1.0;
    attr->value.type = ATTR_VALUE_FLOAT;
-   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+   eina_inarray_push(td->attrs, attr);
 
    //Type: Part
    attr = calloc(1, sizeof(parser_attr));
    attr->keyword = eina_stringshare_add("target:");
    attr->instring = EINA_TRUE;
    attr->value.type = ATTR_VALUE_PART;
-   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+   eina_inarray_push(td->attrs, attr);
 
    attr = calloc(1, sizeof(parser_attr));
    attr->keyword = eina_stringshare_add("to:");
    attr->instring = EINA_TRUE;
    attr->value.type = ATTR_VALUE_PART;
-   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+   eina_inarray_push(td->attrs, attr);
 
    attr = calloc(1, sizeof(parser_attr));
    attr->keyword = eina_stringshare_add("source:");
    attr->instring = EINA_TRUE;
    attr->value.type = ATTR_VALUE_PART;
-   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+   eina_inarray_push(td->attrs, attr);
 
    //Type: State
    attr = calloc(1, sizeof(parser_attr));
@@ -507,33 +510,33 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    attr->instring = EINA_TRUE;
    attr->value.type = ATTR_VALUE_STATE;
    attr->value.program = EINA_TRUE;
-   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+   eina_inarray_push(td->attrs, attr);
 
    attr = calloc(1, sizeof(parser_attr));
    attr->keyword = eina_stringshare_add("inherit:");
    attr->instring = EINA_TRUE;
    attr->value.type = ATTR_VALUE_STATE;
-   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+   eina_inarray_push(td->attrs, attr);
 
    //Type: Image
    attr = calloc(1, sizeof(parser_attr));
    attr->keyword = eina_stringshare_add("normal:");
    attr->instring = EINA_TRUE;
    attr->value.type = ATTR_VALUE_IMAGE;
-   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+   eina_inarray_push(td->attrs, attr);
 
    attr = calloc(1, sizeof(parser_attr));
    attr->keyword = eina_stringshare_add("tween:");
    attr->instring = EINA_TRUE;
    attr->value.type = ATTR_VALUE_IMAGE;
-   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+   eina_inarray_push(td->attrs, attr);
 
    //Type: Program
    attr = calloc(1, sizeof(parser_attr));
    attr->keyword = eina_stringshare_add("after:");
    attr->instring = EINA_TRUE;
    attr->value.type = ATTR_VALUE_PROGRAM;
-   td->attrs = eina_inlist_append(td->attrs, (Eina_Inlist *) attr);
+   eina_inarray_push(td->attrs, attr);
 }
 
 static void
@@ -869,11 +872,8 @@ parser_term(parser_data *pd)
    parser_attr *attr;
    Eina_Stringshare *str;
 
-   while(pd->attrs)
+   EINA_INARRAY_FOREACH(pd->attrs, attr)
      {
-        attr = EINA_INLIST_CONTAINER_GET(pd->attrs, parser_attr);
-        pd->attrs = eina_inlist_remove(pd->attrs, pd->attrs);
-
         eina_stringshare_del(attr->keyword);
 
         if (attr->value.strs)
@@ -882,8 +882,9 @@ parser_term(parser_data *pd)
                eina_stringshare_del(eina_array_pop(attr->value.strs));
              eina_array_free(attr->value.strs);
           }
-        free(attr);
      }
+
+   eina_inarray_free(pd->attrs);
 
    free(pd);
 }
