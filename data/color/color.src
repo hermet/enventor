@@ -1,4 +1,5 @@
 group "syntax_color_group" struct {
+   value "string" string: "999999";
    value "comment" string: "00B000";
    value "define" string: "D42A2A";
    group "colors" array {
@@ -43,6 +44,7 @@ group "syntax_color_group" struct {
             value "key" string: "styles";
             value "key" string: "size ";
             value "key" string: "text ";
+            value "key" string: "text.";
          }
       }
       group "color" struct {
@@ -95,7 +97,8 @@ group "syntax_color_group" struct {
             value "key" string: "size";
             value "key" string: "tag";
             value "key" string: "target";
-            value "key" string: "text";
+            value "key" string: "text:";
+            value "key" string: "text_class";
             value "key" string: "to_x";
             value "key" string: "to_y";
             value "key" string: "to";

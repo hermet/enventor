@@ -19,6 +19,7 @@ typedef struct syntax_color_group
 {
    char *comment;
    char *define;
+   char *string;
    color colors[COL_NUM];
 } syntax_color_group;
 
@@ -27,6 +28,7 @@ struct syntax_color_s
    Eina_Strbuf *strbuf;
    Eina_Strbuf *cachebuf;
    Eina_Hash *color_hash;
+   Eina_Stringshare *col_string;
    Eina_Stringshare *col_comment;
    Eina_Stringshare *col_define;
    Eina_Stringshare *cols[COL_NUM];
@@ -62,6 +64,8 @@ eddc_init()
                                              sizeof(color));
    edd_color = eet_data_descriptor_stream_new(&eddc);
 
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd_scg, syntax_color_group, "string",
+                                 string, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_scg, syntax_color_group, "comment",
                                  comment, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_scg, syntax_color_group, "define",
@@ -110,6 +114,8 @@ color_table_init(color_data *cd)
 
    if (!scg) return;
 
+   cd->col_string = eina_stringshare_add(scg->string);
+   //free(scg->define);
    cd->col_comment = eina_stringshare_add(scg->comment);
    //free(scg->comment);
    cd->col_define = eina_stringshare_add(scg->define);
@@ -180,6 +186,7 @@ color_term(color_data *cd)
    eina_hash_free(cd->color_hash);
    eina_strbuf_free(cd->cachebuf);
 
+   eina_stringshare_del(cd->col_string);
    eina_stringshare_del(cd->col_comment);
    eina_stringshare_del(cd->col_define);
 
@@ -377,6 +384,36 @@ comment2_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
 }
 
 static int
+string_apply(Eina_Strbuf *strbuf, char **cur, char **prev,
+             const Eina_Stringshare *color, Eina_Bool inside_string)
+{
+   //escape string: " ~ "
+   if ((*cur)[0] != QUOT_C) return 0;
+
+   char buf[128];
+
+   if (!inside_string)
+     {
+        snprintf(buf, sizeof(buf), "<color=#%s>", color);
+        eina_strbuf_append(strbuf, buf);
+     }
+
+   eina_strbuf_append_length(strbuf, *prev, *cur - *prev);
+   eina_strbuf_append_char(strbuf, QUOT_C);
+
+   if (inside_string)
+     {
+        snprintf(buf, sizeof(buf), "</color>");
+        eina_strbuf_append(strbuf, buf);
+     }
+
+   (*cur)++;
+   *prev = *cur;
+
+   return 1;
+}
+
+static int
 sharp_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
             char **prev, const Eina_Stringshare *color)
 {
@@ -543,15 +580,13 @@ color_apply(color_data *cd, const char *src, int length)
         else if (ret == -1) goto finished;
 
         //escape string: " ~ "
-        if (cur[0] == QUOT_C)
+        ret = string_apply(strbuf, &cur, &prev, cd->col_string, inside_string);
+        if (ret == 1)
           {
-             eina_strbuf_append_length(strbuf, prev, cur - prev);
-             eina_strbuf_append_char(strbuf, QUOT_C);
-             cur++;
-             prev = cur;
              inside_string = !inside_string;
              continue;
           }
+
         if (inside_string || inside_comment)
           {
              cur++;
