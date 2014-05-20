@@ -130,9 +130,11 @@ slider_layout_set(Evas_Object *ctxpopup, attr_value *attr, double slider_val,
 static void
 constant_candidate_set(Evas_Object *ctxpopup, attr_value *attr, void *data)
 {
-   Eina_List *l;
    Eina_Stringshare *candidate;
-   EINA_LIST_FOREACH(attr->strs, l, candidate)
+   Eina_Array_Iterator itr;
+   unsigned int i;
+
+   EINA_ARRAY_ITER_NEXT(attr->strs, i, candidate, itr)
      elm_ctxpopup_item_append(ctxpopup, candidate, NULL, ctxpopup_it_cb, data);
 }
 
