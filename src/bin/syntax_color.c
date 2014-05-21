@@ -448,7 +448,7 @@ string_apply(Eina_Strbuf *strbuf, char **cur, char **prev,
 }
 
 static int
-sharp_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
+macro_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
             char **prev, const Eina_Stringshare *color, color_data *cd)
 {
    if ((*cur)[0] != '#') return 0;
@@ -693,7 +693,7 @@ color_apply(color_data *cd, const char *src, int length)
         if (ret == 1) continue;
 
         //handle comment: #
-        ret = sharp_apply(strbuf, &src, length, &cur, &prev, cd->col_macro, cd);
+        ret = macro_apply(strbuf, &src, length, &cur, &prev, cd->col_macro, cd);
         if (ret == 1) continue;
         else if (ret == -1) goto finished;
 
