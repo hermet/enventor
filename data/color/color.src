@@ -1,7 +1,6 @@
 group "syntax_color_group" struct {
    value "string" string: "AAAAAA";
    value "comment" string: "00B000";
-   value "define" string: "D42A2A";
    value "macro" string: "D42A2A";
    group "colors" array {
       count 6;

@@ -19,7 +19,6 @@ typedef struct syntax_color_group
 {
    char *string;
    char *comment;
-   char *define;
    char *macro;
    color colors[COL_NUM];
 } syntax_color_group;
@@ -31,7 +30,6 @@ struct syntax_color_s
    Eina_Hash *color_hash;
    Eina_Stringshare *col_string;
    Eina_Stringshare *col_comment;
-   Eina_Stringshare *col_define;
    Eina_Stringshare *col_macro;
    Eina_Stringshare *cols[COL_NUM];
    Eina_List *macros;
@@ -71,8 +69,6 @@ eddc_init()
                                  string, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_scg, syntax_color_group, "comment",
                                  comment, EET_T_STRING);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd_scg, syntax_color_group, "define",
-                                 define, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_scg, syntax_color_group, "macro",
                                  macro, EET_T_STRING);
 
@@ -120,11 +116,9 @@ color_table_init(color_data *cd)
    if (!scg) return;
 
    cd->col_string = eina_stringshare_add(scg->string);
-   //free(scg->define);
+   //free(scg->string);
    cd->col_comment = eina_stringshare_add(scg->comment);
    //free(scg->comment);
-   cd->col_define = eina_stringshare_add(scg->define);
-   //free(scg->define);
    cd->col_macro = eina_stringshare_add(scg->macro);
    //free(scg->macro);
 
@@ -229,7 +223,6 @@ color_term(color_data *cd)
 
    eina_stringshare_del(cd->col_string);
    eina_stringshare_del(cd->col_comment);
-   eina_stringshare_del(cd->col_define);
    eina_stringshare_del(cd->col_macro);
 
    Eina_Stringshare *macro;
@@ -460,8 +453,7 @@ string_apply(Eina_Strbuf *strbuf, char **cur, char **prev,
 
 static int
 sharp_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
-            char **prev, const Eina_Stringshare *color,
-            const Eina_Stringshare *color2, color_data *cd)
+            char **prev, const Eina_Stringshare *color, color_data *cd)
 {
    if ((*cur)[0] != '#') return 0;
 
@@ -654,8 +646,7 @@ color_apply(color_data *cd, const char *src, int length)
         if (ret == 1) continue;
 
         //handle comment: #
-        ret = sharp_apply(strbuf, &src, length, &cur, &prev, cd->col_define,
-                          cd->col_macro, cd);
+        ret = sharp_apply(strbuf, &src, length, &cur, &prev, cd->col_macro, cd);
         if (ret == 1) continue;
         else if (ret == -1) goto finished;
 
