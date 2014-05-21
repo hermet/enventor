@@ -155,7 +155,7 @@ color_table_init(color_data *cd)
 }
 
 static void
-macro_key_push(color_data *cd, char *key, int len)
+macro_key_push(color_data *cd, char *str, int len)
 {
    //Already registered?
    Eina_List *l;
@@ -163,8 +163,14 @@ macro_key_push(color_data *cd, char *key, int len)
    EINA_LIST_FOREACH(cd->macros, l, macro)
      {
         if (strlen(macro) != len) continue;
-        if (!strcmp(macro, key)) return;
+        if (!strcmp(macro, str)) return;
      }
+
+   char *key = str;
+
+   //cutoff "()" from the macro name
+   char *cut = strstr(key, "(");
+   if (cut) key = strndup(str, cut - str);
 
    char tmp[2];
    tmp[0] = key[0];
@@ -184,7 +190,7 @@ macro_key_push(color_data *cd, char *key, int len)
 
    cd->macros = eina_list_append(cd->macros, eina_stringshare_add(tuple->key));
 
-   free(key);
+   if (cut) free(key);
 }
 
 static void
@@ -501,7 +507,10 @@ sharp_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
    eina_strbuf_append_length(strbuf, *prev, (*cur - *prev));
    eina_strbuf_append(strbuf, "</color>");
 
-   macro_key_push(cd, strndup(*prev, *cur - *prev), *cur - *prev);
+   //push the macro to color table
+   char *macro = strndup(*prev, *cur - *prev);
+   macro_key_push(cd, macro, *cur - *prev);
+   free(macro);
 
    *prev = *cur;
 
