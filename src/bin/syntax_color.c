@@ -17,9 +17,10 @@ typedef struct color
 
 typedef struct syntax_color_group
 {
+   char *string;
    char *comment;
    char *define;
-   char *string;
+   char *macro;
    color colors[COL_NUM];
 } syntax_color_group;
 
@@ -31,7 +32,9 @@ struct syntax_color_s
    Eina_Stringshare *col_string;
    Eina_Stringshare *col_comment;
    Eina_Stringshare *col_define;
+   Eina_Stringshare *col_macro;
    Eina_Stringshare *cols[COL_NUM];
+   Eina_List *macros;
    syntax_color_group *scg;
    Ecore_Thread *thread;
 
@@ -70,6 +73,8 @@ eddc_init()
                                  comment, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_scg, syntax_color_group, "define",
                                  define, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd_scg, syntax_color_group, "macro",
+                                 macro, EET_T_STRING);
 
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_color, color, "val", val, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_LIST_STRING(edd_color, color, "keys", keys);
@@ -120,6 +125,8 @@ color_table_init(color_data *cd)
    //free(scg->comment);
    cd->col_define = eina_stringshare_add(scg->define);
    //free(scg->define);
+   cd->col_macro = eina_stringshare_add(scg->macro);
+   //free(scg->macro);
 
    cd->color_hash = eina_hash_string_small_new(hash_free_cb);
 
@@ -154,6 +161,39 @@ color_table_init(color_data *cd)
 }
 
 static void
+macro_key_push(color_data *cd, char *key, int len)
+{
+   //Already registered?
+   Eina_List *l;
+   Eina_Stringshare *macro;
+   EINA_LIST_FOREACH(cd->macros, l, macro)
+     {
+        if (strlen(macro) != len) continue;
+        if (!strcmp(macro, key)) return;
+     }
+
+   char tmp[2];
+   tmp[0] = key[0];
+   tmp[1] = '\0';
+
+   Eina_Inarray *inarray = eina_hash_find(cd->color_hash, tmp);
+   if (!inarray)
+     {
+        inarray = eina_inarray_new(sizeof(color_tuple), 0);
+        eina_hash_add(cd->color_hash, tmp, inarray);
+     }
+
+   color_tuple *tuple = malloc(sizeof(color_tuple));
+   tuple->col = cd->col_macro;
+   tuple->key = eina_stringshare_add(key);
+   eina_inarray_push(inarray, tuple);
+
+   cd->macros = eina_list_append(cd->macros, eina_stringshare_add(tuple->key));
+
+   free(key);
+}
+
+static void
 init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
    color_data *cd = data;
@@ -174,6 +214,7 @@ color_init(Eina_Strbuf *strbuf)
    cd->strbuf = strbuf;
    cd->cachebuf = eina_strbuf_new();
    cd->thread = ecore_thread_run(init_thread_blocking, NULL, NULL, cd);
+   cd->macros = NULL;
 
    return cd;
 }
@@ -189,6 +230,10 @@ color_term(color_data *cd)
    eina_stringshare_del(cd->col_string);
    eina_stringshare_del(cd->col_comment);
    eina_stringshare_del(cd->col_define);
+   eina_stringshare_del(cd->col_macro);
+
+   Eina_Stringshare *macro;
+   EINA_LIST_FREE(cd->macros, macro) eina_stringshare_del(macro);
 
    int i;
    for(i = 0; i < COL_NUM; i++)
@@ -415,10 +460,25 @@ string_apply(Eina_Strbuf *strbuf, char **cur, char **prev,
 
 static int
 sharp_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
-            char **prev, const Eina_Stringshare *color)
+            char **prev, const Eina_Stringshare *color,
+            const Eina_Stringshare *color2, color_data *cd)
 {
    if ((*cur)[0] != '#') return 0;
 
+   char *space = strstr(*cur, " ");
+   const char *eol = strstr(*cur, EOL);
+
+   if (!eol) eol = (*src) + length;
+   if (!space) space = (char *) eol;
+
+   //Let's find start of the macro name
+   while ((*space == ' ') && (space != eol)) space++;
+
+   //Let's find the macro name
+   char *macro_begin = space;
+   char *macro_end = strstr(space, " ");
+
+   //#define, #ifdef, #if, #...
    eina_strbuf_append_length(strbuf, *prev, (*cur - *prev));
 
    char buf[128];
@@ -428,43 +488,38 @@ sharp_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
    int cmp_size = 1;    //strlen("#");
    *cur += cmp_size;
 
-   if (*cur > (*src + length))
-     {
-        eina_strbuf_append(strbuf, "</color>");
-        return -1;
-     }
-
    *prev = *cur;
+   *cur = space;
 
-   char *space = strstr(*prev, " ");
-   char *eol = strstr(*prev, EOL);
-
-   if (space < eol)
-     {
-        *cur = space;
-        cmp_size = 1; //strlen(" ");
-     }
-   else
-     {
-        *cur = eol;
-        cmp_size = EOL_LEN;
-     }
-
-   if (*cur)
-     {
-        eina_strbuf_append_length(strbuf, *prev, (*cur - *prev));
-        if (space < eol) eina_strbuf_append(strbuf, "</color> ");
-        else eina_strbuf_append(strbuf, "</color><br/>");
-        *cur += cmp_size;
-        *prev = *cur;
-        return 1;
-     }
-
-   eina_strbuf_append(strbuf, *prev);
-   *prev = *cur;
-
+   eina_strbuf_append_length(strbuf, *prev, (*cur - *prev));
    eina_strbuf_append(strbuf, "</color>");
-   return -1;
+
+   if ((!macro_end) || (macro_end >= eol))
+     {
+       *prev = *cur;
+       return 1;
+     }
+
+   //macro name
+   *prev = *cur;
+   *cur = macro_end;
+
+   snprintf(buf, sizeof(buf), "<color=#%s>", color);
+   eina_strbuf_append(strbuf, buf);
+   eina_strbuf_append_length(strbuf, *prev, (*cur - *prev));
+   eina_strbuf_append(strbuf, "</color>");
+
+   macro_key_push(cd, strndup(*prev, *cur - *prev), *cur - *prev);
+
+   *prev = *cur;
+
+   return 1;
+
+nospace:
+   (*cur)++;
+   eina_strbuf_append_length(strbuf, *prev, (*cur - *prev));
+   *prev = *cur;
+   return 1;
 }
 
 const char *
@@ -599,7 +654,8 @@ color_apply(color_data *cd, const char *src, int length)
         if (ret == 1) continue;
 
         //handle comment: #
-        ret = sharp_apply(strbuf, &src, length, &cur, &prev, cd->col_define);
+        ret = sharp_apply(strbuf, &src, length, &cur, &prev, cd->col_define,
+                          cd->col_macro, cd);
         if (ret == 1) continue;
         else if (ret == -1) goto finished;
 
