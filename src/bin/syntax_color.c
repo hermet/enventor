@@ -33,7 +33,6 @@ struct syntax_color_s
    Eina_Stringshare *col_macro;
    Eina_Stringshare *cols[COL_NUM];
    Eina_List *macros;
-   syntax_color_group *scg;
    Ecore_Thread *thread;
 
    Eina_Bool ready: 1;
@@ -41,6 +40,7 @@ struct syntax_color_s
 
 static Eet_Data_Descriptor *edd_scg = NULL;
 static Eet_Data_Descriptor *edd_color = NULL;
+static syntax_color_group *scg = NULL;
 
 static void
 hash_free_cb(void *data)
@@ -95,8 +95,8 @@ color_load(color_data *cd)
    Eet_File *ef = eet_open(buf, EET_FILE_MODE_READ);
    if (ef)
      {
-        cd->scg = eet_data_read(ef, edd_scg, "color");
-        if (!cd->scg) EINA_LOG_ERR("Failed to read syntax color group.");
+        scg = eet_data_read(ef, edd_scg, "color");
+        if (!scg) EINA_LOG_ERR("Failed to read syntax color group.");
         eet_close(ef);
      }
    else EINA_LOG_ERR("Failed to open color data file \"%s\"", buf);
@@ -111,7 +111,6 @@ color_table_init(color_data *cd)
    char *key;
    char tmp[2];
    Eina_Inarray *inarray;
-   syntax_color_group *scg = cd->scg;
 
    if (!scg) return;
 
@@ -151,7 +150,7 @@ color_table_init(color_data *cd)
      }
 
    free(scg);
-   cd->scg = NULL;
+   scg = NULL;
 }
 
 static void
