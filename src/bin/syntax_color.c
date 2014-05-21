@@ -639,8 +639,6 @@ color_apply(color_data *cd, const char *src, int length)
 
    if (!src || (length < 1)) return NULL;
 
-   macro_keys_free(cd);
-
    Eina_Strbuf *strbuf = cd->cachebuf;
    eina_strbuf_reset(strbuf);
 
@@ -739,6 +737,8 @@ finished:
         if (prev + 1 < cur) eina_strbuf_append(strbuf, prev);
         str = eina_strbuf_string_get(strbuf);
      }
+
+   macro_keys_free(cd);
 
    return str;
 }
