@@ -136,7 +136,7 @@ color_table_init(color_data *cd)
              inarray = eina_hash_find(cd->color_hash, tmp);
              if (!inarray)
                {
-                  inarray = eina_inarray_new(sizeof(color_tuple), 0);
+                  inarray = eina_inarray_new(sizeof(color_tuple), 20);
                   eina_hash_add(cd->color_hash, tmp, inarray);
                }
 
@@ -156,15 +156,6 @@ color_table_init(color_data *cd)
 static void
 macro_key_push(color_data *cd, char *str, int len)
 {
-   //Already registered?
-   Eina_List *l;
-   Eina_Stringshare *macro;
-   EINA_LIST_FOREACH(cd->macros, l, macro)
-     {
-        if (strlen(macro) != len) continue;
-        if (!strcmp(macro, str)) return;
-     }
-
    char *key = str;
 
    //cutoff "()" from the macro name
@@ -178,7 +169,7 @@ macro_key_push(color_data *cd, char *str, int len)
    Eina_Inarray *inarray = eina_hash_find(cd->color_hash, tmp);
    if (!inarray)
      {
-        inarray = eina_inarray_new(sizeof(color_tuple), 0);
+        inarray = eina_inarray_new(sizeof(color_tuple), 20);
         eina_hash_add(cd->color_hash, tmp, inarray);
      }
 
@@ -468,12 +459,42 @@ sharp_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
    if (!eol) eol = (*src) + length;
    if (!space) space = (char *) eol;
 
-   //Let's find start of the macro name
-   while ((*space == ' ') && (space != eol)) space++;
-
    //Let's find the macro name
+   while ((*space == ' ') && (space != eol)) space++;
    char *macro_begin = space;
    char *macro_end = strstr(space, " ");
+
+   //Excetional case 1
+   if (!macro_end) macro_end = (char *) eol;
+   //Exceptional case 2
+   else if (macro_end > eol) macro_end = (char *) eol;
+   //Let's check the macro function case
+   else
+   {
+     int macro_len = macro_end - macro_begin;
+     char *macro = alloca(macro_len);
+     strncpy(macro, macro_begin, macro_len);
+
+     //Check how many "(", ")" pairs are exists
+     int bracket_inside = 0;
+     while (macro_len >= 0)
+       {
+          if (macro[macro_len] == '(') bracket_inside++;
+          else if (macro[macro_len] == ')') bracket_inside--;
+          macro_len--;
+       }
+     if (bracket_inside > 0)
+       {
+          while (bracket_inside > 0)
+            {
+               macro_end = strstr(macro_end, ")");
+               bracket_inside--;
+            }
+          if (!macro_end) macro_end = (char *) eol;
+          else if (macro_end > eol) macro_end = (char *) eol;
+          else macro_end++;
+       }
+   }
 
    //#define, #ifdef, #if, #...
    eina_strbuf_append_length(strbuf, *prev, (*cur - *prev));
@@ -486,30 +507,19 @@ sharp_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
    *cur += cmp_size;
 
    *prev = *cur;
-   *cur = space;
-
-   eina_strbuf_append_length(strbuf, *prev, (*cur - *prev));
-   eina_strbuf_append(strbuf, "</color>");
-
-   if ((!macro_end) || (macro_end >= eol))
-     {
-       *prev = *cur;
-       return 1;
-     }
-
-   //macro name
-   *prev = *cur;
    *cur = macro_end;
 
-   snprintf(buf, sizeof(buf), "<color=#%s>", color);
-   eina_strbuf_append(strbuf, buf);
    eina_strbuf_append_length(strbuf, *prev, (*cur - *prev));
    eina_strbuf_append(strbuf, "</color>");
 
-   //push the macro to color table
-   char *macro = strndup(*prev, *cur - *prev);
-   macro_key_push(cd, macro, *cur - *prev);
-   free(macro);
+   //push the macro to color table but only not numeric case.
+   if ((macro_end > macro_begin) &&
+       ((macro_begin[0] < '0') || (macro_begin[0] > '9')))
+     {
+        char *macro = strndup(macro_begin, (macro_end - macro_begin));
+        macro_key_push(cd, macro, (macro_end - macro_begin));
+        free(macro);
+     }
 
    *prev = *cur;
 
@@ -588,6 +598,35 @@ bracket_escape(Eina_Strbuf *strbuf, char **cur, char **prev)
    return 0;
 }
 
+static void
+macro_keys_free(color_data *cd)
+{
+   Eina_Stringshare *macro;
+   Eina_Inarray *inarray;
+   color_tuple *tuple;
+   char key[2];
+
+   EINA_LIST_FREE(cd->macros, macro)
+     {
+        key[0] = macro[0];
+        key[1] = '\0';
+        inarray = eina_hash_find(cd->color_hash, key);
+
+        if (inarray)
+          {
+             EINA_INARRAY_REVERSE_FOREACH(inarray, tuple)
+               {
+                  if (strlen(macro) != strlen(tuple->key)) continue;
+                  if (!strcmp(macro, tuple->key))
+                    {
+                       eina_inarray_pop(inarray);
+                       break;
+                    }
+               }
+          }
+     }
+}
+
 /* 
 	OPTIMIZATION POINT 
 	1. Apply Color only changed line.
@@ -599,6 +638,8 @@ color_apply(color_data *cd, const char *src, int length)
    Eina_Bool inside_comment = EINA_FALSE;
 
    if (!src || (length < 1)) return NULL;
+
+   macro_keys_free(cd);
 
    Eina_Strbuf *strbuf = cd->cachebuf;
    eina_strbuf_reset(strbuf);
