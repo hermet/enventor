@@ -232,9 +232,9 @@ color_term(color_data *cd)
 }
 
 static Eina_Bool
-color_markup_insert(Eina_Strbuf *strbuf, const char **src, int length,
-                    char **cur, char **prev,  const char *cmp,
-                    Eina_Stringshare *color)
+color_markup_insert_internal(Eina_Strbuf *strbuf, const char **src, int length,
+                             char **cur, char **prev,  const char *cmp,
+                             Eina_Stringshare *color)
 {
    char buf[128];
 
@@ -573,31 +573,6 @@ color_cancel(color_data *cd, const char *src, int length)
    return str;
 }
 
-static int
-bracket_escape(Eina_Strbuf *strbuf, char **cur, char **prev)
-{
-   if ((*cur)[0] != '&') return 0;
-   int cmp_size = 4;
-
-   if (!strncmp(*cur, "&lt;", cmp_size))
-     {
-        eina_strbuf_append_length(strbuf, *prev, *cur - *prev);
-        eina_strbuf_append(strbuf, "&lt;");
-        *cur += cmp_size;
-        *prev = *cur;
-        return 1;
-     }
-   else if (!strncmp(*cur, "&gt;", cmp_size))
-     {
-        eina_strbuf_append_length(strbuf, *prev, *cur - *prev);
-        eina_strbuf_append(strbuf, "&gt;");
-        *cur += cmp_size;
-        *prev = *cur;
-        return 1;
-     }
-   return 0;
-}
-
 static void
 macro_keys_free(color_data *cd)
 {
@@ -627,6 +602,37 @@ macro_keys_free(color_data *cd)
      }
 }
 
+static int
+color_markup_insert(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
+                    char **prev, color_data *cd)
+{
+   char key[2];
+   key[0] = (*cur)[0];
+   key[1] = '\0';
+
+   Eina_Inarray *inarray = eina_hash_find(cd->color_hash, key);
+   color_tuple *tuple;
+
+   //Found tuple list. Search in detail.
+   if (inarray)
+     {
+        Eina_Bool found = EINA_FALSE;
+
+        EINA_INARRAY_FOREACH(inarray, tuple)
+          {
+             if (!strncmp(*cur, tuple->key, strlen(tuple->key)))
+               {
+                  if (color_markup_insert_internal(strbuf, src, length, cur,
+                                                   prev, tuple->key,
+                                                   tuple->col))
+                    return 1;
+                  else return -1;
+               }
+          }
+     }
+   return 0;
+}
+
 /* 
 	OPTIMIZATION POINT 
 	1. Apply Color only changed line.
@@ -646,8 +652,6 @@ color_apply(color_data *cd, const char *src, int length)
    char *prev = (char *) src;
    char *cur = (char *) src;
    int ret;
-   Eina_Inarray *inarray;
-   color_tuple *tuple;
 
    while (cur && (cur <= (src + length)))
      {
@@ -687,42 +691,15 @@ color_apply(color_data *cd, const char *src, int length)
              continue;
           }
 
-        //FIXME: This might be textblock problem. should be removed here.
-        //escape <> bracket.
-        ret = bracket_escape(strbuf, &cur, &prev);
+        //handle comment: preprocessors, #
+        ret = macro_apply(strbuf, &src, length, &cur, &prev, cd->col_macro, cd);
         if (ret == 1) continue;
 
-        //handle comment: #
-        ret = macro_apply(strbuf, &src, length, &cur, &prev, cd->col_macro, cd);
+        //apply color markup
+        ret = color_markup_insert(strbuf, &src, length, &cur, &prev, cd);
         if (ret == 1) continue;
         else if (ret == -1) goto finished;
 
-        char key[2];
-        key[0] = cur[0];
-        key[1] = '\0';
-        inarray = eina_hash_find(cd->color_hash, key);
-
-        //Found tuple list. Search in detail.
-        if (inarray)
-          {
-             Eina_Bool found = EINA_FALSE;
-
-             EINA_INARRAY_FOREACH(inarray, tuple)
-               {
-                  if (!strncmp(cur, tuple->key, strlen(tuple->key)))
-                    {
-                       ret = color_markup_insert(strbuf, &src, length, &cur,
-                                                 &prev, tuple->key, tuple->col);
-                       if (ret)
-                         {
-                            found = EINA_TRUE;
-                            break;
-                         }
-                       else goto finished;
-                    }
-               }
-             if (found) continue;
-          }
         cur++;
      }
 
