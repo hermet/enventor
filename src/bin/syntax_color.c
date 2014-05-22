@@ -658,7 +658,8 @@ color_apply(color_data *cd, const char *src, int length)
         //escape empty string
         if (cur[0] == ' ')
           {
-             eina_strbuf_append_length(strbuf, prev, cur - prev);
+             if (cur > prev)
+               eina_strbuf_append_length(strbuf, prev, cur - prev);
              eina_strbuf_append_char(strbuf, ' ');
              ++cur;
              prev = cur;
