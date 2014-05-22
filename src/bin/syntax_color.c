@@ -432,8 +432,7 @@ string_apply(Eina_Strbuf *strbuf, char **cur, char **prev,
         eina_strbuf_append(strbuf, buf);
      }
 
-   eina_strbuf_append_length(strbuf, *prev, *cur - *prev);
-   eina_strbuf_append_char(strbuf, QUOT_C);
+   eina_strbuf_append_length(strbuf, *prev, (*cur - *prev) + 1);
 
    if (inside_string)
      {
@@ -659,8 +658,9 @@ color_apply(color_data *cd, const char *src, int length)
         if (cur[0] == ' ')
           {
              if (cur > prev)
-               eina_strbuf_append_length(strbuf, prev, cur - prev);
-             eina_strbuf_append_char(strbuf, ' ');
+               eina_strbuf_append_length(strbuf, prev, (cur - prev) + 1);
+             else
+               eina_strbuf_append_char(strbuf, ' ');
              ++cur;
              prev = cur;
              continue;
