@@ -90,8 +90,13 @@ syntax_color_apply(edit_data *ed)
    if (!utf8) return;
    const char *translated = color_apply(syntax_color_data_get(ed->sh), utf8,
                                         strlen(utf8));
-   elm_entry_entry_set(ed->en_edit, NULL);
-   elm_entry_entry_append(ed->en_edit, translated);
+
+   /* I'm not sure this will be problem.
+      But it can avoid entry_object_text_escaped_set() in Edje.
+      Logically that's unnecessary in this case. */
+   Evas_Object *tb = elm_entry_textblock_get(ed->en_edit);
+   evas_object_textblock_text_markup_set(tb, translated);
+   elm_entry_calc_force(ed->en_edit);
    elm_entry_cursor_pos_set(ed->en_edit, pos);
    //FIXME: Need to recover selection area.
 }
