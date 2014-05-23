@@ -605,22 +605,49 @@ static int
 color_markup_insert(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
                     char **prev, color_data *cd)
 {
-   char key[2];
-   key[0] = (*cur)[0];
-   key[1] = '\0';
+   const char *SYMBOLS = " {}[];:.()!<>=&|";
+   char tmp[2];
+   Eina_Bool symbol = EINA_FALSE;
 
-   Eina_Inarray *inarray = eina_hash_find(cd->color_hash, key);
-   color_tuple *tuple;
+   tmp[0] = (*cur)[0];
+   tmp[1] = '\0';
+   if (strstr(SYMBOLS, tmp)) symbol = EINA_TRUE;
+
+   if (!symbol && (*cur > *src))
+     {
+        tmp[0] = *(*cur - 1);
+        tmp[1] = '\0';
+        if (!strstr(SYMBOLS, tmp)) return 0;
+     }
+
+   tmp[0] = (*cur)[0];
+   tmp[1] = '\0';
+
+   Eina_Inarray *inarray = eina_hash_find(cd->color_hash, tmp);
+   if (!inarray) return 0;
 
    //Found tuple list. Search in detail.
-   if (inarray)
-     {
-        Eina_Bool found = EINA_FALSE;
+   color_tuple *tuple;
+   int len;
 
-        EINA_INARRAY_FOREACH(inarray, tuple)
+   EINA_INARRAY_FOREACH(inarray, tuple)
+     {
+        len = strlen(tuple->key);
+        char *p = *cur + len;
+        if (!strncmp(*cur, tuple->key, len))
           {
-             if (!strncmp(*cur, tuple->key, strlen(tuple->key)))
+             if (p <= (*src + length))
                {
+                  if (!symbol &&
+                      /* Exceptional Case. For duplicated keywords, it
+                         subdivides with '.' ' '. See the config.src */
+                      (*(p - 1) != '.') &&
+                      (*(p - 1) != ' '))
+                    {
+                       tmp[0] = *p;
+                       tmp[1] = '\0';
+                       if (!strstr(SYMBOLS, tmp)) return 0;
+                    }
                   if (color_markup_insert_internal(strbuf, src, length, cur,
                                                    prev, tuple->key,
                                                    tuple->col))
