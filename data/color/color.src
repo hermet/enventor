@@ -20,6 +20,7 @@ group "syntax_color_group" struct {
             value "key" string: "=";
             value "key" string: "&";
             value "key" string: "|";
+            value "key" string: "\\";
          }
       }
       group "color" struct {
