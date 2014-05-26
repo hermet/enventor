@@ -305,12 +305,12 @@ main_mouse_wheel_cb(void *data, int type EINA_UNUSED, void *ev)
         if (event->z < 0)
           {
              config_font_size_set(config_font_size_get() + 0.1f);
-             edit_font_size_update(ad->ed, EINA_TRUE);
+             edit_font_size_update(ad->ed, EINA_TRUE, EINA_TRUE);
           }
         else
           {
              config_font_size_set(config_font_size_get() - 0.1f);
-             edit_font_size_update(ad->ed, EINA_TRUE);
+             edit_font_size_update(ad->ed, EINA_TRUE, EINA_TRUE);
           }
 
         return ECORE_CALLBACK_PASS_ON;
@@ -365,7 +365,7 @@ config_update_cb(void *data)
    app_data *ad = data;
    build_cmd_set();
    edit_line_number_toggle(ad->ed);
-   edit_font_size_update(ad->ed, EINA_FALSE);
+   edit_font_size_update(ad->ed, EINA_FALSE, EINA_TRUE);
 
    base_tools_toggle(EINA_FALSE);
    base_statusbar_toggle(EINA_FALSE);

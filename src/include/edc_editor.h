@@ -11,7 +11,7 @@ Eina_Bool edit_save(edit_data *ed);
 void edit_new(edit_data* ed);
 void edit_view_sync_cb_set(edit_data *ed, void (*cb)(void *data, Eina_Stringshare *part_name, Eina_Stringshare *group_name), void *data);
 void edit_view_sync(edit_data *ed);
-void edit_font_size_update(edit_data *ed, Eina_Bool msg);
+void edit_font_size_update(edit_data *ed, Eina_Bool msg, Eina_Bool update);
 void edit_template_insert(edit_data *ed);
 void edit_template_part_insert(edit_data *ed, Edje_Part_Type type);
 void edit_part_highlight_toggle(edit_data *ed, Eina_Bool msg);

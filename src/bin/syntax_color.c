@@ -281,10 +281,9 @@ static int
 tab_skip(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
         char **prev)
 {
-   int cmp_size = 6;    //strlen("<tab/>");
-   if (strncmp(*cur, "<tab/>", cmp_size)) return 0;
-   eina_strbuf_append_length(strbuf, *prev, (*cur - *prev + cmp_size));
-   *cur += cmp_size;
+   if (strncmp(*cur, TAB, TAB_LEN)) return 0;
+   eina_strbuf_append_length(strbuf, *prev, (*cur - *prev + TAB_LEN));
+   *cur += TAB_LEN;
    if (*cur > (*src + length)) return -1;
    *prev = *cur;
 
@@ -532,7 +531,8 @@ nospace:
 }
 
 const char *
-color_cancel(color_data *cd, const char *src, int length)
+color_cancel(color_data *cd, const char *src, int length, int from_pos,
+             int to_pos, char **from, char **to)
 {
    if (!src || length < 1) return NULL;
    Eina_Strbuf *strbuf = cd->strbuf;
@@ -541,14 +541,31 @@ color_cancel(color_data *cd, const char *src, int length)
    const char *str = NULL;
    char *prev = (char *) src;
    char *cur = (char *) src;
+   int line = 1;
+   Eina_Bool find_from = EINA_TRUE;
+   Eina_Bool find_to = EINA_TRUE;
 
    while (cur && (cur <= (src + length)))
      {
+        if (find_from && (line == from_pos))
+          {
+             from_pos = eina_strbuf_length_get(strbuf);
+             find_from = EINA_FALSE;
+          }
+        if (find_to && (line == to_pos))
+          {
+             to_pos = eina_strbuf_length_get(strbuf);
+             find_to = EINA_FALSE;
+          }
+
         //escape EOL: <br/>
         if (br_skip(strbuf, &src, length, &cur, &prev) == 1)
-          continue;
+        {
+           line++;
+           continue;
+        }
 
-        //escape EOL: <tab/>
+        //escape TAB: <tab/>
         if (tab_skip(strbuf, &src, length, &cur, &prev) == 1)
           continue;
 
@@ -569,6 +586,14 @@ color_cancel(color_data *cd, const char *src, int length)
         if (prev + 1 < cur) eina_strbuf_append(strbuf, prev);
         str = eina_strbuf_string_get(strbuf);
      }
+
+   //Exceptional Handling
+   if (find_from) from_pos = 0;
+   if (find_to) to_pos = eina_strbuf_length_get(strbuf);
+
+   *from = ((char *) str) + from_pos;
+   *to = ((char *) str) + to_pos;
+
    return str;
 }
 
@@ -659,17 +684,14 @@ color_markup_insert(Eina_Strbuf *strbuf, const char **src, int length, char **cu
    return 0;
 }
 
-/* 
-	OPTIMIZATION POINT 
-	1. Apply Color only changed line.
-*/
 const char *
-color_apply(color_data *cd, const char *src, int length)
+color_apply(color_data *cd, const char *src, int length, char *from, char *to)
 {
    Eina_Bool inside_string = EINA_FALSE;
    Eina_Bool inside_comment = EINA_FALSE;
 
    if (!src || (length < 1)) return NULL;
+   if (from == to) return NULL;
 
    Eina_Strbuf *strbuf = cd->cachebuf;
    eina_strbuf_reset(strbuf);
@@ -682,15 +704,18 @@ color_apply(color_data *cd, const char *src, int length)
    while (cur && (cur <= (src + length)))
      {
         //escape empty string
-        if (cur[0] == ' ')
+        if (cur >= from)
           {
-             if (cur > prev)
-               eina_strbuf_append_length(strbuf, prev, (cur - prev) + 1);
-             else
-               eina_strbuf_append_char(strbuf, ' ');
-             ++cur;
-             prev = cur;
-             continue;
+             if (cur[0] == ' ')
+               {
+                  if (cur > prev)
+                    eina_strbuf_append_length(strbuf, prev, (cur - prev) + 1);
+                  else
+                    eina_strbuf_append_char(strbuf, ' ');
+                  ++cur;
+                  prev = cur;
+                  continue;
+               }
           }
 
         //handle comment: /* ~ */
@@ -700,10 +725,13 @@ color_apply(color_data *cd, const char *src, int length)
         else if (ret == -1) goto finished;
 
         //handle comment: //
-        ret = comment2_apply(strbuf, &src, length, &cur, &prev, cd->col_comment,
-                             &inside_comment);
-        if (ret == 1) continue;
-        else if (ret == -1) goto finished;
+        if (cur >= from)
+          {
+             ret = comment2_apply(strbuf, &src, length, &cur, &prev,
+                                  cd->col_comment, &inside_comment);
+             if (ret == 1) continue;
+             else if (ret == -1) goto finished;
+          }
 
         //escape string: " ~ "
         ret = string_apply(strbuf, &cur, &prev, cd->col_string, inside_string);
@@ -724,11 +752,15 @@ color_apply(color_data *cd, const char *src, int length)
         if (ret == 1) continue;
 
         //apply color markup
-        ret = color_markup_insert(strbuf, &src, length, &cur, &prev, cd);
-        if (ret == 1) continue;
-        else if (ret == -1) goto finished;
+        if (cur >= from)
+          {
+             ret = color_markup_insert(strbuf, &src, length, &cur, &prev, cd);
+             if (ret == 1) continue;
+             else if (ret == -1) goto finished;
+          }
 
         cur++;
+        if (cur > to) goto finished;
      }
 
    //Same with origin source.
@@ -739,7 +771,7 @@ color_apply(color_data *cd, const char *src, int length)
      {
 finished:
         //append leftovers.
-        if (prev + 1 < cur) eina_strbuf_append(strbuf, prev);
+        if (prev < cur) eina_strbuf_append(strbuf, prev);
         str = eina_strbuf_string_get(strbuf);
      }
 

@@ -4,7 +4,9 @@
 
 //FIXME: Make flexible
 const int MAX_LINE_DIGIT_CNT = 10;
-const double SYNTAX_COLOR_TIME = 0.25;
+const int SYNTAX_COLOR_SPARE_LINES = 25;
+const double SYNTAX_COLOR_DEFAULT_TIME = 0.25;
+const double SYNTAX_COLOR_SHORT_TIME = 0.025;
 
 struct editor_s
 {
@@ -19,6 +21,7 @@ struct editor_s
 
    int cur_line;
    int line_max;
+   Evas_Coord scroller_h;
 
    Ecore_Timer *syntax_color_timer;
 
@@ -80,23 +83,52 @@ line_decrease(edit_data *ed, int cnt)
 }
 
 static void
+current_visible_text_region_get(edit_data *ed, int *from_line, int *to_line)
+{
+   Evas_Coord region_y, region_h;
+   Evas_Coord cursor_h;
+
+   elm_scroller_region_get(ed->scroller, NULL, &region_y, NULL, &region_h);
+   elm_entry_cursor_geometry_get(ed->en_edit, NULL, NULL, NULL, &cursor_h);
+
+   int from = (region_y / cursor_h) - SYNTAX_COLOR_SPARE_LINES;
+   int to = from + (region_h / cursor_h) + SYNTAX_COLOR_SPARE_LINES;
+   from -= SYNTAX_COLOR_SPARE_LINES;
+   to += SYNTAX_COLOR_SPARE_LINES;
+
+   if (from < 1) from = 1;
+   if (to > ed->line_max) to = ed->line_max;
+
+   *from_line = from;
+   *to_line = to;
+}
+
+static void
 syntax_color_apply(edit_data *ed)
 {
-   //FIXME: Optimize here by applying color syntax for only changed lines 
-   char *text = (char *) elm_entry_entry_get(ed->en_edit);
+   Evas_Object *tb = elm_entry_textblock_get(ed->en_edit);
+   char *text = (char *) evas_object_textblock_text_markup_get(tb);
    int pos = elm_entry_cursor_pos_get(ed->en_edit);
+
+   int from_line, to_line;
+   current_visible_text_region_get(ed, &from_line, &to_line);
+
+   char *from, *to;
    char *utf8 = (char *) color_cancel(syntax_color_data_get(ed->sh), text,
-                                      strlen(text));
+                                      strlen(text), from_line, to_line, &from,
+                                      &to);
    if (!utf8) return;
+
    const char *translated = color_apply(syntax_color_data_get(ed->sh), utf8,
-                                        strlen(utf8));
+                                        strlen(utf8), from, to);
+   if (!translated) return;
 
    /* I'm not sure this will be problem.
       But it can avoid entry_object_text_escaped_set() in Edje.
       Logically that's unnecessary in this case. */
-   Evas_Object *tb = elm_entry_textblock_get(ed->en_edit);
    evas_object_textblock_text_markup_set(tb, translated);
    elm_entry_calc_force(ed->en_edit);
+   elm_entry_cursor_pos_set(ed->en_edit, 0);
    elm_entry_cursor_pos_set(ed->en_edit, pos);
    //FIXME: Need to recover selection area.
 }
@@ -112,11 +144,10 @@ syntax_color_timer_cb(void *data)
 }
 
 static void
-syntax_color_timer_update(edit_data *ed)
+syntax_color_timer_update(edit_data *ed, double time)
 {
    ecore_timer_del(ed->syntax_color_timer);
-   ed->syntax_color_timer = ecore_timer_add(SYNTAX_COLOR_TIME,
-                                            syntax_color_timer_cb, ed);
+   ed->syntax_color_timer = ecore_timer_add(time, syntax_color_timer_cb, ed);
 }
 
 static void
@@ -164,7 +195,7 @@ edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
       right after applying syntax color. This workaround makes avoid to not
       applying syntax color while entry has the selected text. */
    if (elm_entry_selection_get(ed->en_edit)) return;
-   syntax_color_timer_update(ed);
+   syntax_color_timer_update(ed, SYNTAX_COLOR_DEFAULT_TIME);
 }
 
 static void
@@ -317,7 +348,7 @@ edit_template_insert(edit_data *ed)
 
    elm_entry_cursor_pos_set(ed->en_edit, cursor_pos);
 
-   syntax_color_timer_update(ed);
+   syntax_color_timer_update(ed, 0);
    snprintf(buf, sizeof(buf), "Template code inserted. (%s)", buf2);
    stats_info_msg_update(buf);
 }
@@ -397,7 +428,7 @@ edit_template_part_insert(edit_data *ed, Edje_Part_Type type)
 
    elm_entry_cursor_pos_set(ed->en_edit, cursor_pos);
 
-   syntax_color_timer_update(ed);
+   syntax_color_timer_update(ed, SYNTAX_COLOR_SHORT_TIME);
    snprintf(buf, sizeof(buf), "Template code inserted. (%s Part)", part);
    stats_info_msg_update(buf);
 }
@@ -741,6 +772,25 @@ key_up_cb(void *data, int type EINA_UNUSED, void *ev)
    return ECORE_CALLBACK_PASS_ON;
 }
 
+static void
+scroller_scroll_cb(void *data, Evas_Object *obj, void *event_info)
+{
+   edit_data *ed = data;
+   syntax_color_timer_update(ed, SYNTAX_COLOR_SHORT_TIME);
+}
+
+static void
+scroller_resize_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+   edit_data *ed = data;
+   Evas_Coord h;
+   evas_object_geometry_get(obj, NULL, NULL, NULL, &h);
+
+   if (h == ed->scroller_h) return;
+   syntax_color_timer_update(ed, SYNTAX_COLOR_SHORT_TIME);
+   ed->scroller_h = h;
+}
+
 edit_data *
 edit_init(Evas_Object *parent)
 {
@@ -759,6 +809,12 @@ edit_init(Evas_Object *parent)
    elm_scroller_policy_set(scroller, ELM_SCROLLER_POLICY_AUTO,
                            ELM_SCROLLER_POLICY_AUTO);
    elm_object_focus_allow_set(scroller, EINA_FALSE);
+   evas_object_smart_callback_add(scroller, "scroll,up", scroller_scroll_cb,
+                                  ed);
+   evas_object_smart_callback_add(scroller, "scroll,down", scroller_scroll_cb,
+                                  ed);
+   evas_object_event_callback_add(scroller, EVAS_CALLBACK_RESIZE,
+                                  scroller_resize_cb, ed);
    evas_object_size_hint_weight_set(scroller, EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(scroller, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -811,7 +867,7 @@ edit_init(Evas_Object *parent)
    ed->cur_line = -1;
 
    edit_line_number_toggle(ed);
-   edit_font_size_update(ed, EINA_FALSE);
+   edit_font_size_update(ed, EINA_FALSE, EINA_FALSE);
 
    return ed;
 }
@@ -960,7 +1016,7 @@ edit_new(edit_data *ed)
 }
 
 void
-edit_font_size_update(edit_data *ed, Eina_Bool msg)
+edit_font_size_update(edit_data *ed, Eina_Bool msg, Eina_Bool update)
 {
    elm_object_scale_set(ed->layout, config_font_size_get());
 
@@ -969,6 +1025,8 @@ edit_font_size_update(edit_data *ed, Eina_Bool msg)
    char buf[128];
    snprintf(buf, sizeof(buf), "Font Size: %1.1fx", config_font_size_get());
    stats_info_msg_update(buf);
+
+   if (update) syntax_color_timer_update(ed, 0);
 }
 
 void

@@ -3,6 +3,8 @@
 #define QUOT_LEN 1
 #define EOL "<br/>"
 #define EOL_LEN 5
+#define TAB "<tab/>"
+#define TAB_LEN 6
 
 parser_data *parser_init();
 void parser_term(parser_data *pd);
