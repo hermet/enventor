@@ -321,7 +321,7 @@ edit_template_insert(edit_data *ed)
 
    if (!t)
      {
-        stats_info_msg_update("Can't insert template code here. Move the cursor inside the \"Images|Parts|Part\" scope.");
+        stats_info_msg_update("Can't insert template code here. Move the cursor inside the \"Collections,Images,Parts,Part\" scope.");
         return;
      }
 
