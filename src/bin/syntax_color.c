@@ -159,7 +159,7 @@ macro_key_push(color_data *cd, char *str, int len)
    char *key = str;
 
    //cutoff "()" from the macro name
-   char *cut = strstr(key, "(");
+   char *cut = strchr(key, '(');
    if (cut) key = strndup(str, cut - str);
 
    char tmp[2];
@@ -451,7 +451,7 @@ macro_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
 {
    if ((*cur)[0] != '#') return 0;
 
-   char *space = strstr(*cur, " ");
+   char *space = strchr(*cur, ' ');
    const char *eol = strstr(*cur, EOL);
 
    if (!eol) eol = (*src) + length;
@@ -460,7 +460,7 @@ macro_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
    //Let's find the macro name
    while ((*space == ' ') && (space != eol)) space++;
    char *macro_begin = space;
-   char *macro_end = strstr(space, " ");
+   char *macro_end = strchr(space, ' ');
 
    //Excetional case 1
    if (!macro_end) macro_end = (char *) eol;
@@ -485,7 +485,7 @@ macro_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
        {
           while (bracket_inside > 0)
             {
-               macro_end = strstr(macro_end, ")");
+               macro_end = strchr(macro_end, ')');
                bracket_inside--;
             }
           if (!macro_end) macro_end = (char *) eol;
@@ -631,20 +631,16 @@ color_markup_insert(Eina_Strbuf *strbuf, const char **src, int length, char **cu
                     char **prev, color_data *cd)
 {
    const char *SYMBOLS = " {}[];:.()!<>=&|";
-   char tmp[2];
    Eina_Bool symbol = EINA_FALSE;
 
-   tmp[0] = (*cur)[0];
-   tmp[1] = '\0';
-   if (strstr(SYMBOLS, tmp)) symbol = EINA_TRUE;
+   if (strchr(SYMBOLS, (*cur)[0])) symbol = EINA_TRUE;
 
    if (!symbol && (*cur > *src))
      {
-        tmp[0] = *(*cur - 1);
-        tmp[1] = '\0';
-        if (!strstr(SYMBOLS, tmp)) return 0;
+        if (!strchr(SYMBOLS, *(*cur -1))) return 0;
      }
 
+   char tmp[2];
    tmp[0] = (*cur)[0];
    tmp[1] = '\0';
 
@@ -669,9 +665,7 @@ color_markup_insert(Eina_Strbuf *strbuf, const char **src, int length, char **cu
                       (*(p - 1) != '.') &&
                       (*(p - 1) != ' '))
                     {
-                       tmp[0] = *p;
-                       tmp[1] = '\0';
-                       if (!strstr(SYMBOLS, tmp)) return 0;
+                       if (!strchr(SYMBOLS, *p)) return 0;
                     }
                   if (color_markup_insert_internal(strbuf, src, length, cur,
                                                    prev, tuple->key,
