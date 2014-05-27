@@ -428,7 +428,7 @@ edit_template_part_insert(edit_data *ed, Edje_Part_Type type)
 
    elm_entry_cursor_pos_set(ed->en_edit, cursor_pos);
 
-   syntax_color_timer_update(ed, SYNTAX_COLOR_SHORT_TIME);
+   syntax_color_timer_update(ed, 0);
    snprintf(buf, sizeof(buf), "Template code inserted. (%s Part)", part);
    stats_info_msg_update(buf);
 }
