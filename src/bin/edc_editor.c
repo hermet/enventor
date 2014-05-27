@@ -4,7 +4,7 @@
 
 //FIXME: Make flexible
 const int MAX_LINE_DIGIT_CNT = 10;
-const int SYNTAX_COLOR_SPARE_LINES = 25;
+const int SYNTAX_COLOR_SPARE_LINES = 42;
 const double SYNTAX_COLOR_DEFAULT_TIME = 0.25;
 const double SYNTAX_COLOR_SHORT_TIME = 0.025;
 
@@ -92,8 +92,8 @@ current_visible_text_region_get(edit_data *ed, int *from_line, int *to_line)
    elm_scroller_region_get(ed->scroller, NULL, &region_y, NULL, &region_h);
    elm_entry_cursor_geometry_get(ed->en_edit, NULL, NULL, NULL, &cursor_h);
 
-   int from = (region_y / cursor_h) - SYNTAX_COLOR_SPARE_LINES;
-   int to = from + (region_h / cursor_h) + SYNTAX_COLOR_SPARE_LINES;
+   int from = (region_y / cursor_h);
+   int to = from + (region_h / cursor_h);
    from -= SYNTAX_COLOR_SPARE_LINES;
    to += SYNTAX_COLOR_SPARE_LINES;
 
