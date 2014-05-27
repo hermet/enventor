@@ -8,6 +8,13 @@ const int SYNTAX_COLOR_SPARE_LINES = 42;
 const double SYNTAX_COLOR_DEFAULT_TIME = 0.25;
 const double SYNTAX_COLOR_SHORT_TIME = 0.025;
 
+typedef struct syntax_color_thread_data_s
+{
+   edit_data *ed;
+   char *text;
+   const char *translated;
+} syntax_color_td;
+
 struct editor_s
 {
    Evas_Object *en_edit;
@@ -24,6 +31,7 @@ struct editor_s
    Evas_Coord scroller_h;
 
    Ecore_Timer *syntax_color_timer;
+   Ecore_Thread *syntax_color_thread;
 
    void (*view_sync_cb)(void *data, Eina_Stringshare *part_name,
                          Eina_Stringshare *group_name);
@@ -84,7 +92,7 @@ line_decrease(edit_data *ed, int cnt)
 }
 
 static void
-current_visible_text_region_get(edit_data *ed, int *from_line, int *to_line)
+visible_text_region_get(edit_data *ed, int *from_line, int *to_line)
 {
    Evas_Coord region_y, region_h;
    Evas_Coord cursor_h;
@@ -105,17 +113,16 @@ current_visible_text_region_get(edit_data *ed, int *from_line, int *to_line)
 }
 
 static void
-syntax_color_apply(edit_data *ed, Eina_Bool region)
+syntax_color_apply(edit_data *ed)
 {
    Evas_Object *tb = elm_entry_textblock_get(ed->en_edit);
    char *text = (char *) evas_object_textblock_text_markup_get(tb);
    int pos = elm_entry_cursor_pos_get(ed->en_edit);
 
-   int from_line = -1, to_line = -1;
+   int from_line, to_line;
+   visible_text_region_get(ed, &from_line, &to_line);
 
-   if (region) current_visible_text_region_get(ed, &from_line, &to_line);
-
-   char *from = NULL, *to = NULL;
+   char *from, *to;
    char *utf8 = (char *) color_cancel(syntax_color_data_get(ed->sh), text,
                                       strlen(text), from_line, to_line, &from,
                                       &to);
@@ -129,7 +136,6 @@ syntax_color_apply(edit_data *ed, Eina_Bool region)
       But it can avoid entry_object_text_escaped_set() in Edje.
       Logically that's unnecessary in this case. */
    evas_object_textblock_text_markup_set(tb, translated);
-   elm_entry_calc_force(ed->en_edit);
 
    //recorver cursor position??
    elm_entry_cursor_pos_set(ed->en_edit, 0);
@@ -143,7 +149,7 @@ syntax_color_timer_cb(void *data)
 {
    edit_data *ed = data;
    if (!color_ready(syntax_color_data_get(ed->sh))) return ECORE_CALLBACK_RENEW;
-   syntax_color_apply(ed, EINA_TRUE);
+   syntax_color_apply(ed);
    ed->syntax_color_timer = NULL;
    return ECORE_CALLBACK_CANCEL;
 }
@@ -152,8 +158,54 @@ static void
 syntax_color_partial_update(edit_data *ed, double time)
 {
    if (ed->on_drag) return;
+   ecore_thread_cancel(ed->syntax_color_thread);
+   ed->syntax_color_thread = NULL;
    ecore_timer_del(ed->syntax_color_timer);
    ed->syntax_color_timer = ecore_timer_add(time, syntax_color_timer_cb, ed);
+}
+
+static void
+syntax_color_thread_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
+{
+   syntax_color_td *td = data;
+   char *utf8 = (char *) color_cancel(syntax_color_data_get(td->ed->sh),
+                                      td->text, strlen(td->text), -1, -1, NULL,
+                                      NULL);
+   if (!utf8) return;
+   td->translated = color_apply(syntax_color_data_get(td->ed->sh), utf8,
+                                strlen(utf8), NULL, NULL);
+}
+
+static void
+syntax_color_thread_end_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
+{
+   syntax_color_td *td = data;
+   if (!td->translated) return;
+
+   int pos = elm_entry_cursor_pos_get(td->ed->en_edit);
+   Evas_Object *tb = elm_entry_textblock_get(td->ed->en_edit);
+
+   /* I'm not sure this will be problem.
+      But it can avoid entry_object_text_escaped_set() in Edje.
+      Logically that's unnecessary in this case. */
+   evas_object_textblock_text_markup_set(tb, td->translated);
+
+   //recorver cursor position??
+   elm_entry_cursor_pos_set(td->ed->en_edit, 0);
+   elm_entry_cursor_pos_set(td->ed->en_edit, pos);
+
+   //FIXME: Need to recover selection area.
+
+   td->ed->syntax_color_thread = NULL;
+   free(td);
+}
+
+static void
+syntax_color_thread_cancel_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
+{
+   syntax_color_td *td = data;
+   td->ed->syntax_color_thread = NULL;
+   free(td);
 }
 
 static void
@@ -161,7 +213,15 @@ syntax_color_full_update(edit_data *ed)
 {
    ecore_timer_del(ed->syntax_color_timer);
    ed->syntax_color_timer = NULL;
-   syntax_color_apply(ed, EINA_FALSE);
+
+   syntax_color_td *td = malloc(sizeof(syntax_color_td));
+   td->ed = ed;
+   Evas_Object *tb = elm_entry_textblock_get(ed->en_edit);
+   td->text = (char *) evas_object_textblock_text_markup_get(tb);
+   ed->syntax_color_thread = ecore_thread_run(syntax_color_thread_cb,
+                                              syntax_color_thread_end_cb,
+                                              syntax_color_thread_cancel_cb,
+                                              td);
 }
 
 static void
@@ -929,6 +989,7 @@ edit_term(edit_data *ed)
    syntax_helper *sh = ed->sh;
    parser_data *pd = ed->pd;
 
+   ecore_thread_cancel(ed->syntax_color_thread);
    ecore_timer_del(ed->syntax_color_timer);
    free(ed);
 
