@@ -32,6 +32,7 @@ struct editor_s
    Eina_Bool edit_changed : 1;
    Eina_Bool linenumber : 1;
    Eina_Bool ctrl_pressed : 1;
+   Eina_Bool on_drag : 1;
 };
 
 static Eina_Bool
@@ -104,16 +105,17 @@ current_visible_text_region_get(edit_data *ed, int *from_line, int *to_line)
 }
 
 static void
-syntax_color_apply(edit_data *ed)
+syntax_color_apply(edit_data *ed, Eina_Bool region)
 {
    Evas_Object *tb = elm_entry_textblock_get(ed->en_edit);
    char *text = (char *) evas_object_textblock_text_markup_get(tb);
    int pos = elm_entry_cursor_pos_get(ed->en_edit);
 
-   int from_line, to_line;
-   current_visible_text_region_get(ed, &from_line, &to_line);
+   int from_line = -1, to_line = -1;
 
-   char *from, *to;
+   if (region) current_visible_text_region_get(ed, &from_line, &to_line);
+
+   char *from = NULL, *to = NULL;
    char *utf8 = (char *) color_cancel(syntax_color_data_get(ed->sh), text,
                                       strlen(text), from_line, to_line, &from,
                                       &to);
@@ -128,8 +130,11 @@ syntax_color_apply(edit_data *ed)
       Logically that's unnecessary in this case. */
    evas_object_textblock_text_markup_set(tb, translated);
    elm_entry_calc_force(ed->en_edit);
+
+   //recorver cursor position??
    elm_entry_cursor_pos_set(ed->en_edit, 0);
    elm_entry_cursor_pos_set(ed->en_edit, pos);
+
    //FIXME: Need to recover selection area.
 }
 
@@ -138,16 +143,25 @@ syntax_color_timer_cb(void *data)
 {
    edit_data *ed = data;
    if (!color_ready(syntax_color_data_get(ed->sh))) return ECORE_CALLBACK_RENEW;
-   syntax_color_apply(ed);
+   syntax_color_apply(ed, EINA_TRUE);
    ed->syntax_color_timer = NULL;
    return ECORE_CALLBACK_CANCEL;
 }
 
 static void
-syntax_color_timer_update(edit_data *ed, double time)
+syntax_color_partial_update(edit_data *ed, double time)
 {
+   if (ed->on_drag) return;
    ecore_timer_del(ed->syntax_color_timer);
    ed->syntax_color_timer = ecore_timer_add(time, syntax_color_timer_cb, ed);
+}
+
+static void
+syntax_color_full_update(edit_data *ed)
+{
+   ecore_timer_del(ed->syntax_color_timer);
+   ed->syntax_color_timer = NULL;
+   syntax_color_apply(ed, EINA_FALSE);
 }
 
 static void
@@ -195,7 +209,7 @@ edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
       right after applying syntax color. This workaround makes avoid to not
       applying syntax color while entry has the selected text. */
    if (elm_entry_selection_get(ed->en_edit)) return;
-   syntax_color_timer_update(ed, SYNTAX_COLOR_DEFAULT_TIME);
+   syntax_color_partial_update(ed, SYNTAX_COLOR_DEFAULT_TIME);
 }
 
 static void
@@ -348,7 +362,7 @@ edit_template_insert(edit_data *ed)
 
    elm_entry_cursor_pos_set(ed->en_edit, cursor_pos);
 
-   syntax_color_timer_update(ed, 0);
+   syntax_color_partial_update(ed, 0);
    snprintf(buf, sizeof(buf), "Template code inserted. (%s)", buf2);
    stats_info_msg_update(buf);
 }
@@ -428,7 +442,7 @@ edit_template_part_insert(edit_data *ed, Edje_Part_Type type)
 
    elm_entry_cursor_pos_set(ed->en_edit, cursor_pos);
 
-   syntax_color_timer_update(ed, 0);
+   syntax_color_partial_update(ed, 0);
    snprintf(buf, sizeof(buf), "Template code inserted. (%s Part)", part);
    stats_info_msg_update(buf);
 }
@@ -773,10 +787,12 @@ key_up_cb(void *data, int type EINA_UNUSED, void *ev)
 }
 
 static void
-scroller_scroll_cb(void *data, Evas_Object *obj, void *event_info)
+scroller_scroll_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                   void *event_info EINA_UNUSED)
 {
    edit_data *ed = data;
-   syntax_color_timer_update(ed, SYNTAX_COLOR_SHORT_TIME);
+   if (ed->on_drag) syntax_color_full_update(ed);
+   else syntax_color_partial_update(ed, SYNTAX_COLOR_SHORT_TIME);
 }
 
 static void
@@ -787,8 +803,26 @@ scroller_resize_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
    evas_object_geometry_get(obj, NULL, NULL, NULL, &h);
 
    if (h == ed->scroller_h) return;
-   syntax_color_timer_update(ed, SYNTAX_COLOR_SHORT_TIME);
+   syntax_color_partial_update(ed, SYNTAX_COLOR_SHORT_TIME);
    ed->scroller_h = h;
+}
+
+static void
+scroller_vbar_press_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                       void *event_info EINA_UNUSED)
+{
+   edit_data *ed = data;
+   ed->on_drag = EINA_TRUE;
+   syntax_color_full_update(ed);
+}
+
+static void
+scroller_vbar_unpress_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                         void *event_info EINA_UNUSED)
+{
+   edit_data *ed = data;
+   ed->on_drag = EINA_FALSE;
+   syntax_color_partial_update(ed, SYNTAX_COLOR_SHORT_TIME);
 }
 
 edit_data *
@@ -813,6 +847,10 @@ edit_init(Evas_Object *parent)
                                   ed);
    evas_object_smart_callback_add(scroller, "scroll,down", scroller_scroll_cb,
                                   ed);
+   evas_object_smart_callback_add(scroller, "vbar,press",
+                                  scroller_vbar_press_cb, ed);
+   evas_object_smart_callback_add(scroller, "vbar,unpress",
+                                  scroller_vbar_unpress_cb, ed);
    evas_object_event_callback_add(scroller, EVAS_CALLBACK_RESIZE,
                                   scroller_resize_cb, ed);
    evas_object_size_hint_weight_set(scroller, EVAS_HINT_EXPAND,
@@ -1026,7 +1064,7 @@ edit_font_size_update(edit_data *ed, Eina_Bool msg, Eina_Bool update)
    snprintf(buf, sizeof(buf), "Font Size: %1.1fx", config_font_size_get());
    stats_info_msg_update(buf);
 
-   if (update) syntax_color_timer_update(ed, 0);
+   if (update) syntax_color_partial_update(ed, 0);
 }
 
 void

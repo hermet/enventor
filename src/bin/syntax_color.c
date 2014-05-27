@@ -542,8 +542,19 @@ color_cancel(color_data *cd, const char *src, int length, int from_pos,
    char *prev = (char *) src;
    char *cur = (char *) src;
    int line = 1;
-   Eina_Bool find_from = EINA_TRUE;
-   Eina_Bool find_to = EINA_TRUE;
+   Eina_Bool find_from, find_to;
+
+   //if the from_pos equals -1, we wanna full text area of syntax color
+   if (from_pos == -1)
+     {
+        find_from = EINA_FALSE;
+        find_to = EINA_FALSE;
+     }
+   else
+     {
+        find_from = EINA_TRUE;
+        find_to = EINA_TRUE;
+     }
 
    while (cur && (cur <= (src + length)))
      {
@@ -591,8 +602,11 @@ color_cancel(color_data *cd, const char *src, int length, int from_pos,
    if (find_from) from_pos = 0;
    if (find_to) to_pos = eina_strbuf_length_get(strbuf);
 
-   *from = ((char *) str) + from_pos;
-   *to = ((char *) str) + to_pos;
+   if (from_pos != -1)
+     {
+        *from = ((char *) str) + from_pos;
+        *to = ((char *) str) + to_pos;
+     }
 
    return str;
 }
@@ -685,7 +699,6 @@ color_apply(color_data *cd, const char *src, int length, char *from, char *to)
    Eina_Bool inside_comment = EINA_FALSE;
 
    if (!src || (length < 1)) return NULL;
-   if (from == to) return NULL;
 
    Eina_Strbuf *strbuf = cd->cachebuf;
    eina_strbuf_reset(strbuf);
@@ -698,7 +711,7 @@ color_apply(color_data *cd, const char *src, int length, char *from, char *to)
    while (cur && (cur <= (src + length)))
      {
         //escape empty string
-        if (cur >= from)
+        if (!from || (cur >= from))
           {
              if (cur[0] == ' ')
                {
@@ -719,7 +732,7 @@ color_apply(color_data *cd, const char *src, int length, char *from, char *to)
         else if (ret == -1) goto finished;
 
         //handle comment: //
-        if (cur >= from)
+        if (!from || (cur >= from))
           {
              ret = comment2_apply(strbuf, &src, length, &cur, &prev,
                                   cd->col_comment, &inside_comment);
@@ -746,7 +759,7 @@ color_apply(color_data *cd, const char *src, int length, char *from, char *to)
         if (ret == 1) continue;
 
         //apply color markup
-        if (cur >= from)
+        if (!from || (cur >= from))
           {
              ret = color_markup_insert(strbuf, &src, length, &cur, &prev, cd);
              if (ret == 1) continue;
@@ -754,7 +767,7 @@ color_apply(color_data *cd, const char *src, int length, char *from, char *to)
           }
 
         cur++;
-        if (cur > to) goto finished;
+        if (to && (cur > to)) goto finished;
      }
 
    //Same with origin source.
