@@ -791,8 +791,7 @@ scroller_scroll_cb(void *data, Evas_Object *obj EINA_UNUSED,
                    void *event_info EINA_UNUSED)
 {
    edit_data *ed = data;
-   if (ed->on_drag) syntax_color_full_update(ed);
-   else syntax_color_partial_update(ed, SYNTAX_COLOR_SHORT_TIME);
+   syntax_color_partial_update(ed, SYNTAX_COLOR_SHORT_TIME);
 }
 
 static void
