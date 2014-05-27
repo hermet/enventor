@@ -252,8 +252,6 @@ static int
 markup_skip(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
             char **prev)
 {
-   if ((*cur)[0] != '<') return 0;
-
    eina_strbuf_append_length(strbuf, *prev, (*cur - *prev));
    (*cur)++;
 
@@ -273,32 +271,6 @@ markup_skip(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
         *prev = *cur;
         return -1;
      }
-
-   return 1;
-}
-
-static int
-tab_skip(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
-        char **prev)
-{
-   if (strncmp(*cur, TAB, TAB_LEN)) return 0;
-   eina_strbuf_append_length(strbuf, *prev, (*cur - *prev + TAB_LEN));
-   *cur += TAB_LEN;
-   if (*cur > (*src + length)) return -1;
-   *prev = *cur;
-
-   return 1;
-}
-
-static int
-br_skip(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
-        char **prev)
-{
-   if (strncmp(*cur, EOL, EOL_LEN)) return 0;
-   eina_strbuf_append_length(strbuf, *prev, (*cur - *prev + EOL_LEN));
-   *cur += EOL_LEN;
-   if (*cur > (*src + length)) return -1;
-   *prev = *cur;
 
    return 1;
 }
@@ -568,22 +540,27 @@ color_cancel(color_data *cd, const char *src, int length, int from_pos,
              to_pos = eina_strbuf_length_get(strbuf);
              find_to = EINA_FALSE;
           }
-
-        //escape EOL: <br/>
-        if (br_skip(strbuf, &src, length, &cur, &prev) == 1)
-        {
-           line++;
-           continue;
-        }
-
-        //escape TAB: <tab/>
-        if (tab_skip(strbuf, &src, length, &cur, &prev) == 1)
-          continue;
-
-        //escape markups: <..> ~ </..> 
-        if (markup_skip(strbuf, &src, length, &cur, &prev) == 1)
-          continue;
-
+        if (*cur == '<')
+          {
+             //escape EOL: <br/>
+             if (!strncmp(cur, EOL, EOL_LEN))
+               {
+                  eina_strbuf_append_length(strbuf, prev, (cur - prev + EOL_LEN));
+                  cur += EOL_LEN;
+                  prev = cur;
+                  line++;
+                  continue;
+               }
+             //escape TAB: <tab/>
+             if (!strncmp(cur, TAB, TAB_LEN))
+               {
+                  cur += TAB_LEN;
+                  continue;
+               }
+            //escape markups: <..> ~ </..>
+            if (markup_skip(strbuf, &src, length, &cur, &prev) == 1)
+              continue;
+          }
         cur++;
      }
 
