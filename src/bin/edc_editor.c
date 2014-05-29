@@ -229,7 +229,7 @@ edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    Elm_Entry_Change_Info *info = event_info;
    edit_data *ed = data;
-   ed->edit_changed = EINA_TRUE;
+   edit_changed_set(ed, EINA_TRUE);
 
    Eina_Bool syntax_color = EINA_TRUE;
 
@@ -309,7 +309,7 @@ edit_save(edit_data *ed)
 
    save_msg_show(ed);
    //FIXME: If compile edc here? we can edit_changed FALSE;
-   //ed->edit_changed = EINA_FALSE;
+   //edit_changed_set(ed, EINA_FALSE);
 
    edit_view_sync(ed);
 
@@ -333,7 +333,7 @@ ctxpopup_candidate_selected_cb(void *data, Evas_Object *obj, void *event_info)
    const char *text = event_info;
    elm_entry_entry_insert(ed->en_edit, text);
    elm_ctxpopup_dismiss(obj);
-   ed->edit_changed = EINA_TRUE;
+   edit_changed_set(ed, EINA_TRUE);
    edit_save(ed);
 }
 
@@ -818,8 +818,7 @@ edit_line_delete(edit_data *ed)
    line_decrease(ed, 1);
 
    cur_line_pos_set(ed, EINA_TRUE);
-
-   ed->edit_changed = EINA_TRUE;
+   edit_changed_set(ed, EINA_TRUE);
 }
 
 static Eina_Bool
@@ -1108,7 +1107,7 @@ edit_new(edit_data *ed)
    elm_entry_entry_set(ed->en_edit, "");
    elm_entry_entry_set(ed->en_line, "");
    edit_edc_read(ed, config_edc_path_get());
-   ed->edit_changed = EINA_TRUE;
+   edit_changed_set(ed, EINA_TRUE);
 
    char buf[PATH_MAX];
    snprintf(buf, sizeof(buf), "File Path: \"%s\"", config_edc_path_get());
