@@ -818,6 +818,8 @@ edit_line_delete(edit_data *ed)
    line_decrease(ed, 1);
 
    cur_line_pos_set(ed, EINA_TRUE);
+
+   ed->edit_changed = EINA_TRUE;
 }
 
 static Eina_Bool
