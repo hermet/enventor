@@ -943,8 +943,8 @@ group { name: "elm/panes/vertical/enventor";
             y: 0 0 0;
          }
          description { state: "default" 0.0;
-            max: 18 99999;
-            min: 18 14;
+            max: 10 99999;
+            min: 10 14;
             fixed: 1 1;
             rel1.relative: 0.5 0.5;
             rel2.relative: 0.5 0.5;
@@ -981,46 +981,6 @@ group { name: "elm/panes/vertical/enventor";
             rel1.to_x: "elm.swallow.event";
             rel2.to_x: "elm.swallow.event";
             color: 0 0 0 0;
-         }
-      }
-      part { name: "elm.swallow.zoom";
-         type: SWALLOW;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: 20 20;
-            fixed: 1 1;
-            align: 0.5 0;
-            rel2.relative: 1 0;
-            rel1.to: "bar";
-            rel2.to: "bar";
-         }
-      }
-      part { name: "elm.swallow.left_arrow";
-         type: SWALLOW;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: 20 20;
-            fixed: 1 1;
-            align: 0.5 1;
-            rel1.to: "elm.bar";
-            rel2.to: "elm.bar";
-            rel2.relative: 1 0;
-            rel1.offset: 0 -20;
-            rel2.offset: -1 -21;
-         }
-      }
-      part { name: "elm.swallow.right_arrow";
-         type: SWALLOW;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: 20 20;
-            fixed: 1 1;
-            align: 0.5 0;
-            rel1.to: "elm.bar";
-            rel2.to: "elm.bar";
-            rel1.relative: 0 1;
-            rel1.offset: 0 20;
-            rel2.offset: -1 -21;
          }
       }
    }
