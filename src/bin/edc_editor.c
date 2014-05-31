@@ -1027,7 +1027,7 @@ edit_edc_read(edit_data *ed, const char *file_path)
    if (eina_iterator_next(itr, (void **)(void *)&(line)))
      {
         line_num = 1;
-        if (!eina_strbuf_append(strbuf_line, "1")) goto err;
+        if (!eina_strbuf_append_char(strbuf_line, '1')) goto err;
         if (!eina_strbuf_append_length(strbuf_edit, line->start, line->length))
            goto err;
      }
@@ -1038,16 +1038,24 @@ edit_edc_read(edit_data *ed, const char *file_path)
         line_num++;
 
         //Append line number
-        sprintf(buf, "<br/>%d", line_num);
+        sprintf(buf, "\n%d", line_num);
         if (!eina_strbuf_append(strbuf_line, buf)) goto err;
 
         //Append edc ccde
-        if (!eina_strbuf_append(strbuf_edit, EOL)) goto err;
+        if (!eina_strbuf_append_char(strbuf_edit, '\n')) goto err;
         if (!eina_strbuf_append_length(strbuf_edit, line->start, line->length))
           goto err;
      }
-   elm_entry_entry_append(ed->en_line, eina_strbuf_string_get(strbuf_line));
-   elm_entry_entry_append(ed->en_edit, eina_strbuf_string_get(strbuf_edit));
+   char *markup_line =
+         elm_entry_utf8_to_markup(eina_strbuf_string_get(strbuf_line));
+   char *markup_edit =
+         elm_entry_utf8_to_markup(eina_strbuf_string_get(strbuf_edit));
+
+   elm_entry_entry_append(ed->en_line, markup_line);
+   elm_entry_entry_append(ed->en_edit, markup_edit);
+
+   free(markup_line);
+   free(markup_edit);
 
    ed->line_max = line_num;
    Eina_Stringshare *group_name =
