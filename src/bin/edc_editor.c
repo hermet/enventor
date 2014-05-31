@@ -863,7 +863,7 @@ scroller_resize_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
    evas_object_geometry_get(obj, NULL, NULL, NULL, &h);
 
    if (h == ed->scroller_h) return;
-   syntax_color_partial_update(ed, SYNTAX_COLOR_SHORT_TIME);
+   syntax_color_partial_update(ed, SYNTAX_COLOR_DEFAULT_TIME);
    ed->scroller_h = h;
 }
 
