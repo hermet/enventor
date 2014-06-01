@@ -18,28 +18,29 @@ item_unselect(Elm_Object_Item *it)
 }
 
 static void
-f2_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
+new_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    menu_edc_new();
    item_unselect((Elm_Object_Item *)event_info);
 }
 
 static void
-f3_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
+save_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    menu_edc_save();
    item_unselect((Elm_Object_Item *)event_info);
 }
 
 static void
-f4_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
+load_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    menu_edc_load();
    item_unselect((Elm_Object_Item *)event_info);
 }
 
 static void
-f5_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
+highlight_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+             void *event_info)
 {
    edit_data *ed = data;
    config_part_highlight_set(!config_part_highlight_get());
@@ -48,7 +49,8 @@ f5_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
 }
 
 static void
-f6_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
+swallow_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+           void *event_info)
 {
    config_dummy_swallow_set(!config_dummy_swallow_get());
    view_dummy_toggle(VIEW_DATA, EINA_TRUE);
@@ -56,7 +58,7 @@ f6_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
 }
 
 static void
-f9_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
+lines_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    edit_data *ed = data;
    config_linenumber_set(!config_linenumber_get());
@@ -65,14 +67,15 @@ f9_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 }
 
 static void
-f10_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
+status_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+          void *event_info)
 {
    base_statusbar_toggle(EINA_TRUE);
    item_unselect((Elm_Object_Item *)event_info);
 }
 
 static void
-f11_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
+find_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    if (search_is_opened()) search_close();
    else search_open();
@@ -80,7 +83,8 @@ f11_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
 }
 
 static void
-f12_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
+setting_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+           void *event_info)
 {
    menu_setting();
    item_unselect((Elm_Object_Item *)event_info);
@@ -102,23 +106,23 @@ tools_create(Evas_Object *parent, edit_data *ed)
    elm_object_focus_allow_set(toolbar, EINA_FALSE);
 
    Elm_Object_Item *it;
-   it = elm_toolbar_item_append(toolbar, NULL, "New", f2_cb, NULL);
+   it = elm_toolbar_item_append(toolbar, NULL, "New", new_cb, NULL);
    elm_toolbar_item_icon_file_set(it, EDJE_PATH, "new");
-   it = elm_toolbar_item_append(toolbar, NULL, "Save", f3_cb, NULL);
+   it = elm_toolbar_item_append(toolbar, NULL, "Save", save_cb, NULL);
    elm_toolbar_item_icon_file_set(it, EDJE_PATH, "file");
-   it = elm_toolbar_item_append(toolbar, NULL, "Load", f4_cb, NULL);
+   it = elm_toolbar_item_append(toolbar, NULL, "Load", load_cb, NULL);
    elm_toolbar_item_icon_file_set(it, EDJE_PATH, "file");
-   it = elm_toolbar_item_append(toolbar, NULL, "Highlight", f5_cb, ed);
+   it = elm_toolbar_item_append(toolbar, NULL, "Highlight", highlight_cb, ed);
    elm_toolbar_item_icon_file_set(it, EDJE_PATH, "highlight");
-   it = elm_toolbar_item_append(toolbar, NULL, "Swallow", f6_cb, NULL);
+   it = elm_toolbar_item_append(toolbar, NULL, "Swallow", swallow_cb, NULL);
    elm_toolbar_item_icon_file_set(it, EDJE_PATH, "swallow_s");
-   it = elm_toolbar_item_append(toolbar, NULL, "Lines", f9_cb, ed);
+   it = elm_toolbar_item_append(toolbar, NULL, "Lines", lines_cb, ed);
    elm_toolbar_item_icon_file_set(it, EDJE_PATH, "lines");
-   it = elm_toolbar_item_append(toolbar, NULL, "Find", f11_cb, NULL);
+   it = elm_toolbar_item_append(toolbar, NULL, "Find", find_cb, NULL);
    elm_toolbar_item_icon_file_set(it, EDJE_PATH, "find");
-   it = elm_toolbar_item_append(toolbar, NULL, "Status", f10_cb, NULL);
+   it = elm_toolbar_item_append(toolbar, NULL, "Status", status_cb, NULL);
    elm_toolbar_item_icon_file_set(it, EDJE_PATH, "status");
-   it = elm_toolbar_item_append(toolbar, NULL, "Setting", f12_cb, NULL);
+   it = elm_toolbar_item_append(toolbar, NULL, "Setting", setting_cb, NULL);
    elm_toolbar_item_icon_file_set(it, EDJE_PATH, "setting");
 
    return toolbar;
