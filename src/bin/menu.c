@@ -330,6 +330,9 @@ toggle_create(Evas_Object *parent, const char *text, Eina_Bool state)
 static void
 setting_open(menu_data *md)
 {
+   search_close();
+   goto_close();
+
    //Layout
    Evas_Object *layout = elm_layout_add(base_win_get());
    elm_layout_file_set(layout, EDJE_PATH, "setting_layout");
