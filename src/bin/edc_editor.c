@@ -136,6 +136,7 @@ syntax_color_apply(edit_data *ed)
       But it can avoid entry_object_text_escaped_set() in Edje.
       Logically that's unnecessary in this case. */
    evas_object_textblock_text_markup_set(tb, translated);
+   elm_entry_calc_force(ed->en_edit);
 
    //recorver cursor position??
    elm_entry_cursor_pos_set(ed->en_edit, 0);
@@ -189,6 +190,8 @@ syntax_color_thread_end_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
       But it can avoid entry_object_text_escaped_set() in Edje.
       Logically that's unnecessary in this case. */
    evas_object_textblock_text_markup_set(tb, td->translated);
+
+   elm_entry_calc_force(td->ed->en_edit);
 
    //recorver cursor position??
    elm_entry_cursor_pos_set(td->ed->en_edit, 0);
