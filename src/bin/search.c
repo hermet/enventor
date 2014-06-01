@@ -275,6 +275,8 @@ search_open()
       return;
    }
 
+   goto_close();
+
    sd = calloc(1, sizeof(search_data));
    g_sd = sd;
 
@@ -287,7 +289,6 @@ search_open()
    evas_object_smart_callback_add(win, "delete,request", win_delete_request_cb,
                                   sd);
    evas_object_smart_callback_add(win, "moved", win_moved_cb, sd);
-   evas_object_show(win);
 
    //Bg
    Evas_Object *bg = elm_bg_add(win);
@@ -352,6 +353,8 @@ search_open()
                                   replace_all_clicked_cb, sd);
    elm_object_part_content_set(layout, "elm.swallow.replace_all",
                                btn_replace_all);
+   evas_object_show(win);
+
    sd->win = win;
    sd->layout = layout;
    sd->en_find = entry_find;

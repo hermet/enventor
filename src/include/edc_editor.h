@@ -19,3 +19,5 @@ void edit_line_delete(edit_data *ed);
 void edit_edc_reload(edit_data *ed, const char *edc_path);
 Eina_Stringshare *edit_cur_prog_name_get(edit_data *ed);
 Eina_Stringshare *edit_cur_part_name_get(edit_data *ed);
+int edit_max_line_get(edit_data *ed);
+void edit_goto(edit_data *ed, int line);

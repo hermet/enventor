@@ -16,6 +16,13 @@ win_delete_request_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
   menu_exit();
 }
 
+static void
+win_focused_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+               void *event_info EINA_UNUSED)
+{
+   goto_close();
+}
+
 void
 base_title_set(const char *path)
 {
@@ -129,6 +136,7 @@ base_gui_init()
    elm_win_focus_highlight_enabled_set(win, EINA_TRUE);
    evas_object_smart_callback_add(win, "delete,request", win_delete_request_cb,
                                   NULL);
+   evas_object_smart_callback_add(win, "focused", win_focused_cb, NULL);
 
    //Window icon
    Evas_Object *icon = evas_object_image_add(evas_object_evas_get(win));

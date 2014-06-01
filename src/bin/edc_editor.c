@@ -1171,3 +1171,19 @@ edit_cur_part_name_get(edit_data *ed)
 {
    return parser_cur_name_fast_get(ed->en_edit, "part");
 }
+
+int
+edit_max_line_get(edit_data *ed)
+{
+   return ed->line_max;
+}
+
+void
+edit_goto(edit_data *ed, int line)
+{
+   Evas_Object *tb = elm_entry_textblock_get(ed->en_edit);
+   Evas_Textblock_Cursor *cur = evas_object_textblock_cursor_get(tb);
+   evas_textblock_cursor_line_set(cur, (line - 1));
+   elm_entry_calc_force(ed->en_edit);
+   elm_object_focus_set(ed->en_edit, EINA_TRUE);
+}

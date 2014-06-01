@@ -1,0 +1,162 @@
+#include <Elementary.h>
+#include "common.h"
+
+typedef struct goto_s
+{
+   Evas_Object *win;
+   Evas_Object *layout;
+   Evas_Object *btn;
+   edit_data *ed;
+} goto_data;
+
+static goto_data *g_gd = NULL;
+static Evas_Coord win_x = -1;
+static Evas_Coord win_y = -1;
+static Evas_Coord win_w = DEFAULT_GOTO_WIN_W;
+static Evas_Coord win_h = DEFAULT_GOTO_WIN_H;
+
+static void
+win_delete_request_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+                      void *event_info EINA_UNUSED)
+{
+   goto_close();
+}
+
+static void
+win_moved_cb(void *data EINA_UNUSED, Evas_Object *obj,
+             void *event_info EINA_UNUSED)
+{
+   /* Move the window with the previous remembered position when the window is
+      moved by window manager first time. */
+   if ((win_x != -1) || (win_y != -1)) evas_object_move(obj, win_x, win_y);
+   evas_object_smart_callback_del(obj, "moved", win_moved_cb);
+}
+
+static void
+entry_activated_cb(void *data, Evas_Object *obj, void* event_info EINA_UNUSED)
+{
+   goto_data *gd = data;
+
+   if (elm_object_disabled_get(gd->btn)) return;
+
+   const char *txt = elm_entry_entry_get(obj);
+   int line = atoi(txt);
+  edit_goto(gd->ed, line);
+  goto_close();
+}
+
+static void
+entry_changed_cb(void *data, Evas_Object *obj, void* event_info EINA_UNUSED)
+{
+   goto_data *gd = data;
+   const char *txt = elm_entry_entry_get(obj);
+   if (txt[0] == 0) return;
+
+   int line = atoi(txt);
+
+   if ((line < 1) || (line > edit_max_line_get(gd->ed)))
+     {
+        elm_object_part_text_set(gd->layout, "elm.text.msg",
+                                 "Invalid line number.");
+        elm_object_disabled_set(gd->btn, EINA_TRUE);
+     }
+   else
+     {
+        elm_object_part_text_set(gd->layout, "elm.text.msg", "");
+        elm_object_disabled_set(gd->btn, EINA_FALSE);
+     }
+}
+
+void
+goto_open(edit_data *ed)
+{
+   goto_data *gd = g_gd;
+
+   if (gd)
+   {
+      elm_win_activate(gd->win);
+      return;
+   }
+
+   search_close();
+
+   gd = calloc(1, sizeof(goto_data));
+   g_gd = gd;
+
+   //Win
+   Evas_Object *win = elm_win_add(base_win_get(), "Enventor Goto Line",
+                                  ELM_WIN_DIALOG_BASIC);
+   elm_win_focus_highlight_enabled_set(win, EINA_TRUE);
+
+   elm_win_title_set(win, "Go to Line");
+   evas_object_resize(win, win_w, win_h);
+   evas_object_smart_callback_add(win, "delete,request", win_delete_request_cb,
+                                  gd);
+   evas_object_smart_callback_add(win, "moved", win_moved_cb, gd);
+
+   //Bg
+   Evas_Object *bg = elm_bg_add(win);
+   evas_object_show(bg);
+   elm_win_resize_object_add(win, bg);
+
+   //Layout
+   Evas_Object *layout = elm_layout_add(win);
+   elm_layout_file_set(layout, EDJE_PATH, "goto");
+   evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_show(layout);
+   elm_win_resize_object_add(win, layout);
+
+   char  buf[256];
+   snprintf(buf, sizeof(buf), "Enter line number [1..%d]:",
+            edit_max_line_get(ed));
+   elm_object_part_text_set(layout, "elm.text.goto", buf);
+
+   //Entry (line)
+   Evas_Object *entry = elm_entry_add(layout);
+   elm_entry_single_line_set(entry, EINA_TRUE);
+   elm_entry_scrollable_set(entry, EINA_TRUE);
+   evas_object_smart_callback_add(entry, "activated", entry_activated_cb,
+                                  gd);
+   evas_object_smart_callback_add(entry, "changed,user", entry_changed_cb, gd);
+   evas_object_size_hint_weight_set(entry, EVAS_HINT_EXPAND, 0);
+   evas_object_size_hint_align_set(entry, EVAS_HINT_FILL, 0);
+   evas_object_show(entry);
+   elm_object_focus_set(entry, EINA_TRUE);
+   elm_object_part_content_set(layout, "elm.swallow.entry", entry);
+
+   //Button (ok)
+   Evas_Object *btn = elm_button_add(layout);
+   elm_object_text_set(btn, "Ok");
+   //evas_object_smart_callback_add(btn_backward, "clicked",
+     //                             backward_clicked_cb, sd);
+   elm_object_part_content_set(layout, "elm.swallow.btn",
+                               btn);
+
+   evas_object_show(win);
+
+   gd->win = win;
+   gd->layout = layout;
+   gd->btn = btn;
+   gd->ed = ed;
+}
+
+Eina_Bool
+goto_is_opened()
+{
+   goto_data *gd = g_gd;
+   return (gd ? EINA_TRUE : EINA_FALSE);
+}
+
+void
+goto_close()
+{
+   goto_data *gd = g_gd;
+   if (!gd) return;
+
+   //Save last state
+   evas_object_geometry_get(gd->win, NULL, NULL, &win_w, &win_h);
+   elm_win_screen_position_get(gd->win, &win_x, &win_y);
+   evas_object_del(gd->win);
+   free(gd);
+   g_gd = NULL;
+}

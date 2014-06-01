@@ -28,6 +28,7 @@ enventor_SOURCES = \
 	build.c \
 	tools.c \
 	search.c \
+	goto.c \
 	newfile.c \
 	globals.c
 

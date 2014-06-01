@@ -126,6 +126,12 @@ ctrl_func(app_data *ad, const char *key)
         search_open();
         return ECORE_CALLBACK_DONE;
      }
+   //Goto Line
+   if (!strcmp(key, "l") || !strcmp(key, "L"))
+     {
+        goto_open(ad->ed);
+        return ECORE_CALLBACK_DONE;
+     }
    //Part Highlight
    if (!strcmp(key, "h") || !strcmp(key, "h"))
      {
@@ -189,8 +195,9 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    //Main Menu
    if (!strcmp(event->key, "Escape"))
      {
-        if (search_is_opened())
+        if (search_is_opened() || goto_is_opened())
           {
+             goto_close();
              search_close();
              edit_focus_set(ad->ed);
              return ECORE_CALLBACK_DONE;
