@@ -12,6 +12,18 @@ images {
    image: "setting.png" COMP;
    image: "status.png" COMP;
    image: "swallow_s.png" COMP;
+   image: "goto.png" COMP;
+}
+
+group { name: "line";
+   parts {
+      part { name: "img";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            image.normal: "goto.png";
+         }
+      }
+   }
 }
 
 group { name: "file";

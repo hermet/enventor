@@ -55,4 +55,5 @@ EXTRA_DIST = \
    setting_icon.png \
    setting.png \
    status.png \
-   swallow_s.png
+   swallow_s.png \
+   goto.png

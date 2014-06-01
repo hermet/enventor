@@ -83,6 +83,14 @@ find_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
 }
 
 static void
+goto_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
+{
+   edit_data *ed = data;
+   goto_open(ed);
+   item_unselect((Elm_Object_Item *)event_info);
+}
+
+static void
 setting_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
            void *event_info)
 {
@@ -120,6 +128,8 @@ tools_create(Evas_Object *parent, edit_data *ed)
    elm_toolbar_item_icon_file_set(it, EDJE_PATH, "lines");
    it = elm_toolbar_item_append(toolbar, NULL, "Find", find_cb, NULL);
    elm_toolbar_item_icon_file_set(it, EDJE_PATH, "find");
+   it = elm_toolbar_item_append(toolbar, NULL, "Goto", goto_cb, ed);
+   elm_toolbar_item_icon_file_set(it, EDJE_PATH, "line");
    it = elm_toolbar_item_append(toolbar, NULL, "Status", status_cb, NULL);
    elm_toolbar_item_icon_file_set(it, EDJE_PATH, "status");
    it = elm_toolbar_item_append(toolbar, NULL, "Setting", setting_cb, NULL);
