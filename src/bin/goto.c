@@ -5,6 +5,7 @@ typedef struct goto_s
 {
    Evas_Object *win;
    Evas_Object *layout;
+   Evas_Object *entry;
    Evas_Object *btn;
    edit_data *ed;
 } goto_data;
@@ -33,16 +34,20 @@ win_moved_cb(void *data EINA_UNUSED, Evas_Object *obj,
 }
 
 static void
+goto_line(goto_data *gd)
+{
+  const char *txt = elm_entry_entry_get(gd->entry);
+  int line = atoi(txt);
+  edit_goto(gd->ed, line);
+  goto_close();
+}
+
+static void
 entry_activated_cb(void *data, Evas_Object *obj, void* event_info EINA_UNUSED)
 {
    goto_data *gd = data;
-
    if (elm_object_disabled_get(gd->btn)) return;
-
-   const char *txt = elm_entry_entry_get(obj);
-   int line = atoi(txt);
-  edit_goto(gd->ed, line);
-  goto_close();
+   goto_line(gd);
 }
 
 static void
@@ -65,6 +70,14 @@ entry_changed_cb(void *data, Evas_Object *obj, void* event_info EINA_UNUSED)
         elm_object_part_text_set(gd->layout, "elm.text.msg", "");
         elm_object_disabled_set(gd->btn, EINA_FALSE);
      }
+}
+
+static void
+btn_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
+               void *event_info EINA_UNUSED)
+{
+   goto_data *gd = data;
+   goto_line(gd);
 }
 
 void
@@ -127,8 +140,7 @@ goto_open(edit_data *ed)
    //Button (ok)
    Evas_Object *btn = elm_button_add(layout);
    elm_object_text_set(btn, "Ok");
-   //evas_object_smart_callback_add(btn_backward, "clicked",
-     //                             backward_clicked_cb, sd);
+   evas_object_smart_callback_add(btn, "clicked", btn_clicked_cb, gd);
    elm_object_part_content_set(layout, "elm.swallow.btn",
                                btn);
 
@@ -136,6 +148,7 @@ goto_open(edit_data *ed)
 
    gd->win = win;
    gd->layout = layout;
+   gd->entry = entry;
    gd->btn = btn;
    gd->ed = ed;
 }
