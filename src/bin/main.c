@@ -477,6 +477,7 @@ elm_setup()
    if (engine && !strncmp(engine, "gl", strlen("gl")))
      elm_config_preferred_engine_set("opengl_x11");
 
+   elm_config_focus_autoscroll_mode_set(ELM_FOCUS_AUTOSCROLL_MODE_NONE);
    elm_config_scroll_bounce_enabled_set(EINA_FALSE);
    elm_policy_set(ELM_POLICY_QUIT, ELM_POLICY_QUIT_LAST_WINDOW_CLOSED);
    elm_app_compile_bin_dir_set(PACKAGE_BIN_DIR);
