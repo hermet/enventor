@@ -28,6 +28,7 @@ struct editor_s
 
    int cur_line;
    int line_max;
+   int syntax_color_lock;
    Evas_Coord scroller_h;
 
    Ecore_Timer *syntax_color_timer;
@@ -40,7 +41,6 @@ struct editor_s
    Eina_Bool edit_changed : 1;
    Eina_Bool linenumber : 1;
    Eina_Bool ctrl_pressed : 1;
-   Eina_Bool on_drag : 1;
 };
 
 static Eina_Bool
@@ -117,16 +117,18 @@ visible_text_region_get(edit_data *ed, int *from_line, int *to_line)
 }
 
 static void
-syntax_color_apply(edit_data *ed)
+syntax_color_apply(edit_data *ed, Eina_Bool partial)
 {
    Evas_Object *tb = elm_entry_textblock_get(ed->en_edit);
    char *text = (char *) evas_object_textblock_text_markup_get(tb);
    int pos = elm_entry_cursor_pos_get(ed->en_edit);
 
-   int from_line, to_line;
-   visible_text_region_get(ed, &from_line, &to_line);
+   int from_line = 1;
+   int to_line = -1;
+   if (partial) visible_text_region_get(ed, &from_line, &to_line);
 
-   char *from, *to;
+   char *from = NULL;
+   char *to = NULL;
    char *utf8 = (char *) color_cancel(syntax_color_data_get(ed->sh), text,
                                       strlen(text), from_line, to_line, &from,
                                       &to);
@@ -154,7 +156,7 @@ syntax_color_timer_cb(void *data)
 {
    edit_data *ed = data;
    if (!color_ready(syntax_color_data_get(ed->sh))) return ECORE_CALLBACK_RENEW;
-   syntax_color_apply(ed);
+   syntax_color_apply(ed, EINA_TRUE);
    ed->syntax_color_timer = NULL;
    return ECORE_CALLBACK_CANCEL;
 }
@@ -162,7 +164,9 @@ syntax_color_timer_cb(void *data)
 static void
 syntax_color_partial_update(edit_data *ed, double time)
 {
-   if (ed->on_drag) return;
+   /* If the syntax_color_full_update is requested forcely, lock would be -1
+      in this case, it should avoid partial updation by entry changed. */
+   if (ed->syntax_color_lock != 0) return;
    ecore_thread_cancel(ed->syntax_color_thread);
    ed->syntax_color_thread = NULL;
    ecore_timer_del(ed->syntax_color_timer);
@@ -215,20 +219,30 @@ syntax_color_thread_cancel_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
    free(td);
 }
 
-static void
-syntax_color_full_update(edit_data *ed)
+void
+syntax_color_full_update(edit_data *ed, Eina_Bool thread)
 {
+   if (ed->syntax_color_lock > 0) return;
+
    ecore_timer_del(ed->syntax_color_timer);
    ed->syntax_color_timer = NULL;
 
-   syntax_color_td *td = malloc(sizeof(syntax_color_td));
-   td->ed = ed;
-   Evas_Object *tb = elm_entry_textblock_get(ed->en_edit);
-   td->text = (char *) evas_object_textblock_text_markup_get(tb);
-   ed->syntax_color_thread = ecore_thread_run(syntax_color_thread_cb,
-                                              syntax_color_thread_end_cb,
-                                              syntax_color_thread_cancel_cb,
-                                              td);
+   if (thread)
+     {
+        syntax_color_td *td = malloc(sizeof(syntax_color_td));
+        td->ed = ed;
+        Evas_Object *tb = elm_entry_textblock_get(ed->en_edit);
+        td->text = (char *) evas_object_textblock_text_markup_get(tb);
+        ed->syntax_color_thread =
+           ecore_thread_run(syntax_color_thread_cb,
+                            syntax_color_thread_end_cb,
+                            syntax_color_thread_cancel_cb,
+                            td);
+     }
+   else
+     {
+        syntax_color_apply(ed, EINA_FALSE);
+     }
 }
 
 static void
@@ -362,6 +376,29 @@ ctxpopup_preview_dismiss_cb(void *data, Evas_Object *obj,
    if (skip_focus) return;
    elm_object_disabled_set(ed->layout, EINA_FALSE);
    elm_object_focus_set(ed->en_edit, EINA_TRUE);
+}
+
+void
+edit_syntax_color_full_apply(edit_data *ed, Eina_Bool force)
+{
+   int lock;
+
+   if (force)
+     {
+        lock = ed->syntax_color_lock;
+        ed->syntax_color_lock = -1;
+     }
+   syntax_color_full_update(ed, EINA_FALSE);
+
+   if (force) ed->syntax_color_lock = lock;
+   else ed->syntax_color_lock++;
+}
+
+void
+edit_syntax_color_partial_apply(edit_data *ed)
+{
+   ed->syntax_color_lock--;
+   syntax_color_partial_update(ed, SYNTAX_COLOR_DEFAULT_TIME);
 }
 
 void
@@ -885,8 +922,8 @@ scroller_vbar_press_cb(void *data, Evas_Object *obj EINA_UNUSED,
                        void *event_info EINA_UNUSED)
 {
    edit_data *ed = data;
-   ed->on_drag = EINA_TRUE;
-   syntax_color_full_update(ed);
+   syntax_color_full_update(ed, EINA_TRUE);
+   ed->syntax_color_lock++;
 }
 
 static void
@@ -894,7 +931,7 @@ scroller_vbar_unpress_cb(void *data, Evas_Object *obj EINA_UNUSED,
                          void *event_info EINA_UNUSED)
 {
    edit_data *ed = data;
-   ed->on_drag = EINA_FALSE;
+   ed->syntax_color_lock--;
    syntax_color_partial_update(ed, SYNTAX_COLOR_SHORT_TIME);
 }
 
@@ -966,8 +1003,6 @@ edit_init(Evas_Object *parent)
                                   edit_mouse_down_cb, ed);
    elm_object_focus_set(en_edit, EINA_TRUE);
    elm_object_part_content_set(layout, "elm.swallow.edit", en_edit);
-
-   search_entry_register(en_edit);
 
    ed->scroller = scroller;
    ed->en_line = en_line;
@@ -1199,4 +1234,10 @@ edit_goto(edit_data *ed, int line)
    evas_textblock_cursor_line_set(cur, (line - 1));
    elm_entry_calc_force(ed->en_edit);
    elm_object_focus_set(ed->en_edit, EINA_TRUE);
+}
+
+Evas_Object *
+edit_entry_get(edit_data *ed)
+{
+   return ed->en_edit;
 }

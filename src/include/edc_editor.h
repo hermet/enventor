@@ -21,3 +21,6 @@ Eina_Stringshare *edit_cur_prog_name_get(edit_data *ed);
 Eina_Stringshare *edit_cur_part_name_get(edit_data *ed);
 int edit_max_line_get(edit_data *ed);
 void edit_goto(edit_data *ed, int line);
+void edit_syntax_color_full_apply(edit_data *ed, Eina_Bool force);
+void edit_syntax_color_partial_apply(edit_data *ed);
+Evas_Object * edit_entry_get(edit_data *ed);

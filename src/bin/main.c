@@ -123,7 +123,7 @@ ctrl_func(app_data *ad, const char *key)
    //Find/Replace
    if (!strcmp(key, "f") || !strcmp(key, "F"))
      {
-        search_open();
+        search_open(ad->ed);
         return ECORE_CALLBACK_DONE;
      }
    //Goto Line

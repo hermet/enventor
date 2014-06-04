@@ -8,12 +8,14 @@ typedef struct search_s
    Evas_Object *en_find;
    Evas_Object *en_replace;
    Evas_Object *entry;
+   edit_data *ed;
    int pos;
+   int len;
+   int syntax_color;
    Eina_Bool forward : 1;
 } search_data;
 
 static search_data *g_sd = NULL;
-static Evas_Object *g_entry = NULL;
 static Evas_Coord win_x = -1;
 static Evas_Coord win_y = -1;
 static Evas_Coord win_w = DEFAULT_SEARCH_WIN_W;
@@ -80,6 +82,16 @@ replace_all_proc(search_data *sd)
    free(utf8);
 }
 
+/* FIXME: selection_region_set() won't be worked all just right after entry
+   changes, no idea why? so use the animator. */
+static Eina_Bool
+selection_region_anim_cb(void *data)
+{
+   search_data *sd = data;
+   elm_entry_select_region_set(sd->entry, sd->pos, sd->pos + sd->len);
+   return ECORE_CALLBACK_CANCEL;
+}
+
 static void
 find_forward_proc(search_data *sd)
 {
@@ -121,10 +133,9 @@ find_forward_proc(search_data *sd)
      }
 
    //Got you!
-   int len = strlen(find);
+   sd->len = strlen(find);
    sd->pos = s - utf8;
-   elm_entry_select_none(sd->entry);
-   elm_entry_select_region_set(sd->entry, sd->pos, sd->pos + len);
+   ecore_animator_add(selection_region_anim_cb, sd);
    free(utf8);
 }
 
@@ -183,8 +194,8 @@ find_backward_proc(search_data *sd)
 
    //Got you!
    sd->pos = prev - utf8;
-   elm_entry_select_none(sd->entry);
-   elm_entry_select_region_set(sd->entry, sd->pos, sd->pos + strlen(find));
+   sd->len = strlen(find);
+   ecore_animator_add(selection_region_anim_cb, sd);
 
    free(utf8);
 }
@@ -220,6 +231,7 @@ replace_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
    search_data *sd = data;
    Eina_Bool next;
    next = replace_proc(sd);
+   edit_syntax_color_full_apply(sd->ed, EINA_TRUE);
    if (!next) return;
    if (sd->forward) find_forward_proc(sd);
    else find_backward_proc(sd);
@@ -231,6 +243,7 @@ replace_all_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
 {
    search_data *sd = data;
    replace_all_proc(sd);
+   edit_syntax_color_full_apply(sd->ed, EINA_TRUE);
 }
 
 static void
@@ -259,13 +272,30 @@ replace_activated_cb(void *data, Evas_Object *obj EINA_UNUSED,
    search_data *sd = data;
    Eina_Bool next;
    next = replace_proc(sd);
+   edit_syntax_color_full_apply(sd->ed, EINA_TRUE);
    if (!next) return;
    if (sd->forward) find_forward_proc(sd);
    else find_backward_proc(sd);
 }
 
+static void
+win_focused_cb(void *data, Evas_Object *obj, void *event_info)
+{
+   search_data *sd = g_sd;
+   edit_syntax_color_full_apply(sd->ed, EINA_FALSE);
+   sd->syntax_color++;
+}
+
+static void
+win_unfocused_cb(void *data, Evas_Object *obj, void *event_info)
+{
+   search_data *sd = g_sd;
+   edit_syntax_color_partial_apply(sd->ed);
+   sd->syntax_color--;
+}
+
 void
-search_open()
+search_open(edit_data *ed)
 {
    search_data *sd = g_sd;
 
@@ -289,6 +319,8 @@ search_open()
    evas_object_smart_callback_add(win, "delete,request", win_delete_request_cb,
                                   sd);
    evas_object_smart_callback_add(win, "moved", win_moved_cb, sd);
+   evas_object_smart_callback_add(win, "focused", win_focused_cb, sd);
+   evas_object_smart_callback_add(win, "unfocused", win_unfocused_cb, sd);
 
    //Bg
    Evas_Object *bg = elm_bg_add(win);
@@ -356,10 +388,11 @@ search_open()
    evas_object_show(win);
 
    sd->win = win;
+   sd->ed = ed;
    sd->layout = layout;
    sd->en_find = entry_find;
    sd->en_replace = entry_replace;
-   sd->entry = g_entry;
+   sd->entry = edit_entry_get(ed);
    sd->pos = -1;
    sd->forward = EINA_TRUE;
 }
@@ -372,16 +405,17 @@ search_is_opened()
 }
 
 void
-search_entry_register(Evas_Object *entry)
-{
-   g_entry = entry;
-}
-
-void
 search_close()
 {
    search_data *sd = g_sd;
    if (!sd) return;
+
+   while (sd->syntax_color > 0)
+     {
+        edit_syntax_color_partial_apply(sd->ed);
+        sd->syntax_color--;
+     }
+
    //Save last state
    evas_object_geometry_get(sd->win, NULL, NULL, &win_w, &win_h);
    elm_win_screen_position_get(sd->win, &win_x, &win_y);
