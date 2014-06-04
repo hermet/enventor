@@ -285,6 +285,11 @@ win_focused_cb(void *data, Evas_Object *obj, void *event_info)
    search_data *sd = g_sd;
    edit_syntax_color_full_apply(sd->ed, EINA_FALSE);
    sd->syntax_color++;
+   /* FIXME: reset position because search requests syntax color partial apply
+      when it's window is unfocused. the selection region would be dismissed.
+      we can remove this once selection region could be recovered just right
+      after syntax color is applied. */
+   sd->pos = -1;
 }
 
 static void
