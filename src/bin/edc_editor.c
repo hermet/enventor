@@ -57,13 +57,17 @@ line_init(edit_data *ed)
 }
 
 static void
-line_increase(edit_data *ed)
+line_increase(edit_data *ed, int cnt)
 {
    char buf[MAX_LINE_DIGIT_CNT];
+   int i;
 
-   ed->line_max++;
-   snprintf(buf, sizeof(buf), "<br/>%d", ed->line_max);
-   elm_entry_entry_append(ed->en_line, buf);
+   for (i = 0; i < cnt; i++)
+     {
+        ed->line_max++;
+        snprintf(buf, sizeof(buf), "<br/>%d", ed->line_max);
+        elm_entry_entry_append(ed->en_line, buf);
+     }
 }
 
 static void
@@ -243,8 +247,14 @@ edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 
         if (!strcmp(info->change.insert.content, EOL))
           {
-             line_increase(ed);
+             line_increase(ed, 1);
              syntax_color = EINA_FALSE;
+          }
+        else
+          {
+             int increase =
+                parser_line_cnt_get(ed->pd, info->change.insert.content);
+             line_increase(ed, increase);
           }
 
         if (config_auto_indent_get())
@@ -417,7 +427,7 @@ edit_template_insert(edit_data *ed)
         elm_entry_entry_insert(ed->en_edit, p);
         elm_entry_entry_insert(ed->en_edit, t[i]);
         //Incease line by (line count - 1)
-        line_increase(ed);
+        line_increase(ed, 1);
      }
 
    elm_entry_entry_insert(ed->en_edit, p);
@@ -497,7 +507,7 @@ edit_template_part_insert(edit_data *ed, Edje_Part_Type type)
         elm_entry_entry_insert(ed->en_edit, p);
         elm_entry_entry_insert(ed->en_edit, t[i]);
         //Incease line by (line count - 1)
-        line_increase(ed);
+        line_increase(ed, 1);
      }
 
    elm_entry_entry_insert(ed->en_edit, p);
