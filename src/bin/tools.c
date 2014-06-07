@@ -75,10 +75,11 @@ status_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 }
 
 static void
-find_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
+find_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
+   edit_data *ed = data;
    if (search_is_opened()) search_close();
-   else search_open();
+   else search_open(ed);
    item_unselect((Elm_Object_Item *)event_info);
 }
 
@@ -126,7 +127,7 @@ tools_create(Evas_Object *parent, edit_data *ed)
    elm_toolbar_item_icon_file_set(it, EDJE_PATH, "swallow_s");
    it = elm_toolbar_item_append(toolbar, NULL, "Lines", lines_cb, ed);
    elm_toolbar_item_icon_file_set(it, EDJE_PATH, "lines");
-   it = elm_toolbar_item_append(toolbar, NULL, "Find", find_cb, NULL);
+   it = elm_toolbar_item_append(toolbar, NULL, "Find", find_cb, ed);
    elm_toolbar_item_icon_file_set(it, EDJE_PATH, "find");
    it = elm_toolbar_item_append(toolbar, NULL, "Goto", goto_cb, ed);
    elm_toolbar_item_icon_file_set(it, EDJE_PATH, "line");
