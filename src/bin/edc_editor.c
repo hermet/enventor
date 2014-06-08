@@ -1239,6 +1239,7 @@ edit_max_line_get(edit_data *ed)
 void
 edit_goto(edit_data *ed, int line)
 {
+   elm_entry_select_none(ed->en_edit);
    Evas_Object *tb = elm_entry_textblock_get(ed->en_edit);
    Evas_Textblock_Cursor *cur = evas_object_textblock_cursor_get(tb);
    evas_textblock_cursor_line_set(cur, (line - 1));
