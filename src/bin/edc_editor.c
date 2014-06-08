@@ -37,10 +37,12 @@ struct editor_s
    void (*view_sync_cb)(void *data, Eina_Stringshare *part_name,
                          Eina_Stringshare *group_name);
    void *view_sync_cb_data;
+   int select_pos;
 
    Eina_Bool edit_changed : 1;
    Eina_Bool linenumber : 1;
    Eina_Bool ctrl_pressed : 1;
+   Eina_Bool on_select_recover : 1;
 };
 
 static Eina_Bool
@@ -117,6 +119,29 @@ visible_text_region_get(edit_data *ed, int *from_line, int *to_line)
 }
 
 static void
+entry_recover(edit_data *ed, int cursor_pos)
+{
+   elm_entry_calc_force(ed->en_edit);
+
+   //recover cursor position??
+   elm_entry_cursor_pos_set(ed->en_edit, 0);
+   elm_entry_cursor_pos_set(ed->en_edit, cursor_pos);
+
+   //not on selection mode
+   if (ed->select_pos == -1) return;
+
+   //recover selection region
+   const char *select = elm_entry_selection_get(ed->en_edit);
+   if (!select) return;
+   char *utf8 = evas_textblock_text_markup_to_utf8(NULL, select);
+   ed->on_select_recover = EINA_TRUE;
+   elm_entry_select_none(ed->en_edit);
+   elm_entry_select_region_set(ed->en_edit, ed->select_pos, cursor_pos);
+   ed->on_select_recover = EINA_FALSE;
+   free(utf8);
+}
+
+static void
 syntax_color_apply(edit_data *ed, Eina_Bool partial)
 {
    Evas_Object *tb = elm_entry_textblock_get(ed->en_edit);
@@ -142,13 +167,8 @@ syntax_color_apply(edit_data *ed, Eina_Bool partial)
       But it can avoid entry_object_text_escaped_set() in Edje.
       Logically that's unnecessary in this case. */
    evas_object_textblock_text_markup_set(tb, translated);
-   elm_entry_calc_force(ed->en_edit);
 
-   //recorver cursor position??
-   elm_entry_cursor_pos_set(ed->en_edit, 0);
-   elm_entry_cursor_pos_set(ed->en_edit, pos);
-
-   //FIXME: Need to recover selection area.
+   entry_recover(ed, pos);
 }
 
 static Eina_Bool
@@ -199,13 +219,7 @@ syntax_color_thread_end_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
       Logically that's unnecessary in this case. */
    evas_object_textblock_text_markup_set(tb, td->translated);
 
-   elm_entry_calc_force(td->ed->en_edit);
-
-   //recorver cursor position??
-   elm_entry_cursor_pos_set(td->ed->en_edit, 0);
-   elm_entry_cursor_pos_set(td->ed->en_edit, pos);
-
-   //FIXME: Need to recover selection area.
+   entry_recover(td->ed, pos);
 
    td->ed->syntax_color_thread = NULL;
    free(td);
@@ -292,10 +306,6 @@ edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
      }
 
    if (!syntax_color) return;
-   /* FIXME: after searching the text, it couldn't recover the selected text
-      right after applying syntax color. This workaround makes avoid to not
-      applying syntax color while entry has the selected text. */
-   if (elm_entry_selection_get(ed->en_edit)) return;
    syntax_color_partial_update(ed, SYNTAX_COLOR_DEFAULT_TIME);
 }
 
@@ -558,18 +568,6 @@ edit_template_part_insert(edit_data *ed, Edje_Part_Type type)
 }
 
 static void
-edit_mouse_down_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
-                   Evas_Object *obj, void *event_info EINA_UNUSED)
-{
-   Evas_Event_Mouse_Down *ev = event_info;
-   if (ev->button == 1)
-     {
-        elm_entry_select_none(obj);
-        return;
-     }
-}
-
-static void
 cur_line_pos_set(edit_data *ed, Eina_Bool force)
 {
    Evas_Coord y, h;
@@ -790,7 +788,18 @@ edit_selection_cleared_cb(void *data, Evas_Object *obj EINA_UNUSED,
                           void *event_info EINA_UNUSED)
 {
    edit_data *ed = data;
+   if (ed->on_select_recover) return;
    cur_line_pos_set(ed, EINA_TRUE);
+   ed->select_pos = -1;
+}
+
+static void
+edit_selection_start_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                        void *event_info EINA_UNUSED)
+{
+   edit_data *ed = data;
+   if (ed->select_pos != -1) return;
+   ed->select_pos = elm_entry_cursor_pos_get(ed->en_edit);
 }
 
 static void
@@ -996,11 +1005,11 @@ edit_init(Evas_Object *parent)
                                   edit_cursor_double_clicked_cb, ed);
    evas_object_smart_callback_add(en_edit, "selection,cleared",
                                   edit_selection_cleared_cb, ed);
+   evas_object_smart_callback_add(en_edit, "selection,start",
+                                  edit_selection_start_cb, ed);
    evas_object_size_hint_weight_set(en_edit, EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(en_edit, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_event_callback_add(en_edit, EVAS_CALLBACK_MOUSE_DOWN,
-                                  edit_mouse_down_cb, ed);
    elm_object_focus_set(en_edit, EINA_TRUE);
    elm_object_part_content_set(layout, "elm.swallow.edit", en_edit);
 
@@ -1011,6 +1020,7 @@ edit_init(Evas_Object *parent)
    ed->parent = parent;
    ed->linenumber = EINA_TRUE;
    ed->cur_line = -1;
+   ed->select_pos = -1;
 
    edit_line_number_toggle(ed);
    edit_font_size_update(ed, EINA_FALSE, EINA_FALSE);
@@ -1145,7 +1155,7 @@ edit_changed_set(edit_data *ed, Eina_Bool changed)
 void
 edit_line_number_toggle(edit_data *ed)
 {
-   //FIXME: edit & config toogle should be handled in one place.
+   //FIXME: edit & config toggle should be handled in one place.
    Eina_Bool linenumber = config_linenumber_get();
    if (ed->linenumber == linenumber) return;
    ed->linenumber = linenumber;
