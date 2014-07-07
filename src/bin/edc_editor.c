@@ -1061,61 +1061,48 @@ edit_edc_read(edit_data *ed, const char *file_path)
 {
    char buf[MAX_LINE_DIGIT_CNT];
 
+   Eina_File *file = NULL;
+   Eina_Strbuf *strbuf_line = NULL;
+   char *utf8_edit = NULL;
+   char *markup_edit = NULL;
+   char *markup_line = NULL;
+   int line_num = 1;
+
    ed->line_max = 0;
 
-   Eina_Iterator *itr = NULL;
-   Eina_Strbuf *strbuf_line = NULL, *strbuf_edit = NULL;
-
-   Eina_File *file = eina_file_open(file_path, EINA_FALSE);
+   file = eina_file_open(file_path, EINA_FALSE);
    if (!file) goto err;
-
-   itr = eina_file_map_lines(file);
-   if (!itr) goto err;
 
    strbuf_line = eina_strbuf_new();
    if (!strbuf_line) goto err;
 
-   strbuf_edit = eina_strbuf_new();
-   if (!strbuf_edit) goto err;
+   utf8_edit = eina_file_map_all(file, EINA_FILE_REMOVE);
+   if (!utf8_edit) goto err;
 
-   Eina_File_Line *line;
-   int line_num = 0;
-
-   //Read first line specially.
-   if (eina_iterator_next(itr, (void **)(void *)&(line)))
-     {
-        line_num = 1;
-        if (!eina_strbuf_append_char(strbuf_line, '1')) goto err;
-        if (!eina_strbuf_append_length(strbuf_edit, line->start, line->length))
-           goto err;
-     }
-
-   //Read last lines.
-   EINA_ITERATOR_FOREACH(itr, line)
+   //Append line numbers
+   if (!eina_strbuf_append_char(strbuf_line, '1')) goto err;
+   char *p = utf8_edit;
+   int len = strlen(p);
+   while ((p = strchr(p, '\n')) && p < (utf8_edit + len))
      {
         line_num++;
-
-        //Append line number
+        ++p;
         sprintf(buf, "\n%d", line_num);
         if (!eina_strbuf_append(strbuf_line, buf)) goto err;
-
-        //Append edc ccde
-        if (!eina_strbuf_append_char(strbuf_edit, '\n')) goto err;
-        if (!eina_strbuf_append_length(strbuf_edit, line->start, line->length))
-          goto err;
      }
-   char *markup_line =
-         elm_entry_utf8_to_markup(eina_strbuf_string_get(strbuf_line));
-   char *markup_edit =
-         elm_entry_utf8_to_markup(eina_strbuf_string_get(strbuf_edit));
 
+   markup_line = elm_entry_utf8_to_markup(eina_strbuf_string_get(strbuf_line));
+   if (!markup_line) goto err;
    elm_entry_entry_append(ed->en_line, markup_line);
-   elm_entry_entry_append(ed->en_edit, markup_edit);
-
    free(markup_line);
+
+   markup_edit = elm_entry_utf8_to_markup(utf8_edit);
+   if (!markup_edit) goto err;
+   elm_entry_entry_set(ed->en_edit, markup_edit);
    free(markup_edit);
 
    ed->line_max = line_num;
+
    Eina_Stringshare *group_name =
       parser_first_group_name_get(ed->pd, ed->en_edit);
 
@@ -1126,11 +1113,10 @@ edit_edc_read(edit_data *ed, const char *file_path)
    ecore_animator_add(syntax_color_timer_cb, ed);
 
 err:
-   //Even any text is not inserted, line number should start with 1 
+   //Even any text is not inserted, line number should start with 1
    if (ed->line_max == 0) line_init(ed);
-   if (strbuf_edit) eina_strbuf_free(strbuf_edit);
    if (strbuf_line) eina_strbuf_free(strbuf_line);
-   if (itr) eina_iterator_free(itr);
+   if (utf8_edit) eina_file_map_free(file, utf8_edit);
    if (file) eina_file_close(file);
 }
 
