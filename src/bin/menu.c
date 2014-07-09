@@ -145,7 +145,7 @@ warning_dismiss_done(void *data, Evas_Object *obj EINA_UNUSED,
 }
 
 static void
-warning_layout_create(menu_data *md, Evas_Smart_Cb yes_cb,
+warning_open(menu_data *md, Evas_Smart_Cb yes_cb,
                       Evas_Smart_Cb save_cb)
 {
    if (md->warning_layout) return;
@@ -1009,7 +1009,7 @@ menu_edc_new()
    menu_data *md = g_md;
    if (edit_changed_get(md->ed))
      {
-        warning_layout_create(md, new_yes_btn_cb, new_save_btn_cb);
+        warning_open(md, new_yes_btn_cb, new_save_btn_cb);
         return EINA_TRUE;
      }
 
@@ -1031,7 +1031,7 @@ menu_edc_load()
 {
    menu_data *md = g_md;
    if (edit_changed_get(md->ed))
-     warning_layout_create(md, load_yes_btn_cb, load_save_btn_cb);
+     warning_open(md, load_yes_btn_cb, load_save_btn_cb);
    else
      edc_file_load(md);
 }
@@ -1104,7 +1104,7 @@ menu_exit()
    if (edit_changed_get(md->ed))
      {
         search_close();
-        warning_layout_create(md, exit_yes_btn_cb, exit_save_btn_cb);
+        warning_open(md, exit_yes_btn_cb, exit_save_btn_cb);
      }
    else
      elm_exit();
