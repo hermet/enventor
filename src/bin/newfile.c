@@ -150,6 +150,7 @@ newfile_create(Evas_Object *parent)
      }
    evas_object_event_callback_add(list, EVAS_CALLBACK_DEL, list_del_cb, NULL);
    evas_object_show(list);
+   elm_object_focus_set(list, EINA_TRUE);
 
    elm_grid_pack(grid, list, 50, 0, 50, 100);
 
