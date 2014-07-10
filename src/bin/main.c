@@ -34,9 +34,9 @@ edc_changed_cb(void *data, int type EINA_UNUSED, void *event)
 }
 
 static Eina_Bool
-edc_proto_setup()
+edc_default_setup()
 {
-   newfile_new(NULL, EINA_TRUE);
+   newfile_default_set();
    build_edc();
 
    return EINA_TRUE;
@@ -442,7 +442,7 @@ args_dispatch(int argc, char **argv, char *edc_path, char *img_path,
      }
 
 defaults:
-   if (default_edc) sprintf(edc_path, "%s", PROTO_EDC_PATH);
+   if (default_edc) sprintf(edc_path, "%s", DEFAULT_EDC_PATH);
 }
 
 static void
@@ -519,7 +519,7 @@ init(app_data *ad, int argc, char **argv)
    config_data_set(ad, argc, argv);
 
    if (!build_init()) return EINA_FALSE;
-   if (!edc_proto_setup()) return EINA_FALSE;
+   if (!edc_default_setup()) return EINA_FALSE;
    if (!base_gui_init()) return EINA_FALSE;
 
    edj_mgr_set();

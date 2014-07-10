@@ -1,0 +1,6 @@
+collections {
+   group { name: "main";
+      parts {
+      }
+   }
+}

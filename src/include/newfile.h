@@ -1,1 +1,3 @@
-void newfile_new(edit_data *ed, Eina_Bool init);
+void newfile_default_set();
+void newfile_set(edit_data *ed);
+Evas_Object * newfile_create(Evas_Object *parent);

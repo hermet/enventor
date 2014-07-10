@@ -4,6 +4,7 @@
 struct menu_s
 {
    Evas_Object *menu_layout;
+   Evas_Object *newfile_layout;
    Evas_Object *setting_layout;
    Evas_Object *warning_layout;
    Evas_Object *fileselector_layout;
@@ -47,6 +48,13 @@ fileselector_close()
 }
 
 static void
+newfile_close()
+{
+   menu_data *md = g_md;
+   elm_object_signal_emit(md->newfile_layout, "elm,state,dismiss", "");
+}
+
+static void
 about_close()
 {
    menu_data *md = g_md;
@@ -73,6 +81,22 @@ menu_close()
    menu_data *md = g_md;
    if (!md->menu_layout) return;
    elm_object_signal_emit(md->menu_layout, "elm,state,dismiss", "");
+}
+
+static void
+newfile_dismiss_done(void *data, Evas_Object *obj EINA_UNUSED,
+                     const char *emission EINA_UNUSED,
+                     const char *source EINA_UNUSED)
+{
+   menu_data *md = data;
+   evas_object_del(md->newfile_layout);
+   md->newfile_layout = NULL;
+   md->open_depth--;
+   if (md->menu_layout)
+     {
+        elm_object_disabled_set(md->menu_layout, EINA_FALSE);
+        elm_object_focus_set(md->menu_layout, EINA_TRUE);
+     }
 }
 
 static void
@@ -145,8 +169,61 @@ warning_dismiss_done(void *data, Evas_Object *obj EINA_UNUSED,
 }
 
 static void
-warning_open(menu_data *md, Evas_Smart_Cb yes_cb,
-                      Evas_Smart_Cb save_cb)
+newfile_ok_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                  void *event_info EINA_UNUSED)
+{
+   menu_data *md = data;
+   newfile_set(md->ed);
+   newfile_close(md);
+   menu_close(md);
+}
+
+static void
+newfile_cancel_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                      void *event_info EINA_UNUSED)
+{
+   menu_data *md = data;
+   newfile_close(md);
+}
+
+void
+newfile_open(menu_data *md)
+{
+   if (md->newfile_layout) return;
+
+   Evas_Object *layout = elm_layout_add(base_win_get());
+   elm_layout_file_set(layout, EDJE_PATH, "newfile_layout");
+   elm_object_part_text_set(layout, "elm.text.title", "New File: choose a template.");
+   elm_object_signal_callback_add(layout, "elm,state,dismiss,done", "",
+                                  newfile_dismiss_done, md);
+   evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_show(layout);
+   base_win_resize_object_add(layout);
+
+   elm_object_part_content_set(layout, "elm.swallow.content",
+                               newfile_create(layout));
+   Evas_Object *btn;
+
+   //Ok Button
+   btn = elm_button_add(layout);
+   elm_object_text_set(btn, "Ok");
+   evas_object_smart_callback_add(btn, "clicked", newfile_ok_btn_cb, md);
+   elm_object_part_content_set(layout, "elm.swallow.ok_btn", btn);
+
+   //Cancel Button
+   btn = elm_button_add(layout);
+   elm_object_text_set(btn, "Cancel");
+   evas_object_smart_callback_add(btn, "clicked", newfile_cancel_btn_cb, md);
+   elm_object_part_content_set(layout, "elm.swallow.cancel_btn", btn);
+
+   if (md->menu_layout) elm_object_disabled_set(md->menu_layout, EINA_TRUE);
+
+   md->newfile_layout = layout;
+   md->open_depth++;
+}
+
+static void
+warning_open(menu_data *md, Evas_Smart_Cb yes_cb, Evas_Smart_Cb save_cb)
 {
    if (md->warning_layout) return;
 
@@ -603,7 +680,7 @@ new_yes_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
                void *event_info EINA_UNUSED)
 {
    menu_data *md = data;
-   newfile_new(md->ed, EINA_FALSE);
+   newfile_open(md);
    warning_close(md);
    menu_close(md);
 }
@@ -674,7 +751,7 @@ new_save_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
    menu_data *md = data;
 
    edit_save(md->ed);
-   newfile_new(md->ed, EINA_FALSE);
+   newfile_open(md);
    warning_close(md);
    menu_close(md);
 }
@@ -1003,20 +1080,14 @@ menu_setting()
    setting_open(md);
 }
 
-Eina_Bool
+void
 menu_edc_new()
 {
    menu_data *md = g_md;
    if (edit_changed_get(md->ed))
-     {
-        warning_open(md, new_yes_btn_cb, new_save_btn_cb);
-        return EINA_TRUE;
-     }
-
-   newfile_new(md->ed, EINA_FALSE);
-   menu_close(md);
-
-   return EINA_FALSE;
+     warning_open(md, new_yes_btn_cb, new_save_btn_cb);
+   else
+     newfile_open(md);
 }
 
 void
@@ -1049,6 +1120,11 @@ menu_toggle()
    if (md->warning_layout)
      {
         warning_close(md);
+        return;
+     }
+   if (md->newfile_layout)
+     {
+        newfile_close(md);
         return;
      }
    if (md->fileselector_layout)
