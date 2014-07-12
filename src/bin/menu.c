@@ -39,6 +39,8 @@ static void warning_no_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
 static void new_save_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
                             void *event_info EINA_UNUSED);
 static void edc_file_save(menu_data *md);
+static void new_yes_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                           void *event_info EINA_UNUSED);
 
 static void
 fileselector_close()
@@ -201,7 +203,7 @@ newfile_open(menu_data *md)
    base_win_resize_object_add(layout);
 
    elm_object_part_content_set(layout, "elm.swallow.content",
-                               newfile_create(layout));
+                               newfile_create(layout, newfile_ok_btn_cb, md));
    Evas_Object *btn;
 
    //Ok Button
