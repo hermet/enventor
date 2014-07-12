@@ -25,50 +25,35 @@ files_DATA = basic.edc \
 
 EXTRA_DIST = $(files_DATA)
 
-basic.edj: Makefile $(EXTRA_DIST)
-	$(EDJE_CC) $(EDJE_FLAGS) \
-	$(top_srcdir)/data/templates/basic.edc \
-	$(top_builddir)/data/templates/basic.edj
+srcdir = $(top_srcdir)/data/templates
+builddir = $(top_builddir)/data/templates
 
-empty.edj: Makefile $(EXTRA_DIST)
-	$(EDJE_CC) $(EDJE_FLAGS) \
-	$(top_srcdir)/data/templates/empty.edc \
-	$(top_builddir)/data/templates/empty.edj
+basic.edj: Makefile basic.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/basic.edc $(builddir)/basic.edj
 
-map.edj: Makefile $(EXTRA_DIST)
-	$(EDJE_CC) $(EDJE_FLAGS) \
-	$(top_srcdir)/data/templates/map.edc \
-	$(top_builddir)/data/templates/map.edj
+empty.edj: Makefile empty.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/empty.edc $(builddir)/empty.edj
 
-textblock.edj: Makefile $(EXTRA_DIST)
-	$(EDJE_CC) $(EDJE_FLAGS) \
-	$(top_srcdir)/data/templates/textblock.edc \
-	$(top_builddir)/data/templates/textblock.edj
+map.edj: Makefile map.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/map.edc $(builddir)/map.edj
 
-transition.edj: Makefile $(EXTRA_DIST)
-	$(EDJE_CC) $(EDJE_FLAGS) \
-	$(top_srcdir)/data/templates/transition.edc \
-	$(top_builddir)/data/templates/transition.edj
+textblock.edj: Makefile textblock.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/textblock.edc $(builddir)/textblock.edj
 
-tween.edj: Makefile $(EXTRA_DIST)
-	$(EDJE_CC) $(EDJE_FLAGS) \
-	$(top_srcdir)/data/templates/tween.edc \
-	$(top_builddir)/data/templates/tween.edj
+transition.edj: Makefile transition.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/transition.edc $(builddir)/transition.edj
 
-rect.edj: Makefile $(EXTRA_DIST)
-	$(EDJE_CC) $(EDJE_FLAGS) \
-	$(top_srcdir)/data/templates/rect.edc \
-	$(top_builddir)/data/templates/rect.edj
+tween.edj: Makefile tween.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/tween.edc $(builddir)/tween.edj
 
-image.edj: Makefile $(EXTRA_DIST)
-	$(EDJE_CC) $(EDJE_FLAGS) \
-	$(top_srcdir)/data/templates/image.edc \
-	$(top_builddir)/data/templates/image.edj
+rect.edj: Makefile rect.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/rect.edc $(builddir)/rect.edj
 
-text.edj: Makefile $(EXTRA_DIST)
-	$(EDJE_CC) $(EDJE_FLAGS) \
-	$(top_srcdir)/data/templates/text.edc \
-	$(top_builddir)/data/templates/text.edj
+image.edj: Makefile image.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/image.edc $(builddir)/image.edj
+
+text.edj: Makefile text.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/text.edc $(builddir)/text.edj
 
 clean-local:
 	rm -f *.edj
