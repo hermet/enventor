@@ -141,8 +141,6 @@ panes_term()
 Evas_Object *
 panes_init(Evas_Object *parent)
 {
-   Evas_Object *img;
-
    panes_data *pd = malloc(sizeof(panes_data));
    g_pd = pd;
 

@@ -168,7 +168,7 @@ find_backward_proc(search_data *sd)
    char *prev = NULL;
    char *s = utf8;
 
-   while (s = strstr(s, find))
+   while ((s = strstr(s, find)))
      {
         if ((s - utf8) >= sd->pos) break;
         prev = s;

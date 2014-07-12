@@ -840,7 +840,7 @@ parser_states_filtered_name_get(Eina_List *states)
      {
         char *p = state;
         char *pp = state;
-        while (p = strstr(p, " "))
+        while ((p = strstr(p, " ")))
            {
               pp = p;
               p++;
@@ -870,7 +870,6 @@ parser_term(parser_data *pd)
    ecore_thread_cancel(pd->init_thread);
 
    parser_attr *attr;
-   Eina_Stringshare *str;
 
    EINA_INARRAY_FOREACH(pd->attrs, attr)
      {

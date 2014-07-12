@@ -13,7 +13,7 @@ list_del_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
             void *event_info EINA_UNUSED)
 {
    new_data *nd = g_nd;
-   free(g_nd);
+   free(nd);
    g_nd = NULL;
 }
 
@@ -90,8 +90,6 @@ list_item_selected_cb(void *data, Evas_Object *obj, void *event_info)
 static void
 templates_get(new_data *nd)
 {
-   Eina_Iterator *itr;
-
    char buf[PATH_MAX];
    snprintf(buf, sizeof(buf), "%s/templates", elm_app_data_dir_get());
 
@@ -138,7 +136,7 @@ newfile_create(Evas_Object *parent)
    Elm_Object_Item *it;
    Eina_Bool first_item = EINA_TRUE;
 
-   EINA_LIST_REVERSE_FOREACH(nd->templates, l, name)
+   EINA_LIST_FOREACH(nd->templates, l, name)
      {
         it = elm_list_item_append(list, name, NULL, NULL, list_item_selected_cb,
                                   layout);

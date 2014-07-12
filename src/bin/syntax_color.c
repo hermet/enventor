@@ -494,12 +494,6 @@ macro_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
    *prev = *cur;
 
    return 1;
-
-nospace:
-   (*cur)++;
-   eina_strbuf_append_length(strbuf, *prev, (*cur - *prev));
-   *prev = *cur;
-   return 1;
 }
 
 const char *
