@@ -164,8 +164,8 @@ void
 goto_close()
 {
    goto_data *gd = g_gd;
-   if (!gd) return;
 
+   if (!gd) return;
    //Save last state
    evas_object_geometry_get(gd->win, NULL, NULL, &win_w, &win_h);
    elm_win_screen_position_get(gd->win, &win_x, &win_y);

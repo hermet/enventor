@@ -94,11 +94,10 @@ newfile_dismiss_done(void *data, Evas_Object *obj EINA_UNUSED,
    evas_object_del(md->newfile_layout);
    md->newfile_layout = NULL;
    md->open_depth--;
-   if (md->menu_layout)
-     {
-        elm_object_disabled_set(md->menu_layout, EINA_FALSE);
-        elm_object_focus_set(md->menu_layout, EINA_TRUE);
-     }
+   if (md->open_depth == 0) edit_focus_set(md->ed);
+   if (!md->menu_layout) return;
+   elm_object_disabled_set(md->menu_layout, EINA_FALSE);
+   elm_object_focus_set(md->menu_layout, EINA_TRUE);
 }
 
 static void
@@ -110,11 +109,10 @@ fileselector_dismiss_done(void *data, Evas_Object *obj EINA_UNUSED,
    evas_object_del(md->fileselector_layout);
    md->fileselector_layout = NULL;
    md->open_depth--;
-   if (md->menu_layout)
-     {
-        elm_object_disabled_set(md->menu_layout, EINA_FALSE);
-        elm_object_focus_set(md->menu_layout, EINA_TRUE);
-     }
+   if (md->open_depth == 0) edit_focus_set(md->ed);
+   if (!md->menu_layout) return;
+   elm_object_disabled_set(md->menu_layout, EINA_FALSE);
+   elm_object_focus_set(md->menu_layout, EINA_TRUE);
 }
 
 static void
@@ -126,6 +124,7 @@ setting_dismiss_done(void *data, Evas_Object *obj EINA_UNUSED,
    evas_object_del(md->setting_layout);
    md->setting_layout = NULL;
    md->open_depth--;
+   if (md->open_depth == 0) edit_focus_set(md->ed);
    if (!md->menu_layout) return;
    elm_object_disabled_set(md->menu_layout, EINA_FALSE);
    elm_object_focus_set(md->menu_layout, EINA_TRUE);
@@ -140,6 +139,7 @@ about_dismiss_done(void *data, Evas_Object *obj EINA_UNUSED,
    evas_object_del(md->about_layout);
    md->about_layout = NULL;
    md->open_depth--;
+   if (md->open_depth == 0) edit_focus_set(md->ed);
    if (!md->menu_layout) return;
    elm_object_disabled_set(md->menu_layout, EINA_FALSE);
    elm_object_focus_set(md->menu_layout, EINA_TRUE);
@@ -154,6 +154,7 @@ menu_dismiss_done(void *data, Evas_Object *obj EINA_UNUSED,
    evas_object_del(md->menu_layout);
    md->menu_layout = NULL;
    md->open_depth--;
+   if (md->open_depth == 0) edit_focus_set(md->ed);
 }
 
 static void
@@ -165,6 +166,7 @@ warning_dismiss_done(void *data, Evas_Object *obj EINA_UNUSED,
    evas_object_del(md->warning_layout);
    md->warning_layout = NULL;
    md->open_depth--;
+   if (md->open_depth == 0) edit_focus_set(md->ed);
    if (!md->menu_layout) return;
    elm_object_disabled_set(md->menu_layout, EINA_FALSE);
    elm_object_focus_set(md->menu_layout, EINA_TRUE);
@@ -1172,6 +1174,7 @@ int
 menu_open_depth()
 {
    menu_data *md = g_md;
+   if (!md) return 0;
    return md->open_depth;
 }
 

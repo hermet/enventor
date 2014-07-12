@@ -204,8 +204,6 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
              return ECORE_CALLBACK_DONE;
           }
         menu_toggle();
-        if (menu_open_depth() == 0)
-          edit_focus_set(ad->ed);
         return ECORE_CALLBACK_DONE;
      }
 

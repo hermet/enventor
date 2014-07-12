@@ -87,7 +87,8 @@ static void
 goto_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    edit_data *ed = data;
-   goto_open(ed);
+   if (goto_is_opened()) goto_close();
+   else goto_open(ed);
    item_unselect((Elm_Object_Item *)event_info);
 }
 
