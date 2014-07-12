@@ -96,7 +96,7 @@ group "syntax_color_group" struct {
             value "key" string: "normal";
             value "key" string: "offset";
             value "key" string: "on";
-            value "key" string: "perspective";
+            value "key" string: "perspective:";
             value "key" string: "perspective_on";
             value "key" string: "relative";
             value "key" string: "repch";
