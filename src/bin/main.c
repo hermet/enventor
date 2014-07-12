@@ -22,15 +22,16 @@ edc_changed_cb(void *data, int type EINA_UNUSED, void *event)
    Eio_Monitor_Event *ev = event;
    app_data *ad = data;
 
-   if (!edit_changed_get(ad->ed)) return ECORE_CALLBACK_RENEW;
+   if (ev->monitor != ad->edc_monitor) return ECORE_CALLBACK_PASS_ON;
+
+   if (!edit_changed_get(ad->ed)) return ECORE_CALLBACK_DONE;
 
    if (strcmp(ev->filename, config_edc_path_get()))
-     return ECORE_CALLBACK_RENEW;
-
+     return ECORE_CALLBACK_DONE;
    build_edc();
    edit_changed_set(ad->ed, EINA_FALSE);
 
-   return ECORE_CALLBACK_RENEW;
+   return ECORE_CALLBACK_DONE;
 }
 
 static Eina_Bool
@@ -386,8 +387,9 @@ config_update_cb(void *data)
         edit_changed_set(ad->ed, EINA_FALSE);
         edj_mgr_clear();
         edc_view_set(stats_group_name_get());
-        if (ad->edc_monitor) eio_monitor_del(ad->edc_monitor);
+        eio_monitor_del(ad->edc_monitor);
         ad->edc_monitor = eio_monitor_add(config_edc_path_get());
+        if (!ad->edc_monitor) EINA_LOG_ERR("Failed to add Eio_Monitor");
      }
    //If the edc is reloaded, then rebuild it!
    else if (edit_changed_get(ad->ed))
@@ -532,6 +534,8 @@ init(app_data *ad, int argc, char **argv)
    base_gui_show();
 
    ad->edc_monitor = eio_monitor_add(config_edc_path_get());
+   if (!ad->edc_monitor) EINA_LOG_ERR("Failed to add Eio_Monitor");
+
    ecore_event_handler_add(EIO_MONITOR_FILE_MODIFIED, edc_changed_cb, ad);
 
    return EINA_TRUE;

@@ -2,6 +2,7 @@
 
 #include <Elementary.h>
 #include <Edje_Edit.h>
+#include <Eio.h>
 #include "common.h"
 
 struct viewer_s
@@ -18,6 +19,8 @@ struct viewer_s
 
    Ecore_Idler *idler;
    Ecore_Timer *timer;
+   Eio_Monitor *edj_monitor;
+   Ecore_Event_Handler *monitor_event;
 
    void (*del_cb)(void *data);
    void *data;
@@ -47,6 +50,9 @@ file_set_timer_cb(void *data)
    if (edje_object_file_set(vd->layout, config_edj_path_get(),
                             vd->group_name))
      {
+        eio_monitor_del(vd->edj_monitor);
+        vd->edj_monitor = eio_monitor_add(config_edj_path_get());
+        if (!vd->edj_monitor) EINA_LOG_ERR("Failed to add Eio_Monitor");
         vd->timer = NULL;
         return ECORE_CALLBACK_CANCEL;
      }
@@ -129,21 +135,33 @@ view_scroller_create(Evas_Object *parent)
    return scroller;
 }
 
-static void
-edje_change_file_cb(void *data, Evas_Object *obj,
-                    const char *emission EINA_UNUSED,
-                    const char *source EINA_UNUSED)
+static Eina_Bool
+edj_changed_cb(void *data, int type EINA_UNUSED, void *event)
 {
    view_data *vd = data;
+   Eio_Monitor_Event *ev = event;
+
+   if (vd->edj_monitor != ev->monitor) return ECORE_CALLBACK_PASS_ON;
+
+   eio_monitor_del(vd->edj_monitor);
+
    if (!edje_object_file_set(vd->layout, config_edj_path_get(),
                         vd->group_name))
      {
         vd->del_cb(vd->data);
         view_term(vd);
-        return;
+        vd->edj_monitor = NULL;
+        EINA_LOG_ERR("Failed to load edj file \"%s\"", config_edj_path_get());
+        return ECORE_CALLBACK_DONE;
      }
-   view_obj_min_update(obj);
+
+   vd->edj_monitor = eio_monitor_add(config_edj_path_get());
+   if (!vd->edj_monitor) EINA_LOG_ERR("Failed to add Eio_Monitor");
+
+   view_obj_min_update(vd->layout);
    view_part_highlight_set(vd, vd->part_name);
+
+   return ECORE_CALLBACK_DONE;
 }
 
 static void
@@ -193,13 +211,17 @@ view_obj_create(view_data *vd, const char *file_path, const char *group)
         //FIXME: more optimized way?
         vd->timer = ecore_timer_add(1, file_set_timer_cb, vd);
      }
+   else
+     {
+        eio_monitor_del(vd->edj_monitor);
+        vd->edj_monitor = eio_monitor_add(file_path);
+        if (!vd->edj_monitor) EINA_LOG_ERR("Failed to add Eio_Monitor");
+     }
+
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
    evas_object_event_callback_add(layout, EVAS_CALLBACK_RESIZE,
                                   layout_resize_cb, vd);
-   edje_object_signal_callback_add(layout,
-                                   "edje,change,file", "edje",
-                                   edje_change_file_cb, vd);
    view_obj_min_update(layout);
 
    return layout;
@@ -258,6 +280,10 @@ view_init(Evas_Object *parent, const char *group,
    vd->del_cb = del_cb;
    vd->data = data;
    view_part_highlight_set(vd, NULL);
+
+   vd->monitor_event =
+      ecore_event_handler_add(EIO_MONITOR_FILE_MODIFIED, edj_changed_cb, vd);
+
    return vd;
 }
 
@@ -273,9 +299,10 @@ view_term(view_data *vd)
      evas_object_event_callback_del(vd->part_obj, EVAS_CALLBACK_DEL,
                                     part_obj_del_cb);
    evas_object_del(vd->scroller);
-
    ecore_idler_del(vd->idler);
    ecore_timer_del(vd->timer);
+   eio_monitor_del(vd->edj_monitor);
+   ecore_event_handler_del(vd->monitor_event);
 
    free(vd);
 }
