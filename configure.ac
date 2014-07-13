@@ -101,6 +101,7 @@ data/themes/default/Makefile
 data/themes/default/images/Makefile
 data/templates/Makefile
 data/color/Makefile
+data/sounds/Makefile
 ])
 
 AC_OUTPUT

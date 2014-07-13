@@ -1,19 +1,27 @@
 MAINTAINERCLEANFILES = Makefile.in
 
 EDJE_CC = @edje_cc@
-EDJE_FLAGS = -id $(top_srcdir)/data/images
+EDJE_FLAGS = -id $(top_srcdir)/data/images -sd $(top_srcdir)/data/sounds
 
 filesdir = $(datadir)/$(PACKAGE)/templates
 files_DATA = basic.edc \
              basic.edj \
+             clip.edc \
+             clip.edj \
              empty.edc \
              empty.edj \
              image.edc \
              image.edj \
              map.edc \
              map.edj \
+             proxy.edc \
+             proxy.edj \
              rect.edc \
              rect.edj \
+             sound.edc \
+             sound.edj \
+             spacer.edc \
+             spacer.edj \
              text.edc \
              text.edj \
              textblock.edc \
@@ -54,6 +62,18 @@ image.edj: Makefile image.edc
 
 text.edj: Makefile text.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/text.edc $(builddir)/text.edj
+
+proxy.edj: Makefile proxy.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/proxy.edc $(builddir)/proxy.edj
+
+clip.edj: Makefile clip.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/clip.edc $(builddir)/clip.edj
+
+spacer.edj: Makefile spacer.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/spacer.edc $(builddir)/spacer.edj
+
+sound.edj: Makefile sound.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/sound.edc $(builddir)/sound.edj
 
 clean-local:
 	rm -f *.edj
