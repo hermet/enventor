@@ -473,10 +473,8 @@ edit_template_insert(edit_data *ed)
      {
         elm_entry_entry_insert(ed->en_edit, p);
         elm_entry_entry_insert(ed->en_edit, t[i]);
-        //Incease line by (line count - 1)
-        line_increase(ed, 1);
      }
-
+   line_increase(ed, (line_cnt - 1));
    elm_entry_entry_insert(ed->en_edit, p);
    elm_entry_entry_insert(ed->en_edit, t[i]);
 
