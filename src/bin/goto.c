@@ -102,6 +102,8 @@ goto_open(edit_data *ed)
    elm_win_focus_highlight_enabled_set(win, EINA_TRUE);
 
    elm_win_title_set(win, "Go to Line");
+   win_w = (Evas_Coord) ((double) win_w * elm_config_scale_get());
+   win_h = (Evas_Coord) ((double) win_h * elm_config_scale_get());
    evas_object_resize(win, win_w, win_h);
    evas_object_smart_callback_add(win, "delete,request", win_delete_request_cb,
                                   gd);
