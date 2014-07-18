@@ -7,4 +7,4 @@ Icon=enventor
 Exec=enventor
 Terminal=false
 #MimeType=text/edc
-Categories=Utility;EdcEditor;
+Categories=Development;Utility;
