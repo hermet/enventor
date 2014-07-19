@@ -1,6 +1,29 @@
 ============
-Enventor 0.2
+Enventor 0.3.0
 ============
+
+Changes since Enventor 0.2.0:
+---------------------------
+
+Additions:
+   * Go to line (Ctrl+L)
+   * Support template codes from the new file
+   * Auto Completion (Ctrl+O)
+
+Improvements:
+   * Improved syntax color keywords to be configurable (enventor/data/color/color.src)
+   * Support more syntax color keywords
+   * Optimized syntax color function with parital applying mechacnism (Much faster in case of editing huge text)
+   * Support syntax color on macros
+   * Better intelligent focus movement
+   * Changed desktop category to Development/Utility
+
+Fixes:
+   * Fixed broken Search GUI scalability
+   * Fixed corrupted line number displaying
+   * Fixed a crash when an invalid input file is requested
+   * Got rid of a dangling empty space in the end of the file
+   * Fixed missing loading "&" character in a edc
 
 Changes since Enventor 0.1:
 ---------------------------
