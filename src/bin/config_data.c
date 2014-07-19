@@ -47,7 +47,9 @@ config_edj_path_update(config_data *cd)
      snprintf(buf, (ext - file) + 1, "%s", file);
    else
      strncpy(buf, file, sizeof(buf));
-   sprintf(edj_path, "%s/%s.edj", ecore_file_dir_get(cd->edc_path), buf);
+   char *filedir = ecore_file_dir_get(cd->edc_path);
+   sprintf(edj_path, "%s/%s.edj", filedir, buf);
+   free(filedir);
 
    eina_stringshare_replace(&cd->edj_path, edj_path);
 }

@@ -150,7 +150,6 @@ edj_changed_cb(void *data, int type EINA_UNUSED, void *event)
      {
         vd->del_cb(vd->data);
         view_term(vd);
-        vd->edj_monitor = NULL;
         EINA_LOG_ERR("Failed to load edj file \"%s\"", config_edj_path_get());
         return ECORE_CALLBACK_DONE;
      }
@@ -292,8 +291,8 @@ view_term(view_data *vd)
 {
    if (!vd) return;
 
-   if (vd->group_name) eina_stringshare_del(vd->group_name);
-   if (vd->part_name) eina_stringshare_del(vd->part_name);
+   eina_stringshare_del(vd->group_name);
+   eina_stringshare_del(vd->part_name);
 
    if (vd->part_obj)
      evas_object_event_callback_del(vd->part_obj, EVAS_CALLBACK_DEL,

@@ -44,6 +44,7 @@ syntax_term(syntax_helper *sh)
 
    ecore_timer_del(sh->buf_flush_timer);
    eina_strbuf_free(sh->strbuf);
+   free(sh);
 }
 
 color_data *
