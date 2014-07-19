@@ -130,7 +130,7 @@ newfile_create(Evas_Object *parent, Evas_Smart_Cb selected_cb, void *data)
    elm_object_focus_set(list, EINA_TRUE);
    evas_object_size_hint_weight_set(list, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(list, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_smart_callback_add(list, "clicked,double", selected_cb, data);
+   evas_object_smart_callback_add(list, "activated", selected_cb, data);
 
    Eina_List *l;
    Eina_Stringshare *name;
