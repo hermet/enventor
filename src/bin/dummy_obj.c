@@ -94,31 +94,27 @@ animator_cb(void *data)
 }
 
 static void
-edje_change_file_cb(void *data, Evas_Object *obj EINA_UNUSED,
-                    const char *emission EINA_UNUSED,
-                    const char *source EINA_UNUSED)
-{
-   dummy_obj *dummy = data;
-   dummy_objs_update(dummy);
-}
-
-static void
 layout_del_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED, Evas_Object *obj,
               void *event_info EINA_UNUSED)
 {
    dummy_obj_del(obj);
 }
 
-void dummy_obj_new(Evas_Object *layout)
+void
+dummy_obj_update(Evas_Object *layout)
+{
+   dummy_obj *dummy = evas_object_data_get(layout, DUMMYOBJ);
+   if (!dummy) return;
+   dummy_objs_update(dummy);
+}
+
+void
+dummy_obj_new(Evas_Object *layout)
 {
    dummy_obj *dummy = evas_object_data_get(layout, DUMMYOBJ);
    if (dummy) return;
 
    dummy = calloc(1, sizeof(dummy_obj));
-
-   edje_object_signal_callback_add(layout,
-                                   "edje,change,file", "edje",
-                                   edje_change_file_cb, dummy);
 
    Ecore_Animator *animator = ecore_animator_add(animator_cb, dummy);
    evas_object_data_set(layout, DUMMYOBJ, dummy);
@@ -148,8 +144,4 @@ void dummy_obj_del(Evas_Object *layout)
 
    evas_object_data_set(layout, DUMMYOBJ, NULL);
    evas_object_event_callback_del(layout, EVAS_CALLBACK_DEL, layout_del_cb);
-   edje_object_signal_callback_del(layout,
-                                   "edje,change,file", "edje",
-                                   edje_change_file_cb);
-
 }

@@ -159,6 +159,7 @@ edj_changed_cb(void *data, int type EINA_UNUSED, void *event)
 
    view_obj_min_update(vd->layout);
    view_part_highlight_set(vd, vd->part_name);
+   dummy_obj_update(vd->layout);
 
    return ECORE_CALLBACK_DONE;
 }
