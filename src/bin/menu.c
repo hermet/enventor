@@ -21,6 +21,7 @@ struct menu_s
    Evas_Object *toggle_highlight;
    Evas_Object *toggle_swallow;
    Evas_Object *toggle_indent;
+   Evas_Object *toggle_autocomp;
    Evas_Object *ctxpopup;
 
    const char *last_accessed_path;
@@ -287,6 +288,7 @@ setting_apply_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
    config_part_highlight_set(elm_check_state_get(md->toggle_highlight));
    config_dummy_swallow_set(elm_check_state_get(md->toggle_swallow));
    config_auto_indent_set(elm_check_state_get(md->toggle_indent));
+   config_auto_complete_set(elm_check_state_get(md->toggle_autocomp));
 
    config_apply();
 
@@ -381,6 +383,7 @@ setting_reset_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
    elm_check_state_set(md->toggle_highlight, config_part_highlight_get());
    elm_check_state_set(md->toggle_swallow, config_dummy_swallow_get());
    elm_check_state_set(md->toggle_indent, config_auto_indent_get());
+   elm_check_state_set(md->toggle_autocomp, config_auto_complete_get());
 }
 
 static Evas_Object *
@@ -558,6 +561,11 @@ setting_open(menu_data *md)
                                 config_auto_indent_get());
    elm_box_pack_end(box, toggle_indent);
 
+   //Toggle (Auto Complete)
+   Evas_Object *toggle_autocomp = toggle_create(box, "Auto Completion",
+                                config_auto_complete_get());
+   elm_box_pack_end(box, toggle_autocomp);
+
    Evas_Object *btn;
 
    //Apply Button
@@ -594,6 +602,7 @@ setting_open(menu_data *md)
    md->toggle_highlight = toggle_highlight;
    md->toggle_swallow = toggle_swallow;
    md->toggle_indent = toggle_indent;
+   md->toggle_autocomp = toggle_autocomp;
    md->open_depth++;
 }
 

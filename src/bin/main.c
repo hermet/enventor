@@ -171,6 +171,12 @@ ctrl_func(app_data *ad, const char *key)
         auto_indentation_toggle();
         return ECORE_CALLBACK_DONE;
      }
+   //Auto Completion
+   if (!strcmp(key, "o") || !strcmp(key, "O"))
+     {
+        autocomp_toggle();
+        return ECORE_CALLBACK_DONE;
+     }
    return ECORE_CALLBACK_PASS_ON;
 }
 
@@ -179,6 +185,8 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
 {
    Ecore_Event_Key *event = ev;
    app_data *ad = data;
+
+   if (autocomp_key_event_hook(event->key)) return ECORE_CALLBACK_DONE;
 
    //Shift Key
    if (!strcmp("Shift_L", event->key))
@@ -522,6 +530,7 @@ init(app_data *ad, int argc, char **argv)
    if (!edc_default_setup()) return EINA_FALSE;
    if (!base_gui_init()) return EINA_FALSE;
 
+   autocomp_init(base_layout_get());
    edj_mgr_set();
    statusbar_set();
    edc_edit_set(ad);
@@ -549,6 +558,7 @@ term(app_data *ad)
    stats_term();
    base_gui_term();
    config_term();
+   autocomp_term();
 
    elm_shutdown();
 }

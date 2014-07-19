@@ -28,6 +28,7 @@ typedef struct config_s
    Eina_Bool dummy_swallow;
    Eina_Bool auto_indent;
    Eina_Bool tools;
+   Eina_Bool auto_complete;
 } config_data;
 
 static config_data *g_cd = NULL;
@@ -128,6 +129,7 @@ config_load()
         cd->dummy_swallow = EINA_TRUE;
         cd->auto_indent = EINA_TRUE;
         cd->tools = EINA_FALSE;
+        cd->auto_complete = EINA_TRUE;
      }
 
    g_cd = cd;
@@ -200,6 +202,8 @@ eddc_init()
                                  auto_indent, EET_T_UCHAR);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "tools",
                                  tools, EET_T_UCHAR);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "auto_complete",
+                                    auto_complete, EET_T_UCHAR);
 }
 
 void
@@ -572,6 +576,13 @@ config_auto_indent_get()
    return cd->auto_indent;
 }
 
+Eina_Bool
+config_auto_complete_get()
+{
+   config_data *cd = g_cd;
+   return cd->auto_complete;
+}
+
 void
 config_font_size_set(float font_size)
 {
@@ -590,6 +601,13 @@ config_font_size_get()
 {
    config_data *cd = g_cd;
    return cd->font_size;
+}
+
+void
+config_auto_complete_set(Eina_Bool auto_complete)
+{
+   config_data *cd = g_cd;
+   cd->auto_complete = auto_complete;
 }
 
 void

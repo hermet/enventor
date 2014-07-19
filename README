@@ -47,6 +47,7 @@ F12 = Setting
  
 Ctrl+S = Quick Save + Compile EDC
 Ctrl+I = On/Off Auto Indentation
+Ctrl+O = On/Off Auto Completion
 Ctrl+W = Show/Hide Dummy Swallow
 Ctrl+H = On/Off Part Highlighting
 Ctrl+, = Full Edit View / Split View

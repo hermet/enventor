@@ -34,6 +34,8 @@ Eina_Bool config_dummy_swallow_get();
 void config_dummy_swallow_set(Eina_Bool dummy_swallow);
 void config_auto_indent_set(Eina_Bool auto_indent);
 Eina_Bool config_auto_indent_get();
+void config_auto_complete_set(Eina_Bool auto_complete);
+Eina_Bool config_auto_complete_get();
 void config_font_size_set(float font_size);
 float config_font_size_get();
 void config_view_scale_set(double view_scale);

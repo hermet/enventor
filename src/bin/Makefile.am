@@ -30,6 +30,7 @@ enventor_SOURCES = \
 	search.c \
 	goto.c \
 	newfile.c \
+    auto_comp.c \
 	globals.c
 
 enventor_LDADD = @ENVENTOR_LIBS@

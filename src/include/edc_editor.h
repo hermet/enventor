@@ -24,3 +24,6 @@ void edit_goto(edit_data *ed, int line);
 void edit_syntax_color_full_apply(edit_data *ed, Eina_Bool force);
 void edit_syntax_color_partial_apply(edit_data *ed);
 Evas_Object * edit_entry_get(edit_data *ed);
+void edit_line_increase(edit_data *ed, int cnt);
+void edit_line_decrease(edit_data *ed, int cnt);
+int edit_cur_indent_depth_get(edit_data *ed);

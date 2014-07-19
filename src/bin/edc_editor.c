@@ -59,45 +59,6 @@ line_init(edit_data *ed)
 }
 
 static void
-line_increase(edit_data *ed, int cnt)
-{
-   char buf[MAX_LINE_DIGIT_CNT];
-   int i;
-
-   for (i = 0; i < cnt; i++)
-     {
-        ed->line_max++;
-        snprintf(buf, sizeof(buf), "<br/>%d", ed->line_max);
-        elm_entry_entry_append(ed->en_line, buf);
-     }
-}
-
-static void
-line_decrease(edit_data *ed, int cnt)
-{
-   if (cnt < 1) return;
-
-   Evas_Object *textblock = elm_entry_textblock_get(ed->en_line);
-   Evas_Textblock_Cursor *cur1 = evas_object_textblock_cursor_new(textblock);
-   evas_textblock_cursor_line_set(cur1, (ed->line_max - cnt - 1));
-   evas_textblock_cursor_line_char_last(cur1);
-
-   Evas_Textblock_Cursor *cur2 = evas_object_textblock_cursor_new(textblock);
-   evas_textblock_cursor_paragraph_last(cur2);
-
-   evas_textblock_cursor_range_delete(cur1, cur2);
-
-   evas_textblock_cursor_free(cur1);
-   evas_textblock_cursor_free(cur2);
-
-   elm_entry_calc_force(ed->en_line);
-
-   ed->line_max -= cnt;
-
-   if (ed->line_max < 1) line_init(ed);
-}
-
-static void
 visible_text_region_get(edit_data *ed, int *from_line, int *to_line)
 {
    Evas_Coord region_y, region_h;
@@ -275,14 +236,14 @@ edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 
         if (!strcmp(info->change.insert.content, EOL))
           {
-             line_increase(ed, 1);
+             edit_line_increase(ed, 1);
              syntax_color = EINA_FALSE;
           }
         else
           {
              int increase =
                 parser_line_cnt_get(ed->pd, info->change.insert.content);
-             line_increase(ed, increase);
+             edit_line_increase(ed, increase);
           }
 
         if (config_auto_indent_get())
@@ -301,7 +262,7 @@ edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
                decrease++;
           }
 
-        line_decrease(ed, decrease);
+        edit_line_decrease(ed, decrease);
         if (info->change.del.content[0] == ' ') return;
      }
 
@@ -407,7 +368,7 @@ edit_syntax_color_full_apply(edit_data *ed, Eina_Bool force)
 void
 edit_syntax_color_partial_apply(edit_data *ed)
 {
-   ed->syntax_color_lock--;
+   if (ed->syntax_color_lock > 0) ed->syntax_color_lock = 0;
    syntax_color_partial_update(ed, SYNTAX_COLOR_DEFAULT_TIME);
 }
 
@@ -474,7 +435,7 @@ edit_template_insert(edit_data *ed)
         elm_entry_entry_insert(ed->en_edit, p);
         elm_entry_entry_insert(ed->en_edit, t[i]);
      }
-   line_increase(ed, (line_cnt - 1));
+   edit_line_increase(ed, (line_cnt -1));
    elm_entry_entry_insert(ed->en_edit, p);
    elm_entry_entry_insert(ed->en_edit, t[i]);
 
@@ -483,6 +444,12 @@ edit_template_insert(edit_data *ed)
    syntax_color_partial_update(ed, 0);
    snprintf(buf, sizeof(buf), "Template code inserted. (%s)", buf2);
    stats_info_msg_update(buf);
+}
+
+int
+edit_cur_indent_depth_get(edit_data *ed)
+{
+   return indent_space_get(syntax_indent_data_get(ed->sh), ed->en_edit);
 }
 
 void
@@ -552,7 +519,7 @@ edit_template_part_insert(edit_data *ed, Edje_Part_Type type)
         elm_entry_entry_insert(ed->en_edit, p);
         elm_entry_entry_insert(ed->en_edit, t[i]);
         //Incease line by (line count - 1)
-        line_increase(ed, 1);
+        edit_line_increase(ed, 1);
      }
 
    elm_entry_entry_insert(ed->en_edit, p);
@@ -872,7 +839,7 @@ edit_line_delete(edit_data *ed)
    evas_textblock_cursor_free(cur2);
    elm_entry_calc_force(ed->en_edit);
 
-   line_decrease(ed, 1);
+   edit_line_decrease(ed, 1);
 
    cur_line_pos_set(ed, EINA_TRUE);
    edit_changed_set(ed, EINA_TRUE);
@@ -1068,6 +1035,8 @@ edit_edc_read(edit_data *ed, const char *file_path)
 
    ed->line_max = 0;
 
+   autocomp_target_set(NULL);
+
    file = eina_file_open(file_path, EINA_FALSE);
    if (!file) goto err;
 
@@ -1109,6 +1078,8 @@ edit_edc_read(edit_data *ed, const char *file_path)
    base_title_set(config_edc_path_get());
 
    ecore_animator_add(syntax_color_timer_cb, ed);
+
+   autocomp_target_set(ed);
 
 err:
    //Even any text is not inserted, line number should start with 1
@@ -1235,4 +1206,43 @@ Evas_Object *
 edit_entry_get(edit_data *ed)
 {
    return ed->en_edit;
+}
+
+void
+edit_line_increase(edit_data *ed, int cnt)
+{
+   char buf[MAX_LINE_DIGIT_CNT];
+   int i;
+
+   for (i = 0; i < cnt; i++)
+     {
+        ed->line_max++;
+        snprintf(buf, sizeof(buf), "<br/>%d", ed->line_max);
+        elm_entry_entry_append(ed->en_line, buf);
+     }
+}
+
+void
+edit_line_decrease(edit_data *ed, int cnt)
+{
+   if (cnt < 1) return;
+
+   Evas_Object *textblock = elm_entry_textblock_get(ed->en_line);
+   Evas_Textblock_Cursor *cur1 = evas_object_textblock_cursor_new(textblock);
+   evas_textblock_cursor_line_set(cur1, (ed->line_max - cnt - 1));
+   evas_textblock_cursor_line_char_last(cur1);
+
+   Evas_Textblock_Cursor *cur2 = evas_object_textblock_cursor_new(textblock);
+   evas_textblock_cursor_paragraph_last(cur2);
+
+   evas_textblock_cursor_range_delete(cur1, cur2);
+
+   evas_textblock_cursor_free(cur1);
+   evas_textblock_cursor_free(cur2);
+
+   elm_entry_calc_force(ed->en_line);
+
+   ed->line_max -= cnt;
+
+   if (ed->line_max < 1) line_init(ed);
 }
