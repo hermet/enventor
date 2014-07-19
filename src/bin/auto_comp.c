@@ -63,7 +63,7 @@ init_thread_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
    COMPDATA_SET(ad, "signal",AUTOCOMP_SIGNAL, 2, 0);
    COMPDATA_SET(ad, "source",AUTOCOMP_SOURCE, 2, 0);
    COMPDATA_SET(ad, "target",AUTOCOMP_TARGET, 2, 0);
-   COMPDATA_SET(ad, "scale",AUTOCOMP_SCALE, 0, 0);
+   COMPDATA_SET(ad, "scale",AUTOCOMP_SCALE, 1, 0);
    COMPDATA_SET(ad, "rel1",AUTOCOMP_REL1, 2, 1);
    COMPDATA_SET(ad, "rel2",AUTOCOMP_REL2, 2, 1);
    COMPDATA_SET(ad, "relatvie",AUTOCOMP_RELATIVE, 1, 0);

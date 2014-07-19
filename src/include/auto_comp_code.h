@@ -97,7 +97,7 @@ const char *AUTOCOMP_TARGET[AUTOCOMP_TARGET_LINE_CNT] =
 #define AUTOCOMP_SCALE_LINE_CNT 1
 const char *AUTOCOMP_SCALE[AUTOCOMP_SCALE_LINE_CNT] =
 {
-   "scale: 1;"
+   "scale: ;"
 };
 
 #define AUTOCOMP_REL1_LINE_CNT 3
