@@ -560,6 +560,8 @@ term(app_data *ad)
    config_term();
    autocomp_term();
 
+   eio_monitor_del(ad->edc_monitor);
+
    elm_shutdown();
 }
 

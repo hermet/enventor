@@ -80,6 +80,8 @@ dummy_objs_update(dummy_obj *dummy)
              dummy->swallows = eina_list_append(dummy->swallows, po);
           }
      }
+
+   edje_edit_string_list_free(parts);
 }
 
 static Eina_Bool
