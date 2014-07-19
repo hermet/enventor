@@ -2,7 +2,7 @@ collections {
    styles {
       style { name: "text_style";
          base: "font="Sans" font_size=30 text_class=entry color=#0088AA style=shadow,bottom shadow_color=#00000080 valign=0.5 ellipsis=1.0 wrap=none align=center";
-        }
+      }
    }
    group { name: "main";
       parts {
