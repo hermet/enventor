@@ -1079,14 +1079,13 @@ edit_edc_read(edit_data *ed, const char *file_path)
 
    ecore_animator_add(syntax_color_timer_cb, ed);
 
-   autocomp_target_set(ed);
-
 err:
    //Even any text is not inserted, line number should start with 1
    if (ed->line_max == 0) line_init(ed);
    if (strbuf_line) eina_strbuf_free(strbuf_line);
    if (utf8_edit) eina_file_map_free(file, utf8_edit);
    if (file) eina_file_close(file);
+   autocomp_target_set(ed);
 }
 
 void

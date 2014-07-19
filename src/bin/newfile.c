@@ -79,10 +79,15 @@ list_item_selected_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Evas_Object *layout = data;
    Elm_Object_Item *it = event_info;
+   char *name = (char *)elm_object_item_text_get(it);
+
+   /* empty is real empty. cannot load the edj. so replace the empty to minimum
+      to show the preview layout. */
+   if (!strcmp("empty", name)) name = "minimum";
 
    char buf[PATH_MAX];
    snprintf(buf, sizeof(buf), "%s/templates/%s.edj", elm_app_data_dir_get(),
-            elm_object_item_text_get(it));
+            name);
 
    elm_layout_file_set(layout, buf, "main");
 }
