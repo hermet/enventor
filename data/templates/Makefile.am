@@ -16,7 +16,7 @@ files_DATA = basic.edc \
              map.edj \
              minimum.edc \
              minimum.edj \
-				 proxy.edc \
+             proxy.edc \
              proxy.edj \
              rect.edc \
              rect.edj \
