@@ -20,6 +20,6 @@ EXTRA_DIST = common.h \
 	template_code.h \
 	tools.h \
 	newfile.h \
-    auto_comp.h \
+	auto_comp.h \
 	auto_comp_code.h \
 	search.h
