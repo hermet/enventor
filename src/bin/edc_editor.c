@@ -1228,13 +1228,17 @@ edit_line_decrease(edit_data *ed, int cnt)
 
    Evas_Object *textblock = elm_entry_textblock_get(ed->en_line);
    Evas_Textblock_Cursor *cur1 = evas_object_textblock_cursor_new(textblock);
-   evas_textblock_cursor_line_set(cur1, (ed->line_max - cnt - 1));
-   evas_textblock_cursor_line_char_last(cur1);
-
    Evas_Textblock_Cursor *cur2 = evas_object_textblock_cursor_new(textblock);
-   evas_textblock_cursor_paragraph_last(cur2);
 
-   evas_textblock_cursor_range_delete(cur1, cur2);
+   int i = cnt;
+   while (i)
+     {
+        evas_textblock_cursor_paragraph_last(cur1);
+        evas_textblock_cursor_paragraph_prev(cur1);
+        evas_textblock_cursor_paragraph_last(cur2);
+        evas_textblock_cursor_range_delete(cur1, cur2);
+        i--;
+     }
 
    evas_textblock_cursor_free(cur1);
    evas_textblock_cursor_free(cur2);
