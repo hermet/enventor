@@ -1219,6 +1219,7 @@ edit_line_increase(edit_data *ed, int cnt)
         snprintf(buf, sizeof(buf), "<br/>%d", ed->line_max);
         elm_entry_entry_append(ed->en_line, buf);
      }
+   elm_entry_calc_force(ed->en_line);
 }
 
 void
