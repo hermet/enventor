@@ -244,7 +244,11 @@ ctxpopup_candidate_list_create(edit_data *ed, attr_value *attr,
 
    //ctxpopup data
    ctxpopup_data *ctxdata = malloc(sizeof(ctxpopup_data));
-   if (!ctxdata) goto err;
+   if (!ctxdata)
+     {
+        EINA_LOG_ERR("Failed to allocate Memory!");
+        goto err;
+     }
    ctxdata->selected_cb = ctxpopup_selected_cb;
    ctxdata->data = ed;
    evas_object_data_set(ctxpopup, "ctxpopup_data", ctxdata);
@@ -330,7 +334,11 @@ ctxpopup_img_preview_create(edit_data *ed,
                                        ELM_CTXPOPUP_DIRECTION_RIGHT);
    //ctxpopup data
    ctxpopup_data *ctxdata = malloc(sizeof(ctxpopup_data));
-   if (!ctxdata) return NULL;
+   if (!ctxdata)
+     {
+        EINA_LOG_ERR("Failed to allocate Memory!");
+        return NULL;
+     }
    ctxdata->relay_cb = ctxpopup_relay_cb;
    ctxdata->data = ed;
    ctxdata->ctxpopup = ctxpopup;

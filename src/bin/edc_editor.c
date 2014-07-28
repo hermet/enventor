@@ -205,6 +205,11 @@ syntax_color_full_update(edit_data *ed, Eina_Bool thread)
    if (thread)
      {
         syntax_color_td *td = malloc(sizeof(syntax_color_td));
+        if (!td)
+          {
+             EINA_LOG_ERR("Failed to allocate Memory!");
+             return;
+          }
         td->ed = ed;
         Evas_Object *tb = elm_entry_textblock_get(ed->en_edit);
         td->text = (char *) evas_object_textblock_text_markup_get(tb);
@@ -916,6 +921,11 @@ edit_init(Evas_Object *parent)
    syntax_helper *sh = syntax_init();
 
    edit_data *ed = calloc(1, sizeof(edit_data));
+   if (!ed)
+     {
+        EINA_LOG_ERR("Failed to allocate Memory!");
+        return NULL;
+     }
    ed->pd = pd;
    ed->sh = sh;
 

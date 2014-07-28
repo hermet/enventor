@@ -141,6 +141,11 @@ color_table_init(color_data *cd)
                }
 
              tuple = malloc(sizeof(color_tuple));
+             if (!tuple)
+               {
+                  EINA_LOG_ERR("Failed to allocate Memory!");
+                  continue;
+               }
              tuple->col = cd->cols[i];
              tuple->key = eina_stringshare_add(key);
              //free(key);
@@ -174,6 +179,12 @@ macro_key_push(color_data *cd, char *str, int len)
      }
 
    color_tuple *tuple = malloc(sizeof(color_tuple));
+   if (!tuple)
+     {
+        EINA_LOG_ERR("Failed to allocate Memory!");
+        if (cut) free(key);
+        return;
+     }
    tuple->col = cd->col_macro;
    tuple->key = eina_stringshare_add(key);
    eina_inarray_push(inarray, tuple);
@@ -201,6 +212,11 @@ color_data *
 color_init(Eina_Strbuf *strbuf)
 {
    color_data *cd = malloc(sizeof(color_data));
+   if (!cd)
+     {
+        EINA_LOG_ERR("Failed to allocate Memory!");
+        return NULL;
+     }
    cd->strbuf = strbuf;
    cd->cachebuf = eina_strbuf_new();
    cd->thread = ecore_thread_run(init_thread_blocking, NULL, NULL, cd);

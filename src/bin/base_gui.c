@@ -128,6 +128,11 @@ base_gui_init()
    char buf[PATH_MAX];
 
    base_data *bd = calloc(1, sizeof(base_data));
+   if (!bd)
+     {
+        EINA_LOG_ERR("Failed to allocate Memory!");
+        return EINA_FALSE;
+     }
    g_bd = bd;
 
    //Window

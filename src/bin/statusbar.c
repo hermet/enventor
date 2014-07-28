@@ -39,6 +39,11 @@ Evas_Object *
 stats_init(Evas_Object *parent)
 {
    stats_data *sd = calloc(1, sizeof(stats_data));
+   if (!sd)
+     {
+        EINA_LOG_ERR("Failed to allocate Memory!");
+        return NULL;
+     }
    g_sd = sd;
 
    Evas_Object *layout = elm_layout_add(parent);

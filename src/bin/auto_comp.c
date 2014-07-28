@@ -484,6 +484,11 @@ void
 autocomp_init(Evas_Object *parent)
 {
    autocomp_data *ad = calloc(1, sizeof(autocomp_data));
+   if (!ad)
+     {
+        EINA_LOG_ERR("Failed to allocate Memory!");
+        return;
+     }
    ad->init_thread = ecore_thread_run(init_thread_cb, init_thread_end_cb,
                                       init_thread_cancel_cb, ad);
    ad->anchor = elm_button_add(parent);

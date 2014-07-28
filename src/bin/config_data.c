@@ -122,7 +122,11 @@ config_load()
    if (!cd)
      {
         cd = calloc(1, sizeof(config_data));
-
+        if (!cd)
+          {
+             EINA_LOG_ERR("Failed to allocate Memory!");
+             return NULL;
+          }
         cd->font_size = 1.0f;
         cd->view_scale = 1;
         cd->stats_bar = EINA_TRUE;

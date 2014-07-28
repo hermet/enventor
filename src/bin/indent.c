@@ -11,6 +11,11 @@ indent_data *
 indent_init(Eina_Strbuf *strbuf)
 {
    indent_data *id = malloc(sizeof(indent_data));
+   if (!id)
+     {
+        EINA_LOG_ERR("Failed to allocate Memory!");
+        return NULL;
+     }
    id->strbuf = strbuf;
    return id;
 }

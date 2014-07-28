@@ -1067,6 +1067,11 @@ void
 menu_init(edit_data *ed)
 {
    menu_data *md = calloc(1, sizeof(menu_data));
+   if (!md)
+     {
+        EINA_LOG_ERR("Failed to allocate Memory!");
+        return;
+     }
    g_md = md;
 
    md->ed = ed;

@@ -725,7 +725,11 @@ parser_cur_group_name_get(parser_data *pd, Evas_Object *entry,
    if (pd->thread) ecore_thread_cancel(pd->thread);
 
    cur_name_td *td = calloc(1, sizeof(cur_name_td));
-   if (!td) return;
+   if (!td)
+     {
+        EINA_LOG_ERR("Failed to allocate Memory!");
+        return;
+     }
 
    const char *text = elm_entry_entry_get(entry);
    if (!text) return;
@@ -753,7 +757,11 @@ parser_cur_name_get(parser_data *pd, Evas_Object *entry, void (*cb)(void *data,
    if (pd->thread) ecore_thread_cancel(pd->thread);
 
    cur_name_td *td = calloc(1, sizeof(cur_name_td));
-   if (!td) return;
+   if (!td)
+     {
+        EINA_LOG_ERR("Failed to allocate Memory!");
+        return;
+     }
 
    const char *text = elm_entry_entry_get(entry);
    if (!text) return;
@@ -854,8 +862,20 @@ parser_data *
 parser_init()
 {
    parser_data *pd = calloc(1, sizeof(parser_data));
+   if (!pd)
+     {
+        EINA_LOG_ERR("Failed to allocate Memory!");
+        return NULL;
+     }
 
    type_init_td *td = calloc(1, sizeof(type_init_td));
+   if (!td)
+     {
+        EINA_LOG_ERR("Failed to allocate Memory!");
+        free(pd);
+        return NULL;
+     }
+
    td->pd = pd;
    pd->init_thread = ecore_thread_run(type_init_thread_blocking,
                                       type_init_thread_end,

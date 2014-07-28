@@ -68,7 +68,11 @@ dummy_objs_update(dummy_obj *dummy)
                continue;
 
              po = malloc(sizeof(part_obj));
-             if (!po) continue;
+             if (!po)
+               {
+                  EINA_LOG_ERR("Failed to allocate Memory!");
+                  continue;
+               }
 
              //New part. Add fake object.
              Evas_Object *obj = edje_object_add(dummy->layout);
@@ -115,6 +119,11 @@ dummy_obj_new(Evas_Object *layout)
    if (dummy) return;
 
    dummy = calloc(1, sizeof(dummy_obj));
+   if (!dummy)
+     {
+        EINA_LOG_ERR("Failed to allocate Memory!");
+        return;
+     }
 
    Ecore_Animator *animator = ecore_animator_add(animator_cb, dummy);
    evas_object_data_set(layout, DUMMYOBJ, dummy);

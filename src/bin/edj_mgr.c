@@ -62,6 +62,11 @@ void
 edj_mgr_init(Evas_Object *parent)
 {
    edj_mgr *em = calloc(1, sizeof(edj_mgr));
+   if (!em)
+     {
+        EINA_LOG_ERR("Failed to allocate Memory!");
+        return;
+     }
    g_em = em;
 
    Evas_Object *layout = elm_layout_add(parent);
@@ -114,7 +119,11 @@ edj_mgr_view_new(const char *group)
    edj_mgr *em = g_em;
 
    edj_data *edj = calloc(1, sizeof(edj_data));
-   if (!edj) return NULL;
+   if (!edj)
+     {
+        EINA_LOG_ERR("Failed to allocate Memory!");
+        return NULL;
+     }
 
    view_data *vd = view_init(em->layout, group, view_del_cb, edj);
    if (!vd)

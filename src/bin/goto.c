@@ -94,6 +94,11 @@ goto_open(edit_data *ed)
    search_close();
 
    gd = calloc(1, sizeof(goto_data));
+   if (!gd)
+     {
+        EINA_LOG_ERR("Failed to allocate Memory!");
+        return;
+     }
    g_gd = gd;
 
    //Win

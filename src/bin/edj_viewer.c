@@ -271,6 +271,11 @@ view_init(Evas_Object *parent, const char *group,
           void (*del_cb)(void *data), void *data)
 {
    view_data *vd = calloc(1, sizeof(view_data));
+   if (!vd)
+     {
+        EINA_LOG_ERR("Failed to allocate Memory!");
+        return NULL;
+     }
    vd->parent = parent;
    vd->scroller = view_scroller_create(parent);
    vd->dummy_on = config_dummy_swallow_get();

@@ -27,6 +27,11 @@ syntax_helper *
 syntax_init()
 {
    syntax_helper *sh = malloc(sizeof(syntax_helper));
+   if (!sh)
+     {
+        EINA_LOG_ERR("Failed to allocate Memory!");
+        return NULL;
+     }
    sh->strbuf = eina_strbuf_new();
    sh->buf_flush_timer = ecore_timer_add(1800, buf_flush_timer_cb, sh);
 
