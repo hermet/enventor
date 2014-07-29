@@ -963,6 +963,7 @@ edit_init(Evas_Object *parent)
    evas_object_color_set(en_line, 101, 101, 101, 255);
    elm_entry_editable_set(en_line, EINA_FALSE);
    elm_entry_line_wrap_set(en_line, ELM_WRAP_NONE);
+   elm_object_focus_allow_set(en_line, EINA_FALSE);
    evas_object_size_hint_weight_set(en_line, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(en_line, 0, EVAS_HINT_FILL);
    elm_object_part_content_set(layout, "elm.swallow.linenumber", en_line);
