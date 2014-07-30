@@ -43,9 +43,6 @@ EXTRA_DIST = \
    sym_up_light_normal.png \
    vgrad_med_lighter.png \
    warning.png \
-   panes_left_arrow.png \
-   panes_right_arrow.png \
-   panes_recover_arrow.png \
    pm_fill.png \
    file.png \
    find.png \
