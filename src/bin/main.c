@@ -215,7 +215,7 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
         return ECORE_CALLBACK_DONE;
      }
 
-   if (menu_open_depth() > 0) return ECORE_CALLBACK_PASS_ON;
+   if (menu_activated_get() > 0) return ECORE_CALLBACK_PASS_ON;
 
    //Control Key
    if (!strcmp("Control_L", event->key))

@@ -9,4 +9,6 @@ void menu_edc_load();
 void menu_exit();
 void menu_about();
 void menu_setting();
-int menu_open_depth();
+int menu_activated_get();
+void menu_activate_request();
+void menu_deactivate_request();

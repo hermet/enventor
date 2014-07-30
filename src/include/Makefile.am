@@ -23,4 +23,5 @@ EXTRA_DIST = common.h \
 	auto_comp.h \
 	auto_comp_code.h \
 	goto.h \
+	setting.h \
 	search.h

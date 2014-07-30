@@ -30,5 +30,6 @@ typedef struct indent_s indent_data;
 #include "goto.h"
 #include "newfile.h"
 #include "auto_comp.h"
+#include "setting.h"
 
 #endif
