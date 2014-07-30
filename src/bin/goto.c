@@ -121,7 +121,7 @@ goto_open(edit_data *ed)
 
    //Layout
    Evas_Object *layout = elm_layout_add(win);
-   elm_layout_file_set(layout, EDJE_PATH, "goto");
+   elm_layout_file_set(layout, EDJE_PATH, "goto_layout");
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_show(layout);
    elm_win_resize_object_add(win, layout);

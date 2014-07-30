@@ -11,8 +11,8 @@ files_DATA = enventor.edj
 EXTRA_DIST = enventor.edc \
              content.edc \
              images.edc \
-             layout.edc \
-             menu.edc \
+             layout_common.edc \
+             layout_setting.edc \
              theme_ext.edc
 
 enventor.edj: Makefile $(EXTRA_DIST)

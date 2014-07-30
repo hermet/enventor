@@ -6,6 +6,6 @@ collections {
    #include "content.edc"
    #include "images.edc"
    #include "theme_ext.edc"
-   #include "layout.edc"
-   #include "menu.edc"
+   #include "layout_common.edc"
+   #include "layout_setting.edc"
 }

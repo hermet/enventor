@@ -21,7 +21,7 @@ EXTRA_DIST = \
    holes_vert.png \
    inset_shadow.png \
    logo.png \
-   menu_layout.png \
+   frame_bg.png \
    minus.png \
    part_highlight.png \
    plus.png \
