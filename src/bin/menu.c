@@ -169,8 +169,6 @@ newfile_open(menu_data *md)
    evas_object_smart_callback_add(btn, "clicked", newfile_cancel_btn_cb, md);
    elm_object_part_content_set(layout, "elm.swallow.cancel_btn", btn);
 
-   if (md->menu_layout) elm_object_disabled_set(md->menu_layout, EINA_TRUE);
-
    md->newfile_layout = layout;
    menu_activate_request();
 }
@@ -210,9 +208,6 @@ warning_open(menu_data *md, Evas_Smart_Cb yes_cb, Evas_Smart_Cb save_cb)
    elm_object_text_set(btn, "Yes");
    evas_object_smart_callback_add(btn, "clicked", yes_cb, md);
    elm_object_part_content_set(layout, "elm.swallow.yes", btn);
-
-   if (md->menu_layout)
-     elm_object_disabled_set(md->menu_layout, EINA_TRUE);
 
    md->warning_layout = layout;
    menu_activate_request();
@@ -271,9 +266,6 @@ about_open(menu_data *md)
      }
    elm_entry_entry_append(entry, eina_strbuf_string_get(strbuf));
    elm_entry_entry_append(entry, "</font_size></color>");
-
-   if (md->menu_layout)
-     elm_object_disabled_set(md->menu_layout, EINA_TRUE);
 
    md->about_layout = layout;
    menu_activate_request();
@@ -549,12 +541,11 @@ edc_file_save(menu_data *md)
 
    elm_object_part_content_set(layout, "elm.swallow.fileselector", fs);
 
-   if (md->menu_layout)
-     elm_object_disabled_set(md->menu_layout, EINA_TRUE);
+   menu_activate_request();
+
    elm_object_focus_set(fs, EINA_TRUE);
 
    md->fileselector_layout = layout;
-   menu_activate_request();
 }
 
 static void
@@ -583,12 +574,11 @@ edc_file_load(menu_data *md)
 
    elm_object_part_content_set(layout, "elm.swallow.fileselector", fs);
 
-   if (md->menu_layout)
-     elm_object_disabled_set(md->menu_layout, EINA_TRUE);
+   menu_activate_request();
+
    elm_object_focus_set(fs, EINA_TRUE);
 
    md->fileselector_layout = layout;
-   menu_activate_request();
 }
 
 static void
@@ -664,7 +654,7 @@ menu_open(menu_data *md)
    ecore_timer_add(0.15, btn_effect_timer_cb, btn);
 
    md->menu_layout = layout;
-   menu_activate_request();
+   md->active_request++;
 }
 
 static void
