@@ -52,18 +52,20 @@ AC_SUBST(release_info)
 VMAJ=v_maj
 AC_SUBST(VMAJ)
 
+efl_version="1.9.0"
+
 PKG_CHECK_MODULES([ENVENTOR],
   [
-   eina >= 1.9.0
-   eet >= 1.9.0
-   elementary >= 1.9.0
-   evas >= 1.9.0
-   ecore >= 1.9.0
-   ecore-ipc >= 1.9.0
-   edje >= 1.9.0
-   eo >= 1.9.0
-   eio >= 1.9.0
-   efreet >= 1.9.0
+   eina >= ${efl_version}
+   eet >= ${efl_version}
+   elementary >= ${efl_version}
+   evas >= ${efl_version}
+   ecore >= ${efl_version}
+   ecore-ipc >= ${efl_version}
+   edje >= ${efl_version}
+   eo >= ${efl_version}
+   eio >= ${efl_version}
+   efreet >= ${efl_version}
    ]
  )
 
