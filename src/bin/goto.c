@@ -62,7 +62,7 @@ entry_changed_cb(void *data, Evas_Object *obj, void* event_info EINA_UNUSED)
    if ((line < 1) || (line > edit_max_line_get(gd->ed)))
      {
         elm_object_part_text_set(gd->layout, "elm.text.msg",
-                                 "Invalid line number.");
+                                 "Invalid line number");
         elm_object_disabled_set(gd->btn, EINA_TRUE);
      }
    else
