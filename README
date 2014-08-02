@@ -57,6 +57,8 @@ Ctrl+Shift+W = Insert Part Template Code: Swallow
  
 Ctrl+A = Select Text All
 Ctrl+Double Click = Select a word
+Ctrl+Z = Undo Text
+Ctrl+R = Redo Text
 Ctrl+C = Copy Selected Text
 Ctrl+V = Paste Copied Text
 Ctrl+X = Cut Selected Text

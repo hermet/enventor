@@ -25,6 +25,7 @@ struct editor_s
 
    syntax_helper *sh;
    parser_data *pd;
+   redoundo_data *rd;
 
    int cur_line;
    int line_max;
@@ -334,7 +335,7 @@ ctxpopup_candidate_selected_cb(void *data, Evas_Object *obj, void *event_info)
 {
    edit_data *ed = data;
    const char *text = event_info;
-   redoundo_candidate_add(text, elm_entry_cursor_pos_get(ed->en_edit));
+   redoundo_text_relative_push(ed->rd, text);
    elm_entry_entry_insert(ed->en_edit, text);
    elm_ctxpopup_dismiss(obj);
    edit_changed_set(ed, EINA_TRUE);
@@ -445,6 +446,9 @@ edit_template_insert(edit_data *ed)
    elm_entry_entry_insert(ed->en_edit, p);
    elm_entry_entry_insert(ed->en_edit, t[i]);
 
+   int cursor_pos2 = elm_entry_cursor_pos_get(ed->en_edit);
+   redoundo_entry_region_push(ed->rd, cursor_pos, cursor_pos2);
+
    elm_entry_cursor_pos_set(ed->en_edit, cursor_pos);
 
    syntax_color_partial_update(ed, 0);
@@ -519,7 +523,6 @@ edit_template_part_insert(edit_data *ed, Edje_Part_Type type)
            break;
      }
 
-   int redoundo_cursor = 0;
    int i;
    for (i = 0; i < (line_cnt - 1); i++)
      {
@@ -532,11 +535,8 @@ edit_template_part_insert(edit_data *ed, Edje_Part_Type type)
    elm_entry_entry_insert(ed->en_edit, p);
    elm_entry_entry_insert(ed->en_edit, t[i]);
 
-   redoundo_cursor = elm_entry_cursor_pos_get(ed->en_edit);
-   elm_entry_select_region_set(ed->en_edit, cursor_pos, redoundo_cursor);
-   redoundo_node_add(elm_entry_selection_get(ed->en_edit), cursor_pos,
-                     redoundo_cursor - cursor_pos, EINA_TRUE);
-   elm_entry_select_none(ed->en_edit);
+   int cursor_pos2 = elm_entry_cursor_pos_get(ed->en_edit);
+   redoundo_entry_region_push(ed->rd, cursor_pos, cursor_pos2);
 
    elm_entry_cursor_pos_set(ed->en_edit, cursor_pos);
 
@@ -834,7 +834,8 @@ edit_line_delete(edit_data *ed)
    //only one line remain. clear it.
    if (ed->line_max == 1)
      {
-        redoundo_node_add(elm_entry_entry_get(ed->en_edit), 0, 0, EINA_FALSE);
+        redoundo_text_push(ed->rd, elm_entry_entry_get(ed->en_edit), 0, 0,
+                           EINA_FALSE);
         elm_entry_entry_set(ed->en_edit, "");
         line_init(ed);
         return;
@@ -857,15 +858,31 @@ edit_line_delete(edit_data *ed)
    evas_textblock_cursor_range_delete(cur1, cur2);
    evas_textblock_cursor_free(cur1);
    evas_textblock_cursor_free(cur2);
-   redoundo_node_add(content, cur1_pos, abs(cur2_pos - cur1_pos), EINA_FALSE);
+   redoundo_text_push(ed->rd, content, cur1_pos, abs(cur2_pos - cur1_pos),
+                      EINA_FALSE);
    elm_entry_calc_force(ed->en_edit);
 
    edit_line_decrease(ed, 1);
 
    cur_line_pos_set(ed, EINA_TRUE);
    edit_changed_set(ed, EINA_TRUE);
+}
 
+static void
+edit_redoundo(edit_data *ed, Eina_Bool undo)
+{
+   int lines;
+   Eina_Bool changed;
 
+   if (undo) lines = redoundo_undo(ed->rd, &changed);
+   else lines = redoundo_redo(ed->rd, &changed);
+   if (!changed) return;
+
+   if (lines > 0) edit_line_increase(ed, lines);
+   else edit_line_decrease(ed, abs(lines));
+
+   edit_changed_set(ed, EINA_TRUE);
+   syntax_color_full_update(ed, EINA_TRUE);
 }
 
 static Eina_Bool
@@ -876,7 +893,26 @@ key_down_cb(void *data, int type EINA_UNUSED, void *ev)
 
    //Control Key
    if (!strcmp("Control_L", event->key))
-     ed->ctrl_pressed = EINA_TRUE;
+     {
+        ed->ctrl_pressed = EINA_TRUE;
+        return ECORE_CALLBACK_PASS_ON;
+     }
+
+   if (ed->ctrl_pressed)
+     {
+        //Undo
+        if (!strcmp(event->key, "z") || !strcmp(event->key, "Z"))
+          {
+             edit_redoundo(ed, EINA_TRUE);
+             return ECORE_CALLBACK_DONE;
+          }
+        //Redo
+        if (!strcmp(event->key, "r") || !strcmp(event->key, "R"))
+          {
+             edit_redoundo(ed, EINA_FALSE);
+             return ECORE_CALLBACK_DONE;
+          }
+     }
 
    return ECORE_CALLBACK_PASS_ON;
 }
@@ -1019,7 +1055,8 @@ edit_init(Evas_Object *parent)
    edit_line_number_toggle(ed);
    edit_font_size_update(ed, EINA_FALSE, EINA_FALSE);
 
-   redoundo_init(en_edit);
+   ed->rd = redoundo_init(en_edit);
+   evas_object_data_set(ed->en_edit, "redoundo", ed->rd);
 
    return ed;
 }
@@ -1044,13 +1081,13 @@ edit_term(edit_data *ed)
    syntax_helper *sh = ed->sh;
    parser_data *pd = ed->pd;
 
+   redoundo_term(ed->rd);
    ecore_thread_cancel(ed->syntax_color_thread);
    ecore_timer_del(ed->syntax_color_timer);
    free(ed);
 
    syntax_term(sh);
    parser_term(pd);
-   redoundo_term();
 }
 
 void
@@ -1202,6 +1239,7 @@ edit_edc_reload(edit_data *ed, const char *edc_path)
    edit_new(ed);
    edj_mgr_reload_need_set(EINA_TRUE);
    config_apply();
+   redoundo_clear(ed->rd);
 }
 
 Eina_Stringshare *

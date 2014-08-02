@@ -177,18 +177,6 @@ ctrl_func(app_data *ad, const char *key)
         autocomp_toggle();
         return ECORE_CALLBACK_DONE;
      }
-   //Undo
-   if (!strcmp(key, "z") || !strcmp(key, "Z"))
-     {
-        undo(ad->ed);
-        return ECORE_CALLBACK_DONE;
-     }
-   //Redo
-  if (!strcmp(key, "y") || !strcmp(key, "Y"))
-     {
-        redo(ad->ed);
-        return ECORE_CALLBACK_DONE;
-     }
 
    return ECORE_CALLBACK_PASS_ON;
 }

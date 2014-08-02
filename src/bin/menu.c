@@ -171,7 +171,6 @@ newfile_open(menu_data *md)
 
    md->newfile_layout = layout;
    menu_activate_request();
-   redoundo_clear();
 }
 
 static void
@@ -580,7 +579,6 @@ edc_file_load(menu_data *md)
    elm_object_focus_set(fs, EINA_TRUE);
 
    md->fileselector_layout = layout;
-   redoundo_clear();
 }
 
 static void
