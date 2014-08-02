@@ -137,7 +137,6 @@ goto_open(edit_data *ed)
    elm_entry_single_line_set(entry, EINA_TRUE);
    elm_entry_scrollable_set(entry, EINA_TRUE);
 
-
    digits_filter_data.accepted = "0123456789";
    digits_filter_data.rejected = NULL;
    elm_entry_markup_filter_append(entry, elm_entry_filter_accept_set,
