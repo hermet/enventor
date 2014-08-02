@@ -234,7 +234,7 @@ redoundo_redo(redoundo_data *rd, Eina_Bool *changed)
         *changed = EINA_TRUE;
      }
 
-   return EINA_TRUE;
+   return lines;
 }
 
 void
