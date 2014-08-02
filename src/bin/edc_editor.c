@@ -272,6 +272,8 @@ edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
         if (info->change.del.content[0] == ' ') return;
      }
 
+   stats_line_num_update(ed->cur_line, ed->line_max);
+
    if (!syntax_color) return;
    syntax_color_partial_update(ed, SYNTAX_COLOR_DEFAULT_TIME);
 }
