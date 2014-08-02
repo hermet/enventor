@@ -100,7 +100,7 @@ nochange:
 int
 redoundo_undo(redoundo_data *rd, Eina_Bool *changed)
 {
-   *changed = EINA_FALSE;
+   if (changed) *changed = EINA_FALSE;
 
    if (!rd->last_diff) return 0;
 
@@ -152,9 +152,13 @@ redoundo_undo(redoundo_data *rd, Eina_Bool *changed)
    rd->last_diff =  eina_list_data_get(rd->current_node);
 
    if (rd->last_diff && rd->last_diff->relative)
-     lines += redoundo_undo(rd, changed);
+     lines += redoundo_undo(rd, NULL);
 
-   *changed = EINA_TRUE;
+   if (changed)
+     {
+        elm_entry_calc_force(rd->entry);
+        *changed = EINA_TRUE;
+     }
 
    return lines;
 }
@@ -162,7 +166,7 @@ redoundo_undo(redoundo_data *rd, Eina_Bool *changed)
 int
 redoundo_redo(redoundo_data *rd, Eina_Bool *changed)
 {
-   *changed = EINA_FALSE;
+   if (changed) *changed = EINA_FALSE;
 
    if (!rd->queue) return 0;
 
@@ -225,9 +229,13 @@ redoundo_redo(redoundo_data *rd, Eina_Bool *changed)
    rd->current_node = next;
 
    if (diff->relative)
-     lines += redoundo_redo(rd, changed);
+     lines += redoundo_redo(rd, NULL);
 
-   *changed = EINA_TRUE;
+   if (changed)
+     {
+        elm_entry_calc_force(rd->entry);
+        *changed = EINA_TRUE;
+     }
 
    return EINA_TRUE;
 }

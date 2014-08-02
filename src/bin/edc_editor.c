@@ -272,8 +272,6 @@ edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
         if (info->change.del.content[0] == ' ') return;
      }
 
-   stats_line_num_update(ed->cur_line, ed->line_max);
-
    if (!syntax_color) return;
    syntax_color_partial_update(ed, SYNTAX_COLOR_DEFAULT_TIME);
 }
@@ -1300,6 +1298,8 @@ edit_line_increase(edit_data *ed, int cnt)
         elm_entry_entry_append(ed->en_line, buf);
      }
    elm_entry_calc_force(ed->en_line);
+
+   stats_line_num_update(ed->cur_line, ed->line_max);
 }
 
 void
@@ -1329,4 +1329,5 @@ edit_line_decrease(edit_data *ed, int cnt)
    ed->line_max -= cnt;
 
    if (ed->line_max < 1) line_init(ed);
+   stats_line_num_update(ed->cur_line, ed->line_max);
 }
