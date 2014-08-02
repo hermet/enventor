@@ -95,7 +95,9 @@ indent_insert_br_case(indent_data *id, Evas_Object *entry)
    memset(p, ' ', space);
    p[space] = '\0';
 
+   redoundo_node_add(p, elm_entry_cursor_pos_get(entry), 0, EINA_TRUE);
    elm_entry_entry_insert(entry, p);
+
 }
 
 static void

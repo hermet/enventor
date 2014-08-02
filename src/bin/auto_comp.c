@@ -198,7 +198,7 @@ static void
 insert_completed_text(autocomp_data *ad)
 {
    if (!ad->compset_list) return;
-
+   int redoundo_cursor = 0;
    Elm_Object_Item *it = elm_list_selected_item_get(ad->list);
 
    comp_set *compset =  elm_object_item_data_get(it);
@@ -206,6 +206,7 @@ insert_completed_text(autocomp_data *ad)
    Evas_Object *entry = edit_entry_get(ad->ed);
 
    int space = edit_cur_indent_depth_get(ad->ed);
+   redoundo_cursor = elm_entry_cursor_pos_get(entry);
 
    //Insert the first line.
    elm_entry_entry_insert(entry,  txt[0]+ (ad->queue_pos + 1));
@@ -229,6 +230,14 @@ insert_completed_text(autocomp_data *ad)
      }
 
    int cursor_pos = elm_entry_cursor_pos_get(entry);
+
+   /* undo/redo feture connection */
+   elm_entry_select_region_set(entry,  redoundo_cursor, cursor_pos);
+   redoundo_node_add(elm_entry_selection_get(entry), redoundo_cursor,
+                     cursor_pos - redoundo_cursor, EINA_TRUE);
+   elm_entry_select_none(entry);
+   /*--------------------------------------------------------------*/
+
    cursor_pos -= (compset->cursor_offset + (compset->line_back * space));
    elm_entry_cursor_pos_set(entry, cursor_pos);
    edit_line_increase(ad->ed, (compset->line_cnt - 1));

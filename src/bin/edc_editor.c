@@ -334,6 +334,7 @@ ctxpopup_candidate_selected_cb(void *data, Evas_Object *obj, void *event_info)
 {
    edit_data *ed = data;
    const char *text = event_info;
+   redoundo_candidate_add(text, elm_entry_cursor_pos_get(ed->en_edit));
    elm_entry_entry_insert(ed->en_edit, text);
    elm_ctxpopup_dismiss(obj);
    edit_changed_set(ed, EINA_TRUE);
@@ -518,6 +519,7 @@ edit_template_part_insert(edit_data *ed, Edje_Part_Type type)
            break;
      }
 
+   int redoundo_cursor = 0;
    int i;
    for (i = 0; i < (line_cnt - 1); i++)
      {
@@ -529,6 +531,12 @@ edit_template_part_insert(edit_data *ed, Edje_Part_Type type)
 
    elm_entry_entry_insert(ed->en_edit, p);
    elm_entry_entry_insert(ed->en_edit, t[i]);
+
+   redoundo_cursor = elm_entry_cursor_pos_get(ed->en_edit);
+   elm_entry_select_region_set(ed->en_edit, cursor_pos, redoundo_cursor);
+   redoundo_node_add(elm_entry_selection_get(ed->en_edit), cursor_pos,
+                     redoundo_cursor - cursor_pos, EINA_TRUE);
+   elm_entry_select_none(ed->en_edit);
 
    elm_entry_cursor_pos_set(ed->en_edit, cursor_pos);
 
@@ -826,6 +834,7 @@ edit_line_delete(edit_data *ed)
    //only one line remain. clear it.
    if (ed->line_max == 1)
      {
+        redoundo_node_add(elm_entry_entry_get(ed->en_edit), 0, 0, EINA_FALSE);
         elm_entry_entry_set(ed->en_edit, "");
         line_init(ed);
         return;
@@ -838,16 +847,25 @@ edit_line_delete(edit_data *ed)
    Evas_Textblock_Cursor *cur2 = evas_object_textblock_cursor_new(textblock);
    evas_textblock_cursor_line_set(cur2, line2);
    if (max) evas_textblock_cursor_line_char_last(cur2);
+   int cur1_pos, cur2_pos;
+
+   cur1_pos = evas_textblock_cursor_pos_get(cur1);
+   cur2_pos = evas_textblock_cursor_pos_get(cur2);
+   const char *content = evas_textblock_cursor_range_text_get(cur1, cur2,
+                                                    EVAS_TEXTBLOCK_TEXT_MARKUP);
 
    evas_textblock_cursor_range_delete(cur1, cur2);
    evas_textblock_cursor_free(cur1);
    evas_textblock_cursor_free(cur2);
+   redoundo_node_add(content, cur1_pos, abs(cur2_pos - cur1_pos), EINA_FALSE);
    elm_entry_calc_force(ed->en_edit);
 
    edit_line_decrease(ed, 1);
 
    cur_line_pos_set(ed, EINA_TRUE);
    edit_changed_set(ed, EINA_TRUE);
+
+
 }
 
 static Eina_Bool
@@ -1001,6 +1019,8 @@ edit_init(Evas_Object *parent)
    edit_line_number_toggle(ed);
    edit_font_size_update(ed, EINA_FALSE, EINA_FALSE);
 
+   redoundo_init(en_edit);
+
    return ed;
 }
 
@@ -1030,6 +1050,7 @@ edit_term(edit_data *ed)
 
    syntax_term(sh);
    parser_term(pd);
+   redoundo_term();
 }
 
 void

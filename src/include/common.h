@@ -9,6 +9,7 @@ typedef struct parser_s parser_data;
 typedef struct attr_value_s attr_value;
 typedef struct syntax_helper_s syntax_helper;
 typedef struct indent_s indent_data;
+typedef struct _redoundo_queue queue;
 
 #include "edc_editor.h"
 #include "menu.h"
@@ -31,5 +32,6 @@ typedef struct indent_s indent_data;
 #include "newfile.h"
 #include "auto_comp.h"
 #include "setting.h"
+#include "redoundo.h"
 
 #endif
