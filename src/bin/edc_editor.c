@@ -1151,7 +1151,6 @@ edit_edc_read(edit_data *ed, const char *file_path)
       parser_first_group_name_get(ed->pd, ed->en_edit);
 
    stats_edc_group_update(group_name);
-   stats_line_num_update(0, ed->line_max);
    base_title_set(config_edc_path_get());
 
    ecore_animator_add(syntax_color_timer_cb, ed);
@@ -1163,6 +1162,7 @@ err:
    if (utf8_edit) eina_file_map_free(file, utf8_edit);
    if (file) eina_file_close(file);
    autocomp_target_set(ed);
+   stats_line_num_update(1, ed->line_max);
 }
 
 void
