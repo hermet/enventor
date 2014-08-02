@@ -878,7 +878,12 @@ edit_redoundo(edit_data *ed, Eina_Bool undo)
 
    if (undo) lines = redoundo_undo(ed->rd, &changed);
    else lines = redoundo_redo(ed->rd, &changed);
-   if (!changed) return;
+   if (!changed)
+     {
+        if (undo) stats_info_msg_update("No text to be undo.");
+        else stats_info_msg_update("No text to be redo.");
+        return;
+     }
 
    if (undo) stats_info_msg_update("Undo text.");
    else stats_info_msg_update("Redo text.");
