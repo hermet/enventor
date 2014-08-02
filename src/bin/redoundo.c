@@ -112,9 +112,6 @@ redoundo_undo(redoundo_data *rd, Eina_Bool *changed)
    if (rd->last_diff->action)
      {
         //Last change was adding new symbol(s), that mean here need delete it
-        //FIXME: cur_line is 0?
-        stats_line_num_update(0, elm_entry_cursor_pos_get(rd->entry));
-
         //Undo one character
         if (rd->last_diff->length == 1)
           {
