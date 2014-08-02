@@ -880,6 +880,9 @@ edit_redoundo(edit_data *ed, Eina_Bool undo)
    else lines = redoundo_redo(ed->rd, &changed);
    if (!changed) return;
 
+   if (undo) stats_info_msg_update("Undo text.");
+   else stats_info_msg_update("Redo text.");
+
    if (lines > 0) edit_line_increase(ed, lines);
    else edit_line_decrease(ed, abs(lines));
 
