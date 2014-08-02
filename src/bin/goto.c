@@ -83,6 +83,7 @@ btn_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
 void
 goto_open(edit_data *ed)
 {
+   static Elm_Entry_Filter_Accept_Set digits_filter_data;
    goto_data *gd = g_gd;
 
    if (gd)
@@ -135,6 +136,12 @@ goto_open(edit_data *ed)
    Evas_Object *entry = elm_entry_add(layout);
    elm_entry_single_line_set(entry, EINA_TRUE);
    elm_entry_scrollable_set(entry, EINA_TRUE);
+
+
+   digits_filter_data.accepted = "0123456789";
+   digits_filter_data.rejected = NULL;
+   elm_entry_markup_filter_append(entry, elm_entry_filter_accept_set,
+                                  &digits_filter_data);
    evas_object_smart_callback_add(entry, "activated", entry_activated_cb,
                                   gd);
    evas_object_smart_callback_add(entry, "changed,user", entry_changed_cb, gd);
