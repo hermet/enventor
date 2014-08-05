@@ -167,14 +167,14 @@ goto_open(edit_data *ed)
 }
 
 Eina_Bool
-goto_is_opened()
+goto_is_opened(void)
 {
    goto_data *gd = g_gd;
    return (gd ? EINA_TRUE : EINA_FALSE);
 }
 
 void
-goto_close()
+goto_close(void)
 {
    goto_data *gd = g_gd;
 

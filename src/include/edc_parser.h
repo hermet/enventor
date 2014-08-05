@@ -6,7 +6,7 @@
 #define TAB "<tab/>"
 #define TAB_LEN 6
 
-parser_data *parser_init();
+parser_data *parser_init(void);
 void parser_term(parser_data *pd);
 Eina_Stringshare *parser_first_group_name_get(parser_data *pd, Evas_Object *entry);
 void parser_cur_name_get(parser_data *pd, Evas_Object *entry, void (*cb)(void *data, Eina_Stringshare *part_name, Eina_Stringshare *group_name), void *data);

@@ -859,7 +859,7 @@ parser_states_filtered_name_get(Eina_List *states)
 }
 
 parser_data *
-parser_init()
+parser_init(void)
 {
    parser_data *pd = calloc(1, sizeof(parser_data));
    if (!pd)

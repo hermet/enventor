@@ -103,7 +103,7 @@ config_paths_buf_set(Eina_List *paths, const char *prefix)
 }
 
 static config_data *
-config_load()
+config_load(void)
 {
    char buf[PATH_MAX];
    snprintf(buf, sizeof(buf), "%s/enventor/config.eet",
@@ -176,7 +176,7 @@ config_load()
 }
 
 static void
-eddc_init()
+eddc_init(void)
 {
    Eet_Data_Descriptor_Class eddc;
    eet_eina_stream_data_descriptor_class_set(&eddc, sizeof(eddc),
@@ -238,7 +238,7 @@ config_init(const char *edc_path, const char *edc_img_path,
 }
 
 void
-config_term()
+config_term(void)
 {
    config_data *cd = g_cd;
 
@@ -431,42 +431,42 @@ config_edc_img_path_set(const char *edc_img_path)
 }
 
 void
-config_apply()
+config_apply(void)
 {
    config_data *cd = g_cd;
    if (cd->update_cb) cd->update_cb(cd->update_cb_data);
 }
 
 Eina_List *
-config_edc_img_path_list_get()
+config_edc_img_path_list_get(void)
 {
    config_data *cd = g_cd;
    return cd->edc_img_path_list;
 }
 
 Eina_List *
-config_edc_snd_path_list_get()
+config_edc_snd_path_list_get(void)
 {
    config_data *cd = g_cd;
    return cd->edc_snd_path_list;
 }
 
 Eina_List *
-config_edc_data_path_list_get()
+config_edc_data_path_list_get(void)
 {
    config_data *cd = g_cd;
    return cd->edc_data_path_list;
 }
 
 Eina_List *
-config_edc_fnt_path_list_get()
+config_edc_fnt_path_list_get(void)
 {
    config_data *cd = g_cd;
    return cd->edc_fnt_path_list;
 }
 
 const char *
-config_edc_img_path_get()
+config_edc_img_path_get(void)
 {
    config_data *cd = g_cd;
    if (!cd->edc_img_path_buf) return NULL;
@@ -474,7 +474,7 @@ config_edc_img_path_get()
 }
 
 const char *
-config_edc_snd_path_get()
+config_edc_snd_path_get(void)
 {
    config_data *cd = g_cd;
    if (!cd->edc_snd_path_buf) return NULL;
@@ -482,7 +482,7 @@ config_edc_snd_path_get()
 }
 
 const char *
-config_edc_data_path_get()
+config_edc_data_path_get(void)
 {
    config_data *cd = g_cd;
    if (!cd->edc_data_path_buf) return NULL;
@@ -490,7 +490,7 @@ config_edc_data_path_get()
 }
 
 const char *
-config_edc_fnt_path_get()
+config_edc_fnt_path_get(void)
 {
    config_data *cd = g_cd;
    if (!cd->edc_fnt_path_buf) return NULL;
@@ -498,28 +498,28 @@ config_edc_fnt_path_get()
 }
 
 const char *
-config_edc_path_get()
+config_edc_path_get(void)
 {
    config_data *cd = g_cd;
    return cd->edc_path;
 }
 
 const char *
-config_edj_path_get()
+config_edj_path_get(void)
 {
    config_data *cd = g_cd;
    return cd->edj_path;
 }
 
 Eina_Bool
-config_linenumber_get()
+config_linenumber_get(void)
 {
    config_data *cd = g_cd;
    return cd->linenumber;
 }
 
 Eina_Bool
-config_stats_bar_get()
+config_stats_bar_get(void)
 {
    config_data *cd = g_cd;
    return cd->stats_bar;
@@ -548,7 +548,7 @@ config_update_cb_set(void (*cb)(void *data), void *data)
 }
 
 Eina_Bool
-config_part_highlight_get()
+config_part_highlight_get(void)
 {
    config_data *cd = g_cd;
    return cd->part_highlight;
@@ -562,7 +562,7 @@ config_part_highlight_set(Eina_Bool highlight)
 }
 
 Eina_Bool
-config_dummy_swallow_get()
+config_dummy_swallow_get(void)
 {
    config_data *cd = g_cd;
    return cd->dummy_swallow;
@@ -576,14 +576,14 @@ config_dummy_swallow_set(Eina_Bool dummy_swallow)
 }
 
 Eina_Bool
-config_auto_indent_get()
+config_auto_indent_get(void)
 {
    config_data *cd = g_cd;
    return cd->auto_indent;
 }
 
 Eina_Bool
-config_auto_complete_get()
+config_auto_complete_get(void)
 {
    config_data *cd = g_cd;
    return cd->auto_complete;
@@ -603,7 +603,7 @@ config_font_size_set(float font_size)
 }
 
 float
-config_font_size_get()
+config_font_size_get(void)
 {
    config_data *cd = g_cd;
    return cd->font_size;
@@ -636,7 +636,7 @@ config_view_scale_set(double view_scale)
 }
 
 double
-config_view_scale_get()
+config_view_scale_get(void)
 {
    config_data *cd = g_cd;
    return cd->view_scale;
@@ -661,7 +661,7 @@ config_view_size_get(Evas_Coord *w, Evas_Coord *h)
 }
 
 Eina_Bool
-config_tools_get()
+config_tools_get(void)
 {
    config_data *cd = g_cd;
    return cd->tools;

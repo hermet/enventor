@@ -57,14 +57,14 @@ stats_init(Evas_Object *parent)
    return layout;
 }
 
-Eina_Stringshare *stats_group_name_get()
+Eina_Stringshare *stats_group_name_get(void)
 {
    stats_data *sd = g_sd;
    return sd->group_name;
 }
 
 void
-stats_term()
+stats_term(void)
 {
    stats_data *sd = g_sd;
    eina_stringshare_del(sd->group_name);
@@ -82,7 +82,7 @@ stats_info_msg_update(const char *msg)
 }
 
 void
-stats_view_size_update()
+stats_view_size_update(void)
 {
    stats_data *sd = g_sd;
 

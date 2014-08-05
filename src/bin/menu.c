@@ -31,37 +31,32 @@ static void new_yes_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
                            void *event_info EINA_UNUSED);
 
 static void
-fileselector_close()
+fileselector_close(menu_data *md)
 {
-   menu_data *md = g_md;
    elm_object_signal_emit(md->fileselector_layout, "elm,state,dismiss", "");
 }
 
 static void
-newfile_close()
+newfile_close(menu_data *md)
 {
-   menu_data *md = g_md;
    elm_object_signal_emit(md->newfile_layout, "elm,state,dismiss", "");
 }
 
 static void
-about_close()
+about_close(menu_data *md)
 {
-   menu_data *md = g_md;
    elm_object_signal_emit(md->about_layout, "elm,state,dismiss", "");
 }
 
 static void
-warning_close()
+warning_close(menu_data *md)
 {
-   menu_data *md = g_md;
    elm_object_signal_emit(md->warning_layout, "elm,state,dismiss", "");
 }
 
 static void
-menu_close()
+menu_close(menu_data *md)
 {
-   menu_data *md = g_md;
    if (!md->menu_layout) return;
    elm_object_signal_emit(md->menu_layout, "elm,state,dismiss", "");
 }
@@ -680,28 +675,28 @@ menu_init(edit_data *ed)
 }
 
 void
-menu_term()
+menu_term(void)
 {
    menu_data *md = g_md;
    free(md);
 }
 
 void
-menu_about()
+menu_about(void)
 {
    menu_data *md = g_md;
    about_open(md);
 }
 
 void
-menu_setting()
+menu_setting(void)
 {
    menu_data *md = g_md;
    setting_open();
 }
 
 void
-menu_edc_new()
+menu_edc_new(void)
 {
    menu_data *md = g_md;
    if (edit_changed_get(md->ed))
@@ -711,14 +706,14 @@ menu_edc_new()
 }
 
 void
-menu_edc_save()
+menu_edc_save(void)
 {
    menu_data *md = g_md;
    edc_file_save(md);
 }
 
 void
-menu_edc_load()
+menu_edc_load(void)
 {
    menu_data *md = g_md;
    if (edit_changed_get(md->ed))
@@ -728,7 +723,7 @@ menu_edc_load()
 }
 
 void
-menu_toggle()
+menu_toggle(void)
 {
    menu_data *md = g_md;
 
@@ -787,7 +782,7 @@ menu_ctxpopup_register(Evas_Object *ctxpopup)
 }
 
 int
-menu_activated_get()
+menu_activated_get(void)
 {
    menu_data *md = g_md;
    if (!md) return 0;
@@ -795,7 +790,7 @@ menu_activated_get()
 }
 
 void
-menu_exit()
+menu_exit(void)
 {
    menu_data *md = g_md;
    if (edit_changed_get(md->ed))
@@ -808,7 +803,7 @@ menu_exit()
 }
 
 void
-menu_deactivate_request()
+menu_deactivate_request(void)
 {
    menu_data *md = g_md;
    md->active_request--;
@@ -819,7 +814,7 @@ menu_deactivate_request()
 }
 
 void
-menu_activate_request()
+menu_activate_request(void)
 {
    menu_data *md = g_md;
    if (md->menu_layout) elm_object_disabled_set(md->menu_layout, EINA_TRUE);

@@ -4,7 +4,7 @@
 static char *EDJE_CC_CMD = NULL;
 
 Eina_Bool
-build_cmd_set()
+build_cmd_set(void)
 {
    Eina_Strbuf *buf = eina_strbuf_new();
    if (!buf) return EINA_FALSE;
@@ -31,7 +31,7 @@ build_cmd_set()
 }
 
 void
-build_edc()
+build_edc(void)
 {
    char *bp = NULL;
    size_t size;
@@ -48,13 +48,13 @@ build_edc()
 }
 
 Eina_Bool
-build_init()
+build_init(void)
 {
    return build_cmd_set();
 }
 
 void
-build_term()
+build_term(void)
 {
    free(EDJE_CC_CMD);
 }

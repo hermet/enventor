@@ -65,7 +65,7 @@ panes_full_view_cancel(panes_data *pd)
 }
 
 void
-panes_full_view_right()
+panes_full_view_right(void)
 {
    const double TRANSIT_TIME = 0.25;
 
@@ -94,7 +94,7 @@ panes_full_view_right()
 }
 
 void
-panes_full_view_left()
+panes_full_view_left(void)
 {
    const double TRANSIT_TIME = 0.25;
 
@@ -131,7 +131,7 @@ panes_content_set(const char *part, Evas_Object *content)
 }
 
 void
-panes_term()
+panes_term(void)
 {
    panes_data *pd = g_pd;
    evas_object_del(pd->panes);

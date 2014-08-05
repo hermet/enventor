@@ -59,14 +59,14 @@ base_tools_toggle(Eina_Bool config)
 }
 
 Evas_Object *
-base_win_get()
+base_win_get(void)
 {
    base_data *bd = g_bd;
    return bd->win;
 }
 
 Evas_Object *
-base_layout_get()
+base_layout_get(void)
 {
    base_data *bd = g_bd;
    return bd->layout;
@@ -91,13 +91,13 @@ void base_tools_set(Evas_Object *tools)
 }
 
 void
-base_full_view_left()
+base_full_view_left(void)
 {
    panes_full_view_left();
 }
 
 void
-base_full_view_right()
+base_full_view_right(void)
 {
    panes_full_view_right();
 }
@@ -115,7 +115,7 @@ base_left_view_set(Evas_Object *left)
 }
 
 void
-base_gui_term()
+base_gui_term(void)
 {
    base_data *bd = g_bd;
    panes_term();
@@ -123,7 +123,7 @@ base_gui_term()
 }
 
 Eina_Bool
-base_gui_init()
+base_gui_init(void)
 {
    char buf[PATH_MAX];
 
@@ -168,7 +168,7 @@ base_gui_init()
 }
 
 void
-base_gui_show()
+base_gui_show(void)
 {
    evas_object_show(g_bd->win);
 }

@@ -411,14 +411,14 @@ search_open(edit_data *ed)
 }
 
 Eina_Bool
-search_is_opened()
+search_is_opened(void)
 {
    search_data *sd = g_sd;
    return (sd ? EINA_TRUE : EINA_FALSE);
 }
 
 void
-search_close()
+search_close(void)
 {
    search_data *sd = g_sd;
    if (!sd) return;

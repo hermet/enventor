@@ -500,7 +500,7 @@ autocomp_init(Evas_Object *parent)
 }
 
 void
-autocomp_term()
+autocomp_term(void)
 {
    autocomp_data *ad = g_ad;
    evas_object_del(ad->anchor);
@@ -515,7 +515,7 @@ autocomp_term()
 }
 
 void
-autocomp_toggle()
+autocomp_toggle(void)
 {
    Eina_Bool toggle = !config_auto_complete_get();
    if (toggle) stats_info_msg_update("Auto Completion Enabled.");

@@ -42,7 +42,7 @@ view_del_timer_cb(void *data)
 }
 
 void
-edj_mgr_clear()
+edj_mgr_clear(void)
 {
    edj_data *edj;
    edj_mgr *em = g_em;
@@ -75,11 +75,11 @@ edj_mgr_init(Evas_Object *parent)
 }
 
 void
-edj_mgr_term()
+edj_mgr_term(void)
 {
    edj_mgr *em = g_em;
 
-   edj_mgr_clear(em);
+   edj_mgr_clear();
    evas_object_del(em->layout);
    free(em);
 }
@@ -187,7 +187,7 @@ edj_mgr_view_switch_to(view_data *vd)
 }
 
 Evas_Object *
-edj_mgr_obj_get()
+edj_mgr_obj_get(void)
 {
    edj_mgr *em = g_em;
    return em->layout;
@@ -201,7 +201,7 @@ edj_mgr_reload_need_set(Eina_Bool reload)
 }
 
 Eina_Bool
-edj_mgr_reload_need_get()
+edj_mgr_reload_need_get(void)
 {
    edj_mgr *em = g_em;
    return em->reload_need;

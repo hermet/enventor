@@ -116,15 +116,14 @@ setting_apply_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
 
    config_apply();
 
-   setting_close(sd);
+   setting_close();
 }
 
 static void
-setting_cancel_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
+setting_cancel_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
                       void *event_info EINA_UNUSED)
 {
-   setting_data *sd = data;
-   setting_close(sd);
+   setting_close();
 }
 
 static void
@@ -180,7 +179,7 @@ toggle_create(Evas_Object *parent, const char *text, Eina_Bool state)
 }
 
 void
-setting_open()
+setting_open(void)
 {
    setting_data *sd = g_sd;
    if (sd) return;
@@ -393,7 +392,7 @@ setting_close()
 }
 
 Eina_Bool
-setting_is_opened()
+setting_is_opened(void)
 {
    setting_data *sd = g_sd;
    if (!sd) return EINA_FALSE;

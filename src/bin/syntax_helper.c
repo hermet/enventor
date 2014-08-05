@@ -24,7 +24,7 @@ buf_flush_timer_cb(void *data)
 }
 
 syntax_helper *
-syntax_init()
+syntax_init(void)
 {
    syntax_helper *sh = malloc(sizeof(syntax_helper));
    if (!sh)

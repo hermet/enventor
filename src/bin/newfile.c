@@ -42,7 +42,7 @@ newfile_set(edit_data *ed)
 }
 
 void
-newfile_default_set()
+newfile_default_set(void)
 {
    Eina_Bool success = EINA_TRUE;
    char buf[PATH_MAX];

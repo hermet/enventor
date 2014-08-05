@@ -53,7 +53,7 @@ hash_free_cb(void *data)
 }
 
 static void
-eddc_init()
+eddc_init(void)
 {
    Eet_Data_Descriptor_Class eddc;
    eet_eina_stream_data_descriptor_class_set(&eddc, sizeof(eddc),
@@ -80,7 +80,7 @@ eddc_init()
 }
 
 static void
-eddc_term()
+eddc_term(void)
 {
    eet_data_descriptor_free(edd_scg);
    eet_data_descriptor_free(edd_color);

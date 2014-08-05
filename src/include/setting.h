@@ -1,3 +1,3 @@
-void setting_open();
-void setting_close();
-Eina_Bool setting_is_opened();
+void setting_open(void);
+void setting_close(void);
+Eina_Bool setting_is_opened(void);
