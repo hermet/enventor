@@ -18,7 +18,6 @@ EXTRA_DIST = \
    holes_tiny_glow_vert.png \
    holes_tiny_horiz.png \
    holes_tiny_vert.png \
-   holes_vert.png \
    inset_shadow.png \
    logo.png \
    frame_bg.png \
@@ -53,4 +52,6 @@ EXTRA_DIST = \
    setting.png \
    status.png \
    swallow_s.png \
-   goto.png
+   goto.png \
+   downlight_glow_left.png \
+   downlight_glow_right.png
