@@ -86,6 +86,7 @@ group "syntax_color_group" struct {
             value "key" string: "inherit";
             value "key" string: "insert_after";
             value "key" string: "insert_before";
+            value "key" string: "in";
             value "key" string: "item";
             value "key" string: "max";
             value "key" string: "middle";
