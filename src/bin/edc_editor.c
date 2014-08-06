@@ -429,6 +429,7 @@ edit_template_insert(edit_data *ed)
 
    int cursor_pos = elm_entry_cursor_pos_get(ed->en_edit);
    elm_entry_cursor_line_begin_set(ed->en_edit);
+   int cursor_pos1 = elm_entry_cursor_pos_get(ed->en_edit);
    int space = indent_space_get(syntax_indent_data_get(ed->sh), ed->en_edit);
 
    //Alloc Empty spaces
@@ -447,7 +448,7 @@ edit_template_insert(edit_data *ed)
    elm_entry_entry_insert(ed->en_edit, t[i]);
 
    int cursor_pos2 = elm_entry_cursor_pos_get(ed->en_edit);
-   redoundo_entry_region_push(ed->rd, cursor_pos, cursor_pos2);
+   redoundo_entry_region_push(ed->rd, cursor_pos1, cursor_pos2);
 
    elm_entry_cursor_pos_set(ed->en_edit, cursor_pos);
 
@@ -469,6 +470,7 @@ edit_template_part_insert(edit_data *ed, Edje_Part_Type type)
 
    int cursor_pos = elm_entry_cursor_pos_get(ed->en_edit);
    elm_entry_cursor_line_begin_set(ed->en_edit);
+   int cursor_pos1 = elm_entry_cursor_pos_get(ed->en_edit);
    int space = indent_space_get(syntax_indent_data_get(ed->sh), ed->en_edit);
 
    //Alloc Empty spaces
@@ -536,7 +538,7 @@ edit_template_part_insert(edit_data *ed, Edje_Part_Type type)
    elm_entry_entry_insert(ed->en_edit, t[i]);
 
    int cursor_pos2 = elm_entry_cursor_pos_get(ed->en_edit);
-   redoundo_entry_region_push(ed->rd, cursor_pos, cursor_pos2);
+   redoundo_entry_region_push(ed->rd, cursor_pos1, cursor_pos2);
 
    elm_entry_cursor_pos_set(ed->en_edit, cursor_pos);
 
