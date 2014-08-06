@@ -86,9 +86,10 @@ indent_insert_br_case(indent_data *id, Evas_Object *entry)
              i++;
           }
      }
+   free(utf8);
 
    int space = indent_space_get(id, entry);
-   if (space <= 0) goto end;
+   if (space <= 0) return;
 
    //Alloc Empty spaces
    char *p = alloca(space + 1);
@@ -99,9 +100,6 @@ indent_insert_br_case(indent_data *id, Evas_Object *entry)
    redoundo_text_push(rd, p, elm_entry_cursor_pos_get(entry), 0, EINA_TRUE);
 
    elm_entry_entry_insert(entry, p);
-
-end:
-   free(utf8);
 }
 
 static void
