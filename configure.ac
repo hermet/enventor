@@ -61,7 +61,6 @@ PKG_CHECK_MODULES([ENVENTOR],
    elementary >= ${efl_version}
    evas >= ${efl_version}
    ecore >= ${efl_version}
-   ecore-ipc >= ${efl_version}
    edje >= ${efl_version}
    eo >= ${efl_version}
    eio >= ${efl_version}
