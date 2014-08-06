@@ -74,19 +74,27 @@ indent_insert_br_case(indent_data *id, Evas_Object *entry)
 {
    Evas_Object *tb = elm_entry_textblock_get(entry);
    Evas_Textblock_Cursor *cur = evas_object_textblock_cursor_get(tb);
+   redoundo_data *rd = evas_object_data_get(entry, "redoundo");
    const char *text = evas_textblock_cursor_paragraph_text_get(cur);
    char *utf8 = elm_entry_markup_to_utf8(text);
+   Eina_Strbuf* diff = eina_strbuf_new();
+   int rd_cur_pos = evas_textblock_cursor_pos_get(cur);
+
    if (strlen(utf8) > 0)
      {
         evas_textblock_cursor_paragraph_char_first(cur);
         int i = 0;
         while (utf8[i] == ' ')
           {
+             eina_strbuf_append(diff, evas_textblock_cursor_content_get(cur));
              evas_textblock_cursor_char_delete(cur);
              i++;
           }
      }
    free(utf8);
+   redoundo_text_push(rd, eina_strbuf_string_get(diff), rd_cur_pos, 0,
+                      EINA_FALSE);
+   eina_strbuf_free(diff);
 
    int space = indent_space_get(id, entry);
    if (space <= 0) return;
@@ -96,7 +104,6 @@ indent_insert_br_case(indent_data *id, Evas_Object *entry)
    memset(p, ' ', space);
    p[space] = '\0';
 
-   redoundo_data *rd = evas_object_data_get(entry, "redoundo");
    redoundo_text_push(rd, p, elm_entry_cursor_pos_get(entry), 0, EINA_TRUE);
 
    elm_entry_entry_insert(entry, p);
@@ -173,6 +180,9 @@ indent_delete_apply(indent_data *id EINA_UNUSED, Evas_Object *entry,
    evas_textblock_cursor_line_set(cur, cur_line - 1);
    const char *text = evas_textblock_cursor_paragraph_text_get(cur);
    char *utf8 = elm_entry_markup_to_utf8(text);
+   Eina_Strbuf* diff = eina_strbuf_new();
+   int rd_cur_pos = evas_textblock_cursor_pos_get(cur);
+   redoundo_data *rd = evas_object_data_get(entry, "redoundo");
 
    int len = strlen(utf8);
    if (len < 0) return EINA_FALSE;
@@ -184,16 +194,24 @@ indent_delete_apply(indent_data *id EINA_UNUSED, Evas_Object *entry,
         if ((utf8[(len - 1)] == ' '))
           {
              evas_textblock_cursor_char_prev(cur);
+             eina_strbuf_append(diff, evas_textblock_cursor_content_get(cur));
              evas_textblock_cursor_char_delete(cur);
           }
         else break;
         len--;
      }
 
-   if (len == 0) evas_textblock_cursor_char_delete(cur);
+   if (len == 0)
+     {
+        eina_strbuf_append(diff, evas_textblock_cursor_content_get(cur));
+        evas_textblock_cursor_char_delete(cur);
+     }
+   redoundo_text_push(rd, eina_strbuf_string_get(diff), rd_cur_pos, 0,
+                      EINA_FALSE);
    elm_entry_calc_force(entry);
    evas_textblock_cursor_free(cur);
    free(utf8);
+   eina_strbuf_free(diff);
    if (len == 0)
      {
         elm_entry_cursor_prev(entry);
