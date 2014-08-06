@@ -392,7 +392,7 @@ entry_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 }
 
 static void
-entry_cursor_changed_manual_cb(void *data, Evas_Object *obj,
+entry_cursor_changed_manual_cb(void *data, Evas_Object *obj EINA_UNUSED,
                                void *event_info EINA_UNUSED)
 {
    autocomp_data *ad = data;

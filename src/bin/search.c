@@ -280,7 +280,8 @@ replace_activated_cb(void *data, Evas_Object *obj EINA_UNUSED,
 }
 
 static void
-win_focused_cb(void *data, Evas_Object *obj, void *event_info)
+win_focused_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+               void *event_info EINA_UNUSED)
 {
    search_data *sd = g_sd;
    edit_syntax_color_full_apply(sd->ed, EINA_FALSE);
@@ -293,7 +294,8 @@ win_focused_cb(void *data, Evas_Object *obj, void *event_info)
 }
 
 static void
-win_unfocused_cb(void *data, Evas_Object *obj, void *event_info)
+win_unfocused_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+                 void *event_info EINA_UNUSED)
 {
    search_data *sd = g_sd;
    edit_syntax_color_partial_apply(sd->ed);

@@ -93,9 +93,9 @@ entry_recover(edit_data *ed, int cursor_pos)
    if (ed->select_pos == -1) return;
 
    //recover selection region
-   const char *select = elm_entry_selection_get(ed->en_edit);
-   if (!select) return;
-   char *utf8 = evas_textblock_text_markup_to_utf8(NULL, select);
+   const char *selected = elm_entry_selection_get(ed->en_edit);
+   if (!selected) return;
+   char *utf8 = evas_textblock_text_markup_to_utf8(NULL, selected);
    ed->on_select_recover = EINA_TRUE;
    elm_entry_select_none(ed->en_edit);
    elm_entry_select_region_set(ed->en_edit, ed->select_pos, cursor_pos);
@@ -144,7 +144,7 @@ syntax_color_timer_cb(void *data)
 }
 
 static void
-syntax_color_partial_update(edit_data *ed, double time)
+syntax_color_partial_update(edit_data *ed, double interval)
 {
    /* If the syntax_color_full_update is requested forcely, lock would be -1
       in this case, it should avoid partial updation by entry changed. */
@@ -152,7 +152,7 @@ syntax_color_partial_update(edit_data *ed, double time)
    ecore_thread_cancel(ed->syntax_color_thread);
    ed->syntax_color_thread = NULL;
    ecore_timer_del(ed->syntax_color_timer);
-   ed->syntax_color_timer = ecore_timer_add(time, syntax_color_timer_cb, ed);
+   ed->syntax_color_timer = ecore_timer_add(interval, syntax_color_timer_cb, ed);
 }
 
 static void
@@ -949,7 +949,8 @@ scroller_scroll_cb(void *data, Evas_Object *obj EINA_UNUSED,
 }
 
 static void
-scroller_resize_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
+scroller_resize_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
+                   void *event_info EINA_UNUSED)
 {
    edit_data *ed = data;
    Evas_Coord h;

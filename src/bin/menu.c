@@ -280,10 +280,9 @@ about_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
 }
 
 static void
-setting_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
+setting_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
                void *event_info EINA_UNUSED)
 {
-   menu_data *md = data;
    setting_open();
 }
 
@@ -691,7 +690,6 @@ menu_about(void)
 void
 menu_setting(void)
 {
-   menu_data *md = g_md;
    setting_open();
 }
 

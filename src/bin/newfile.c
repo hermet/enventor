@@ -9,10 +9,10 @@ typedef struct new_data_s {
 static new_data *g_nd = NULL;
 
 static void
-list_del_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
+list_del_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
             void *event_info EINA_UNUSED)
 {
-   new_data *nd = g_nd;
+   new_data *nd = data;
    free(nd);
    g_nd = NULL;
 }
@@ -61,7 +61,7 @@ newfile_default_set(void)
 }
 
 static void
-file_dir_list_cb(const char *name, const char *path, void *data)
+file_dir_list_cb(const char *name, const char *path EINA_UNUSED, void *data)
 {
    new_data *nd = data;
 
@@ -75,7 +75,8 @@ file_dir_list_cb(const char *name, const char *path, void *data)
 }
 
 static void
-list_item_selected_cb(void *data, Evas_Object *obj, void *event_info)
+list_item_selected_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                      void *event_info)
 {
    Evas_Object *layout = data;
    Elm_Object_Item *it = event_info;
@@ -157,7 +158,7 @@ newfile_create(Evas_Object *parent, Evas_Smart_Cb selected_cb, void *data)
              first_item = EINA_FALSE;
           }
      }
-   evas_object_event_callback_add(list, EVAS_CALLBACK_DEL, list_del_cb, NULL);
+   evas_object_event_callback_add(list, EVAS_CALLBACK_DEL, list_del_cb, nd);
    evas_object_show(list);
    elm_object_focus_set(list, EINA_TRUE);
 

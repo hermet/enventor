@@ -43,7 +43,8 @@ goto_line(goto_data *gd)
 }
 
 static void
-entry_activated_cb(void *data, Evas_Object *obj, void* event_info EINA_UNUSED)
+entry_activated_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                   void* event_info EINA_UNUSED)
 {
    goto_data *gd = data;
    if (elm_object_disabled_get(gd->btn)) return;

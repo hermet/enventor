@@ -87,7 +87,7 @@ eddc_term(void)
 }
 
 static void
-color_load(color_data *cd)
+color_load()
 {
    char buf[PATH_MAX];
    snprintf(buf, sizeof(buf), "%s/color/color.eet", elm_app_data_dir_get());
@@ -159,7 +159,7 @@ color_table_init(color_data *cd)
 }
 
 static void
-macro_key_push(color_data *cd, char *str, int len)
+macro_key_push(color_data *cd, char *str)
 {
    char *key = str;
 
@@ -200,7 +200,7 @@ init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    color_data *cd = data;
 
    eddc_init();
-   color_load(cd);
+   color_load();
    eddc_term();
    color_table_init(cd);
 
@@ -250,12 +250,12 @@ color_term(color_data *cd)
 static Eina_Bool
 color_markup_insert_internal(Eina_Strbuf *strbuf, const char **src, int length,
                              char **cur, char **prev,  const char *cmp,
-                             Eina_Stringshare *color)
+                             Eina_Stringshare *col)
 {
    char buf[128];
 
    eina_strbuf_append_length(strbuf, *prev, *cur - *prev);
-   snprintf(buf, sizeof(buf), "<color=#%s>%s</color>", color, cmp);
+   snprintf(buf, sizeof(buf), "<color=#%s>%s</color>", col, cmp);
    eina_strbuf_append(strbuf, buf);
    *cur += strlen(cmp);
    if (*cur > (*src + length)) return EINA_FALSE;
@@ -293,7 +293,7 @@ markup_skip(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
 
 static int
 comment_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
-              char **prev, const Eina_Stringshare *color,
+              char **prev, const Eina_Stringshare *col,
               Eina_Bool *inside_comment)
 {
    if (!(*inside_comment))
@@ -305,7 +305,7 @@ comment_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
         eina_strbuf_append_length(strbuf, *prev, (*cur - *prev));
 
         char buf[128];
-        snprintf(buf, sizeof(buf), "<color=#%s>/*", color);
+        snprintf(buf, sizeof(buf), "<color=#%s>/*", col);
         eina_strbuf_append(strbuf, buf);
 
         int cmp_size = 2;     //strlen("/*");
@@ -361,7 +361,7 @@ comment_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
 
 static int
 comment2_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
-               char **prev, const Eina_Stringshare *color,
+               char **prev, const Eina_Stringshare *col,
                Eina_Bool *inside_comment)
 {
    if (*inside_comment) return 0;
@@ -372,7 +372,7 @@ comment2_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
    eina_strbuf_append_length(strbuf, *prev, (*cur - *prev));
 
    char buf[128];
-   snprintf(buf, sizeof(buf), "<color=#%s>//", color);
+   snprintf(buf, sizeof(buf), "<color=#%s>//", col);
    eina_strbuf_append(strbuf, buf);
 
    int cmp_size = 2;    //strlen("//");
@@ -406,7 +406,7 @@ comment2_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
 
 static int
 string_apply(Eina_Strbuf *strbuf, char **cur, char **prev,
-             const Eina_Stringshare *color, Eina_Bool inside_string)
+             const Eina_Stringshare *col, Eina_Bool inside_string)
 {
    //escape string: " ~ "
    if ((*cur)[0] != QUOT_C) return 0;
@@ -415,7 +415,7 @@ string_apply(Eina_Strbuf *strbuf, char **cur, char **prev,
 
    if (!inside_string)
      {
-        snprintf(buf, sizeof(buf), "<color=#%s>", color);
+        snprintf(buf, sizeof(buf), "<color=#%s>", col);
         eina_strbuf_append(strbuf, buf);
      }
 
@@ -435,7 +435,7 @@ string_apply(Eina_Strbuf *strbuf, char **cur, char **prev,
 
 static int
 macro_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
-            char **prev, const Eina_Stringshare *color, color_data *cd)
+            char **prev, const Eina_Stringshare *col, color_data *cd)
 {
    if ((*cur)[0] != '#') return 0;
 
@@ -486,7 +486,7 @@ macro_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
    eina_strbuf_append_length(strbuf, *prev, (*cur - *prev));
 
    char buf[128];
-   snprintf(buf, sizeof(buf), "<color=#%s>#", color);
+   snprintf(buf, sizeof(buf), "<color=#%s>#", col);
    eina_strbuf_append(strbuf, buf);
 
    int cmp_size = 1;    //strlen("#");
@@ -503,7 +503,7 @@ macro_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
        ((macro_begin[0] < '0') || (macro_begin[0] > '9')))
      {
         char *macro = strndup(macro_begin, (macro_end - macro_begin));
-        macro_key_push(cd, macro, (macro_end - macro_begin));
+        macro_key_push(cd, macro);
         free(macro);
      }
 
