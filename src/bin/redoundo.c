@@ -157,6 +157,7 @@ redoundo_undo(redoundo_data *rd, Eina_Bool *changed)
      {
         elm_entry_calc_force(rd->entry);
         *changed = EINA_TRUE;
+        elm_entry_select_none(rd->entry);
      }
 
    return lines;
@@ -235,6 +236,7 @@ redoundo_redo(redoundo_data *rd, Eina_Bool *changed)
      {
         elm_entry_calc_force(rd->entry);
         *changed = EINA_TRUE;
+        elm_entry_select_none(rd->entry);
      }
 
    return lines;
