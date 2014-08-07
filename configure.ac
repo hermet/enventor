@@ -64,8 +64,8 @@ PKG_CHECK_MODULES([ENVENTOR],
    edje >= ${efl_version}
    eio >= ${efl_version}
    efreet >= ${efl_version}
-   ]
- )
+  ]
+)
 
 ### Checks for linker characteristics
 lt_enable_auto_import=""
