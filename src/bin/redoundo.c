@@ -197,6 +197,7 @@ redoundo_redo(redoundo_data *rd, Eina_Bool *changed)
         evas_object_textblock_text_markup_prepend(rd->cursor, diff->text);
 
         lines = parser_line_cnt_get(NULL, diff->text);
+        elm_entry_cursor_pos_set(rd->entry, (diff->cursor_pos + diff->length));
      }
    //Remove
    else
@@ -219,10 +220,10 @@ redoundo_redo(redoundo_data *rd, Eina_Bool *changed)
              evas_textblock_cursor_free(cursor);
           }
         lines = -parser_line_cnt_get(NULL, diff->text);
+        elm_entry_cursor_pos_set(rd->entry, diff->cursor_pos);
      }
 
    rd->internal_change = EINA_FALSE;
-   elm_entry_cursor_pos_set(rd->entry, (diff->cursor_pos + diff->length));
 
    rd->last_diff = diff;
    rd->current_node = next;
