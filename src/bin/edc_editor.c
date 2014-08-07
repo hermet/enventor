@@ -205,7 +205,7 @@ syntax_color_full_update(edit_data *ed, Eina_Bool thread)
 
    if (thread)
      {
-        syntax_color_td *td = malloc(sizeof(syntax_color_td));
+        syntax_color_td *td = calloc(1, sizeof(syntax_color_td));
         if (!td)
           {
              EINA_LOG_ERR("Failed to allocate Memory!");
