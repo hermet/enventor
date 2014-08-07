@@ -925,7 +925,7 @@ group { name: "elm/panes/vertical/enventor";
          description { state: "default" 0.0;
             rel1.to: "elm.swallow.right";
             rel2.to: "elm.swallow.right";
-            color: 0 0 0 255;
+            color: 0 0 0 175;
          }
       }
       part { name: "sub_whole"; type: SPACER;
