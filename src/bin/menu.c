@@ -439,6 +439,7 @@ fileselector_save_done_cb(void *data, Evas_Object *obj, void *event_info)
    edj_mgr_reload_need_set(EINA_TRUE);
    config_apply();
 
+   base_title_set(selected);
    fileselector_close(md);
    menu_close(md);
 }
