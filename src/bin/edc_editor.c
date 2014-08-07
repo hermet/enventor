@@ -8,12 +8,6 @@ const int SYNTAX_COLOR_SPARE_LINES = 42;
 const double SYNTAX_COLOR_DEFAULT_TIME = 0.25;
 const double SYNTAX_COLOR_SHORT_TIME = 0.025;
 
-static const char ALPHA_STRING[] =
-   "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-   "abcdefghijklmnopqrstuvwxyz";
-
-static const char ALPHA_STRING_LEN = 52;
-
 typedef struct syntax_color_thread_data_s
 {
    edit_data *ed;
@@ -469,14 +463,6 @@ edit_cur_indent_depth_get(edit_data *ed)
    return indent_space_get(syntax_indent_data_get(ed->sh), ed->en_edit);
 }
 
-static void
-part_name_string_generate(char *part_name_line)
-{
-   char *pos = strstr(part_name_line, QUOT);
-   while (*(++pos) != QUOT_C)
-     *pos = ALPHA_STRING[rand() % ALPHA_STRING_LEN];
-}
-
 void
 edit_template_part_insert(edit_data *ed, Edje_Part_Type type)
 {
@@ -539,13 +525,10 @@ edit_template_part_insert(edit_data *ed, Edje_Part_Type type)
            break;
      }
 
-   char *part_name_line = strdup(TEMPLATE_PART_NAME_FORMAT);
-   part_name_string_generate(part_name_line);
-
    elm_entry_entry_insert(ed->en_edit, p);
-   elm_entry_entry_insert(ed->en_edit, part_name_line);
+   const char *first_line = template_part_first_line_get();
+   elm_entry_entry_insert(ed->en_edit, first_line);
    edit_line_increase(ed, 1);
-   free(part_name_line);
 
    int i;
    for (i = 0; i < (line_cnt - 1); i++)

@@ -32,9 +32,6 @@ const char *TEMPLATE_GROUP[TEMPLATE_GROUP_LINE_CNT] =
    "}"
 };
 
-const char * TEMPLATE_PART_NAME_FORMAT =
-             "part { name: \"PartName\";<br/>";
-
 #define TEMPLATE_PART_IMAGE_LINE_CNT 15
 
 const char *TEMPLATE_PART_IMAGE[TEMPLATE_PART_IMAGE_LINE_CNT] =

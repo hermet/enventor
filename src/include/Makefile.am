@@ -25,4 +25,5 @@ EXTRA_DIST = common.h \
 	goto.h \
 	setting.h \
 	search.h \
-	redoundo.h
+	redoundo.h \
+	template.h

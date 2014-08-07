@@ -33,7 +33,8 @@ enventor_SOURCES = \
 	auto_comp.c \
 	setting.c \
 	globals.c \
-	redoundo.c
+	redoundo.c \
+	template.c
 
 enventor_LDADD = @ENVENTOR_LIBS@
 enventor_LDFLAGS = $(LTLIBINTL)

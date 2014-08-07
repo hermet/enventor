@@ -33,5 +33,6 @@ typedef struct redoundo_s redoundo_data;
 #include "auto_comp.h"
 #include "setting.h"
 #include "redoundo.h"
+#include "template.h"
 
 #endif
