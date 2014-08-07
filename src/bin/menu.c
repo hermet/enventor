@@ -141,7 +141,7 @@ newfile_open(menu_data *md)
 
    Evas_Object *layout = elm_layout_add(base_win_get());
    elm_layout_file_set(layout, EDJE_PATH, "newfile_layout");
-   elm_object_part_text_set(layout, "elm.text.title", "New File: choose a template.");
+   elm_object_part_text_set(layout, "elm.text.title", "New File: Choose a template");
    elm_object_signal_callback_add(layout, "elm,state,dismiss,done", "",
                                   newfile_dismiss_done, md);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -413,7 +413,7 @@ fileselector_save_done_cb(void *data, Evas_Object *obj, void *event_info)
    if (ecore_file_is_dir(selected))
      {
         elm_object_part_text_set(md->fileselector_layout,
-                                 "elm.text.msg", "Choose a file to save.");
+                                 "elm.text.msg", "Choose a file to save");
         elm_object_signal_emit(md->fileselector_layout,
                                "elm,action,msg,show", "");
         return;
