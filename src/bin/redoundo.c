@@ -104,7 +104,6 @@ redoundo_undo(redoundo_data *rd, Eina_Bool *changed)
 
    if (!rd->last_diff) return 0;
 
-   elm_entry_cursor_pos_set(rd->entry, rd->last_diff->cursor_pos);
    rd->internal_change = EINA_TRUE;
 
    int lines;
@@ -133,6 +132,7 @@ redoundo_undo(redoundo_data *rd, Eina_Bool *changed)
              evas_textblock_cursor_free(cursor);
           }
         lines = -parser_line_cnt_get(NULL, rd->last_diff->text);
+        elm_entry_cursor_pos_set(rd->entry, rd->last_diff->cursor_pos);
      }
    else
      {
@@ -142,6 +142,8 @@ redoundo_undo(redoundo_data *rd, Eina_Bool *changed)
                                                   rd->last_diff->text);
 
         lines = parser_line_cnt_get(NULL, rd->last_diff->text);
+        elm_entry_cursor_pos_set(rd->entry,
+                                 (rd->last_diff->cursor_pos + rd->last_diff->length));
      }
 
    rd->internal_change = EINA_FALSE;
