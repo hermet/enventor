@@ -32,12 +32,13 @@ const char *TEMPLATE_GROUP[TEMPLATE_GROUP_LINE_CNT] =
    "}"
 };
 
+const char * TEMPLATE_PART_NAME_FORMAT =
+             "part { name: \"PartName\";<br/>";
 
 #define TEMPLATE_PART_IMAGE_LINE_CNT 15
 
 const char *TEMPLATE_PART_IMAGE[TEMPLATE_PART_IMAGE_LINE_CNT] =
 {
-   "part { name: \"XXX\";<br/>",
    "   type: IMAGE;<br/>",
    "   scale: 1;<br/>",
    "   mouse_events: 1;<br/>",
@@ -58,7 +59,6 @@ const char *TEMPLATE_PART_IMAGE[TEMPLATE_PART_IMAGE_LINE_CNT] =
 
 const char *TEMPLATE_PART_RECT[TEMPLATE_PART_RECT_LINE_CNT] =
 {
-   "part { name: \"XXX\";<br/>",
    "   type: RECT;<br/>",
    "   scale: 1;<br/>",
    "   mouse_events: 1;<br/>",
@@ -78,7 +78,6 @@ const char *TEMPLATE_PART_RECT[TEMPLATE_PART_RECT_LINE_CNT] =
 
 const char *TEMPLATE_PART_SWALLOW[TEMPLATE_PART_SWALLOW_LINE_CNT] =
 {
-   "part { name: \"XXX\";<br/>",
    "   type: SWALLOW;<br/>",
    "   scale: 1;<br/>",
    "   mouse_events: 1;<br/>",
@@ -97,7 +96,6 @@ const char *TEMPLATE_PART_SWALLOW[TEMPLATE_PART_SWALLOW_LINE_CNT] =
 
 const char *TEMPLATE_PART_SPACER[TEMPLATE_PART_SPACER_LINE_CNT] =
 {
-   "part { name: \"XXX\";<br/>",
    "   type: SPACER;<br/>",
    "   scale: 1;<br/>",
    "   description { state: \"default\" 0.0;<br/>",
@@ -114,7 +112,6 @@ const char *TEMPLATE_PART_SPACER[TEMPLATE_PART_SPACER_LINE_CNT] =
 
 const char *TEMPLATE_PART_TEXT[TEMPLATE_PART_TEXT_LINE_CNT] =
 {
-   "part { name: \"XXX\";<br/>",
    "   type: TEXT;<br/>",
    "   scale: 1;<br/>",
    "   mouse_events: 1;<br/>",
@@ -144,7 +141,6 @@ const char *TEMPLATE_PART_TEXT[TEMPLATE_PART_TEXT_LINE_CNT] =
 
 const char *TEMPLATE_PART_TEXTBLOCK[TEMPLATE_PART_TEXTBLOCK_LINE_CNT] =
 {
-   "part { name: \"XXX\";<br/>",
    "   type: TEXTBLOCK;<br/>",
    "   description { state: \"default\" 0.0;<br/>",
    "      rel1 { relative: 0.0 0.0; offset: 0 0; /*to: \"XXX\";*/ }<br/>",
