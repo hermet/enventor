@@ -62,7 +62,6 @@ PKG_CHECK_MODULES([ENVENTOR],
    evas >= ${efl_version}
    ecore >= ${efl_version}
    edje >= ${efl_version}
-   eo >= ${efl_version}
    eio >= ${efl_version}
    efreet >= ${efl_version}
    ]
