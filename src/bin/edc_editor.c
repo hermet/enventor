@@ -1154,7 +1154,7 @@ edit_edc_read(edit_data *ed, const char *file_path)
       parser_first_group_name_get(ed->pd, ed->en_edit);
 
    stats_edc_group_update(group_name);
-   base_title_set(config_edc_path_get());
+   base_title_set(file_path);
 
    ecore_animator_add(syntax_color_timer_cb, ed);
 
