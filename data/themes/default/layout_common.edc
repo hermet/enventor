@@ -8,12 +8,6 @@ images {
    image: "bub_over_bot.png" COMP;
 }
 
-styles {
-     style { name: "entry_statusbar_style";
-        base: "font="FN" font_size=11 text_class=entry color=#ffffff style=shadow,bottom shadow_color=#00000080 glow_color=#3399ff18 valign=1 ellipsis=1.0 wrap=none";
-     }
-}
-
 group { name: "about_layout";
    parts {
       part { name: "clipper";
@@ -1414,63 +1408,117 @@ group { name: "statusbar_layout";
             color: 0 0 0 0;
          }
       }
-      part { name: "elm.text.view_size";
-         type: TEXTBLOCK;
+      part { name: "size_spacer";
+         type: SPACER;
          scale: 1;
-         clip_to: "base_clip";
-         description {
-            rel1.to: "base_clip";
-            rel2.to: "base_clip";
-            rel2.relative: 0.0 1.0;
-            align: 0 0.5;
-            min: 120 14;
+         description { state: "default" 0.0;
+            rel1.relative: 0 0;
+            rel2.relative: 0 1;
+            min: 250 0;
             fixed: 1 0;
-            rel1.offset: 0 -2;
-            rel2.offset: -1 -3;
-            text.style: "entry_statusbar_style";
          }
       }
-      part { name: "elm.text.cur_pos";
-         type: TEXTBLOCK;
-         scale: 1;
-         clip_to: "base_clip";
-         description {
-            rel1.to: "elm.text.view_size";
-            rel1.relative: 1 0.0;
-            rel2.to: "elm.text.view_size";
-            rel2.relative: 1 1.0;
-            min: 200 14;
-            fixed: 1 0;
-            align: 0 0.5;
-            text.style: "entry_statusbar_style";
-         }
-      }
-      part { name: "elm.text.group_name";
-         type: TEXTBLOCK;
-         scale: 1;
-         clip_to: "base_clip";
-         description {
-            rel1.to: "elm.text.cur_pos";
-            rel1.relative: 1 0.0;
-            rel2.to: "elm.text.line";
-            rel2.relative: 0 1.0;
-            min: 180 14;
-            align: 1 0.5;
-            fixed: 1 0;
-            text.style: "entry_statusbar_style";
-         }
-      }
-      part { name: "elm.text.group_name_bracket";
+      part { name: "elm.text.size[";
          type: TEXT;
+         clip_to: "base_clip";
          scale: 1;
          effect: SHADOW BOTTOM;
+         description { state: "default" 0.0;
+            rel2.relative: 0.0 1.0;
+            align: 0 0.5;
+            rel1.offset: 0 -2;
+            rel2.offset: -1 -3;
+            fixed: 1 0;
+            color: 255 255 255 255;
+            color3: 0 0 0 128;
+            text {
+               text: "Size [";
+               size: 11;
+               align: 0 0;
+               min: 1 0;
+               ellipsis: -1;
+            }
+         }
+      }
+      part { name: "elm.text.size_w";
+         type: TEXT;
          clip_to: "base_clip";
-         description {
-            rel1.to_x: "elm.text.group_name";
-            rel1.relative: 1 0.0;
-            rel2.to_x: "elm.text.group_name";
-            rel2.relative: 1 1.0;
-            min: 6 14;
+         scale: 1;
+         effect: GLOW;
+         description { state: "default" 0.0;
+            rel1.to_x: "elm.text.size[";
+            rel2.to_x: "elm.text.size[";
+            rel1.relative: 1.0 0.0;
+            rel2.relative: 1.0 1.0;
+            align: 0 0.5;
+            fixed: 1 0;
+            color: 51 153 255 255;
+            color2: 51 153 255 24;
+            color3: 51 153 255 18;
+            text {
+               size: 11;
+               align: 0 0.5;
+               min: 1 0;
+               ellipsis: -1;
+            }
+         }
+      }
+      part { name: "elm.text.size_x";
+         type: TEXT;
+         clip_to: "base_clip";
+         scale: 1;
+         effect: SHADOW BOTTOM;
+         description { state: "default" 0.0;
+            rel1.to_x: "elm.text.size_w";
+            rel2.to_x: "elm.text.size_w";
+            rel1.relative: 1.0 0.0;
+            rel2.relative: 1.0 1.0;
+            align: 0 0.5;
+            fixed: 1 0;
+            color: 255 255 255 255;
+            color3: 0 0 0 128;
+            text {
+               text: "x";
+               size: 11;
+               align: 0 0.5;
+               min: 1 0;
+               ellipsis: -1;
+            }
+         }
+      }
+      part { name: "elm.text.size_h";
+         type: TEXT;
+         clip_to: "base_clip";
+         scale: 1;
+         effect: GLOW;
+         description { state: "default" 0.0;
+            rel1.to_x: "elm.text.size_x";
+            rel2.to_x: "elm.text.size_x";
+            rel1.relative: 1.0 0.0;
+            rel2.relative: 1.0 1.0;
+            align: 0 0.5;
+            fixed: 1 0;
+            color: 51 153 255 255;
+            color2: 51 153 255 24;
+            color3: 51 153 255 18;
+            text {
+               size: 11;
+               align: 0 0.5;
+               min: 1 0;
+               ellipsis: -1;
+            }
+         }
+      }
+      part { name: "elm.text.size]";
+         type: TEXT;
+         clip_to: "base_clip";
+         scale: 1;
+         effect: SHADOW BOTTOM;
+         description { state: "default" 0.0;
+            rel1.to_x: "elm.text.size_h";
+            rel2.to_x: "elm.text.size_h";
+            rel1.relative: 1.0 0.0;
+            rel2.relative: 1.0 1.0;
             align: 0 0.5;
             fixed: 1 0;
             color: 255 255 255 255;
@@ -1479,21 +1527,432 @@ group { name: "statusbar_layout";
                text: "]";
                size: 11;
                align: 0 0.5;
+               min: 1 0;
+               ellipsis: -1;
             }
          }
       }
-      part { name: "elm.text.line";
-         type: TEXTBLOCK;
+      part { name: "elm.text.cursor_px[";
+         type: TEXT;
+         clip_to: "base_clip";
          scale: 1;
+         effect: SHADOW BOTTOM;
+         description { state: "default" 0.0;
+            rel1.to: "size_spacer";
+            rel1.relative: 1 0.0;
+            rel2.to: "size_spacer";
+            rel2.relative: 1 1.0;
+            align: 0 0.5;
+            fixed: 1 0;
+            color: 255 255 255 255;
+            color3: 0 0 0 128;
+            text {
+               text: "Cursor [";
+               size: 11;
+               align: 0 0.5;
+               min: 1 0;
+               ellipsis: -1;
+            }
+         }
+      }
+      part { name: "elm.text.cursor_pxx";
+         type: TEXT;
+         clip_to: "base_clip";
+         scale: 1;
+         effect: GLOW;
+         description { state: "default" 0.0;
+            rel1.to_x: "elm.text.cursor_px[";
+            rel2.to_x: "elm.text.cursor_px[";
+            rel1.relative: 1.0 0.0;
+            rel2.relative: 1.0 1.0;
+            align: 0 0.5;
+            fixed: 1 0;
+            color: 51 153 255 255;
+            color2: 51 153 255 24;
+            color3: 51 153 255 18;
+            text {
+               size: 11;
+               align: 0 0.5;
+               min: 1 0;
+               ellipsis: -1;
+            }
+         }
+      }
+      part { name: "elm.text.cursor_px.";
+         type: TEXT;
+         clip_to: "base_clip";
+         scale: 1;
+         effect: SHADOW BOTTOM;
+         description { state: "default" 0.0;
+            rel1.to_x: "elm.text.cursor_pxx";
+            rel2.to_x: "elm.text.cursor_pxx";
+            rel1.relative: 1.0 0.0;
+            rel2.relative: 1.0 1.0;
+            align: 0 0.5;
+            fixed: 1 0;
+            color: 255 255 255 255;
+            color3: 0 0 0 128;
+            text {
+               text: ",";
+               size: 11;
+               align: 0 0.5;
+               min: 1 0;
+               ellipsis: -1;
+            }
+         }
+      }
+      part { name: "elm.text.cursor_pxy";
+         type: TEXT;
+         clip_to: "base_clip";
+         scale: 1;
+         effect: GLOW;
+         description { state: "default" 0.0;
+            rel1.to_x: "elm.text.cursor_px.";
+            rel2.to_x: "elm.text.cursor_px.";
+            rel1.relative: 1.0 0.0;
+            rel2.relative: 1.0 1.0;
+            align: 0 0.5;
+            fixed: 1 0;
+            color: 51 153 255 255;
+            color2: 51 153 255 24;
+            color3: 51 153 255 18;
+            text {
+               size: 11;
+               align: 0 0.5;
+               min: 1 0;
+               ellipsis: -1;
+            }
+         }
+      }
+      part { name: "elm.text.cursor_px][";
+         type: TEXT;
+         clip_to: "base_clip";
+         scale: 1;
+         effect: SHADOW BOTTOM;
+         description { state: "default" 0.0;
+            rel1.to_x: "elm.text.cursor_pxy";
+            rel2.to_x: "elm.text.cursor_pxy";
+            rel1.relative: 1.0 0.0;
+            rel2.relative: 1.0 1.0;
+            align: 0 0.5;
+            fixed: 1 0;
+            color: 255 255 255 255;
+            color3: 0 0 0 128;
+            text {
+               text: "][";
+               size: 11;
+               align: 0 0.5;
+               min: 1 0;
+               ellipsis: -1;
+            }
+         }
+      }
+      part { name: "elm.text.cursor_relx";
+         type: TEXT;
+         clip_to: "base_clip";
+         scale: 1;
+         effect: GLOW;
+         description { state: "default" 0.0;
+            rel1.to_x: "elm.text.cursor_px][";
+            rel2.to_x: "elm.text.cursor_px][";
+            rel1.relative: 1.0 0.0;
+            rel2.relative: 1.0 1.0;
+            align: 0 0.5;
+            fixed: 1 0;
+            color: 51 153 255 255;
+            color2: 51 153 255 24;
+            color3: 51 153 255 18;
+            text {
+               size: 11;
+               align: 0 0.5;
+               min: 1 0;
+               ellipsis: -1;
+            }
+         }
+      }
+      part { name: "elm.text.cursor_rel.";
+         type: TEXT;
+         clip_to: "base_clip";
+         scale: 1;
+         effect: SHADOW BOTTOM;
+         description { state: "default" 0.0;
+            rel1.to_x: "elm.text.cursor_relx";
+            rel2.to_x: "elm.text.cursor_relx";
+            rel1.relative: 1.0 0.0;
+            rel2.relative: 1.0 1.0;
+            align: 0 0.5;
+            fixed: 1 0;
+            color: 255 255 255 255;
+            color3: 0 0 0 128;
+            text {
+               text: ",";
+               size: 11;
+               align: 0 0.5;
+               min: 1 0;
+               ellipsis: -1;
+            }
+         }
+      }
+      part { name: "elm.text.cursor_rely";
+         type: TEXT;
+         clip_to: "base_clip";
+         scale: 1;
+         effect: GLOW;
+         description { state: "default" 0.0;
+            rel1.to_x: "elm.text.cursor_rel.";
+            rel2.to_x: "elm.text.cursor_rel.";
+            rel1.relative: 1.0 0.0;
+            rel2.relative: 1.0 1.0;
+            align: 0 0.5;
+            fixed: 1 0;
+            color: 51 153 255 255;
+            color2: 51 153 255 24;
+            color3: 51 153 255 18;
+            text {
+               size: 11;
+               align: 0 0.5;
+               min: 1 0;
+               ellipsis: -1;
+            }
+         }
+      }
+      part { name: "elm.text.cursor_rel]";
+         type: TEXT;
+         clip_to: "base_clip";
+         scale: 1;
+         effect: SHADOW BOTTOM;
+         description { state: "default" 0.0;
+            rel1.to_x: "elm.text.cursor_rely";
+            rel2.to_x: "elm.text.cursor_rely";
+            rel1.relative: 1.0 0.0;
+            rel2.relative: 1.0 1.0;
+            align: 0 0.5;
+            fixed: 1 0;
+            color: 255 255 255 255;
+            color3: 0 0 0 128;
+            text {
+               text: "]";
+               size: 11;
+               align: 0 0.5;
+               min: 1 0;
+               ellipsis: -1;
+            }
+         }
+      }
+      part { name: "cursor_spacer";
+         type: SPACER;
+         scale: 1;
+         description {
+            rel1.to: "size_spacer";
+            rel1.relative: 1.0 0.0;
+            rel2.to: "size_spacer";
+            rel2.relative: 1.0 1.0;
+            min: 200 0;
+            fixed: 1 0;
+            align: 0 0.5;
+         }
+      }
+      part { name: "group_spacer";
+         type: SPACER;
+         scale: 1;
+         description {
+            rel1.to: "line_spacer";
+            rel1.relative: 0.0 0.0;
+            rel2.to: "line_spacer";
+            rel2.relative: 0.0 1.0;
+            min: 200 0;
+            fixed: 1 0;
+            align: 1 0.5;
+         }
+      }
+      part { name: "elm.text.group[";
+         type: TEXT;
+         clip_to: "base_clip";
+         scale: 1;
+         effect: SHADOW BOTTOM;
+         description { state: "default" 0.0;
+            rel1.to_x: "cursor_spacer";
+            rel2.to_x: "elm.text.group_name";
+            rel1.relative: 1.0 0.0;
+            rel2.relative: 0.0 1.0;
+            align: 1 0.5;
+            color: 255 255 255 255;
+            color3: 0 0 0 128;
+            text {
+               text: "Group [";
+               size: 11;
+               align: 1 0.5;
+               min: 1 0;
+               ellipsis: -1;
+            }
+         }
+      }
+      part { name: "elm.text.group_name";
+         type: TEXT;
+         clip_to: "base_clip";
+         scale: 1;
+         effect: GLOW;
+         description { state: "default" 0.0;
+            rel1.to_x: "group_spacer";
+            rel2.to_x: "elm.text.group]";
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 0.0 1.0;
+            align: 1 0.5;
+            fixed: 1 0;
+            color: 51 153 255 255;
+            color2: 51 153 255 24;
+            color3: 51 153 255 18;
+            text {
+               size: 11;
+               align: 1 0.5;
+               min: 0 0;
+               max: 1 0;
+            }
+         }
+      }
+      part { name: "elm.text.group]";
+         type: TEXT;
+         scale: 1;
+         effect: SHADOW BOTTOM;
          clip_to: "base_clip";
          description {
+            rel1.to_x: "line_spacer";
+            rel1.relative: 0 0.0;
+            rel2.to_x: "line_spacer";
+            rel2.relative: 0 1.0;
+            align: 1 0.5;
+            fixed: 1 0;
+            color: 255 255 255 255;
+            color3: 0 0 0 128;
+            text {
+               text: "]";
+               size: 11;
+               align: 1 0.5;
+               min: 1 0;
+               ellipsis: -1;
+            }
+         }
+      }
+      part { name: "line_spacer";
+         type: SPACER;
+         scale: 1;
+         description {
+            rel1.relative: 1 0;
+            align: 1 0.5;
+            min: 100 0;
+            fixed: 1 0;
+         }
+      }
+      part { name: "elm.text.line_[";
+         type: TEXT;
+         clip_to: "base_clip";
+         scale: 1;
+         effect: SHADOW BOTTOM;
+         description { state: "default" 0.0;
+            rel1.to: "elm.text.line_cur";
+            rel2.to: "elm.text.line_cur";
+            rel2.relative: 0 1.0;
+            align: 1 0.5;
+            fixed: 1 0;
+            color: 255 255 255 255;
+            color3: 0 0 0 128;
+            text {
+               text: "Line [";
+               size: 11;
+               align: 1 0.5;
+               min: 1 0;
+               ellipsis: -1;
+            }
+         }
+      }
+      part { name: "elm.text.line_cur";
+         type: TEXT;
+         clip_to: "base_clip";
+         scale: 1;
+         effect: GLOW;
+         description { state: "default" 0.0;
+            rel1.to: "elm.text.line_c";
+            rel2.to: "elm.text.line_c";
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 0.0 1.0;
+            align: 1 0.5;
+            fixed: 1 0;
+            color: 51 153 255 255;
+            color2: 51 153 255 24;
+            color3: 51 153 255 18;
+            text {
+               size: 11;
+               align: 1 0.5;
+               min: 1 0;
+               ellipsis: -1;
+            }
+         }
+      }
+      part { name: "elm.text.line_c";
+         type: TEXT;
+         clip_to: "base_clip";
+         scale: 1;
+         effect: SHADOW BOTTOM;
+         description { state: "default" 0.0;
+            rel1.to: "elm.text.line_max";
+            rel2.to: "elm.text.line_max";
+            rel2.relative: 0 1.0;
+            align: 1 0.5;
+            fixed: 1 0;
+            color: 255 255 255 255;
+            color3: 0 0 0 128;
+            text {
+               text: ":";
+               size: 11;
+               align: 1 0.5;
+               min: 1 0;
+               ellipsis: -1;
+            }
+         }
+      }
+      part { name: "elm.text.line_max";
+         type: TEXT;
+         clip_to: "base_clip";
+         scale: 1;
+         effect: GLOW;
+         description { state: "default" 0.0;
+            rel1.to_x: "elm.text.line]";
+            rel2.to_x: "elm.text.line]";
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 0.0 1.0;
+            align: 1 0.5;
+            fixed: 1 0;
+            color: 51 153 255 255;
+            color2: 51 153 255 24;
+            color3: 51 153 255 18;
+            text {
+               size: 11;
+               align: 1 0.5;
+               min: 1 0;
+               ellipsis: -1;
+            }
+         }
+      }
+      part { name: "elm.text.line]";
+         type: TEXT;
+         clip_to: "base_clip";
+         scale: 1;
+         effect: SHADOW BOTTOM;
+         description { state: "default" 0.0;
             rel1.relative: 1 0;
             rel1.offset: 0 -2;
             rel2.offset: -1 -3;
             align: 1 0.5;
-            min: 100 14;
             fixed: 1 0;
-            text.style: "entry_statusbar_style";
+            color: 255 255 255 255;
+            color3: 0 0 0 128;
+            text {
+               text: "]";
+               size: 11;
+               align: 1 0;
+               min: 1 0;
+               ellipsis: -1;
+            }
          }
       }
       part { name: "elm.text.info_msg";
