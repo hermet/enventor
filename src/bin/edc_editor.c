@@ -1129,6 +1129,8 @@ edit_edc_read(edit_data *ed, const char *file_path)
    strbuf_line = eina_strbuf_new();
    if (!strbuf_line) goto err;
 
+   base_title_set(file_path);
+
    utf8_edit = eina_file_map_all(file, EINA_FILE_REMOVE);
    if (!utf8_edit) goto err;
 
@@ -1160,7 +1162,6 @@ edit_edc_read(edit_data *ed, const char *file_path)
       parser_first_group_name_get(ed->pd, ed->en_edit);
 
    stats_edc_group_update(group_name);
-   base_title_set(file_path);
 
    ecore_animator_add(syntax_color_timer_cb, ed);
 
