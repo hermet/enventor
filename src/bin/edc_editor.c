@@ -1131,7 +1131,7 @@ edit_edc_read(edit_data *ed, const char *file_path)
 
    base_title_set(file_path);
 
-   utf8_edit = eina_file_map_all(file, EINA_FILE_REMOVE);
+   utf8_edit = eina_file_map_all(file, EINA_FILE_POPULATE);
    if (!utf8_edit) goto err;
 
    //Append line numbers
