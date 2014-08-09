@@ -570,7 +570,7 @@ type_init_thread_cancel(void *data, Ecore_Thread *thread EINA_UNUSED)
    free(td);
 }
 
-const char *
+Eina_Stringshare *
 parser_paragh_name_get(parser_data *pd EINA_UNUSED, Evas_Object *entry)
 {
    //FIXME: list up groups
@@ -650,7 +650,7 @@ parser_paragh_name_get(parser_data *pd EINA_UNUSED, Evas_Object *entry)
           {
              group_info *gi = &group_list[i];
              if (!strncmp(cur, gi->str, gi->len))
-               return gi->str;
+               return eina_stringshare_add_length(gi->str, gi->len);
           }
      }
 

@@ -1,1 +1,3 @@
-const char *template_part_first_line_get(void);
+void template_insert(edit_data *ed);
+void template_part_insert(edit_data *ed, Edje_Part_Type type);
+

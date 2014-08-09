@@ -70,7 +70,7 @@ auto_indentation_toggle()
 }
 
 static Eina_Bool
-template_insert(app_data *ad, const char *key)
+template_insert_patch(app_data *ad, const char *key)
 {
    Edje_Part_Type type;
 
@@ -101,7 +101,7 @@ template_insert(app_data *ad, const char *key)
    else
      type = EDJE_PART_TYPE_NONE;
 
-   edit_template_part_insert(ad->ed, type);
+   template_part_insert(ad->ed, type);
 
    return ECORE_CALLBACK_DONE;
 }
@@ -150,7 +150,7 @@ ctrl_func(app_data *ad, const char *key)
    //Template Code
    if (!strcmp(key, "t") || !strcmp(key, "T"))
      {
-        edit_template_insert(ad->ed);
+        template_insert(ad->ed);
         return ECORE_CALLBACK_DONE;
      }
    //Full Edit View
@@ -198,7 +198,7 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
 
    if (ad->ctrl_pressed)
      {
-        if (ad->shift_pressed) return template_insert(ad, event->key);
+        if (ad->shift_pressed) return template_insert_patch(ad, event->key);
         else return ctrl_func(ad, event->key);
      }
 

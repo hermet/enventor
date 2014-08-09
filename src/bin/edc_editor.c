@@ -1,6 +1,5 @@
 #include <Elementary.h>
 #include "common.h"
-#include "template_code.h"
 
 //FIXME: Make flexible
 const int MAX_LINE_DIGIT_CNT = 10;
@@ -373,183 +372,11 @@ edit_syntax_color_full_apply(edit_data *ed, Eina_Bool force)
 }
 
 void
-edit_syntax_color_partial_apply(edit_data *ed)
+edit_syntax_color_partial_apply(edit_data *ed, double interval)
 {
    if (ed->syntax_color_lock > 0) ed->syntax_color_lock = 0;
-   syntax_color_partial_update(ed, SYNTAX_COLOR_DEFAULT_TIME);
-}
-
-void
-edit_template_insert(edit_data *ed)
-{
-   const char *paragh = parser_paragh_name_get(ed->pd, ed->en_edit);
-   if (!paragh) return;
-
-   if (!strcmp(paragh, "parts"))
-     {
-        edit_template_part_insert(ed, EDJE_PART_TYPE_IMAGE);
-        return;
-     }
-
-   int line_cnt;
-   char **t = NULL;
-   char buf[64];
-   char buf2[12];
-
-   if (!strcmp(paragh, "part"))
-     {
-        line_cnt = TEMPLATE_DESC_LINE_CNT;
-        t = (char **) &TEMPLATE_DESC;
-        strcpy(buf2, "Description");
-     }
-   else if (!strcmp(paragh, "programs"))
-     {
-        line_cnt = TEMPLATE_PROG_LINE_CNT;
-        t = (char **) &TEMPLATE_PROG;
-        strcpy(buf2, "Program");
-     }
-   else if (!strcmp(paragh, "images"))
-     {
-        line_cnt = TEMPLATE_IMG_LINE_CNT;
-        t = (char **) &TEMPLATE_IMG;
-        strcpy(buf2, "Image File");
-     }
-   else if (!strcmp(paragh, "collections"))
-     {
-        line_cnt = TEMPLATE_GROUP_LINE_CNT;
-        t = (char **) &TEMPLATE_GROUP;
-        strcpy(buf2, "Group");
-     }
-
-   if (!t)
-     {
-        stats_info_msg_update("Can't insert template code here. Move the cursor inside the \"Collections,Images,Parts,Part,Programs\" scope.");
-        return;
-     }
-
-   int cursor_pos = elm_entry_cursor_pos_get(ed->en_edit);
-   elm_entry_cursor_line_begin_set(ed->en_edit);
-   int cursor_pos1 = elm_entry_cursor_pos_get(ed->en_edit);
-   int space = indent_space_get(syntax_indent_data_get(ed->sh), ed->en_edit);
-
-   //Alloc Empty spaces
-   char *p = alloca(space + 1);
-   memset(p, ' ', space);
-   p[space] = '\0';
-
-   int i;
-   for (i = 0; i < (line_cnt - 1); i++)
-     {
-        elm_entry_entry_insert(ed->en_edit, p);
-        elm_entry_entry_insert(ed->en_edit, t[i]);
-     }
-   edit_line_increase(ed, (line_cnt -1));
-   elm_entry_entry_insert(ed->en_edit, p);
-   elm_entry_entry_insert(ed->en_edit, t[i]);
-
-   int cursor_pos2 = elm_entry_cursor_pos_get(ed->en_edit);
-   redoundo_entry_region_push(ed->rd, cursor_pos1, cursor_pos2);
-
-   elm_entry_cursor_pos_set(ed->en_edit, cursor_pos);
-
-   syntax_color_partial_update(ed, 0);
-   snprintf(buf, sizeof(buf), "Template code inserted. (%s)", buf2);
-   stats_info_msg_update(buf);
-}
-
-int
-edit_cur_indent_depth_get(edit_data *ed)
-{
-   return indent_space_get(syntax_indent_data_get(ed->sh), ed->en_edit);
-}
-
-void
-edit_template_part_insert(edit_data *ed, Edje_Part_Type type)
-{
-   if (type == EDJE_PART_TYPE_NONE) return;
-
-   int cursor_pos = elm_entry_cursor_pos_get(ed->en_edit);
-   elm_entry_cursor_line_begin_set(ed->en_edit);
-   int cursor_pos1 = elm_entry_cursor_pos_get(ed->en_edit);
-   int space = indent_space_get(syntax_indent_data_get(ed->sh), ed->en_edit);
-
-   //Alloc Empty spaces
-   char *p = alloca(space + 1);
-   memset(p, ' ', space);
-   p[space] = '\0';
-
-   int line_cnt;
-   char **t;
-   char buf[64];
-   char part[20];
-
-   switch(type)
-     {
-        case EDJE_PART_TYPE_RECTANGLE:
-           line_cnt = TEMPLATE_PART_RECT_LINE_CNT;
-           t = (char **) &TEMPLATE_PART_RECT;
-           strcpy(part, "Rect");
-           break;
-        case EDJE_PART_TYPE_TEXT:
-           line_cnt = TEMPLATE_PART_TEXT_LINE_CNT;
-           t = (char **) &TEMPLATE_PART_TEXT;
-           strcpy(part, "Text");
-           break;
-        case EDJE_PART_TYPE_SWALLOW:
-           line_cnt = TEMPLATE_PART_SWALLOW_LINE_CNT;
-           t = (char **) &TEMPLATE_PART_SWALLOW;
-           strcpy(part, "Swallow");
-           break;
-        case EDJE_PART_TYPE_TEXTBLOCK:
-           line_cnt = TEMPLATE_PART_TEXTBLOCK_LINE_CNT;
-           t = (char **) &TEMPLATE_PART_TEXTBLOCK;
-           strcpy(part, "Textblock");
-           break;
-        case EDJE_PART_TYPE_SPACER:
-           line_cnt = TEMPLATE_PART_SPACER_LINE_CNT;
-           t = (char **) &TEMPLATE_PART_SPACER;
-           strcpy(part, "Spacer");
-           break;
-        case EDJE_PART_TYPE_IMAGE:
-        case EDJE_PART_TYPE_NONE:
-        case EDJE_PART_TYPE_GRADIENT:
-        case EDJE_PART_TYPE_GROUP:
-        case EDJE_PART_TYPE_BOX:
-        case EDJE_PART_TYPE_TABLE:
-        case EDJE_PART_TYPE_EXTERNAL:
-        case EDJE_PART_TYPE_PROXY:
-        case EDJE_PART_TYPE_LAST:
-           line_cnt = TEMPLATE_PART_IMAGE_LINE_CNT;
-           t = (char **) &TEMPLATE_PART_IMAGE;
-           strcpy(part, "Image");
-           break;
-     }
-
-   elm_entry_entry_insert(ed->en_edit, p);
-   const char *first_line = template_part_first_line_get();
-   elm_entry_entry_insert(ed->en_edit, first_line);
-   edit_line_increase(ed, 1);
-
-   int i;
-   for (i = 0; i < (line_cnt - 1); i++)
-     {
-        elm_entry_entry_insert(ed->en_edit, p);
-        elm_entry_entry_insert(ed->en_edit, t[i]);
-        //Incease line by (line count - 1)
-        edit_line_increase(ed, 1);
-     }
-
-   elm_entry_entry_insert(ed->en_edit, p);
-   elm_entry_entry_insert(ed->en_edit, t[i]);
-
-   int cursor_pos2 = elm_entry_cursor_pos_get(ed->en_edit);
-   redoundo_entry_region_push(ed->rd, cursor_pos1, cursor_pos2);
-
-   elm_entry_cursor_pos_set(ed->en_edit, cursor_pos);
-
-   syntax_color_partial_update(ed, 0);
-   snprintf(buf, sizeof(buf), "Template code inserted. (%s Part)", part);
-   stats_info_msg_update(buf);
+   if (interval < 0) syntax_color_partial_update(ed, SYNTAX_COLOR_DEFAULT_TIME);
+   else syntax_color_partial_update(ed, interval);
 }
 
 static void
@@ -873,6 +700,12 @@ edit_line_delete(edit_data *ed)
 
    cur_line_pos_set(ed, EINA_TRUE);
    edit_changed_set(ed, EINA_TRUE);
+}
+
+int
+edit_cur_indent_depth_get(edit_data *ed)
+{
+   return indent_space_get(syntax_indent_data_get(ed->sh), ed->en_edit);
 }
 
 static void
@@ -1261,6 +1094,12 @@ edit_edc_reload(edit_data *ed, const char *edc_path)
 }
 
 Eina_Stringshare *
+edit_cur_paragh_get(edit_data *ed)
+{
+   return parser_paragh_name_get(ed->pd, ed->en_edit);
+}
+
+Eina_Stringshare *
 edit_cur_prog_name_get(edit_data *ed)
 {
    return parser_cur_name_fast_get(ed->en_edit, "program");
@@ -1341,3 +1180,10 @@ edit_line_decrease(edit_data *ed, int cnt)
    if (ed->line_max < 1) line_init(ed);
    stats_line_num_update(ed->cur_line, ed->line_max);
 }
+
+void
+edit_redoundo_region_push(edit_data *ed, int cursor_pos1, int cursor_pos2)
+{
+   redoundo_entry_region_push(ed->rd, cursor_pos1, cursor_pos2);
+}
+

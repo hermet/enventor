@@ -298,7 +298,7 @@ win_unfocused_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
                  void *event_info EINA_UNUSED)
 {
    search_data *sd = g_sd;
-   edit_syntax_color_partial_apply(sd->ed);
+   edit_syntax_color_partial_apply(sd->ed, -1);
    sd->syntax_color--;
 }
 
@@ -427,7 +427,7 @@ search_close(void)
 
    while (sd->syntax_color > 0)
      {
-        edit_syntax_color_partial_apply(sd->ed);
+        edit_syntax_color_partial_apply(sd->ed, -1);
         sd->syntax_color--;
      }
 

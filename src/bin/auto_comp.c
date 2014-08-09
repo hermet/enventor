@@ -541,7 +541,7 @@ autocomp_key_event_hook(const char *key)
       {
          insert_completed_text(ad);
          queue_reset(ad);
-         edit_syntax_color_partial_apply(ad->ed);
+         edit_syntax_color_partial_apply(ad->ed, -1);
          return EINA_TRUE;
       }
 
