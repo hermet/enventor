@@ -122,6 +122,15 @@ base_gui_term(void)
    free(bd);
 }
 
+static void
+err_noti_cb(void *data, const char *msg)
+{
+   base_data *bd = data;
+
+   printf("%s\n", msg);
+   fflush(stdout);
+}
+
 Eina_Bool
 base_gui_init(void)
 {
@@ -160,6 +169,8 @@ base_gui_init(void)
    //Panes
    Evas_Object *panes = panes_init(layout);
    elm_object_part_content_set(layout, "elm.swallow.panes", panes);
+
+   build_err_noti_cb_set(err_noti_cb, bd);
 
    bd->win = win;
    bd->layout = layout;
