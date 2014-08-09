@@ -227,6 +227,7 @@ state_candidate_set(Evas_Object *ctxpopup, void *data, Eina_Bool prog)
 end:
    eina_stringshare_del(program);
    view_string_list_free(targets);
+   if (!prog && target) eina_stringshare_del(target);
    return ret;
 }
 
