@@ -61,6 +61,7 @@ PKG_CHECK_MODULES([ENVENTOR],
    elementary >= ${efl_version}
    evas >= ${efl_version}
    ecore >= ${efl_version}
+   ecore-file >= ${efl_version}
    edje >= ${efl_version}
    eio >= ${efl_version}
    efreet >= ${efl_version}
