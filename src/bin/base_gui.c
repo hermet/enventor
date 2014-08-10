@@ -115,6 +115,19 @@ base_left_view_set(Evas_Object *left)
 }
 
 void
+base_console_toggle(Eina_Bool config)
+{
+   base_data *bd = g_bd;
+
+   if (config) config_console_set(!config_console_get());
+
+   if (config_console_get())
+     elm_object_signal_emit(bd->layout, "elm,state,console,show", "");
+   else
+     elm_object_signal_emit(bd->layout, "elm,state,console,hide", "");
+}
+
+void
 base_gui_term(void)
 {
    base_data *bd = g_bd;
@@ -129,6 +142,9 @@ err_noti_cb(void *data, const char *msg)
 
    printf("%s\n", msg);
    fflush(stdout);
+
+   config_console_set(EINA_TRUE);
+   elm_object_signal_emit(bd->layout, "elm,state,console,show", "");
 }
 
 Eina_Bool
@@ -161,8 +177,7 @@ base_gui_init(void)
    //Base Layout
    Evas_Object *layout = elm_layout_add(win);
    elm_layout_file_set(layout, EDJE_PATH,  "main_layout");
-   evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND,
-                                    EVAS_HINT_EXPAND);
+   evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    elm_win_resize_object_add(win, layout);
    evas_object_show(layout);
 
@@ -174,6 +189,8 @@ base_gui_init(void)
 
    bd->win = win;
    bd->layout = layout;
+
+   base_console_toggle(EINA_FALSE);
 
    return EINA_TRUE;
 }

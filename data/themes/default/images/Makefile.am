@@ -49,9 +49,10 @@ EXTRA_DIST = \
    lines.png \
    new.png \
    setting_icon.png \
-   setting.png \
+   console.png \
    status.png \
    swallow_s.png \
    goto.png \
    downlight_glow_left.png \
-   downlight_glow_right.png
+   downlight_glow_right.png \
+	alarm_highlight.png

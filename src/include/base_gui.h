@@ -11,6 +11,7 @@ void base_tools_toggle(Eina_Bool config);
 void base_tools_set(Evas_Object *tools);
 void base_full_view_left(void);
 void base_full_view_right(void);
+void base_console_toggle(Eina_Bool config);
 void base_left_view_set(Evas_Object *left);
 void base_right_view_set(Evas_Object *right);
 void base_gui_term(void);

@@ -255,16 +255,22 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
         edit_line_number_toggle(ad->ed);
         return ECORE_CALLBACK_DONE;
      }
-   //Statusbar
-   if (!strcmp(event->key, "F10"))
-     {
-        base_statusbar_toggle(EINA_TRUE);
-        return ECORE_CALLBACK_DONE;
-     }
    //Tools
-   if (!strcmp(event->key, "F11"))
+   if (!strcmp(event->key, "F9"))
      {
         base_tools_toggle(EINA_TRUE);
+        return ECORE_CALLBACK_DONE;
+     }
+   //Console
+   if (!strcmp(event->key, "F10"))
+     {
+        base_console_toggle(EINA_TRUE);
+        return ECORE_CALLBACK_DONE;
+     }
+   //Statusbar
+   if (!strcmp(event->key, "F11"))
+     {
+        base_statusbar_toggle(EINA_TRUE);
         return ECORE_CALLBACK_DONE;
      }
    //Setting
@@ -383,6 +389,7 @@ config_update_cb(void *data)
    edit_font_size_update(ad->ed, EINA_FALSE, EINA_TRUE);
 
    base_tools_toggle(EINA_FALSE);
+   base_console_toggle(EINA_FALSE);
    base_statusbar_toggle(EINA_FALSE);
    edit_part_highlight_toggle(ad->ed, EINA_FALSE);
    view_dummy_toggle(VIEW_DATA, EINA_FALSE);

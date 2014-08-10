@@ -93,10 +93,10 @@ goto_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 }
 
 static void
-setting_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+console_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
            void *event_info)
 {
-   menu_setting();
+   base_console_toggle(EINA_TRUE);
    item_unselect((Elm_Object_Item *)event_info);
 }
 
@@ -134,8 +134,8 @@ tools_create(Evas_Object *parent, edit_data *ed)
    elm_toolbar_item_icon_file_set(it, EDJE_PATH, "line");
    it = elm_toolbar_item_append(toolbar, NULL, "Status", status_cb, NULL);
    elm_toolbar_item_icon_file_set(it, EDJE_PATH, "status");
-   it = elm_toolbar_item_append(toolbar, NULL, "Setting", setting_cb, NULL);
-   elm_toolbar_item_icon_file_set(it, EDJE_PATH, "setting");
+   it = elm_toolbar_item_append(toolbar, NULL, "Console", console_cb, NULL);
+   elm_toolbar_item_icon_file_set(it, EDJE_PATH, "console");
 
    return toolbar;
 }

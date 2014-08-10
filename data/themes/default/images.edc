@@ -6,7 +6,7 @@ images {
    image: "highlight.png" COMP;
    image: "lines.png" COMP;
    image: "new.png" COMP;
-   image: "setting.png" COMP;
+   image: "console.png" COMP;
    image: "status.png" COMP;
    image: "swallow_s.png" COMP;
    image: "goto.png" COMP;
@@ -77,12 +77,12 @@ group { name: "new";
    }
 }
 
-group { name: "setting";
+group { name: "console";
    parts {
       part { name: "img";
          type: IMAGE;
          description { state: "default" 0.0;
-            image.normal: "setting.png";
+            image.normal: "console.png";
          }
       }
    }

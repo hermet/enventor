@@ -29,6 +29,7 @@ typedef struct config_s
    Eina_Bool auto_indent;
    Eina_Bool tools;
    Eina_Bool auto_complete;
+   Eina_Bool console;
 } config_data;
 
 static config_data *g_cd = NULL;
@@ -136,6 +137,7 @@ config_load(void)
         cd->auto_indent = EINA_TRUE;
         cd->tools = EINA_FALSE;
         cd->auto_complete = EINA_TRUE;
+        cd->console = EINA_FALSE;
      }
 
    g_cd = cd;
@@ -210,6 +212,8 @@ eddc_init(void)
                                  tools, EET_T_UCHAR);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "auto_complete",
                                     auto_complete, EET_T_UCHAR);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "console",
+                                 console, EET_T_UCHAR);
 }
 
 void
@@ -658,6 +662,20 @@ config_view_size_get(Evas_Coord *w, Evas_Coord *h)
 
    if (w) *w = cd->view_size.w;
    if (h) *h = cd->view_size.h;
+}
+
+Eina_Bool
+config_console_get(void)
+{
+   config_data *cd = g_cd;
+   return cd->console;
+}
+
+void
+config_console_set(Eina_Bool enabled)
+{
+   config_data *cd = g_cd;
+   cd->console = enabled;
 }
 
 Eina_Bool

@@ -42,4 +42,5 @@ void config_view_scale_set(double view_scale);
 double config_view_scale_get(void);
 Eina_Bool config_tools_get(void);
 void config_tools_set(Eina_Bool enabled);
-
+Eina_Bool config_console_get(void);
+void config_console_set(Eina_Bool enabled);
