@@ -8,8 +8,6 @@ typedef enum
    PANES_SPLIT_VIEW
 } Panes_State;
 
-const char *PANES_DATA = "_panes_data";
-
 typedef struct _panes_data
 {
    Evas_Object *panes;
@@ -159,8 +157,6 @@ panes_init(Evas_Object *parent)
    pd->state = PANES_SPLIT_VIEW;
    pd->last_right_size1 = 0.5;
    pd->last_right_size2 = 0.5;
-
-   evas_object_data_set(panes, PANES_DATA, pd);
 
    return panes;
 }
