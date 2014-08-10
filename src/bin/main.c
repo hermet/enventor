@@ -154,15 +154,27 @@ ctrl_func(app_data *ad, const char *key)
         return ECORE_CALLBACK_DONE;
      }
    //Full Edit View
-   if (!strcmp(key, "comma"))
+   if (!strcmp(key, "Left"))
      {
         base_full_view_left();
         return ECORE_CALLBACK_DONE;
      }
-   //Full Edje View
-   if (!strcmp(key, "period"))
+   //Full Live View
+   if (!strcmp(key, "Right"))
      {
         base_full_view_right();
+        return ECORE_CALLBACK_DONE;
+     }
+   //Full Console View
+   if (!strcmp(key, "Up"))
+     {
+        base_full_view_top();
+        return ECORE_CALLBACK_DONE;
+     }
+   //Full Editors View
+   if (!strcmp(key, "Down"))
+     {
+        base_full_view_bottom();
         return ECORE_CALLBACK_DONE;
      }
    //Auto Indentation

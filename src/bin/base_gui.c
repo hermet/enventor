@@ -103,6 +103,18 @@ base_full_view_right(void)
 }
 
 void
+base_full_view_top(void)
+{
+   panes_full_view_top();
+}
+
+void
+base_full_view_bottom(void)
+{
+   panes_full_view_bottom();
+}
+
+void
 base_right_view_set(Evas_Object *right)
 {
    panes_content_set("right", right);

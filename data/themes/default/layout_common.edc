@@ -2046,13 +2046,7 @@ group { name: "main_layout";
             rel1.relative: 0 1;
             rel2.relative: 1 0;
             rel1.to_y: "elm.swallow.tools";
-            rel2.to_y: "elm.swallow.console";
-         }
-         description { state: "console" 0.0;
-            rel1.to: "elm.swallow.console";
-            rel2.to: "elm.swallow.console";
-            rel1.relative: 0 0;
-            rel2.relative: 1 0;
+            rel2.to_y: "elm.swallow.statusbar";
          }
       }
       part { name: "elm.swallow.statusbar";
@@ -2068,25 +2062,6 @@ group { name: "main_layout";
          description { state: "visible" 0.0;
             inherit: "default" 0.0;
             align: 0.5 1;
-         }
-      }
-      part { name: "elm.swallow.console";
-         type: SWALLOW;
-         scale: 1;
-         description { state: "default" 0.0;
-            rel1.to: "elm.swallow.statusbar";
-            rel2.to: "elm.swallow.statusbar";
-            rel1.relative: 0 0;
-            rel2.relative: 1 0;
-            align: 0.5 1;
-            color: 0 0 0 0;
-         }
-         description { state: "visible" 0.0;
-            inherit: "default" 0.0;
-            align: 0.5 1;
-            min: 0 125;
-            fixed: 0 1;
-            color: 255 255 255 255;
          }
       }
    }
@@ -2113,18 +2088,6 @@ group { name: "main_layout";
          signal: "elm,state,tools,hide";
          action: STATE_SET "default" 0.0;
          target: "elm.swallow.tools";
-         transition: DECELERATE 0.25;
-      }
-      program { name: "console_show";
-         signal: "elm,state,console,show";
-         action: STATE_SET "visible" 0.0;
-         target: "elm.swallow.console";
-         transition: DECELERATE 0.25;
-      }
-      program { name: "console_hide";
-         signal: "elm,state,console,hide";
-         action: STATE_SET "default" 0.0;
-         target: "elm.swallow.console";
          transition: DECELERATE 0.25;
       }
    }
