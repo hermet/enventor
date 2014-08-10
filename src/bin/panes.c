@@ -17,10 +17,10 @@ typedef struct _panes_data
 
    double origin;
    double delta;
+   double last_right_size1;  //when down the panes bar
+   double last_right_size2;  //when up the panes bar
 } panes_data;
 
-static double panes_last_right_size1 = 0.5;  //when down the panes bar
-static double panes_last_right_size2 = 0.5;  //when up the panes bar
 static panes_data *g_pd = NULL;
 
 static void
@@ -32,19 +32,19 @@ transit_op(void *data, Elm_Transit *transit EINA_UNUSED, double progress)
 }
 
 static void
-press_cb(void *data EINA_UNUSED, Evas_Object *obj,
-             void *event_info EINA_UNUSED)
+press_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
 {
-    panes_last_right_size1 = elm_panes_content_right_size_get(obj);
+    panes_data *pd = data;
+    pd->last_right_size1 = elm_panes_content_right_size_get(obj);
 }
 
 static void
-unpress_cb(void *data EINA_UNUSED, Evas_Object *obj,
-             void *event_info EINA_UNUSED)
+unpress_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
 {
+    panes_data *pd = data;
     double right_size = elm_panes_content_right_size_get(obj);
-    if (panes_last_right_size1 != right_size)
-      panes_last_right_size2 = right_size;
+    if (pd->last_right_size1 != right_size)
+      pd->last_right_size2 = right_size;
 }
 
 static void
@@ -53,7 +53,7 @@ panes_full_view_cancel(panes_data *pd)
    const double TRANSIT_TIME = 0.25;
 
    pd->origin = elm_panes_content_right_size_get(pd->panes);
-   pd->delta = panes_last_right_size2 - pd->origin;
+   pd->delta = pd->last_right_size2 - pd->origin;
 
    Elm_Transit *transit = elm_transit_add();
    elm_transit_effect_add(transit, transit_op, pd, NULL);
@@ -153,12 +153,12 @@ panes_init(Evas_Object *parent)
    Evas_Object *panes = elm_panes_add(parent);
    elm_object_style_set(panes, elm_app_name_get());
    evas_object_size_hint_weight_set(panes, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_smart_callback_add(panes, "press",
-                                  press_cb, NULL);
-   evas_object_smart_callback_add(panes, "unpress",
-                                  unpress_cb, NULL);
+   evas_object_smart_callback_add(panes, "press", press_cb, pd);
+   evas_object_smart_callback_add(panes, "unpress", unpress_cb, pd);
    pd->panes = panes;
    pd->state = PANES_SPLIT_VIEW;
+   pd->last_right_size1 = 0.5;
+   pd->last_right_size2 = 0.5;
 
    evas_object_data_set(panes, PANES_DATA, pd);
 
