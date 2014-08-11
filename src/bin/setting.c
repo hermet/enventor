@@ -19,6 +19,7 @@ struct setting_s
    Evas_Object *toggle_swallow;
    Evas_Object *toggle_indent;
    Evas_Object *toggle_autocomp;
+   Evas_Object *toggle_live_edit;
 };
 
 typedef struct setting_s setting_data;
@@ -115,6 +116,7 @@ setting_apply_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
    config_dummy_swallow_set(elm_check_state_get(sd->toggle_swallow));
    config_auto_indent_set(elm_check_state_get(sd->toggle_indent));
    config_auto_complete_set(elm_check_state_get(sd->toggle_autocomp));
+   config_live_edit_set(elm_check_state_get(sd->toggle_live_edit));
 
    config_apply();
 
@@ -154,6 +156,7 @@ setting_reset_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
    elm_check_state_set(sd->toggle_swallow, config_dummy_swallow_get());
    elm_check_state_set(sd->toggle_indent, config_auto_indent_get());
    elm_check_state_set(sd->toggle_autocomp, config_auto_complete_get());
+   elm_check_state_set(sd->toggle_live_edit, config_live_edit_get());
 }
 
 static Evas_Object *
@@ -349,8 +352,13 @@ setting_open(void)
 
    //Toggle (Auto Complete)
    Evas_Object *toggle_autocomp = toggle_create(box, "Auto Completion",
-                                config_auto_complete_get());
+                                  config_auto_complete_get());
    elm_box_pack_end(box, toggle_autocomp);
+   
+   //Toggle (Live Edit)
+   Evas_Object *toggle_live_edit = toggle_create(box, "Live Edit",
+                                   config_live_edit_get());
+   elm_box_pack_end(box, toggle_live_edit);
 
    Evas_Object *btn;
 
@@ -388,6 +396,7 @@ setting_open(void)
    sd->toggle_swallow = toggle_swallow;
    sd->toggle_indent = toggle_indent;
    sd->toggle_autocomp = toggle_autocomp;
+   sd->toggle_live_edit = toggle_live_edit;
 
    menu_activate_request();
 }

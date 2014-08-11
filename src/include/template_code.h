@@ -9,8 +9,8 @@ const char *TEMPLATE_GROUP[TEMPLATE_GROUP_LINE_CNT] =
    "         scale: 1;<br/>",
    "         mouse_events: 1;<br/>",
    "         description { state: \"default\" 0.0;<br/>",
-   "            rel1 { relative: 0.0 0.0; offset: 0 0; /*to: \"XXX\";*/ }<br/>",
-   "            rel2 { relative: 1.0 1.0; offset: -1 -1; /*to: \"XXX\";*/ }<br/>",
+   "            rel1 { relative: 0.25 0.25; offset: 0 0; /*to: \"XXX\";*/ }<br/>",
+   "            rel2 { relative: 0.75 0.75; offset: -1 -1; /*to: \"XXX\";*/ }<br/>",
    "            align: 0.5 0.5;<br/>",
    "            fixed: 0 0;<br/>",
    "            min: 0 0;<br/>",
@@ -40,8 +40,8 @@ const char *TEMPLATE_PART_IMAGE[TEMPLATE_PART_IMAGE_LINE_CNT] =
    "   scale: 1;<br/>",
    "   mouse_events: 1;<br/>",
    "   description { state: \"default\" 0.0;<br/>",
-   "      rel1 { relative: 0.0 0.0; offset: 0 0; /*to: \"XXX\";*/ }<br/>",
-   "      rel2 { relative: 1.0 1.0; offset: -1 -1; /*to: \"XXX\";*/ }<br/>",
+   "      rel1 { relative: 0.25 0.25; offset: 0 0; /*to: \"XXX\";*/ }<br/>",
+   "      rel2 { relative: 0.75 0.75; offset: -1 -1; /*to: \"XXX\";*/ }<br/>",
    "      align: 0.5 0.5;<br/>",
    "      fixed: 0 0;<br/>",
    "      min: 0 0;<br/>",
@@ -49,7 +49,8 @@ const char *TEMPLATE_PART_IMAGE[TEMPLATE_PART_IMAGE_LINE_CNT] =
    "      image.normal: \"logo.png\";<br/>",
    "      //aspect: 1 1;<br/>",
    "   }<br/>",
-   "}"
+   "}<br/>",
+   ""
 };
 
 #define TEMPLATE_PART_RECT_LINE_CNT 14
@@ -60,15 +61,16 @@ const char *TEMPLATE_PART_RECT[TEMPLATE_PART_RECT_LINE_CNT] =
    "   scale: 1;<br/>",
    "   mouse_events: 1;<br/>",
    "   description { state: \"default\" 0.0;<br/>",
-   "      rel1 { relative: 0.0 0.0; offset: 0 0; /*to: \"XXX\";*/ }<br/>",
-   "      rel2 { relative: 1.0 1.0; offset: -1 -1; /*to: \"XXX\";*/ }<br/>",
+   "      rel1 { relative: 0.25 0.25; offset: 0 0; /*to: \"XXX\";*/ }<br/>",
+   "      rel2 { relative: 0.75 0.75; offset: -1 -1; /*to: \"XXX\";*/ }<br/>",
    "      color: 255 255 255 255;<br/>",
    "      align: 0.5 0.5;<br/>",
    "      fixed: 0 0;<br/>",
    "      min: 0 0;<br/>",
    "      visible: 1;<br/>",
    "   }<br/>",
-   "}"
+   "}<br/>",
+   ""
 };
 
 #define TEMPLATE_PART_SWALLOW_LINE_CNT 13
@@ -79,14 +81,15 @@ const char *TEMPLATE_PART_SWALLOW[TEMPLATE_PART_SWALLOW_LINE_CNT] =
    "   scale: 1;<br/>",
    "   mouse_events: 1;<br/>",
    "   description { state: \"default\" 0.0;<br/>",
-   "      rel1 { relative: 0.0 0.0; offset: 0 0; /*to: \"XXXX\";*/ }<br/>",
-   "      rel2 { relative: 1.0 1.0; offset: -1 -1; /*to: \"XXX\";*/ }<br/>",
+   "      rel1 { relative: 0.25 0.25; offset: 0 0; /*to: \"XXXX\";*/ }<br/>",
+   "      rel2 { relative: 0.75 0.75; offset: -1 -1; /*to: \"XXX\";*/ }<br/>",
    "      align: 0.5 0.5;<br/>",
    "      fixed: 0 0;<br/>",
    "      min: 0 0;<br/>",
    "      visible: 1;<br/>",
    "   }<br/>",
-   "}"
+   "}<br/>",
+   ""
 };
 
 #define TEMPLATE_PART_SPACER_LINE_CNT 11
@@ -96,13 +99,14 @@ const char *TEMPLATE_PART_SPACER[TEMPLATE_PART_SPACER_LINE_CNT] =
    "   type: SPACER;<br/>",
    "   scale: 1;<br/>",
    "   description { state: \"default\" 0.0;<br/>",
-   "      rel1 { relative: 0.0 0.0; offset: 0 0; /*to: \"XXX\";*/ }<br/>",
-   "      rel2 { relative: 1.0 1.0; offset: -1 -1; /*to: \"XXX\";*/ }<br/>",
+   "      rel1 { relative: 0.25 0.25; offset: 0 0; /*to: \"XXX\";*/ }<br/>",
+   "      rel2 { relative: 0.75 0.75; offset: -1 -1; /*to: \"XXX\";*/ }<br/>",
    "      align: 0.5 0.5;<br/>",
    "      fixed: 0 0;<br/>",
    "      min: 0 0;<br/>",
    "   }<br/>",
-   "}"
+   "}<br/>",
+   ""
 };
 
 #define TEMPLATE_PART_TEXT_LINE_CNT 24
@@ -114,8 +118,8 @@ const char *TEMPLATE_PART_TEXT[TEMPLATE_PART_TEXT_LINE_CNT] =
    "   mouse_events: 1;<br/>",
    "   //effect: SHADOW;<br/>",
    "   description { state: \"default\" 0.0;<br/>",
-   "      rel1 { relative: 0.0 0.0; offset: 0 0; /*to: \"XXX\";*/ }<br/>",
-   "      rel2 { relative: 1.0 1.0; offset: -1 -1; /*to: \"XXX\";*/ }<br/>",
+   "      rel1 { relative: 0.25 0.25; offset: 0 0; /*to: \"XXX\";*/ }<br/>",
+   "      rel2 { relative: 0.75 0.75; offset: -1 -1; /*to: \"XXX\";*/ }<br/>",
    "      align: 0.5 0.5;<br/>",
    "      fixed: 0 0;<br/>",
    "      min: 0 0;<br/>",
@@ -131,17 +135,18 @@ const char *TEMPLATE_PART_TEXT[TEMPLATE_PART_TEXT_LINE_CNT] =
    "         min: 0 0;<br/>",
    "      }<br/>",
    "   }<br/>",
-   "}"
+   "}<br/>",
+   ""
 };
 
-#define TEMPLATE_PART_TEXTBLOCK_LINE_CNT 18
+#define TEMPLATE_PART_TEXTBLOCK_LINE_CNT 17
 
 const char *TEMPLATE_PART_TEXTBLOCK[TEMPLATE_PART_TEXTBLOCK_LINE_CNT] =
 {
    "   type: TEXTBLOCK;<br/>",
    "   description { state: \"default\" 0.0;<br/>",
-   "      rel1 { relative: 0.0 0.0; offset: 0 0; /*to: \"XXX\";*/ }<br/>",
-   "      rel2 { relative: 1.0 1.0; offset: -1 -1; /*to: \"XXX\";*/ }<br/>",
+   "      rel1 { relative: 0.25 0.25; offset: 0 0; /*to: \"XXX\";*/ }<br/>",
+   "      rel2 { relative: 0.75 0.75; offset: -1 -1; /*to: \"XXX\";*/ }<br/>",
    "      align: 0.5 0.5;<br/>",
    "      fixed: 0 0;<br/>",
    "      min: 0 0;<br/>",
@@ -153,7 +158,8 @@ const char *TEMPLATE_PART_TEXTBLOCK[TEMPLATE_PART_TEXTBLOCK_LINE_CNT] =
    "         min: 0 0;<br/>",
    "      }<br/>",
    "   }<br/>",
-   "}"
+   "}<br/>",
+   ""
 };
 
 #define TEMPLATE_DESC_LINE_CNT 10
@@ -189,5 +195,11 @@ const char *TEMPLATE_PROG[TEMPLATE_PROG_LINE_CNT] =
 
 const char *TEMPLATE_IMG[TEMPLATE_IMG_LINE_CNT] =
 {
-   "image: \"logo.png\" COMP;"
+   "image: \"logo.png\" COMP;<br/>"
 };
+
+#define TEMPLATE_IMG_BLOCK_LINE_CNT 3
+
+const char *TEMPLATE_IMG_BLOCK = "   images {<br/>"
+                                 "      image: \"logo.png\" COMP;<br/>"
+                                 "   }<br/>";

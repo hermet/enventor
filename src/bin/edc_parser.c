@@ -921,3 +921,108 @@ parser_term(parser_data *pd)
 
    free(pd);
 }
+
+static const char *
+end_of_parts_block_find(const char *pos)
+{
+   //TODO: Process comments and quotes.
+   pos = strstr(pos, "parts");
+   if (!pos) return NULL;
+   pos = strstr(pos, "{");
+   if (!pos) return NULL;
+   pos++;
+   char level = 1;
+
+   while (*pos)
+     {
+        if (*pos == '{') level++;
+        else if (*pos == '}')
+          {
+             level--;
+          }
+        if (!level) return --pos;
+        pos++;
+     }
+   return NULL;
+}
+
+static const char *
+group_beginning_pos_get(const char* source, const char *group_name)
+{
+   const char* group_block_name = "group";
+   const int quot_len = QUOT_LEN;
+   const char *quot = QUOT;
+
+   const char *pos = strstr(source, group_block_name);
+   //TODO: Process comments and quotes.
+   while (pos)
+   {
+      const char *name = strstr(pos, quot);
+      if (!name) return NULL;
+      pos = strstr(++name, quot);
+      if (!pos) return NULL;
+      if (!strncmp(name, group_name, strlen(group_name)))
+        return pos;
+      pos = strstr(++pos,  group_block_name);
+   }
+
+   return NULL;
+}
+
+Evas_Coord
+parser_end_of_parts_block_pos_get(const Evas_Object *entry, const char *group_name)
+{
+   if (!group_name)
+        return -1;
+
+   const char *text = elm_entry_entry_get(entry);
+   if (!text) return -1;
+
+   char *utf8 = elm_entry_markup_to_utf8(text);
+   if (!utf8) return -1;
+
+   const char *pos = group_beginning_pos_get(utf8, group_name);
+   if (!pos) return -1;
+   pos = end_of_parts_block_find(++pos);
+   if (pos) return pos - utf8 + 1;
+   return -1;
+}
+
+Eina_Bool
+parser_images_pos_get(const Evas_Object *entry, Evas_Coord *res_position)
+{
+   if (!res_position) return EINA_FALSE;
+
+   const char* group_block_name = "group";
+   const char* images_block_name = "images";
+   Evas_Coord images_block_name_len = 6; //strlen of "images"
+
+   *res_position = -1;
+   const char *text = elm_entry_entry_get(entry);
+   if (!text) return EINA_FALSE;
+
+   char *utf8 = elm_entry_markup_to_utf8(text);
+   if (!utf8) return EINA_FALSE;
+
+   const char *pos = strstr(utf8, images_block_name);
+   if (pos)
+     {
+        // TODO: Remove this check and process lines of the form "images.image: "logo.png" COMP;"
+        if (*(pos + images_block_name_len + 1) == '.')
+          return EINA_FALSE;
+
+        pos = strstr(pos, "{\n");
+        if (!pos) return EINA_FALSE;
+
+        *res_position = pos - utf8 + 2;
+        return EINA_TRUE;
+     }
+   pos = strstr(utf8, group_block_name);
+   if (pos)
+     {
+        *res_position = pos - utf8;
+        return EINA_FALSE;
+     }
+   return EINA_FALSE;
+}
+

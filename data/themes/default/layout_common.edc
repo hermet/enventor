@@ -6,6 +6,7 @@ images {
    image: "logo.png" COMP;
    image: "shine.png" COMP;
    image: "bub_over_bot.png" COMP;
+   image: "disabler.png" COMP;
 }
 
 group { name: "about_layout";
@@ -2132,6 +2133,28 @@ group { name: "edit_layout";
             fixed: 0 1;
          }
       }
+      part { name: "disabler_bg";
+         type: RECT;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+         }
+         description { state: "disabled" 0.0;
+            color: 0 0 0 160;
+         }
+      }
+      part { name: "disabler_decorations";
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            image.normal: "disabler.png";
+            fill.type: TILE;
+            color: 155 155 155 0;
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color: 55 55 77 200;
+         }
+      }
    }
    programs {
       program { name: "linenumber_show";
@@ -2144,6 +2167,24 @@ group { name: "edit_layout";
          signal: "elm,state,linenumber,hide";
          action: STATE_SET "hide" 0.0;
          target: "base_clip";
+         transition: DECELERATE 0.35;
+      }
+   }
+   programs {
+      program { name: "layout_disable";
+         signal: "elm,state,disabled";
+         source: "editor";
+         action: STATE_SET "disabled" 0.0;
+         target: "disabler_bg";
+         target: "disabler_decorations";
+         transition: DECELERATE 0.35;
+      }
+      program { name: "layout_enable";
+         signal: "elm,state,enabled";
+         source: "editor";
+         action: STATE_SET "default" 0.0;
+         target: "disabler_bg";
+         target: "disabler_decorations";
          transition: DECELERATE 0.35;
       }
    }

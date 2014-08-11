@@ -1187,3 +1187,15 @@ edit_redoundo_region_push(edit_data *ed, int cursor_pos1, int cursor_pos2)
    redoundo_entry_region_push(ed->rd, cursor_pos1, cursor_pos2);
 }
 
+void
+edit_disabled_set(edit_data *ed, Eina_Bool disable)
+{
+   elm_object_disabled_set(ed->layout, disable);
+   elm_object_focus_allow_set(ed->layout, disable);
+   evas_object_freeze_events_set (ed->layout, disable);
+
+   if (disable)
+     elm_object_signal_emit(ed->layout, "elm,state,disabled", "editor");
+   else
+     elm_object_signal_emit(ed->layout, "elm,state,enabled", "editor");
+}

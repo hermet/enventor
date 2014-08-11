@@ -10,6 +10,13 @@ images {
    image: "status.png" COMP;
    image: "swallow_s.png" COMP;
    image: "goto.png" COMP;
+   image: "live_edit_icons/icon-image.png" COMP;
+   image: "live_edit_icons/icon-rectangle.png" COMP;
+   image: "live_edit_icons/icon-swallow.png" COMP;
+   image: "live_edit_icons/icon-spacer.png" COMP;
+   image: "live_edit_icons/icon-text.png" COMP;
+   image: "live_edit_icons/icon-textblock.png" COMP;
+   image: "live_edit_icons/icon-live-edit.png" COMP;
 }
 
 group { name: "line";
@@ -131,3 +138,36 @@ group { name: "minus";
       }
    }
 }
+
+group { name: "live-edit";
+   parts {
+      part { name: "img";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            image.normal: "live_edit_icons/icon-live-edit.png";
+         }
+      }
+   }
+}
+
+#define ADD_LIVE_EDIT_ICON_GROUP(_group_name, _image_path) \
+   group { name: _group_name; \
+      parts { \
+         part { name: "img"; \
+            description { state: "default" 0.0; \
+               image.normal: _image_path; \
+               min: 10 10; \
+               max: 10 10; \
+            } \
+         } \
+      } \
+   }
+
+ADD_LIVE_EDIT_ICON_GROUP("IMAGE", "live_edit_icons/icon-image.png")
+ADD_LIVE_EDIT_ICON_GROUP("RECT", "live_edit_icons/icon-rectangle.png")
+ADD_LIVE_EDIT_ICON_GROUP("SPACER", "live_edit_icons/icon-spacer.png")
+ADD_LIVE_EDIT_ICON_GROUP("SWALLOW", "live_edit_icons/icon-swallow.png")
+ADD_LIVE_EDIT_ICON_GROUP("TEXT", "live_edit_icons/icon-text.png")
+ADD_LIVE_EDIT_ICON_GROUP("TEXTBLOCK", "live_edit_icons/icon-textblock.png")
+
+#undef ADD_LIVE_EDIT_ICON_GROUP

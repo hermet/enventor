@@ -26,4 +26,5 @@ EXTRA_DIST = common.h \
 	setting.h \
 	search.h \
 	redoundo.h \
-	template.h
+	template.h \
+	live_edit.h

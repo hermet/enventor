@@ -100,8 +100,18 @@ console_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
    item_unselect((Elm_Object_Item *)event_info);
 }
 
+static void
+live_edit_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
+{
+   live_edit_data *led = data;
+   Eina_Bool is_on = !config_live_edit_get();
+   config_live_edit_set(is_on);
+   live_edit_toggle(led, is_on);
+   item_unselect((Elm_Object_Item *)event_info);
+}
+
 Evas_Object *
-tools_create(Evas_Object *parent, edit_data *ed)
+tools_create(Evas_Object *parent, edit_data *ed, live_edit_data *led)
 {
    Evas_Object *toolbar = elm_toolbar_add(parent);
    elm_object_style_set(toolbar, "item_horizontal");
@@ -136,6 +146,8 @@ tools_create(Evas_Object *parent, edit_data *ed)
    elm_toolbar_item_icon_file_set(it, EDJE_PATH, "status");
    it = elm_toolbar_item_append(toolbar, NULL, "Console", console_cb, NULL);
    elm_toolbar_item_icon_file_set(it, EDJE_PATH, "console");
+   it = elm_toolbar_item_append(toolbar, NULL, "LiveEdit", live_edit_cb, led);
+   elm_toolbar_item_icon_file_set(it, EDJE_PATH, "live-edit");
 
    return toolbar;
 }

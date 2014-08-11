@@ -318,6 +318,12 @@ view_obj_get(view_data *vd)
    return vd->scroller;
 }
 
+Evas_Object *
+view_layout_get(view_data *vd)
+{
+   return vd->layout;
+}
+
 void
 view_program_run(view_data *vd, const char *program)
 {
