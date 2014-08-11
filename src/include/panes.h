@@ -1,7 +1,8 @@
 Evas_Object *panes_init(Evas_Object *parent);
 void panes_term(void);
-void panes_full_view_right(void);
-void panes_full_view_left(void);
-void panes_full_view_top(void);
-void panes_full_view_bottom(void);
-void panes_content_set(const char *part, Evas_Object *content);
+void panes_text_editor_full_view(void);
+void panes_live_view_full_view(void);
+void panes_editors_full_view(void);
+void panes_console_full_view(void);
+void panes_live_view_set(Evas_Object *live_view);
+void panes_text_editor_set(Evas_Object *text_editor);

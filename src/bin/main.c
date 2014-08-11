@@ -155,25 +155,25 @@ ctrl_func(app_data *ad, const char *key)
    //Full Edit View
    if (!strcmp(key, "Left"))
      {
-        base_full_view_left();
+        base_live_view_full_view();
         return ECORE_CALLBACK_DONE;
      }
    //Full Live View
    if (!strcmp(key, "Right"))
      {
-        base_full_view_right();
+        base_text_editor_full_view();
         return ECORE_CALLBACK_DONE;
      }
    //Full Console View
    if (!strcmp(key, "Up"))
      {
-        base_full_view_top();
+        base_editors_full_view();
         return ECORE_CALLBACK_DONE;
      }
    //Full Editors View
    if (!strcmp(key, "Down"))
      {
-        base_full_view_bottom();
+        base_console_full_view();
         return ECORE_CALLBACK_DONE;
      }
    //Auto Indentation
@@ -383,7 +383,7 @@ edc_edit_set(app_data *ad)
 {
    edit_data *ed = edit_init(base_layout_get());
    edit_edc_read(ed, config_edc_path_get());
-   base_right_view_set(edit_obj_get(ed));
+   base_text_editor_set(edit_obj_get(ed));
    edit_view_sync_cb_set(ed, view_sync_cb, ad);
    ad->ed = ed;
 }
@@ -528,7 +528,7 @@ static void
 edj_mgr_set()
 {
    edj_mgr_init(base_layout_get());
-   base_left_view_set(edj_mgr_obj_get());
+   base_live_view_set(edj_mgr_obj_get());
 }
 
 static void

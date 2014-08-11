@@ -91,39 +91,39 @@ void base_tools_set(Evas_Object *tools)
 }
 
 void
-base_full_view_left(void)
+base_live_view_full_view(void)
 {
-   panes_full_view_left();
+   panes_live_view_full_view();
 }
 
 void
-base_full_view_right(void)
+base_text_editor_full_view(void)
 {
-   panes_full_view_right();
+   panes_text_editor_full_view();
 }
 
 void
-base_full_view_top(void)
+base_editors_full_view(void)
 {
-   panes_full_view_top();
+   panes_editors_full_view();
 }
 
 void
-base_full_view_bottom(void)
+base_console_full_view(void)
 {
-   panes_full_view_bottom();
+   panes_console_full_view();
 }
 
 void
-base_right_view_set(Evas_Object *right)
+base_text_editor_set(Evas_Object *text_editor)
 {
-   panes_content_set("right", right);
+   panes_text_editor_set(text_editor);
 }
 
 void
-base_left_view_set(Evas_Object *left)
+base_live_view_set(Evas_Object *live_view)
 {
-   panes_content_set("left", left);
+   panes_live_view_set(live_view);
 }
 
 void
@@ -156,7 +156,7 @@ err_noti_cb(void *data, const char *msg)
    fflush(stdout);
 
    config_console_set(EINA_TRUE);
-   elm_object_signal_emit(bd->layout, "elm,state,console,show", "");
+   elm_object_signal_emit(bd->layout, "elm,state,alert,show", "");
 }
 
 Eina_Bool
