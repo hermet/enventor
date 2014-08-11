@@ -167,13 +167,13 @@ ctrl_func(app_data *ad, const char *key)
    //Full Console View
    if (!strcmp(key, "Up"))
      {
-        base_editors_full_view();
+        base_console_full_view();
         return ECORE_CALLBACK_DONE;
      }
    //Full Editors View
    if (!strcmp(key, "Down"))
      {
-        base_console_full_view();
+        base_editors_full_view();
         return ECORE_CALLBACK_DONE;
      }
    //Auto Indentation

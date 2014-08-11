@@ -2050,6 +2050,19 @@ group { name: "main_layout";
             rel2.to_y: "elm.swallow.statusbar";
          }
       }
+      part { name: "error_alert";
+         type: RECT;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            rel1.to_y: "elm.swallow.panes";
+            rel2.to_y: "elm.swallow.panes";
+            color: 0 0 0 0;
+         }
+         description { state: "visible" 0.0;
+            inherit: "default" 0.0;
+            color: 200 0 0 175;
+         }
+      }
       part { name: "elm.swallow.statusbar";
          type: SWALLOW;
          scale: 1;
@@ -2090,6 +2103,17 @@ group { name: "main_layout";
          action: STATE_SET "default" 0.0;
          target: "elm.swallow.tools";
          transition: DECELERATE 0.25;
+      }
+      program { name: "alert_show";
+         signal: "elm,state,alert,show";
+         action: STATE_SET "visible" 0.0;
+         target: "error_alert";
+         after: "alert_show2";
+      }
+      program { name: "alert_show2";
+         action: STATE_SET "default" 0.0;
+         target: "error_alert";
+         transition: DECELERATE 1;
       }
    }
 }

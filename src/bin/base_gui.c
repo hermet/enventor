@@ -5,6 +5,7 @@ typedef struct base_s
 {
    Evas_Object *win;
    Evas_Object *layout;
+   Evas_Object *console;
 } base_data;
 
 static base_data *g_bd = NULL;
@@ -133,10 +134,7 @@ base_console_toggle(Eina_Bool config)
 
    if (config) config_console_set(!config_console_get());
 
-   if (config_console_get())
-     elm_object_signal_emit(bd->layout, "elm,state,console,show", "");
-   else
-     elm_object_signal_emit(bd->layout, "elm,state,console,hide", "");
+   panes_editors_full_view();
 }
 
 void
@@ -152,11 +150,20 @@ err_noti_cb(void *data, const char *msg)
 {
    base_data *bd = data;
 
-   printf("%s\n", msg);
-   fflush(stdout);
-
-   config_console_set(EINA_TRUE);
+   if (!config_console_get())
+     {
+        base_editors_full_view();
+        config_console_set(EINA_TRUE);
+     }
    elm_object_signal_emit(bd->layout, "elm,state,alert,show", "");
+   console_text_set(bd->console, msg);
+}
+
+void
+base_console_reset(void)
+{
+   base_data *bd = g_bd;
+   console_text_set(bd->console, "");
 }
 
 Eina_Bool
@@ -197,12 +204,15 @@ base_gui_init(void)
    Evas_Object *panes = panes_init(layout);
    elm_object_part_content_set(layout, "elm.swallow.panes", panes);
 
+   //Console
+   Evas_Object *console = console_create(panes);
+   panes_console_set(console);
+
    build_err_noti_cb_set(err_noti_cb, bd);
 
    bd->win = win;
    bd->layout = layout;
-
-   base_console_toggle(EINA_FALSE);
+   bd->console = console;
 
    return EINA_TRUE;
 }

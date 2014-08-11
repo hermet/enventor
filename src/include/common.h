@@ -35,5 +35,6 @@ typedef struct redoundo_s redoundo_data;
 #include "redoundo.h"
 #include "template.h"
 #include "live_edit.h"
+#include "console.h"
 
 #endif

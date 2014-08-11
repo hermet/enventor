@@ -17,3 +17,4 @@ void base_console_toggle(Eina_Bool config);
 void base_live_view_set(Evas_Object *live_view);
 void base_text_editor_set(Evas_Object *text_editor);
 void base_gui_term(void);
+void base_console_reset(void);

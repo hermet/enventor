@@ -35,7 +35,8 @@ enventor_SOURCES = \
 	globals.c \
 	redoundo.c \
 	template.c \
-	live_edit.c
+	live_edit.c \
+	console.c
 
 enventor_LDADD = @ENVENTOR_LIBS@
 enventor_LDFLAGS = $(LTLIBINTL)

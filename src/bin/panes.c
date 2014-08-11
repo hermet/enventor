@@ -5,10 +5,10 @@ static const double TRANSIT_TIME = 0.25;
 
 typedef enum
 {
-   PANES_FULL_VIEW_LEFT,
-   PANES_FULL_VIEW_RIGHT,
-   PANES_FULL_VIEW_TOP,
-   PANES_FULL_VIEW_BOTTOM,
+   PANES_LIVE_VIEW_EXPAND,
+   PANES_TEXT_EDITOR_EXPAND,
+   PANES_EDITORS_EXPAND,
+   PANES_CONSOLE_EXPAND,
    PANES_SPLIT_VIEW
 } Panes_State;
 
@@ -105,6 +105,8 @@ panes_v_full_view_cancel(panes_data *pd)
    elm_transit_go(transit);
 
    pd->vert.state = PANES_SPLIT_VIEW;
+
+   config_console_set(EINA_TRUE);
 }
 
 void
@@ -113,7 +115,7 @@ panes_text_editor_full_view(void)
    panes_data *pd = g_pd;
 
    //Revert state if the current state is full view right already.
-   if (pd->horiz.state == PANES_FULL_VIEW_RIGHT)
+   if (pd->horiz.state == PANES_TEXT_EDITOR_EXPAND)
      {
         panes_h_full_view_cancel(pd);
         return;
@@ -131,7 +133,7 @@ panes_text_editor_full_view(void)
    elm_transit_duration_set(transit, TRANSIT_TIME);
    elm_transit_go(transit);
 
-   pd->horiz.state = PANES_FULL_VIEW_RIGHT;
+   pd->horiz.state = PANES_TEXT_EDITOR_EXPAND;
 }
 
 void
@@ -140,7 +142,7 @@ panes_live_view_full_view(void)
    panes_data *pd = g_pd;
 
    //Revert state if the current state is full view left already.
-   if (pd->horiz.state == PANES_FULL_VIEW_LEFT)
+   if (pd->horiz.state == PANES_LIVE_VIEW_EXPAND)
      {
         panes_h_full_view_cancel(pd);
         return;
@@ -158,16 +160,16 @@ panes_live_view_full_view(void)
    elm_transit_duration_set(transit, TRANSIT_TIME);
    elm_transit_go(transit);
 
-   pd->horiz.state = PANES_FULL_VIEW_LEFT;
+   pd->horiz.state = PANES_LIVE_VIEW_EXPAND;
 }
 
 void
-panes_console_full_view(void)
+panes_editors_full_view(void)
 {
    panes_data *pd = g_pd;
 
    //Revert state if the current state is full view bottom already.
-   if (pd->vert.state == PANES_FULL_VIEW_BOTTOM)
+   if (pd->vert.state == PANES_EDITORS_EXPAND)
      {
         panes_v_full_view_cancel(pd);
         return;
@@ -184,16 +186,18 @@ panes_console_full_view(void)
    elm_transit_duration_set(transit, TRANSIT_TIME);
    elm_transit_go(transit);
 
-   pd->vert.state = PANES_FULL_VIEW_BOTTOM;
+   pd->vert.state = PANES_EDITORS_EXPAND;
+
+   config_console_set(EINA_FALSE);
 }
 
 void
-panes_editors_full_view(void)
+panes_console_full_view(void)
 {
    panes_data *pd = g_pd;
 
    //Revert state if the current state is full view top already.
-   if (pd->vert.state == PANES_FULL_VIEW_TOP)
+   if (pd->vert.state == PANES_CONSOLE_EXPAND)
      {
         panes_v_full_view_cancel(pd);
         return;
@@ -211,7 +215,7 @@ panes_editors_full_view(void)
    elm_transit_duration_set(transit, TRANSIT_TIME);
    elm_transit_go(transit);
 
-   pd->vert.state = PANES_FULL_VIEW_TOP;
+   pd->vert.state = PANES_CONSOLE_EXPAND;
 }
 
 void
@@ -229,6 +233,13 @@ panes_live_view_set(Evas_Object *live_view)
 }
 
 void
+panes_console_set(Evas_Object *console)
+{
+   panes_data *pd = g_pd;
+   elm_object_part_content_set(pd->vert.obj, "bottom", console);
+}
+
+void
 panes_term(void)
 {
    panes_data *pd = g_pd;
@@ -239,6 +250,8 @@ panes_term(void)
 Evas_Object *
 panes_init(Evas_Object *parent)
 {
+   const double DEFAULT_CONSOLE_SIZE = 0.3;
+
    panes_data *pd = malloc(sizeof(panes_data));
    if (!pd)
      {
@@ -258,8 +271,8 @@ panes_init(Evas_Object *parent)
 
    pd->vert.obj = panes_v;
    pd->vert.state = PANES_SPLIT_VIEW;
-   pd->vert.last_size[0] = 0.5;
-   pd->vert.last_size[1] = 0.5;
+   pd->vert.last_size[0] = DEFAULT_CONSOLE_SIZE;
+   pd->vert.last_size[1] = DEFAULT_CONSOLE_SIZE;
 
    //Panes Horizontal
    Evas_Object *panes_h = elm_panes_add(parent);
@@ -276,6 +289,11 @@ panes_init(Evas_Object *parent)
    pd->horiz.state = PANES_SPLIT_VIEW;
    pd->horiz.last_size[0] = 0.5;
    pd->horiz.last_size[1] = 0.5;
+
+   if (config_console_get())
+     elm_panes_content_right_size_set(panes_v, DEFAULT_CONSOLE_SIZE);
+   else
+     elm_panes_content_right_size_set(panes_v, 0.0);
 
    return panes_v;
 }
