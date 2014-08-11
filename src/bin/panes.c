@@ -250,7 +250,7 @@ panes_term(void)
 Evas_Object *
 panes_init(Evas_Object *parent)
 {
-   const double DEFAULT_CONSOLE_SIZE = 0.3;
+   const double DEFAULT_CONSOLE_SIZE = 0.175;
 
    panes_data *pd = malloc(sizeof(panes_data));
    if (!pd)
