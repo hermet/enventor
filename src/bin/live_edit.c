@@ -107,8 +107,8 @@ live_edit_toggle(void)
 
    edit_disabled_set(ld->ed, on);
 
-   if (on) stats_info_msg_update("Enabled Live View Edit Mode.");
-   else stats_info_msg_update("Disabled Live View Edit Mode.");
+   if (on) stats_info_msg_update("Live View Edit Mode Enabled.");
+   else stats_info_msg_update("Live View Edit Mode Disabled.");
 
    config_live_edit_set(on);
 }
