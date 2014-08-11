@@ -1,6 +1,8 @@
 #include <Elementary.h>
 #include "common.h"
 
+#define DEFAULT_QUEUE_SIZE 200
+
 typedef struct diff_s
 {
    Eina_Stringshare *text;
@@ -18,6 +20,7 @@ struct redoundo_s
    Eina_List *queue;
    Eina_List *current_node;
    diff_data *last_diff;
+   unsigned int queue_max;        //Maximum queuing data count 0: unlimited
    Eina_Bool internal_change : 1; //Entry change by redoundo
 };
 
@@ -61,6 +64,15 @@ entry_changed_user_cb(void *data, Evas_Object *obj EINA_UNUSED,
      {
         EINA_LOG_ERR("Failed to allocate Memory!");
         return;
+     }
+
+   if ((rd->queue_max) && (eina_list_count(rd->queue) >= rd->queue_max))
+     {
+        diff_data *old = NULL;
+        old = eina_list_data_get(rd->queue);
+        eina_stringshare_del(old->text);
+        free(old);
+        rd->queue = eina_list_remove_list(rd->queue, rd->queue);
      }
 
    if (info->insert)
@@ -294,6 +306,7 @@ redoundo_init(Evas_Object *entry)
    rd->entry = entry;
    rd->textblock = elm_entry_textblock_get(entry);
    rd->cursor = evas_object_textblock_cursor_new(rd->textblock);
+   rd->queue_max = DEFAULT_QUEUE_SIZE;
 
    //FIXME: Why signal callback? not smart callback?
    elm_object_signal_callback_add(entry, "entry,changed,user", "*",
