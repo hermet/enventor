@@ -1,11 +1,10 @@
 images {
    image: "plus.png" COMP;
    image: "minus.png" COMP;
-   image: "file.png" COMP;
+   image: "menu.png" COMP;
    image: "find.png" COMP;
    image: "highlight.png" COMP;
    image: "lines.png" COMP;
-   image: "new.png" COMP;
    image: "console.png" COMP;
    image: "status.png" COMP;
    image: "swallow_s.png" COMP;
@@ -30,12 +29,12 @@ group { name: "line";
    }
 }
 
-group { name: "file";
+group { name: "menu";
    parts {
       part { name: "img";
          type: IMAGE;
          description { state: "default" 0.0;
-            image.normal: "file.png";
+            image.normal: "menu.png";
          }
       }
    }
@@ -69,16 +68,6 @@ group { name: "lines";
          type: IMAGE;
          description { state: "default" 0.0;
             image.normal: "lines.png";
-         }
-      }
-   }
-}
-group { name: "new";
-   parts {
-      part { name: "img";
-         type: IMAGE;
-         description { state: "default" 0.0;
-            image.normal: "new.png";
          }
       }
    }

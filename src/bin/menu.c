@@ -759,7 +759,10 @@ menu_toggle(void)
 
    //Main Menu 
    if (md->active_request) menu_close(md);
-   else menu_open(md);
+   else
+     {
+        menu_open(md);
+     }
 }
 
 void

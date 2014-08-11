@@ -43,11 +43,10 @@ EXTRA_DIST = \
    vgrad_med_lighter.png \
    warning.png \
    pm_fill.png \
-   file.png \
+   menu.png \
    find.png \
    highlight.png \
    lines.png \
-   new.png \
    setting_icon.png \
    console.png \
    status.png \

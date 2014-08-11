@@ -18,9 +18,18 @@ item_unselect(Elm_Object_Item *it)
 }
 
 static void
-new_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
+menu_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
-   menu_edc_new();
+   edit_data *ed = data;
+
+   if (search_is_opened() || goto_is_opened())
+     {
+        goto_close();
+        search_close();
+        edit_focus_set(ed);
+     }
+
+   menu_toggle();
    item_unselect((Elm_Object_Item *)event_info);
 }
 
@@ -123,12 +132,8 @@ tools_create(Evas_Object *parent, edit_data *ed)
    elm_object_focus_allow_set(toolbar, EINA_FALSE);
 
    Elm_Object_Item *it;
-   it = elm_toolbar_item_append(toolbar, NULL, "New", new_cb, NULL);
-   elm_toolbar_item_icon_file_set(it, EDJE_PATH, "new");
-   it = elm_toolbar_item_append(toolbar, NULL, "Save", save_cb, NULL);
-   elm_toolbar_item_icon_file_set(it, EDJE_PATH, "file");
-   it = elm_toolbar_item_append(toolbar, NULL, "Load", load_cb, NULL);
-   elm_toolbar_item_icon_file_set(it, EDJE_PATH, "file");
+   it = elm_toolbar_item_append(toolbar, NULL, "Menu", menu_cb, ed);
+   elm_toolbar_item_icon_file_set(it, EDJE_PATH, "menu");
    it = elm_toolbar_item_append(toolbar, NULL, "Highlight", highlight_cb, ed);
    elm_toolbar_item_icon_file_set(it, EDJE_PATH, "highlight");
    it = elm_toolbar_item_append(toolbar, NULL, "Swallow", swallow_cb, NULL);
