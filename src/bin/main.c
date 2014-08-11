@@ -18,7 +18,6 @@ int main(int argc, char **argv);
 static Eina_Bool
 edc_changed_cb(void *data, int type EINA_UNUSED, void *event)
 {
-   //FIXME: Why does this callback called multiple times?
    Eio_Monitor_Event *ev = event;
    app_data *ad = data;
 

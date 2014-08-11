@@ -22,11 +22,13 @@ struct viewer_s
    Ecore_Timer *timer;
    Eio_Monitor *edj_monitor;
    Ecore_Event_Handler *monitor_event;
+   Ecore_Event_Handler *exe_del_event;
 
    void (*del_cb)(void *data);
    void *data;
 
    Eina_Bool dummy_on;
+   Eina_Bool edj_reload_need : 1;
 };
 
 static void
@@ -137,6 +139,33 @@ view_scroller_create(Evas_Object *parent)
 }
 
 static Eina_Bool
+exe_del_event_cb(void *data, int type EINA_UNUSED, void *event)
+{
+   view_data *vd = data;
+   Eio_Monitor_Event *ev = event;
+
+   if (!vd->edj_reload_need) return ECORE_CALLBACK_PASS_ON;
+
+   if (!edje_object_file_set(vd->layout, config_edj_path_get(),
+                             vd->group_name))
+     {
+        vd->del_cb(vd->data);
+        view_term(vd);
+        EINA_LOG_ERR("Failed to load edj file \"%s\"", config_edj_path_get());
+        vd->edj_reload_need = EINA_FALSE;
+        return ECORE_CALLBACK_DONE;
+     }
+
+   view_obj_min_update(vd->layout);
+   view_part_highlight_set(vd, vd->part_name);
+   dummy_obj_update(vd->layout);
+
+   vd->edj_reload_need = EINA_FALSE;
+
+   return ECORE_CALLBACK_PASS_ON;
+}
+
+static Eina_Bool
 edj_changed_cb(void *data, int type EINA_UNUSED, void *event)
 {
    view_data *vd = data;
@@ -144,23 +173,11 @@ edj_changed_cb(void *data, int type EINA_UNUSED, void *event)
 
    if (vd->edj_monitor != ev->monitor) return ECORE_CALLBACK_PASS_ON;
 
-   eio_monitor_del(vd->edj_monitor);
-
-   if (!edje_object_file_set(vd->layout, config_edj_path_get(),
-                        vd->group_name))
-     {
-        vd->del_cb(vd->data);
-        view_term(vd);
-        EINA_LOG_ERR("Failed to load edj file \"%s\"", config_edj_path_get());
-        return ECORE_CALLBACK_DONE;
-     }
-
+   //FIXME: why it need to add monitor again??
    vd->edj_monitor = eio_monitor_add(config_edj_path_get());
-   if (!vd->edj_monitor) EINA_LOG_ERR("Failed to add Eio_Monitor");
+   if (!vd->edj_monitor) EINA_LOG_ERR("Failed to add Eio_Monitor!");
 
-   view_obj_min_update(vd->layout);
-   view_part_highlight_set(vd, vd->part_name);
-   dummy_obj_update(vd->layout);
+   vd->edj_reload_need = EINA_TRUE;
 
    return ECORE_CALLBACK_DONE;
 }
@@ -292,6 +309,13 @@ view_init(Evas_Object *parent, const char *group,
    vd->monitor_event =
       ecore_event_handler_add(EIO_MONITOR_FILE_MODIFIED, edj_changed_cb, vd);
 
+   /* Is this required?? Suddenly, something is changed and
+      it won't successful with EIO_MONITOR_FILE_MODIFIED to reload the edj file
+      since the file couldn't be accessed at the moment. To fix this problem,
+      we check the ECORE_EXE_EVENT_DEL additionally. */
+   vd->exe_del_event =
+      ecore_event_handler_add(ECORE_EXE_EVENT_DEL, exe_del_event_cb, vd);
+
    return vd;
 }
 
@@ -311,6 +335,7 @@ view_term(view_data *vd)
    ecore_timer_del(vd->timer);
    eio_monitor_del(vd->edj_monitor);
    ecore_event_handler_del(vd->monitor_event);
+   ecore_event_handler_del(vd->exe_del_event);
 
    free(vd);
 }
