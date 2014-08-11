@@ -66,7 +66,7 @@ init_thread_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
    COMPDATA_SET(ad, "scale",AUTOCOMP_SCALE, 1, 0);
    COMPDATA_SET(ad, "rel1",AUTOCOMP_REL1, 2, 1);
    COMPDATA_SET(ad, "rel2",AUTOCOMP_REL2, 2, 1);
-   COMPDATA_SET(ad, "relatvie",AUTOCOMP_RELATIVE, 1, 0);
+   COMPDATA_SET(ad, "relative",AUTOCOMP_RELATIVE, 1, 0);
    COMPDATA_SET(ad, "offset", AUTOCOMP_OFFSET, 1, 0);
    COMPDATA_SET(ad, "color", AUTOCOMP_COLOR, 1, 0);
    COMPDATA_SET(ad, "color2", AUTOCOMP_COLOR2, 1, 0);
