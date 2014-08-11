@@ -14,11 +14,12 @@ static const char *
 template_part_first_line_get(void)
 {
    static char buf[40];
-   char name[8];
+   char name[9];
    int i;
 
    for (i = 0; i < 8; i++)
      name[i] = NAME_SEED[(rand() % NAME_SEED_LEN)];
+   name[i]='\0';
 
    snprintf(buf, sizeof(buf), "part { name: \"%s\";<br/>", name);
 
