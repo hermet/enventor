@@ -1,156 +1,137 @@
 #include <Elementary.h>
 #include "common.h"
 
-struct live_editor_s
+typedef struct menu_data_s
+{
+   const char *name;
+   int type;
+} menu_data;
+
+typedef struct live_editor_s
 {
    Evas_Object *menu;
    edit_data *ed;
+} live_data;
+
+const int MENU_ITEMS_NUM = 6;
+
+static const menu_data MENU_ITEMS[] =
+{
+     {"RECT", EDJE_PART_TYPE_RECTANGLE},
+     {"IMAGE", EDJE_PART_TYPE_IMAGE},
+     {"SPACER", EDJE_PART_TYPE_SPACER},
+     {"SWALLOW", EDJE_PART_TYPE_SWALLOW},
+     {"TEXT", EDJE_PART_TYPE_TEXT},
+     {"TEXTBLOCK", EDJE_PART_TYPE_TEXTBLOCK}
 };
 
-#define LIVE_EDIT_ITEMS_NUM 6
-static const char *LIVE_EDIT_MENU_LABELS[LIVE_EDIT_ITEMS_NUM] =
-{
-   "RECT",
-   "IMAGE",
-   "SPACER",
-   "SWALLOW",
-   "TEXT",
-   "TEXTBLOCK"
-};
+static live_data *g_ld = NULL;
 
-static Eina_Bool
-live_edit_part_insert(live_edit_data *led, unsigned int part_type,
-                      Eina_Stringshare *group_name)
+static void
+menu_it_selected_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
-   Edje_Part_Type type;
-   switch (part_type)
-     {
-      case 0:
-        {
-           type = EDJE_PART_TYPE_RECTANGLE;
-           break;
-        }
-      case 1:
-        {
-           type = EDJE_PART_TYPE_IMAGE;
-           break;
-        }
-      case 2:
-        {
-           type = EDJE_PART_TYPE_SPACER;
-           break;
-        }
-      case 3:
-        {
-           type = EDJE_PART_TYPE_SWALLOW;
-           break;
-        }
-      case 4:
-        {
-           type = EDJE_PART_TYPE_TEXT;
-           break;
-        }
-      case 5:
-        {
-           type = EDJE_PART_TYPE_TEXTBLOCK;
-           break;
-        }
-   }
-   template_live_edit_part_insert(led->ed, type, group_name);
-   return EINA_TRUE;
-}
-
-live_edit_data*
-live_edit_init(edit_data *ed)
-{
-   live_edit_data *led = calloc(1, sizeof(live_edit_data));
-   if (!led)
-     {
-        EINA_LOG_ERR("Failed to allocate Memory!");
-        return NULL;
-     }
-   led->ed = ed;
-
-   return led;
+   live_data *ld = data;
+   const Elm_Object_Item *it = event_info;
+   unsigned int idx = elm_menu_item_index_get(it);
+   template_live_edit_part_insert(ld->ed, MENU_ITEMS[idx].type,
+                                  view_group_name_get(VIEW_DATA));
+   evas_object_del(ld->menu);
+   ld->menu = NULL;
 }
 
 static void
-live_edit_menu_item_selected_cb(void *data, Evas_Object *obj, void *event_info)
+menu_dismissed_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
 {
-   live_edit_data *led = data;
-   const Elm_Object_Item *it = event_info;
-   unsigned int part_type = elm_menu_item_index_get(it);
-   live_edit_part_insert(led, part_type, view_group_name_get(VIEW_DATA));
+   live_data *ld = data;
+   evas_object_del(ld->menu);
+   ld->menu = NULL;
 }
 
 static Evas_Object *
-live_edit_menu_create(Evas_Object *parent, live_edit_data *led)
+menu_create(Evas_Object *parent, live_data *ld)
 {
-   long int i;
+   int i;
    Evas_Object* icon;
    Elm_Object_Item *it;
-
    Evas_Object *menu = elm_menu_add(parent);
 
-   for (i = 0; i < LIVE_EDIT_ITEMS_NUM; i++)
+   for (i = 0; i < MENU_ITEMS_NUM; i++)
      {
-        it = elm_menu_item_add(menu, NULL, NULL,
-                               LIVE_EDIT_MENU_LABELS[i],
-                               live_edit_menu_item_selected_cb, led);
+        it = elm_menu_item_add(menu, NULL, NULL, MENU_ITEMS[i].name,
+                               menu_it_selected_cb, ld);
         icon = elm_image_add(menu);
-        elm_image_file_set(icon, EDJE_PATH, LIVE_EDIT_MENU_LABELS[i]);
+        elm_image_file_set(icon, EDJE_PATH, MENU_ITEMS[i].name);
         elm_object_item_part_content_set(it, NULL, icon);
      }
-   
+
+   evas_object_smart_callback_add(menu, "dismissed", menu_dismissed_cb, ld);
+
    return menu;
 }
 
-
 static void
-live_edit_menu_show_cb(void *data, Evas *e EINA_UNUSED,
-                       Evas_Object *obj EINA_UNUSED, void *event_info)
+layout_mouse_up_cb(void *data, Evas *e EINA_UNUSED,
+                   Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    Evas_Event_Mouse_Up *ev = event_info;
-   live_edit_data *led = data;
+   live_data *ld = data;
 
    // Check if the right button is pressed
    if (ev->button != 3) return;
 
-   if (!led->menu)
-     led->menu = live_edit_menu_create(obj, led);
+   ld->menu = menu_create(obj, ld);
 
-   elm_menu_move(led->menu, ev->canvas.x, ev->canvas.y);
-   evas_object_show(led->menu);
+   elm_menu_move(ld->menu, ev->canvas.x, ev->canvas.y);
+   evas_object_show(ld->menu);
 }
 
 void
-live_edit_toggle(live_edit_data* led, Eina_Bool is_on)
+live_edit_toggle(void)
 {
-   if (VIEW_DATA)
-     {
-        Evas_Object *view_layout = view_layout_get(VIEW_DATA);
+   live_data *ld = g_ld;
+   Eina_Bool on = !config_live_edit_get();
 
-        if (is_on)
-          evas_object_event_callback_add(view_layout, EVAS_CALLBACK_MOUSE_UP,
-                                         live_edit_menu_show_cb, led);
-        else
-          evas_object_event_callback_del(view_layout, EVAS_CALLBACK_MOUSE_UP,
-                                         live_edit_menu_show_cb);
+   Evas_Object *event_obj = view_obj_get(VIEW_DATA);
+   if (!event_obj) return;
+
+   if (on)
+     {
+        evas_object_event_callback_add(event_obj, EVAS_CALLBACK_MOUSE_UP,
+                                       layout_mouse_up_cb, ld);
+     }
+   else
+     {
+        evas_object_event_callback_del(event_obj, EVAS_CALLBACK_MOUSE_UP,
+                                       layout_mouse_up_cb);
      }
 
-   edit_disabled_set(led->ed, is_on);
-   if (is_on)
-     stats_info_msg_update("Enabled Live View Edit Mode");
-   else
-     stats_info_msg_update("Disabled Live View Edit Mode");
+   edit_disabled_set(ld->ed, on);
+
+   if (on) stats_info_msg_update("Enabled Live View Edit Mode.");
+   else stats_info_msg_update("Disabled Live View Edit Mode.");
+
+   config_live_edit_set(on);
 }
 
 void
-live_edit_term(live_edit_data* led)
+live_edit_init(edit_data *ed)
 {
-   if (led->menu)
-     evas_object_del(led->menu);
-   free(led);
+   live_data *ld = calloc(1, sizeof(live_data));
+   if (!ld)
+     {
+        EINA_LOG_ERR("Faild to allocate Memory!");
+        return;
+     }
+   g_ld = ld;
+
+   ld->ed = ed;
 }
 
-#undef LIVE_EDIT_ITEMS_NUM
+void
+live_edit_term()
+{
+   live_data *ld = g_ld;
+   if (ld->menu) evas_object_del(ld->menu);
+   free(ld);
+   g_ld = NULL;
+}

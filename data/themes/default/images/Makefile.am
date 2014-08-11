@@ -55,4 +55,5 @@ EXTRA_DIST = \
    goto.png \
    downlight_glow_left.png \
    downlight_glow_right.png \
-	alarm_highlight.png
+   alarm_highlight.png \
+   disabler.png

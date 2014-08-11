@@ -623,12 +623,11 @@ config_live_edit_get(void)
 }
 
 void
-config_live_edit_set(Eina_Bool enabled)
+config_live_edit_set(Eina_Bool live_edit)
 {
    config_data *cd = g_cd;
-   cd->live_edit = enabled;
+   cd->live_edit = live_edit;
 }
-
 
 void
 config_auto_complete_set(Eina_Bool auto_complete)

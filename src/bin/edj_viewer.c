@@ -10,6 +10,7 @@ struct viewer_s
    Evas_Object *parent;
    Evas_Object *layout;
    Evas_Object *scroller;
+   Evas_Object *event_rect;
 
    Evas_Object *part_obj;
    Evas_Object *part_highlight;
@@ -199,6 +200,8 @@ event_layer_set(view_data *vd)
                                   layout_del_cb, rect);
    evas_object_event_callback_add(rect, EVAS_CALLBACK_MOUSE_MOVE,
                                   rect_mouse_move_cb, vd);
+
+   vd->event_rect = rect;
 }
 
 static Evas_Object *
@@ -316,12 +319,6 @@ Evas_Object *
 view_obj_get(view_data *vd)
 {
    return vd->scroller;
-}
-
-Evas_Object *
-view_layout_get(view_data *vd)
-{
-   return vd->layout;
 }
 
 void

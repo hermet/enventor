@@ -4,7 +4,6 @@
 typedef struct viewer_s view_data;
 typedef struct statusbar_s stats_data;
 typedef struct editor_s edit_data;
-typedef struct live_editor_s live_edit_data;
 typedef struct syntax_color_s color_data;
 typedef struct parser_s parser_data;
 typedef struct attr_value_s attr_value;

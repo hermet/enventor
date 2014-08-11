@@ -49,6 +49,7 @@ Ctrl+Right = On/Off Full Live View
 Ctrl+Top = On/Off Full Console View
 Ctrl+Bottom = On/Off Full Editors View
 Ctrl+T = Insert Defaut Template Code
+Ctrl+M = On/Off Live View Edit Mode
 Ctrl+Mouse Wheel Up = View Scale Up / Font Size Up
 Ctrl+Mouse Wheel Down = View Scale Down / Font Size Down
 Ctrl+Shift+B = Insert Part Template Code: Textblock

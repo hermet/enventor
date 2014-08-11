@@ -936,10 +936,8 @@ end_of_parts_block_find(const char *pos)
    while (*pos)
      {
         if (*pos == '{') level++;
-        else if (*pos == '}')
-          {
-             level--;
-          }
+        else if (*pos == '}') level--;
+
         if (!level) return --pos;
         pos++;
      }
@@ -949,11 +947,12 @@ end_of_parts_block_find(const char *pos)
 static const char *
 group_beginning_pos_get(const char* source, const char *group_name)
 {
-   const char* group_block_name = "group";
+   const char* GROUP_SYNTAX_NAME = "group";
    const int quot_len = QUOT_LEN;
    const char *quot = QUOT;
 
-   const char *pos = strstr(source, group_block_name);
+   const char *pos = strstr(source, GROUP_SYNTAX_NAME);
+
    //TODO: Process comments and quotes.
    while (pos)
    {
@@ -963,17 +962,17 @@ group_beginning_pos_get(const char* source, const char *group_name)
       if (!pos) return NULL;
       if (!strncmp(name, group_name, strlen(group_name)))
         return pos;
-      pos = strstr(++pos,  group_block_name);
+      pos = strstr(++pos,  GROUP_SYNTAX_NAME);
    }
 
    return NULL;
 }
 
-Evas_Coord
-parser_end_of_parts_block_pos_get(const Evas_Object *entry, const char *group_name)
+int
+parser_end_of_parts_block_pos_get(const Evas_Object *entry,
+                                  const char *group_name)
 {
-   if (!group_name)
-        return -1;
+   if (!group_name) return -1;
 
    const char *text = elm_entry_entry_get(entry);
    if (!text) return -1;
@@ -982,45 +981,61 @@ parser_end_of_parts_block_pos_get(const Evas_Object *entry, const char *group_na
    if (!utf8) return -1;
 
    const char *pos = group_beginning_pos_get(utf8, group_name);
-   if (!pos) return -1;
+   if (!pos)
+     {
+        free(utf8);
+        return -1;
+     }
+
    pos = end_of_parts_block_find(++pos);
-   if (pos) return pos - utf8 + 1;
-   return -1;
+   if (!pos)
+     {
+        free(utf8);
+        return - 1;
+     }
+
+   int ret = (pos - utf8) + 1;
+
+   free(utf8);
+
+   return ret;
 }
 
 Eina_Bool
-parser_images_pos_get(const Evas_Object *entry, Evas_Coord *res_position)
+parser_images_pos_get(const Evas_Object *entry, int *ret)
 {
-   if (!res_position) return EINA_FALSE;
+   const char* GROUP_SYNTAX_NAME = "group";
+   const char* IMAGES_BLOCK_NAME = "images";
+   const int IMAGES_BLOCK_NAME_LEN = 6; //strlen of "images"
 
-   const char* group_block_name = "group";
-   const char* images_block_name = "images";
-   Evas_Coord images_block_name_len = 6; //strlen of "images"
+   if (!ret) return EINA_FALSE;
 
-   *res_position = -1;
+   *ret = -1;
+
    const char *text = elm_entry_entry_get(entry);
    if (!text) return EINA_FALSE;
 
    char *utf8 = elm_entry_markup_to_utf8(text);
    if (!utf8) return EINA_FALSE;
 
-   const char *pos = strstr(utf8, images_block_name);
+   const char *pos = strstr(utf8, IMAGES_BLOCK_NAME);
    if (pos)
      {
-        // TODO: Remove this check and process lines of the form "images.image: "logo.png" COMP;"
-        if (*(pos + images_block_name_len + 1) == '.')
+        /* TODO: Remove this check and process lines of the form
+           "images.image: "logo.png" COMP;" */
+        if (*(pos + IMAGES_BLOCK_NAME_LEN + 1) == '.')
           return EINA_FALSE;
 
         pos = strstr(pos, "{\n");
         if (!pos) return EINA_FALSE;
 
-        *res_position = pos - utf8 + 2;
+        *ret = pos - utf8 + 2;
         return EINA_TRUE;
      }
-   pos = strstr(utf8, group_block_name);
+   pos = strstr(utf8, GROUP_SYNTAX_NAME);
    if (pos)
      {
-        *res_position = pos - utf8;
+        *ret = pos - utf8;
         return EINA_FALSE;
      }
    return EINA_FALSE;

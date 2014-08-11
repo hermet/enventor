@@ -6,7 +6,6 @@
 typedef struct app_s
 {
    edit_data *ed;
-   live_edit_data *led;
 
    Eio_Monitor *edc_monitor;
 
@@ -193,9 +192,7 @@ ctrl_func(app_data *ad, const char *key)
    //Live Edit
    if (!strcmp(key, "m") || !strcmp(key, "M"))
      {
-        Eina_Bool is_on = !config_live_edit_get();
-        config_live_edit_set(is_on);
-        live_edit_toggle(ad->led, is_on);
+        live_edit_toggle();
         return ECORE_CALLBACK_DONE;
      }
 
@@ -393,14 +390,6 @@ edc_edit_set(app_data *ad)
 }
 
 static void
-live_edit_set(app_data *ad)
-{
-   ad->led = live_edit_init(ad->ed);
-   Eina_Bool is_on = config_live_edit_get();
-   live_edit_toggle(ad->led, is_on);
-}
-
-static void
 statusbar_set()
 {
    Evas_Object *obj = stats_init(base_layout_get());
@@ -422,7 +411,6 @@ config_update_cb(void *data)
    base_statusbar_toggle(EINA_FALSE);
    edit_part_highlight_toggle(ad->ed, EINA_FALSE);
    view_dummy_toggle(VIEW_DATA, EINA_FALSE);
-   live_edit_toggle(ad->led, config_live_edit_get());
 
    //previous build was failed, Need to rebuild then reload the edj.
    if (edj_mgr_reload_need_get())
@@ -545,9 +533,9 @@ edj_mgr_set()
 }
 
 static void
-tools_set(edit_data *ed, live_edit_data *led)
+tools_set(edit_data *ed)
 {
-   Evas_Object *tools = tools_create(base_layout_get(), ed, led);
+   Evas_Object *tools = tools_create(base_layout_get(), ed);
    base_tools_set(tools);
 }
 
@@ -572,10 +560,10 @@ init(app_data *ad, int argc, char **argv)
    edj_mgr_set();
    statusbar_set();
    edc_edit_set(ad);
-   live_edit_set(ad);
    edc_view_set(stats_group_name_get());
    menu_init(ad->ed);
-   tools_set(ad->ed, ad->led);
+   tools_set(ad->ed);
+   live_edit_init(ad->ed);
 
    base_gui_show();
 
@@ -593,7 +581,7 @@ term(app_data *ad)
    build_term();
    menu_term();
    edit_term(ad->ed);
-   live_edit_term(ad->led);
+   live_edit_term();
    edj_mgr_term();
    stats_term();
    base_gui_term();

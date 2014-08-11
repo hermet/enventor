@@ -14,12 +14,11 @@ static const char *
 template_part_first_line_get(void)
 {
    static char buf[40];
-   char name[9];
+   char name[8];
    int i;
 
    for (i = 0; i < 8; i++)
      name[i] = NAME_SEED[(rand() % NAME_SEED_LEN)];
-   name[8] = '\0';
 
    snprintf(buf, sizeof(buf), "part { name: \"%s\";<br/>", name);
 
@@ -257,8 +256,7 @@ internal_template_part_insert(edit_data *ed,
 }
 
 void
-template_live_edit_part_insert(edit_data *ed,
-                               Edje_Part_Type type,
+template_live_edit_part_insert(edit_data *ed, Edje_Part_Type type,
                                const Eina_Stringshare *group_name)
 {
    internal_template_part_insert(ed, type, TEMPLATE_PART_INSERT_LIVE_EDIT,
@@ -266,8 +264,7 @@ template_live_edit_part_insert(edit_data *ed,
 }
 
 void
-template_part_insert(edit_data *ed,
-                     Edje_Part_Type type)
+template_part_insert(edit_data *ed, Edje_Part_Type type)
 {
    internal_template_part_insert(ed, type,
                                  TEMPLATE_PART_INSERT_DEFAULT, NULL);
