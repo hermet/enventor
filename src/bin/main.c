@@ -72,6 +72,12 @@ static Eina_Bool
 template_insert_patch(app_data *ad, const char *key)
 {
    Edje_Part_Type type;
+   if (config_live_edit_get())
+     {
+        stats_info_msg_update("Insertion of template code is disabled "
+                              "while in Live Edit mode");
+        return ECORE_CALLBACK_DONE;
+     }
 
    if (!strcmp(key, "a") || !strcmp(key, "A"))
      type = EDJE_PART_TYPE_TABLE;
