@@ -155,6 +155,12 @@ ctrl_func(app_data *ad, const char *key)
    //Template Code
    if (!strcmp(key, "t") || !strcmp(key, "T"))
      {
+        if (config_live_edit_get())
+          {
+             stats_info_msg_update("Insertion of template code is disabled "
+                                   "while in Live Edit mode");
+             return ECORE_CALLBACK_DONE;
+          }
         template_insert(ad->ed);
         return ECORE_CALLBACK_DONE;
      }
