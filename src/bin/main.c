@@ -410,6 +410,7 @@ config_update_cb(void *data)
    base_statusbar_toggle(EINA_FALSE);
    edit_part_highlight_toggle(ad->ed, EINA_FALSE);
    view_dummy_toggle(VIEW_DATA, EINA_FALSE);
+   if (config_live_edit_get()) live_edit_toggle();
 
    //previous build was failed, Need to rebuild then reload the edj.
    if (edj_mgr_reload_need_get())

@@ -7,6 +7,15 @@ images {
    image: "shine.png" COMP;
    image: "bub_over_bot.png" COMP;
    image: "disabler.png" COMP;
+   image: "live_edit_icons/rel1.dragable.png" COMP;
+   image: "live_edit_icons/rel2.dragable.png" COMP;
+   image: "live_edit_icons/bg_glow_in.png" COMP;
+}
+
+styles {
+     style { name: "entry_live_edit_style";
+        base: "font="FN" font_size=11 text_class=entry color=#ffffff style=shadow,bottom shadow_color=#00000080 glow_color=#3399ff18 valign=1 ellipsis=1.0 wrap=none";
+     }
 }
 
 group { name: "about_layout";
@@ -1279,6 +1288,166 @@ group { name: "search_layout";
    }
 }
 
+#define BG_COLOR 88 99 122
+#define BORDER_COLOR 220 250 255
+#define REL_SIZE 70 35
+#define INFO_SIZE 130 50
+
+group { name: "viewer_layout_dragable_container";
+   parts {
+      part { name: "bg";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 255 255 255 0;
+         }
+         description { state: "show" 0.0;
+            color: 255 255 255 30;
+         }
+      }
+      part { name: "new_part_bg";
+         type: RECT;
+         scale: 1;
+         description { state: "default" 0.0;
+            color: BG_COLOR 0;
+            rel1.to: "rel1.dragable";
+            rel2.to: "rel2.dragable";
+         }
+         description { state: "show" 0.0;
+            inherit:"default" 0.0;
+            color: BG_COLOR 230;
+         }
+      }
+      part { name: "new_part_bg_decorations";
+         scale: 1;
+         description { state: "default" 0.0;
+            image.normal: "live_edit_icons/bg_glow_in.png";
+            image.border: 1 1 1 1;
+            rel1.to: "new_part_bg";
+            rel2.to: "new_part_bg";
+            color: BORDER_COLOR 0;
+         }
+         description { state: "show" 0.0;
+            inherit:"default" 0.0;
+            color: BORDER_COLOR 255;
+         }
+      }
+      part { name: "rel1.dragable";
+         scale: 1;
+         description { state: "default" 0.0;
+            image.normal: "live_edit_icons/rel1.dragable.png";
+            image.border: 3 3 3 3;
+            min: REL_SIZE;
+            max: REL_SIZE;
+            color: BORDER_COLOR 0;
+         }
+         description { state: "show" 0.0;
+            inherit:"default" 0.0;
+            color: BORDER_COLOR 255;
+         }
+         dragable {
+            confine: "bg";
+            x: 1 1 0;
+            y: 1 1 0;
+         }
+      }
+      part { name: "elm.text.live_edit.rel1";
+         type: TEXTBLOCK;
+         scale: 1;
+         repeat_events: 1;
+         description {
+            text.style: "entry_live_edit_style";
+            rel1.to: "rel1.dragable";
+            rel2.to: "rel1.dragable";
+         }
+      }
+      part { name: "rel2.dragable";
+         scale: 1;
+         description { state: "default" 0.0;
+            image.normal: "live_edit_icons/rel2.dragable.png";
+            image.border: 3 3 3 3;
+            min: REL_SIZE;
+            max: REL_SIZE;
+            color: BORDER_COLOR 0;
+         }
+         description { state: "show" 0.0;
+            inherit:"default" 0.0;
+            color: BORDER_COLOR 255;
+         }
+         dragable {
+            confine: "bg";
+            x: 1 1 0;
+            y: 1 1 0;
+         }
+      }
+      part { name: "elm.text.live_edit.rel2";
+         type: TEXTBLOCK;
+         scale: 1;
+         repeat_events: 1;
+         description {
+            text.style: "entry_live_edit_style";
+            rel1.to: "rel2.dragable";
+            rel2.to: "rel2.dragable";
+         }
+      }
+      part { name: "info_bg";
+         scale: 1;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            image.normal: "live_edit_icons/rel2.dragable.png";
+            image.border: 3 3 3 3;
+            min: INFO_SIZE;
+            max: INFO_SIZE;
+            color: BORDER_COLOR 0;
+            align: 1.0 1.0;
+         }
+         description { state: "show" 0.0;
+            inherit:"default" 0.0;
+            color: BORDER_COLOR 122;
+         }
+      }
+      part { name: "elm.text.live_edit.new_part_info";
+         type: TEXTBLOCK;
+         scale: 1;
+         repeat_events: 1;
+         description {
+            text.style: "entry_live_edit_style";
+            rel1.to: "info_bg";
+            rel2.to: "info_bg";
+            color: 255 255 255 120;
+         }
+      }
+   }
+   programs {
+      program { name: "on_load_init";
+         signal: "load";
+         source: "";
+         script {
+            set_drag(PART:"rel1.dragable", 0.2, 0.2);
+            set_drag(PART:"rel2.dragable", 0.8, 0.8);
+         }
+         after: "on_load_show";
+      }
+      program { name: "on_load_show";
+         action: STATE_SET "show" 0.0;
+         target: "bg";
+         target: "new_part_bg_decorations";
+         target: "new_part_bg";
+         target: "rel1.dragable";
+         target: "rel2.dragable";
+         target: "info_bg";
+         transition: DECELERATE 0.25;
+         after: "emit_drag_signal";
+      }
+      program { name: "emit_drag_signal";
+         action: SIGNAL_EMIT "drag" "rel2.dragable";
+      }
+   }
+}
+#undef BG_COLOR
+#undef BORDER_COLOR
+#undef REL_SIZE
+#undef INFO_SIZE
+
 group { name: "viewer_layout";
    parts {
       part { name: "prev_clipper";
@@ -1314,6 +1483,12 @@ group { name: "viewer_layout";
          description { state: "default" 0.0;
             rel1.to: "cur_clipper";
             rel2.to: "cur_clipper";
+         }
+      }
+      part { name: "elm.swallow.live_edit";
+         type: SWALLOW;
+         repeat_events: 1;
+         description { state: "default" 0.0;
          }
       }
    }
