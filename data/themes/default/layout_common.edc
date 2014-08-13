@@ -983,12 +983,11 @@ group { name: "menu_layout";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            rel1.to: "elm.swallow.exit_btn";
-            rel2.to: "elm.swallow.exit_btn";
             rel1.relative: 1 1;
-            min: 40 23;
+            rel2.offset: -10 -1;
+            min: 20 20;
             fixed: 1 1;
-            align: 1 0;
+            align: 1 1;
          }
       }
       part { name: "elm.swallow.prev_btn";
@@ -996,10 +995,11 @@ group { name: "menu_layout";
          scale: 1;
          clip_to: "clipper";
          description { state: "default" 0.0;
+            rel1.relative: 0 0;
+            rel2.relative: 1 0;
             rel1.to: "padding7";
             rel2.to: "padding7";
-            rel2.relative: 1 0;
-            align: 0.5 0;
+            align: 1 1;
             min: 40 40;
             fixed: 1 1;
          }

@@ -320,16 +320,11 @@ exit_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 }
 
 static void
-prev_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+prev_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
             void *event_info EINA_UNUSED)
 {
    menu_data *md = data;
-   if (search_is_opened() || goto_is_opened())
-     {
-        goto_close();
-        search_close();
-        edit_focus_set(md->ed);
-     }
+   edit_focus_set(md->ed);
    menu_toggle();
 }
 
@@ -667,9 +662,7 @@ menu_open(menu_data *md)
    elm_object_style_set(btn, "anchor");
    evas_object_smart_callback_add(btn, "clicked", prev_btn_cb, md);
    elm_object_text_set(btn, "Back");
-   evas_object_show(btn);
    elm_object_part_content_set(layout, "elm.swallow.prev_btn", btn);
-   ecore_timer_add(0.15, btn_effect_timer_cb, btn);
 
    md->menu_layout = layout;
    md->active_request++;
