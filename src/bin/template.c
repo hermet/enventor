@@ -176,8 +176,9 @@ internal_template_part_insert(edit_data *ed,
         elm_entry_entry_insert(edit_entry, t[i]);
      }
 
-   //Increase (part name + body + relatives + tail) line
-   edit_line_increase(ed, (1 + line_cnt + 2 + TEMPLATE_PART_TALE_LINE_CNT));
+   /* Increase (part name + body + relatives + tail) line. But line increase
+		count should be -1 because the cursor position would be taken one line. */
+   edit_line_increase(ed, (1 + line_cnt + 2 + TEMPLATE_PART_TALE_LINE_CNT) - 1);
 
    int cursor_pos2 = elm_entry_cursor_pos_get(edit_entry);
    edit_redoundo_region_push(ed, cursor_pos1, cursor_pos2);
