@@ -83,10 +83,7 @@ internal_template_part_insert(edit_data *ed,
                               Template_Part_Insert_Type insert_type,
                               const Eina_Stringshare *group_name)
 {
-   if (type == EDJE_PART_TYPE_NONE) return;
-   if ((type == EDJE_PART_TYPE_IMAGE) &&
-       (insert_type == TEMPLATE_PART_INSERT_LIVE_EDIT))
-     image_description_add(ed);
+   if (type == EDJE_PART_TYPE_IMAGE) image_description_add(ed);
 
    Evas_Object *edit_entry = edit_entry_get(ed);
    int cursor_pos = template_part_insert_cursor_pos_set(ed, insert_type,
@@ -210,7 +207,6 @@ template_part_insert(edit_data *ed, Edje_Part_Type type)
    internal_template_part_insert(ed, type, TEMPLATE_PART_INSERT_DEFAULT,
                                  0.25, 0.25, 0.75, 0.75, NULL);
 }
-
 
 void
 template_insert(edit_data *ed)
