@@ -287,7 +287,9 @@ template_insert(edit_data *ed)
    elm_entry_entry_insert(entry, p);
    elm_entry_entry_insert(entry, t[i]);
 
-   edit_line_increase(ed, line_cnt);
+   /* Line increase count should be -1 because the cursor position would be 
+      taken one line. */
+   edit_line_increase(ed, (line_cnt - 1));
 
    int cursor_pos2 = elm_entry_cursor_pos_get(entry);
    edit_redoundo_region_push(ed, cursor_pos1, cursor_pos2);
