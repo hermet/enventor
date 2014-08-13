@@ -1194,7 +1194,10 @@ edit_disabled_set(edit_data *ed, Eina_Bool disabled)
    elm_object_focus_allow_set(ed->layout, disabled);
 
    if (disabled)
-     elm_object_signal_emit(ed->layout, "elm,state,disabled", "");
+     {
+        elm_object_signal_emit(ed->layout, "elm,state,disabled", "");
+        elm_entry_select_none(ed->en_edit);
+     }
    else
      elm_object_signal_emit(ed->layout, "elm,state,enabled", "");
 }
