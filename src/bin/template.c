@@ -10,10 +10,9 @@ typedef enum {
 const char *NAME_SEED = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 const int NAME_SEED_LEN = 52;
 
-static const char *
-template_part_first_line_get(void)
+static void
+template_part_first_line_get(char *buf, int size)
 {
-   static char buf[40];
    char name[9];
    int i;
 
@@ -21,9 +20,7 @@ template_part_first_line_get(void)
      name[i] = NAME_SEED[(rand() % NAME_SEED_LEN)];
    name[i]='\0';
 
-   snprintf(buf, sizeof(buf), "part { name: \"%s\";<br/>", name);
-
-   return (const char *) buf;
+   snprintf(buf, size, "part { name: \"%s\";<br/>", name);
 }
 
 static void
@@ -87,7 +84,7 @@ internal_template_part_insert(edit_data *ed,
 
    Evas_Object *edit_entry = edit_entry_get(ed);
    int cursor_pos = template_part_insert_cursor_pos_set(ed, insert_type,
-                                                             group_name);
+                                                        group_name);
    if (cursor_pos == -1) return;
    int cursor_pos1 = elm_entry_cursor_pos_get(edit_entry);
    int space = edit_cur_indent_depth_get(ed);
@@ -146,7 +143,8 @@ internal_template_part_insert(edit_data *ed,
 
    //Insert first line of the part block with generated name.
    elm_entry_entry_insert(edit_entry, p);
-   const char *first_line = template_part_first_line_get();
+   char first_line[40];
+   template_part_first_line_get(first_line, 40);
    elm_entry_entry_insert(edit_entry, first_line);
    edit_line_increase(ed, 1);
 
