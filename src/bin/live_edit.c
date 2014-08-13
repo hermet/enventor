@@ -48,18 +48,18 @@ static const char *LIVE_EDIT_NEW_PART_DATA_STR =
 static const char *LIVE_EDIT_NEW_PART_REL_STR = "   %.2f %.2f";
 
 static void
-live_edit_current_part_values_update(live_data *ld, Evas_Object *layout)
+cur_part_value_update(live_data *ld, Evas_Object *edje)
 {
    Evas_Coord x, y, w, h;
    Evas_Coord view_w, view_h;
 
    config_view_size_get(&view_w, &view_h);
-   edje_object_part_geometry_get(layout, "new_part_bg", &x, &y, &w, &h);
+   edje_object_part_geometry_get(edje, "new_part_bg", &x, &y, &w, &h);
 
-   ld->cur_part_data->rel1_x = (float)x/view_w;
-   ld->cur_part_data->rel1_y = (float)y/view_h;
-   ld->cur_part_data->rel2_x = (float)(x + w)/view_w;
-   ld->cur_part_data->rel2_y = (float)(y + h)/view_h;
+   ld->cur_part_data->rel1_x = ((float) x) / ((float) view_w);
+   ld->cur_part_data->rel1_y = ((float) y) / ((float) view_h);
+   ld->cur_part_data->rel2_x = ((float) (x + w)) / ((float) view_w);
+   ld->cur_part_data->rel2_y = ((float) (y + h)) / ((float) view_h);
    ld->cur_part_data->x = x;
    ld->cur_part_data->y = y;
    ld->cur_part_data->w = w;
@@ -67,11 +67,11 @@ live_edit_current_part_values_update(live_data *ld, Evas_Object *layout)
 }
 
 static Evas_Object *
-create_dragable_container(live_data *led)
+create_live_edit_layout()
 {
    Evas_Object *viewer_layout = edj_mgr_obj_get();
    Evas_Object *layout = elm_layout_add(viewer_layout);
-   elm_layout_file_set(layout, EDJE_PATH,  "viewer_layout_dragable_container");
+   elm_layout_file_set(layout, EDJE_PATH,  "live_edit_layout");
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(layout, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_part_content_set(viewer_layout, "elm.swallow.live_edit", layout);
@@ -79,11 +79,11 @@ create_dragable_container(live_data *led)
 }
 
 static void
-live_edit_part_info_update(live_data *ld)
+part_info_update(live_data *ld)
 {
    Evas_Object *layout = elm_layout_edje_get(ld->layout);
 
-   live_edit_current_part_values_update(ld, layout);
+   cur_part_value_update(ld, layout);
 
    char part_info[LIVE_EDIT_NEW_PART_DATA_MAX_LEN];
 
@@ -107,24 +107,19 @@ live_edit_part_info_update(live_data *ld)
 }
 
 static void
-live_edit_part_geometry_changed_cb(void *data,
+dragable_geometry_changed_cb(void *data,
                                    Evas_Object *obj EINA_UNUSED,
                                    const char *emission EINA_UNUSED,
                                    const char *source EINA_UNUSED)
 {
    //TODO: recalc on viewport size changed
-   live_edit_part_info_update(data);
+   live_data *ld = data;
+   part_info_update(ld);
 }
 
 static void
 live_edit_reset(live_data *ld)
 {
-   edje_object_signal_callback_del(elm_layout_edje_get(ld->layout),
-                                   "drag", "rel1.dragable",
-                                   live_edit_part_geometry_changed_cb);
-   edje_object_signal_callback_del(elm_layout_edje_get(ld->layout),
-                                   "drag", "rel2.dragable",
-                                   live_edit_part_geometry_changed_cb);
    ecore_event_handler_del(ld->key_down_handler);
    ld->key_down_handler = NULL;
 
@@ -133,7 +128,7 @@ live_edit_reset(live_data *ld)
 }
 
 static Eina_Bool
-drag_n_drop_mode_toggle_cb(void *data, int type EINA_UNUSED, void *ev)
+key_down_cb(void *data, int type EINA_UNUSED, void *ev)
 {
    Ecore_Event_Key *event = ev;
    live_data *ld = data;
@@ -155,22 +150,22 @@ drag_n_drop_mode_toggle_cb(void *data, int type EINA_UNUSED, void *ev)
 }
 
 static void
-setup_layout(live_data *ld)
+live_edit_layer_set(live_data *ld)
 {
    ld->key_down_handler = ecore_event_handler_add(ECORE_EVENT_KEY_DOWN,
-                                                  drag_n_drop_mode_toggle_cb,
+                                                  key_down_cb,
                                                   ld);
-   Evas_Object *layout = create_dragable_container(ld);
-   ld->layout = layout;
-   
+   Evas_Object *layout = create_live_edit_layout();
+
    edje_object_signal_callback_add(elm_layout_edje_get(layout),
                                    "drag", "rel1.dragable",
-                                   live_edit_part_geometry_changed_cb, ld);
+                                   dragable_geometry_changed_cb, ld);
    edje_object_signal_callback_add(elm_layout_edje_get(layout),
                                    "drag", "rel2.dragable",
-                                   live_edit_part_geometry_changed_cb, ld);
-   
-   live_edit_part_info_update(ld);
+                                   dragable_geometry_changed_cb, ld);
+   part_info_update(ld);
+
+   ld->layout = layout;
 }
 
 static void
@@ -179,8 +174,7 @@ menu_it_selected_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
    live_data *ld = data;
    const Elm_Object_Item *it = event_info;
    ld->cur_part_data->type = elm_menu_item_index_get(it);
-   setup_layout(ld);
-
+   live_edit_layer_set(ld);
    evas_object_del(ld->menu);
    ld->menu = NULL;
 }
@@ -279,8 +273,8 @@ void
 live_edit_term()
 {
    live_data *ld = g_ld;
-   if (ld->menu) evas_object_del(ld->menu);
-   if (ld->layout) live_edit_reset(ld);
+   evas_object_del(ld->menu);
+   live_edit_reset(ld);
    free(ld->cur_part_data);
    free(ld);
    g_ld = NULL;

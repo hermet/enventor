@@ -26,21 +26,6 @@ template_part_first_line_get(void)
    return (const char *) buf;
 }
 
-static const char *
-template_part_relative_line_get(char rel_no, float relative_x, float relative_y)
-{
-   if ((rel_no != 1) && (rel_no != 2))
-     return NULL;
-
-   static char buf[40];
-   int i;
-
-   snprintf(buf, sizeof(buf), "      rel%d.relative: %.2f %.2f;<br/>",
-            rel_no, relative_x, relative_y);
-
-   return (const char *) buf;
-}
-
 void
 template_insert(edit_data *ed)
 {
@@ -244,28 +229,30 @@ internal_template_part_insert(edit_data *ed,
            break;
      }
 
-   // insert the first line of the part block with generated name.
+   //Insert first line of the part block with generated name.
    elm_entry_entry_insert(edit_entry, p);
    const char *first_line = template_part_first_line_get();
    elm_entry_entry_insert(edit_entry, first_line);
    edit_line_increase(ed, 1);
 
-   // insert the body of the part
+   //Insert part body
    int i;
    for (i = 0; i < line_cnt; i++)
      {
         elm_entry_entry_insert(edit_entry, p);
         elm_entry_entry_insert(edit_entry, t[i]);
-        //Incease line by (line count - 1)
-        edit_line_increase(ed, 1);
      }
 
-   // insert relatives
+   //Insert relatives
    elm_entry_entry_insert(edit_entry, p);
-   elm_entry_entry_insert(edit_entry, template_part_relative_line_get(1, rel1_x, rel1_y));
+
+   snprintf(buf, sizeof(buf), "      rel1.relative: %.2f %.2f;<br/>",rel1_x,
+            rel2_y);
+   elm_entry_entry_insert(edit_entry, buf);
    elm_entry_entry_insert(edit_entry, p);
-   elm_entry_entry_insert(edit_entry, template_part_relative_line_get(2, rel2_x, rel2_y));
-   edit_line_increase(ed, 2);
+   snprintf(buf, sizeof(buf), "      rel2.relative: %.2f %.2f;<br/>",rel1_x,
+            rel2_y);
+   elm_entry_entry_insert(edit_entry, buf);
 
    // insert the tale of the part that contains closing brackets
    t = (char **) &TEMPLATE_PART_TALE;
@@ -273,8 +260,10 @@ internal_template_part_insert(edit_data *ed,
      {
         elm_entry_entry_insert(edit_entry, p);
         elm_entry_entry_insert(edit_entry, t[i]);
-        edit_line_increase(ed, 1);
      }
+
+   //part name + line count + relatives + tail line
+   edit_line_increase(ed, (1 + line_cnt + 2 + TEMPLATE_PART_TALE_LINE_CNT));
 
    int cursor_pos2 = elm_entry_cursor_pos_get(edit_entry);
    edit_redoundo_region_push(ed, cursor_pos1, cursor_pos2);
@@ -288,15 +277,12 @@ internal_template_part_insert(edit_data *ed,
 }
 
 void
-template_live_edit_part_insert(edit_data *ed, Edje_Part_Type type,
-                               float rel1_x, float rel1_y,
-                               float rel2_x, float rel2_y,
+template_live_edit_part_insert(edit_data *ed, Edje_Part_Type type, float rel1_x,
+                               float rel1_y, float rel2_x, float rel2_y,
                                const Eina_Stringshare *group_name)
 {
-   internal_template_part_insert(ed, type,
-                                 rel1_x, rel1_y, rel2_x, rel2_y,
-                                 TEMPLATE_PART_INSERT_LIVE_EDIT,
-                                 group_name);
+   internal_template_part_insert(ed, type, rel1_x, rel1_y, rel2_x, rel2_y,
+                                 TEMPLATE_PART_INSERT_LIVE_EDIT, group_name);
 }
 
 void

@@ -1318,7 +1318,7 @@ group { name: "search_layout";
 #define REL_SIZE 70 35
 #define INFO_SIZE 130 50
 
-group { name: "viewer_layout_dragable_container";
+group { name: "live_edit_layout";
    parts {
       part { name: "bg";
          type: RECT;
@@ -1512,7 +1512,6 @@ group { name: "viewer_layout";
       }
       part { name: "elm.swallow.live_edit";
          type: SWALLOW;
-         repeat_events: 1;
          description { state: "default" 0.0;
          }
       }
