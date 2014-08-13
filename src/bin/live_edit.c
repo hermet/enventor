@@ -239,6 +239,14 @@ menu_it_selected_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
    ld->menu = NULL;
 }
 
+static void
+menu_dismissed_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
+{
+   live_data *ld = data;
+   evas_object_del(obj);
+   ld->menu = NULL;
+}
+
 static Evas_Object *
 menu_create(Evas_Object *parent, live_data *ld)
 {
@@ -246,6 +254,7 @@ menu_create(Evas_Object *parent, live_data *ld)
    Evas_Object* icon;
    Elm_Object_Item *it;
    Evas_Object *menu = elm_menu_add(parent);
+   evas_object_smart_callback_add(menu, "dismissed", menu_dismissed_cb, ld);
 
    for (i = 0; i < MENU_ITEMS_NUM; i++)
      {
@@ -268,6 +277,8 @@ layout_mouse_up_cb(void *data, Evas *e EINA_UNUSED,
 
    // Check if the right button is pressed
    if (ev->button != 3) return;
+
+   if (ld->menu) return;
 
    ld->menu = menu_create(obj, ld);
 
