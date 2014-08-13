@@ -29,9 +29,16 @@ template_part_first_line_get(void)
 void
 template_insert(edit_data *ed)
 {
+   const char *EXCEPT_MSG = "Can't insert template code here. Move the cursor"                              " inside the \"Collections,Images,Parts,Part,"
+                            "Programs\" scope.";
+
    Evas_Object *entry = edit_entry_get(ed);
    Eina_Stringshare *paragh = edit_cur_paragh_get(ed);
-   if (!paragh) return;
+   if (!paragh)
+     {
+        stats_info_msg_update(EXCEPT_MSG);
+        return;
+     }
 
    if (!strcmp(paragh, "parts"))
      {
@@ -71,7 +78,7 @@ template_insert(edit_data *ed)
 
    if (!t)
      {
-        stats_info_msg_update("Can't insert template code here. Move the cursor inside the \"Collections,Images,Parts,Part,Programs\" scope.");
+        stats_info_msg_update(EXCEPT_MSG);
         goto end;
      }
 
