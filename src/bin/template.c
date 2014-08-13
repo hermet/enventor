@@ -153,10 +153,10 @@ template_part_insert(edit_data *ed, Edje_Part_Type part_type,
    //Insert relatives
    elm_entry_entry_insert(edit_entry, p);
    snprintf(buf, sizeof(buf), "      rel1.relative: %.2f %.2f;<br/>", rel1_x,
-            rel2_y);
+            rel1_y);
    elm_entry_entry_insert(edit_entry, buf);
    elm_entry_entry_insert(edit_entry, p);
-   snprintf(buf, sizeof(buf), "      rel2.relative: %.2f %.2f;<br/>", rel1_x,
+   snprintf(buf, sizeof(buf), "      rel2.relative: %.2f %.2f;<br/>", rel2_x,
             rel2_y);
    elm_entry_entry_insert(edit_entry, buf);
 
