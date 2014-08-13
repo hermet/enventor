@@ -26,95 +26,6 @@ template_part_first_line_get(void)
    return (const char *) buf;
 }
 
-void
-template_insert(edit_data *ed)
-{
-   const char *EXCEPT_MSG = "Can't insert template code here. Move the cursor"                              " inside the \"Collections,Images,Parts,Part,"
-                            "Programs\" scope.";
-
-   Evas_Object *entry = edit_entry_get(ed);
-   Eina_Stringshare *paragh = edit_cur_paragh_get(ed);
-   if (!paragh)
-     {
-        stats_info_msg_update(EXCEPT_MSG);
-        return;
-     }
-
-   if (!strcmp(paragh, "parts"))
-     {
-        template_part_insert(ed, EDJE_PART_TYPE_IMAGE);
-        goto end;
-     }
-
-   int line_cnt;
-   char **t = NULL;
-   char buf[64];
-   char buf2[12];
-
-   if (!strcmp(paragh, "part"))
-     {
-        line_cnt = TEMPLATE_DESC_LINE_CNT;
-        t = (char **) &TEMPLATE_DESC;
-        strcpy(buf2, "Description");
-     }
-   else if (!strcmp(paragh, "programs"))
-     {
-        line_cnt = TEMPLATE_PROG_LINE_CNT;
-        t = (char **) &TEMPLATE_PROG;
-        strcpy(buf2, "Program");
-     }
-   else if (!strcmp(paragh, "images"))
-     {
-        line_cnt = TEMPLATE_IMG_LINE_CNT;
-        t = (char **) &TEMPLATE_IMG;
-        strcpy(buf2, "Image File");
-     }
-   else if (!strcmp(paragh, "collections"))
-     {
-        line_cnt = TEMPLATE_GROUP_LINE_CNT;
-        t = (char **) &TEMPLATE_GROUP;
-        strcpy(buf2, "Group");
-     }
-
-   if (!t)
-     {
-        stats_info_msg_update(EXCEPT_MSG);
-        goto end;
-     }
-
-   int cursor_pos = elm_entry_cursor_pos_get(entry);
-   elm_entry_cursor_line_begin_set(entry);
-   int cursor_pos1 = elm_entry_cursor_pos_get(entry);
-   int space = edit_cur_indent_depth_get(ed);
-
-   //Alloc Empty spaces
-   char *p = alloca(space + 1);
-   memset(p, ' ', space);
-   p[space] = '\0';
-
-   int i;
-   for (i = 0; i < (line_cnt - 1); i++)
-     {
-        elm_entry_entry_insert(entry, p);
-        elm_entry_entry_insert(entry, t[i]);
-     }
-   edit_line_increase(ed, line_cnt);
-   elm_entry_entry_insert(entry, p);
-   elm_entry_entry_insert(entry, t[i]);
-
-   int cursor_pos2 = elm_entry_cursor_pos_get(entry);
-   edit_redoundo_region_push(ed, cursor_pos1, cursor_pos2);
-
-   elm_entry_cursor_pos_set(entry, cursor_pos);
-
-   edit_syntax_color_partial_apply(ed, 0);
-   snprintf(buf, sizeof(buf), "Template code inserted. (%s)", buf2);
-   stats_info_msg_update(buf);
-
-end:
-   eina_stringshare_del(paragh);
-}
-
 static void
 image_description_add(edit_data *ed)
 {
@@ -298,4 +209,95 @@ template_part_insert(edit_data *ed, Edje_Part_Type type)
 {
    internal_template_part_insert(ed, type, TEMPLATE_PART_INSERT_DEFAULT,
                                  0.25, 0.25, 0.75, 0.75, NULL);
+}
+
+
+void
+template_insert(edit_data *ed)
+{
+   const char *EXCEPT_MSG = "Can't insert template code here. Move the cursor"                              " inside the \"Collections,Images,Parts,Part,"
+                            "Programs\" scope.";
+
+   Evas_Object *entry = edit_entry_get(ed);
+   Eina_Stringshare *paragh = edit_cur_paragh_get(ed);
+   if (!paragh)
+     {
+        stats_info_msg_update(EXCEPT_MSG);
+        return;
+     }
+
+   if (!strcmp(paragh, "parts"))
+     {
+        template_part_insert(ed, EDJE_PART_TYPE_IMAGE);
+        goto end;
+     }
+
+   int line_cnt;
+   char **t = NULL;
+   char buf[64];
+   char buf2[12];
+
+   if (!strcmp(paragh, "part"))
+     {
+        line_cnt = TEMPLATE_DESC_LINE_CNT;
+        t = (char **) &TEMPLATE_DESC;
+        strcpy(buf2, "Description");
+     }
+   else if (!strcmp(paragh, "programs"))
+     {
+        line_cnt = TEMPLATE_PROG_LINE_CNT;
+        t = (char **) &TEMPLATE_PROG;
+        strcpy(buf2, "Program");
+     }
+   else if (!strcmp(paragh, "images"))
+     {
+        line_cnt = TEMPLATE_IMG_LINE_CNT;
+        t = (char **) &TEMPLATE_IMG;
+        strcpy(buf2, "Image File");
+     }
+   else if (!strcmp(paragh, "collections"))
+     {
+        line_cnt = TEMPLATE_GROUP_LINE_CNT;
+        t = (char **) &TEMPLATE_GROUP;
+        strcpy(buf2, "Group");
+     }
+
+   if (!t)
+     {
+        stats_info_msg_update(EXCEPT_MSG);
+        goto end;
+     }
+
+   int cursor_pos = elm_entry_cursor_pos_get(entry);
+   elm_entry_cursor_line_begin_set(entry);
+   int cursor_pos1 = elm_entry_cursor_pos_get(entry);
+   int space = edit_cur_indent_depth_get(ed);
+
+   //Alloc Empty spaces
+   char *p = alloca(space + 1);
+   memset(p, ' ', space);
+   p[space] = '\0';
+
+   int i;
+   for (i = 0; i < (line_cnt - 1); i++)
+     {
+        elm_entry_entry_insert(entry, p);
+        elm_entry_entry_insert(entry, t[i]);
+     }
+   elm_entry_entry_insert(entry, p);
+   elm_entry_entry_insert(entry, t[i]);
+
+   edit_line_increase(ed, line_cnt);
+
+   int cursor_pos2 = elm_entry_cursor_pos_get(entry);
+   edit_redoundo_region_push(ed, cursor_pos1, cursor_pos2);
+
+   elm_entry_cursor_pos_set(entry, cursor_pos);
+
+   edit_syntax_color_partial_apply(ed, 0);
+   snprintf(buf, sizeof(buf), "Template code inserted. (%s)", buf2);
+   stats_info_msg_update(buf);
+
+end:
+   eina_stringshare_del(paragh);
 }
