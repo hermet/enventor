@@ -80,7 +80,6 @@ internal_template_part_insert(edit_data *ed,
                               Template_Part_Insert_Type insert_type,
                               const Eina_Stringshare *group_name)
 {
-   if (type == EDJE_PART_TYPE_NONE) return;
    if ((type == EDJE_PART_TYPE_IMAGE) &&
        (insert_type == TEMPLATE_PART_INSERT_LIVE_EDIT))
      image_description_add(ed);
@@ -145,8 +144,8 @@ internal_template_part_insert(edit_data *ed,
      }
 
    //Insert first line of the part block with generated name.
-   elm_entry_entry_insert(edit_entry, p);
    char first_line[40];
+   elm_entry_entry_insert(edit_entry, p);
    template_part_first_line_get(first_line, 40);
    elm_entry_entry_insert(edit_entry, first_line);
    edit_line_increase(ed, 1);
@@ -161,16 +160,15 @@ internal_template_part_insert(edit_data *ed,
 
    //Insert relatives
    elm_entry_entry_insert(edit_entry, p);
-
-   snprintf(buf, sizeof(buf), "      rel1.relative: %.2f %.2f;<br/>",rel1_x,
+   snprintf(buf, sizeof(buf), "      rel1.relative: %.2f %.2f;<br/>", rel1_x,
             rel2_y);
    elm_entry_entry_insert(edit_entry, buf);
    elm_entry_entry_insert(edit_entry, p);
-   snprintf(buf, sizeof(buf), "      rel2.relative: %.2f %.2f;<br/>",rel1_x,
+   snprintf(buf, sizeof(buf), "      rel2.relative: %.2f %.2f;<br/>", rel1_x,
             rel2_y);
    elm_entry_entry_insert(edit_entry, buf);
 
-   // insert the tale of the part that contains closing brackets
+   //Insert the tale of the part that contains closing brackets
    t = (char **) &TEMPLATE_PART_TALE;
    for (i = 0; i < TEMPLATE_PART_TALE_LINE_CNT; i++)
      {
@@ -178,7 +176,7 @@ internal_template_part_insert(edit_data *ed,
         elm_entry_entry_insert(edit_entry, t[i]);
      }
 
-   //part name + line count + relatives + tail line
+   //Increase (part name + body + relatives + tail) line
    edit_line_increase(ed, (1 + line_cnt + 2 + TEMPLATE_PART_TALE_LINE_CNT));
 
    int cursor_pos2 = elm_entry_cursor_pos_get(edit_entry);
