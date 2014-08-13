@@ -272,6 +272,7 @@ internal_template_part_insert(edit_data *ed,
 
    snprintf(buf, sizeof(buf), "Template code inserted. (%s Part)", part);
    stats_info_msg_update(buf);
+   edit_syntax_color_partial_apply(ed, 0);
    edit_changed_set(ed, EINA_TRUE);
    edit_save(ed);
 }
