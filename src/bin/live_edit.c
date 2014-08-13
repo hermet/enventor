@@ -218,11 +218,11 @@ live_edit_layer_set(live_data *ld)
    edje_object_signal_callback_add(elm_layout_edje_get(layout),
                                    "mouse,up,1", "new_part_bg",
                                    new_part_mouse_up_cb, ld);
-   elm_layout_part_cursor_set(ld->layout, "new_part_bg",
+   elm_layout_part_cursor_set(layout, "new_part_bg",
                               ELM_CURSOR_FLEUR);
-   elm_layout_part_cursor_set(ld->layout, "rel1.dragable",
+   elm_layout_part_cursor_set(layout, "rel1.dragable",
                               ELM_CURSOR_TOP_LEFT_CORNER);
-   elm_layout_part_cursor_set(ld->layout, "rel2.dragable",
+   elm_layout_part_cursor_set(layout, "rel2.dragable",
                               ELM_CURSOR_BOTTOM_RIGHT_CORNER);
    part_info_update(ld);
    ld->layout = layout;
