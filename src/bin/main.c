@@ -201,7 +201,7 @@ ctrl_func(app_data *ad, const char *key)
         return ECORE_CALLBACK_DONE;
      }
    //Live Edit
-   if (!strcmp(key, "m") || !strcmp(key, "M"))
+   if (!strcmp(key, "e") || !strcmp(key, "E"))
      {
         live_edit_toggle();
         return ECORE_CALLBACK_DONE;
