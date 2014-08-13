@@ -1,0 +1,73 @@
+images {
+   image: "spacer.png" COMP;
+}
+group { name: "IMAGE_bg";
+   parts {
+      part { name: "logo";
+         description { state: "default" 0.0;
+            image.normal: "logo.png";
+         }
+      }
+   }
+}
+group { name: "RECT_bg";
+   parts {
+      part { name: "rect";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 0 136 170 255;
+         }
+      }
+   }
+}
+group { name: "TEXT_bg";
+   parts {
+      part { name: "text";
+         type: TEXT;
+         description { state: "default" 0.0;
+            color: 255 255 255 255;
+            text {
+               size: 10;
+               font: "Sans";
+               text: "TEXT";
+            }
+         }
+      }
+   }
+}
+group { name: "TEXTBLOCK_bg";
+   parts {
+      part { name: "text";
+         type: TEXTBLOCK;
+         description { state: "default" 0.0;
+            color: 255 255 255 255;
+            text {
+               size: 10;
+               font: "Sans";
+               text: "TEXTBLOCK";
+            }
+         }
+      }
+   }
+}
+group { name: "SWALLOW_bg";
+   parts {
+      part { name: "bg";
+         description { state: "default" 0.0;
+            image.normal: "swallow.png";
+            color: 255 255 255 155;
+         }
+      }
+   }
+}
+group { name: "SPACER_bg";
+   parts {
+      part { name: "bg";
+         description { state: "default" 0.0;
+            image.normal: "spacer.png";
+            fill.type: TILE;
+            color: 255 255 255 50;
+         }
+      }
+   }
+}

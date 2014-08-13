@@ -64,7 +64,7 @@ const char *TEMPLATE_PART_RECT[TEMPLATE_PART_RECT_LINE_CNT] =
    "   scale: 1;<br/>",
    "   mouse_events: 1;<br/>",
    "   description { state: \"default\" 0.0;<br/>",
-   "      color: 255 255 255 255;<br/>",
+   "      color: 0 136 170 255;<br/>",
    "      align: 0.5 0.5;<br/>",
    "      fixed: 0 0;<br/>",
    "      min: 0 0;<br/>",

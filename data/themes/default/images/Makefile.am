@@ -55,4 +55,5 @@ EXTRA_DIST = \
    downlight_glow_left.png \
    downlight_glow_right.png \
    alarm_highlight.png \
-   disabler.png
+   disabler.png \
+   swallow_spacer_mask.png

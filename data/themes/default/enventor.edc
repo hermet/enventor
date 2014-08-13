@@ -8,4 +8,5 @@ collections {
    #include "theme_ext.edc"
    #include "layout_common.edc"
    #include "layout_setting.edc"
+   #include "live_edit.edc"
 }

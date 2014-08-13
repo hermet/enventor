@@ -167,6 +167,17 @@ new_part_mouse_up_cb(void *data EINA_UNUSED,
 }
 
 static void
+new_part_bg_set(live_data *ld)
+{
+   char buf[PATH_MAX];
+   snprintf(buf, sizeof(buf), "%s_bg",
+            MENU_ITEMS[ld->cur_part_data->type].name);
+   Evas_Object *bg_layout = elm_layout_add(ld->layout);
+   elm_layout_file_set(bg_layout, EDJE_PATH, buf);
+   elm_object_part_content_set(ld->layout, "new_part_bg", bg_layout);
+}
+
+static void
 live_edit_reset(live_data *ld)
 {
    ecore_event_handler_del(ld->key_down_handler);
@@ -225,8 +236,9 @@ live_edit_layer_set(live_data *ld)
                               ELM_CURSOR_TOP_LEFT_CORNER);
    elm_layout_part_cursor_set(layout, "rel2.dragable",
                               ELM_CURSOR_BOTTOM_RIGHT_CORNER);
-   part_info_update(ld);
    ld->layout = layout;
+   new_part_bg_set(ld);
+   part_info_update(ld);
 }
 
 static void
