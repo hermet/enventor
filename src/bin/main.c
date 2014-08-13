@@ -71,7 +71,7 @@ auto_indentation_toggle()
 static Eina_Bool
 template_insert_patch(app_data *ad, const char *key)
 {
-   Edje_Part_Type type;
+   Edje_Part_Type part_type;
    if (config_live_edit_get())
      {
         stats_info_msg_update("Insertion of template code is disabled "
@@ -80,33 +80,34 @@ template_insert_patch(app_data *ad, const char *key)
      }
 
    if (!strcmp(key, "a") || !strcmp(key, "A"))
-     type = EDJE_PART_TYPE_TABLE;
+     part_type = EDJE_PART_TYPE_TABLE;
    else if (!strcmp(key, "b") || !strcmp(key, "B"))
-     type = EDJE_PART_TYPE_TEXTBLOCK;
+     part_type = EDJE_PART_TYPE_TEXTBLOCK;
    else if (!strcmp(key, "e") || !strcmp(key, "E"))
-     type = EDJE_PART_TYPE_EXTERNAL;
+     part_type = EDJE_PART_TYPE_EXTERNAL;
    else if (!strcmp(key, "g") || !strcmp(key, "G"))
-     type = EDJE_PART_TYPE_GRADIENT;
+     part_type = EDJE_PART_TYPE_GRADIENT;
    else if (!strcmp(key, "i") || !strcmp(key, "I"))
-     type = EDJE_PART_TYPE_IMAGE;
+     part_type = EDJE_PART_TYPE_IMAGE;
    else if (!strcmp(key, "o") || !strcmp(key, "O"))
-     type = EDJE_PART_TYPE_GROUP;
+     part_type = EDJE_PART_TYPE_GROUP;
    else if (!strcmp(key, "p") || !strcmp(key, "P"))
-     type = EDJE_PART_TYPE_PROXY;
+     part_type = EDJE_PART_TYPE_PROXY;
    else if (!strcmp(key, "r") || !strcmp(key, "R"))
-     type = EDJE_PART_TYPE_RECTANGLE;
+     part_type = EDJE_PART_TYPE_RECTANGLE;
    else if (!strcmp(key, "t") || !strcmp(key, "T"))
-     type = EDJE_PART_TYPE_TEXT;
+     part_type = EDJE_PART_TYPE_TEXT;
    else if (!strcmp(key, "s") || !strcmp(key, "S"))
-     type = EDJE_PART_TYPE_SPACER;
+     part_type = EDJE_PART_TYPE_SPACER;
    else if (!strcmp(key, "w") || !strcmp(key, "W"))
-     type = EDJE_PART_TYPE_SWALLOW;
+     part_type = EDJE_PART_TYPE_SWALLOW;
    else if (!strcmp(key, "x") || !strcmp(key, "X"))
-     type = EDJE_PART_TYPE_BOX;
+     part_type = EDJE_PART_TYPE_BOX;
    else
-     type = EDJE_PART_TYPE_NONE;
+     part_type = EDJE_PART_TYPE_NONE;
 
-   template_part_insert(ad->ed, type);
+   template_part_insert(ad->ed, part_type, TEMPLATE_INSERT_DEFAULT,
+                        REL1_X, REL1_Y, REL2_X, REL2_Y, NULL);
 
    return ECORE_CALLBACK_DONE;
 }
@@ -161,7 +162,7 @@ ctrl_func(app_data *ad, const char *key)
                                    "while in Live Edit mode");
              return ECORE_CALLBACK_DONE;
           }
-        template_insert(ad->ed);
+        template_insert(ad->ed, TEMPLATE_INSERT_DEFAULT);
         return ECORE_CALLBACK_DONE;
      }
    //Full Edit View

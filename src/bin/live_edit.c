@@ -184,13 +184,14 @@ key_down_cb(void *data, int type EINA_UNUSED, void *ev)
 
    if (!strcmp(event->key, "Return"))
      {
-        template_live_edit_part_insert(ld->ed,
-                                       MENU_ITEMS[ld->cur_part_data->type].type,
-                                       ld->cur_part_data->rel1_x,
-                                       ld->cur_part_data->rel1_y,
-                                       ld->cur_part_data->rel2_x,
-                                       ld->cur_part_data->rel2_y,
-                                       view_group_name_get(VIEW_DATA));
+        template_part_insert(ld->ed,
+                             MENU_ITEMS[ld->cur_part_data->type].type,
+                             TEMPLATE_INSERT_LIVE_EDIT,
+                             ld->cur_part_data->rel1_x,
+                             ld->cur_part_data->rel1_y,
+                             ld->cur_part_data->rel2_x,
+                             ld->cur_part_data->rel2_y,
+                             view_group_name_get(VIEW_DATA));
      }
    else if (strcmp(event->key, "Delete")) return EINA_TRUE;
 

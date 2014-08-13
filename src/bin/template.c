@@ -2,11 +2,6 @@
 #include "common.h"
 #include "template_code.h"
 
-typedef enum {
-   TEMPLATE_PART_INSERT_DEFAULT,
-   TEMPLATE_PART_INSERT_LIVE_EDIT
-} Template_Part_Insert_Type;
-
 const char *NAME_SEED = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 const int NAME_SEED_LEN = 52;
 
@@ -36,7 +31,7 @@ image_description_add(edit_data *ed)
    if (images_block)
       {
          elm_entry_cursor_pos_set(edit_entry, cursor_pos);
-         template_insert(ed);
+         template_insert(ed, TEMPLATE_INSERT_LIVE_EDIT);
       }
    else
       {
@@ -53,12 +48,12 @@ image_description_add(edit_data *ed)
 
 static int
 template_part_insert_cursor_pos_set(edit_data *ed,
-                                    Template_Part_Insert_Type insert_type,
+                                    Template_Insert_Type insert_type,
                                     const Eina_Stringshare *group_name)
 {
    int cursor_pos = -1;
    Evas_Object *edit_entry = edit_entry_get(ed);
-   if (insert_type == TEMPLATE_PART_INSERT_LIVE_EDIT)
+   if (insert_type == TEMPLATE_INSERT_LIVE_EDIT)
      {
         cursor_pos = parser_end_of_parts_block_pos_get(edit_entry, group_name);
         if (cursor_pos != -1)
@@ -72,16 +67,14 @@ template_part_insert_cursor_pos_set(edit_data *ed,
    return cursor_pos;
 }
 
-static void
-internal_template_part_insert(edit_data *ed,
-                              Edje_Part_Type type,
-                              float rel1_x, float rel1_y,
-                              float rel2_x, float rel2_y,
-                              Template_Part_Insert_Type insert_type,
-                              const Eina_Stringshare *group_name)
+void
+template_part_insert(edit_data *ed, Edje_Part_Type part_type,
+                     Template_Insert_Type insert_type, float rel1_x,
+                     float rel1_y, float rel2_x, float rel2_y,
+                     const Eina_Stringshare *group_name)
 {
-   if ((type == EDJE_PART_TYPE_IMAGE) &&
-       (insert_type == TEMPLATE_PART_INSERT_LIVE_EDIT))
+   if ((part_type == EDJE_PART_TYPE_IMAGE) &&
+       (insert_type == TEMPLATE_INSERT_LIVE_EDIT))
      image_description_add(ed);
 
    Evas_Object *edit_entry = edit_entry_get(ed);
@@ -101,7 +94,7 @@ internal_template_part_insert(edit_data *ed,
    char buf[64];
    char part[20];
 
-   switch(type)
+   switch(part_type)
      {
         case EDJE_PART_TYPE_RECTANGLE:
            line_cnt = TEMPLATE_PART_RECT_LINE_CNT;
@@ -148,7 +141,6 @@ internal_template_part_insert(edit_data *ed,
    elm_entry_entry_insert(edit_entry, p);
    template_part_first_line_get(first_line, 40);
    elm_entry_entry_insert(edit_entry, first_line);
-   edit_line_increase(ed, 1);
 
    //Insert part body
    int i;
@@ -176,9 +168,16 @@ internal_template_part_insert(edit_data *ed,
         elm_entry_entry_insert(edit_entry, t[i]);
      }
 
+   //add new line only in live edit mode
+   if (insert_type == TEMPLATE_INSERT_LIVE_EDIT)
+     elm_entry_entry_insert(edit_entry, "<br/>");
+
    /* Increase (part name + body + relatives + tail) line. But line increase
-		count should be -1 because the cursor position would be taken one line. */
-   edit_line_increase(ed, (1 + line_cnt + 2 + TEMPLATE_PART_TALE_LINE_CNT) - 1);
+      count should be -1 in entry template insertion because the
+      cursor position would be taken one line additionally. */
+   int line_inc = 1 + line_cnt + 2 + TEMPLATE_PART_TALE_LINE_CNT;
+   if (insert_type == TEMPLATE_INSERT_DEFAULT) line_inc--;
+   edit_line_increase(ed, line_inc);
 
    int cursor_pos2 = elm_entry_cursor_pos_get(edit_entry);
    edit_redoundo_region_push(ed, cursor_pos1, cursor_pos2);
@@ -193,24 +192,7 @@ internal_template_part_insert(edit_data *ed,
 }
 
 void
-template_live_edit_part_insert(edit_data *ed, Edje_Part_Type type, float rel1_x,
-                               float rel1_y, float rel2_x, float rel2_y,
-                               const Eina_Stringshare *group_name)
-{
-   internal_template_part_insert(ed, type, rel1_x, rel1_y, rel2_x, rel2_y,
-                                 TEMPLATE_PART_INSERT_LIVE_EDIT, group_name);
-}
-
-void
-template_part_insert(edit_data *ed, Edje_Part_Type type)
-{
-   internal_template_part_insert(ed, type, TEMPLATE_PART_INSERT_DEFAULT,
-                                 0.25, 0.25, 0.75, 0.75, NULL);
-}
-
-
-void
-template_insert(edit_data *ed)
+template_insert(edit_data *ed, Template_Insert_Type insert_type)
 {
    const char *EXCEPT_MSG = "Can't insert template code here. Move the cursor"                              " inside the \"Collections,Images,Parts,Part,"
                             "Programs\" scope.";
@@ -225,7 +207,8 @@ template_insert(edit_data *ed)
 
    if (!strcmp(paragh, "parts"))
      {
-        template_part_insert(ed, EDJE_PART_TYPE_IMAGE);
+        template_part_insert(ed, EDJE_PART_TYPE_IMAGE, TEMPLATE_INSERT_DEFAULT,
+                             REL1_X, REL1_Y, REL2_X, REL2_Y, NULL);
         goto end;
      }
 
@@ -264,7 +247,6 @@ template_insert(edit_data *ed)
         stats_info_msg_update(EXCEPT_MSG);
         goto end;
      }
-
    int cursor_pos = elm_entry_cursor_pos_get(entry);
    elm_entry_cursor_line_begin_set(entry);
    int cursor_pos1 = elm_entry_cursor_pos_get(entry);
@@ -284,9 +266,10 @@ template_insert(edit_data *ed)
    elm_entry_entry_insert(entry, p);
    elm_entry_entry_insert(entry, t[i]);
 
-   /* Line increase count should be -1 because the cursor position would be 
-      taken one line. */
-   edit_line_increase(ed, (line_cnt - 1));
+   /* Line increase count should be -1 in entry template insertion because the
+      cursor position would be taken one line additionally. */
+   if (insert_type == TEMPLATE_INSERT_DEFAULT) line_cnt--;
+   edit_line_increase(ed, line_cnt);
 
    int cursor_pos2 = elm_entry_cursor_pos_get(entry);
    edit_redoundo_region_push(ed, cursor_pos1, cursor_pos2);
