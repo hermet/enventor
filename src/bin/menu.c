@@ -319,6 +319,20 @@ exit_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
    menu_exit();
 }
 
+static void
+prev_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+            void *event_info EINA_UNUSED)
+{
+   menu_data *md = data;
+   if (search_is_opened() || goto_is_opened())
+     {
+        goto_close();
+        search_close();
+        edit_focus_set(md->ed);
+     }
+   menu_toggle();
+}
+
 static Evas_Object *
 btn_create(Evas_Object *parent, const char *label, Evas_Smart_Cb cb, void *data)
 {
@@ -646,6 +660,15 @@ menu_open(menu_data *md)
    //Button(Exit)
    btn = btn_create(layout, "Exit", exit_btn_cb, md);
    elm_object_part_content_set(layout, "elm.swallow.exit_btn", btn);
+   ecore_timer_add(0.15, btn_effect_timer_cb, btn);
+
+   //Button(Prev)
+   btn = elm_button_add(layout);
+   elm_object_style_set(btn, "anchor");
+   evas_object_smart_callback_add(btn, "clicked", prev_btn_cb, md);
+   elm_object_text_set(btn, "Back");
+   evas_object_show(btn);
+   elm_object_part_content_set(layout, "elm.swallow.prev_btn", btn);
    ecore_timer_add(0.15, btn_effect_timer_cb, btn);
 
    md->menu_layout = layout;

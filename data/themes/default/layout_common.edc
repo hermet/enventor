@@ -979,6 +979,31 @@ group { name: "menu_layout";
             fixed: 1 1;
          }
       }
+      part { name: "padding7";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1.to: "elm.swallow.exit_btn";
+            rel2.to: "elm.swallow.exit_btn";
+            rel1.relative: 1 1;
+            min: 40 23;
+            fixed: 1 1;
+            align: 1 0;
+         }
+      }
+      part { name: "elm.swallow.prev_btn";
+         type: SWALLOW;
+         scale: 1;
+         clip_to: "clipper";
+         description { state: "default" 0.0;
+            rel1.to: "padding7";
+            rel2.to: "padding7";
+            rel2.relative: 1 0;
+            align: 0.5 0;
+            min: 40 40;
+            fixed: 1 1;
+         }
+      }
       part { name: "event_blocker";
          type: RECT;
          description { state: "default" 0.0;
