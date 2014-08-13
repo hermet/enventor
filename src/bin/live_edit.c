@@ -1,3 +1,4 @@
+#include <Elementary_Cursor.h>
 #include <Elementary.h>
 #include "common.h"
 
@@ -118,6 +119,54 @@ dragable_geometry_changed_cb(void *data,
 }
 
 static void
+new_part_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
+                 Evas_Object *obj EINA_UNUSED, void *event_info)
+{
+   Evas_Event_Mouse_Move *ev = event_info;
+   live_data *ld = data;
+
+   Evas_Coord view_w, view_h;
+   config_view_size_get(&view_w, &view_h);
+   int cur_x = ld->cur_part_data->x + ev->cur.canvas.x - ev->prev.canvas.x;
+   int cur_y = ld->cur_part_data->y + ev->cur.canvas.y - ev->prev.canvas.y;
+
+   if ((cur_x >= 0) && (cur_y >= 0) &&
+       (cur_x <= view_w - ld->cur_part_data->w) &&
+       (cur_y <= view_h - ld->cur_part_data->h))
+     {
+        double dx = ((float) cur_x / (float) view_w) -
+           ld->cur_part_data->rel1_x;
+        double dy = ((float) cur_y / (float) view_h) -
+           ld->cur_part_data->rel1_y;
+        edje_object_part_drag_step(elm_layout_edje_get(ld->layout),
+                                   "rel1.dragable", dx, dy);
+        edje_object_part_drag_step(elm_layout_edje_get(ld->layout),
+                                   "rel2.dragable", dx, dy);
+        part_info_update(ld);
+     }
+}
+
+static void
+new_part_mouse_down_cb(void *data,
+                       Evas_Object *obj,
+                       const char *emission EINA_UNUSED,
+                       const char *source EINA_UNUSED)
+{
+   evas_object_event_callback_add(obj, EVAS_CALLBACK_MOUSE_MOVE,
+                                  new_part_mouse_move_cb, data);
+}
+
+static void
+new_part_mouse_up_cb(void *data EINA_UNUSED,
+                      Evas_Object *obj,
+                      const char *emission EINA_UNUSED,
+                      const char *source EINA_UNUSED)
+{
+   evas_object_event_callback_del(obj, EVAS_CALLBACK_MOUSE_MOVE,
+                                  new_part_mouse_move_cb);
+}
+
+static void
 live_edit_reset(live_data *ld)
 {
    ecore_event_handler_del(ld->key_down_handler);
@@ -163,8 +212,19 @@ live_edit_layer_set(live_data *ld)
    edje_object_signal_callback_add(elm_layout_edje_get(layout),
                                    "drag", "rel2.dragable",
                                    dragable_geometry_changed_cb, ld);
+   edje_object_signal_callback_add(elm_layout_edje_get(layout),
+                                   "mouse,down,1", "new_part_bg",
+                                   new_part_mouse_down_cb, ld);
+   edje_object_signal_callback_add(elm_layout_edje_get(layout),
+                                   "mouse,up,1", "new_part_bg",
+                                   new_part_mouse_up_cb, ld);
+   elm_layout_part_cursor_set(ld->layout, "new_part_bg",
+                              ELM_CURSOR_FLEUR);
+   elm_layout_part_cursor_set(ld->layout, "rel1.dragable",
+                              ELM_CURSOR_TOP_LEFT_CORNER);
+   elm_layout_part_cursor_set(ld->layout, "rel2.dragable",
+                              ELM_CURSOR_BOTTOM_RIGHT_CORNER);
    part_info_update(ld);
-
    ld->layout = layout;
 }
 
