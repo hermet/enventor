@@ -119,7 +119,14 @@ init_thread_cancel_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
 static void
 entry_anchor_off(autocomp_data *ad)
 {
-   if (ad->anchor_visible) elm_object_tooltip_hide(ad->anchor);
+   if (ad->anchor_visible)
+     {
+        elm_object_tooltip_hide(ad->anchor);
+        /* Reset content_cb to have guarantee the callback call. If anchor is
+           changed faster than tooltip hide, the callback won't be called
+           since tooltip regards the content callback is same with before. */
+        elm_object_tooltip_content_cb_set(ad->anchor, NULL, NULL, NULL);
+     }
    ad->anchor_visible = EINA_FALSE;
    ad->compset_list = eina_list_free(ad->compset_list);
 }
@@ -349,10 +356,6 @@ candidate_list_show(autocomp_data *ad)
         if ((cy + y) > (h / 2)) tooltip_orient = ELM_TOOLTIP_ORIENT_TOP;
 
         //Tooltip set
-        /* Reset content_cb to have guarantee the callback call. If anchor is
-           changed faster than tooltip hide, the callback won't be called
-           since tooltip regards the content callback is same with before. */
-        elm_object_tooltip_content_cb_set(ad->anchor, NULL, NULL, NULL);
         elm_object_tooltip_content_cb_set(ad->anchor,
                                           entry_tooltip_content_cb, ad, NULL);
         elm_object_tooltip_orient_set(ad->anchor, tooltip_orient);
