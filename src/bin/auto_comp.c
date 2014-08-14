@@ -349,6 +349,10 @@ candidate_list_show(autocomp_data *ad)
         if ((cy + y) > (h / 2)) tooltip_orient = ELM_TOOLTIP_ORIENT_TOP;
 
         //Tooltip set
+        /* Reset content_cb to have guarantee the callback call. If anchor is
+           changed faster than tooltip hide, the callback won't be called
+           since tooltip regards the content callback is same with before. */
+        elm_object_tooltip_content_cb_set(ad->anchor, NULL, NULL, NULL);
         elm_object_tooltip_content_cb_set(ad->anchor,
                                           entry_tooltip_content_cb, ad, NULL);
         elm_object_tooltip_orient_set(ad->anchor, tooltip_orient);
