@@ -12,7 +12,6 @@ struct setting_s
    Evas_Object *slider_font;
    Evas_Object *slider_view;
    Evas_Object *toggle_tools;
-   Evas_Object *toggle_console;
    Evas_Object *toggle_stats;
    Evas_Object *toggle_linenum;
    Evas_Object *toggle_highlight;
@@ -108,7 +107,6 @@ setting_apply_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
    config_font_size_set((float) elm_slider_value_get(sd->slider_font));
    config_view_scale_set(elm_slider_value_get(sd->slider_view));
    config_tools_set(elm_check_state_get(sd->toggle_tools));
-   config_console_set(elm_check_state_get(sd->toggle_console));
    config_stats_bar_set(elm_check_state_get(sd->toggle_stats));
    config_linenumber_set(elm_check_state_get(sd->toggle_linenum));
    config_part_highlight_set(elm_check_state_get(sd->toggle_highlight));
@@ -147,7 +145,6 @@ setting_reset_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
    elm_slider_value_set(sd->slider_view, (double) config_view_scale_get());
 
    elm_check_state_set(sd->toggle_tools, config_tools_get());
-   elm_check_state_set(sd->toggle_console, config_console_get());
    elm_check_state_set(sd->toggle_stats, config_stats_bar_get());
    elm_check_state_set(sd->toggle_linenum, config_linenumber_get());
    elm_check_state_set(sd->toggle_highlight, config_part_highlight_get());
@@ -317,11 +314,6 @@ setting_open(void)
                                              config_tools_get());
    elm_box_pack_end(box, toggle_tools);
 
-   //Toggle (Console)
-   Evas_Object *toggle_console = toggle_create(box, "Console",
-                                               config_console_get());
-   elm_box_pack_end(box, toggle_console);
-
    //Toggle (Status)
    Evas_Object *toggle_stats = toggle_create(box, "Status",
                                              config_stats_bar_get());
@@ -381,7 +373,6 @@ setting_open(void)
    sd->slider_font = slider_font;
    sd->slider_view = slider_view;
    sd->toggle_tools = toggle_tools;
-   sd->toggle_console = toggle_console;
    sd->toggle_stats = toggle_stats;
    sd->toggle_linenum = toggle_linenum;
    sd->toggle_highlight = toggle_highlight;

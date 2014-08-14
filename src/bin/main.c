@@ -294,7 +294,7 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    //Console
    if (!strcmp(event->key, "F10"))
      {
-        base_console_toggle(EINA_TRUE);
+        base_console_toggle();
         return ECORE_CALLBACK_DONE;
      }
    //Statusbar
@@ -419,7 +419,6 @@ config_update_cb(void *data)
    edit_font_size_update(ad->ed, EINA_FALSE, EINA_TRUE);
 
    base_tools_toggle(EINA_FALSE);
-   base_console_toggle(EINA_FALSE);
    base_statusbar_toggle(EINA_FALSE);
    edit_part_highlight_toggle(ad->ed, EINA_FALSE);
    view_dummy_toggle(VIEW_DATA, EINA_FALSE);

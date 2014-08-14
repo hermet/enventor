@@ -128,12 +128,9 @@ base_live_view_set(Evas_Object *live_view)
 }
 
 void
-base_console_toggle(Eina_Bool config)
+base_console_toggle()
 {
    base_data *bd = g_bd;
-
-   if (config) config_console_set(!config_console_get());
-
    panes_editors_full_view();
 }
 
@@ -149,12 +146,7 @@ static void
 err_noti_cb(void *data, const char *msg)
 {
    base_data *bd = data;
-
-   if (!config_console_get())
-     {
-        base_editors_full_view();
-        config_console_set(EINA_TRUE);
-     }
+   if (panes_editors_full_view_get()) base_editors_full_view();
    elm_object_signal_emit(bd->layout, "elm,state,alert,show", "");
    console_text_set(bd->console, msg);
 }

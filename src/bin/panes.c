@@ -60,6 +60,7 @@ v_unpress_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
     panes_data *pd = data;
     double size = elm_panes_content_right_size_get(obj);
     if (pd->vert.last_size[0] != size) pd->vert.last_size[1] = size;
+    config_console_size_set(size);
 }
 
 static void
@@ -105,8 +106,6 @@ panes_v_full_view_cancel(panes_data *pd)
    elm_transit_go(transit);
 
    pd->vert.state = PANES_SPLIT_VIEW;
-
-   config_console_set(EINA_TRUE);
 }
 
 void
@@ -163,6 +162,14 @@ panes_live_view_full_view(void)
    pd->horiz.state = PANES_LIVE_VIEW_EXPAND;
 }
 
+Eina_Bool
+panes_editors_full_view_get(void)
+{
+   panes_data *pd = g_pd;
+   if (pd->vert.state == PANES_EDITORS_EXPAND) return EINA_TRUE;
+   else return EINA_FALSE;
+}
+
 void
 panes_editors_full_view(void)
 {
@@ -187,8 +194,6 @@ panes_editors_full_view(void)
    elm_transit_go(transit);
 
    pd->vert.state = PANES_EDITORS_EXPAND;
-
-   config_console_set(EINA_FALSE);
 }
 
 void
@@ -250,8 +255,6 @@ panes_term(void)
 Evas_Object *
 panes_init(Evas_Object *parent)
 {
-   const double DEFAULT_CONSOLE_SIZE = 0.175;
-
    panes_data *pd = malloc(sizeof(panes_data));
    if (!pd)
      {
@@ -271,8 +274,8 @@ panes_init(Evas_Object *parent)
 
    pd->vert.obj = panes_v;
    pd->vert.state = PANES_SPLIT_VIEW;
-   pd->vert.last_size[0] = DEFAULT_CONSOLE_SIZE;
-   pd->vert.last_size[1] = DEFAULT_CONSOLE_SIZE;
+   pd->vert.last_size[0] = config_console_size_get();
+   pd->vert.last_size[1] = config_console_size_get();
 
    //Panes Horizontal
    Evas_Object *panes_h = elm_panes_add(parent);
@@ -290,10 +293,7 @@ panes_init(Evas_Object *parent)
    pd->horiz.last_size[0] = 0.5;
    pd->horiz.last_size[1] = 0.5;
 
-   if (config_console_get())
-     elm_panes_content_right_size_set(panes_v, DEFAULT_CONSOLE_SIZE);
-   else
-     elm_panes_content_right_size_set(panes_v, 0.0);
+   elm_panes_content_right_size_set(panes_v, config_console_size_get());
 
    return panes_v;
 }

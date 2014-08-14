@@ -17,6 +17,7 @@ typedef struct config_s
 
    float font_size;
    double view_scale;
+   double console_size;
 
    void (*update_cb)(void *data);
    void *update_cb_data;
@@ -29,7 +30,6 @@ typedef struct config_s
    Eina_Bool auto_indent;
    Eina_Bool tools;
    Eina_Bool auto_complete;
-   Eina_Bool console;
    Eina_Bool live_edit;
 } config_data;
 
@@ -131,6 +131,7 @@ config_load(void)
           }
         cd->font_size = 1.0f;
         cd->view_scale = 1;
+        cd->console_size = 0.175;
         cd->stats_bar = EINA_TRUE;
         cd->linenumber = EINA_TRUE;
         cd->part_highlight = EINA_TRUE;
@@ -138,7 +139,6 @@ config_load(void)
         cd->auto_indent = EINA_TRUE;
         cd->tools = EINA_FALSE;
         cd->auto_complete = EINA_TRUE;
-        cd->console = EINA_FALSE;
         cd->live_edit = EINA_FALSE;
      }
 
@@ -200,6 +200,8 @@ eddc_init(void)
                                  EET_T_FLOAT);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "view_scale",
                                  view_scale, EET_T_DOUBLE);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "console_size",
+                                 console_size, EET_T_DOUBLE);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "stats_bar", stats_bar,
                                  EET_T_UCHAR);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "linenumber",
@@ -214,8 +216,6 @@ eddc_init(void)
                                  tools, EET_T_UCHAR);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "auto_complete",
                                     auto_complete, EET_T_UCHAR);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "console",
-                                 console, EET_T_UCHAR);
 }
 
 void
@@ -680,18 +680,18 @@ config_view_size_get(Evas_Coord *w, Evas_Coord *h)
    if (h) *h = cd->view_size.h;
 }
 
-Eina_Bool
-config_console_get(void)
+double
+config_console_size_get(void)
 {
    config_data *cd = g_cd;
-   return cd->console;
+   return cd->console_size;
 }
 
 void
-config_console_set(Eina_Bool enabled)
+config_console_size_set(double size)
 {
    config_data *cd = g_cd;
-   cd->console = enabled;
+   cd->console_size = size;
 }
 
 Eina_Bool

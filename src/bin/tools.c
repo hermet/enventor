@@ -105,7 +105,7 @@ static void
 console_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
            void *event_info)
 {
-   base_console_toggle(EINA_TRUE);
+   base_console_toggle();
    item_unselect((Elm_Object_Item *)event_info);
 }
 
