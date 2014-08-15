@@ -741,35 +741,6 @@ group { name: "warning_layout";
    }
 }
 
-group { name: "button_layout";
-   parts {
-      part { name: "elm.swallow.btn";
-         type: SWALLOW;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 0.5 0.5;
-            min: 50 50;
-            rel1.relative: 0.5 0.5;
-            rel2.relative: 0.5 0.5;
-            fixed: 1 1;
-         }
-         description { state: "zoom" 0.0;
-            inherit: "default" 0.0;
-            min: 80 80;
-         }
-      }
-   }
-   programs {
-      program { name: "btn_effect";
-         signal: "elm,action,btn,zoom";
-         source: "";
-         action: STATE_SET "zoom" 0.0;
-         target: "elm.swallow.btn";
-         transition: LINEAR 0.25;
-      }
-   }
-}
-
 group { name: "menu_layout";
    parts {
       part { name: "bg";
@@ -779,6 +750,9 @@ group { name: "menu_layout";
          }
          description { state: "show" 0.0;
             color: 0 0 0 175;
+         }
+         description { state: "anim" 0.0;
+            color: 0 0 0 200;
          }
       }
       part { name: "clipper";
@@ -820,7 +794,7 @@ group { name: "menu_layout";
                font: FN;
                text: "Enventor Menu";
                size: 28;
-               align: 0.5 1;
+               align: 0.5 0.5;
                min: 1 0;
             }
             color: 51 153 255 255;
@@ -849,8 +823,9 @@ group { name: "menu_layout";
             rel1.to: "padding1";
             rel2.to: "padding1";
             rel1.relative: 1 0;
-            align: 0 0.5;
+            align: 0 0;
             min: 80 80;
+            max: 80 80;
             fixed: 1 1;
          }
       }
@@ -1030,6 +1005,19 @@ group { name: "menu_layout";
          source: "";
          action: STATE_SET "hide" 0.0;
          target: "event_blocker";
+         after: "bg_anim";
+      }
+      program { name: "bg_anim";
+         action: STATE_SET "anim" 0.0;
+         transition: "DECELERATE" 2;
+         target: "bg";
+         after: "bg_anim2";
+      }
+      program { name: "bg_anim2";
+         action: STATE_SET "show" 0.0;
+         transition: "DECELERATE" 2;
+         target: "bg";
+         after: "bg_anim";
       }
       program { name: "dismiss";
          signal: "elm,state,dismiss";

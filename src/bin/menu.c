@@ -331,29 +331,16 @@ prev_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
 static Evas_Object *
 btn_create(Evas_Object *parent, const char *label, Evas_Smart_Cb cb, void *data)
 {
-   Evas_Object *layout, *btn;
+   Evas_Object *btn;
 
-   layout = elm_layout_add(parent);
-   elm_layout_file_set(layout, EDJE_PATH, "button_layout");
-   evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_show(layout);
-
-   btn  = elm_button_add(layout);
+   btn  = elm_button_add(parent);
+   elm_object_style_set(btn, "anchor");
+   elm_object_scale_set(btn, 1.45);
    evas_object_smart_callback_add(btn, "clicked", cb, data);
    elm_object_text_set(btn, label);
    evas_object_show(btn);
 
-   elm_object_part_content_set(layout, "elm.swallow.btn", btn);
-
-   return layout;
-}
-
-static Eina_Bool
-btn_effect_timer_cb(void *data)
-{
-   Evas_Object *btn = data;
-   elm_object_signal_emit(btn, "elm,action,btn,zoom", "");
-   return ECORE_CALLBACK_CANCEL;
+   return btn;
 }
 
 static void
@@ -630,32 +617,26 @@ menu_open(menu_data *md)
    btn = btn_create(layout, "New", new_btn_cb, md);
    elm_object_focus_set(btn, EINA_TRUE);
    elm_object_part_content_set(layout, "elm.swallow.new_btn", btn);
-   ecore_timer_add(0, btn_effect_timer_cb, btn);
 
    //Button(Save)
    btn = btn_create(layout, "Save", save_btn_cb, md);
    elm_object_part_content_set(layout, "elm.swallow.save_btn", btn);
-   ecore_timer_add(0.03, btn_effect_timer_cb, btn);
 
    //Button(Load)
    btn = btn_create(layout, "Load", load_btn_cb, md);
    elm_object_part_content_set(layout, "elm.swallow.load_btn", btn);
-   ecore_timer_add(0.06, btn_effect_timer_cb, btn);
 
    //Button(Setting)
    btn = btn_create(layout, "Setting", setting_btn_cb, md);
    elm_object_part_content_set(layout, "elm.swallow.setting_btn", btn);
-   ecore_timer_add(0.09, btn_effect_timer_cb, btn);
 
    //Button(About)
    btn = btn_create(layout, "About", about_btn_cb, md);
    elm_object_part_content_set(layout, "elm.swallow.about_btn", btn);
-   ecore_timer_add(0.12, btn_effect_timer_cb, btn);
 
    //Button(Exit)
    btn = btn_create(layout, "Exit", exit_btn_cb, md);
    elm_object_part_content_set(layout, "elm.swallow.exit_btn", btn);
-   ecore_timer_add(0.15, btn_effect_timer_cb, btn);
 
    //Button(Prev)
    btn = elm_button_add(layout);
