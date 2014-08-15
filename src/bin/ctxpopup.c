@@ -306,16 +306,34 @@ err:
 }
 
 static void
+image_relay(ctxpopup_data *ctxdata, Eina_Bool up)
+{
+   if (up)
+     ctxdata->relay_cb(ctxdata->data, ctxdata->ctxpopup, (void *) 0);
+   else
+     ctxdata->relay_cb(ctxdata->data, ctxdata->ctxpopup, (void *) 1);
+}
+
+static void
+ctxpopup_mouse_wheel_cb(void *data, Evas *e EINA_UNUSED,
+                        Evas_Object *obj EINA_UNUSED, void *event_info)
+{
+   Evas_Event_Mouse_Wheel *ev = event_info;
+   ctxpopup_data *ctxdata = data;
+
+   if (ev->z > 0) image_relay(ctxdata, EINA_FALSE);
+   else if (ev->z < 0) image_relay(ctxdata, EINA_TRUE);
+}
+
+static void
 ctxpopup_key_down_cb(void *data, Evas *e EINA_UNUSED,
                      Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    Evas_Event_Key_Down *ev = event_info;
    ctxpopup_data *ctxdata = data;
 
-   if (!strcmp(ev->key, "Down"))
-     ctxdata->relay_cb(ctxdata->data, ctxdata->ctxpopup, (void *) 1);
-   else if (!strcmp(ev->key, "Up"))
-     ctxdata->relay_cb(ctxdata->data, ctxdata->ctxpopup, (void *) 0);
+   if (!strcmp(ev->key, "Down")) image_relay(ctxdata, EINA_FALSE);
+   else if (!strcmp(ev->key, "Up")) image_relay(ctxdata, EINA_TRUE);
 }
 
 Evas_Object *
@@ -364,6 +382,8 @@ ctxpopup_img_preview_create(edit_data *ed,
                                   ctxdata);
    evas_object_event_callback_add(ctxpopup, EVAS_CALLBACK_KEY_DOWN,
                                   ctxpopup_key_down_cb, ctxdata);
+   evas_object_event_callback_add(ctxpopup, EVAS_CALLBACK_MOUSE_WHEEL,
+                                  ctxpopup_mouse_wheel_cb, ctxdata);
    evas_object_focus_set(ctxpopup, EINA_TRUE);
    return ctxpopup;
 }
