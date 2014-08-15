@@ -18,8 +18,6 @@ group { name: "swallow";
          description { state: "default" 0.0;
             image.normal: "swallow.png";
             align: 0.5 0.5;
-            min: 0 0;
-            max: 120 120;
             color: 255 255 255 127;
             aspect: 1 1;
             aspect_preference: BOTH;
