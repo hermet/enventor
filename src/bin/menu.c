@@ -335,7 +335,7 @@ btn_create(Evas_Object *parent, const char *label, Evas_Smart_Cb cb, void *data)
 
    btn  = elm_button_add(parent);
    elm_object_style_set(btn, "anchor");
-   elm_object_scale_set(btn, 1.45);
+   elm_object_scale_set(btn, 1.25);
    evas_object_smart_callback_add(btn, "clicked", cb, data);
    elm_object_text_set(btn, label);
    evas_object_show(btn);

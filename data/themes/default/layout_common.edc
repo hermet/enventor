@@ -788,7 +788,7 @@ group { name: "menu_layout";
                font: FN;
                text: "Enventor Menu";
                size: 28;
-               align: 0.5 0.5;
+               align: 0.5 1;
                min: 1 0;
             }
             color: COL_HI;
@@ -802,7 +802,7 @@ group { name: "menu_layout";
             rel2.relative: 0 0.5;
             rel1.to: "base_frame";
             rel2.to: "base_frame";
-            min: 23 120;
+            min: 23 100;
             fixed: 1 1;
             align: 0 0.5;
          }
@@ -814,10 +814,10 @@ group { name: "menu_layout";
          description { state: "default" 0.0;
             rel1.to: "padding1";
             rel2.to: "padding1";
-            rel1.relative: 1 0;
+            rel1.relative: 1 0.2;
             align: 0 0;
-            min: 80 80;
-            max: 80 80;
+            min: 80 50;
+            max: 80 50;
             fixed: 1 1;
          }
       }
@@ -828,7 +828,7 @@ group { name: "menu_layout";
             rel1.to: "elm.swallow.new_btn";
             rel2.to: "elm.swallow.new_btn";
             rel1.relative: 1 0;
-            min: 23 80;
+            min: 23 50;
             fixed: 1 1;
             align: 0 0.5;
          }
@@ -842,7 +842,7 @@ group { name: "menu_layout";
             rel2.to: "padding2";
             rel1.relative: 1 0;
             align: 0 0.5;
-            min: 80 80;
+            min: 80 50;
             fixed: 1 1;
          }
       }
@@ -853,7 +853,7 @@ group { name: "menu_layout";
             rel1.to: "elm.swallow.save_btn";
             rel2.to: "elm.swallow.save_btn";
             rel1.relative: 1 0;
-            min: 23 80;
+            min: 23 50;
             fixed: 1 1;
             align: 0 0.5;
          }
@@ -867,7 +867,7 @@ group { name: "menu_layout";
             rel2.to: "padding3";
             rel1.relative: 1 0;
             align: 0 0.5;
-            min: 80 80;
+            min: 80 50;
             fixed: 1 1;
          }
       }
@@ -878,7 +878,7 @@ group { name: "menu_layout";
             rel1.to: "elm.swallow.load_btn";
             rel2.to: "elm.swallow.load_btn";
             rel1.relative: 1 0;
-            min: 23 80;
+            min: 23 50;
             fixed: 1 1;
             align: 0 0.5;
          }
@@ -892,7 +892,7 @@ group { name: "menu_layout";
             rel2.to: "padding4";
             rel1.relative: 1 0;
             align: 0 0.5;
-            min: 80 80;
+            min: 80 50;
             fixed: 1 1;
          }
       }
@@ -903,7 +903,7 @@ group { name: "menu_layout";
             rel1.to: "elm.swallow.setting_btn";
             rel2.to: "elm.swallow.setting_btn";
             rel1.relative: 1 0;
-            min: 23 80;
+            min: 23 50;
             fixed: 1 1;
             align: 0 0.5;
          }
@@ -917,7 +917,7 @@ group { name: "menu_layout";
             rel2.to: "padding5";
             rel1.relative: 1 0;
             align: 0 0.5;
-            min: 80 80;
+            min: 80 50;
             fixed: 1 1;
          }
       }
@@ -928,7 +928,7 @@ group { name: "menu_layout";
             rel1.to: "elm.swallow.about_btn";
             rel2.to: "elm.swallow.about_btn";
             rel1.relative: 1 0;
-            min: 23 80;
+            min: 23 50;
             fixed: 1 1;
             align: 0 0.5;
          }
@@ -942,7 +942,7 @@ group { name: "menu_layout";
             rel2.to: "padding6";
             rel1.relative: 1 0;
             align: 0 0.5;
-            min: 80 80;
+            min: 80 50;
             fixed: 1 1;
          }
       }
