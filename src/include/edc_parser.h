@@ -21,3 +21,5 @@ int parser_line_cnt_get(parser_data *pd EINA_UNUSED, const char *src);
 Eina_List *parser_states_filtered_name_get(Eina_List *states);
 int parser_end_of_parts_block_pos_get(const Evas_Object *entry, const char *group_name);
 Eina_Bool parser_images_pos_get(const Evas_Object *entry, int *pos);
+const char * parser_colon_pos_get(parser_data *pd EINA_UNUSED, const char *cur);
+
