@@ -88,7 +88,6 @@ static Eina_Bool
 selection_region_anim_cb(void *data)
 {
    search_data *sd = data;
-   elm_entry_select_none(sd->entry);
    elm_entry_select_region_set(sd->entry, sd->pos, sd->pos + sd->len);
    return ECORE_CALLBACK_CANCEL;
 }
