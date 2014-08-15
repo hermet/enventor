@@ -1,4 +1,8 @@
 #define FN "Sans"
+#define COL_HI 51 153 255 255; color2: 51 153 255 24; color3: 51 153 255 18
+#define COL_HI_TRANS 51 153 255 0; color2: 51 153 255 0; color3: 51 153 255 0
+#define COL_NM 255 255 255 255; color3: 0 0 0 128
+#define COL_NM_TRANS 255 255 255 0; color3: 0 0 0 0
 
 data.item: "version" "110";
 

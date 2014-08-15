@@ -100,9 +100,7 @@ group { name: "setting_layout";
                align: 0.5 0.5;
                min: 1 0;
             }
-            color: 51 153 255 255;
-            color2: 51 153 255 24;
-            color3: 51 153 255 18;
+            color: COL_HI;
          }
       }
       part { name: "img_path_frame";
@@ -181,8 +179,7 @@ group { name: "setting_layout";
          description {
             rel1 {to: "img_path_icon"; relative: 1 0; offset: 5 1;}
             rel2 {to: "img_path_icon"; relative: 1 1;}
-            color: 255 255 255 255;
-            color3: 0 0 0 128;
+            color: COL_NM;
             align: 0 0.5;
             fixed: 1 1;
             text {
@@ -230,8 +227,7 @@ group { name: "setting_layout";
          description {
             rel1 {to: "snd_path_icon"; relative: 1 0; offset: 5 1;}
             rel2 {to: "snd_path_icon"; relative: 1 1;}
-            color: 255 255 255 255;
-            color3: 0 0 0 128;
+            color: COL_NM;
             align: 0 0.5;
             fixed: 1 1;
             text {
@@ -279,8 +275,7 @@ group { name: "setting_layout";
          description {
             rel1 {to: "fnt_path_icon"; relative: 1 0; offset: 5 1;}
             rel2 {to: "fnt_path_icon"; relative: 1 1;}
-            color: 255 255 255 255;
-            color3: 0 0 0 128;
+            color: COL_NM;
             align: 0 0.5;
             fixed: 1 1;
             text {
@@ -328,8 +323,7 @@ group { name: "setting_layout";
          description {
             rel1 {to: "data_path_icon"; relative: 1 0; offset: 5 1;}
             rel2 {to: "data_path_icon"; relative: 1 1;}
-            color: 255 255 255 255;
-            color3: 0 0 0 128;
+            color: COL_NM;
             align: 0 0.5;
             fixed: 1 1;
             text {
@@ -377,8 +371,7 @@ group { name: "setting_layout";
          description {
             rel1 {to: "preference_icon"; relative: 1 0; offset: 5 1;}
             rel2 {to: "preference_icon"; relative: 1 1;}
-            color: 255 255 255 255;
-            color3: 0 0 0 128;
+            color: COL_NM;
             align: 0 0;
             fixed: 1 1;
             text {

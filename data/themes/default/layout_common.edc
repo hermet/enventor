@@ -214,9 +214,7 @@ group { name: "fileselector_layout";
                align: 0.5 0.5;
                min: 1 0;
             }
-            color: 51 153 255 255;
-            color2: 51 153 255 24;
-            color3: 51 153 255 18;
+            color: COL_HI;
          }
       }
       part { name: "elm.swallow.fileselector";
@@ -414,9 +412,7 @@ group { name: "newfile_layout";
                align: 0.5 0.5;
                min: 1 0;
             }
-            color: 51 153 255 255;
-            color2: 51 153 255 24;
-            color3: 51 153 255 18;
+            color: COL_HI;
          }
       }
       part { name: "elm.swallow.content";
@@ -603,9 +599,7 @@ group { name: "warning_layout";
             }
             fixed: 1 1;
             align: 0.5 0.5;
-            color: 51 153 255 255;
-            color2: 51 153 255 24;
-            color3: 51 153 255 18;
+            color: COL_HI;
          }
       }
       part { name: "elm.text.desc";
@@ -797,9 +791,7 @@ group { name: "menu_layout";
                align: 0.5 0.5;
                min: 1 0;
             }
-            color: 51 153 255 255;
-            color2: 51 153 255 24;
-            color3: 51 153 255 18;
+            color: COL_HI;
          }
       }
       part { name: "padding1";
@@ -1070,8 +1062,7 @@ group { name: "goto_layout";
                size: 11;
                align: 0 0;
             }
-            color: 255 255 255 255;
-            color3: 0 0 0 128;
+            color: COL_NM;
             min: 180 20;
             fixed: 1 1;
          }
@@ -1104,9 +1095,7 @@ group { name: "goto_layout";
                size: 10;
                align: 0 0.5;
             }
-            color: 51 153 255 255;
-            color2: 51 153 255 16;
-            color3: 51 153 255 8;
+            color: COL_HI;
             min: 180 30;
             fixed: 1 1;
          }
@@ -1163,8 +1152,7 @@ group { name: "search_layout";
                align: 0 0;
                text: "Find:";
             }
-            color: 255 255 255 255;
-            color3: 0 0 0 128;
+            color: COL_NM;
             min: 80 20;
             fixed: 1 1;
          }
@@ -1186,8 +1174,7 @@ group { name: "search_layout";
                align: 0 0;
                text: "Replace with:";
             }
-            color: 255 255 255 255;
-            color3: 0 0 0 128;
+            color: COL_NM;
             min: 80 20;
             fixed: 1 1;
          }
@@ -1209,9 +1196,7 @@ group { name: "search_layout";
                align: 0 0.5;
                text: "Forward";
             }
-            color: 51 153 255 255;
-            color2: 51 153 255 16;
-            color3: 51 153 255 8;
+            color: COL_HI;
             min: 80 30;
             fixed: 1 1;
          }
@@ -1360,9 +1345,7 @@ group { name: "live_edit_layout";
          description {
             rel1.to: "rel1_dragable";
             rel2.to: "rel1_dragable";
-            color: 51 153 255 255;
-            color2: 51 153 255 24;
-            color3: 51 153 255 18;
+            color: COL_HI;
             align: 0 0.5;
             fixed: 1 1;
             text {
@@ -1397,9 +1380,7 @@ group { name: "live_edit_layout";
          description {
             rel1.to: "rel2_dragable";
             rel2.to: "rel2_dragable";
-            color: 51 153 255 255;
-            color2: 51 153 255 24;
-            color3: 51 153 255 18;
+            color: COL_HI;
             align: 1 0.5;
             text {
                font: FN;
@@ -1617,8 +1598,7 @@ group { name: "statusbar_layout";
             rel1.offset: 0 -2;
             rel2.offset: -1 -3;
             fixed: 1 0;
-            color: 255 255 255 255;
-            color3: 0 0 0 128;
+            color: COL_NM;
             text {
                text: "Size [";
                size: 11;
@@ -1640,9 +1620,7 @@ group { name: "statusbar_layout";
             rel2.relative: 1.0 1.0;
             align: 0 0.5;
             fixed: 1 0;
-            color: 51 153 255 255;
-            color2: 51 153 255 24;
-            color3: 51 153 255 18;
+            color: COL_HI;
             text {
                size: 11;
                align: 0 0.5;
@@ -1663,8 +1641,7 @@ group { name: "statusbar_layout";
             rel2.relative: 1.0 1.0;
             align: 0 0.5;
             fixed: 1 0;
-            color: 255 255 255 255;
-            color3: 0 0 0 128;
+            color: COL_NM;
             text {
                text: "x";
                size: 11;
@@ -1686,9 +1663,7 @@ group { name: "statusbar_layout";
             rel2.relative: 1.0 1.0;
             align: 0 0.5;
             fixed: 1 0;
-            color: 51 153 255 255;
-            color2: 51 153 255 24;
-            color3: 51 153 255 18;
+            color: COL_HI;
             text {
                size: 11;
                align: 0 0.5;
@@ -1709,8 +1684,7 @@ group { name: "statusbar_layout";
             rel2.relative: 1.0 1.0;
             align: 0 0.5;
             fixed: 1 0;
-            color: 255 255 255 255;
-            color3: 0 0 0 128;
+            color: COL_NM;
             text {
                text: "]";
                size: 11;
@@ -1732,8 +1706,7 @@ group { name: "statusbar_layout";
             rel2.relative: 1 1.0;
             align: 0 0.5;
             fixed: 1 0;
-            color: 255 255 255 255;
-            color3: 0 0 0 128;
+            color: COL_NM;
             text {
                text: "Cursor [";
                size: 11;
@@ -1755,9 +1728,7 @@ group { name: "statusbar_layout";
             rel2.relative: 1.0 1.0;
             align: 0 0.5;
             fixed: 1 0;
-            color: 51 153 255 255;
-            color2: 51 153 255 24;
-            color3: 51 153 255 18;
+            color: COL_HI;
             text {
                size: 11;
                align: 0 0.5;
@@ -1778,8 +1749,7 @@ group { name: "statusbar_layout";
             rel2.relative: 1.0 1.0;
             align: 0 0.5;
             fixed: 1 0;
-            color: 255 255 255 255;
-            color3: 0 0 0 128;
+            color: COL_NM;
             text {
                text: ",";
                size: 11;
@@ -1801,9 +1771,7 @@ group { name: "statusbar_layout";
             rel2.relative: 1.0 1.0;
             align: 0 0.5;
             fixed: 1 0;
-            color: 51 153 255 255;
-            color2: 51 153 255 24;
-            color3: 51 153 255 18;
+            color: COL_HI;
             text {
                size: 11;
                align: 0 0.5;
@@ -1824,8 +1792,7 @@ group { name: "statusbar_layout";
             rel2.relative: 1.0 1.0;
             align: 0 0.5;
             fixed: 1 0;
-            color: 255 255 255 255;
-            color3: 0 0 0 128;
+            color: COL_NM;
             text {
                text: "][";
                size: 11;
@@ -1847,9 +1814,7 @@ group { name: "statusbar_layout";
             rel2.relative: 1.0 1.0;
             align: 0 0.5;
             fixed: 1 0;
-            color: 51 153 255 255;
-            color2: 51 153 255 24;
-            color3: 51 153 255 18;
+            color: COL_HI;
             text {
                size: 11;
                align: 0 0.5;
@@ -1870,8 +1835,7 @@ group { name: "statusbar_layout";
             rel2.relative: 1.0 1.0;
             align: 0 0.5;
             fixed: 1 0;
-            color: 255 255 255 255;
-            color3: 0 0 0 128;
+            color: COL_NM;
             text {
                text: ",";
                size: 11;
@@ -1893,9 +1857,7 @@ group { name: "statusbar_layout";
             rel2.relative: 1.0 1.0;
             align: 0 0.5;
             fixed: 1 0;
-            color: 51 153 255 255;
-            color2: 51 153 255 24;
-            color3: 51 153 255 18;
+            color: COL_HI;
             text {
                size: 11;
                align: 0 0.5;
@@ -1916,8 +1878,7 @@ group { name: "statusbar_layout";
             rel2.relative: 1.0 1.0;
             align: 0 0.5;
             fixed: 1 0;
-            color: 255 255 255 255;
-            color3: 0 0 0 128;
+            color: COL_NM;
             text {
                text: "]";
                size: 11;
@@ -1964,8 +1925,7 @@ group { name: "statusbar_layout";
             rel1.relative: 1.0 0.0;
             rel2.relative: 0.0 1.0;
             align: 1 0.5;
-            color: 255 255 255 255;
-            color3: 0 0 0 128;
+            color: COL_NM;
             text {
                text: "Group [";
                size: 11;
@@ -1987,9 +1947,7 @@ group { name: "statusbar_layout";
             rel2.relative: 0.0 1.0;
             align: 1 0.5;
             fixed: 1 0;
-            color: 51 153 255 255;
-            color2: 51 153 255 24;
-            color3: 51 153 255 18;
+            color: COL_HI;
             text {
                size: 11;
                align: 1 0.5;
@@ -2010,8 +1968,7 @@ group { name: "statusbar_layout";
             rel2.relative: 0 1.0;
             align: 1 0.5;
             fixed: 1 0;
-            color: 255 255 255 255;
-            color3: 0 0 0 128;
+            color: COL_NM;
             text {
                text: "]";
                size: 11;
@@ -2042,8 +1999,7 @@ group { name: "statusbar_layout";
             rel2.relative: 0 1.0;
             align: 1 0.5;
             fixed: 1 0;
-            color: 255 255 255 255;
-            color3: 0 0 0 128;
+            color: COL_NM;
             text {
                text: "Line [";
                size: 11;
@@ -2065,9 +2021,7 @@ group { name: "statusbar_layout";
             rel2.relative: 0.0 1.0;
             align: 1 0.5;
             fixed: 1 0;
-            color: 51 153 255 255;
-            color2: 51 153 255 24;
-            color3: 51 153 255 18;
+            color: COL_HI;
             text {
                size: 11;
                align: 1 0.5;
@@ -2087,8 +2041,7 @@ group { name: "statusbar_layout";
             rel2.relative: 0 1.0;
             align: 1 0.5;
             fixed: 1 0;
-            color: 255 255 255 255;
-            color3: 0 0 0 128;
+            color: COL_NM;
             text {
                text: ":";
                size: 11;
@@ -2110,9 +2063,7 @@ group { name: "statusbar_layout";
             rel2.relative: 0.0 1.0;
             align: 1 0.5;
             fixed: 1 0;
-            color: 51 153 255 255;
-            color2: 51 153 255 24;
-            color3: 51 153 255 18;
+            color: COL_HI;
             text {
                size: 11;
                align: 1 0.5;
@@ -2132,8 +2083,7 @@ group { name: "statusbar_layout";
             rel2.offset: -1 -3;
             align: 1 0.5;
             fixed: 1 0;
-            color: 255 255 255 255;
-            color3: 0 0 0 128;
+            color: COL_NM;
             text {
                text: "]";
                size: 11;
@@ -2156,15 +2106,11 @@ group { name: "statusbar_layout";
                size: 11;
                align: 0 0.5;
             }
-            color: 51 153 255 0;
-            color2: 51 153 255 0;
-            color3: 51 153 255 0;
+            color: COL_HI_TRANS;
          }
          description { state: "show" 0.0;
             inherit: "default" 0.0;
-            color: 51 153 255 255;
-            color2: 51 153 255 24;
-            color3: 51 153 255 18;
+            color: COL_HI;
          }
       }
       program { name: "info_msg_show";
