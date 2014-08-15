@@ -438,8 +438,26 @@ preview_img_relay_show(edit_data *ed, Evas_Object *ctxpopup, Eina_Bool next)
         /* Since the ctxpopup will be shown again,
            Don't revert the focus in the dismiss cb. */
         evas_object_data_set(ctxpopup, "continue", (void *) 1);
-     }
 
+        //Set the entry selection region to next image.
+        const char *colon = parser_colon_pos_get(NULL, text);
+        if (!colon) goto end;
+
+        const char *select = elm_entry_selection_get(ed->en_edit);
+        if (!select) goto end;
+
+        char *select_utf8 = elm_entry_markup_to_utf8(select);
+        if (!select_utf8) goto end;
+        int select_len = strlen(select_utf8);
+        free(select_utf8);
+        const char *p = (colon - select_len);
+        if (p < text) goto end;
+
+        int cursor_pos = elm_entry_cursor_pos_get(ed->en_edit);
+        elm_entry_select_region_set(ed->en_edit, (cursor_pos - select_len),
+                                    cursor_pos);
+     }
+end:
    menu_ctxpopup_unregister(ctxpopup);
    elm_ctxpopup_dismiss(ctxpopup);
 }
