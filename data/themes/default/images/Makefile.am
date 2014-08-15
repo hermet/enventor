@@ -56,4 +56,13 @@ EXTRA_DIST = \
    downlight_glow_right.png \
    alarm_highlight.png \
    disabler.png \
-   swallow_spacer_mask.png
+   live_bg_glow_in.png \
+   live_rel1_dragable.png \
+   live_rel2_dragable.png \
+   live_image.png \
+   live_rectangle.png \
+   live_swallow.png \
+   live_spacer.png \
+   live_text.png \
+   live_textblock.png \
+   live_edit.png

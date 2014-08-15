@@ -55,7 +55,7 @@ cur_part_value_update(live_data *ld, Evas_Object *edje)
    Evas_Coord view_w, view_h;
 
    config_view_size_get(&view_w, &view_h);
-   edje_object_part_geometry_get(edje, "new_part_bg", &x, &y, &w, &h);
+   edje_object_part_geometry_get(edje, "elm.swallow.symbol", &x, &y, &w, &h);
 
    ld->cur_part_data->rel1_x = ((float) x) / ((float) view_w);
    ld->cur_part_data->rel1_y = ((float) y) / ((float) view_h);
@@ -94,17 +94,15 @@ part_info_update(live_data *ld)
             ld->cur_part_data->x, ld->cur_part_data->y,
             ld->cur_part_data->w, ld->cur_part_data->h);
    edje_object_part_text_set(layout,
-                             "elm.text.live_edit.new_part_info", part_info);
+                             "elm.text.info", part_info);
    snprintf(part_info,
             LIVE_EDIT_NEW_PART_REL_STR_MAX_LEN, LIVE_EDIT_NEW_PART_REL_STR,
             ld->cur_part_data->rel1_x, ld->cur_part_data->rel1_y);
-   edje_object_part_text_set(layout,
-                             "elm.text.live_edit.rel1", part_info);
+   edje_object_part_text_set(layout, "elm.text.rel1", part_info);
    snprintf(part_info,
             LIVE_EDIT_NEW_PART_REL_STR_MAX_LEN, LIVE_EDIT_NEW_PART_REL_STR,
             ld->cur_part_data->rel2_x, ld->cur_part_data->rel2_y);
-   edje_object_part_text_set(layout,
-                             "elm.text.live_edit.rel2", part_info);
+   edje_object_part_text_set(layout, "elm.text.rel2", part_info);
 }
 
 static void
@@ -139,9 +137,9 @@ new_part_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
         double dy = ((float) cur_y / (float) view_h) -
            ld->cur_part_data->rel1_y;
         edje_object_part_drag_step(elm_layout_edje_get(ld->layout),
-                                   "rel1.dragable", dx, dy);
+                                   "rel1_dragable", dx, dy);
         edje_object_part_drag_step(elm_layout_edje_get(ld->layout),
-                                   "rel2.dragable", dx, dy);
+                                   "rel2_dragable", dx, dy);
         part_info_update(ld);
      }
 }
@@ -167,14 +165,14 @@ new_part_mouse_up_cb(void *data EINA_UNUSED,
 }
 
 static void
-new_part_bg_set(live_data *ld)
+symbol_set(live_data *ld)
 {
    char buf[PATH_MAX];
    snprintf(buf, sizeof(buf), "%s_bg",
             MENU_ITEMS[ld->cur_part_data->type].name);
    Evas_Object *bg_layout = elm_layout_add(ld->layout);
    elm_layout_file_set(bg_layout, EDJE_PATH, buf);
-   elm_object_part_content_set(ld->layout, "new_part_bg", bg_layout);
+   elm_object_part_content_set(ld->layout, "elm.swallow.symbol", bg_layout);
 }
 
 static void
@@ -219,25 +217,25 @@ live_edit_layer_set(live_data *ld)
    Evas_Object *layout = create_live_edit_layout();
 
    edje_object_signal_callback_add(elm_layout_edje_get(layout),
-                                   "drag", "rel1.dragable",
+                                   "drag", "rel1_dragable",
                                    dragable_geometry_changed_cb, ld);
    edje_object_signal_callback_add(elm_layout_edje_get(layout),
-                                   "drag", "rel2.dragable",
+                                   "drag", "rel2_dragable",
                                    dragable_geometry_changed_cb, ld);
    edje_object_signal_callback_add(elm_layout_edje_get(layout),
-                                   "mouse,down,1", "new_part_bg",
+                                   "mouse,down,1", "elm.swallow.symbol",
                                    new_part_mouse_down_cb, ld);
    edje_object_signal_callback_add(elm_layout_edje_get(layout),
-                                   "mouse,up,1", "new_part_bg",
+                                   "mouse,up,1", "elm.swallow.symbol",
                                    new_part_mouse_up_cb, ld);
-   elm_layout_part_cursor_set(layout, "new_part_bg",
+   elm_layout_part_cursor_set(layout, "elm.swallow.symbol",
                               ELM_CURSOR_FLEUR);
-   elm_layout_part_cursor_set(layout, "rel1.dragable",
+   elm_layout_part_cursor_set(layout, "rel1_dragable",
                               ELM_CURSOR_TOP_LEFT_CORNER);
-   elm_layout_part_cursor_set(layout, "rel2.dragable",
+   elm_layout_part_cursor_set(layout, "rel2_dragable",
                               ELM_CURSOR_BOTTOM_RIGHT_CORNER);
    ld->layout = layout;
-   new_part_bg_set(ld);
+   symbol_set(ld);
    part_info_update(ld);
 }
 

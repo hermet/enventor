@@ -9,13 +9,13 @@ images {
    image: "status.png" COMP;
    image: "swallow_s.png" COMP;
    image: "goto.png" COMP;
-   image: "live_edit_icons/icon-image.png" COMP;
-   image: "live_edit_icons/icon-rectangle.png" COMP;
-   image: "live_edit_icons/icon-swallow.png" COMP;
-   image: "live_edit_icons/icon-spacer.png" COMP;
-   image: "live_edit_icons/icon-text.png" COMP;
-   image: "live_edit_icons/icon-textblock.png" COMP;
-   image: "live_edit_icons/icon-live-edit.png" COMP;
+   image: "live_image.png" COMP;
+   image: "live_rectangle.png" COMP;
+   image: "live_swallow.png" COMP;
+   image: "live_spacer.png" COMP;
+   image: "live_text.png" COMP;
+   image: "live_textblock.png" COMP;
+   image: "live_edit.png" COMP;
 }
 
 group { name: "line";
@@ -128,12 +128,12 @@ group { name: "minus";
    }
 }
 
-group { name: "live-edit";
+group { name: "live_edit";
    parts {
       part { name: "img";
          type: IMAGE;
          description { state: "default" 0.0;
-            image.normal: "live_edit_icons/icon-live-edit.png";
+            image.normal: "live_edit.png";
          }
       }
    }
@@ -145,18 +145,16 @@ group { name: "live-edit";
          part { name: "img"; \
             description { state: "default" 0.0; \
                image.normal: _image_path; \
-               min: 10 10; \
-               max: 10 10; \
             } \
          } \
       } \
    }
 
-ADD_LIVE_EDIT_ICON_GROUP("IMAGE", "live_edit_icons/icon-image.png")
-ADD_LIVE_EDIT_ICON_GROUP("RECT", "live_edit_icons/icon-rectangle.png")
-ADD_LIVE_EDIT_ICON_GROUP("SPACER", "live_edit_icons/icon-spacer.png")
-ADD_LIVE_EDIT_ICON_GROUP("SWALLOW", "live_edit_icons/icon-swallow.png")
-ADD_LIVE_EDIT_ICON_GROUP("TEXT", "live_edit_icons/icon-text.png")
-ADD_LIVE_EDIT_ICON_GROUP("TEXTBLOCK", "live_edit_icons/icon-textblock.png")
+ADD_LIVE_EDIT_ICON_GROUP("IMAGE", "live_image.png")
+ADD_LIVE_EDIT_ICON_GROUP("RECT", "live_rectangle.png")
+ADD_LIVE_EDIT_ICON_GROUP("SPACER", "live_spacer.png")
+ADD_LIVE_EDIT_ICON_GROUP("SWALLOW", "live_swallow.png")
+ADD_LIVE_EDIT_ICON_GROUP("TEXT", "live_text.png")
+ADD_LIVE_EDIT_ICON_GROUP("TEXTBLOCK", "live_textblock.png")
 
 #undef ADD_LIVE_EDIT_ICON_GROUP
