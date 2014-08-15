@@ -78,6 +78,21 @@ Ctrl+End = Go to the Bottom line
 enventor --help
 enventor [input file] [-id image path] [-sd sound path] [-fd font path] [-dd data path]
  
+ 
+[Authors]
+ 
+Hermet (Chuneon Park)
+Cedric Bail
+Raoul Hecky
+Daniel Juyung Seo
+Ryuan Choi
+Jihoon Kim
+The Rasterman (Carsten Haitzler)
+Kateryna Fesyna
+JaeHyun Jo
+Mykyta Biliavskyi
+Alex-P. Natsios
+ 
   
 * FOR ANY ISSUES PLEASE EMAIL *
 enlightenment-devel@lists.sourceforge.net
