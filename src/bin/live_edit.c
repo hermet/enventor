@@ -327,6 +327,13 @@ live_edit_toggle(void)
 }
 
 void
+live_edit_cancel(void)
+{
+   if (!config_live_edit_get()) return;
+   live_edit_toggle();
+}
+
+void
 live_edit_init(edit_data *ed)
 {
    live_data *ld = calloc(1, sizeof(live_data));
