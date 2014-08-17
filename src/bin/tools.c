@@ -139,7 +139,7 @@ tools_create(Evas_Object *parent, edit_data *ed)
    it = elm_toolbar_item_append(toolbar, NULL, "Swallow", swallow_cb, NULL);
    elm_toolbar_item_icon_file_set(it, EDJE_PATH, "swallow_s");
    it = elm_toolbar_item_append(toolbar, NULL, "LiveEdit", live_edit_cb, NULL);
-   elm_toolbar_item_icon_file_set(it, EDJE_PATH, "live-edit");
+   elm_toolbar_item_icon_file_set(it, EDJE_PATH, "live_edit");
    it = elm_toolbar_item_append(toolbar, NULL, "Lines", lines_cb, ed);
    elm_toolbar_item_icon_file_set(it, EDJE_PATH, "lines");
    it = elm_toolbar_item_append(toolbar, NULL, "Find", find_cb, ed);
