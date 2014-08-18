@@ -233,7 +233,7 @@ about_open(menu_data *md)
 
    //Read README
    char buf[PATH_MAX];
-   snprintf(buf, sizeof(buf), "%s/docs/README", elm_app_data_dir_get());
+   snprintf(buf, sizeof(buf), "%s/about/ABOUT", elm_app_data_dir_get());
 
    Eina_File *file = eina_file_open(buf, EINA_FALSE);
    if (!file) goto err;

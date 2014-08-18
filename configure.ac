@@ -103,6 +103,7 @@ data/themes/default/images/Makefile
 data/templates/Makefile
 data/color/Makefile
 data/sounds/Makefile
+data/about/Makefile
 ])
 
 AC_OUTPUT
