@@ -3,6 +3,7 @@ Encoding=UTF-8
 Type=Application
 Name=Enventor
 Comment=Enlightenment EDC Editor
+Comment[ru]=Редактор EDC-файлов
 Icon=enventor
 Exec=enventor
 Terminal=false
