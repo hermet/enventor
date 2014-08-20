@@ -1,5 +1,5 @@
 images {
-   image: "spacer.png" COMP;
+   image: "live_spacer.png" COMP;
 }
 group { name: "IMAGE_bg";
    parts {
@@ -64,7 +64,7 @@ group { name: "SPACER_bg";
    parts {
       part { name: "bg";
          description { state: "default" 0.0;
-            image.normal: "spacer.png";
+            image.normal: "live_spacer.png";
             fill.type: TILE;
             color: 255 255 255 50;
          }

@@ -54,7 +54,6 @@ EXTRA_DIST = \
    goto.png \
    downlight_glow_left.png \
    downlight_glow_right.png \
-   alarm_highlight.png \
    disabler.png \
    live_bg_glow_in.png \
    live_rel1_dragable.png \
@@ -65,4 +64,5 @@ EXTRA_DIST = \
    live_spacer.png \
    live_text.png \
    live_textblock.png \
-   live_edit.png
+   live_edit.png \
+   new.png
