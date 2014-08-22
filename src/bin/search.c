@@ -147,7 +147,7 @@ find_backward_proc(search_data *sd)
 
    char buf[256];
    Eina_Bool need_iterate = EINA_TRUE;
-   int len;
+   int len = 0;
 
    const char *text = elm_entry_entry_get(sd->entry);
    if (!text) return;
