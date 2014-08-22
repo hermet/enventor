@@ -345,7 +345,7 @@ ctxpopup_preview_dismiss_cb(void *data, Evas_Object *obj,
                             void *event_info EINA_UNUSED)
 {
    edit_data *ed = data;
-   int skip_focus = (int) evas_object_data_get(obj, "continue");
+   int skip_focus = (int)(uintptr_t) evas_object_data_get(obj, "continue");
    evas_object_del(obj);
 
    //Since the ctxpopup will be shown again, Don't revert the focus.
@@ -465,7 +465,7 @@ static void
 ctxpopup_preview_relay_cb(void *data, Evas_Object *obj, void *event_info)
 {
    edit_data *ed = data;
-   int next = (int) event_info;
+   int next = (int)(uintptr_t) event_info;
    preview_img_relay_show(ed, obj, (Eina_Bool) next);
 }
 
