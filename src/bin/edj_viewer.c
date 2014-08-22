@@ -152,7 +152,6 @@ exe_del_event_cb(void *data, int type EINA_UNUSED, void *event)
         vd->del_cb(vd->data);
         view_term(vd);
         EINA_LOG_ERR("Failed to load edj file \"%s\"", config_edj_path_get());
-        vd->edj_reload_need = EINA_FALSE;
         return ECORE_CALLBACK_DONE;
      }
 
