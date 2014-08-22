@@ -48,7 +48,7 @@ config_edj_path_update(config_data *cd)
    if (ext && file)
      snprintf(buf, (ext - file) + 1, "%s", file);
    else
-     strncpy(buf, file, sizeof(buf));
+     strncpy(buf, file, sizeof(buf) - 1);
    char *filedir = ecore_file_dir_get(cd->edc_path);
    sprintf(edj_path, "%s/%s.edj", filedir, buf);
    free(filedir);
