@@ -508,7 +508,11 @@ image_preview_show(edit_data *ed, char *cur, Evas_Coord x, Evas_Coord y)
            ctxpopup_img_preview_create(ed, fullpath,
                                        ctxpopup_preview_dismiss_cb,
                                        ctxpopup_preview_relay_cb);
-        if (!ctxpopup) return EINA_FALSE;
+        if (!ctxpopup)
+          {
+             free(filename);
+             return EINA_FALSE;
+          }
 
         evas_object_move(ctxpopup, x, y);
         evas_object_show(ctxpopup);

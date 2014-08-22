@@ -753,10 +753,18 @@ parser_cur_group_name_get(parser_data *pd, Evas_Object *entry,
      }
 
    const char *text = elm_entry_entry_get(entry);
-   if (!text) return;
+   if (!text)
+     {
+        free(td);
+        return;
+     }
 
    char *utf8 = elm_entry_markup_to_utf8(text);
-   if (!utf8) return;
+   if (!utf8)
+     {
+        free(td);
+        return;
+     }
 
    td->pd = pd;
    td->utf8 = utf8;
@@ -785,10 +793,18 @@ parser_cur_name_get(parser_data *pd, Evas_Object *entry, void (*cb)(void *data,
      }
 
    const char *text = elm_entry_entry_get(entry);
-   if (!text) return;
+   if (!text)
+     {
+        free(td);
+        return;
+     }
 
    char *utf8 = elm_entry_markup_to_utf8(text);
-   if (!utf8) return;
+   if (!utf8)
+     {
+        free(td);
+        return;
+     }
 
    td->pd = pd;
    td->utf8 = utf8;
