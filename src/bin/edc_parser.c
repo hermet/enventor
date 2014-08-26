@@ -745,24 +745,17 @@ parser_cur_group_name_get(parser_data *pd, Evas_Object *entry,
 {
    if (pd->thread) ecore_thread_cancel(pd->thread);
 
+   const char *text = elm_entry_entry_get(entry);
+   if (!text) return;
+
+   char *utf8 = elm_entry_markup_to_utf8(text);
+   if (!utf8) return;
+
    cur_name_td *td = calloc(1, sizeof(cur_name_td));
    if (!td)
      {
+        free(utf8);
         EINA_LOG_ERR("Failed to allocate Memory!");
-        return;
-     }
-
-   const char *text = elm_entry_entry_get(entry);
-   if (!text)
-     {
-        free(td);
-        return;
-     }
-
-   char *utf8 = elm_entry_markup_to_utf8(text);
-   if (!utf8)
-     {
-        free(td);
         return;
      }
 
@@ -785,24 +778,17 @@ parser_cur_name_get(parser_data *pd, Evas_Object *entry, void (*cb)(void *data,
 {
    if (pd->thread) ecore_thread_cancel(pd->thread);
 
+   const char *text = elm_entry_entry_get(entry);
+   if (!text) return;
+
+   char *utf8 = elm_entry_markup_to_utf8(text);
+   if (!utf8) return;
+
    cur_name_td *td = calloc(1, sizeof(cur_name_td));
    if (!td)
      {
+        free(utf8);
         EINA_LOG_ERR("Failed to allocate Memory!");
-        return;
-     }
-
-   const char *text = elm_entry_entry_get(entry);
-   if (!text)
-     {
-        free(td);
-        return;
-     }
-
-   char *utf8 = elm_entry_markup_to_utf8(text);
-   if (!utf8)
-     {
-        free(td);
         return;
      }
 
