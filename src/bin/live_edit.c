@@ -289,9 +289,7 @@ layout_mouse_up_cb(void *data, Evas *e EINA_UNUSED,
    // Check if the right button is pressed
    if (ev->button != 3) return;
 
-   if (ld->menu) return;
-
-   ld->menu = menu_create(obj, ld);
+   if (!ld->menu) ld->menu = menu_create(obj, ld);
 
    elm_menu_move(ld->menu, ev->canvas.x, ev->canvas.y);
    evas_object_show(ld->menu);
