@@ -27,7 +27,7 @@ dummy_objs_update(dummy_obj *dummy)
    char *part_name;
    Edje_Part_Type type;
    part_obj *po;
-
+   Evas *evas = evas_object_evas_get(dummy->layout);
    Eina_Bool removed;
 
    //Remove the fake swallow objects that parts are removed.
@@ -75,7 +75,7 @@ dummy_objs_update(dummy_obj *dummy)
                }
 
              //New part. Add fake object.
-             Evas_Object *obj = edje_object_add(dummy->layout);
+             Evas_Object *obj = edje_object_add(evas);
              edje_object_file_set(obj, EDJE_PATH, "swallow");
              edje_object_part_swallow(dummy->layout, part_name, obj);
 
