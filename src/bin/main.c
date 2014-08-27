@@ -510,9 +510,8 @@ elm_setup()
    elm_need_efreet();
    elm_config_profile_set("standard");
 
-   /* Recover the scale & theme since it will be reset by
+   /* Recover the scale since it will be reset by
       elm_config_profile_set() */
-   elm_theme_set(NULL, "default");
    char *scale = getenv("ELM_SCALE");
    if (scale) elm_config_scale_set(atof(scale));
 
