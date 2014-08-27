@@ -65,4 +65,6 @@ EXTRA_DIST = \
    live_text.png \
    live_textblock.png \
    live_edit.png \
-   new.png
+   new.png \
+   white_bar_vert_glow.png \
+   horizontal_separated_bar_small_glow.png

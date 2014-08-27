@@ -885,7 +885,7 @@ edit_init(Evas_Object *parent)
 
    //Line Number Entry
    Evas_Object *en_line = elm_entry_add(layout);
-   evas_object_color_set(en_line, 101, 101, 101, 255);
+   elm_object_style_set(en_line, elm_app_name_get());
    elm_entry_editable_set(en_line, EINA_FALSE);
    elm_entry_line_wrap_set(en_line, ELM_WRAP_NONE);
    elm_object_focus_allow_set(en_line, EINA_FALSE);
