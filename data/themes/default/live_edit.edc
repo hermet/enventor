@@ -28,7 +28,7 @@ group { name: "TEXT_bg";
             color: 255 255 255 255;
             text {
                size: 10;
-               font: "Sans";
+               font: FN;
                text: "TEXT";
             }
          }
@@ -43,7 +43,7 @@ group { name: "TEXTBLOCK_bg";
             color: 255 255 255 255;
             text {
                size: 10;
-               font: "Sans";
+               font: FN;
                text: "TEXTBLOCK";
             }
          }
