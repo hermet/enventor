@@ -170,8 +170,8 @@ toggle_create(Evas_Object *parent, const char *text, Eina_Bool state)
    Evas_Object *toggle = elm_check_add(parent);
    elm_object_style_set(toggle, "toggle");
    elm_check_state_set(toggle, state);
-   evas_object_size_hint_weight_set(toggle, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(toggle, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_size_hint_weight_set(toggle, EVAS_HINT_EXPAND, 0);
+   evas_object_size_hint_align_set(toggle, EVAS_HINT_FILL, 0);
    elm_object_text_set(toggle, text);
    evas_object_show(toggle);
 
@@ -236,113 +236,139 @@ setting_open(void)
    Evas_Object *scroller = elm_scroller_add(layout);
    elm_object_part_content_set(layout, "elm.swallow.preference", scroller);
 
+   //Box
    Evas_Object *box = elm_box_add(scroller);
+   elm_box_horizontal_set(box, EINA_TRUE);
    evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(box, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_show(box);
 
    elm_object_content_set(scroller, box);
 
-   Evas_Object *label, *box2;
-
-   //Font Size
-   box2 = elm_box_add(box);
-   elm_box_horizontal_set(box2, EINA_TRUE);
-   evas_object_size_hint_weight_set(box2, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(box2, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   //Left Box
+   Evas_Object *box2 = elm_box_add(box);
+   elm_box_padding_set(box2, 1, 1);
+   evas_object_size_hint_weight_set(box2, EVAS_HINT_EXPAND, 0);
+   evas_object_size_hint_align_set(box2, EVAS_HINT_FILL, 0);
    evas_object_show(box2);
-
    elm_box_pack_end(box, box2);
 
+   Evas_Object *label, *box3;
+
+   //Font Size
+   box3 = elm_box_add(box2);
+   elm_box_horizontal_set(box3, EINA_TRUE);
+   evas_object_size_hint_weight_set(box3, EVAS_HINT_EXPAND, 0);
+   evas_object_size_hint_align_set(box3, EVAS_HINT_FILL, 0);
+   evas_object_show(box3);
+
+   elm_box_pack_end(box2, box3);
+
    //Font Size (Label)
-   label = elm_label_add(box2);
-   evas_object_size_hint_weight_set(label, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(label, 0, EVAS_HINT_FILL);
+   label = elm_label_add(box3);
+   evas_object_size_hint_weight_set(label, EVAS_HINT_EXPAND, 0);
+   evas_object_size_hint_align_set(label, 0, 0);
 
    elm_object_text_set(label, "Font Size");
    evas_object_show(label);
 
-   elm_box_pack_end(box2, label);
+   elm_box_pack_end(box3, label);
 
    //Font Size (Slider)
-   Evas_Object *slider_font = elm_slider_add(box2);
-   evas_object_size_hint_weight_set(label, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(slider_font, 1, EVAS_HINT_FILL);
-   elm_slider_span_size_set(slider_font, 400);
+   Evas_Object *slider_font = elm_slider_add(box3);
+   evas_object_size_hint_weight_set(label, EVAS_HINT_EXPAND, 0);
+   evas_object_size_hint_align_set(slider_font, 1, 0);
+   elm_slider_span_size_set(slider_font, 170);
    elm_slider_indicator_show_set(slider_font, EINA_FALSE);
    elm_slider_unit_format_set(slider_font, "%1.1fx");
    elm_slider_min_max_set(slider_font, MIN_FONT_SIZE, MAX_FONT_SIZE);
    elm_slider_value_set(slider_font, (double) config_font_size_get());
    evas_object_show(slider_font);
 
-   elm_box_pack_end(box2, slider_font);
+   elm_box_pack_end(box3, slider_font);
 
-   //View Scale
+   //Toggle (Tools)
+   Evas_Object *toggle_tools = toggle_create(box2, "Tools",
+                                             config_tools_get());
+   elm_box_pack_end(box2, toggle_tools);
+
+   //Toggle (Line Number)
+   Evas_Object *toggle_linenum = toggle_create(box2, "Line Number",
+                                               config_linenumber_get());
+   elm_box_pack_end(box2, toggle_linenum);
+
+   //Toggle (Dummy Swallow)
+   Evas_Object *toggle_swallow = toggle_create(box2, "Dummy Swallow",
+                                 config_dummy_swallow_get());
+   elm_box_pack_end(box2, toggle_swallow);
+
+   //Toggle (Auto Complete)
+   Evas_Object *toggle_autocomp = toggle_create(box2, "Auto Completion",
+                                  config_auto_complete_get());
+   elm_box_pack_end(box2, toggle_autocomp);
+
+   Evas_Object *separator = elm_separator_add(box);
+   evas_object_show(separator);
+   elm_box_pack_end(box, separator);
+
+   //Right Box
    box2 = elm_box_add(box);
-   elm_box_horizontal_set(box2, EINA_TRUE);
+   elm_box_padding_set(box2, 1, 1);
    evas_object_size_hint_weight_set(box2, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(box2, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_size_hint_align_set(box2, EVAS_HINT_FILL, 0);
    evas_object_show(box2);
 
    elm_box_pack_end(box, box2);
 
+   //View Scale
+   box3 = elm_box_add(box2);
+   elm_box_padding_set(box2, 1, 1);
+   elm_box_horizontal_set(box3, EINA_TRUE);
+   evas_object_size_hint_weight_set(box3, EVAS_HINT_EXPAND, 0);
+   evas_object_size_hint_align_set(box3, EVAS_HINT_FILL, 0);
+   evas_object_show(box3);
+
+   elm_box_pack_end(box2, box3);
+
    //View Scale (Label)
-   label = elm_label_add(box2);
-   evas_object_size_hint_weight_set(label, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(label, 0, EVAS_HINT_FILL);
+   label = elm_label_add(box3);
+   evas_object_size_hint_weight_set(label, EVAS_HINT_EXPAND, 0);
+   evas_object_size_hint_align_set(label, 0, 0);
 
    elm_object_text_set(label, "View Scale");
    evas_object_show(label);
 
-   elm_box_pack_end(box2, label);
+   elm_box_pack_end(box3, label);
 
    //View Scale (Slider)
    Evas_Object *slider_view = elm_slider_add(box2);
-   evas_object_size_hint_weight_set(label, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(slider_view, 1, EVAS_HINT_FILL);
-   elm_slider_span_size_set(slider_view, 394);
+   evas_object_size_hint_weight_set(label, EVAS_HINT_EXPAND, 0);
+   evas_object_size_hint_align_set(slider_view, 1, 0);
+   elm_slider_span_size_set(slider_view, 170);
    elm_slider_indicator_show_set(slider_view, EINA_FALSE);
    elm_slider_unit_format_set(slider_view, "%1.2fx");
    elm_slider_min_max_set(slider_view, MIN_VIEW_SCALE, MAX_VIEW_SCALE);
    elm_slider_value_set(slider_view, (double) config_view_scale_get());
    evas_object_show(slider_view);
 
-   elm_box_pack_end(box2, slider_view);
-
-   //Toggle (Tools)
-   Evas_Object *toggle_tools = toggle_create(box, "Tools",
-                                             config_tools_get());
-   elm_box_pack_end(box, toggle_tools);
+   elm_box_pack_end(box3, slider_view);
 
    //Toggle (Status)
-   Evas_Object *toggle_stats = toggle_create(box, "Status",
+   Evas_Object *toggle_stats = toggle_create(box2, "Status",
                                              config_stats_bar_get());
-   elm_box_pack_end(box, toggle_stats);
+   elm_box_pack_end(box2, toggle_stats);
 
-   //Toggle (Line Number)
-   Evas_Object *toggle_linenum = toggle_create(box, "Line Number",
-                                               config_linenumber_get());
-   elm_box_pack_end(box, toggle_linenum);
 
    //Toggle (Part Highlighting)
-   Evas_Object *toggle_highlight = toggle_create(box, "Part Highlighting",
+   Evas_Object *toggle_highlight = toggle_create(box2, "Part Highlighting",
                                    config_part_highlight_get());
-   elm_box_pack_end(box, toggle_highlight);
+   elm_box_pack_end(box2, toggle_highlight);
 
-   //Toggle (Dummy Swallow)
-   Evas_Object *toggle_swallow = toggle_create(box, "Dummy Swallow",
-                                 config_dummy_swallow_get());
-   elm_box_pack_end(box, toggle_swallow);
 
    //Toggle (Auto Indentation)
-   Evas_Object *toggle_indent = toggle_create(box, "Auto Indentation",
+   Evas_Object *toggle_indent = toggle_create(box2, "Auto Indentation",
                                 config_auto_indent_get());
-   elm_box_pack_end(box, toggle_indent);
-
-   //Toggle (Auto Complete)
-   Evas_Object *toggle_autocomp = toggle_create(box, "Auto Completion",
-                                  config_auto_complete_get());
-   elm_box_pack_end(box, toggle_autocomp);
+   elm_box_pack_end(box2, toggle_indent);
 
    Evas_Object *btn;
 

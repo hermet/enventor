@@ -28,8 +28,8 @@ group { name: "setting_layout";
          scale: 1;
          clip_to: "clipper";
          description {
-            min: 600 380;
-            max: 600 380;
+            min: 600 350;
+            max: 600 350;
             fixed: 1 1;
             image.normal: "frame_bg.png";
             image.border: 10 10 10 10;
@@ -150,10 +150,10 @@ group { name: "setting_layout";
          type: SPACER;
          scale: 1;
          description {
-            rel1 {to: "data_path_frame"; relative: 0 1;}
+            rel1 {to: "data_path_frame"; relative: 0 1; offset: 0 5;}
             rel2 {to: "data_path_frame"; relative: 1 1;}
             align: 0.5 0;
-            min: 0 185;
+            min: 0 140;
             fixed: 0 1;
          }
       }
@@ -390,7 +390,7 @@ group { name: "setting_layout";
          description {
             rel1.to_x: "preference_guide";
             rel1.to_y: "preference_guide";
-            rel1.offset: 0 10;
+            rel1.offset: 0 5;
             rel1.relative: 0 1;
             rel2.to: "preference_frame";
          }
