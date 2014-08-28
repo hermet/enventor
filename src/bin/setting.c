@@ -264,25 +264,16 @@ setting_open(void)
 
    elm_box_pack_end(box2, box3);
 
-   //Font Size (Label)
-   label = elm_label_add(box3);
-   evas_object_size_hint_weight_set(label, EVAS_HINT_EXPAND, 0);
-   evas_object_size_hint_align_set(label, 0, 0);
-
-   elm_object_text_set(label, "Font Size");
-   evas_object_show(label);
-
-   elm_box_pack_end(box3, label);
-
    //Font Size (Slider)
    Evas_Object *slider_font = elm_slider_add(box3);
    evas_object_size_hint_weight_set(label, EVAS_HINT_EXPAND, 0);
-   evas_object_size_hint_align_set(slider_font, 1, 0);
-   elm_slider_span_size_set(slider_font, 170);
+   evas_object_size_hint_align_set(slider_font, 0, 0);
+   elm_slider_span_size_set(slider_font, 190);
    elm_slider_indicator_show_set(slider_font, EINA_FALSE);
    elm_slider_unit_format_set(slider_font, "%1.1fx");
    elm_slider_min_max_set(slider_font, MIN_FONT_SIZE, MAX_FONT_SIZE);
    elm_slider_value_set(slider_font, (double) config_font_size_get());
+   elm_object_text_set(slider_font, "Font Size");
    evas_object_show(slider_font);
 
    elm_box_pack_end(box3, slider_font);
@@ -330,25 +321,16 @@ setting_open(void)
 
    elm_box_pack_end(box2, box3);
 
-   //View Scale (Label)
-   label = elm_label_add(box3);
-   evas_object_size_hint_weight_set(label, EVAS_HINT_EXPAND, 0);
-   evas_object_size_hint_align_set(label, 0, 0);
-
-   elm_object_text_set(label, "View Scale");
-   evas_object_show(label);
-
-   elm_box_pack_end(box3, label);
-
    //View Scale (Slider)
    Evas_Object *slider_view = elm_slider_add(box2);
    evas_object_size_hint_weight_set(label, EVAS_HINT_EXPAND, 0);
-   evas_object_size_hint_align_set(slider_view, 1, 0);
-   elm_slider_span_size_set(slider_view, 170);
+   evas_object_size_hint_align_set(slider_view, 0, 0);
+   elm_slider_span_size_set(slider_view, 190);
    elm_slider_indicator_show_set(slider_view, EINA_FALSE);
    elm_slider_unit_format_set(slider_view, "%1.2fx");
    elm_slider_min_max_set(slider_view, MIN_VIEW_SCALE, MAX_VIEW_SCALE);
    elm_slider_value_set(slider_view, (double) config_view_scale_get());
+   elm_object_text_set(slider_view, "View Scale");
    evas_object_show(slider_view);
 
    elm_box_pack_end(box3, slider_view);
