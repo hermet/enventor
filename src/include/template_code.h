@@ -122,7 +122,7 @@ const char *TEMPLATE_PART_TEXT[TEMPLATE_PART_TEXT_LINE_CNT] =
    "      }<br/>"
 };
 
-#define TEMPLATE_PART_TEXTBLOCK_LINE_CNT 12
+#define TEMPLATE_PART_TEXTBLOCK_LINE_CNT 7
 
 const char *TEMPLATE_PART_TEXTBLOCK[TEMPLATE_PART_TEXTBLOCK_LINE_CNT] =
 {
@@ -132,12 +132,7 @@ const char *TEMPLATE_PART_TEXTBLOCK[TEMPLATE_PART_TEXTBLOCK_LINE_CNT] =
    "      fixed: 0 0;<br/>",
    "      min: 0 0;<br/>",
    "      visible: 1;<br/>",
-   "      text {<br/>",
-   "         style: \"XXX\";<br/>",
-   "         text: \"TEXTBLOCK\";<br/>",
-   "         align: 0.5 0.5;<br/>",
-   "         min: 0 0;<br/>",
-   "      }<br/>"
+   "      text.text: \"TEXTBLOCK\";<br/>"
 };
 
 #define TEMPLATE_DESC_LINE_CNT 10
@@ -181,3 +176,15 @@ const char *TEMPLATE_IMG[TEMPLATE_IMG_LINE_CNT] =
 const char *TEMPLATE_IMG_BLOCK = "   images {<br/>"
                                  "      image: \"logo.png\" COMP;<br/>"
                                  "   }<br/>";
+
+#define TEMPLATE_TEXTBLOCK_STYLE_LINE_CNT 3
+
+const char *TEMPLATE_TEXTBLOCK_STYLE_BLOCK[TEMPLATE_TEXTBLOCK_STYLE_LINE_CNT] =
+{
+   "   styles {<br/>",
+   "      style { name: \"%s\";<br/>"
+   "         base: \"font=\"Sans\" font_size=30 text_class=entry color=#0088AA style=shadow,bottom shadow_color=#00000080 valign=0.5 ellipsis=1.0 wrap=none align=center\";<br/>"
+   "      }<br/>",
+   "   }<br/>"
+};
+

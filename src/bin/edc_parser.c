@@ -1010,15 +1010,12 @@ parser_end_of_parts_block_pos_get(const Evas_Object *entry,
    return ret;
 }
 
-Eina_Bool
-parser_images_pos_get(const Evas_Object *entry, int *ret)
+static Eina_Bool
+parser_collections_block_pos_get(const Evas_Object *entry,
+                                 const char *block_name, int *ret)
 {
    const char* GROUP_SYNTAX_NAME = "group";
-   const char* IMAGES_BLOCK_NAME = "images";
-   const int IMAGES_BLOCK_NAME_LEN = 6; //strlen of "images"
-
-   if (!ret) return EINA_FALSE;
-
+   const int BLOCK_NAME_LEN = strlen(block_name);
    *ret = -1;
 
    const char *text = elm_entry_entry_get(entry);
@@ -1027,12 +1024,12 @@ parser_images_pos_get(const Evas_Object *entry, int *ret)
    char *utf8 = elm_entry_markup_to_utf8(text);
    if (!utf8) return EINA_FALSE;
 
-   const char *pos = strstr(utf8, IMAGES_BLOCK_NAME);
+   const char *pos = strstr(utf8, block_name);
    if (pos)
      {
         /* TODO: Remove this check and process lines of the form
            "images.image: "logo.png" COMP;" */
-        if (*(pos + IMAGES_BLOCK_NAME_LEN + 1) == '.')
+        if (*(pos + BLOCK_NAME_LEN + 1) == '.')
           return EINA_FALSE;
 
         pos = strstr(pos, "{\n");
@@ -1048,5 +1045,17 @@ parser_images_pos_get(const Evas_Object *entry, int *ret)
         return EINA_FALSE;
      }
    return EINA_FALSE;
+}
+
+Eina_Bool
+parser_images_pos_get(const Evas_Object *entry, int *ret)
+{
+   return parser_collections_block_pos_get(entry, "images", ret);
+}
+
+Eina_Bool
+parser_styles_pos_get(const Evas_Object *entry, int *ret)
+{
+   return parser_collections_block_pos_get(entry, "styles", ret);
 }
 

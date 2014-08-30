@@ -1,6 +1,13 @@
 images {
    image: "live_spacer.png" COMP;
 }
+
+styles {
+   style { name: "default_style";
+      base: "font="Sans" font_size=30 text_class=entry color=#0088AA style=shadow,bottom shadow_color=#00000080 valign=0.5 ellipsis=1.0 wrap=none align=center";
+   }
+}
+
 group { name: "IMAGE_bg";
    parts {
       part { name: "logo";
@@ -42,6 +49,7 @@ group { name: "TEXTBLOCK_bg";
          description { state: "default" 0.0;
             color: 255 255 255 255;
             text {
+               style: "default_style";
                size: 10;
                font: FN;
                text: "TEXTBLOCK";
