@@ -97,6 +97,7 @@ tools_btn_create(Evas_Object *parent, const char *icon, const char *label,
 {
    Evas_Object *btn = elm_button_add(parent);
    elm_object_style_set(btn, "anchor");
+   elm_object_focus_allow_set(btn, EINA_FALSE);
 
    Evas_Object *img = elm_image_add(btn);
    elm_image_file_set(img, EDJE_PATH, icon);
@@ -165,6 +166,10 @@ tools_create(Evas_Object *parent, edit_data *ed)
                                     EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
    elm_box_pack_end(box, btn);
+
+   sp = elm_separator_add(box);
+   evas_object_show(sp);
+   elm_box_pack_end(box, sp);
 
    btn = tools_btn_create(box, "console", "Console", console_cb, NULL);
    evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
