@@ -3,20 +3,6 @@
 
 #define TOOLBAR_ICON_SIZE 16
 
-Eina_Bool
-unselect_anim_cb(void *data)
-{
-   Elm_Object_Item *it = data;
-   elm_toolbar_item_selected_set(it, EINA_FALSE);
-   return ECORE_CALLBACK_CANCEL;
-}
-
-static void
-item_unselect(Elm_Object_Item *it)
-{
-   ecore_timer_add(0.1, unselect_anim_cb, it);
-}
-
 static void
 menu_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
@@ -30,21 +16,18 @@ menu_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
      }
 
    menu_toggle();
-   item_unselect((Elm_Object_Item *)event_info);
 }
 
 static void
 save_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    menu_edc_save();
-   item_unselect((Elm_Object_Item *)event_info);
 }
 
 static void
 load_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    menu_edc_load();
-   item_unselect((Elm_Object_Item *)event_info);
 }
 
 static void
@@ -54,7 +37,6 @@ highlight_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
    edit_data *ed = data;
    config_part_highlight_set(!config_part_highlight_get());
    edit_part_highlight_toggle(ed, EINA_TRUE);
-   item_unselect((Elm_Object_Item *)event_info);
 }
 
 static void
@@ -63,7 +45,6 @@ swallow_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 {
    config_dummy_swallow_set(!config_dummy_swallow_get());
    view_dummy_toggle(VIEW_DATA, EINA_TRUE);
-   item_unselect((Elm_Object_Item *)event_info);
 }
 
 static void
@@ -72,7 +53,6 @@ lines_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
    edit_data *ed = data;
    config_linenumber_set(!config_linenumber_get());
    edit_line_number_toggle(ed);
-   item_unselect((Elm_Object_Item *)event_info);
 }
 
 static void
@@ -80,7 +60,6 @@ status_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
           void *event_info)
 {
    base_statusbar_toggle(EINA_TRUE);
-   item_unselect((Elm_Object_Item *)event_info);
 }
 
 static void
@@ -89,7 +68,6 @@ find_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
    edit_data *ed = data;
    if (search_is_opened()) search_close();
    else search_open(ed);
-   item_unselect((Elm_Object_Item *)event_info);
 }
 
 static void
@@ -98,7 +76,6 @@ goto_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
    edit_data *ed = data;
    if (goto_is_opened()) goto_close();
    else goto_open(ed);
-   item_unselect((Elm_Object_Item *)event_info);
 }
 
 static void
@@ -106,22 +83,17 @@ console_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
            void *event_info)
 {
    base_console_toggle();
-   item_unselect((Elm_Object_Item *)event_info);
 }
 
 static void
 live_edit_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    live_edit_toggle();
-   item_unselect((Elm_Object_Item *)event_info);
 }
 
-Evas_Object *
-tools_btn_create(Evas_Object *parent,
-                 const char *icon,
-                 const char *label,
-                 Evas_Smart_Cb func,
-                 void *data)
+static Evas_Object *
+tools_btn_create(Evas_Object *parent, const char *icon, const char *label,
+                 Evas_Smart_Cb func, void *data)
 {
    Evas_Object *btn = elm_button_add(parent);
    elm_object_style_set(btn, "anchor");
