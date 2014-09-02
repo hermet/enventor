@@ -117,39 +117,94 @@ live_edit_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 }
 
 Evas_Object *
+tools_btn_create(Evas_Object *parent,
+                 const char *icon,
+                 const char *label,
+                 Evas_Smart_Cb func,
+                 void *data)
+{
+   Evas_Object *btn = elm_button_add(parent);
+   elm_object_style_set(btn, "anchor");
+
+   Evas_Object *img = elm_image_add(btn);
+   elm_image_file_set(img, EDJE_PATH, icon);
+   elm_object_content_set(btn, img);
+
+   elm_object_text_set(btn, label);
+   evas_object_smart_callback_add(btn, "clicked", func, data);
+   evas_object_show(btn);
+
+   return btn;
+}
+
+Evas_Object *
 tools_create(Evas_Object *parent, edit_data *ed)
 {
-   Evas_Object *toolbar = elm_toolbar_add(parent);
-   elm_object_style_set(toolbar, "item_horizontal");
-   elm_toolbar_icon_size_set(toolbar,
-                             TOOLBAR_ICON_SIZE * elm_config_scale_get());
-   elm_toolbar_transverse_expanded_set(toolbar, EINA_TRUE);
-   elm_toolbar_homogeneous_set(toolbar, EINA_FALSE);
-   elm_toolbar_shrink_mode_set(toolbar, ELM_TOOLBAR_SHRINK_EXPAND);
-   evas_object_size_hint_weight_set(toolbar, EVAS_HINT_EXPAND,
+   Evas_Object *box = elm_box_add(parent);
+   elm_box_horizontal_set(box, EINA_TRUE);
+   elm_box_padding_set(box, 10, 0);
+   evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(toolbar, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_object_focus_allow_set(toolbar, EINA_FALSE);
+   evas_object_size_hint_align_set(box, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
-   Elm_Object_Item *it;
-   it = elm_toolbar_item_append(toolbar, NULL, "Menu", menu_cb, ed);
-   elm_toolbar_item_icon_file_set(it, EDJE_PATH, "menu");
-   it = elm_toolbar_item_append(toolbar, NULL, "Highlight", highlight_cb, ed);
-   elm_toolbar_item_icon_file_set(it, EDJE_PATH, "highlight");
-   it = elm_toolbar_item_append(toolbar, NULL, "Swallow", swallow_cb, NULL);
-   elm_toolbar_item_icon_file_set(it, EDJE_PATH, "swallow_s");
-   it = elm_toolbar_item_append(toolbar, NULL, "LiveEdit", live_edit_cb, NULL);
-   elm_toolbar_item_icon_file_set(it, EDJE_PATH, "live_edit");
-   it = elm_toolbar_item_append(toolbar, NULL, "Lines", lines_cb, ed);
-   elm_toolbar_item_icon_file_set(it, EDJE_PATH, "lines");
-   it = elm_toolbar_item_append(toolbar, NULL, "Find", find_cb, ed);
-   elm_toolbar_item_icon_file_set(it, EDJE_PATH, "find");
-   it = elm_toolbar_item_append(toolbar, NULL, "Goto", goto_cb, ed);
-   elm_toolbar_item_icon_file_set(it, EDJE_PATH, "line");
-   it = elm_toolbar_item_append(toolbar, NULL, "Status", status_cb, NULL);
-   elm_toolbar_item_icon_file_set(it, EDJE_PATH, "status");
-   it = elm_toolbar_item_append(toolbar, NULL, "Console", console_cb, NULL);
-   elm_toolbar_item_icon_file_set(it, EDJE_PATH, "console");
+   Evas_Object *btn;
+   btn = tools_btn_create(box, "menu", "Menu", menu_cb, ed);
+   evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
+   elm_box_pack_end(box, btn);
 
-   return toolbar;
+   Evas_Object *sp;
+   sp = elm_separator_add(box);
+   evas_object_show(sp);
+   elm_box_pack_end(box, sp);
+
+   btn = tools_btn_create(box, "highlight", "Highlight", highlight_cb, ed);
+   evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
+   elm_box_pack_end(box, btn);
+
+   btn = tools_btn_create(box, "swallow_s", "Swallow",
+                          swallow_cb, NULL);
+   evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
+   elm_box_pack_end(box, btn);
+
+   btn = tools_btn_create(box, "live_edit", "LiveEdit", swallow_cb, NULL);
+   evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
+   elm_box_pack_end(box, btn);
+
+   sp = elm_separator_add(box);
+   evas_object_show(sp);
+   elm_box_pack_end(box, sp);
+
+   btn = tools_btn_create(box, "lines", "Lines", lines_cb, ed);
+   evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
+   elm_box_pack_end(box, btn);
+
+   btn = tools_btn_create(box, "find", "Find", find_cb, ed);
+   evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
+   elm_box_pack_end(box, btn);
+
+   btn = tools_btn_create(box, "line", "Goto", goto_cb, ed);
+   evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND,
+                                    EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
+   elm_box_pack_end(box, btn);
+
+   btn = tools_btn_create(box, "console", "Console", console_cb, NULL);
+   evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn, 1.0, EVAS_HINT_FILL);
+   elm_box_pack_end(box, btn);
+
+   btn = tools_btn_create(box, "status", "Status", status_cb, NULL);
+   evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn, 1.0, EVAS_HINT_FILL);
+   elm_box_pack_end(box, btn);
+
+   evas_object_show(box);
+
+   return box;
 }
