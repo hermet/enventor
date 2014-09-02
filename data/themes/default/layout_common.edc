@@ -10,7 +10,6 @@ images {
    image: "live_rel1_dragable.png" COMP;
    image: "live_rel2_dragable.png" COMP;
    image: "live_bg_glow_in.png" COMP;
-   image: "shine.png" COMP;
    image: "bevel_in.png" COMP;
 }
 
@@ -2183,19 +2182,6 @@ group { name: "main_layout";
             rel2.to: "tools_base";
             rel1.offset: 2 0;
             rel2.offset: -4 -1;
-         }
-      }
-      part { name: "tools_shine";
-         type: IMAGE;
-         scale: 1;
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            rel1 { to: "tools_base"; relative: 0 0; }
-            rel2 { to: "tools_base"; relative: 1 0; }
-            min: 0 1;
-            fixed: 0 1;
-            align: 0.5 0;
-            image.normal: "shine.png";
          }
       }
       part { name: "tools_overlay";
