@@ -142,7 +142,7 @@ tools_create(Evas_Object *parent, edit_data *ed)
    evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
    elm_box_pack_end(box, btn);
 
-   btn = tools_btn_create(box, "live_edit", "LiveEdit", swallow_cb, NULL);
+   btn = tools_btn_create(box, "live_edit", "LiveEdit", live_edit_cb, NULL);
    evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
    elm_box_pack_end(box, btn);
