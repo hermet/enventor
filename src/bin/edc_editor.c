@@ -721,6 +721,8 @@ edit_line_delete(edit_data *ed)
 
    cur_line_pos_set(ed, EINA_TRUE);
    edit_changed_set(ed, EINA_TRUE);
+
+   syntax_color_partial_update(ed, SYNTAX_COLOR_DEFAULT_TIME);
 }
 
 int
