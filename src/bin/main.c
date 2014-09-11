@@ -487,7 +487,7 @@ args_dispatch(int argc, char **argv, char *edc_path, char *img_path,
      }
 
 defaults:
-   if (default_edc) sprintf(edc_path, "%s", DEFAULT_EDC_PATH);
+   if (default_edc) sprintf(edc_path, DEFAULT_EDC_PATH_FORMAT, getpid());
 }
 
 static void

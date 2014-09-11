@@ -28,17 +28,19 @@ newfile_set(edit_data *ed)
 
    Eina_Bool success = EINA_TRUE;
    char buf[PATH_MAX];
+   char default_path[PATH_MAX];
+
    snprintf(buf, sizeof(buf), "%s/templates/%s.edc",
             elm_app_data_dir_get(), elm_object_item_text_get(it));
-   config_edc_path_set(DEFAULT_EDC_PATH);
-   success = eina_file_copy(buf, config_edc_path_get(),
+   sprintf(default_path, DEFAULT_EDC_PATH_FORMAT, getpid());
+   success = eina_file_copy(buf, default_path,
                             EINA_FILE_COPY_DATA, NULL, NULL);
    if (!success)
      {
         EINA_LOG_ERR("Cannot find file! \"%s\"", buf);
         return;
      }
-   edit_edc_reload(ed, DEFAULT_EDC_PATH);
+   edit_edc_reload(ed, default_path);
 }
 
 void
