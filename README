@@ -12,7 +12,7 @@ it does a lot.
   elementary (>= 1.9.0)
   
 Please note that some features may not quite function correctly or completely
-under EFL 1.10. Newer would be better.
+less EFL 1.10. Newer would be better.
   
 Please see http://www.enlightenment.org for information on these.
   
