@@ -10,7 +10,7 @@ images {
    image: "live_rel1_dragable.png" COMP;
    image: "live_rel2_dragable.png" COMP;
    image: "live_bg_glow_in.png" COMP;
-   image: "bevel_in.png" COMP;
+   image: "bevel_out.png" COMP;
 }
 
 styles {
@@ -2165,7 +2165,7 @@ group { name: "main_layout";
          description { state: "default" 0.0;
             rel1.relative: 0 0;
             rel2.relative: 1 0;
-            min: 0 26;
+            min: 0 23;
             fixed: 0 1;
             align: 0.5 1;
          }
@@ -2191,8 +2191,8 @@ group { name: "main_layout";
          description { state: "default" 0.0;
             rel1 { to: "tools_base"; }
             rel2 { to: "tools_base"; }
-            image.normal: "bevel_in.png";
-            image.border: 3 3 3 3;
+            image.normal: "bevel_out.png";
+            image.border: 1 1 1 1;
             image.border_scale: 1;
          }
       }

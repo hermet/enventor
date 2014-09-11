@@ -96,7 +96,7 @@ tools_btn_create(Evas_Object *parent, const char *icon, const char *label,
                  Evas_Smart_Cb func, void *data)
 {
    Evas_Object *btn = elm_button_add(parent);
-   elm_object_style_set(btn, "anchor");
+   elm_object_style_set(btn, "enventor");
    elm_object_focus_allow_set(btn, EINA_FALSE);
 
    Evas_Object *img = elm_image_add(btn);
