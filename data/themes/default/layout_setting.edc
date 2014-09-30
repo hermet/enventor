@@ -135,7 +135,7 @@ group { name: "setting_layout";
             fixed: 0 1;
          }
       }
-      part { name: "data_path_frame";
+      part { name: "dat_path_frame";
          type: SPACER;
          scale: 1;
          description {
@@ -150,8 +150,8 @@ group { name: "setting_layout";
          type: SPACER;
          scale: 1;
          description {
-            rel1 {to: "data_path_frame"; relative: 0 1; offset: 0 5;}
-            rel2 {to: "data_path_frame"; relative: 1 1;}
+            rel1 {to: "dat_path_frame"; relative: 0 1; offset: 0 5;}
+            rel2 {to: "dat_path_frame"; relative: 1 1;}
             align: 0.5 0;
             min: 0 140;
             fixed: 0 1;
@@ -301,7 +301,7 @@ group { name: "setting_layout";
             rel2.to: "fnt_path_frame";
          }
       }
-      part { name: "data_path_icon";
+      part { name: "dat_path_icon";
          type: IMAGE;
          scale: 1;
          clip_to: "clipper";
@@ -310,19 +310,19 @@ group { name: "setting_layout";
             min: 20 20;
             max: 20 20;
             fixed: 1 1;
-            rel1.to: "data_path_frame";
-            rel2.to: "data_path_frame";
+            rel1.to: "dat_path_frame";
+            rel2.to: "dat_path_frame";
             image.normal: "folder.png";
          }
       }
-      part { name: "data_path_guide";
+      part { name: "dat_path_guide";
          type: TEXT;
          effect: SHADOW BOTTOM;
          scale: 1;
          clip_to: "clipper";
          description {
-            rel1 {to: "data_path_icon"; relative: 1 0; offset: 5 1;}
-            rel2 {to: "data_path_icon"; relative: 1 1;}
+            rel1 {to: "dat_path_icon"; relative: 1 0; offset: 5 1;}
+            rel2 {to: "dat_path_icon"; relative: 1 1;}
             color: COL_NM;
             align: 0 0.5;
             fixed: 1 1;
@@ -335,18 +335,18 @@ group { name: "setting_layout";
             }
          }
       }
-      part { name: "elm.swallow.data_path_entry";
+      part { name: "elm.swallow.dat_path_entry";
          type: SWALLOW;
          scale: 1;
          clip_to: "clipper";
          description {
             align: 0 0;
             fixed: 1 1;
-            rel1.to_x: "data_path_guide";
-            rel1.to_y: "data_path_guide";
+            rel1.to_x: "dat_path_guide";
+            rel1.to_y: "dat_path_guide";
             rel1.offset: 14 0;
             rel1.relative: 1 0;
-            rel2.to: "data_path_frame";
+            rel2.to: "dat_path_frame";
          }
       }
       part { name: "preference_icon";

@@ -1,9 +1,19 @@
-#include <Elementary.h>
-#include "common.h"
+#ifdef HAVE_CONFIG_H
+ #include "config.h"
+#endif
+
+#define ENVENTOR_BETA_API_SUPPORT 1
+
+#include <Enventor.h>
+#include "enventor_private.h"
 #include "template_code.h"
 
 const char *NAME_SEED = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 const int NAME_SEED_LEN = 52;
+
+/*****************************************************************************/
+/* Internal method implementation                                            */
+/*****************************************************************************/
 
 static void
 template_random_string_create(char *buf, int size)
@@ -27,7 +37,7 @@ image_description_add(edit_data *ed)
    if (images_block)
       {
          elm_entry_cursor_pos_set(edit_entry, cursor_pos);
-         template_insert(ed, TEMPLATE_INSERT_LIVE_EDIT);
+         template_insert(ed, TEMPLATE_INSERT_LIVE_EDIT, NULL, 0);
       }
    else
       {
@@ -98,16 +108,21 @@ template_part_insert_cursor_pos_set(edit_data *ed,
    return cursor_pos;
 }
 
-void
+/*****************************************************************************/
+/* Externally accessible calls                                               */
+/*****************************************************************************/
+
+Eina_Bool
 template_part_insert(edit_data *ed, Edje_Part_Type part_type,
                      Template_Insert_Type insert_type, float rel1_x,
                      float rel1_y, float rel2_x, float rel2_y,
-                     const Eina_Stringshare *group_name)
+                     const Eina_Stringshare *group_name, char *syntax, size_t n)
 {
    Evas_Object *edit_entry = edit_entry_get(ed);
    int cursor_pos = template_part_insert_cursor_pos_set(ed, insert_type,
                                                         group_name);
-   if (cursor_pos == -1) return;
+   if (cursor_pos == -1) return EINA_FALSE;
+
    int cursor_pos1 = elm_entry_cursor_pos_get(edit_entry);
    int space = edit_cur_indent_depth_get(ed);
 
@@ -119,34 +134,33 @@ template_part_insert(edit_data *ed, Edje_Part_Type part_type,
    int line_cnt;
    char **t;
    char buf[64];
-   char part[20];
 
    switch(part_type)
      {
         case EDJE_PART_TYPE_RECTANGLE:
            line_cnt = TEMPLATE_PART_RECT_LINE_CNT;
            t = (char **) &TEMPLATE_PART_RECT;
-           strcpy(part, "Rect");
+           strncpy(syntax, "Rect", n);
            break;
         case EDJE_PART_TYPE_TEXT:
            line_cnt = TEMPLATE_PART_TEXT_LINE_CNT;
            t = (char **) &TEMPLATE_PART_TEXT;
-           strcpy(part, "Text");
+           strncpy(syntax, "Text", n);
            break;
         case EDJE_PART_TYPE_SWALLOW:
            line_cnt = TEMPLATE_PART_SWALLOW_LINE_CNT;
            t = (char **) &TEMPLATE_PART_SWALLOW;
-           strcpy(part, "Swallow");
+           strncpy(syntax, "Swallow", n);
            break;
         case EDJE_PART_TYPE_TEXTBLOCK:
            line_cnt = TEMPLATE_PART_TEXTBLOCK_LINE_CNT;
            t = (char **) &TEMPLATE_PART_TEXTBLOCK;
-           strcpy(part, "Textblock");
+           strncpy(syntax, "Textblock", n);
            break;
         case EDJE_PART_TYPE_SPACER:
            line_cnt = TEMPLATE_PART_SPACER_LINE_CNT;
            t = (char **) &TEMPLATE_PART_SPACER;
-           strcpy(part, "Spacer");
+           strncpy(syntax, "Spacer", n);
            break;
         case EDJE_PART_TYPE_IMAGE:
         case EDJE_PART_TYPE_NONE:
@@ -159,7 +173,7 @@ template_part_insert(edit_data *ed, Edje_Part_Type part_type,
         case EDJE_PART_TYPE_LAST:
            line_cnt = TEMPLATE_PART_IMAGE_LINE_CNT;
            t = (char **) &TEMPLATE_PART_IMAGE;
-           strcpy(part, "Image");
+           strncpy(syntax, "Image", n);
            break;
      }
 
@@ -229,71 +243,59 @@ template_part_insert(edit_data *ed, Edje_Part_Type part_type,
         else if (part_type == EDJE_PART_TYPE_TEXTBLOCK)
           textblock_style_add(ed, random_name);
      }
-
-   snprintf(buf, sizeof(buf), "Template code inserted. (%s Part)", part);
-   stats_info_msg_update(buf);
    edit_syntax_color_partial_apply(ed, 0);
    edit_changed_set(ed, EINA_TRUE);
-   edit_save(ed);
+
+   return EINA_TRUE;
 }
 
-void
-template_insert(edit_data *ed, Template_Insert_Type insert_type)
+Eina_Bool
+template_insert(edit_data *ed, Template_Insert_Type insert_type, char *syntax, size_t n)
 {
-   const char *EXCEPT_MSG = "Can't insert template code here. Move the cursor"
-                            "inside the \"Collections,Images,Parts,Part,"
-                            "Programs\" scope.";
-
    Evas_Object *entry = edit_entry_get(ed);
    Eina_Stringshare *paragh = edit_cur_paragh_get(ed);
-   if (!paragh)
-     {
-        stats_info_msg_update(EXCEPT_MSG);
-        return;
-     }
+   Eina_Bool ret = EINA_FALSE;
+   if (!paragh) return EINA_FALSE;
 
    if (!strcmp(paragh, "parts"))
      {
-        template_part_insert(ed, EDJE_PART_TYPE_IMAGE, TEMPLATE_INSERT_DEFAULT,
-                             REL1_X, REL1_Y, REL2_X, REL2_Y, NULL);
+        ret = template_part_insert(ed, EDJE_PART_TYPE_IMAGE,
+                                   TEMPLATE_INSERT_DEFAULT,
+                                   REL1_X, REL1_Y, REL2_X, REL2_Y, NULL, syntax,
+                                   n);
         goto end;
      }
 
    int line_cnt;
    char **t = NULL;
-   char buf[64];
-   char buf2[12];
 
    if (!strcmp(paragh, "part"))
      {
         line_cnt = TEMPLATE_DESC_LINE_CNT;
         t = (char **) &TEMPLATE_DESC;
-        strcpy(buf2, "Description");
+        strncpy(syntax, "Description", n);
      }
    else if (!strcmp(paragh, "programs"))
      {
         line_cnt = TEMPLATE_PROG_LINE_CNT;
         t = (char **) &TEMPLATE_PROG;
-        strcpy(buf2, "Program");
+        strncpy(syntax, "Program", n);
      }
    else if (!strcmp(paragh, "images"))
      {
         line_cnt = TEMPLATE_IMG_LINE_CNT;
         t = (char **) &TEMPLATE_IMG;
-        strcpy(buf2, "Image File");
+        strncpy(syntax, "Image File", n);
      }
    else if (!strcmp(paragh, "collections"))
      {
         line_cnt = TEMPLATE_GROUP_LINE_CNT;
         t = (char **) &TEMPLATE_GROUP;
-        strcpy(buf2, "Group");
+        strncpy(syntax, "Group", n);
      }
 
-   if (!t)
-     {
-        stats_info_msg_update(EXCEPT_MSG);
-        goto end;
-     }
+   if (!t) goto end;
+
    int cursor_pos = elm_entry_cursor_pos_get(entry);
    elm_entry_cursor_line_begin_set(entry);
    int cursor_pos1 = elm_entry_cursor_pos_get(entry);
@@ -324,9 +326,11 @@ template_insert(edit_data *ed, Template_Insert_Type insert_type)
    elm_entry_cursor_pos_set(entry, cursor_pos);
 
    edit_syntax_color_partial_apply(ed, 0);
-   snprintf(buf, sizeof(buf), "Template code inserted. (%s)", buf2);
-   stats_info_msg_update(buf);
+
+   ret = EINA_TRUE;
 
 end:
    eina_stringshare_del(paragh);
+
+   return ret;
 }

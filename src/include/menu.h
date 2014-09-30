@@ -1,4 +1,4 @@
-void menu_init(edit_data *ed);
+void menu_init(Evas_Object *enventor);
 void menu_term(void);
 void menu_toggle(void);
 void menu_ctxpopup_register(Evas_Object *ctxpopup);

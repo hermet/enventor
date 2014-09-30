@@ -10,12 +10,12 @@ struct menu_s
    Evas_Object *about_layout;
 
    Evas_Object *ctxpopup;
+   Evas_Object *enventor;
 
    const char *last_accessed_path;
 
    int active_request;
 
-   edit_data *ed;
 };
 
 typedef struct menu_s menu_data;
@@ -121,7 +121,7 @@ newfile_ok_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
                   void *event_info EINA_UNUSED)
 {
    menu_data *md = data;
-   newfile_set(md->ed);
+   newfile_set(md->enventor);
    newfile_close(md);
    menu_close(md);
 }
@@ -308,7 +308,7 @@ exit_save_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
                  void *event_info EINA_UNUSED)
 {
    menu_data *md = data;
-   edit_save(md->ed);
+   enventor_object_save(md->enventor, config_edc_path_get());
    elm_exit();
 }
 
@@ -324,7 +324,7 @@ prev_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
             void *event_info EINA_UNUSED)
 {
    menu_data *md = data;
-   edit_focus_set(md->ed);
+   enventor_object_focus_set(md->enventor, EINA_TRUE);
    menu_toggle();
 }
 
@@ -356,8 +356,7 @@ new_save_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
                 void *event_info EINA_UNUSED)
 {
    menu_data *md = data;
-
-   edit_save(md->ed);
+   enventor_object_save(md->enventor, config_edc_path_get());
    newfile_open(md);
    warning_close(md);
    menu_close(md);
@@ -417,22 +416,22 @@ fileselector_save_done_cb(void *data, Evas_Object *obj, void *event_info)
 
    //Update the edc file and try to save.
    if (strcmp(config_edc_path_get(), selected))
-     edit_changed_set(md->ed, EINA_TRUE);
-
+     enventor_object_modified_set(md->enventor, EINA_TRUE);
    config_edc_path_set(selected);
 
-   if (!edit_save(md->ed))
+   if (!enventor_object_save(md->enventor, selected))
      {
         char buf[PATH_MAX];
-        snprintf(buf, sizeof(buf), "Failed to load: %s.", selected);
+        snprintf(buf, sizeof(buf), "Failed to save: %s.", selected);
         elm_object_part_text_set(md->fileselector_layout,
                                  "elm.text.msg", buf);
         elm_object_signal_emit(md->fileselector_layout,
                                "elm,action,msg,show", "");
         return;
      }
-
+#if 0
    edj_mgr_reload_need_set(EINA_TRUE);
+#endif
    config_apply();
 
    base_title_set(selected);
@@ -495,7 +494,8 @@ fileselector_load_done_cb(void *data, Evas_Object *obj, void *event_info)
                                "elm,action,msg,show", "");
         return;
      }
-   edit_edc_reload(md->ed, selected);
+   enventor_object_file_set(md->enventor, selected);
+   base_title_set(selected);
    fileselector_close(md);
    menu_close(md);
 }
@@ -586,7 +586,7 @@ load_save_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
                  void *event_info EINA_UNUSED)
 {
    menu_data *md = data;
-   edit_save(md->ed);
+   enventor_object_save(md->enventor);
    edc_file_load(md);
    warning_close(md);
 }
@@ -658,7 +658,7 @@ ctxpopup_del_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 }
 
 void
-menu_init(edit_data *ed)
+menu_init(Evas_Object *enventor)
 {
    menu_data *md = calloc(1, sizeof(menu_data));
    if (!md)
@@ -668,7 +668,7 @@ menu_init(edit_data *ed)
      }
    g_md = md;
 
-   md->ed = ed;
+   md->enventor = enventor;
 }
 
 void
@@ -695,7 +695,7 @@ void
 menu_edc_new(void)
 {
    menu_data *md = g_md;
-   if (edit_changed_get(md->ed))
+   if (enventor_object_modified_get(md->enventor))
      warning_open(md, new_yes_btn_cb, new_save_btn_cb);
    else
      newfile_open(md);
@@ -712,7 +712,7 @@ void
 menu_edc_load(void)
 {
    menu_data *md = g_md;
-   if (edit_changed_get(md->ed))
+   if (enventor_object_modified_get(md->enventor))
      warning_open(md, load_yes_btn_cb, load_save_btn_cb);
    else
      edc_file_load(md);
@@ -792,7 +792,7 @@ void
 menu_exit(void)
 {
    menu_data *md = g_md;
-   if (edit_changed_get(md->ed))
+   if (enventor_object_modified_get(md->enventor))
      {
         search_close();
         warning_open(md, exit_yes_btn_cb, exit_save_btn_cb);
@@ -806,7 +806,9 @@ menu_deactivate_request(void)
 {
    menu_data *md = g_md;
    md->active_request--;
-   if (md->active_request == 0) edit_focus_set(md->ed);
+
+   if (md->active_request == 0)
+     enventor_object_focus_set(md->enventor, EINA_TRUE);
    if (!md->menu_layout) return;
    elm_object_disabled_set(md->menu_layout, EINA_FALSE);
    elm_object_focus_set(md->menu_layout, EINA_TRUE);

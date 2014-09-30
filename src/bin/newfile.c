@@ -18,7 +18,7 @@ list_del_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 }
 
 void
-newfile_set(edit_data *ed)
+newfile_set(Evas_Object *enventor)
 {
    new_data *nd = g_nd;
    if (!nd) return;
@@ -40,7 +40,8 @@ newfile_set(edit_data *ed)
         EINA_LOG_ERR("Cannot find file! \"%s\"", buf);
         return;
      }
-   edit_edc_reload(ed, default_path);
+   enventor_object_file_set(enventor, default_path);
+   base_title_set(default_path);
 }
 
 void

@@ -1,5 +1,11 @@
-#include <Elementary.h>
-#include "common.h"
+#ifdef HAVE_CONFIG_H
+ #include "config.h"
+#endif
+
+#define ENVENTOR_BETA_API_SUPPORT 1
+
+#include <Enventor.h>
+#include "enventor_private.h"
 
 #define DEFAULT_QUEUE_SIZE 200
 
@@ -23,6 +29,10 @@ struct redoundo_s
    unsigned int queue_max;        //Maximum queuing data count 0: unlimited
    Eina_Bool internal_change : 1; //Entry change by redoundo
 };
+
+/*****************************************************************************/
+/* Internal method implementation                                            */
+/*****************************************************************************/
 
 static void
 untracked_diff_free(redoundo_data *rd)
@@ -108,6 +118,10 @@ entry_changed_user_cb(void *data, Evas_Object *obj EINA_UNUSED,
 nochange:
    free(diff);
 }
+
+/*****************************************************************************/
+/* Externally accessible calls                                               */
+/*****************************************************************************/
 
 int
 redoundo_undo(redoundo_data *rd, Eina_Bool *changed)

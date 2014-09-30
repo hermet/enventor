@@ -10,6 +10,10 @@ typedef struct base_s
 
 static base_data *g_bd = NULL;
 
+/*****************************************************************************/
+/* Internal method implementation                                            */
+/*****************************************************************************/
+
 static void
 win_delete_request_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
                       void *event_info EINA_UNUSED)
@@ -22,6 +26,19 @@ win_focused_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
                void *event_info EINA_UNUSED)
 {
    goto_close();
+}
+
+/*****************************************************************************/
+/* Externally accessible calls                                               */
+/*****************************************************************************/
+
+void
+base_error_msg_set(const char *msg)
+{
+   base_data *bd = g_bd;
+   if (panes_editors_full_view_get()) base_editors_full_view();
+   elm_object_signal_emit(bd->layout, "elm,state,alert,show", "");
+   console_text_set(bd->console, msg);
 }
 
 void
@@ -98,7 +115,7 @@ base_live_view_full_view(void)
 }
 
 void
-base_text_editor_full_view(void)
+base_enventor_full_view(void)
 {
    panes_text_editor_full_view();
 }
@@ -113,12 +130,6 @@ void
 base_console_full_view(void)
 {
    panes_console_full_view();
-}
-
-void
-base_text_editor_set(Evas_Object *text_editor)
-{
-   panes_text_editor_set(text_editor);
 }
 
 void
@@ -140,15 +151,6 @@ base_gui_term(void)
    base_data *bd = g_bd;
    panes_term();
    free(bd);
-}
-
-static void
-err_noti_cb(void *data, const char *msg)
-{
-   base_data *bd = data;
-   if (panes_editors_full_view_get()) base_editors_full_view();
-   elm_object_signal_emit(bd->layout, "elm,state,alert,show", "");
-   console_text_set(bd->console, msg);
 }
 
 void
@@ -200,8 +202,6 @@ base_gui_init(void)
    Evas_Object *console = console_create(panes);
    panes_console_set(console);
 
-   build_err_noti_cb_set(err_noti_cb, bd);
-
    bd->win = win;
    bd->layout = layout;
    bd->console = console;
@@ -213,4 +213,10 @@ void
 base_gui_show(void)
 {
    evas_object_show(g_bd->win);
+}
+
+void
+base_enventor_set(Evas_Object *enventor)
+{
+   panes_text_editor_set(enventor);
 }

@@ -1,5 +1,11 @@
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#define ENVENTOR_BETA_API_SUPPORT 1
+
 #include <Elementary_Cursor.h>
-#include <Elementary.h>
+#include <Enventor.h>
 #include "common.h"
 
 typedef struct menu_data_s
@@ -19,7 +25,7 @@ typedef struct live_editor_s
 {
    Evas_Object *menu;
    Evas_Object *layout;
-   edit_data *ed;
+   Evas_Object *enventor;
    cur_part_data *cur_part_data;
 
    Ecore_Event_Handler *key_down_handler;
@@ -193,6 +199,7 @@ key_down_cb(void *data, int type EINA_UNUSED, void *ev)
 
    if (!strcmp(event->key, "Return"))
      {
+#if 0
         template_part_insert(ld->ed,
                              MENU_ITEMS[ld->cur_part_data->type].type,
                              TEMPLATE_INSERT_LIVE_EDIT,
@@ -201,6 +208,7 @@ key_down_cb(void *data, int type EINA_UNUSED, void *ev)
                              ld->cur_part_data->rel2_x,
                              ld->cur_part_data->rel2_y,
                              view_group_name_get(VIEW_DATA));
+#endif
      }
    else if (strcmp(event->key, "Delete")) return EINA_TRUE;
 
@@ -300,7 +308,7 @@ live_edit_toggle(void)
 {
    live_data *ld = g_ld;
    Eina_Bool on = !config_live_edit_get();
-
+#if 0
    Evas_Object *event_obj = view_obj_get(VIEW_DATA);
    if (!event_obj) return;
 
@@ -315,8 +323,10 @@ live_edit_toggle(void)
                                        layout_mouse_up_cb);
         live_edit_reset(ld);
      }
-
-   edit_disabled_set(ld->ed, on);
+#endif
+#if 0
+   enventor_object_disabled_set(ld->enventor, on);
+#endif
 
    if (on) stats_info_msg_update("Live View Edit Mode Enabled.");
    else stats_info_msg_update("Live View Edit Mode Disabled.");
@@ -332,7 +342,7 @@ live_edit_cancel(void)
 }
 
 void
-live_edit_init(edit_data *ed)
+live_edit_init(Evas_Object *enventor)
 {
    live_data *ld = calloc(1, sizeof(live_data));
    if (!ld)
@@ -349,7 +359,7 @@ live_edit_init(edit_data *ed)
         return;
      }
 
-   ld->ed = ed;
+   ld->enventor = enventor;
 
    ld->menu = NULL;
    ld->layout = NULL;

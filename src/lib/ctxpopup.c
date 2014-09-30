@@ -1,5 +1,11 @@
-#include <Elementary.h>
-#include "common.h"
+#ifdef HAVE_CONFIG_H
+ #include "config.h"
+#endif
+
+#define ENVENTOR_BETA_API_SUPPORT 1
+
+#include <Enventor.h>
+#include "enventor_private.h"
 
 typedef struct ctxpopup_data_s {
    Evas_Smart_Cb selected_cb;
@@ -7,6 +13,10 @@ typedef struct ctxpopup_data_s {
    Evas_Object *ctxpopup;
    void *data;
 } ctxpopup_data;
+
+/*****************************************************************************/
+/* Internal method implementation                                            */
+/*****************************************************************************/
 
 static void
 btn_plus_cb(void *data, Evas_Object *obj EINA_UNUSED,
@@ -231,6 +241,94 @@ end:
    return ret;
 }
 
+static void
+image_relay(ctxpopup_data *ctxdata, Eina_Bool up)
+{
+   if (up)
+     ctxdata->relay_cb(ctxdata->data, ctxdata->ctxpopup, (void *) 0);
+   else
+     ctxdata->relay_cb(ctxdata->data, ctxdata->ctxpopup, (void *) 1);
+}
+
+static void
+ctxpopup_mouse_wheel_cb(void *data, Evas *e EINA_UNUSED,
+                        Evas_Object *obj EINA_UNUSED, void *event_info)
+{
+   Evas_Event_Mouse_Wheel *ev = event_info;
+   ctxpopup_data *ctxdata = data;
+
+   if (ev->z > 0) image_relay(ctxdata, EINA_FALSE);
+   else if (ev->z < 0) image_relay(ctxdata, EINA_TRUE);
+}
+
+static void
+ctxpopup_key_down_cb(void *data, Evas *e EINA_UNUSED,
+                     Evas_Object *obj EINA_UNUSED, void *event_info)
+{
+   Evas_Event_Key_Down *ev = event_info;
+   ctxpopup_data *ctxdata = data;
+
+   if (!strcmp(ev->key, "Down")) image_relay(ctxdata, EINA_FALSE);
+   else if (!strcmp(ev->key, "Up")) image_relay(ctxdata, EINA_TRUE);
+}
+
+/*****************************************************************************/
+/* Externally accessible calls                                               */
+/*****************************************************************************/
+
+Evas_Object *
+ctxpopup_img_preview_create(edit_data *ed,
+                            const char *imgpath,
+                            Evas_Smart_Cb ctxpopup_dismiss_cb,
+                            Evas_Smart_Cb ctxpopup_relay_cb)
+{
+   //create ctxpopup
+   Evas_Object *ctxpopup = elm_ctxpopup_add(edit_obj_get(ed));
+   if (!ctxpopup) return NULL;
+
+   elm_object_style_set(ctxpopup, "enventor");
+   elm_ctxpopup_direction_priority_set(ctxpopup, ELM_CTXPOPUP_DIRECTION_LEFT,
+                                       ELM_CTXPOPUP_DIRECTION_UP,
+                                       ELM_CTXPOPUP_DIRECTION_DOWN,
+                                       ELM_CTXPOPUP_DIRECTION_RIGHT);
+   //ctxpopup data
+   ctxpopup_data *ctxdata = malloc(sizeof(ctxpopup_data));
+   if (!ctxdata)
+     {
+        EINA_LOG_ERR("Failed to allocate Memory!");
+        return NULL;
+     }
+   ctxdata->relay_cb = ctxpopup_relay_cb;
+   ctxdata->data = ed;
+   ctxdata->ctxpopup = ctxpopup;
+   evas_object_data_set(ctxpopup, "ctxpopup_data", ctxdata);
+
+   //Layout
+   Evas_Object *layout = elm_layout_add(ctxpopup);
+   elm_layout_file_set(layout, EDJE_PATH, "preview_layout");
+   elm_object_content_set(ctxpopup, layout);
+
+   Evas *e = evas_object_evas_get(ctxpopup);
+   Evas_Object *img = evas_object_image_filled_add(e);
+   evas_object_image_file_set(img, imgpath, NULL);
+   Evas_Coord w, h;
+   evas_object_image_size_get(img, &w, &h);
+   evas_object_size_hint_aspect_set(img, EVAS_ASPECT_CONTROL_BOTH, w, h);
+   elm_object_part_content_set(layout, "elm.swallow.img", img);
+
+   evas_object_smart_callback_add(ctxpopup, "dismissed", ctxpopup_dismiss_cb,
+                                  ed);
+   evas_object_event_callback_add(ctxpopup, EVAS_CALLBACK_DEL, ctxpopup_del_cb,
+                                  ctxdata);
+   evas_object_event_callback_add(ctxpopup, EVAS_CALLBACK_KEY_DOWN,
+                                  ctxpopup_key_down_cb, ctxdata);
+   evas_object_event_callback_add(ctxpopup, EVAS_CALLBACK_MOUSE_WHEEL,
+                                  ctxpopup_mouse_wheel_cb, ctxdata);
+   evas_object_focus_set(ctxpopup, EINA_TRUE);
+
+   return ctxpopup;
+}
+
 Evas_Object *
 ctxpopup_candidate_list_create(edit_data *ed, attr_value *attr,
                                double slider_val,
@@ -238,10 +336,10 @@ ctxpopup_candidate_list_create(edit_data *ed, attr_value *attr,
                                Evas_Smart_Cb ctxpopup_selected_cb)
 {
    //create ctxpopup
-   Evas_Object *ctxpopup = elm_ctxpopup_add(base_layout_get());
+   Evas_Object *ctxpopup = elm_ctxpopup_add(edit_obj_get(ed));
    if (!ctxpopup) return NULL;
 
-   elm_object_style_set(ctxpopup, elm_app_name_get());
+   elm_object_style_set(ctxpopup, "enventor");
 
    //ctxpopup data
    ctxpopup_data *ctxdata = malloc(sizeof(ctxpopup_data));
@@ -305,85 +403,3 @@ err:
    return NULL;
 }
 
-static void
-image_relay(ctxpopup_data *ctxdata, Eina_Bool up)
-{
-   if (up)
-     ctxdata->relay_cb(ctxdata->data, ctxdata->ctxpopup, (void *) 0);
-   else
-     ctxdata->relay_cb(ctxdata->data, ctxdata->ctxpopup, (void *) 1);
-}
-
-static void
-ctxpopup_mouse_wheel_cb(void *data, Evas *e EINA_UNUSED,
-                        Evas_Object *obj EINA_UNUSED, void *event_info)
-{
-   Evas_Event_Mouse_Wheel *ev = event_info;
-   ctxpopup_data *ctxdata = data;
-
-   if (ev->z > 0) image_relay(ctxdata, EINA_FALSE);
-   else if (ev->z < 0) image_relay(ctxdata, EINA_TRUE);
-}
-
-static void
-ctxpopup_key_down_cb(void *data, Evas *e EINA_UNUSED,
-                     Evas_Object *obj EINA_UNUSED, void *event_info)
-{
-   Evas_Event_Key_Down *ev = event_info;
-   ctxpopup_data *ctxdata = data;
-
-   if (!strcmp(ev->key, "Down")) image_relay(ctxdata, EINA_FALSE);
-   else if (!strcmp(ev->key, "Up")) image_relay(ctxdata, EINA_TRUE);
-}
-
-Evas_Object *
-ctxpopup_img_preview_create(edit_data *ed,
-                            const char *imgpath,
-                            Evas_Smart_Cb ctxpopup_dismiss_cb,
-                            Evas_Smart_Cb ctxpopup_relay_cb)
-{
-   //create ctxpopup
-   Evas_Object *ctxpopup = elm_ctxpopup_add(base_layout_get());
-   if (!ctxpopup) return NULL;
-
-   elm_object_style_set(ctxpopup, elm_app_name_get());
-   elm_ctxpopup_direction_priority_set(ctxpopup, ELM_CTXPOPUP_DIRECTION_LEFT,
-                                       ELM_CTXPOPUP_DIRECTION_UP,
-                                       ELM_CTXPOPUP_DIRECTION_DOWN,
-                                       ELM_CTXPOPUP_DIRECTION_RIGHT);
-   //ctxpopup data
-   ctxpopup_data *ctxdata = malloc(sizeof(ctxpopup_data));
-   if (!ctxdata)
-     {
-        EINA_LOG_ERR("Failed to allocate Memory!");
-        return NULL;
-     }
-   ctxdata->relay_cb = ctxpopup_relay_cb;
-   ctxdata->data = ed;
-   ctxdata->ctxpopup = ctxpopup;
-   evas_object_data_set(ctxpopup, "ctxpopup_data", ctxdata);
-
-   //Layout
-   Evas_Object *layout = elm_layout_add(ctxpopup);
-   elm_layout_file_set(layout, EDJE_PATH, "preview_layout");
-   elm_object_content_set(ctxpopup, layout);
-
-   Evas *e = evas_object_evas_get(ctxpopup);
-   Evas_Object *img = evas_object_image_filled_add(e);
-   evas_object_image_file_set(img, imgpath, NULL);
-   Evas_Coord w, h;
-   evas_object_image_size_get(img, &w, &h);
-   evas_object_size_hint_aspect_set(img, EVAS_ASPECT_CONTROL_BOTH, w, h);
-   elm_object_part_content_set(layout, "elm.swallow.img", img);
-
-   evas_object_smart_callback_add(ctxpopup, "dismissed", ctxpopup_dismiss_cb,
-                                  ed);
-   evas_object_event_callback_add(ctxpopup, EVAS_CALLBACK_DEL, ctxpopup_del_cb,
-                                  ctxdata);
-   evas_object_event_callback_add(ctxpopup, EVAS_CALLBACK_KEY_DOWN,
-                                  ctxpopup_key_down_cb, ctxdata);
-   evas_object_event_callback_add(ctxpopup, EVAS_CALLBACK_MOUSE_WHEEL,
-                                  ctxpopup_mouse_wheel_cb, ctxdata);
-   evas_object_focus_set(ctxpopup, EINA_TRUE);
-   return ctxpopup;
-}

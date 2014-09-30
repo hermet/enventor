@@ -1,13 +1,16 @@
-#include <Elementary.h>
-#include <Eio.h>
+#ifdef HAVE_CONFIG_H
 #include "config.h"
+#endif
+
+#define ENVENTOR_BETA_API_SUPPORT 1
+
+#include <Eio.h>
+#include <Enventor.h>
 #include "common.h"
 
 typedef struct app_s
 {
-   edit_data *ed;
-
-   Eio_Monitor *edc_monitor;
+   Evas_Object *enventor;
 
    Eina_Bool ctrl_pressed : 1;
    Eina_Bool shift_pressed : 1;
@@ -16,53 +19,34 @@ typedef struct app_s
 int main(int argc, char **argv);
 
 static Eina_Bool
-edc_changed_cb(void *data, int type EINA_UNUSED, void *event)
-{
-   Eio_Monitor_Event *ev = event;
-   app_data *ad = data;
-
-   if (ev->monitor != ad->edc_monitor) return ECORE_CALLBACK_PASS_ON;
-
-   if (!edit_changed_get(ad->ed)) return ECORE_CALLBACK_DONE;
-
-   if (strcmp(ev->filename, config_edc_path_get()))
-     return ECORE_CALLBACK_DONE;
-   build_edc();
-   edit_changed_set(ad->ed, EINA_FALSE);
-
-   return ECORE_CALLBACK_DONE;
-}
-
-static Eina_Bool
-edc_default_setup()
-{
-   newfile_default_set();
-   build_edc();
-
-   return EINA_TRUE;
-}
-
-static Eina_Bool
 main_key_up_cb(void *data, int type EINA_UNUSED, void *ev)
 {
    Ecore_Event_Key *event = ev;
    app_data *ad = data;
 
    if (!strcmp("Control_L", event->key))
-     {
-        edit_editable_set(ad->ed, EINA_TRUE);
-        ad->ctrl_pressed = EINA_FALSE;
-     }
+     ad->ctrl_pressed = EINA_FALSE;
    else if (!strcmp("Shift_L", event->key))
      ad->shift_pressed = EINA_FALSE;
 
    return ECORE_CALLBACK_PASS_ON;
 }
 
+void
+auto_comp_toggle(app_data *ad)
+{
+   Eina_Bool toggle = !config_auto_complete_get();
+   enventor_object_auto_complete_set(ad->enventor, toggle);
+   if (toggle) stats_info_msg_update("Auto Completion Enabled.");
+   else stats_info_msg_update("Auto Completion Disabled.");
+   config_auto_complete_set(toggle);
+}
+
 static void
-auto_indentation_toggle()
+auto_indent_toggle(app_data *ad)
 {
    Eina_Bool toggle = !config_auto_indent_get();
+   enventor_object_auto_indent_set(ad->enventor, toggle);
    if (toggle) stats_info_msg_update("Auto Indentation Enabled.");
    else stats_info_msg_update("Auto Indentation Disabled.");
    config_auto_indent_set(toggle);
@@ -106,211 +90,61 @@ template_insert_patch(app_data *ad, const char *key)
    else
      part_type = EDJE_PART_TYPE_NONE;
 
-   template_part_insert(ad->ed, part_type, TEMPLATE_INSERT_DEFAULT,
-                        REL1_X, REL1_Y, REL2_X, REL2_Y, NULL);
-
+   char syntax[12];
+   if (enventor_object_template_part_insert(ad->enventor, part_type, REL1_X,
+                                            REL1_Y, REL2_X, REL2_Y, syntax,
+                                            sizeof(syntax)))
+     {
+        char msg[64];
+        snprintf(msg, sizeof(msg), "Template code inserted, (%s)", syntax);
+        stats_info_msg_update(msg);
+        enventor_object_save(ad->enventor, config_edc_path_get());
+     }
+   else
+     {
+        stats_info_msg_update("Can't insert template code here. Move the "
+                              "cursor inside the \"Collections,Images,Parts,"
+                              "Part,Programs\" scope.");
+     }
    return ECORE_CALLBACK_DONE;
 }
 
-static Eina_Bool
-ctrl_func(app_data *ad, const char *key)
+static void
+config_update_cb(void *data)
 {
-   //Save
-   if (!strcmp(key, "s") || !strcmp(key, "S"))
-     {
-        edit_save(ad->ed);
-        return ECORE_CALLBACK_DONE;
-     }
-  //Delete Line
-   if (!strcmp(key, "d") || !strcmp(key, "D"))
-     {
-        edit_line_delete(ad->ed);
-        return ECORE_CALLBACK_DONE;
-     }
-   //Find/Replace
-   if (!strcmp(key, "f") || !strcmp(key, "F"))
-     {
-        search_open(ad->ed);
-        return ECORE_CALLBACK_DONE;
-     }
-   //Goto Line
-   if (!strcmp(key, "l") || !strcmp(key, "L"))
-     {
-        goto_open(ad->ed);
-        return ECORE_CALLBACK_DONE;
-     }
-   //Part Highlight
-   if (!strcmp(key, "h") || !strcmp(key, "H"))
-     {
-       config_part_highlight_set(!config_part_highlight_get());
-       edit_part_highlight_toggle(ad->ed, EINA_TRUE);
-        return ECORE_CALLBACK_DONE;
-     }
-   //Swallow Dummy Object
-   if (!strcmp(key, "w") || !strcmp(key, "W"))
-     {
-        config_dummy_swallow_set(!config_dummy_swallow_get());
-        view_dummy_toggle(VIEW_DATA, EINA_TRUE);
-        return ECORE_CALLBACK_DONE;
-     }
-   //Template Code
-   if (!strcmp(key, "t") || !strcmp(key, "T"))
-     {
-        if (config_live_edit_get())
-          {
-             stats_info_msg_update("Insertion of template code is disabled "
-                                   "while in Live Edit mode");
-             return ECORE_CALLBACK_DONE;
-          }
-        template_insert(ad->ed, TEMPLATE_INSERT_DEFAULT);
-        return ECORE_CALLBACK_DONE;
-     }
-   //Full Edit View
-   if (!strcmp(key, "Left"))
-     {
-        base_live_view_full_view();
-        return ECORE_CALLBACK_DONE;
-     }
-   //Full Live View
-   if (!strcmp(key, "Right"))
-     {
-        base_text_editor_full_view();
-        return ECORE_CALLBACK_DONE;
-     }
-   //Full Console View
-   if (!strcmp(key, "Up"))
-     {
-        base_console_full_view();
-        return ECORE_CALLBACK_DONE;
-     }
-   //Full Editors View
-   if (!strcmp(key, "Down"))
-     {
-        base_editors_full_view();
-        return ECORE_CALLBACK_DONE;
-     }
-   //Auto Indentation
-   if (!strcmp(key, "i") || !strcmp(key, "I"))
-     {
-        auto_indentation_toggle();
-        return ECORE_CALLBACK_DONE;
-     }
-   //Auto Completion
-   if (!strcmp(key, "o") || !strcmp(key, "O"))
-     {
-        autocomp_toggle();
-        return ECORE_CALLBACK_DONE;
-     }
-   //Live Edit
-   if (!strcmp(key, "e") || !strcmp(key, "E"))
-     {
-        live_edit_toggle();
-        return ECORE_CALLBACK_DONE;
-     }
-
-   return ECORE_CALLBACK_PASS_ON;
-}
-
-static Eina_Bool
-main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
-{
-   Ecore_Event_Key *event = ev;
    app_data *ad = data;
+   Evas_Object *enventor = ad->enventor;
 
-   if (autocomp_key_event_hook(event->key)) return ECORE_CALLBACK_DONE;
+   Eina_List *list = eina_list_append(NULL, config_edj_path_get());
+   enventor_object_path_set(enventor, ENVENTOR_OUT_EDJ, list);
+   eina_list_free(list);
 
-   //Shift Key
-   if (!strcmp("Shift_L", event->key))
-     {
-        ad->shift_pressed = EINA_TRUE;
-        return ECORE_CALLBACK_DONE;
-     }
+   enventor_object_path_set(enventor, ENVENTOR_RES_IMAGE,
+                            config_edc_img_path_list_get());
+   enventor_object_path_set(enventor, ENVENTOR_RES_SOUND,
+                            config_edc_snd_path_list_get());
+   enventor_object_path_set(enventor, ENVENTOR_RES_FONT,
+                            config_edc_fnt_path_list_get());
+   enventor_object_path_set(enventor, ENVENTOR_RES_DATA,
+                            config_edc_dat_path_list_get());
+   enventor_object_font_scale_set(enventor, config_font_scale_get());
+   enventor_object_linenumber_set(enventor, config_linenumber_get());
+   enventor_object_dummy_swallow_set(enventor, config_dummy_swallow_get());
+   enventor_object_part_highlight_set(enventor, config_part_highlight_get());
+   enventor_object_live_view_scale_set(enventor, config_view_scale_get());
 
-   if (ad->ctrl_pressed)
-     {
-        if (ad->shift_pressed) return template_insert_patch(ad, event->key);
-        else return ctrl_func(ad, event->key);
-     }
+   base_tools_toggle(EINA_FALSE);
+   base_statusbar_toggle(EINA_FALSE);
 
-   //Main Menu
-   if (!strcmp(event->key, "Escape"))
+   //previous build was failed, Need to rebuild then reload the edj.
+#if 0
+   if (edj_mgr_reload_need_get())
      {
-        if (search_is_opened() || goto_is_opened())
-          {
-             goto_close();
-             search_close();
-             edit_focus_set(ad->ed);
-             return ECORE_CALLBACK_DONE;
-          }
-        menu_toggle();
-        return ECORE_CALLBACK_DONE;
+        build_edc();
+        edj_mgr_clear();
+        //edc_view_set(stats_group_name_get());
      }
-
-   if (menu_activated_get() > 0) return ECORE_CALLBACK_PASS_ON;
-
-   //Control Key
-   if (!strcmp("Control_L", event->key))
-     {
-        ad->ctrl_pressed = EINA_TRUE;
-        return ECORE_CALLBACK_PASS_ON;
-     }
-   //README
-   if (!strcmp(event->key, "F1"))
-     {
-        menu_about();
-        return ECORE_CALLBACK_DONE;
-     }
-   //New
-   if (!strcmp(event->key, "F2"))
-     {
-        menu_edc_new();
-        return ECORE_CALLBACK_DONE;
-     }
-   //Save
-   if (!strcmp(event->key, "F3"))
-     {
-        menu_edc_save();
-        return ECORE_CALLBACK_DONE;
-     }
-   //Load
-   if (!strcmp(event->key, "F4"))
-     {
-        menu_edc_load();
-        return ECORE_CALLBACK_DONE;
-     }
-   //Line Number
-   if (!strcmp(event->key, "F5"))
-     {
-        config_linenumber_set(!config_linenumber_get());
-        edit_line_number_toggle(ad->ed);
-        return ECORE_CALLBACK_DONE;
-     }
-   //Tools
-   if (!strcmp(event->key, "F9"))
-     {
-        base_tools_toggle(EINA_TRUE);
-        return ECORE_CALLBACK_DONE;
-     }
-   //Console
-   if (!strcmp(event->key, "F10"))
-     {
-        base_console_toggle();
-        return ECORE_CALLBACK_DONE;
-     }
-   //Statusbar
-   if (!strcmp(event->key, "F11"))
-     {
-        base_statusbar_toggle(EINA_TRUE);
-        return ECORE_CALLBACK_DONE;
-     }
-   //Setting
-   if (!strcmp(event->key, "F12"))
-     {
-        menu_setting();
-        return ECORE_CALLBACK_DONE;
-     }
-
-   return ECORE_CALLBACK_PASS_ON;
+#endif
 }
 
 static Eina_Bool
@@ -323,8 +157,7 @@ main_mouse_wheel_cb(void *data, int type EINA_UNUSED, void *ev)
    if (!ad->ctrl_pressed) return ECORE_CALLBACK_PASS_ON;
 
    //View Scale
-   view_data *vd = edj_mgr_view_get(NULL);
-   Evas_Object *view = view_obj_get(vd);
+   Evas_Object *view = enventor_object_live_view_get(ad->enventor);
    evas_object_geometry_get(view, &x, &y, &w, &h);
 
    if ((event->x >= x) && (event->x <= (x + w)) &&
@@ -337,7 +170,7 @@ main_mouse_wheel_cb(void *data, int type EINA_UNUSED, void *ev)
 
         config_view_scale_set(scale);
         scale = config_view_scale_get();
-        view_scale_set(vd, scale);
+        enventor_object_live_view_scale_set(ad->enventor, scale);
 
         char buf[256];
         snprintf(buf, sizeof(buf), "View Scale: %2.2fx", scale);
@@ -347,22 +180,28 @@ main_mouse_wheel_cb(void *data, int type EINA_UNUSED, void *ev)
      }
 
    //Font Size
-   Evas_Object *editor = edit_obj_get(ad->ed);
-   evas_object_geometry_get(editor, &x, &y, &w, &h);
+   evas_object_geometry_get(ad->enventor, &x, &y, &w, &h);
 
    if ((event->x >= x) && (event->x <= (x + w)) &&
        (event->y >= y) && (event->y <= (y + h)))
      {
         if (event->z < 0)
           {
-             config_font_size_set(config_font_size_get() + 0.1f);
-             edit_font_size_update(ad->ed, EINA_TRUE, EINA_TRUE);
+             config_font_scale_set(config_font_scale_get() + 0.1f);
+             enventor_object_font_scale_set(ad->enventor,
+                                            config_font_scale_get());
           }
         else
           {
-             config_font_size_set(config_font_size_get() - 0.1f);
-             edit_font_size_update(ad->ed, EINA_TRUE, EINA_TRUE);
+             config_font_scale_set(config_font_scale_get() - 0.1f);
+             enventor_object_font_scale_set(ad->enventor,
+                                            config_font_scale_get());
           }
+
+        char buf[128];
+        snprintf(buf, sizeof(buf), "Font Size: %1.1fx",
+                 config_font_scale_get());
+        stats_info_msg_update(buf);
 
         return ECORE_CALLBACK_PASS_ON;
      }
@@ -371,81 +210,15 @@ main_mouse_wheel_cb(void *data, int type EINA_UNUSED, void *ev)
 }
 
 static void
-edc_view_set(Eina_Stringshare *group)
+tools_set(Evas_Object *enventor)
 {
-   view_data *vd = edj_mgr_view_get(group);
-   if (vd) edj_mgr_view_switch_to(vd);
-   else vd = edj_mgr_view_new(group);
-
-   if (!vd) return;
-
-   if (group) stats_edc_group_update(group);
-}
-
-static void
-view_sync_cb(void *data EINA_UNUSED, Eina_Stringshare *part_name,
-             Eina_Stringshare *group_name)
-{
-   if (stats_group_name_get() != group_name)
-     edc_view_set(group_name);
-   view_part_highlight_set(VIEW_DATA, part_name);
-}
-
-static void
-edc_edit_set(app_data *ad)
-{
-   edit_data *ed = edit_init(base_layout_get());
-   edit_edc_read(ed, config_edc_path_get());
-   base_text_editor_set(edit_obj_get(ed));
-   edit_view_sync_cb_set(ed, view_sync_cb, ad);
-   ad->ed = ed;
-}
-
-static void
-statusbar_set()
-{
-   Evas_Object *obj = stats_init(base_layout_get());
-   elm_object_part_content_set(base_layout_get(), "elm.swallow.statusbar",
-                              obj);
-   base_statusbar_toggle(EINA_FALSE);
-}
-
-static void
-config_update_cb(void *data)
-{
-   app_data *ad = data;
-   build_cmd_set();
-   edit_line_number_toggle(ad->ed);
-   edit_font_size_update(ad->ed, EINA_FALSE, EINA_TRUE);
-
-   base_tools_toggle(EINA_FALSE);
-   base_statusbar_toggle(EINA_FALSE);
-   edit_part_highlight_toggle(ad->ed, EINA_FALSE);
-   view_dummy_toggle(VIEW_DATA, EINA_FALSE);
-
-   //previous build was failed, Need to rebuild then reload the edj.
-   if (edj_mgr_reload_need_get())
-     {
-        build_edc();
-        edit_changed_set(ad->ed, EINA_FALSE);
-        edj_mgr_clear();
-        edc_view_set(stats_group_name_get());
-        eio_monitor_del(ad->edc_monitor);
-        ad->edc_monitor = eio_monitor_add(config_edc_path_get());
-        if (!ad->edc_monitor) EINA_LOG_ERR("Failed to add Eio_Monitor");
-     }
-   //If the edc is reloaded, then rebuild it!
-   else if (edit_changed_get(ad->ed))
-     {
-        edit_changed_set(ad->ed, EINA_FALSE);
-     }
-
-   view_scale_set(edj_mgr_view_get(NULL), config_view_scale_get());
+   Evas_Object *tools = tools_create(base_layout_get(), enventor);
+   base_tools_set(tools);
 }
 
 static void
 args_dispatch(int argc, char **argv, char *edc_path, char *img_path,
-              char *snd_path, char *fnt_path, char *data_path)
+              char *snd_path, char *fnt_path, char *dat_path)
 {
    Eina_Bool default_edc = EINA_TRUE;
 
@@ -455,7 +228,8 @@ args_dispatch(int argc, char **argv, char *edc_path, char *img_path,
    //Help
    if ((argc >=2 ) && !strcmp(argv[1], "--help"))
      {
-        fprintf(stdout, "Usage: enventor [input file] [-id image path] [-sd sound path] [-fd font path] [-dd data path]\n");
+        fprintf(stdout, "Usage: enventor [input file] [-id image path]"
+                        "[-sd sound path] [-fd font path] [-dd data path]\n");
         exit(0);
      }
 
@@ -481,7 +255,7 @@ args_dispatch(int argc, char **argv, char *edc_path, char *img_path,
              else if (!strcmp("-fd", argv[cur_arg]))
                sprintf(fnt_path, "%s", argv[cur_arg + 1]);
              else if (!strcmp("-dd", argv[cur_arg]))
-               sprintf(data_path, "%s", argv[cur_arg + 1]);
+               sprintf(dat_path, "%s", argv[cur_arg + 1]);
           }
         cur_arg += 2;
      }
@@ -497,10 +271,10 @@ config_data_set(app_data *ad, int argc, char **argv)
    char img_path[PATH_MAX] = { 0, };
    char snd_path[PATH_MAX] = { 0, };
    char fnt_path[PATH_MAX] = { 0, };
-   char data_path[PATH_MAX] = { 0, };
+   char dat_path[PATH_MAX] = { 0, };
 
-   args_dispatch(argc, argv, edc_path, img_path, snd_path, fnt_path, data_path);
-   config_init(edc_path, img_path, snd_path, fnt_path, data_path);
+   args_dispatch(argc, argv, edc_path, img_path, snd_path, fnt_path, dat_path);
+   config_init(edc_path, img_path, snd_path, fnt_path, dat_path);
    config_update_cb_set(config_update_cb, ad);
 }
 
@@ -527,8 +301,7 @@ elm_setup()
    elm_app_compile_bin_dir_set(PACKAGE_BIN_DIR);
    elm_app_compile_data_dir_set(PACKAGE_DATA_DIR);
    elm_app_compile_lib_dir_set(PACKAGE_LIB_DIR);
-   elm_app_info_set(main, "enventor",
-                    "images/logo.png");
+   elm_app_info_set(main, "enventor", "images/logo.png");
 
    snprintf(EDJE_PATH, sizeof(EDJE_PATH), "%s/themes/enventor.edj",
             elm_app_data_dir_get());
@@ -536,23 +309,415 @@ elm_setup()
 }
 
 static void
-edj_mgr_set()
+enventor_cursor_line_changed_cb(void *data EINA_UNUSED, Evas_Object *obj,
+                                void *event_info)
 {
-   edj_mgr_init(base_layout_get());
-   base_live_view_set(edj_mgr_obj_get());
+   int linenumber = (int) event_info;
+   stats_line_num_update(linenumber, enventor_object_max_line_get(obj));
 }
 
 static void
-tools_set(edit_data *ed)
+enventor_cursor_group_changed_cb(void *data EINA_UNUSED,
+                                 Evas_Object *obj EINA_UNUSED,
+                                 void *event_info)
 {
-   Evas_Object *tools = tools_create(base_layout_get(), ed);
-   base_tools_set(tools);
+   const char *group_name = event_info;
+   if (!group_name) return;
+   stats_edc_group_update(group_name);
+}
+
+static void
+enventor_compile_error_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+                          void *event_info)
+{
+   const char *msg = event_info;
+   base_error_msg_set(msg);
+}
+
+static void
+enventor_live_view_resized_cb(void *data EINA_UNUSED,
+                              Evas_Object *obj EINA_UNUSED,
+                              void *event_info)
+{
+   if (!config_stats_bar_get()) return;
+   Enventor_Live_View_Size *size = event_info;
+   config_view_size_set(size->w, size->h);
+   stats_view_size_update(size->w, size->h);
+}
+
+static void
+enventor_live_view_cursor_moved_cb(void *data EINA_UNUSED,
+                                   Evas_Object *obj EINA_UNUSED,
+                                   void *event_info)
+{
+   if (!config_stats_bar_get()) return;
+   Enventor_Live_View_Cursor *cursor = event_info;
+   stats_cursor_pos_update(cursor->x, cursor->y, cursor->relx, cursor->rely);
+}
+
+static void
+enventor_live_view_resize_cb(void *data EINA_UNUSED,
+                             Evas_Object *obj EINA_UNUSED,
+                             void *event_info)
+{
+   if (!config_stats_bar_get()) return;
+   Enventor_Live_View_Cursor *cursor = event_info;
+   stats_cursor_pos_update(cursor->x, cursor->y, cursor->relx, cursor->rely);
+}
+
+static void
+enventor_program_run_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+                        void *event_info)
+{
+   if (!config_stats_bar_get()) return;
+   const char *program = event_info;
+   char buf[256];
+   snprintf(buf, sizeof(buf), "Program Run: \"%s\"", program);
+   stats_info_msg_update(buf);
+}
+
+static void
+enventor_ctxpopup_selected_cb(void *data EINA_UNUSED, Evas_Object *obj,
+                              void *event_info EINA_UNUSED)
+{
+   EINA_LOG_ERR("!!");
+   enventor_object_save(obj, config_edc_path_get());
+}
+
+static void
+enventor_setup(app_data *ad)
+{
+   Evas_Object *enventor = enventor_object_add(base_layout_get());
+   evas_object_smart_callback_add(enventor, "cursor,line,changed",
+                                  enventor_cursor_line_changed_cb, ad);
+   evas_object_smart_callback_add(enventor, "cursor,group,changed",
+                                  enventor_cursor_group_changed_cb, ad);
+   evas_object_smart_callback_add(enventor, "compile,error",
+                                  enventor_compile_error_cb, ad);
+   evas_object_smart_callback_add(enventor, "live_view,cursor,moved",
+                                  enventor_live_view_cursor_moved_cb, ad);
+   evas_object_smart_callback_add(enventor, "live_view,resized",
+                                  enventor_live_view_resized_cb, ad);
+   evas_object_smart_callback_add(enventor, "program,run",
+                                  enventor_program_run_cb, ad);
+   evas_object_smart_callback_add(enventor, "ctxpopup,selected",
+                                  enventor_ctxpopup_selected_cb, ad);
+   enventor_object_font_scale_set(enventor, config_font_scale_get());
+   enventor_object_live_view_scale_set(enventor, config_view_scale_get());
+   enventor_object_linenumber_set(ad->enventor, config_linenumber_get());
+   enventor_object_part_highlight_set(ad->enventor,
+                                      config_part_highlight_get());
+   enventor_object_auto_indent_set(ad->enventor, config_auto_indent_get());
+   enventor_object_auto_complete_set(ad->enventor, config_auto_complete_get());
+   enventor_object_dummy_swallow_set(ad->enventor, config_dummy_swallow_get());
+
+   Eina_List *list = eina_list_append(NULL, config_edj_path_get());
+   enventor_object_path_set(enventor, ENVENTOR_OUT_EDJ, list);
+   eina_list_free(list);
+
+   enventor_object_path_set(enventor, ENVENTOR_RES_IMAGE,
+                            config_edc_img_path_list_get());
+   enventor_object_path_set(enventor, ENVENTOR_RES_SOUND,
+                            config_edc_snd_path_list_get());
+   enventor_object_path_set(enventor, ENVENTOR_RES_FONT,
+                            config_edc_fnt_path_list_get());
+   enventor_object_path_set(enventor, ENVENTOR_RES_DATA,
+                            config_edc_dat_path_list_get());
+   enventor_object_file_set(enventor, config_edc_path_get());
+
+   evas_object_size_hint_expand_set(enventor, EVAS_HINT_EXPAND,
+                                    EVAS_HINT_EXPAND);
+   evas_object_size_hint_fill_set(enventor, EVAS_HINT_FILL, EVAS_HINT_FILL);
+
+   base_enventor_set(enventor);
+   base_title_set(config_edc_path_get());
+
+   base_live_view_set(enventor_object_live_view_get(enventor));
+
+   ad->enventor = enventor;
+}
+
+static void
+edc_save(app_data *ad)
+{
+   char buf[PATH_MAX];
+
+   if (enventor_object_save(ad->enventor, config_edc_path_get()))
+     {
+        if (config_stats_bar_get())
+          {
+             snprintf(buf, sizeof(buf), "File saved. \"%s\"",
+                      config_edc_path_get());
+          }
+     }
+   else
+     {
+        if (config_stats_bar_get())
+          {
+             snprintf(buf, sizeof(buf), "Already saved. \"%s\"",
+                      config_edc_path_get());
+          }
+
+     }
+   stats_info_msg_update(buf);
+}
+
+static void
+part_highlight_toggle(app_data *ad)
+{
+   config_part_highlight_set(!config_part_highlight_get());
+   enventor_object_part_highlight_set(ad->enventor,
+                                      config_part_highlight_get());
+   if (config_part_highlight_get())
+     stats_info_msg_update("Part Highlighting Enabled.");
+   else
+     stats_info_msg_update("Part Highlighting Disabled.");
+}
+
+static void
+dummy_swallow_toggle(app_data *ad)
+{
+   config_dummy_swallow_set(!config_dummy_swallow_get());
+   enventor_object_dummy_swallow_set(ad->enventor, config_dummy_swallow_get());
+   if (config_dummy_swallow_get())
+     stats_info_msg_update("Dummy Swallow Enabled.");
+   else
+     stats_info_msg_update("Dummy Swallow Disabled.");
+}
+
+static void
+default_template_insert(app_data *ad)
+{
+   if (config_live_edit_get())
+     {
+        stats_info_msg_update("Insertion of template code is disabled "
+                              "while in Live Edit mode");
+        return;
+     }
+
+   char syntax[12];
+   if (enventor_object_template_insert(ad->enventor, syntax, sizeof(syntax)))
+     {
+        char msg[64];
+        snprintf(msg, sizeof(msg), "Template code inserted, (%s)", syntax);
+        stats_info_msg_update(msg);
+        enventor_object_save(ad->enventor, config_edc_path_get());
+     }
+   else
+     {
+        stats_info_msg_update("Can't insert template code here. Move the "
+                              "cursor inside the \"Collections,Images,Parts,"
+                              "Part,Programs\" scope.");
+     }
+}
+
+static Eina_Bool
+ctrl_func(app_data *ad, const char *key)
+{
+   //Save
+   if (!strcmp(key, "s") || !strcmp(key, "S"))
+     {
+        edc_save(ad);
+        return ECORE_CALLBACK_DONE;
+     }
+  //Delete Line
+   if (!strcmp(key, "d") || !strcmp(key, "D"))
+     {
+        enventor_object_line_delete(ad->enventor);
+        return ECORE_CALLBACK_DONE;
+     }
+   //Find/Replace
+   if (!strcmp(key, "f") || !strcmp(key, "F"))
+     {
+        search_open(ad->enventor);
+        return ECORE_CALLBACK_DONE;
+     }
+   //Goto Line
+   if (!strcmp(key, "l") || !strcmp(key, "L"))
+     {
+        goto_open(ad->enventor);
+        return ECORE_CALLBACK_DONE;
+     }
+   //Part Highlight
+   if (!strcmp(key, "h") || !strcmp(key, "H"))
+     {
+        part_highlight_toggle(ad);
+        return ECORE_CALLBACK_DONE;
+     }
+   //Swallow Dummy Object
+   if (!strcmp(key, "w") || !strcmp(key, "W"))
+     {
+        dummy_swallow_toggle(ad);
+        return ECORE_CALLBACK_DONE;
+     }
+   //Template Code
+   if (!strcmp(key, "t") || !strcmp(key, "T"))
+     {
+        default_template_insert(ad);
+        return ECORE_CALLBACK_DONE;
+     }
+   //Full Edit View
+   if (!strcmp(key, "Left"))
+     {
+        base_live_view_full_view();
+        return ECORE_CALLBACK_DONE;
+     }
+   //Full Live View
+   if (!strcmp(key, "Right"))
+     {
+        base_enventor_full_view();
+        return ECORE_CALLBACK_DONE;
+     }
+   //Full Console View
+   if (!strcmp(key, "Up"))
+     {
+        base_console_full_view();
+        return ECORE_CALLBACK_DONE;
+     }
+   //Full Editors View
+   if (!strcmp(key, "Down"))
+     {
+        base_editors_full_view();
+        return ECORE_CALLBACK_DONE;
+     }
+   //Auto Indentation
+   if (!strcmp(key, "i") || !strcmp(key, "I"))
+     {
+        auto_indent_toggle(ad);
+        return ECORE_CALLBACK_DONE;
+     }
+   //Auto Completion
+   if (!strcmp(key, "o") || !strcmp(key, "O"))
+     {
+        auto_comp_toggle(ad);
+        return ECORE_CALLBACK_DONE;
+     }
+   //Live Edit
+   if (!strcmp(key, "e") || !strcmp(key, "E"))
+     {
+        live_edit_toggle();
+        return ECORE_CALLBACK_DONE;
+     }
+
+   return ECORE_CALLBACK_PASS_ON;
+}
+
+static Eina_Bool
+main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
+{
+   Ecore_Event_Key *event = ev;
+   app_data *ad = data;
+
+   //Shift Key
+   if (!strcmp("Shift_L", event->key))
+     {
+        ad->shift_pressed = EINA_TRUE;
+        return ECORE_CALLBACK_DONE;
+     }
+
+   if (ad->ctrl_pressed)
+     {
+        if (ad->shift_pressed) return template_insert_patch(ad, event->key);
+        else return ctrl_func(ad, event->key);
+     }
+
+   //Main Menu
+   if (!strcmp(event->key, "Escape"))
+     {
+        if (search_is_opened() || goto_is_opened())
+          {
+             goto_close();
+             search_close();
+             enventor_object_focus_set(ad->enventor, EINA_TRUE);
+             return ECORE_CALLBACK_DONE;
+          }
+        menu_toggle();
+        return ECORE_CALLBACK_DONE;
+     }
+
+   if (menu_activated_get() > 0) return ECORE_CALLBACK_PASS_ON;
+
+   //Control Key
+   if (!strcmp("Control_L", event->key))
+     {
+        ad->ctrl_pressed = EINA_TRUE;
+        return ECORE_CALLBACK_PASS_ON;
+     }
+
+   //README
+   if (!strcmp(event->key, "F1"))
+     {
+        menu_about();
+        return ECORE_CALLBACK_DONE;
+     }
+
+   //New
+   if (!strcmp(event->key, "F2"))
+     {
+        menu_edc_new();
+        return ECORE_CALLBACK_DONE;
+     }
+   //Save
+   if (!strcmp(event->key, "F3"))
+     {
+        menu_edc_save();
+        return ECORE_CALLBACK_DONE;
+     }
+   //Load
+   if (!strcmp(event->key, "F4"))
+     {
+        menu_edc_load();
+        return ECORE_CALLBACK_DONE;
+     }
+   //Line Number
+   if (!strcmp(event->key, "F5"))
+     {
+        config_linenumber_set(!config_linenumber_get());
+        enventor_object_linenumber_set(ad->enventor, config_linenumber_get());
+        return ECORE_CALLBACK_DONE;
+     }
+
+   //Tools
+   if (!strcmp(event->key, "F9"))
+     {
+        base_tools_toggle(EINA_TRUE);
+        return ECORE_CALLBACK_DONE;
+     }
+
+   //Console
+   if (!strcmp(event->key, "F10"))
+     {
+        base_console_toggle();
+        return ECORE_CALLBACK_DONE;
+     }
+   //Statusbar
+   if (!strcmp(event->key, "F11"))
+     {
+        base_statusbar_toggle(EINA_TRUE);
+        return ECORE_CALLBACK_DONE;
+     }
+   //Setting
+   if (!strcmp(event->key, "F12"))
+     {
+        menu_setting();
+        return ECORE_CALLBACK_DONE;
+     }
+
+   return ECORE_CALLBACK_PASS_ON;
+}
+
+static void
+statusbar_set()
+{
+   Evas_Object *obj = stats_init(base_layout_get());
+   elm_object_part_content_set(base_layout_get(), "elm.swallow.statusbar", obj);
+   base_statusbar_toggle(EINA_FALSE);
 }
 
 static Eina_Bool
 init(app_data *ad, int argc, char **argv)
 {
-   elm_init(argc, argv);
+   enventor_init(argc, argv);
 
    ecore_event_handler_add(ECORE_EVENT_KEY_DOWN, main_key_down_cb, ad);
    ecore_event_handler_add(ECORE_EVENT_KEY_UP, main_key_up_cb, ad);
@@ -561,53 +726,39 @@ init(app_data *ad, int argc, char **argv)
    elm_setup();
 
    config_data_set(ad, argc, argv);
-
-   if (!build_init()) return EINA_FALSE;
-   if (!edc_default_setup()) return EINA_FALSE;
-   if (!base_gui_init()) return EINA_FALSE;
-
-   autocomp_init(base_layout_get());
-   edj_mgr_set();
+   newfile_default_set();
+   base_gui_init();
    statusbar_set();
-   edc_edit_set(ad);
-   edc_view_set(stats_group_name_get());
-   menu_init(ad->ed);
-   tools_set(ad->ed);
-   live_edit_init(ad->ed);
+   enventor_setup(ad);
+   tools_set(ad->enventor);
 
    base_gui_show();
 
-   ad->edc_monitor = eio_monitor_add(config_edc_path_get());
-   if (!ad->edc_monitor) EINA_LOG_ERR("Failed to add Eio_Monitor");
+   //Guarantee Enventor editor has focus.
+   enventor_object_focus_set(ad->enventor, EINA_TRUE);
 
-   ecore_event_handler_add(EIO_MONITOR_FILE_MODIFIED, edc_changed_cb, ad);
+   menu_init(ad->enventor);
 
    return EINA_TRUE;
 }
 
 static void
-term(app_data *ad)
+term(app_data *ad EINA_UNUSED)
 {
-   build_term();
    menu_term();
-   edit_term(ad->ed);
+#if 0
    live_edit_term();
-   edj_mgr_term();
+#endif
    stats_term();
    base_gui_term();
    config_term();
-   autocomp_term();
-
-   eio_monitor_del(ad->edc_monitor);
-
-   elm_shutdown();
+   enventor_shutdown();
 }
 
-int
-main(int argc, char **argv)
+EAPI_MAIN
+int elm_main(int argc, char **argv)
 {
-   app_data ad;
-   memset(&ad, 0x00, sizeof(ad));
+   app_data ad = {0, };
 
    if (!init(&ad, argc, argv))
      {
@@ -619,5 +770,8 @@ main(int argc, char **argv)
 
    term(&ad);
 
+   elm_shutdown();
+
    return 0;
 }
+ELM_MAIN()

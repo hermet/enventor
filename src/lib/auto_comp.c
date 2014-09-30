@@ -1,6 +1,12 @@
-#include <Elementary.h>
+#ifdef HAVE_CONFIG_H
+ #include "config.h"
+#endif
+
+#define ENVENTOR_BETA_API_SUPPORT 1
+
+#include <Enventor.h>
+#include "enventor_private.h"
 #include "auto_comp_code.h"
-#include "common.h"
 
 #define QUEUE_SIZE 20
 #define COMPSET_PAIR_MINIMUM 1
@@ -26,12 +32,17 @@ typedef struct autocomp_s
    Ecore_Thread *init_thread;
    Eina_Bool anchor_visible : 1;
    Eina_Bool initialized : 1;
+   Eina_Bool enabled : 1;
 } autocomp_data;
 
 static autocomp_data *g_ad = NULL;
 
 #define COMPDATA_SET(ad, key, txt, cursor_offset, line_back) \
    compdata_set(ad, idx++, key, (char **)(&txt), cursor_offset, line_back, txt##_LINE_CNT)
+
+/*****************************************************************************/
+/* Internal method implementation                                            */
+/*****************************************************************************/
 
 static void
 compdata_set(autocomp_data *ad, int idx, char *key, char **txt, int cursor_offset, int line_back, int line_cnt)
@@ -151,7 +162,7 @@ queue_reset(autocomp_data *ad)
 static void
 compset_list_update(autocomp_data *ad)
 {
-   if (!config_auto_complete_get() || !ad->initialized) return;
+   if (!ad->enabled || !ad->initialized) return;
    if (ad->queue_pos < COMPSET_PAIR_MINIMUM) return;
    int i;
 
@@ -351,8 +362,7 @@ candidate_list_show(autocomp_data *ad)
      {
         //Decide the Tooltip direction
         Elm_Tooltip_Orient tooltip_orient = ELM_TOOLTIP_ORIENT_BOTTOM;
-        Evas_Object *layout = base_layout_get();
-        evas_object_geometry_get(layout, NULL, NULL, NULL, &h);
+        evas_object_geometry_get(edit_obj_get(ad->ed), NULL, NULL, NULL, &h);
         if ((cy + y) > (h / 2)) tooltip_orient = ELM_TOOLTIP_ORIENT_TOP;
 
         //Tooltip set
@@ -450,6 +460,10 @@ list_item_move(autocomp_data *ad, Eina_Bool up)
    evas_object_smart_callback_add(entry, "unfocused", anchor_unfocused_cb, ad);
 }
 
+/*****************************************************************************/
+/* Externally accessible calls                                               */
+/*****************************************************************************/
+
 void
 autocomp_target_set(edit_data *ed)
 {
@@ -471,6 +485,8 @@ autocomp_target_set(edit_data *ed)
         evas_object_smart_callback_del(entry, "press", entry_press_cb);
         evas_object_event_callback_del(entry, EVAS_CALLBACK_MOVE,
                                        entry_move_cb);
+        evas_object_del(ad->anchor);
+        ad->anchor = NULL;
         ad->ed = NULL;
      }
 
@@ -486,12 +502,47 @@ autocomp_target_set(edit_data *ed)
    evas_object_smart_callback_add(entry, "press", entry_press_cb, ad);
    evas_object_event_callback_add(entry, EVAS_CALLBACK_MOVE,
                                   entry_move_cb, ad);
+
+   ad->anchor = elm_button_add(edit_obj_get(ed));
    ad->ed = ed;
 }
 
+Eina_Bool
+autocomp_event_dispatch(const char *key)
+{
+   autocomp_data *ad = g_ad;
+   if (!ad || !ad->anchor_visible) return EINA_FALSE;
+
+   //Cancel the auto complete.
+   if (!strcmp(key, "BackSpace"))
+     {
+        queue_reset(ad);
+        entry_anchor_off(ad);
+        return EINA_TRUE;
+     }
+   if (!strcmp(key, "Return"))
+     {
+        insert_completed_text(ad);
+        queue_reset(ad);
+        edit_syntax_color_partial_apply(ad->ed, -1);
+        return EINA_TRUE;
+     }
+   if (!strcmp(key, "Up"))
+     {
+        list_item_move(ad, EINA_TRUE);
+        return EINA_TRUE;
+     }
+   if (!strcmp(key, "Down"))
+     {
+        list_item_move(ad, EINA_FALSE);
+        return EINA_TRUE;
+     }
+
+   return EINA_FALSE;
+}
 
 void
-autocomp_init(Evas_Object *parent)
+autocomp_init(void)
 {
    autocomp_data *ad = calloc(1, sizeof(autocomp_data));
    if (!ad)
@@ -499,9 +550,9 @@ autocomp_init(Evas_Object *parent)
         EINA_LOG_ERR("Failed to allocate Memory!");
         return;
      }
+
    ad->init_thread = ecore_thread_run(init_thread_cb, init_thread_end_cb,
                                       init_thread_cancel_cb, ad);
-   ad->anchor = elm_button_add(parent);
    ad->queue_pos = -1;
    g_ad = ad;
 }
@@ -522,47 +573,16 @@ autocomp_term(void)
 }
 
 void
-autocomp_toggle(void)
+autocomp_enabled_set(Eina_Bool enabled)
 {
-   Eina_Bool toggle = !config_auto_complete_get();
-   if (toggle) stats_info_msg_update("Auto Completion Enabled.");
-   else stats_info_msg_update("Auto Completion Disabled.");
-   config_auto_complete_set(toggle);
+   autocomp_data *ad = g_ad;
+   enabled = !!enabled;
+   ad->enabled = enabled;
 }
 
 Eina_Bool
-autocomp_key_event_hook(const char *key)
+autocomp_enabled_get(void)
 {
    autocomp_data *ad = g_ad;
-   if (!ad || !ad->anchor_visible) return EINA_FALSE;
-
-   //Cancel the auto complete.
-   if (!strcmp(key, "BackSpace"))
-     {
-        queue_reset(ad);
-        entry_anchor_off(ad);
-        return EINA_TRUE;
-     }
-
-    if (!strcmp(key, "Return"))
-      {
-         insert_completed_text(ad);
-         queue_reset(ad);
-         edit_syntax_color_partial_apply(ad->ed, -1);
-         return EINA_TRUE;
-      }
-
-    if (!strcmp(key, "Up"))
-      {
-         list_item_move(ad, EINA_TRUE);
-         return EINA_TRUE;
-      }
-
-    if (!strcmp(key, "Down"))
-      {
-         list_item_move(ad, EINA_FALSE);
-         return EINA_TRUE;
-      }
-
-   return EINA_FALSE;
+   return ad->enabled;
 }

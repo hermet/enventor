@@ -1,0 +1,408 @@
+class Enventor.Object (Elm_Widget, Efl.File) {
+   eo_prefix: enventor_obj;
+   properties {
+      part_highlight {
+         set {
+            /*@
+            @brief
+            @warning
+            @see
+            @ingroup Enventor */
+         }
+         get {
+            /*@
+            @brief
+            @return
+            @warning
+            @see
+            @ingroup Enventor */
+         }
+         values {
+            Eina_Bool part_highlight; /*@ ... */
+         }
+      }
+      live_view_scale {
+         set {
+            /*@
+            @brief
+            @warning
+            @see
+            @ingroup Enventor */
+         }
+         get {
+            /*@
+            @brief
+            @return
+            @warning
+            @see
+            @ingroup Enventor */
+         }
+         values {
+            double scale; /*@ ... */
+         }
+      }
+      dummy_swallow {
+         set {
+            /*@
+            @brief
+            @warning
+            @see
+            @ingroup Enventor */
+         }
+         get {
+            /*@
+            @brief
+            @return
+            @warning
+            @see
+            @ingroup Enventor */
+         }
+         values {
+            Eina_Bool dummy_swallow; /*@ ... */
+         }
+      }
+      auto_complete {
+         set {
+            /*@
+            @brief
+            @warning
+            @see
+            @ingroup Enventor */
+         }
+         get {
+            /*@
+            @brief
+            @return
+            @warning
+            @see
+            @ingroup Enventor */
+         }
+         values {
+            Eina_Bool auto_complete; /*@ ... */
+         }
+      }
+      auto_indent {
+         set {
+            /*@
+            @brief
+            @warning
+            @see
+            @ingroup Enventor */
+         }
+         get {
+            /*@
+            @brief
+            @return
+            @warning
+            @see
+            @ingroup Enventor */
+         }
+         values {
+            Eina_Bool auto_indent; /*@ ... */
+         }
+      }
+      ctxpopup {
+         set {
+            /*@
+            @brief
+            @warning
+            @see
+            @ingroup Enventor */
+         }
+         get {
+            /*@
+            @brief
+            @return
+            @warning
+            @see
+            @ingroup Enventor */
+         }
+         values {
+            Eina_Bool ctxpopup; /*@ ... */
+         }
+		}
+      focus {
+         set {
+            /*@
+            @brief
+            @warning
+            @see
+            @ingroup Enventor */
+         }
+         get {
+            /*@
+            @brief
+            @return
+            @warning
+            @see
+            @ingroup Enventor */
+         }
+         values {
+            Eina_Bool focus; /*@ ... */
+         }
+      }
+      modified {
+         set {
+            /*@
+            @brief
+            @warning
+            @see
+            @ingroup Enventor */
+         }
+         get {
+            /*@
+            @brief
+            @return
+            @warning
+            @see
+            @ingroup Enventor */
+         }
+         values {
+            Eina_Bool modified; /*@ ... */
+         }
+      }
+      font_scale {
+         set {
+            /*@
+            @brief
+            @warning
+            @see
+            @ingroup Enventor */
+         }
+         get {
+            /*@
+            @brief
+            @return
+            @warning
+            @see
+            @ingroup Enventor */
+         }
+         values {
+            double font_scale; /*@ ... */
+         }
+      }
+      linenumber {
+         set {
+            /*@
+            @brief
+            @warning
+            @see
+            @ingroup Enventor */
+         }
+         get {
+            /*@
+            @brief
+            @return
+            @warning
+            @see
+            @ingroup Enventor */
+         }
+         values {
+            bool linenumber; /*@ ... */
+         }
+      }
+   }
+   methods {
+      path_set {
+         /*@
+         @brief
+         @return
+         @warning
+         @see
+         @ingroup Enventor */
+         return: Eina_Bool;
+         params {
+            @in Enventor_Path_Type type; /*@ ... */
+            @in const(Eina_List) *pathes; /*@ ... */
+         }
+      }
+      path_get {
+         /*@
+         @brief
+         @return
+         @warning
+         @see
+         @ingroup Enventor */
+         return: const(Eina_List) *;
+         params {
+            @in Enventor_Path_Type type; /*@ ... */
+         }
+      }
+      max_line_get {
+         /*@
+         @brief
+         @return
+         @warning
+         @see
+         @ingroup Enventor */
+         return: int;
+      }
+      text_get {
+         /*@
+         @brief
+         @return
+         @warning
+         @see
+         @ingroup Enventor */
+         return: const(char) *;
+      }
+      text_insert {
+         /*@
+         @brief
+         @warning
+         @see
+         @ingroup Enventor */
+         params {
+            @in const(char) *text; /*@ ... */
+         }
+      }
+      selection_get {
+         /*@
+         @brief
+         @return
+         @warning
+         @see
+         @ingroup Enventor */
+         return: const(char) *;
+      }
+      cursor_pos_get {
+         /*@
+         @brief
+         @return
+         @warning
+         @see
+         @ingroup Enventor */
+         return: int;
+      }
+      select_none {
+         /*@
+         @brief
+         @warning
+         @see
+         @ingroup Enventor */
+      }
+      select_region_set {
+         /*@
+         @brief
+         @warning
+         @see
+         @ingroup Enventor */
+         params {
+            @in int start; /*@ ... */
+            @in int end; /*@ ... */
+         }
+      }
+      line_delete {
+         /*@
+         @brief
+         @warning
+         @see
+         @ingroup Enventor */
+      }
+      save {
+         /*@
+         @brief
+         @return
+         @warning
+         @see
+         @ingroup Enventor */
+         return: Eina_Bool;
+         params {
+            @in const(char) *file; /*@ ... */
+         }
+      }
+      live_view_get {
+         /*@
+         @brief
+         @warning
+         @see
+         @ingroup Enventor */
+         return: Eo *;
+      }
+      line_goto {
+         /*@
+         @brief
+         @warning
+         @see
+         @ingroup Enventor */
+         params {
+            @in int line; /*@ ... */
+         }
+      }
+      syntax_color_full_apply {
+         /*@
+         @brief
+         @warning
+         @see
+         @ingroup Enventor */
+         params {
+            @in Eina_Bool force; /*@ ... */
+         }
+      }
+      syntax_color_partial_apply {
+         /*@
+         @brief
+         @warning
+         @see
+         @ingroup Enventor */
+         params {
+            @in double interval; /*@ ... */
+         }
+      }
+      template_insert {
+         /*@
+         @brief
+         @return
+         @warning
+         @see
+         @ingroup Enventor */
+         return: Eina_Bool;
+         params {
+            @in char *syntax; /*@ ... */
+            @in size_t n;
+         }
+      }
+      template_part_insert {
+         /*@
+         @brief
+         @return
+         @warning
+         @see
+         @ingroup Enventor */
+         return: Eina_Bool;
+         params {
+            @in Edje_Part_Type type; /*@ ... */
+            @in float rel1_x; /*@ ... */
+            @in float rel1_y; /*@ ... */
+            @in float rel2_x; /*@ ... */
+            @in float rel2_y; /*@ ... */
+            @in char *syntax; /*@ ... */
+            @in size_t n;
+         }
+      }
+   }
+   implements {
+      Eo.Base.constructor;
+      Evas.Object_Smart.add;
+      Evas.Object_Smart.del;
+      Evas.Object_Smart.move;
+      Evas.Object_Smart.resize;
+      Evas.Object_Smart.show;
+      Evas.Object_Smart.hide;
+      Evas.Object_Smart.color.set;
+      Evas.Object_Smart.clip.set;
+      Evas.Object_Smart.clip_unset;
+      Efl.File.file.set;
+   }
+   events {
+      cursor,line,changed;
+      cursor,group,changed;
+      live_view,cursor,moved;
+      live_view,resized;
+      max_line,changed;
+      compile,error;
+      program,run;
+      ctxpopup,selected;
+      ctxpopup,dismissed;
+   }
+}

@@ -1,16 +1,21 @@
+#ifdef HAVE_CONFIG_H
+ #include "config.h"
+#endif
+
+#define ENVENTOR_BETA_API_SUPPORT 1
 #define EDJE_EDIT_IS_UNSTABLE_AND_I_KNOW_ABOUT_IT 1
 
-#include <Elementary.h>
+#include <Enventor.h>
 #include <Edje_Edit.h>
 #include <Eio.h>
-#include "common.h"
+#include "enventor_private.h"
 
 struct viewer_s
 {
-   Evas_Object *parent;
    Evas_Object *layout;
    Evas_Object *scroller;
    Evas_Object *event_rect;
+   Evas_Object *enventor;
 
    Evas_Object *part_obj;
    Evas_Object *part_highlight;
@@ -23,7 +28,6 @@ struct viewer_s
    Eio_Monitor *edj_monitor;
    Ecore_Event_Handler *monitor_event;
    Ecore_Event_Handler *exe_del_event;
-
    void (*del_cb)(void *data);
    void *data;
 
@@ -31,12 +35,16 @@ struct viewer_s
    Eina_Bool edj_reload_need : 1;
 };
 
+/*****************************************************************************/
+/* Internal method implementation                                            */
+/*****************************************************************************/
+
 static void
 view_obj_min_update(Evas_Object *obj)
 {
    Evas_Coord w, h;
+   double scale = edj_mgr_view_scale_get();
    edje_object_size_min_calc(obj, &w, &h);
-   double scale = edje_object_scale_get(obj);
    evas_object_size_hint_min_set(obj, ((double)w * scale), ((double)h * scale));
 }
 
@@ -50,11 +58,10 @@ file_set_timer_cb(void *data)
         return ECORE_CALLBACK_CANCEL;
      }
 
-   if (edje_object_file_set(vd->layout, config_edj_path_get(),
-                            vd->group_name))
+   if (edje_object_file_set(vd->layout, build_edj_path_get(), vd->group_name))
      {
         eio_monitor_del(vd->edj_monitor);
-        vd->edj_monitor = eio_monitor_add(config_edj_path_get());
+        vd->edj_monitor = eio_monitor_add(build_edj_path_get());
         if (!vd->edj_monitor) EINA_LOG_ERR("Failed to add Eio_Monitor");
         vd->timer = NULL;
         return ECORE_CALLBACK_CANCEL;
@@ -93,6 +100,7 @@ part_obj_geom_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
 
 static void
 part_obj_del_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+
                 void *event_info EINA_UNUSED)
 {
    view_data *vd = data;
@@ -100,30 +108,23 @@ part_obj_del_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 }
 
 static void
-layout_resize_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
-                 Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
-{
-   if (!config_stats_bar_get()) return;
-
-   Evas_Coord w, h;
-   evas_object_geometry_get(obj, NULL, NULL, &w, &h);
-   config_view_size_set(w, h);
-   stats_view_size_update();
-}
-
-static void
-rect_mouse_move_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
+rect_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
                    Evas_Object *obj EINA_UNUSED, void *event_info)
 {
-   if (!config_stats_bar_get()) return;
-
+   static Enventor_Live_View_Cursor cursor;
+   view_data *vd = data;
    Evas_Event_Mouse_Move *ev = event_info;
 
    Evas_Coord x, y, w, h;
    evas_object_geometry_get(obj, &x, &y, &w, &h);
-   stats_cursor_pos_update(ev->cur.canvas.x - x, ev->cur.canvas.y - y,
-                           (float) (ev->cur.canvas.x - x) / (float) w,
-                           (float) (ev->cur.canvas.y - y) / (float) h);
+
+   cursor.x = ev->cur.canvas.x;
+   cursor.y = ev->cur.canvas.y;
+   cursor.relx = (float) ((ev->cur.canvas.x - x) / (float) w);
+   cursor.rely = (float) ((ev->cur.canvas.y - y) / (float) h);
+
+   evas_object_smart_callback_call(vd->enventor, SIG_LIVE_VIEW_CURSOR_MOVED,
+                                   &cursor);
 }
 
 static Evas_Object *
@@ -139,26 +140,26 @@ view_scroller_create(Evas_Object *parent)
 }
 
 static Eina_Bool
-exe_del_event_cb(void *data, int type EINA_UNUSED, void *event)
+exe_del_event_cb(void *data, int type EINA_UNUSED, void *event EINA_UNUSED)
 {
    view_data *vd = data;
-   Eio_Monitor_Event *ev = event;
 
    if (!vd->edj_reload_need) return ECORE_CALLBACK_PASS_ON;
 
-   if (!edje_object_file_set(vd->layout, config_edj_path_get(),
-                             vd->group_name))
+   if (!edje_object_file_set(vd->layout, build_edj_path_get(), vd->group_name))
      {
         vd->del_cb(vd->data);
         view_term(vd);
-        EINA_LOG_ERR("Failed to load edj file \"%s\"", config_edj_path_get());
+        EINA_LOG_ERR("Failed to load edj file \"%s\"", build_edj_path_get());
         return ECORE_CALLBACK_DONE;
      }
 
    view_obj_min_update(vd->layout);
    view_part_highlight_set(vd, vd->part_name);
    dummy_obj_update(vd->layout);
+#if 0
    base_console_reset();
+#endif
 
    vd->edj_reload_need = EINA_FALSE;
 
@@ -174,7 +175,7 @@ edj_changed_cb(void *data, int type EINA_UNUSED, void *event)
    if (vd->edj_monitor != ev->monitor) return ECORE_CALLBACK_PASS_ON;
 
    //FIXME: why it need to add monitor again??
-   vd->edj_monitor = eio_monitor_add(config_edj_path_get());
+   vd->edj_monitor = eio_monitor_add(build_edj_path_get());
    if (!vd->edj_monitor) EINA_LOG_ERR("Failed to add Eio_Monitor!");
 
    vd->edj_reload_need = EINA_TRUE;
@@ -200,25 +201,15 @@ layout_del_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
    Evas_Object *rect = data;
    evas_object_del(rect);
 }
+
 static void
-event_layer_set(view_data *vd)
+layout_resize_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+                 void *event_info EINA_UNUSED)
 {
-   Evas *e = evas_object_evas_get(vd->layout);
-   Evas_Object *rect = evas_object_rectangle_add(e);
-   evas_object_repeat_events_set(rect, EINA_TRUE);
-   evas_object_color_set(rect, 0, 0, 0, 0);
-   evas_object_show(rect);
-
-   evas_object_event_callback_add(vd->layout, EVAS_CALLBACK_RESIZE,
-                                  layout_geom_cb, rect);
-   evas_object_event_callback_add(vd->layout, EVAS_CALLBACK_MOVE,
-                                  layout_geom_cb, rect);
-   evas_object_event_callback_add(vd->layout, EVAS_CALLBACK_DEL,
-                                  layout_del_cb, rect);
-   evas_object_event_callback_add(rect, EVAS_CALLBACK_MOUSE_MOVE,
-                                  rect_mouse_move_cb, vd);
-
-   vd->event_rect = rect;
+   static Enventor_Live_View_Size size;
+   view_data *vd = data;
+   evas_object_geometry_get(obj, NULL, NULL, &size.w, &size.h);
+   evas_object_smart_callback_call(vd->enventor, SIG_LIVE_VIEW_RESIZED, &size);
 }
 
 static Evas_Object *
@@ -247,13 +238,33 @@ view_obj_create(view_data *vd, const char *file_path, const char *group)
    return layout;
 }
 
+static void
+event_layer_set(view_data *vd)
+{
+   Evas *e = evas_object_evas_get(vd->layout);
+   Evas_Object *rect = evas_object_rectangle_add(e);
+   evas_object_repeat_events_set(rect, EINA_TRUE);
+   evas_object_color_set(rect, 0, 0, 0, 0);
+   evas_object_show(rect);
+
+   evas_object_event_callback_add(vd->layout, EVAS_CALLBACK_RESIZE,
+                                  layout_geom_cb, rect);
+   evas_object_event_callback_add(vd->layout, EVAS_CALLBACK_MOVE,
+                                  layout_geom_cb, rect);
+   evas_object_event_callback_add(vd->layout, EVAS_CALLBACK_DEL,
+                                  layout_del_cb, rect);
+   evas_object_event_callback_add(rect, EVAS_CALLBACK_MOUSE_MOVE,
+                                  rect_mouse_move_cb, vd);
+   vd->event_rect = rect;
+}
+
 static Eina_Bool
 view_obj_idler_cb(void *data)
 {
    view_data *vd = data;
 
-   vd->layout = view_obj_create(vd, config_edj_path_get(), vd->group_name);
-   view_scale_set(vd, config_view_scale_get());
+   vd->layout = view_obj_create(vd, build_edj_path_get(), vd->group_name);
+   view_scale_set(vd, edj_mgr_view_scale_get());
 
    event_layer_set(vd);
    elm_object_content_set(vd->scroller, vd->layout);
@@ -267,27 +278,30 @@ view_obj_idler_cb(void *data)
    return ECORE_CALLBACK_CANCEL;
 }
 
+/*****************************************************************************/
+/* Externally accessible calls                                               */
+/*****************************************************************************/
+
 void
-view_dummy_toggle(view_data *vd, Eina_Bool msg)
+view_dummy_set(view_data *vd, Eina_Bool dummy_on)
 {
-   Eina_Bool dummy_on = config_dummy_swallow_get();
+   dummy_on = !!dummy_on;
+
    if (dummy_on == vd->dummy_on) return;
-   if (dummy_on)
-     {
-        if (msg) stats_info_msg_update("Dummy Swallow Enabled.");
-        dummy_obj_new(vd->layout);
-     }
-   else
-     {
-        if (msg) stats_info_msg_update("Dummy Swallow Disabled.");
-        dummy_obj_del(vd->layout);
-     }
+   if (dummy_on) dummy_obj_new(vd->layout);
+   else dummy_obj_del(vd->layout);
 
    vd->dummy_on = dummy_on;
 }
 
+Eina_Bool
+view_dummy_get(view_data *vd)
+{
+   return vd->dummy_on;
+}
+
 view_data *
-view_init(Evas_Object *parent, const char *group,
+view_init(Evas_Object *enventor, const char *group,
           void (*del_cb)(void *data), void *data)
 {
    view_data *vd = calloc(1, sizeof(view_data));
@@ -296,9 +310,9 @@ view_init(Evas_Object *parent, const char *group,
         EINA_LOG_ERR("Failed to allocate Memory!");
         return NULL;
      }
-   vd->parent = parent;
-   vd->scroller = view_scroller_create(parent);
-   vd->dummy_on = config_dummy_swallow_get();
+   vd->enventor = enventor;
+   vd->scroller = view_scroller_create(enventor);
+   vd->dummy_on = EINA_TRUE;
 
    vd->group_name = eina_stringshare_add(group);
    vd->idler = ecore_idler_add(view_obj_idler_cb, vd);
@@ -352,9 +366,8 @@ view_program_run(view_data *vd, const char *program)
    if (!vd) return;
    if (!program || !vd->layout) return;
    edje_edit_program_run(vd->layout, program);
-   char buf[256];
-   snprintf(buf, sizeof(buf), "Program Run: \"%s\"", program);
-   stats_info_msg_update(buf);
+   evas_object_smart_callback_call(vd->enventor, SIG_PROGRAM_RUN,
+                                   (void*)program);
 }
 
 void
@@ -425,7 +438,7 @@ view_data_get(view_data *vd)
 void
 view_scale_set(view_data *vd, double scale)
 {
-   if (!vd->layout) return;
+   if (!vd || !vd->layout) return;
    if (scale == edje_object_scale_get(vd->layout)) return;
 
    int pminw, pminh;

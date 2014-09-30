@@ -1,6 +1,11 @@
-#include <Elementary.h>
-#include "common.h"
+#ifdef HAVE_CONFIG_H
+ #include "config.h"
+#endif
 
+#define ENVENTOR_BETA_API_SUPPORT 1
+
+#include <Enventor.h>
+#include "enventor_private.h"
 
 struct syntax_helper_s
 {
@@ -9,6 +14,10 @@ struct syntax_helper_s
    Eina_Strbuf *strbuf;
    Ecore_Timer *buf_flush_timer;
 };
+
+/*****************************************************************************/
+/* Internal method implementation                                            */
+/*****************************************************************************/
 
 static Eina_Bool
 buf_flush_timer_cb(void *data)
@@ -22,6 +31,10 @@ buf_flush_timer_cb(void *data)
 
    return ECORE_CALLBACK_RENEW;
 }
+
+/*****************************************************************************/
+/* Externally accessible calls                                               */
+/*****************************************************************************/
 
 syntax_helper *
 syntax_init(void)

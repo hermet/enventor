@@ -1,5 +1,12 @@
-#include <Elementary.h>
-#include "common.h"
+#ifdef HAVE_CONFIG_H
+ #include "config.h"
+#endif
+
+#define ENVENTOR_BETA_API_SUPPORT 1
+
+#include <Enventor.h>
+#include <Eio.h>
+#include "enventor_private.h"
 
 //FIXME: Make flexible
 const int MAX_LINE_DIGIT_CNT = 10;
@@ -20,7 +27,7 @@ struct editor_s
    Evas_Object *en_line;
    Evas_Object *scroller;
    Evas_Object *layout;
-   Evas_Object *parent;
+   Evas_Object *enventor;
 
    syntax_helper *sh;
    parser_data *pd;
@@ -38,12 +45,20 @@ struct editor_s
                          Eina_Stringshare *group_name);
    void *view_sync_cb_data;
    int select_pos;
+   double font_scale;
 
    Eina_Bool edit_changed : 1;
    Eina_Bool linenumber : 1;
    Eina_Bool ctrl_pressed : 1;
    Eina_Bool on_select_recover : 1;
+   Eina_Bool auto_indent : 1;
+   Eina_Bool part_highlight : 1;
+   Eina_Bool ctxpopup: 1;
 };
+
+/*****************************************************************************/
+/* Internal method implementation                                            */
+/*****************************************************************************/
 
 static Eina_Bool
 image_preview_show(edit_data *ed, char *cur, Evas_Coord x, Evas_Coord y);
@@ -193,37 +208,6 @@ syntax_color_thread_cancel_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
    free(td);
 }
 
-void
-syntax_color_full_update(edit_data *ed, Eina_Bool thread)
-{
-   if (ed->syntax_color_lock > 0) return;
-
-   ecore_timer_del(ed->syntax_color_timer);
-   ed->syntax_color_timer = NULL;
-
-   if (thread)
-     {
-        syntax_color_td *td = calloc(1, sizeof(syntax_color_td));
-        if (!td)
-          {
-             EINA_LOG_ERR("Failed to allocate Memory!");
-             return;
-          }
-        td->ed = ed;
-        Evas_Object *tb = elm_entry_textblock_get(ed->en_edit);
-        td->text = (char *) evas_object_textblock_text_markup_get(tb);
-        ed->syntax_color_thread =
-           ecore_thread_run(syntax_color_thread_cb,
-                            syntax_color_thread_end_cb,
-                            syntax_color_thread_cancel_cb,
-                            td);
-     }
-   else
-     {
-        syntax_color_apply(ed, EINA_FALSE);
-     }
-}
-
 static void
 edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
@@ -250,7 +234,7 @@ edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
              edit_line_increase(ed, increase);
           }
 
-        if (config_auto_indent_get())
+        if (ed->auto_indent)
           indent_insert_apply(syntax_indent_data_get(ed->sh), ed->en_edit,
                               info->change.insert.content, ed->cur_line);
      }
@@ -258,7 +242,7 @@ edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
      {
         int decrease = parser_line_cnt_get(ed->pd, info->change.del.content);
 
-        if (config_auto_indent_get())
+        if (ed->auto_indent)
           {
              if (indent_delete_apply(syntax_indent_data_get(ed->sh),
                                      ed->en_edit, info->change.del.content,
@@ -275,50 +259,6 @@ edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 }
 
 static void
-save_msg_show(edit_data *ed)
-{
-   if (!config_stats_bar_get()) return;
-
-   char buf[PATH_MAX];
-
-   if (ed->edit_changed)
-     snprintf(buf, sizeof(buf), "File saved. \"%s\"", config_edc_path_get());
-   else
-     snprintf(buf, sizeof(buf), "Already saved. \"%s\"", config_edc_path_get());
-
-   stats_info_msg_update(buf);
-}
-
-Eina_Bool
-edit_save(edit_data *ed)
-{
-   if (!ed->edit_changed)
-     {
-        save_msg_show(ed);
-        return EINA_TRUE;
-     }
-
-   const char *text = elm_entry_entry_get(ed->en_edit);
-   char *utf8 = elm_entry_markup_to_utf8(text);
-
-   FILE *fp = fopen(config_edc_path_get(), "w");
-   if (!fp) return EINA_FALSE;
-
-   fputs(utf8, fp);
-   fclose(fp);
-
-   free(utf8);
-
-   save_msg_show(ed);
-   //FIXME: If compile edc here? we can edit_changed FALSE;
-   //edit_changed_set(ed, EINA_FALSE);
-
-   edit_view_sync(ed);
-
-   return EINA_TRUE;
-}
-
-static void
 ctxpopup_candidate_dismiss_cb(void *data, Evas_Object *obj,
                               void *event_info EINA_UNUSED)
 {
@@ -326,6 +266,7 @@ ctxpopup_candidate_dismiss_cb(void *data, Evas_Object *obj,
    evas_object_del(obj);
    elm_object_disabled_set(ed->layout, EINA_FALSE);
    elm_object_focus_set(ed->en_edit, EINA_TRUE);
+   evas_object_smart_callback_call(ed->enventor, SIG_CTXPOPUP_DISMISSED, NULL);
 }
 
 static void
@@ -337,7 +278,8 @@ ctxpopup_candidate_selected_cb(void *data, Evas_Object *obj, void *event_info)
    elm_entry_entry_insert(ed->en_edit, text);
    elm_ctxpopup_dismiss(obj);
    edit_changed_set(ed, EINA_TRUE);
-   edit_save(ed);
+   evas_object_smart_callback_call(ed->enventor, SIG_CTXPOPUP_SELECTED,
+                                   (void *)text);
 }
 
 static void
@@ -352,57 +294,6 @@ ctxpopup_preview_dismiss_cb(void *data, Evas_Object *obj,
    if (skip_focus) return;
    elm_object_disabled_set(ed->layout, EINA_FALSE);
    elm_object_focus_set(ed->en_edit, EINA_TRUE);
-}
-
-void
-edit_syntax_color_full_apply(edit_data *ed, Eina_Bool force)
-{
-   int lock;
-
-   if (force)
-     {
-        lock = ed->syntax_color_lock;
-        ed->syntax_color_lock = -1;
-     }
-   syntax_color_full_update(ed, EINA_FALSE);
-
-   if (force) ed->syntax_color_lock = lock;
-   else ed->syntax_color_lock++;
-}
-
-void
-edit_syntax_color_partial_apply(edit_data *ed, double interval)
-{
-   if (ed->syntax_color_lock > 0) ed->syntax_color_lock = 0;
-   if (interval < 0) syntax_color_partial_update(ed, SYNTAX_COLOR_DEFAULT_TIME);
-   else syntax_color_partial_update(ed, interval);
-}
-
-static void
-cur_line_pos_set(edit_data *ed, Eina_Bool force)
-{
-   Evas_Coord y, h;
-   elm_entry_cursor_geometry_get(ed->en_edit, NULL, &y, NULL, &h);
-   int line = (y / h) + 1;
-
-   if (line < 0) line = 1;
-   if (!force && (ed->cur_line == line)) return;
-   ed->cur_line = line;
-
-   if (!config_stats_bar_get()) return;
-   stats_line_num_update(ed->cur_line, ed->line_max);
-}
-
-static void
-program_run(edit_data *ed, char *cur)
-{
-   char *program = parser_name_get(ed->pd, cur);
-   if (program)
-     {
-        view_data *vd = edj_mgr_view_get(NULL);
-        view_program_run(vd, program);
-        free(program);
-     }
 }
 
 //This function is called when user press up/down key or mouse wheel up/down
@@ -457,7 +348,9 @@ preview_img_relay_show(edit_data *ed, Evas_Object *ctxpopup, Eina_Bool next)
                                     cursor_pos);
      }
 end:
+#if 0
    menu_ctxpopup_unregister(ctxpopup);
+#endif
    elm_ctxpopup_dismiss(ctxpopup);
 }
 
@@ -478,7 +371,7 @@ image_preview_show(edit_data *ed, char *cur, Evas_Coord x, Evas_Coord y)
    char fullpath[PATH_MAX];
 
    //1.Find the image path.
-   Eina_List *list = config_edc_img_path_list_get();
+   Eina_List *list = build_path_get(ENVENTOR_RES_IMAGE);
    Eina_List *l;
    char *path;
    Eina_Bool found = EINA_FALSE;
@@ -516,16 +409,14 @@ image_preview_show(edit_data *ed, char *cur, Evas_Coord x, Evas_Coord y)
 
         evas_object_move(ctxpopup, x, y);
         evas_object_show(ctxpopup);
+#if 0
         menu_ctxpopup_register(ctxpopup);
+#endif
         elm_object_disabled_set(ed->layout, EINA_TRUE);
         succeed = EINA_TRUE;
      }
    else
      {
-        char buf[PATH_MAX];
-        snprintf(buf, sizeof(buf), "Failed to load the image. \"%s\"",
-                 filename);
-        stats_info_msg_update(buf);
         succeed = EINA_FALSE;
      }
 
@@ -551,8 +442,22 @@ candidate_list_show(edit_data *ed, char *text, char *cur, char *selected)
    evas_pointer_output_xy_get(evas_object_evas_get(ed->en_edit), &x, &y);
    evas_object_move(ctxpopup, x, y);
    evas_object_show(ctxpopup);
+#if 0
    menu_ctxpopup_register(ctxpopup);
+#endif
    elm_object_disabled_set(ed->layout, EINA_TRUE);
+}
+
+static void
+program_run(edit_data *ed, char *cur)
+{
+   char *program = parser_name_get(ed->pd, cur);
+   if (program)
+     {
+        view_data *vd = edj_mgr_view_get(NULL);
+        view_program_run(vd, program);
+        free(program);
+     }
 }
 
 static void
@@ -562,9 +467,11 @@ edit_cursor_double_clicked_cb(void *data, Evas_Object *obj,
    edit_data *ed = data;
 
    if (ed->ctrl_pressed) return;
+   if (!ed->ctxpopup) return;
 
    char *selected = (char *) elm_entry_selection_get(obj);
    if (!selected) return;
+
    selected = elm_entry_markup_to_utf8(selected);
    if (selected[0] == '\"')
      {
@@ -599,7 +506,7 @@ edit_cursor_double_clicked_cb(void *data, Evas_Object *obj,
 
 static void
 cur_name_get_cb(void *data, Eina_Stringshare *part_name,
-                 Eina_Stringshare *group_name)
+                Eina_Stringshare *group_name)
 {
    edit_data *ed = data;
 
@@ -607,13 +514,19 @@ cur_name_get_cb(void *data, Eina_Stringshare *part_name,
      ed->view_sync_cb(ed->view_sync_cb_data, part_name, group_name);
 }
 
-void
-edit_view_sync(edit_data *ed)
+static void
+cur_line_pos_set(edit_data *ed, Eina_Bool force)
 {
-   if (!config_part_highlight_get())
-      parser_cur_group_name_get(ed->pd, ed->en_edit, cur_name_get_cb, ed);
-   else
-      parser_cur_name_get(ed->pd, ed->en_edit, cur_name_get_cb, ed);
+   Evas_Coord y, h;
+   elm_entry_cursor_geometry_get(ed->en_edit, NULL, &y, NULL, &h);
+   int line = (y / h) + 1;
+
+   if (line < 0) line = 1;
+   if (!force && (ed->cur_line == line)) return;
+   ed->cur_line = line;
+
+   evas_object_smart_callback_call(ed->enventor, SIG_CURSOR_LINE_CHANGED,
+                                   (void *)line);
 }
 
 static void
@@ -651,84 +564,35 @@ edit_cursor_changed_cb(void *data, Evas_Object *obj EINA_UNUSED,
    cur_line_pos_set(ed, EINA_FALSE);
 }
 
-void
-edit_view_sync_cb_set(edit_data *ed,
-                      void (*cb)(void *data, Eina_Stringshare *part_name,
-                                 Eina_Stringshare *group_name), void *data)
+static void
+syntax_color_full_update(edit_data *ed, Eina_Bool thread)
 {
-   ed->view_sync_cb = cb;
-   ed->view_sync_cb_data = data;
-}
+   if (ed->syntax_color_lock > 0) return;
 
-void
-edit_line_delete(edit_data *ed)
-{
-   if (!elm_object_focus_get(ed->en_edit)) return;
+   ecore_timer_del(ed->syntax_color_timer);
+   ed->syntax_color_timer = NULL;
 
-   Evas_Object *textblock = elm_entry_textblock_get(ed->en_edit);
-
-   int line1 = ed->cur_line - 1;
-   int line2 = ed->cur_line;
-
-   //min position case
-   if (line1 < 0)
+   if (thread)
      {
-        line1 = 0;
-        line2 = 1;
+        syntax_color_td *td = calloc(1, sizeof(syntax_color_td));
+        if (!td)
+          {
+             EINA_LOG_ERR("Failed to allocate Memory!");
+             return;
+          }
+        td->ed = ed;
+        Evas_Object *tb = elm_entry_textblock_get(ed->en_edit);
+        td->text = (char *) evas_object_textblock_text_markup_get(tb);
+        ed->syntax_color_thread =
+           ecore_thread_run(syntax_color_thread_cb,
+                            syntax_color_thread_end_cb,
+                            syntax_color_thread_cancel_cb,
+                            td);
      }
-
-   //Max position case
-   Eina_Bool max = EINA_FALSE;
-   if (line2 >= ed->line_max)
+   else
      {
-        line1 = (ed->line_max - 2);
-        line2 = (ed->line_max - 1);
-        max = EINA_TRUE;
+        syntax_color_apply(ed, EINA_FALSE);
      }
-
-   //only one line remain. clear it.
-   if (ed->line_max == 1)
-     {
-        redoundo_text_push(ed->rd, elm_entry_entry_get(ed->en_edit), 0, 0,
-                           EINA_FALSE);
-        elm_entry_entry_set(ed->en_edit, "");
-        line_init(ed);
-        return;
-     }
-
-   Evas_Textblock_Cursor *cur1 = evas_object_textblock_cursor_new(textblock);
-   evas_textblock_cursor_line_set(cur1, line1);
-   if (max) evas_textblock_cursor_line_char_last(cur1);
-
-   Evas_Textblock_Cursor *cur2 = evas_object_textblock_cursor_new(textblock);
-   evas_textblock_cursor_line_set(cur2, line2);
-   if (max) evas_textblock_cursor_line_char_last(cur2);
-   int cur1_pos, cur2_pos;
-
-   cur1_pos = evas_textblock_cursor_pos_get(cur1);
-   cur2_pos = evas_textblock_cursor_pos_get(cur2);
-   const char *content = evas_textblock_cursor_range_text_get(cur1, cur2,
-                                                    EVAS_TEXTBLOCK_TEXT_MARKUP);
-
-   evas_textblock_cursor_range_delete(cur1, cur2);
-   evas_textblock_cursor_free(cur1);
-   evas_textblock_cursor_free(cur2);
-   redoundo_text_push(ed->rd, content, cur1_pos, abs(cur2_pos - cur1_pos),
-                      EINA_FALSE);
-   elm_entry_calc_force(ed->en_edit);
-
-   edit_line_decrease(ed, 1);
-
-   cur_line_pos_set(ed, EINA_TRUE);
-   edit_changed_set(ed, EINA_TRUE);
-
-   syntax_color_partial_update(ed, SYNTAX_COLOR_DEFAULT_TIME);
-}
-
-int
-edit_cur_indent_depth_get(edit_data *ed)
-{
-   return indent_space_get(syntax_indent_data_get(ed->sh), ed->en_edit);
 }
 
 static void
@@ -741,13 +605,17 @@ edit_redoundo(edit_data *ed, Eina_Bool undo)
    else lines = redoundo_redo(ed->rd, &changed);
    if (!changed)
      {
+#if 0
         if (undo) stats_info_msg_update("No text to be undo.");
         else stats_info_msg_update("No text to be redo.");
+#endif
         return;
      }
 
+#if 0
    if (undo) stats_info_msg_update("Undo text.");
    else stats_info_msg_update("Redo text.");
+#endif
 
    if (lines > 0) edit_line_increase(ed, lines);
    else edit_line_decrease(ed, abs(lines));
@@ -840,8 +708,219 @@ scroller_vbar_unpress_cb(void *data, Evas_Object *obj EINA_UNUSED,
    syntax_color_partial_update(ed, SYNTAX_COLOR_SHORT_TIME);
 }
 
+static Eina_Bool
+edit_edc_load(edit_data *ed, const char *file_path)
+{
+   char buf[MAX_LINE_DIGIT_CNT];
+
+   Eina_File *file = NULL;
+   Eina_Strbuf *strbuf_line = NULL;
+   char *utf8_edit = NULL;
+   char *markup_edit = NULL;
+   char *markup_line = NULL;
+   int line_num = 1;
+   Eina_Bool ret = EINA_FALSE;
+
+   ed->line_max = 0;
+
+   file = eina_file_open(file_path, EINA_FALSE);
+   if (!file) goto err;
+
+   strbuf_line = eina_strbuf_new();
+   if (!strbuf_line) goto err;
+
+   utf8_edit = eina_file_map_all(file, EINA_FILE_POPULATE);
+   if (!utf8_edit) goto err;
+
+   //Append line numbers
+   if (!eina_strbuf_append_char(strbuf_line, '1')) goto err;
+   char *p = utf8_edit;
+   int len = strlen(p);
+   while ((p = strchr(p, '\n')) && p < (utf8_edit + len))
+     {
+        line_num++;
+        ++p;
+        sprintf(buf, "\n%d", line_num);
+        if (!eina_strbuf_append(strbuf_line, buf)) goto err;
+     }
+
+   markup_line = elm_entry_utf8_to_markup(eina_strbuf_string_get(strbuf_line));
+   if (!markup_line) goto err;
+   elm_entry_entry_append(ed->en_line, markup_line);
+   free(markup_line);
+
+   markup_edit = elm_entry_utf8_to_markup(utf8_edit);
+   if (!markup_edit) goto err;
+   elm_entry_entry_set(ed->en_edit, markup_edit);
+   free(markup_edit);
+
+   ed->line_max = line_num;
+
+   Eina_Stringshare *group_name =
+      parser_first_group_name_get(ed->pd, ed->en_edit);
+
+   ecore_animator_add(syntax_color_timer_cb, ed);
+
+   ret = EINA_TRUE;
+
+err:
+   //Even any text is not inserted, line number should start with 1
+   if (ed->line_max == 0) line_init(ed);
+   if (strbuf_line) eina_strbuf_free(strbuf_line);
+   if (utf8_edit) eina_file_map_free(file, utf8_edit);
+   if (file) eina_file_close(file);
+
+   evas_object_smart_callback_call(ed->enventor, SIG_MAX_LINE_CHANGED,
+                                   (void *)ed->line_max);
+
+   if (ed->view_sync_cb)
+     ed->view_sync_cb(ed->view_sync_cb_data, NULL, group_name);
+
+   return ret;
+}
+
+/*****************************************************************************/
+/* Externally accessible calls                                               */
+/*****************************************************************************/
+
+void
+edit_view_sync_cb_set(edit_data *ed,
+                      void (*cb)(void *data, Eina_Stringshare *part_name,
+                                 Eina_Stringshare *group_name), void *data)
+{
+   ed->view_sync_cb = cb;
+   ed->view_sync_cb_data = data;
+}
+
+Eina_Bool
+edit_save(edit_data *ed, const char *file)
+{
+   if (!ed->edit_changed) return EINA_FALSE;
+
+   const char *text = elm_entry_entry_get(ed->en_edit);
+   char *utf8 = elm_entry_markup_to_utf8(text);
+   FILE *fp = fopen(file, "w");
+   if (!fp)
+     {
+        EINA_LOG_ERR("Failed to open file \"%s\"", file);
+        return EINA_FALSE;
+     }
+
+   fputs(utf8, fp);
+   fclose(fp);
+   free(utf8);
+
+   edit_view_sync(ed);
+
+   return EINA_TRUE;
+}
+
+void
+edit_syntax_color_full_apply(edit_data *ed, Eina_Bool force)
+{
+   int lock;
+
+   if (force)
+     {
+        lock = ed->syntax_color_lock;
+        ed->syntax_color_lock = -1;
+     }
+   syntax_color_full_update(ed, EINA_FALSE);
+
+   if (force) ed->syntax_color_lock = lock;
+   else ed->syntax_color_lock++;
+}
+
+void
+edit_syntax_color_partial_apply(edit_data *ed, double interval)
+{
+   if (ed->syntax_color_lock > 0) ed->syntax_color_lock = 0;
+   if (interval < 0) syntax_color_partial_update(ed, SYNTAX_COLOR_DEFAULT_TIME);
+   else syntax_color_partial_update(ed, interval);
+}
+
+void
+edit_view_sync(edit_data *ed)
+{
+   if (!ed->part_highlight)
+     parser_cur_group_name_get(ed->pd, ed->en_edit, cur_name_get_cb, ed);
+   else
+     parser_cur_name_get(ed->pd, ed->en_edit, cur_name_get_cb, ed);
+}
+
+void
+edit_line_delete(edit_data *ed)
+{
+   if (!elm_object_focus_get(ed->en_edit)) return;
+
+   Evas_Object *textblock = elm_entry_textblock_get(ed->en_edit);
+
+   int line1 = ed->cur_line - 1;
+   int line2 = ed->cur_line;
+
+   //min position case
+   if (line1 < 0)
+     {
+        line1 = 0;
+        line2 = 1;
+     }
+
+   //Max position case
+   Eina_Bool max = EINA_FALSE;
+   if (line2 >= ed->line_max)
+     {
+        line1 = (ed->line_max - 2);
+        line2 = (ed->line_max - 1);
+        max = EINA_TRUE;
+     }
+
+   //only one line remain. clear it.
+   if (ed->line_max == 1)
+     {
+        redoundo_text_push(ed->rd, elm_entry_entry_get(ed->en_edit), 0, 0,
+                           EINA_FALSE);
+        elm_entry_entry_set(ed->en_edit, "");
+        line_init(ed);
+        return;
+     }
+
+   Evas_Textblock_Cursor *cur1 = evas_object_textblock_cursor_new(textblock);
+   evas_textblock_cursor_line_set(cur1, line1);
+   if (max) evas_textblock_cursor_line_char_last(cur1);
+
+   Evas_Textblock_Cursor *cur2 = evas_object_textblock_cursor_new(textblock);
+   evas_textblock_cursor_line_set(cur2, line2);
+   if (max) evas_textblock_cursor_line_char_last(cur2);
+   int cur1_pos, cur2_pos;
+
+   cur1_pos = evas_textblock_cursor_pos_get(cur1);
+   cur2_pos = evas_textblock_cursor_pos_get(cur2);
+   const char *content = evas_textblock_cursor_range_text_get(cur1, cur2,
+                                                    EVAS_TEXTBLOCK_TEXT_MARKUP);
+
+   evas_textblock_cursor_range_delete(cur1, cur2);
+   evas_textblock_cursor_free(cur1);
+   evas_textblock_cursor_free(cur2);
+   redoundo_text_push(ed->rd, content, cur1_pos, abs(cur2_pos - cur1_pos),
+                      EINA_FALSE);
+   elm_entry_calc_force(ed->en_edit);
+
+   edit_line_decrease(ed, 1);
+
+   cur_line_pos_set(ed, EINA_TRUE);
+   edit_changed_set(ed, EINA_TRUE);
+
+   syntax_color_partial_update(ed, SYNTAX_COLOR_DEFAULT_TIME);
+}
+
+int
+edit_cur_indent_depth_get(edit_data *ed)
+{
+   return indent_space_get(syntax_indent_data_get(ed->sh), ed->en_edit);
+}
+
 edit_data *
-edit_init(Evas_Object *parent)
+edit_init(Evas_Object *enventor)
 {
    srand(time(NULL));
    parser_data *pd = parser_init();
@@ -860,7 +939,7 @@ edit_init(Evas_Object *parent)
    ecore_event_handler_add(ECORE_EVENT_KEY_UP, key_up_cb, ed);
 
    //Scroller
-   Evas_Object *scroller = elm_scroller_add(parent);
+   Evas_Object *scroller = elm_scroller_add(enventor);
    elm_scroller_policy_set(scroller, ELM_SCROLLER_POLICY_AUTO,
                            ELM_SCROLLER_POLICY_AUTO);
    elm_object_focus_allow_set(scroller, EINA_FALSE);
@@ -877,6 +956,9 @@ edit_init(Evas_Object *parent)
    evas_object_size_hint_weight_set(scroller, EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(scroller, EVAS_HINT_FILL, EVAS_HINT_FILL);
+
+   //This is hackish call to not change scroller color by widget.
+   evas_object_data_set(scroller, "_elm_leaveme", (void *)1);
 
    //Layout
    Evas_Object *layout = elm_layout_add(scroller);
@@ -920,24 +1002,19 @@ edit_init(Evas_Object *parent)
    ed->en_line = en_line;
    ed->en_edit = en_edit;
    ed->layout = layout;
-   ed->parent = parent;
+   ed->enventor = enventor;
    ed->linenumber = EINA_TRUE;
+   ed->auto_indent = EINA_TRUE;
+   ed->part_highlight = EINA_TRUE;
+   ed->ctxpopup = EINA_TRUE;
    ed->cur_line = -1;
    ed->select_pos = -1;
-
-   edit_line_number_toggle(ed);
-   edit_font_size_update(ed, EINA_FALSE, EINA_FALSE);
+   ed->font_scale = 1;
 
    ed->rd = redoundo_init(en_edit);
    evas_object_data_set(ed->en_edit, "redoundo", ed->rd);
 
    return ed;
-}
-
-void
-edit_editable_set(edit_data *ed, Eina_Bool editable)
-{
-   elm_entry_editable_set(ed->en_edit, editable);
 }
 
 Evas_Object *
@@ -963,80 +1040,6 @@ edit_term(edit_data *ed)
    parser_term(pd);
 }
 
-void
-edit_edc_read(edit_data *ed, const char *file_path)
-{
-   char buf[MAX_LINE_DIGIT_CNT];
-
-   Eina_File *file = NULL;
-   Eina_Strbuf *strbuf_line = NULL;
-   char *utf8_edit = NULL;
-   char *markup_edit = NULL;
-   char *markup_line = NULL;
-   int line_num = 1;
-
-   ed->line_max = 0;
-
-   autocomp_target_set(NULL);
-
-   file = eina_file_open(file_path, EINA_FALSE);
-   if (!file) goto err;
-
-   strbuf_line = eina_strbuf_new();
-   if (!strbuf_line) goto err;
-
-   base_title_set(file_path);
-
-   utf8_edit = eina_file_map_all(file, EINA_FILE_POPULATE);
-   if (!utf8_edit) goto err;
-
-   //Append line numbers
-   if (!eina_strbuf_append_char(strbuf_line, '1')) goto err;
-   char *p = utf8_edit;
-   int len = strlen(p);
-   while ((p = strchr(p, '\n')) && p < (utf8_edit + len))
-     {
-        line_num++;
-        ++p;
-        sprintf(buf, "\n%d", line_num);
-        if (!eina_strbuf_append(strbuf_line, buf)) goto err;
-     }
-
-   markup_line = elm_entry_utf8_to_markup(eina_strbuf_string_get(strbuf_line));
-   if (!markup_line) goto err;
-   elm_entry_entry_append(ed->en_line, markup_line);
-   free(markup_line);
-
-   markup_edit = elm_entry_utf8_to_markup(utf8_edit);
-   if (!markup_edit) goto err;
-   elm_entry_entry_set(ed->en_edit, markup_edit);
-   free(markup_edit);
-
-   ed->line_max = line_num;
-
-   Eina_Stringshare *group_name =
-      parser_first_group_name_get(ed->pd, ed->en_edit);
-
-   stats_edc_group_update(group_name);
-
-   ecore_animator_add(syntax_color_timer_cb, ed);
-
-err:
-   //Even any text is not inserted, line number should start with 1
-   if (ed->line_max == 0) line_init(ed);
-   if (strbuf_line) eina_strbuf_free(strbuf_line);
-   if (utf8_edit) eina_file_map_free(file, utf8_edit);
-   if (file) eina_file_close(file);
-   autocomp_target_set(ed);
-   stats_line_num_update(1, ed->line_max);
-}
-
-void
-edit_focus_set(edit_data *ed)
-{
-   elm_object_focus_set(ed->en_edit, EINA_TRUE);
-}
-
 Eina_Bool
 edit_changed_get(edit_data *ed)
 {
@@ -1049,13 +1052,17 @@ edit_changed_set(edit_data *ed, Eina_Bool changed)
    ed->edit_changed = changed;
 }
 
-void
-edit_line_number_toggle(edit_data *ed)
+Eina_Bool
+edit_linenumber_get(edit_data *ed)
 {
-   //FIXME: edit & config toggle should be handled in one place.
-   Eina_Bool linenumber = config_linenumber_get();
+   return ed->linenumber;
+}
+
+void
+edit_linenumber_set(edit_data *ed, Eina_Bool linenumber)
+{
    if (ed->linenumber == linenumber) return;
-   ed->linenumber = linenumber;
+   ed->linenumber = !!linenumber;
 
    if (linenumber)
      elm_object_signal_emit(ed->layout, "elm,state,linenumber,show", "");
@@ -1064,57 +1071,54 @@ edit_line_number_toggle(edit_data *ed)
 }
 
 void
-edit_new(edit_data *ed)
+edit_font_scale_set(edit_data *ed, double font_scale)
 {
+   if (ed->font_scale == font_scale) return;
+   elm_object_scale_set(ed->layout, font_scale);
+   syntax_color_partial_update(ed, 0);
+   ed->font_scale = font_scale;
+}
+
+double
+edit_font_scale_get(edit_data *ed)
+{
+   return ed->font_scale;
+}
+
+void
+edit_part_highlight_set(edit_data *ed, Eina_Bool part_highlight)
+{
+   part_highlight = !!part_highlight;
+
+   if (ed->part_highlight == part_highlight) return;
+
+   ed->part_highlight = part_highlight;
+
+   if (part_highlight) edit_view_sync(ed);
+   else view_part_highlight_set(VIEW_DATA, NULL);
+}
+
+Eina_Bool
+edit_part_highlight_get(edit_data *ed)
+{
+   return ed->part_highlight;
+}
+
+Eina_Bool
+edit_load(edit_data *ed, const char *edc_path)
+{
+#if 0
+   live_edit_cancel();
+#endif
    parser_cancel(ed->pd);
    elm_entry_entry_set(ed->en_edit, "");
    elm_entry_entry_set(ed->en_line, "");
-   edit_edc_read(ed, config_edc_path_get());
+   Eina_Bool ret = edit_edc_load(ed, edc_path);
    edit_changed_set(ed, EINA_TRUE);
-
-   char buf[PATH_MAX];
-   snprintf(buf, sizeof(buf), "File Path: \"%s\"", config_edc_path_get());
-   stats_info_msg_update(buf);
-}
-
-void
-edit_font_size_update(edit_data *ed, Eina_Bool msg, Eina_Bool update)
-{
-   elm_object_scale_set(ed->layout, config_font_size_get());
-
-   if (!msg) return;
-
-   char buf[128];
-   snprintf(buf, sizeof(buf), "Font Size: %1.1fx", config_font_size_get());
-   stats_info_msg_update(buf);
-
-   if (update) syntax_color_partial_update(ed, 0);
-}
-
-void
-edit_part_highlight_toggle(edit_data *ed, Eina_Bool msg)
-{
-   Eina_Bool highlight = config_part_highlight_get();
-   if (highlight) edit_view_sync(ed);
-   else view_part_highlight_set(VIEW_DATA, NULL);
-
-   if (!msg) return;
-
-   if (highlight)
-     stats_info_msg_update("Part Highlighting Enabled.");
-   else
-     stats_info_msg_update("Part Highlighting Disabled.");
-}
-
-void
-edit_edc_reload(edit_data *ed, const char *edc_path)
-{
-   live_edit_cancel();
-   config_edc_path_set(edc_path);
-   edit_new(ed);
    edj_mgr_reload_need_set(EINA_TRUE);
-   config_apply();
    redoundo_clear(ed->rd);
+
+   return ret;
 }
 
 Eina_Stringshare *
@@ -1172,7 +1176,8 @@ edit_line_increase(edit_data *ed, int cnt)
      }
    elm_entry_calc_force(ed->en_line);
 
-   stats_line_num_update(ed->cur_line, ed->line_max);
+   evas_object_smart_callback_call(ed->enventor, SIG_MAX_LINE_CHANGED,
+                                   (void *)ed->line_max);
 }
 
 void
@@ -1202,7 +1207,9 @@ edit_line_decrease(edit_data *ed, int cnt)
    ed->line_max -= cnt;
 
    if (ed->line_max < 1) line_init(ed);
-   stats_line_num_update(ed->cur_line, ed->line_max);
+
+   evas_object_smart_callback_call(ed->enventor, SIG_MAX_LINE_CHANGED,
+                                   (void *)ed->line_max);
 }
 
 void
@@ -1224,4 +1231,30 @@ edit_disabled_set(edit_data *ed, Eina_Bool disabled)
      }
    else
      elm_object_signal_emit(ed->layout, "elm,state,enabled", "");
+}
+
+void
+edit_auto_indent_set(edit_data *ed, Eina_Bool auto_indent)
+{
+   auto_indent = !!auto_indent;
+   ed->auto_indent = auto_indent;
+}
+
+Eina_Bool
+edit_auto_indent_get(edit_data *ed)
+{
+   return ed->auto_indent;
+}
+
+Eina_Bool
+edit_ctxpopup_get(edit_data *ed)
+{
+   return ed->ctxpopup;
+}
+
+void
+edit_ctxpopup_set(edit_data *ed, Eina_Bool ctxpopup)
+{
+   ctxpopup = !!ctxpopup;
+   ed->ctxpopup = ctxpopup;
 }

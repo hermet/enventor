@@ -1,4 +1,10 @@
-#include <Elementary.h>
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#define ENVENTOR_BETA_API_SUPPORT 1
+
+#include <Enventor.h>
 #include "common.h"
 
 typedef struct goto_s
@@ -7,7 +13,7 @@ typedef struct goto_s
    Evas_Object *layout;
    Evas_Object *entry;
    Evas_Object *btn;
-   edit_data *ed;
+   Evas_Object *enventor;
 } goto_data;
 
 static goto_data *g_gd = NULL;
@@ -38,7 +44,7 @@ goto_line(goto_data *gd)
 {
   const char *txt = elm_entry_entry_get(gd->entry);
   int line = atoi(txt);
-  edit_goto(gd->ed, line);
+  enventor_object_line_goto(gd->enventor, line);
   goto_close();
 }
 
@@ -60,7 +66,7 @@ entry_changed_cb(void *data, Evas_Object *obj, void* event_info EINA_UNUSED)
 
    int line = atoi(txt);
 
-   if ((line < 1) || (line > edit_max_line_get(gd->ed)))
+   if ((line < 1) || (line > enventor_object_max_line_get(gd->enventor)))
      {
         elm_object_part_text_set(gd->layout, "elm.text.msg",
                                  "Invalid line number");
@@ -82,7 +88,7 @@ btn_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
 }
 
 void
-goto_open(edit_data *ed)
+goto_open(Evas_Object *enventor)
 {
    static Elm_Entry_Filter_Accept_Set digits_filter_data;
    goto_data *gd = g_gd;
@@ -130,7 +136,7 @@ goto_open(edit_data *ed)
 
    char  buf[256];
    snprintf(buf, sizeof(buf), "Enter line number [1..%d]:",
-            edit_max_line_get(ed));
+            enventor_object_max_line_get(enventor));
    elm_object_part_text_set(layout, "elm.text.goto", buf);
 
    //Entry (line)
@@ -157,14 +163,13 @@ goto_open(edit_data *ed)
    evas_object_smart_callback_add(btn, "clicked", btn_clicked_cb, gd);
    elm_object_part_content_set(layout, "elm.swallow.btn",
                                btn);
-
    evas_object_show(win);
 
    gd->win = win;
    gd->layout = layout;
    gd->entry = entry;
    gd->btn = btn;
-   gd->ed = ed;
+   gd->enventor = enventor;
 }
 
 Eina_Bool

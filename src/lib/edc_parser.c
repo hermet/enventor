@@ -1,5 +1,11 @@
-#include <Elementary.h>
-#include "common.h"
+#ifdef HAVE_CONFIG_H
+ #include "config.h"
+#endif
+
+#define ENVENTOR_BETA_API_SUPPORT 1
+
+#include <Enventor.h>
+#include "enventor_private.h"
 
 struct parser_s
 {
@@ -33,75 +39,9 @@ typedef struct type_init_thread_data_s
    parser_data *pd;
 } type_init_td;
 
-void
-parser_cancel(parser_data *pd)
-{
-   if (pd->thread) ecore_thread_cancel(pd->thread);
-}
-
-char *
-parser_name_get(parser_data *pd EINA_UNUSED, const char *cur)
-{
-   if (!cur) return NULL;
-
-   char *p = (char *) cur;
-   char *end;
-   p = strstr(p, "\"");
-   if (!p) return NULL;
-   p++;
-   end = strstr(p, "\"");
-   if (!end) return NULL;
-   return strndup(p, (end - p));
-}
-
-const char *
-parser_colon_pos_get(parser_data *pd EINA_UNUSED, const char *cur)
-{
-   if (!cur) return NULL;
-   return strstr(cur, ":");
-}
-
-attr_value *
-parser_attribute_get(parser_data *pd, const char *text, const char *cur)
-{
-   if (!text || !cur) return NULL;
-   if ((*cur == ';') || (*cur == ':')) return NULL;
-
-   parser_attr *attr;
-   Eina_Bool instring = EINA_FALSE;
-   Eina_Bool necessary = EINA_FALSE;
-
-   char *p = (char *) cur;
-
-   while (p >= text)
-     {
-        if (*p == ':')
-          {
-             necessary = EINA_TRUE;
-             break;
-          }
-        if (*p == '\"') instring = !instring;
-        p--;
-     }
-   if (!p || !necessary) return NULL;
-
-   while (p > text)
-     {
-        if ((*p == ';') || (*p == '.') || (*p == ' ')) break;
-        p--;
-     }
-
-   if (!p) return NULL;
-   if (p != text) p++;
-
-   EINA_INARRAY_FOREACH(pd->attrs, attr)
-     {
-        if ((instring == attr->instring) && strstr(p, attr->keyword))
-          return &attr->value;
-     }
-
-   return NULL;
-}
+/*****************************************************************************/
+/* Internal method implementation                                            */
+/*****************************************************************************/
 
 static void
 group_name_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
@@ -577,6 +517,162 @@ type_init_thread_cancel(void *data, Ecore_Thread *thread EINA_UNUSED)
    free(td);
 }
 
+static const char *
+end_of_parts_block_find(const char *pos)
+{
+   //TODO: Process comments and quotes.
+   pos = strstr(pos, "parts");
+   if (!pos) return NULL;
+   pos = strstr(pos, "{");
+   if (!pos) return NULL;
+   pos++;
+   char level = 1;
+
+   while (*pos)
+     {
+        if (*pos == '{') level++;
+        else if (*pos == '}') level--;
+
+        if (!level) return --pos;
+        pos++;
+     }
+   return NULL;
+}
+
+static const char *
+group_beginning_pos_get(const char* source, const char *group_name)
+{
+   const char* GROUP_SYNTAX_NAME = "group";
+   const char *quot = QUOT;
+
+   const char *pos = strstr(source, GROUP_SYNTAX_NAME);
+
+   //TODO: Process comments and quotes.
+   while (pos)
+   {
+      const char *name = strstr(pos, quot);
+      if (!name) return NULL;
+      pos = strstr(++name, quot);
+      if (!pos) return NULL;
+      if (!strncmp(name, group_name, strlen(group_name)))
+        return pos;
+      pos = strstr(++pos,  GROUP_SYNTAX_NAME);
+   }
+
+   return NULL;
+}
+
+static Eina_Bool
+parser_collections_block_pos_get(const Evas_Object *entry,
+                                 const char *block_name, int *ret)
+{
+   const char* GROUP_SYNTAX_NAME = "group";
+   const int BLOCK_NAME_LEN = strlen(block_name);
+   *ret = -1;
+
+   const char *text = elm_entry_entry_get(entry);
+   if (!text) return EINA_FALSE;
+
+   char *utf8 = elm_entry_markup_to_utf8(text);
+   if (!utf8) return EINA_FALSE;
+
+   const char *pos = strstr(utf8, block_name);
+   if (pos)
+     {
+        /* TODO: Remove this check and process lines of the form
+           "images.image: "logo.png" COMP;" */
+        if (*(pos + BLOCK_NAME_LEN + 1) == '.')
+          return EINA_FALSE;
+
+        pos = strstr(pos, "{\n");
+        if (!pos) return EINA_FALSE;
+
+        *ret = pos - utf8 + 2;
+        return EINA_TRUE;
+     }
+   pos = strstr(utf8, GROUP_SYNTAX_NAME);
+   if (pos)
+     {
+        *ret = pos - utf8;
+        return EINA_FALSE;
+     }
+   return EINA_FALSE;
+}
+
+/*****************************************************************************/
+/* Externally accessible calls                                               */
+/*****************************************************************************/
+
+void
+parser_cancel(parser_data *pd)
+{
+   if (pd->thread) ecore_thread_cancel(pd->thread);
+}
+
+char *
+parser_name_get(parser_data *pd EINA_UNUSED, const char *cur)
+{
+   if (!cur) return NULL;
+
+   char *p = (char *) cur;
+   char *end;
+   p = strstr(p, "\"");
+   if (!p) return NULL;
+   p++;
+   end = strstr(p, "\"");
+   if (!end) return NULL;
+   return strndup(p, (end - p));
+}
+
+const char *
+parser_colon_pos_get(parser_data *pd EINA_UNUSED, const char *cur)
+{
+   if (!cur) return NULL;
+   return strstr(cur, ":");
+}
+
+attr_value *
+parser_attribute_get(parser_data *pd, const char *text, const char *cur)
+{
+   if (!text || !cur) return NULL;
+   if ((*cur == ';') || (*cur == ':')) return NULL;
+
+   parser_attr *attr;
+   Eina_Bool instring = EINA_FALSE;
+   Eina_Bool necessary = EINA_FALSE;
+
+   char *p = (char *) cur;
+
+   while (p >= text)
+     {
+        if (*p == ':')
+          {
+             necessary = EINA_TRUE;
+             break;
+          }
+        if (*p == '\"') instring = !instring;
+        p--;
+     }
+   if (!p || !necessary) return NULL;
+
+   while (p > text)
+     {
+        if ((*p == ';') || (*p == '.') || (*p == ' ')) break;
+        p--;
+     }
+
+   if (!p) return NULL;
+   if (p != text) p++;
+
+   EINA_INARRAY_FOREACH(pd->attrs, attr)
+     {
+        if ((instring == attr->instring) && strstr(p, attr->keyword))
+          return &attr->value;
+     }
+
+   return NULL;
+}
+
 Eina_Stringshare *
 parser_paragh_name_get(parser_data *pd EINA_UNUSED, Evas_Object *entry)
 {
@@ -931,52 +1027,6 @@ parser_term(parser_data *pd)
    free(pd);
 }
 
-static const char *
-end_of_parts_block_find(const char *pos)
-{
-   //TODO: Process comments and quotes.
-   pos = strstr(pos, "parts");
-   if (!pos) return NULL;
-   pos = strstr(pos, "{");
-   if (!pos) return NULL;
-   pos++;
-   char level = 1;
-
-   while (*pos)
-     {
-        if (*pos == '{') level++;
-        else if (*pos == '}') level--;
-
-        if (!level) return --pos;
-        pos++;
-     }
-   return NULL;
-}
-
-static const char *
-group_beginning_pos_get(const char* source, const char *group_name)
-{
-   const char* GROUP_SYNTAX_NAME = "group";
-   const int quot_len = QUOT_LEN;
-   const char *quot = QUOT;
-
-   const char *pos = strstr(source, GROUP_SYNTAX_NAME);
-
-   //TODO: Process comments and quotes.
-   while (pos)
-   {
-      const char *name = strstr(pos, quot);
-      if (!name) return NULL;
-      pos = strstr(++name, quot);
-      if (!pos) return NULL;
-      if (!strncmp(name, group_name, strlen(group_name)))
-        return pos;
-      pos = strstr(++pos,  GROUP_SYNTAX_NAME);
-   }
-
-   return NULL;
-}
-
 int
 parser_end_of_parts_block_pos_get(const Evas_Object *entry,
                                   const char *group_name)
@@ -1008,43 +1058,6 @@ parser_end_of_parts_block_pos_get(const Evas_Object *entry,
    free(utf8);
 
    return ret;
-}
-
-static Eina_Bool
-parser_collections_block_pos_get(const Evas_Object *entry,
-                                 const char *block_name, int *ret)
-{
-   const char* GROUP_SYNTAX_NAME = "group";
-   const int BLOCK_NAME_LEN = strlen(block_name);
-   *ret = -1;
-
-   const char *text = elm_entry_entry_get(entry);
-   if (!text) return EINA_FALSE;
-
-   char *utf8 = elm_entry_markup_to_utf8(text);
-   if (!utf8) return EINA_FALSE;
-
-   const char *pos = strstr(utf8, block_name);
-   if (pos)
-     {
-        /* TODO: Remove this check and process lines of the form
-           "images.image: "logo.png" COMP;" */
-        if (*(pos + BLOCK_NAME_LEN + 1) == '.')
-          return EINA_FALSE;
-
-        pos = strstr(pos, "{\n");
-        if (!pos) return EINA_FALSE;
-
-        *ret = pos - utf8 + 2;
-        return EINA_TRUE;
-     }
-   pos = strstr(utf8, GROUP_SYNTAX_NAME);
-   if (pos)
-     {
-        *ret = pos - utf8;
-        return EINA_FALSE;
-     }
-   return EINA_FALSE;
 }
 
 Eina_Bool

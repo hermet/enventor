@@ -9,13 +9,13 @@ typedef struct config_s
    Eina_List *edc_img_path_list;
    Eina_List *edc_snd_path_list;
    Eina_List *edc_fnt_path_list;
-   Eina_List *edc_data_path_list;
+   Eina_List *edc_dat_path_list;
    Eina_Strbuf *edc_img_path_buf; //pre-stored image paths for edc compile.
    Eina_Strbuf *edc_snd_path_buf; //pre-stored sound paths for edc compile.
    Eina_Strbuf *edc_fnt_path_buf; //pre-stored font paths for edc compile.
-   Eina_Strbuf *edc_data_path_buf; //pre-stored data paths for edc compile.
+   Eina_Strbuf *edc_dat_path_buf; //pre-stored data paths for edc compile.
 
-   float font_size;
+   float font_scale;
    double view_scale;
    double console_size;
 
@@ -127,7 +127,7 @@ config_load(void)
              EINA_LOG_ERR("Failed to allocate Memory!");
              return NULL;
           }
-        cd->font_size = 1.0f;
+        cd->font_scale = 1.0f;
         cd->view_scale = 1;
         cd->console_size = 0.175;
         cd->stats_bar = EINA_TRUE;
@@ -166,13 +166,13 @@ config_load(void)
    else cd->edc_fnt_path_buf =
      config_paths_buf_set(cd->edc_fnt_path_list, " -fd ");
 
-   if (!cd->edc_data_path_list)
+   if (!cd->edc_dat_path_list)
      {
         sprintf(buf, "%s/data", elm_app_data_dir_get());
-        config_edc_data_path_set(buf);
+        config_edc_dat_path_set(buf);
      }
-   else cd->edc_data_path_buf =
-     config_paths_buf_set(cd->edc_data_path_list, " -dd ");
+   else cd->edc_dat_path_buf =
+     config_paths_buf_set(cd->edc_dat_path_list, " -dd ");
 
    return cd;
 }
@@ -192,9 +192,8 @@ eddc_init(void)
    EET_DATA_DESCRIPTOR_ADD_LIST_STRING(edd_base, config_data,
                                        "edc_fnt_path_list", edc_fnt_path_list);
    EET_DATA_DESCRIPTOR_ADD_LIST_STRING(edd_base, config_data,
-                                       "edc_data_path_list",
-                                       edc_data_path_list);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "font_size", font_size,
+                                       "edc_dat_path_list", edc_dat_path_list);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "font_scale", font_scale,
                                  EET_T_FLOAT);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "view_scale",
                                  view_scale, EET_T_DOUBLE);
@@ -227,7 +226,7 @@ config_edc_path_set(const char *edc_path)
 void
 config_init(const char *edc_path, const char *edc_img_path,
             const char *edc_snd_path, const char *edc_fnt_path,
-            const char *edc_data_path)
+            const char *edc_dat_path)
 {
    eddc_init();
 
@@ -238,7 +237,7 @@ config_init(const char *edc_path, const char *edc_img_path,
    if (edc_img_path[0]) config_edc_img_path_set(edc_img_path);
    if (edc_snd_path[0]) config_edc_snd_path_set(edc_snd_path);
    if (edc_fnt_path[0]) config_edc_fnt_path_set(edc_fnt_path);
-   if (edc_data_path[0]) config_edc_data_path_set(edc_data_path);
+   if (edc_dat_path[0]) config_edc_dat_path_set(edc_dat_path);
 }
 
 void
@@ -255,12 +254,12 @@ config_term(void)
    EINA_LIST_FREE(cd->edc_img_path_list, str) eina_stringshare_del(str);
    EINA_LIST_FREE(cd->edc_snd_path_list, str) eina_stringshare_del(str);
    EINA_LIST_FREE(cd->edc_fnt_path_list, str) eina_stringshare_del(str);
-   EINA_LIST_FREE(cd->edc_data_path_list, str) eina_stringshare_del(str);
+   EINA_LIST_FREE(cd->edc_dat_path_list, str) eina_stringshare_del(str);
 
    if (cd->edc_img_path_buf) eina_strbuf_free(cd->edc_img_path_buf);
    if (cd->edc_snd_path_buf) eina_strbuf_free(cd->edc_snd_path_buf);
    if (cd->edc_fnt_path_buf) eina_strbuf_free(cd->edc_fnt_path_buf);
-   if (cd->edc_data_path_buf) eina_strbuf_free(cd->edc_data_path_buf);
+   if (cd->edc_dat_path_buf) eina_strbuf_free(cd->edc_dat_path_buf);
 
    eet_data_descriptor_free(edd_base);
    free(cd);
@@ -309,44 +308,44 @@ config_edc_snd_path_set(const char *edc_snd_path)
 }
 
 void
-config_edc_data_path_set(const char *edc_data_path)
+config_edc_dat_path_set(const char *edc_dat_path)
 {
    config_data *cd = g_cd;
 
    //Free the existing paths
    const char *s;
-   EINA_LIST_FREE(cd->edc_data_path_list, s) eina_stringshare_del(s);
+   EINA_LIST_FREE(cd->edc_dat_path_list, s) eina_stringshare_del(s);
 
-   if (cd->edc_data_path_buf) eina_strbuf_free(cd->edc_data_path_buf);
-   cd->edc_data_path_buf = eina_strbuf_new();
+   if (cd->edc_dat_path_buf) eina_strbuf_free(cd->edc_dat_path_buf);
+   cd->edc_dat_path_buf = eina_strbuf_new();
 
    //parse paths by ';'
    const char *lex;
    Eina_Stringshare *append;
 
-   while(edc_data_path && (strlen(edc_data_path) > 0))
+   while(edc_dat_path && (strlen(edc_dat_path) > 0))
      {
-        lex = strstr(edc_data_path, ";");
+        lex = strstr(edc_dat_path, ";");
         if (lex)
           {
-             append = eina_stringshare_add_length(edc_data_path,
-                                                  (lex - edc_data_path));
-             cd->edc_data_path_list = eina_list_append(cd->edc_data_path_list,
+             append = eina_stringshare_add_length(edc_dat_path,
+                                                  (lex - edc_dat_path));
+             cd->edc_dat_path_list = eina_list_append(cd->edc_dat_path_list,
                                                       append);
-             eina_strbuf_append(cd->edc_data_path_buf, " -fd ");
-             eina_strbuf_append(cd->edc_data_path_buf, append);
+             eina_strbuf_append(cd->edc_dat_path_buf, " -dd ");
+             eina_strbuf_append(cd->edc_dat_path_buf, append);
              lex++;
           }
         else
           {
-             append = eina_stringshare_add(edc_data_path);
-             cd->edc_data_path_list = eina_list_append(cd->edc_data_path_list,
+             append = eina_stringshare_add(edc_dat_path);
+             cd->edc_dat_path_list = eina_list_append(cd->edc_dat_path_list,
                                                       append);
-             eina_strbuf_append(cd->edc_data_path_buf, " -fd ");
-             eina_strbuf_append(cd->edc_data_path_buf, append);
+             eina_strbuf_append(cd->edc_dat_path_buf, " -dd ");
+             eina_strbuf_append(cd->edc_dat_path_buf, append);
           }
 
-        edc_data_path = lex;
+        edc_dat_path = lex;
      }
 }
 
@@ -456,10 +455,10 @@ config_edc_snd_path_list_get(void)
 }
 
 Eina_List *
-config_edc_data_path_list_get(void)
+config_edc_dat_path_list_get(void)
 {
    config_data *cd = g_cd;
-   return cd->edc_data_path_list;
+   return cd->edc_dat_path_list;
 }
 
 Eina_List *
@@ -486,11 +485,11 @@ config_edc_snd_path_get(void)
 }
 
 const char *
-config_edc_data_path_get(void)
+config_edc_dat_path_get(void)
 {
    config_data *cd = g_cd;
-   if (!cd->edc_data_path_buf) return NULL;
-   return eina_strbuf_string_get(cd->edc_data_path_buf);
+   if (!cd->edc_dat_path_buf) return NULL;
+   return eina_strbuf_string_get(cd->edc_dat_path_buf);
 }
 
 const char *
@@ -594,23 +593,23 @@ config_auto_complete_get(void)
 }
 
 void
-config_font_size_set(float font_size)
+config_font_scale_set(float font_scale)
 {
    config_data *cd = g_cd;
 
-   if (font_size > MAX_FONT_SIZE)
-     font_size = MAX_FONT_SIZE;
-   else if (font_size < MIN_FONT_SIZE)
-     font_size = MIN_FONT_SIZE;
+   if (font_scale > MAX_FONT_SCALE)
+     font_scale = MAX_FONT_SCALE;
+   else if (font_scale < MIN_FONT_SCALE)
+     font_scale = MIN_FONT_SCALE;
 
-   cd->font_size = font_size;
+   cd->font_scale = font_scale;
 }
 
 float
-config_font_size_get(void)
+config_font_scale_get(void)
 {
    config_data *cd = g_cd;
-   return cd->font_size;
+   return cd->font_scale;
 }
 
 Eina_Bool

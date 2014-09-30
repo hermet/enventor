@@ -49,22 +49,32 @@ AC_SUBST(version_info)
 AC_SUBST(release_info)
 ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
 ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
-VMAJ=v_maj
-AC_SUBST(VMAJ)
+ENVENTOR_VERSION_MAJOR=v_maj
+ENVENTOR_VERSION_MINOR=v_min
+AC_SUBST(ENVENTOR_VERSION_MAJOR)
+AC_SUBST(ENVENTOR_VERSION_MINOR)
+
+EFL_ENABLE_EO_API_SUPPORT
+EFL_ENABLE_BETA_API_SUPPORT
 
 efl_version="1.9.0"
+requirement_enventor=" \
+eo >= ${efl_version} \
+eina >= ${efl_version} \
+eet >= ${efl_version} \
+elementary >= ${efl_version} \
+evas >= ${efl_version} \
+ecore >= ${efl_version} \
+ecore-file >= ${efl_version} \
+edje >= ${efl_version} \
+eio >= ${efl_version} \
+efreet >= ${efl_version}"
+
+AC_SUBST(requirement_enventor)
 
 PKG_CHECK_MODULES([ENVENTOR],
   [
-   eina >= ${efl_version}
-   eet >= ${efl_version}
-   elementary >= ${efl_version}
-   evas >= ${efl_version}
-   ecore >= ${efl_version}
-   ecore-file >= ${efl_version}
-   edje >= ${efl_version}
-   eio >= ${efl_version}
-   efreet >= ${efl_version}
+     ${requirement_enventor}
   ]
 )
 
@@ -82,16 +92,28 @@ case "$host_vendor" in
 esac
 AC_SUBST([lt_enable_auto_import])
 
+# Needs to be moved into a macro, and also, needs a way to automatically fetch from all the dependencies using the Requires.
+DEPS_EOLIAN_FLAGS=`${PKG_CONFIG} --variable=eolian_flags eo evas edje ecore elementary efl`
+AC_SUBST([DEPS_EOLIAN_FLAGS])
+
 EFL_ATTRIBUTE_UNUSED
 
 # Check edje_cc
 EFL_WITH_BIN([eet], [eet-eet], [eet])
 EFL_WITH_BIN([edje], [edje-cc], [edje_cc])
+EFL_WITH_BIN([eolian], [eolian-gen], [eolian_gen])
+EFL_WITH_BIN([eolian-cxx], [eolian-cxx], [eolian_cxx])
+
+# Force the helper to try external eolian generator
+AM_CONDITIONAL([HAVE_EOLIAN_GEN], [true])
+AM_CONDITIONAL([HAVE_EOLIAN_CXX], [true])
 
 AC_CONFIG_FILES([
 Makefile
 src/Makefile
 src/include/Makefile
+src/lib/Makefile
+src/lib/Enventor.h
 src/bin/Makefile
 data/Makefile
 data/desktop/Makefile
@@ -104,6 +126,7 @@ data/templates/Makefile
 data/color/Makefile
 data/sounds/Makefile
 data/about/Makefile
+pc/enventor.pc
 ])
 
 AC_OUTPUT

@@ -1,5 +1,11 @@
-#include <Elementary.h>
-#include "common.h"
+#ifdef HAVE_CONFIG_H
+ #include "config.h"
+#endif
+
+#define ENVENTOR_BETA_API_SUPPORT 1
+
+#include <Enventor.h>
+#include "enventor_private.h"
 
 #define COL_NUM 6
 
@@ -41,6 +47,10 @@ struct syntax_color_s
 static Eet_Data_Descriptor *edd_scg = NULL;
 static Eet_Data_Descriptor *edd_color = NULL;
 static syntax_color_group *scg = NULL;
+
+/*****************************************************************************/
+/* Internal method implementation                                            */
+/*****************************************************************************/
 
 static void
 hash_free_cb(void *data)
@@ -206,45 +216,6 @@ init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
 
    cd->thread = NULL;
    cd->ready = EINA_TRUE;
-}
-
-color_data *
-color_init(Eina_Strbuf *strbuf)
-{
-   color_data *cd = malloc(sizeof(color_data));
-   if (!cd)
-     {
-        EINA_LOG_ERR("Failed to allocate Memory!");
-        return NULL;
-     }
-   cd->strbuf = strbuf;
-   cd->cachebuf = eina_strbuf_new();
-   cd->thread = ecore_thread_run(init_thread_blocking, NULL, NULL, cd);
-   cd->macros = NULL;
-
-   return cd;
-}
-
-void
-color_term(color_data *cd)
-{
-   ecore_thread_cancel(cd->thread);
-
-   eina_hash_free(cd->color_hash);
-   eina_strbuf_free(cd->cachebuf);
-
-   eina_stringshare_del(cd->col_string);
-   eina_stringshare_del(cd->col_comment);
-   eina_stringshare_del(cd->col_macro);
-
-   Eina_Stringshare *macro;
-   EINA_LIST_FREE(cd->macros, macro) eina_stringshare_del(macro);
-
-   int i;
-   for(i = 0; i < COL_NUM; i++)
-     eina_stringshare_del(cd->cols[i]);
-
-   free(cd);
 }
 
 static Eina_Bool
@@ -677,6 +648,49 @@ color_markup_insert(Eina_Strbuf *strbuf, const char **src, int length, char **cu
           }
      }
    return 0;
+}
+
+/*****************************************************************************/
+/* Externally accessible calls                                               */
+/*****************************************************************************/
+
+color_data *
+color_init(Eina_Strbuf *strbuf)
+{
+   color_data *cd = malloc(sizeof(color_data));
+   if (!cd)
+     {
+        EINA_LOG_ERR("Failed to allocate Memory!");
+        return NULL;
+     }
+   cd->strbuf = strbuf;
+   cd->cachebuf = eina_strbuf_new();
+   cd->thread = ecore_thread_run(init_thread_blocking, NULL, NULL, cd);
+   cd->macros = NULL;
+
+   return cd;
+}
+
+void
+color_term(color_data *cd)
+{
+   ecore_thread_cancel(cd->thread);
+
+   eina_hash_free(cd->color_hash);
+   eina_strbuf_free(cd->cachebuf);
+
+   eina_stringshare_del(cd->col_string);
+   eina_stringshare_del(cd->col_comment);
+   eina_stringshare_del(cd->col_macro);
+
+   Eina_Stringshare *macro;
+   EINA_LIST_FREE(cd->macros, macro) eina_stringshare_del(macro);
+
+   int i;
+   for(i = 0; i < COL_NUM; i++)
+     eina_stringshare_del(cd->cols[i]);
+
+   free(cd);
 }
 
 const char *

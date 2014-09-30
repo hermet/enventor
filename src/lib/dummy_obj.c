@@ -1,8 +1,13 @@
+#ifdef HAVE_CONFIG_H
+ #include "config.h"
+#endif
+
+#define ENVENTOR_BETA_API_SUPPORT 1
 #define EDJE_EDIT_IS_UNSTABLE_AND_I_KNOW_ABOUT_IT 1
 
-#include <Elementary.h>
+#include <Enventor.h>
 #include <Edje_Edit.h>
-#include "common.h"
+#include "enventor_private.h"
 
 typedef struct part_obj_s
 {
@@ -19,7 +24,11 @@ typedef struct dummy_obj_s
 
 const char *DUMMYOBJ = "dummy_obj";
 
-void
+/*****************************************************************************/
+/* Internal method implementation                                            */
+/*****************************************************************************/
+
+static void
 dummy_objs_update(dummy_obj *dummy)
 {
    Eina_List *parts = edje_edit_parts_list_get(dummy->layout);
@@ -104,6 +113,10 @@ layout_del_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED, Evas_Object *obj,
    dummy_obj_del(obj);
 }
 
+/*****************************************************************************/
+/* Externally accessible calls                                               */
+/*****************************************************************************/
+
 void
 dummy_obj_update(Evas_Object *layout)
 {
@@ -135,7 +148,8 @@ dummy_obj_new(Evas_Object *layout)
    dummy->animator = animator;
 }
 
-void dummy_obj_del(Evas_Object *layout)
+void
+dummy_obj_del(Evas_Object *layout)
 {
    dummy_obj *dummy = evas_object_data_get(layout, DUMMYOBJ);
    if (!dummy) return;

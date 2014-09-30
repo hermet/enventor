@@ -5,6 +5,9 @@
 *.swp
 *.eet
 *~
+.*
+*.eo.*
+
 enventor
 enventorql
 Makefile.in

@@ -1,5 +1,11 @@
-#include <Elementary.h>
-#include "common.h"
+#ifdef HAVE_CONFIG_H
+ #include "config.h"
+#endif
+
+#define ENVENTOR_BETA_API_SUPPORT 1
+
+#include <Enventor.h>
+#include "enventor_private.h"
 
 const double VIEW_CACHING_TIME = 60 * 30;
 
@@ -13,12 +19,18 @@ typedef struct edj_mgr_s
 {
    Eina_List *edjs;
    edj_data *edj;
+   Evas_Object *enventor;
    Evas_Object *layout;
+   double view_scale;
 
    Eina_Bool reload_need : 1;
 } edj_mgr;
 
 static edj_mgr *g_em = NULL;
+
+/*****************************************************************************/
+/* Internal method implementation                                            */
+/*****************************************************************************/
 
 static void
 view_del_cb(void *data)
@@ -41,6 +53,10 @@ view_del_timer_cb(void *data)
    return ECORE_CALLBACK_CANCEL;
 }
 
+/*****************************************************************************/
+/* Externally accessible calls                                               */
+/*****************************************************************************/
+
 void
 edj_mgr_clear(void)
 {
@@ -59,7 +75,7 @@ edj_mgr_clear(void)
 }
 
 void
-edj_mgr_init(Evas_Object *parent)
+edj_mgr_init(Evas_Object *enventor)
 {
    edj_mgr *em = calloc(1, sizeof(edj_mgr));
    if (!em)
@@ -69,9 +85,11 @@ edj_mgr_init(Evas_Object *parent)
      }
    g_em = em;
 
-   Evas_Object *layout = elm_layout_add(parent);
+   Evas_Object *layout = elm_layout_add(enventor);
    elm_layout_file_set(layout, EDJE_PATH, "viewer_layout");
+   em->enventor = enventor;
    em->layout = layout;
+   em->view_scale = 1;
 }
 
 void
@@ -125,7 +143,7 @@ edj_mgr_view_new(const char *group)
         return NULL;
      }
 
-   view_data *vd = view_init(em->layout, group, view_del_cb, edj);
+   view_data *vd = view_init(em->enventor, group, view_del_cb, edj);
    if (!vd)
      {
         free(edj);
@@ -153,7 +171,7 @@ edj_mgr_view_switch_to(view_data *vd)
    elm_object_part_content_set(em->layout, "elm.swallow.content",
                                view_obj_get(vd));
 
-   view_scale_set(vd, config_view_scale_get());
+   view_scale_set(vd, em->view_scale);
 
    //Switching effect
    if (prev && (prev != view_obj_get(vd)))
@@ -206,3 +224,19 @@ edj_mgr_reload_need_get(void)
    edj_mgr *em = g_em;
    return em->reload_need;
 }
+
+void
+edj_mgr_view_scale_set(double view_scale)
+{
+   edj_mgr *em = g_em;
+   em->view_scale = view_scale;
+   view_scale_set(VIEW_DATA, view_scale);
+}
+
+double
+edj_mgr_view_scale_get(void)
+{
+   edj_mgr *em = g_em;
+   return em->view_scale;
+}
+

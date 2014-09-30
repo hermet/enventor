@@ -12,33 +12,26 @@ AM_CPPFLAGS = -DPACKAGE_DATA_DIR=\"$(pkgdatadir)\" \
 enventor_SOURCES = \
 	base_gui.c \
 	config_data.c \
-	dummy_obj.c \
-	edc_editor.c \
-	edc_parser.c \
-	edj_viewer.c \
 	main.c \
 	menu.c \
 	panes.c \
 	statusbar.c \
-	syntax_color.c \
-	ctxpopup.c \
-	syntax_helper.c \
-	indent.c \
-	edj_mgr.c \
-	build.c \
 	tools.c \
 	search.c \
 	goto.c \
 	newfile.c \
-	auto_comp.c \
 	setting.c \
 	globals.c \
-	redoundo.c \
-	template.c \
 	live_edit.c \
 	console.c
 
-enventor_LDADD = @ENVENTOR_LIBS@
+enventor_LDADD = \
+	$(top_builddir)/src/lib/libenventor.la \
+   @ENVENTOR_LIBS@
 enventor_LDFLAGS = $(LTLIBINTL)
+
+enventor_CFLAGS = \
+   -I$(top_builddir)/src/lib \
+	@ENVENTOR_CFLAGS@
 
 EXTRA_DIST =

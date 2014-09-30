@@ -81,12 +81,9 @@ stats_info_msg_update(const char *msg)
 }
 
 void
-stats_view_size_update(void)
+stats_view_size_update(Evas_Coord w, Evas_Coord h)
 {
    stats_data *sd = g_sd;
-
-   Evas_Coord w, h;
-   config_view_size_get(&w, &h);
 
    char buf[10];
    snprintf(buf, sizeof(buf), "%d", w);

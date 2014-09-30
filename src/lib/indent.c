@@ -1,30 +1,20 @@
-#include <Elementary.h>
-#include "common.h"
+#ifdef HAVE_CONFIG_H
+ #include "config.h"
+#endif
 
+#define ENVENTOR_BETA_API_SUPPORT 1
+
+#include <Enventor.h>
+#include "enventor_private.h"
 
 struct indent_s
 {
    Eina_Strbuf *strbuf;
 };
 
-indent_data *
-indent_init(Eina_Strbuf *strbuf)
-{
-   indent_data *id = malloc(sizeof(indent_data));
-   if (!id)
-     {
-        EINA_LOG_ERR("Failed to allocate Memory!");
-        return NULL;
-     }
-   id->strbuf = strbuf;
-   return id;
-}
-
-void
-indent_term(indent_data *id)
-{
-   free(id);
-}
+/*****************************************************************************/
+/* Internal method implementation                                            */
+/*****************************************************************************/
 
 static int
 indent_depth_get(indent_data *id EINA_UNUSED, char *src, int pos)
@@ -54,19 +44,6 @@ indent_depth_get(indent_data *id EINA_UNUSED, char *src, int pos)
      }
 
    return depth;
-}
-
-int
-indent_space_get(indent_data *id, Evas_Object *entry)
-{
-   //Get the indentation depth
-   int pos = elm_entry_cursor_pos_get(entry);
-   char *src = elm_entry_markup_to_utf8(elm_entry_entry_get(entry));
-   int space = indent_depth_get(id, src, pos);
-   space *= TAB_SPACE;
-   free(src);
-
-   return space;
 }
 
 static void
@@ -167,6 +144,42 @@ indent_insert_bracket_case(indent_data *id, Evas_Object *entry, int cur_line)
    elm_entry_calc_force(entry);
    evas_textblock_cursor_free(cur);
    free(utf8);
+}
+
+/*****************************************************************************/
+/* Externally accessible calls                                               */
+/*****************************************************************************/
+
+indent_data *
+indent_init(Eina_Strbuf *strbuf)
+{
+   indent_data *id = malloc(sizeof(indent_data));
+   if (!id)
+     {
+        EINA_LOG_ERR("Failed to allocate Memory!");
+        return NULL;
+     }
+   id->strbuf = strbuf;
+   return id;
+}
+
+void
+indent_term(indent_data *id)
+{
+   free(id);
+}
+
+int
+indent_space_get(indent_data *id, Evas_Object *entry)
+{
+   //Get the indentation depth
+   int pos = elm_entry_cursor_pos_get(entry);
+   char *src = elm_entry_markup_to_utf8(elm_entry_entry_get(entry));
+   int space = indent_depth_get(id, src, pos);
+   space *= TAB_SPACE;
+   free(src);
+
+   return space;
 }
 
 Eina_Bool

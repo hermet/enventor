@@ -4,55 +4,52 @@
 #define TOOLBAR_ICON_SIZE 16
 
 static void
-menu_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
+menu_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 {
-   edit_data *ed = data;
+   Evas_Object *enventor = data;
 
    if (search_is_opened() || goto_is_opened())
      {
         goto_close();
         search_close();
-        edit_focus_set(ed);
+        enventor_object_focus_set(enventor, EINA_TRUE);
      }
-
    menu_toggle();
 }
 
 static void
-save_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
+highlight_cb(void *data, Evas_Object *obj EINA_UNUSED,
+             void *event_info EINA_UNUSED)
 {
-   menu_edc_save();
-}
-
-static void
-load_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
-{
-   menu_edc_load();
-}
-
-static void
-highlight_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
-             void *event_info)
-{
-   edit_data *ed = data;
+   Evas_Object *enventor = data;
    config_part_highlight_set(!config_part_highlight_get());
-   edit_part_highlight_toggle(ed, EINA_TRUE);
+   enventor_object_part_highlight_set(enventor, config_part_highlight_get());
+   if (config_part_highlight_get())
+     stats_info_msg_update("Part Highlighting Enabled.");
+   else
+     stats_info_msg_update("Part Highlighting Disabled.");
 }
 
 static void
-swallow_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
-           void *event_info)
+swallow_cb(void *data, Evas_Object *obj EINA_UNUSED,
+           void *event_info EINA_UNUSED)
 {
+   Evas_Object *enventor = data;
    config_dummy_swallow_set(!config_dummy_swallow_get());
-   view_dummy_toggle(VIEW_DATA, EINA_TRUE);
+   enventor_object_dummy_swallow_set(enventor, config_dummy_swallow_get());
+
+   if (config_dummy_swallow_get())
+     stats_info_msg_update("Dummy Swallow Enabled.");
+   else
+     stats_info_msg_update("Dummy Swallow Disabled.");
 }
 
 static void
-lines_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
+lines_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 {
-   edit_data *ed = data;
+   Evas_Object *enventor = data;
    config_linenumber_set(!config_linenumber_get());
-   edit_line_number_toggle(ed);
+   enventor_object_linenumber_set(enventor, config_linenumber_get());
 }
 
 static void
@@ -65,17 +62,17 @@ status_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 static void
 find_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
-   edit_data *ed = data;
+   Evas_Object *enventor = data;
    if (search_is_opened()) search_close();
-   else search_open(ed);
+   else search_open(enventor);
 }
 
 static void
 goto_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
-   edit_data *ed = data;
+   Evas_Object *enventor = data;
    if (goto_is_opened()) goto_close();
-   else goto_open(ed);
+   else goto_open(enventor);
 }
 
 static void
@@ -111,7 +108,7 @@ tools_btn_create(Evas_Object *parent, const char *icon, const char *label,
 }
 
 Evas_Object *
-tools_create(Evas_Object *parent, edit_data *ed)
+tools_create(Evas_Object *parent, Evas_Object *enventor)
 {
    Evas_Object *box = elm_box_add(parent);
    elm_box_horizontal_set(box, EINA_TRUE);
@@ -121,7 +118,7 @@ tools_create(Evas_Object *parent, edit_data *ed)
    evas_object_size_hint_align_set(box, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
    Evas_Object *btn;
-   btn = tools_btn_create(box, "menu", "Menu", menu_cb, ed);
+   btn = tools_btn_create(box, "menu", "Menu", menu_cb, enventor);
    evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
    elm_box_pack_end(box, btn);
@@ -131,7 +128,8 @@ tools_create(Evas_Object *parent, edit_data *ed)
    evas_object_show(sp);
    elm_box_pack_end(box, sp);
 
-   btn = tools_btn_create(box, "highlight", "Highlight", highlight_cb, ed);
+   btn = tools_btn_create(box, "highlight", "Highlight", highlight_cb,
+                          enventor);
    evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
    elm_box_pack_end(box, btn);
@@ -151,17 +149,17 @@ tools_create(Evas_Object *parent, edit_data *ed)
    evas_object_show(sp);
    elm_box_pack_end(box, sp);
 
-   btn = tools_btn_create(box, "lines", "Lines", lines_cb, ed);
+   btn = tools_btn_create(box, "lines", "Lines", lines_cb, enventor);
    evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
    elm_box_pack_end(box, btn);
 
-   btn = tools_btn_create(box, "find", "Find", find_cb, ed);
+   btn = tools_btn_create(box, "find", "Find", find_cb, enventor);
    evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
    elm_box_pack_end(box, btn);
 
-   btn = tools_btn_create(box, "line", "Goto", goto_cb, ed);
+   btn = tools_btn_create(box, "line", "Goto", goto_cb, enventor);
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
