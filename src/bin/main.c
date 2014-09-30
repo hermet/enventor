@@ -140,7 +140,7 @@ ctrl_func(app_data *ad, const char *key)
         return ECORE_CALLBACK_DONE;
      }
    //Part Highlight
-   if (!strcmp(key, "h") || !strcmp(key, "h"))
+   if (!strcmp(key, "h") || !strcmp(key, "H"))
      {
        config_part_highlight_set(!config_part_highlight_get());
        edit_part_highlight_toggle(ad->ed, EINA_TRUE);
