@@ -31,8 +31,10 @@ group { name: "TEXT_bg";
    parts {
       part { name: "text";
          type: TEXT;
+         effect: SHADOW;
          description { state: "default" 0.0;
             color: 255 255 255 255;
+            color3: 0 0 0 128;
             text {
                size: 10;
                font: FN;
