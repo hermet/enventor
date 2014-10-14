@@ -740,9 +740,10 @@ statusbar_set()
 }
 
 static void
-template_show()
+template_show(void)
 {
-   menu_edc_new(EINA_TRUE);
+   if (ad->template_new)
+     menu_edc_new(EINA_TRUE);
 }
 
 static Eina_Bool
@@ -770,7 +771,7 @@ init(app_data *ad, int argc, char **argv)
 
    menu_init(ad->enventor);
 
-   if (ad->template_new) template_show();
+   template_show();
 
    return EINA_TRUE;
 }
