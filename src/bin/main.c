@@ -14,6 +14,7 @@ typedef struct app_s
 
    Eina_Bool ctrl_pressed : 1;
    Eina_Bool shift_pressed : 1;
+   Eina_Bool template_new : 1;
 } app_data;
 
 int main(int argc, char **argv);
@@ -218,9 +219,11 @@ tools_set(Evas_Object *enventor)
 
 static void
 args_dispatch(int argc, char **argv, char *edc_path, char *img_path,
-              char *snd_path, char *fnt_path, char *dat_path)
+              char *snd_path, char *fnt_path, char *dat_path,
+              Eina_Bool *template_new)
 {
    Eina_Bool default_edc = EINA_TRUE;
+   *template_new = EINA_FALSE;
 
    //No arguments. set defaults
    if (argc == 1) goto defaults;
@@ -228,8 +231,8 @@ args_dispatch(int argc, char **argv, char *edc_path, char *img_path,
    //Help
    if ((argc >=2 ) && !strcmp(argv[1], "--help"))
      {
-        fprintf(stdout, "Usage: enventor [input file] [-id image path]"
-                        "[-sd sound path] [-fd font path] [-dd data path]\n");
+        fprintf(stdout, "Usage: enventor [input file] [-to] [-id image path]"
+                "[-sd sound path] [-fd font path] [-dd data path]\n");
         exit(0);
      }
 
@@ -239,6 +242,10 @@ args_dispatch(int argc, char **argv, char *edc_path, char *img_path,
         sprintf(edc_path, "%s", argv[1]);
         default_edc = EINA_FALSE;
      }
+   else if ((argc >= 2) && !strcmp("-to", argv[1]))
+     {
+        *template_new = EINA_TRUE;
+     }
    else goto defaults;
 
    //edc image path
@@ -246,18 +253,31 @@ args_dispatch(int argc, char **argv, char *edc_path, char *img_path,
 
    while (cur_arg < argc)
      {
-        if (argc > (cur_arg + 1))
+        if (!strcmp("-to", argv[cur_arg]))
           {
-             if (!strcmp("-id", argv[cur_arg]))
-               sprintf(img_path, "%s", argv[cur_arg + 1]);
-             else if (!strcmp("-sd", argv[cur_arg]))
-               sprintf(snd_path, "%s", argv[cur_arg + 1]);
-             else if (!strcmp("-fd", argv[cur_arg]))
-               sprintf(fnt_path, "%s", argv[cur_arg + 1]);
-             else if (!strcmp("-dd", argv[cur_arg]))
-               sprintf(dat_path, "%s", argv[cur_arg + 1]);
+             *template_new = EINA_TRUE;
+             cur_arg++;
           }
-        cur_arg += 2;
+        else if (!strcmp("-id", argv[cur_arg]))
+          {
+             sprintf(img_path, "%s", argv[cur_arg + 1]);
+             cur_arg += 2;
+          }
+        else if (!strcmp("-sd", argv[cur_arg]))
+          {
+             sprintf(snd_path, "%s", argv[cur_arg + 1]);
+             cur_arg += 2;
+          }
+        else if (!strcmp("-fd", argv[cur_arg]))
+          {
+             sprintf(fnt_path, "%s", argv[cur_arg + 1]);
+             cur_arg += 2;
+          }
+        else if (!strcmp("-dd", argv[cur_arg]))
+          {
+             sprintf(dat_path, "%s", argv[cur_arg + 1]);
+             cur_arg += 2;
+          }
      }
 
 defaults:
@@ -272,10 +292,13 @@ config_data_set(app_data *ad, int argc, char **argv)
    char snd_path[PATH_MAX] = { 0, };
    char fnt_path[PATH_MAX] = { 0, };
    char dat_path[PATH_MAX] = { 0, };
+   Eina_Bool template_new = EINA_FALSE;
 
-   args_dispatch(argc, argv, edc_path, img_path, snd_path, fnt_path, dat_path);
+   args_dispatch(argc, argv, edc_path, img_path, snd_path, fnt_path, dat_path,
+                 &template_new);
    config_init(edc_path, img_path, snd_path, fnt_path, dat_path);
    config_update_cb_set(config_update_cb, ad);
+   ad->template_new = template_new;
 }
 
 static void
@@ -656,7 +679,7 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    //New
    if (!strcmp(event->key, "F2"))
      {
-        menu_edc_new();
+        menu_edc_new(EINA_FALSE);
         return ECORE_CALLBACK_DONE;
      }
    //Save
@@ -716,6 +739,12 @@ statusbar_set()
    base_statusbar_toggle(EINA_FALSE);
 }
 
+static void
+template_show()
+{
+   menu_edc_new(EINA_TRUE);
+}
+
 static Eina_Bool
 init(app_data *ad, int argc, char **argv)
 {
@@ -740,6 +769,8 @@ init(app_data *ad, int argc, char **argv)
    enventor_object_focus_set(ad->enventor, EINA_TRUE);
 
    menu_init(ad->enventor);
+
+   if (ad->template_new) template_show();
 
    return EINA_TRUE;
 }

@@ -16,6 +16,7 @@ struct menu_s
 
    int active_request;
 
+   Eina_Bool template_new : 1;
 };
 
 typedef struct menu_s menu_data;
@@ -121,7 +122,7 @@ newfile_ok_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
                   void *event_info EINA_UNUSED)
 {
    menu_data *md = data;
-   newfile_set(md->enventor);
+   newfile_set(md->enventor, md->template_new);
    newfile_close(md);
    menu_close(md);
 }
@@ -366,7 +367,7 @@ static void
 new_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
            void *event_info EINA_UNUSED)
 {
-   menu_edc_new();
+   menu_edc_new(EINA_FALSE);
 }
 
 static void
@@ -692,9 +693,10 @@ menu_setting(void)
 }
 
 void
-menu_edc_new(void)
+menu_edc_new(Eina_Bool template_new)
 {
    menu_data *md = g_md;
+   md->template_new = template_new;
    if (enventor_object_modified_get(md->enventor))
      warning_open(md, new_yes_btn_cb, new_save_btn_cb);
    else

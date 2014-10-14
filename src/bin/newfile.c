@@ -18,7 +18,7 @@ list_del_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 }
 
 void
-newfile_set(Evas_Object *enventor)
+newfile_set(Evas_Object *enventor, Eina_Bool template_new)
 {
    new_data *nd = g_nd;
    if (!nd) return;
@@ -28,20 +28,23 @@ newfile_set(Evas_Object *enventor)
 
    Eina_Bool success = EINA_TRUE;
    char buf[PATH_MAX];
-   char default_path[PATH_MAX];
+   char path[PATH_MAX];
 
    snprintf(buf, sizeof(buf), "%s/templates/%s.edc",
             elm_app_data_dir_get(), elm_object_item_text_get(it));
-   sprintf(default_path, DEFAULT_EDC_PATH_FORMAT, getpid());
-   success = eina_file_copy(buf, default_path,
+   if (template_new && config_edc_path_get())
+     sprintf(path, "%s", config_edc_path_get());
+   else
+     sprintf(path, DEFAULT_EDC_PATH_FORMAT, getpid());
+   success = eina_file_copy(buf, path,
                             EINA_FILE_COPY_DATA, NULL, NULL);
    if (!success)
      {
         EINA_LOG_ERR("Cannot find file! \"%s\"", buf);
         return;
      }
-   enventor_object_file_set(enventor, default_path);
-   base_title_set(default_path);
+   enventor_object_file_set(enventor, path);
+   base_title_set(path);
 }
 
 void
