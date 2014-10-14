@@ -232,7 +232,23 @@ args_dispatch(int argc, char **argv, char *edc_path, char *img_path,
    if ((argc >=2 ) && !strcmp(argv[1], "--help"))
      {
         fprintf(stdout, "Usage: enventor [input file] [-to] [-id image path]"
-                "[-sd sound path] [-fd font path] [-dd data path]\n");
+                "[-sd sound path] [-fd font path] [-dd data path]\n"
+                "\n"
+                "-input file = EDC file to open. If input file is skipped, "
+                "Enventor will open a default template code with a temporary "
+                "file.\n"
+                "-to = Open template menu when you launch Enventor\n"
+                "-id = image resources, that edc includes, path\n"
+                "-sd = sound resources, that edc includes, path\n"
+                "-fd = font resources, that edc includes, path\n"
+                "-dd = data resources, that edc includes, path\n"
+                "\n"
+                "Examples of Enventor command line usage:\n"
+                "$ enventor\n"
+                "$ enventor -to\n"
+                "$ enventor newfile.edc -to\n"
+                "$ enventor sample.edc -id ./images -sd ./sounds\n"
+                "\n");
         exit(0);
      }
 

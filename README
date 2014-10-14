@@ -76,7 +76,20 @@ Ctrl+End = Go to the Bottom line
 [Command Line Usage]
  
 enventor --help
-enventor [input file] [-id image path] [-sd sound path] [-fd font path] [-dd data path]
+enventor [input file] [-to] [-id image path] [-sd sound path] [-fd font path] [-dd data path]
+ 
+-input file = EDC file to open. If input file is skipped, Enventor will open a default template code with a temporary file.
+-to = Open template menu when you launch Enventor
+-id = image resources, that edc includes, path
+-sd = sound resources, that edc includes, path
+-fd = font resources, that edc includes, path
+-dd = data resources, that edc includes, path
+ 
+Examples of Enventor command line usage:
+$ enventor
+$ enventor -to
+$ enventor newfile.edc -to
+$ enventor sample.edc -id ./images -sd ./sounds
  
  
 * FOR ANY ISSUES PLEASE EMAIL *
