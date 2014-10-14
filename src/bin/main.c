@@ -740,7 +740,7 @@ statusbar_set()
 }
 
 static void
-template_show(void)
+template_show(app_data *ad)
 {
    if (ad->template_new)
      menu_edc_new(EINA_TRUE);
@@ -771,7 +771,7 @@ init(app_data *ad, int argc, char **argv)
 
    menu_init(ad->enventor);
 
-   template_show();
+   template_show(ad);
 
    return EINA_TRUE;
 }
