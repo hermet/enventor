@@ -135,7 +135,7 @@ config_load(void)
         cd->part_highlight = EINA_TRUE;
         cd->dummy_swallow = EINA_TRUE;
         cd->auto_indent = EINA_TRUE;
-        cd->tools = EINA_FALSE;
+        cd->tools = EINA_TRUE;
         cd->auto_complete = EINA_TRUE;
         cd->live_edit = EINA_FALSE;
      }
