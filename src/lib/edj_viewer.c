@@ -290,14 +290,6 @@ view_dummy_set(view_data *vd, Eina_Bool dummy_swallow)
    else dummy_obj_del(vd->layout);
 }
 
-Eina_Bool
-view_dummy_get(view_data *vd)
-{
-   if (!vd) return EINA_FALSE;
-
-   return eo_do(vd->enventor, enventor_obj_dummy_swallow_get());
-}
-
 view_data *
 view_init(Evas_Object *enventor, const char *group,
           void (*del_cb)(void *data), void *data)
