@@ -27,6 +27,8 @@ typedef struct _Enventor_Object_Data
    Eio_Monitor *edc_monitor;
    Eina_Stringshare *group_name;
 
+   Eina_Bool dummy_swallow : 1;
+
 } Enventor_Object_Data;
 
 static const Evas_Smart_Cb_Description _smart_callbacks[] = {
@@ -307,10 +309,14 @@ _enventor_object_live_view_scale_get(Eo *obj EINA_UNUSED,
 
 EOLIAN static void
 _enventor_object_dummy_swallow_set(Eo *obj EINA_UNUSED,
-                                   Enventor_Object_Data *pd EINA_UNUSED,
+                                   Enventor_Object_Data *pd,
                                    Eina_Bool dummy_swallow)
 {
+   dummy_swallow = !!dummy_swallow;
+   if (pd->dummy_swallow == dummy_swallow) return;
+
    view_dummy_set(VIEW_DATA, dummy_swallow);
+   pd->dummy_swallow = dummy_swallow;
 }
 
 EOLIAN static Eina_Bool
@@ -329,9 +335,9 @@ _enventor_object_ctxpopup_set(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd,
 
 EOLIAN static Eina_Bool
 _enventor_object_dummy_swallow_get(Eo *obj EINA_UNUSED,
-                                   Enventor_Object_Data *pd EINA_UNUSED)
+                                   Enventor_Object_Data *pd)
 {
-   return view_dummy_get(VIEW_DATA);
+   return pd->dummy_swallow;
 }
 
 EOLIAN static void

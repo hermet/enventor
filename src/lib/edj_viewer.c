@@ -31,7 +31,6 @@ struct viewer_s
    void (*del_cb)(void *data);
    void *data;
 
-   Eina_Bool dummy_on;
    Eina_Bool edj_reload_need : 1;
 };
 
@@ -269,7 +268,7 @@ view_obj_idler_cb(void *data)
    event_layer_set(vd);
    elm_object_content_set(vd->scroller, vd->layout);
 
-   if (vd->dummy_on)
+   if (eo_do(vd->enventor, enventor_obj_dummy_swallow_get()))
      dummy_obj_new(vd->layout);
 
    vd->idler = NULL;
@@ -283,21 +282,20 @@ view_obj_idler_cb(void *data)
 /*****************************************************************************/
 
 void
-view_dummy_set(view_data *vd, Eina_Bool dummy_on)
+view_dummy_set(view_data *vd, Eina_Bool dummy_swallow)
 {
-   dummy_on = !!dummy_on;
-
-   if (dummy_on == vd->dummy_on) return;
-   if (dummy_on) dummy_obj_new(vd->layout);
+   if (!vd) return;
+   //Does view have dummy object?
+   if (dummy_swallow) dummy_obj_new(vd->layout);
    else dummy_obj_del(vd->layout);
-
-   vd->dummy_on = dummy_on;
 }
 
 Eina_Bool
 view_dummy_get(view_data *vd)
 {
-   return vd->dummy_on;
+   if (!vd) return EINA_FALSE;
+
+   return eo_do(vd->enventor, enventor_obj_dummy_swallow_get());
 }
 
 view_data *
@@ -312,7 +310,6 @@ view_init(Evas_Object *enventor, const char *group,
      }
    vd->enventor = enventor;
    vd->scroller = view_scroller_create(enventor);
-   vd->dummy_on = EINA_TRUE;
 
    vd->group_name = eina_stringshare_add(group);
    vd->idler = ecore_idler_add(view_obj_idler_cb, vd);
