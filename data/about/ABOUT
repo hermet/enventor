@@ -75,10 +75,11 @@ $ enventor newfile.edc -to
 $ enventor sample.edc -id ./images -sd ./sounds
  
  
-<font_size=11><b>[Authors]</b></font_size>
- 
+<font_size=11><b>[Developers]</b></font_size>
+  
 Hermet (Chuneon Park) <hermet@hermet.pe.kr>
 Jaehyun Cho <jae_hyun_cho@naver.com>
 Mykyta Biliavskyi <m.biliavskyi@samsung.com>
 Kateryna Fesyna <k.fesyna@samsung.com>
 Raoul Hecky <raoul.hecky@gmail.com>
+  
