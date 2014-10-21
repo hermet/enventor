@@ -495,6 +495,7 @@ fileselector_load_done_cb(void *data, Evas_Object *obj, void *event_info)
                                "elm,action,msg,show", "");
         return;
      }
+   config_edc_path_set(selected);
    enventor_object_file_set(md->enventor, selected);
    base_title_set(selected);
    fileselector_close(md);
