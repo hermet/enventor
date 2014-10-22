@@ -40,7 +40,7 @@ exe_event_error_cb(void *data, int type EINA_UNUSED, void *event_info)
    for (el = ev->lines; el && el->line; el++)
      {
         eina_strbuf_append(bd->strbuf, el->line);
-        eina_strbuf_append_char(bd->strbuf, '\n');
+        eina_strbuf_append(bd->strbuf, "<br/>");
      }
 
    bd->noti_cb(bd->noti_data, eina_strbuf_string_get(bd->strbuf));
