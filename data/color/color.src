@@ -64,6 +64,7 @@ group "syntax_color_group" struct {
             value "key" string: "aspect_preference";
             value "key" string: "aspect";
             value "key" string: "backface_cull";
+            value "key" string: "base_scale";
             value "key" string: "base";
             value "key" string: "border_scale";
             value "key" string: "border";

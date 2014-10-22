@@ -326,4 +326,10 @@ const char *AUTOCOMP_CLIP_TO[AUTOCOMP_CLIP_TO_LINE_CNT] =
    "clip_to: \"\";",
 };
 
-#define COMPSET_CNT 50
+#define AUTOCOMP_BASE_SCALE_LINE_CNT 1
+const char *AUTOCOMP_BASE_SCALE[AUTOCOMP_BASE_SCALE_LINE_CNT] =
+{
+   "base_scale: ;",
+};
+
+#define COMPSET_CNT 51

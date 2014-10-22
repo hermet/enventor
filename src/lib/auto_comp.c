@@ -95,6 +95,7 @@ init_thread_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
    COMPDATA_SET(ad, "after", AUTOCOMP_AFTER, 2, 0);
    COMPDATA_SET(ad, "styles", AUTOCOMP_STYLES, 2, 1);
    COMPDATA_SET(ad, "style", AUTOCOMP_STYLE, 4, 1);
+   COMPDATA_SET(ad, "base_scale", AUTOCOMP_BASE_SCALE, 1, 0);
    COMPDATA_SET(ad, "base", AUTOCOMP_BASE, 2, 0);
    COMPDATA_SET(ad, "sounds", AUTOCOMP_SOUNDS, 2, 1);
    COMPDATA_SET(ad, "sample", AUTOCOMP_SAMPLE, 13, 1);
