@@ -214,6 +214,7 @@ group { name: "fileselector_layout";
                size: 12;
                align: 0.5 0.5;
                min: 1 0;
+               ellipsis: -1;
             }
             color: COL_HI;
          }
@@ -412,6 +413,7 @@ group { name: "newfile_layout";
                size: 12;
                align: 0.5 0.5;
                min: 1 0;
+               ellipsis: -1;
             }
             color: COL_HI;
          }
@@ -597,6 +599,7 @@ group { name: "warning_layout";
                size: 12;
                align: 0.5 0.5;
                min: 1 1;
+               ellipsis: -1;
             }
             fixed: 1 1;
             align: 0.5 0.5;
@@ -616,6 +619,7 @@ group { name: "warning_layout";
                size: 11;
                align: 0.5 0;
                min: 1 1;
+               ellipsis: -1;
             }
             align: 0.5 0;
             fixed: 1 1;
@@ -634,6 +638,7 @@ group { name: "warning_layout";
                size: 11;
                align: 0.5 0;
                min: 1 1;
+               ellipsis: -1;
             }
             align: 0.5 0;
             fixed: 1 1;
@@ -791,6 +796,7 @@ group { name: "menu_layout";
                size: 28;
                align: 0.5 1;
                min: 1 0;
+               ellipsis: -1;
             }
             color: COL_HI;
          }
