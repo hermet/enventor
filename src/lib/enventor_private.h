@@ -25,6 +25,7 @@ extern const char SIG_LIVE_VIEW_RESIZED[];
 extern const char SIG_PROGRAM_RUN[];
 extern const char SIG_CTXPOPUP_SELECTED[];
 extern const char SIG_CTXPOPUP_DISMISSED[];
+extern const char SIG_EDC_MODIFIED[];
 
 typedef struct viewer_s view_data;
 typedef struct syntax_color_s color_data;
@@ -193,6 +194,8 @@ Eina_Bool edit_changed_get(edit_data *ed);
 void edit_changed_set(edit_data *ed, Eina_Bool changed);
 void edit_linenumber_set(edit_data *ed, Eina_Bool linenumber);
 Eina_Bool edit_linenumber_get(edit_data *ed);
+Eina_Bool edit_saved_get(edit_data *ed);
+void edit_saved_set(edit_data *ed, Eina_Bool saved);
 Eina_Bool edit_save(edit_data *ed, const char *file);
 void edit_new(edit_data* ed);
 void edit_view_sync_cb_set(edit_data *ed, void (*cb)(void *data, Eina_Stringshare *part_name, Eina_Stringshare *group_name), void *data);

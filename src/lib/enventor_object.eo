@@ -404,5 +404,6 @@ class Enventor.Object (Elm_Widget, Efl.File) {
       program,run;
       ctxpopup,selected;
       ctxpopup,dismissed;
+      edc,modified;
    }
 }

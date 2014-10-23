@@ -54,6 +54,7 @@ struct editor_s
    Eina_Bool auto_indent : 1;
    Eina_Bool part_highlight : 1;
    Eina_Bool ctxpopup: 1;
+   Eina_Bool on_save : 1;
 };
 
 /*****************************************************************************/
@@ -793,6 +794,18 @@ edit_view_sync_cb_set(edit_data *ed,
 }
 
 Eina_Bool
+edit_saved_get(edit_data *ed)
+{
+   return ed->on_save;
+}
+
+void
+edit_saved_set(edit_data *ed, Eina_Bool saved)
+{
+   ed->on_save = saved;
+}
+
+Eina_Bool
 edit_save(edit_data *ed, const char *file)
 {
    if (!ed->edit_changed) return EINA_FALSE;
@@ -811,6 +824,8 @@ edit_save(edit_data *ed, const char *file)
    free(utf8);
 
    edit_view_sync(ed);
+
+   ed->on_save = EINA_TRUE;
 
    return EINA_TRUE;
 }

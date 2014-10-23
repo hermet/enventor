@@ -41,6 +41,7 @@ static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_PROGRAM_RUN, ""},
    {SIG_CTXPOPUP_SELECTED, ""},
    {SIG_CTXPOPUP_DISMISSED, ""},
+   {SIG_EDC_MODIFIED, ""},
    {NULL, NULL}
 };
 
@@ -52,13 +53,24 @@ file_modified_cb(void *data, int type EINA_UNUSED, void *event)
 {
    Eio_Monitor_Event *ev = event;
    Enventor_Object_Data *pd = data;
+   Enventor_EDC_Modified modified;
 
    if (ev->monitor != pd->edc_monitor) return ECORE_CALLBACK_PASS_ON;
+   if (!edit_saved_get(pd->ed))
+     {
+        modified.self_changed = EINA_FALSE;
+        evas_object_smart_callback_call(pd->obj, SIG_EDC_MODIFIED, &modified);
+        return ECORE_CALLBACK_DONE;
+     }
    if (!edit_changed_get(pd->ed)) return ECORE_CALLBACK_DONE;
    if (strcmp(ev->filename, build_edc_path_get())) return ECORE_CALLBACK_DONE;
 
    build_edc();
    edit_changed_set(pd->ed, EINA_FALSE);
+
+   edit_saved_set(pd->ed, EINA_FALSE);
+   modified.self_changed = EINA_TRUE;
+   evas_object_smart_callback_call(pd->obj, SIG_EDC_MODIFIED, &modified);
 
    return ECORE_CALLBACK_DONE;
 }

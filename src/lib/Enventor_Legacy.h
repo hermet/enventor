@@ -22,6 +22,11 @@ typedef struct
    Evas_Coord h;
 } Enventor_Live_View_Size;
 
+typedef struct
+{
+   Eina_Bool self_changed : 1;
+} Enventor_EDC_Modified;
+
 EAPI int enventor_init(int argc, char **argv);
 EAPI int enventor_shutdown(void);
 EAPI Evas_Object *enventor_object_add(Evas_Object *parent);
