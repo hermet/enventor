@@ -339,4 +339,48 @@ const char *AUTOCOMP_SET[AUTOCOMP_SET_LINE_CNT] =
    "}"
 };
 
-#define COMPSET_CNT 52
+#define AUTOCOMP_BOX_LINE_CNT 3
+const char *AUTOCOMP_BOX[AUTOCOMP_BOX_LINE_CNT] =
+{
+   "box {<br/>",
+   "   <br/>",
+   "}"
+};
+
+#define AUTOCOMP_TABLE_LINE_CNT 3
+const char *AUTOCOMP_TABLE[AUTOCOMP_TABLE_LINE_CNT] =
+{
+   "table {<br/>",
+   "   <br/>",
+   "}"
+};
+
+#define AUTOCOMP_ITEM_LINE_CNT 3
+const char *AUTOCOMP_ITEM[AUTOCOMP_ITEM_LINE_CNT] =
+{
+   "item {<br/>",
+   "   <br/>",
+   "}"
+};
+
+#define AUTOCOMP_ITEMS_LINE_CNT 3
+const char *AUTOCOMP_ITEMS[AUTOCOMP_ITEMS_LINE_CNT] =
+{
+   "items {<br/>",
+   "   <br/>",
+   "}"
+};
+
+#define AUTOCOMP_LAYOUT_LINE_CNT 1
+const char *AUTOCOMP_LAYOUT[AUTOCOMP_LAYOUT_LINE_CNT] =
+{
+   "layout: \"\";",
+};
+
+#define AUTOCOMP_PADDING_LINE_CNT 1
+const char *AUTOCOMP_PADDING[AUTOCOMP_PADDING_LINE_CNT] =
+{
+   "padding: ;",
+};
+
+#define COMPSET_CNT 58

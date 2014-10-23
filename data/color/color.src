@@ -26,6 +26,7 @@ group "syntax_color_group" struct {
       group "color" struct {
          value "val" string: "2070D0";
          group "keys" list {
+            value "key" string: "box";
             value "key" string: "collections";
             value "key" string: "data";
             value "key" string: "description";
@@ -35,6 +36,8 @@ group "syntax_color_group" struct {
             value "key" string: "images";
             value "key" string: "image ";
             value "key" string: "image.";
+            value "key" string: "items";
+            value "key" string: "item";
             value "key" string: "map";
             value "key" string: "origin";
             value "key" string: "parts";
@@ -51,6 +54,7 @@ group "syntax_color_group" struct {
             value "key" string: "sounds";
             value "key" string: "styles";
             value "key" string: "size ";
+            value "key" string: "table";
             value "key" string: "text ";
             value "key" string: "text.";
          }
@@ -89,7 +93,7 @@ group "syntax_color_group" struct {
             value "key" string: "insert_after";
             value "key" string: "insert_before";
             value "key" string: "in";
-            value "key" string: "item";
+            value "key" string: "layout";
             value "key" string: "max";
             value "key" string: "middle";
             value "key" string: "min";
@@ -99,6 +103,7 @@ group "syntax_color_group" struct {
             value "key" string: "normal";
             value "key" string: "offset";
             value "key" string: "on";
+            value "key" string: "padding:";
             value "key" string: "perspective:";
             value "key" string: "perspective_on";
             value "key" string: "relative";

@@ -112,6 +112,12 @@ init_thread_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
    COMPDATA_SET(ad, "fixed", AUTOCOMP_FIXED, 1, 0);
    COMPDATA_SET(ad, "clip_to", AUTOCOMP_CLIP_TO, 2, 0);
    COMPDATA_SET(ad, "tween", AUTOCOMP_TWEEN, 2, 0);
+   COMPDATA_SET(ad, "box",AUTOCOMP_BOX, 2, 1);
+   COMPDATA_SET(ad, "table",AUTOCOMP_TABLE, 2, 1);
+   COMPDATA_SET(ad, "item",AUTOCOMP_ITEM, 2, 1);
+   COMPDATA_SET(ad, "items",AUTOCOMP_ITEMS, 2, 1);
+   COMPDATA_SET(ad, "layout",AUTOCOMP_LAYOUT, 2, 0);
+   COMPDATA_SET(ad, "padding",AUTOCOMP_PADDING, 1, 0);
 }
 
 static void
