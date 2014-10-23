@@ -332,4 +332,11 @@ const char *AUTOCOMP_BASE_SCALE[AUTOCOMP_BASE_SCALE_LINE_CNT] =
    "base_scale: ;",
 };
 
-#define COMPSET_CNT 51
+#define AUTOCOMP_SET_LINE_CNT 2
+const char *AUTOCOMP_SET[AUTOCOMP_SET_LINE_CNT] =
+{
+   "set { name: \"\";<br/>",
+   "}"
+};
+
+#define COMPSET_CNT 52

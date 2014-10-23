@@ -63,6 +63,7 @@ init_thread_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
    COMPDATA_SET(ad, "collections",AUTOCOMP_COLLECTIONS, 2, 1);
    COMPDATA_SET(ad, "image",AUTOCOMP_IMAGE, 7, 0);
    COMPDATA_SET(ad, "images",AUTOCOMP_IMAGES, 2, 1);
+   COMPDATA_SET(ad, "set",AUTOCOMP_SET, 4, 1);
    COMPDATA_SET(ad, "group",AUTOCOMP_GROUP, 4, 1);
    COMPDATA_SET(ad, "type",AUTOCOMP_TYPE, 0, 0);
    COMPDATA_SET(ad, "part",AUTOCOMP_PART, 4, 1);
