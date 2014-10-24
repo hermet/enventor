@@ -776,6 +776,7 @@ init(app_data *ad, int argc, char **argv)
    base_gui_init();
    statusbar_set();
    enventor_setup(ad);
+   file_mgr_init(ad->enventor);
    tools_set(ad->enventor);
 
    base_gui_show();
@@ -799,6 +800,7 @@ term(app_data *ad EINA_UNUSED)
 #endif
    stats_term();
    base_gui_term();
+   file_mgr_term();
    config_term();
    enventor_shutdown();
 }

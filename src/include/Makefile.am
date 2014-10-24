@@ -15,4 +15,5 @@ EXTRA_DIST = common.h \
 	setting.h \
 	search.h \
 	live_edit.h \
-	console.h
+	console.h \
+	file_mgr.h

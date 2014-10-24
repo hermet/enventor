@@ -613,7 +613,6 @@ group { name: "warning_layout";
          description {
             rel1 { to: "elm.text.title"; relative: 0.5 1; offset: 0 10; }
             rel2 { to: "elm.text.title"; relative: 0.5 1; }
-            text.text: "Without save, you will lose last changes!";
             text {
                font: FN;
                size: 11;
@@ -632,7 +631,6 @@ group { name: "warning_layout";
          description {
             rel1 { to: "elm.text.desc"; relative: 0.5 1; }
             rel2 { to: "elm.text.desc"; relative: 0.5 1; }
-            text.text: "Are you sure you want to do this?";
             text {
                font: FN;
                size: 11;
@@ -644,13 +642,13 @@ group { name: "warning_layout";
             fixed: 1 1;
          }
       }
-      part { name: "elm.swallow.save";
+      part { name: "elm.swallow.btn1";
          type: SWALLOW;
          clip_to: "clipper";
          scale: 1;
          description {
-            rel1.to: "elm.swallow.yes";
-            rel2.to: "elm.swallow.yes";
+            rel1.to: "elm.swallow.btn2";
+            rel2.to: "elm.swallow.btn2";
             rel1.relative: 0 0;
             rel2.relative: 0 1;
             rel2.offset: -10 -1;
@@ -659,7 +657,7 @@ group { name: "warning_layout";
             fixed: 1 1;
          }
       }
-      part { name: "elm.swallow.yes";
+      part { name: "elm.swallow.btn2";
          type: SWALLOW;
          clip_to: "clipper";
          scale: 1;
@@ -673,13 +671,13 @@ group { name: "warning_layout";
             fixed: 1 1;
          }
       }
-      part { name: "elm.swallow.no";
+      part { name: "elm.swallow.btn3";
          type: SWALLOW;
          clip_to: "clipper";
          scale: 1;
          description {
-            rel1.to: "elm.swallow.yes";
-            rel2.to: "elm.swallow.yes";
+            rel1.to: "elm.swallow.btn2";
+            rel2.to: "elm.swallow.btn2";
             rel1.relative: 1 0;
             rel2.relative: 1 1;
             rel1.offset: 10 0;

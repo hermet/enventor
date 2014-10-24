@@ -22,5 +22,6 @@ typedef struct statusbar_s stats_data;
 #include "setting.h"
 #include "live_edit.h"
 #include "console.h"
+#include "file_mgr.h"
 
 #endif
