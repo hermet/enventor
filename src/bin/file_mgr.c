@@ -103,7 +103,7 @@ warning_open(file_mgr_data *fmd)
    fmd->warning_layout = layout;
 }
 
-static Eina_Bool
+static void
 enventor_edc_modified_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event)
 {
    file_mgr_data *fmd = g_fmd;
@@ -112,21 +112,19 @@ enventor_edc_modified_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event)
    if (modified->self_changed)
      {
         fmd->edc_modified = EINA_FALSE;
-        return ECORE_CALLBACK_DONE;
+        return;
      }
 
    //file is opened first time, we don't regard edc is modified, so skip here.
    if (!fmd->edc_modified)
      {
         fmd->edc_modified = EINA_TRUE;
-        return ECORE_CALLBACK_DONE;
+        return;
      }
 
    warning_open(fmd);
 
    fmd->edc_modified = EINA_FALSE;
-
-   return ECORE_CALLBACK_DONE;
 }
 
 void
