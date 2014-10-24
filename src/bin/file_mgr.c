@@ -34,8 +34,8 @@ warning_close(file_mgr_data *fmd)
 }
 
 static void
-warning_skip_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
-                    void *event_info EINA_UNUSED)
+warning_ignore_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                      void *event_info EINA_UNUSED)
 {
    file_mgr_data *fmd = data;
    enventor_object_modified_set(fmd->enventor, EINA_TRUE);
@@ -43,8 +43,8 @@ warning_skip_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
 }
 
 static void
-warning_save_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
-                    void *event_info EINA_UNUSED)
+warning_save_as_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                       void *event_info EINA_UNUSED)
 {
    file_mgr_data *fmd = data;
    enventor_object_modified_set(fmd->enventor, EINA_TRUE);
@@ -53,8 +53,8 @@ warning_save_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
 }
 
 static void
-warning_load_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
-                    void *event_info EINA_UNUSED)
+warning_replace_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                       void *event_info EINA_UNUSED)
 {
    file_mgr_data *fmd = data;
    enventor_object_file_set(fmd->enventor, config_edc_path_get());
@@ -63,8 +63,7 @@ warning_load_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
 }
 
 static void
-warning_open(file_mgr_data *fmd, Evas_Smart_Cb skip_cb,
-             Evas_Smart_Cb save_cb, Evas_Smart_Cb load_cb)
+warning_open(file_mgr_data *fmd)
 {
    if (fmd->warning_layout) return;
 
@@ -72,9 +71,9 @@ warning_open(file_mgr_data *fmd, Evas_Smart_Cb skip_cb,
    Evas_Object *layout = elm_layout_add(base_win_get());
    elm_layout_file_set(layout, EDJE_PATH, "warning_layout");
    elm_object_part_text_set(layout, "elm.text.desc",
-                            "Another program has changed the same EDC!");
+                            "EDC has been changed on the file system.");
    elm_object_part_text_set(layout, "elm.text.question",
-                            "Are you sure you want to do this?");
+                            "Do you want to replace the contents?");
    elm_object_signal_callback_add(layout, "elm,state,dismiss,done", "",
                                   warning_dismiss_done, fmd);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -83,22 +82,22 @@ warning_open(file_mgr_data *fmd, Evas_Smart_Cb skip_cb,
 
    Evas_Object *btn;
 
-   //Skip Button
+   //Save As Button
    btn = elm_button_add(layout);
-   elm_object_text_set(btn, "Skip");
-   evas_object_smart_callback_add(btn, "clicked", skip_cb, fmd);
+   elm_object_text_set(btn, "Save As");
+   evas_object_smart_callback_add(btn, "clicked", warning_save_as_btn_cb, fmd);
    elm_object_part_content_set(layout, "elm.swallow.btn1", btn);
 
-   //Save Button
+   //Replace Button
    btn = elm_button_add(layout);
-   elm_object_text_set(btn, "Save");
-   evas_object_smart_callback_add(btn, "clicked", save_cb, fmd);
+   elm_object_text_set(btn, "Replace");
+   evas_object_smart_callback_add(btn, "clicked", warning_replace_btn_cb, fmd);
    elm_object_part_content_set(layout, "elm.swallow.btn2", btn);
 
-   //Load Button
+   //Igrore Button
    btn = elm_button_add(layout);
-   elm_object_text_set(btn, "Load");
-   evas_object_smart_callback_add(btn, "clicked", load_cb, fmd);
+   elm_object_text_set(btn, "Ignore");
+   evas_object_smart_callback_add(btn, "clicked", warning_ignore_btn_cb, fmd);
    elm_object_part_content_set(layout, "elm.swallow.btn3", btn);
 
    fmd->warning_layout = layout;
@@ -123,9 +122,10 @@ enventor_edc_modified_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event)
         return ECORE_CALLBACK_DONE;
      }
 
-   warning_open(fmd, warning_skip_btn_cb, warning_save_btn_cb,
-                warning_load_btn_cb);
+   warning_open(fmd);
+
    fmd->edc_modified = EINA_FALSE;
+
    return ECORE_CALLBACK_DONE;
 }
 
