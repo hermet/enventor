@@ -76,12 +76,12 @@ cur_part_value_update(live_data *ld, Evas_Object *edje)
 static Evas_Object *
 create_live_edit_layout(live_data *ld)
 {
-   Evas_Object *viewer_layout = enventor_object_live_view_get(ld->enventor);
-   Evas_Object *layout = elm_layout_add(viewer_layout);
+   Evas_Object *live_view = enventor_object_live_view_get(ld->enventor);
+   Evas_Object *layout = elm_layout_add(live_view);
    elm_layout_file_set(layout, EDJE_PATH,  "live_edit_layout");
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(layout, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_object_part_content_set(viewer_layout, "elm.swallow.live_edit", layout);
+   elm_object_part_content_set(live_view, "elm.swallow.live_edit", layout);
    return layout;
 }
 
