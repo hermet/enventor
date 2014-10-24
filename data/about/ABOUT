@@ -76,10 +76,16 @@ $ enventor sample.edc -id ./images -sd ./sounds
  
  
 <font_size=11><b>[Developers]</b></font_size>
+ 
+A lots of developers have joined in Enventor project. Here listed are the dedicated Enventor developers but there are much more people who've gladly contributed for Enventor improvement. For list of whole contributors, See AUTHORS file.
+ 
+Copyright (C) 2013 - 2014 by:
+ 
+Hermet (Chuneon Park)
+Jaehyun Cho
+Mykyta Biliavskyi
+Kateryna Fesyna
+Raoul Hecky
   
-Hermet (Chuneon Park) <hermet@hermet.pe.kr>
-Jaehyun Cho <jae_hyun_cho@naver.com>
-Mykyta Biliavskyi <m.biliavskyi@samsung.com>
-Kateryna Fesyna <k.fesyna@samsung.com>
-Raoul Hecky <raoul.hecky@gmail.com>
+And various contributors (See AUTHORS)
   
