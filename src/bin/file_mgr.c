@@ -116,6 +116,7 @@ enventor_edc_modified_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event)
         return ECORE_CALLBACK_DONE;
      }
 
+   //file is opened first time, we don't regard edc is modified, so skip here.
    if (!fmd->edc_modified)
      {
         fmd->edc_modified = EINA_TRUE;
