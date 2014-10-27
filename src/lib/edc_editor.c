@@ -530,14 +530,20 @@ cur_line_pos_set(edit_data *ed, Eina_Bool force)
                                    (void *)line);
 }
 
+void
+edit_selection_clear(edit_data *ed)
+{
+   if (ed->on_select_recover) return;
+   cur_line_pos_set(ed, EINA_TRUE);
+   ed->select_pos = -1;
+}
+
 static void
 edit_selection_cleared_cb(void *data, Evas_Object *obj EINA_UNUSED,
                           void *event_info EINA_UNUSED)
 {
    edit_data *ed = data;
-   if (ed->on_select_recover) return;
-   cur_line_pos_set(ed, EINA_TRUE);
-   ed->select_pos = -1;
+   edit_selection_clear(ed);
 }
 
 static void

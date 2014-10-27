@@ -223,5 +223,6 @@ Eina_Bool edit_part_highlight_get(edit_data *ed);
 void edit_ctxpopup_set(edit_data *ed, Eina_Bool ctxpopup);
 Eina_Bool edit_ctxpopup_get(edit_data *ed);
 Eina_Bool edit_load(edit_data *ed, const char *edc_path);
+void edit_selection_clear(edit_data *ed);
 
 #endif

@@ -430,6 +430,7 @@ search_close(void)
    search_data *sd = g_sd;
    if (!sd) return;
 
+   enventor_object_select_none(sd->enventor);
    while (sd->syntax_color > 0)
      {
         enventor_object_syntax_color_partial_apply(sd->enventor, -1);
