@@ -1,6 +1,34 @@
-============
-Enventor 0.3.0
-============
+==============
+Enventor 0.4.0
+==============
+
+Changes since Enventor 0.3.0:
+---------------------------
+
+Additions:
+   * Support Redo/Undo (Ctrl+R/Ctrl+Z)
+   * Support Enventor APIs.
+   * Support Console box that displays error messages.
+
+Improvements:
+   * Support auto completion Tab key to insert selection.
+   * Support auto completion more candidate keywords.
+   * Support tracking edc file modification and notification of it.
+   * Support "-to" command line option to open template menu at launching.
+   * Support multiple Enventor app processes.
+   * Improve GUIs.
+   * Generate template parts with radom names.
+
+Fixes:
+   * Fixed auto completion popup to be shown even if entry cursor is moved up and down.
+   * Fixed to clear selection when find window is moved or closed.
+   * Fixed incorrect part highlight Short Cut key.
+   * Fixed memory leaks in some cases.
+   * Fixed segfault in applying syntax color.
+   * Fixed window title file path to be updated correctly.
+   * Fixed auto completion keyword relative
+   * Fixed auto completion candidation list to be updated correctly.
+   * Fixed dummy object(swallow) was invisible case.
 
 Changes since Enventor 0.2.0:
 ---------------------------
