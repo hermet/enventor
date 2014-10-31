@@ -60,7 +60,7 @@ config_edj_path_update(config_data *cd)
         return;
      }
 
-   eina_stringshare_replace(&cd->edj_path, buf);
+   eina_stringshare_replace(&cd->edj_path, tmp_path);
    eina_tmpstr_del(tmp_path);
 }
 
