@@ -361,7 +361,6 @@ enventor_cursor_group_changed_cb(void *data EINA_UNUSED,
                                  void *event_info)
 {
    const char *group_name = event_info;
-   if (!group_name) return;
    stats_edc_group_update(group_name);
 }
 

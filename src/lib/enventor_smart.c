@@ -89,13 +89,10 @@ edit_view_sync_cb(void *data, Eina_Stringshare *part_name,
              vd = edj_mgr_view_new(group_name);
              if (!vd) return;
           }
-        if (group_name)
-          {
-             eina_stringshare_del(pd->group_name);
-             pd->group_name = eina_stringshare_add(group_name);
-             evas_object_smart_callback_call(pd->obj, SIG_CURSOR_GROUP_CHANGED,
-                                             (void *) group_name);
-          }
+        eina_stringshare_del(pd->group_name);
+        pd->group_name = eina_stringshare_add(group_name);
+        evas_object_smart_callback_call(pd->obj, SIG_CURSOR_GROUP_CHANGED,
+                                        (void *) group_name);
      }
    view_part_highlight_set(VIEW_DATA, part_name);
 }

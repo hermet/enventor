@@ -722,6 +722,7 @@ edit_edc_load(edit_data *ed, const char *file_path)
 
    Eina_File *file = NULL;
    Eina_Strbuf *strbuf_line = NULL;
+   Eina_Stringshare *group_name = NULL;
    char *utf8_edit = NULL;
    char *markup_edit = NULL;
    char *markup_line = NULL;
@@ -763,8 +764,7 @@ edit_edc_load(edit_data *ed, const char *file_path)
 
    ed->line_max = line_num;
 
-   Eina_Stringshare *group_name =
-      parser_first_group_name_get(ed->pd, ed->en_edit);
+   group_name = parser_first_group_name_get(ed->pd, ed->en_edit);
 
    ecore_animator_add(syntax_color_timer_cb, ed);
 
