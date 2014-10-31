@@ -57,13 +57,14 @@ static Eina_Bool
 template_insert_patch(app_data *ad, const char *key)
 {
    Edje_Part_Type part_type;
+#if 0
    if (config_live_edit_get())
      {
         stats_info_msg_update("Insertion of template code is disabled "
                               "while in Live Edit mode");
         return ECORE_CALLBACK_DONE;
      }
-
+#endif
    if (!strcmp(key, "a") || !strcmp(key, "A"))
      part_type = EDJE_PART_TYPE_TABLE;
    else if (!strcmp(key, "b") || !strcmp(key, "B"))
@@ -394,16 +395,6 @@ enventor_live_view_cursor_moved_cb(void *data EINA_UNUSED,
 }
 
 static void
-enventor_live_view_resize_cb(void *data EINA_UNUSED,
-                             Evas_Object *obj EINA_UNUSED,
-                             void *event_info)
-{
-   if (!config_stats_bar_get()) return;
-   Enventor_Live_View_Cursor *cursor = event_info;
-   stats_cursor_pos_update(cursor->x, cursor->y, cursor->relx, cursor->rely);
-}
-
-static void
 enventor_program_run_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
                         void *event_info)
 {
@@ -526,13 +517,14 @@ dummy_swallow_toggle(app_data *ad)
 static void
 default_template_insert(app_data *ad)
 {
+#if 0
    if (config_live_edit_get())
      {
         stats_info_msg_update("Insertion of template code is disabled "
                               "while in Live Edit mode");
         return;
      }
-
+#endif
    char syntax[12];
    if (enventor_object_template_insert(ad->enventor, syntax, sizeof(syntax)))
      {
@@ -633,7 +625,9 @@ ctrl_func(app_data *ad, const char *key)
    //Live Edit
    if (!strcmp(key, "e") || !strcmp(key, "E"))
      {
+#if 0
         live_edit_toggle();
+#endif
         return ECORE_CALLBACK_DONE;
      }
 
@@ -813,7 +807,8 @@ term(app_data *ad EINA_UNUSED)
 EAPI_MAIN
 int elm_main(int argc, char **argv)
 {
-   app_data ad = {0, };
+   app_data ad;
+   memset(&ad, 0x00, sizeof(ad));
 
    if (!init(&ad, argc, argv))
      {

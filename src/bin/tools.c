@@ -1,7 +1,11 @@
-#include <Elementary.h>
-#include "common.h"
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
-#define TOOLBAR_ICON_SIZE 16
+#define ENVENTOR_BETA_API_SUPPORT 1
+
+#include <Enventor.h>
+#include "common.h"
 
 static void
 menu_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
@@ -54,13 +58,14 @@ lines_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 
 static void
 status_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
-          void *event_info)
+          void *event_info EINA_UNUSED)
 {
    base_statusbar_toggle(EINA_TRUE);
 }
 
 static void
-find_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
+find_cb(void *data, Evas_Object *obj EINA_UNUSED,
+        void *event_info EINA_UNUSED)
 {
    Evas_Object *enventor = data;
    if (search_is_opened()) search_close();
@@ -68,7 +73,8 @@ find_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 }
 
 static void
-goto_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
+goto_cb(void *data, Evas_Object *obj EINA_UNUSED,
+        void *event_info EINA_UNUSED)
 {
    Evas_Object *enventor = data;
    if (goto_is_opened()) goto_close();
@@ -77,16 +83,17 @@ goto_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 
 static void
 console_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
-           void *event_info)
+           void *event_info EINA_UNUSED)
 {
    base_console_toggle();
 }
-
+#if 0
 static void
 live_edit_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    live_edit_toggle();
 }
+#endif
 
 static Evas_Object *
 tools_btn_create(Evas_Object *parent, const char *icon, const char *label,
@@ -139,12 +146,12 @@ tools_create(Evas_Object *parent, Evas_Object *enventor)
    evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
    elm_box_pack_end(box, btn);
-
+/*
    btn = tools_btn_create(box, "live_edit", "LiveEdit", live_edit_cb, NULL);
    evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
    elm_box_pack_end(box, btn);
-
+*/
    sp = elm_separator_add(box);
    evas_object_show(sp);
    elm_box_pack_end(box, sp);

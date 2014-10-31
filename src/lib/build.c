@@ -173,7 +173,7 @@ build_term(void)
    eina_stringshare_del(bd->edc_path);
 
    int i;
-   for (i = 0; i < (sizeof(bd->pathes_list) / sizeof(Eina_List *)); i++)
+   for (i = 0; i < (int)(sizeof(bd->pathes_list) / sizeof(Eina_List *)); i++)
      {
         Eina_Stringshare *path;
         EINA_LIST_FREE(bd->pathes_list[i], path)
@@ -206,8 +206,7 @@ build_path_get(Enventor_Path_Type type)
 Eina_Bool
 build_path_set(Enventor_Path_Type type, const Eina_List *pathes)
 {
-   if ((type < ENVENTOR_OUT_EDJ) || (type >= ENVENTOR_PATH_TYPE_LAST))
-     return EINA_FALSE;
+   if (type >= ENVENTOR_PATH_TYPE_LAST) return EINA_FALSE;
 
    build_data *bd = g_bd;
    Eina_Stringshare *path;

@@ -382,6 +382,7 @@ class Enventor.Object (Elm_Widget, Efl.File) {
       }
    }
    implements {
+      class.constructor;
       Eo.Base.constructor;
       Evas.Object_Smart.add;
       Evas.Object_Smart.del;

@@ -7,7 +7,7 @@
 #include <Elementary_Cursor.h>
 #include <Enventor.h>
 #include "common.h"
-
+#if 0
 typedef struct menu_data_s
 {
    const char *name;
@@ -308,10 +308,9 @@ live_edit_toggle(void)
 {
    live_data *ld = g_ld;
    Eina_Bool on = !config_live_edit_get();
-#if 0
    Evas_Object *event_obj = view_obj_get(VIEW_DATA);
    if (!event_obj) return;
-
+#if 0
    if (on)
      {
         evas_object_event_callback_add(event_obj, EVAS_CALLBACK_MOUSE_UP,
@@ -323,15 +322,13 @@ live_edit_toggle(void)
                                        layout_mouse_up_cb);
         live_edit_reset(ld);
      }
-#endif
-#if 0
    enventor_object_disabled_set(ld->enventor, on);
-#endif
 
    if (on) stats_info_msg_update("Live View Edit Mode Enabled.");
    else stats_info_msg_update("Live View Edit Mode Disabled.");
 
    config_live_edit_set(on);
+#endif
 }
 
 void
@@ -376,3 +373,5 @@ live_edit_term()
    free(ld);
    g_ld = NULL;
 }
+
+#endif

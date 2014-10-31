@@ -107,7 +107,7 @@ build_err_noti_cb(void *data, const char *msg)
 /*****************************************************************************/
 /* Internal Eo object required routines                                      */
 /*****************************************************************************/
-static void
+EOLIAN static void
 _enventor_object_class_constructor(Eo_Class *klass)
 {
    evas_smart_legacy_type_register(MY_CLASS_NAME_LEGACY, klass);

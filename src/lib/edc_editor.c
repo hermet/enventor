@@ -334,10 +334,10 @@ preview_img_relay_show(edit_data *ed, Evas_Object *ctxpopup, Eina_Bool next)
         const char *colon = parser_colon_pos_get(NULL, text);
         if (!colon) goto end;
 
-        const char *select = elm_entry_selection_get(ed->en_edit);
-        if (!select) goto end;
+        const char *selection = elm_entry_selection_get(ed->en_edit);
+        if (!selection) goto end;
 
-        char *select_utf8 = elm_entry_markup_to_utf8(select);
+        char *select_utf8 = elm_entry_markup_to_utf8(selection);
         if (!select_utf8) goto end;
         int select_len = strlen(select_utf8);
         free(select_utf8);
