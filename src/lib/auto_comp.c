@@ -528,7 +528,7 @@ autocomp_event_dispatch(const char *key)
         entry_anchor_off(ad);
         return EINA_TRUE;
      }
-   if (!strcmp(key, "Return"))
+   if (!strcmp(key, "Return") || !strcmp(key, "Tab"))
      {
         insert_completed_text(ad);
         queue_reset(ad);
