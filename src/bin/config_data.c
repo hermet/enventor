@@ -41,17 +41,27 @@ config_edj_path_update(config_data *cd)
 {
    //apply edj path also
    char buf[PATH_MAX];
-   char edj_path[PATH_MAX];
+   Eina_Tmpstr *tmp_path;
 
    char *ext = strstr(cd->edc_path, ".edc");
    const char *file = ecore_file_file_get(cd->edc_path);
    if (ext && file)
-     snprintf(buf, (ext - file) + 1, "%s", file);
+     {
+        char filename[PATH_MAX];
+        snprintf(filename, (ext - file) + 1, "%s", file);
+        snprintf(buf, sizeof(buf), "%s_XXXXXX.edj", filename);
+     }
    else
-     strncpy(buf, file, sizeof(buf) - 1);
-   sprintf(edj_path, "/tmp/%s.edj", buf);
+     snprintf(buf, sizeof(buf), "%s_XXXXXX.edj", file);
 
-   eina_stringshare_replace(&cd->edj_path, edj_path);
+   if (!eina_file_mkstemp(buf, &tmp_path))
+     {
+        EINA_LOG_ERR("Failed to generate tmp folder!");
+        return;
+     }
+
+   eina_stringshare_replace(&cd->edj_path, buf);
+   eina_tmpstr_del(tmp_path);
 }
 
 static void
