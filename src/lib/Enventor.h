@@ -14,11 +14,11 @@ extern "C"
 #include <Elementary.h>
 
 #ifndef EFL_NOLEGACY_API_SUPPORT
-#include "Enventor_Legacy.h"
+#include <Enventor_Legacy.h>
 #endif
 
 #ifdef EFL_EO_API_SUPPORT
-#include "Enventor_Eo.h"
+#include <Enventor_Eo.h>
 #endif
 
 EAPI int enventor_init(int argc, char **argv);

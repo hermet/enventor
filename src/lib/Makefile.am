@@ -19,12 +19,15 @@ AM_CPPFLAGS = -DPACKAGE_DATA_DIR=\"$(pkgdatadir)\" \
 lib_LTLIBRARIES = libenventor.la
 
 includes_HEADERS = \
-   Enventor.h \
    Enventor_Legacy.h \
+   Enventor.h \
    Enventor_Eo.h
 includesdir = $(includedir)/enventor-@ENVENTOR_VERSION_MAJOR@
 
 libenventor_la_SOURCES = \
+   enventor_private.h \
+   auto_comp_code.h \
+   template_code.h \
    enventor_main.c \
    enventor_smart.c \
    edc_parser.c \
@@ -36,10 +39,10 @@ libenventor_la_SOURCES = \
    edc_editor.c \
    auto_comp.c \
    build.c \
-	template.c \
-	edj_mgr.c \
-	edj_viewer.c \
-	dummy_obj.c
+   template.c \
+   edj_mgr.c \
+   edj_viewer.c \
+   dummy_obj.c
 
 libenventor_la_CFLAGS = @ENVENTOR_CFLAGS@
 libenventor_la_LIBADD = @ENVENTOR_LIBS@

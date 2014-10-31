@@ -3,8 +3,6 @@ MAINTAINERCLEANFILES = Makefile.in
 EXTRA_DIST = common.h \
 	base_gui.h \
 	config_data.h \
-	dummy_obj.h \
-	edj_viewer.h \
 	menu.h \
 	panes.h \
 	statusbar.h \
