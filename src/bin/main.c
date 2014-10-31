@@ -669,6 +669,12 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
              enventor_object_focus_set(ad->enventor, EINA_TRUE);
              return ECORE_CALLBACK_DONE;
           }
+        if (file_mgr_warning_is_opened())
+          {
+             file_mgr_warning_close();
+             return ECORE_CALLBACK_DONE;
+          }
+
         menu_toggle();
         return ECORE_CALLBACK_DONE;
      }

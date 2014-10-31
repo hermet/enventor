@@ -127,6 +127,22 @@ enventor_edc_modified_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event)
    fmd->edc_modified = EINA_FALSE;
 }
 
+Eina_Bool
+file_mgr_warning_is_opened(void)
+{
+   file_mgr_data *fmd = g_fmd;
+   return ((fmd && fmd->warning_layout) ? EINA_TRUE : EINA_FALSE);
+}
+
+void
+file_mgr_warning_close(void)
+{
+   file_mgr_data *fmd = g_fmd;
+
+   if (fmd->warning_layout)
+     warning_close(fmd);
+}
+
 void
 file_mgr_init(Evas_Object *enventor)
 {
