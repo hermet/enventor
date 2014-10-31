@@ -45,11 +45,9 @@ Ctrl+O = On/Off Auto Completion
 Ctrl+W = Show/Hide Dummy Swallow
 Ctrl+H = On/Off Part Highlighting
 Ctrl+Left = On/Off Full Edit View
-Ctrl+Right = On/Off Full Live View
 Ctrl+Top = On/Off Full Console View
 Ctrl+Bottom = On/Off Full Editors View
 Ctrl+T = Insert Defaut Template Code
-Ctrl+E = On/Off Live View Edit Mode
 Ctrl+Mouse Wheel Up = View Scale Up / Font Size Up
 Ctrl+Mouse Wheel Down = View Scale Down / Font Size Down
 Ctrl+Shift+B = Insert Part Template Code: Textblock
@@ -92,6 +90,17 @@ $ enventor newfile.edc -to
 $ enventor sample.edc -id ./images -sd ./sounds
  
  
-* FOR ANY ISSUES PLEASE EMAIL *
-enlightenment-devel@lists.sourceforge.net
-
+[Developers]
+  
+A lots of developers have joined in Enventor project. Here listed are the dedicated Enventor developers but there are much more people who've gladly contributed for Enventor improvement. For list of whole contributors, See AUTHORS file.
+ 
+Copyright (C) 2013 - 2014 by:
+ 
+Hermet (Chuneon Park)
+Jaehyun Cho
+Mykyta Biliavskyi
+Kateryna Fesyna
+Raoul Hecky
+  
+And various contributors (See AUTHORS)
+ 
