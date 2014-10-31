@@ -518,7 +518,16 @@ Eina_Bool
 autocomp_event_dispatch(const char *key)
 {
    autocomp_data *ad = g_ad;
-   if (!ad || !ad->anchor_visible) return EINA_FALSE;
+   if (!ad) return EINA_FALSE;
+
+   //Reset queue.
+   if (!ad->anchor_visible)
+     {
+        if (!strcmp(key, "Up") || !strcmp(key, "Down") || !strcmp(key, "Left") ||
+            !strcmp(key, "Right"))
+          queue_reset(ad);
+        return EINA_FALSE;
+     }
 
    //Cancel the auto complete.
    if (!strcmp(key, "BackSpace"))
