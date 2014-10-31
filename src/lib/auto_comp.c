@@ -396,7 +396,6 @@ entry_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
             (info->change.insert.content[0] == ' ') ||
             (info->change.insert.content[0] == '.'))
           {
-             entry_anchor_off(ad);
              queue_reset(ad);
           }
         else
@@ -525,7 +524,6 @@ autocomp_event_dispatch(const char *key)
    if (!strcmp(key, "BackSpace"))
      {
         queue_reset(ad);
-        entry_anchor_off(ad);
         return EINA_TRUE;
      }
    if (!strcmp(key, "Return") || !strcmp(key, "Tab"))
