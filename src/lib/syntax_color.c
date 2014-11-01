@@ -158,8 +158,8 @@ color_table_init(color_data *cd)
                }
              tuple->col = cd->cols[i];
              tuple->key = eina_stringshare_add(key);
-             //free(key);
              eina_inarray_push(inarray, tuple);
+             free(tuple);
           }
         eina_list_free(scg->colors[i].keys);
      }
