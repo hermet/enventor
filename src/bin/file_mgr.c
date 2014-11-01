@@ -111,7 +111,7 @@ enventor_edc_modified_cb(void *data, Evas_Object *obj EINA_UNUSED,
                          void *event_info)
 {
    file_mgr_data *fmd = data;
-   Enventor_EDC_Modified *modified = event;
+   Enventor_EDC_Modified *modified = event_info;
 
    if (modified->self_changed)
      {

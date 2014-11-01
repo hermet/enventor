@@ -1,4 +1,10 @@
-#include <Elementary.h>
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#define ENVENTOR_BETA_API_SUPPORT 1
+
+#include <Enventor.h>
 #include "common.h"
 
 struct menu_s
@@ -592,7 +598,7 @@ load_save_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
                  void *event_info EINA_UNUSED)
 {
    menu_data *md = data;
-   enventor_object_save(md->enventor);
+   enventor_object_save(md->enventor, config_edc_path_get());
    edc_file_load(md);
    warning_close(md);
 }
