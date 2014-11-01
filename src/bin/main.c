@@ -674,6 +674,7 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
      }
 
    if (menu_activated_get() > 0) return ECORE_CALLBACK_PASS_ON;
+   if (file_mgr_warning_is_opened()) return ECORE_CALLBACK_PASS_ON;
 
    //Control Key
    if (!strcmp("Control_L", event->key))
