@@ -151,10 +151,11 @@ entry_anchor_off(autocomp_data *ad)
 }
 
 static void
-anchor_unfocused_cb(void *data, Evas_Object *obj EINA_UNUSED,
+anchor_unfocused_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
                     void *event_info EINA_UNUSED)
 {
-   autocomp_data *ad = data;
+   autocomp_data *ad = g_ad;
+   if (!g_ad) return;
    entry_anchor_off(ad);
 }
 
@@ -385,10 +386,13 @@ candidate_list_show(autocomp_data *ad)
 }
 
 static void
-entry_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
+entry_changed_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+                 void *event_info)
 {
+   autocomp_data *ad = g_ad;
+   if (!g_ad) return;
+
    Elm_Entry_Change_Info *info = event_info;
-   autocomp_data *ad = data;
 
    if (info->insert)
      {
@@ -416,18 +420,21 @@ entry_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 }
 
 static void
-entry_cursor_changed_manual_cb(void *data, Evas_Object *obj EINA_UNUSED,
+entry_cursor_changed_manual_cb(void *data EINA_UNUSED,
+                               Evas_Object *obj EINA_UNUSED,
                                void *event_info EINA_UNUSED)
 {
-   autocomp_data *ad = data;
+   autocomp_data *ad = g_ad;
+   if (!g_ad) return;
    entry_anchor_off(ad);
 }
 
 static void
-entry_cursor_changed_cb(void *data, Evas_Object *obj,
+entry_cursor_changed_cb(void *data EINA_UNUSED, Evas_Object *obj,
                         void *event_info EINA_UNUSED)
 {
-   autocomp_data *ad = data;
+   autocomp_data *ad = g_ad;
+   if (!g_ad) return;
 
    //Update anchor position
    Evas_Coord x, y, cx, cy, cw, ch;
@@ -438,18 +445,20 @@ entry_cursor_changed_cb(void *data, Evas_Object *obj,
 }
 
 static void
-entry_press_cb(void *data, Evas_Object *obj EINA_UNUSED,
+entry_press_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
                void *event_info EINA_UNUSED)
 {
-   autocomp_data *ad = data;
+   autocomp_data *ad = g_ad;
+   if (!g_ad) return;
    entry_anchor_off(ad);
 }
 
 static void
-entry_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
-              void *event_info EINA_UNUSED)
+entry_move_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
+              Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 {
-   autocomp_data *ad = data;
+   autocomp_data *ad = g_ad;
+   if (!g_ad) return;
    entry_anchor_off(ad);
 }
 
@@ -464,7 +473,8 @@ list_item_move(autocomp_data *ad, Eina_Bool up)
    else it = elm_list_item_next(it);
    if (it) elm_list_item_selected_set(it, EINA_TRUE);
 
-   evas_object_smart_callback_add(entry, "unfocused", anchor_unfocused_cb, ad);
+   evas_object_smart_callback_add(entry, "unfocused", anchor_unfocused_cb,
+                                  NULL);
 }
 
 /*****************************************************************************/
@@ -500,15 +510,17 @@ autocomp_target_set(edit_data *ed)
    if (!ed) return;
 
    entry = edit_entry_get(ed);
-   evas_object_smart_callback_add(entry, "changed,user", entry_changed_cb, ad);
+   evas_object_smart_callback_add(entry, "changed,user", entry_changed_cb,
+                                  NULL);
    evas_object_smart_callback_add(entry, "cursor,changed,manual",
-                                          entry_cursor_changed_manual_cb, ad);
+                                          entry_cursor_changed_manual_cb, NULL);
    evas_object_smart_callback_add(entry, "cursor,changed",
-                                  entry_cursor_changed_cb, ad);
-   evas_object_smart_callback_add(entry, "unfocused", anchor_unfocused_cb, ad);
-   evas_object_smart_callback_add(entry, "press", entry_press_cb, ad);
+                                  entry_cursor_changed_cb, NULL);
+   evas_object_smart_callback_add(entry, "unfocused", anchor_unfocused_cb,
+                                  NULL);
+   evas_object_smart_callback_add(entry, "press", entry_press_cb, NULL);
    evas_object_event_callback_add(entry, EVAS_CALLBACK_MOVE,
-                                  entry_move_cb, ad);
+                                  entry_move_cb, NULL);
 
    ad->anchor = elm_button_add(edit_obj_get(ed));
    ad->ed = ed;
