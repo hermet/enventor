@@ -24,6 +24,7 @@ warning_dismiss_done(void *data, Evas_Object *obj EINA_UNUSED,
 {
    file_mgr_data *fmd = data;
    evas_object_del(fmd->warning_layout);
+   enventor_object_focus_set(fmd->enventor, EINA_TRUE);
    fmd->warning_layout = NULL;
 }
 
@@ -87,6 +88,8 @@ warning_open(file_mgr_data *fmd)
    elm_object_text_set(btn, "Save As");
    evas_object_smart_callback_add(btn, "clicked", warning_save_as_btn_cb, fmd);
    elm_object_part_content_set(layout, "elm.swallow.btn1", btn);
+   evas_object_show(btn);
+   elm_object_focus_set(btn, EINA_TRUE);
 
    //Replace Button
    btn = elm_button_add(layout);
@@ -106,7 +109,7 @@ warning_open(file_mgr_data *fmd)
 static void
 enventor_edc_modified_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event)
 {
-   file_mgr_data *fmd = data;
+   file_mgr_data *fmd = g_fmd;
    Enventor_EDC_Modified *modified = event;
 
    if (modified->self_changed)
