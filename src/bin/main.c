@@ -414,6 +414,13 @@ enventor_ctxpopup_selected_cb(void *data EINA_UNUSED, Evas_Object *obj,
 }
 
 static void
+enventor_focused_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+                    void *event_info EINA_UNUSED)
+{
+   if (file_mgr_edc_modified_get()) file_mgr_warning_open();
+}
+
+static void
 enventor_setup(app_data *ad)
 {
    Evas_Object *enventor = enventor_object_add(base_layout_get());
@@ -431,6 +438,8 @@ enventor_setup(app_data *ad)
                                   enventor_program_run_cb, ad);
    evas_object_smart_callback_add(enventor, "ctxpopup,selected",
                                   enventor_ctxpopup_selected_cb, ad);
+   evas_object_smart_callback_add(enventor, "focused",
+                                  enventor_focused_cb, ad);
 
    enventor_object_font_scale_set(enventor, config_font_scale_get());
    enventor_object_live_view_scale_set(enventor, config_view_scale_get());

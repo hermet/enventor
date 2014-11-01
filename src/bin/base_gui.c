@@ -141,7 +141,6 @@ base_live_view_set(Evas_Object *live_view)
 void
 base_console_toggle()
 {
-   base_data *bd = g_bd;
    panes_editors_full_view();
 }
 

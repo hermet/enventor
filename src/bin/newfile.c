@@ -1,4 +1,10 @@
-#include <Elementary.h>
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#define ENVENTOR_BETA_API_SUPPORT 1
+
+#include <Enventor.h>
 #include "common.h"
 
 typedef struct new_data_s {
@@ -45,6 +51,7 @@ newfile_set(Evas_Object *enventor, Eina_Bool template_new)
      }
    enventor_object_file_set(enventor, path);
    base_title_set(path);
+   file_mgr_reset();
 }
 
 void

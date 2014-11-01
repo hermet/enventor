@@ -446,6 +446,7 @@ fileselector_save_done_cb(void *data, Evas_Object *obj, void *event_info)
    config_apply();
 
    base_title_set(selected);
+   file_mgr_reset();
    fileselector_close(md);
    menu_close(md);
 }
@@ -510,6 +511,7 @@ fileselector_load_done_cb(void *data, Evas_Object *obj, void *event_info)
    base_title_set(selected);
    fileselector_close(md);
    menu_close(md);
+   file_mgr_reset();
 }
 
 static void

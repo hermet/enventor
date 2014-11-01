@@ -11,8 +11,7 @@
 typedef struct file_mgr_s {
      Evas_Object *enventor;
      Evas_Object *warning_layout;
-
-     Eina_Bool edc_modified : 1;
+     int edc_modified;   //1: edc is opened, 2: edc is changed
 } file_mgr_data;
 
 static file_mgr_data *g_fmd = NULL;
@@ -104,6 +103,8 @@ warning_open(file_mgr_data *fmd)
    elm_object_part_content_set(layout, "elm.swallow.btn3", btn);
 
    fmd->warning_layout = layout;
+
+   fmd->edc_modified = 0;
 }
 
 static void
@@ -115,20 +116,34 @@ enventor_edc_modified_cb(void *data, Evas_Object *obj EINA_UNUSED,
 
    if (modified->self_changed)
      {
-        fmd->edc_modified = EINA_FALSE;
+        fmd->edc_modified = 0;
         return;
      }
 
    //file is opened first time, we don't regard edc is modified, so skip here.
-   if (!fmd->edc_modified)
-     {
-        fmd->edc_modified = EINA_TRUE;
-        return;
-     }
+   fmd->edc_modified++;
+
+   if (fmd->edc_modified == 1) return;
+
+   /* FIXME: Here ignore edc changes, if any menu is closed, 
+      then we need to open warning box. */
+   if (menu_activated_get()) return;
 
    warning_open(fmd);
+}
 
-   fmd->edc_modified = EINA_FALSE;
+void
+file_mgr_reset(void)
+{
+   file_mgr_data *fmd = g_fmd;
+   fmd->edc_modified = 0;
+}
+
+int
+file_mgr_edc_modified_get(void)
+{
+   file_mgr_data *fmd = g_fmd;
+   return ((fmd->edc_modified == 2) ? EINA_TRUE : EINA_FALSE);
 }
 
 Eina_Bool
@@ -136,6 +151,13 @@ file_mgr_warning_is_opened(void)
 {
    file_mgr_data *fmd = g_fmd;
    return ((fmd && fmd->warning_layout) ? EINA_TRUE : EINA_FALSE);
+}
+
+void
+file_mgr_warning_open(void)
+{
+   file_mgr_data *fmd = g_fmd;
+   warning_open(fmd);
 }
 
 void
