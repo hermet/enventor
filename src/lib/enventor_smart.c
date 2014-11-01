@@ -42,6 +42,7 @@ static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_CTXPOPUP_SELECTED, ""},
    {SIG_CTXPOPUP_DISMISSED, ""},
    {SIG_EDC_MODIFIED, ""},
+   {SIG_FOCUSED, ""},
    {NULL, NULL}
 };
 

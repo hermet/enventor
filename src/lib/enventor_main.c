@@ -19,6 +19,7 @@ const char SIG_PROGRAM_RUN[] = "program,run";
 const char SIG_CTXPOPUP_SELECTED[] = "ctxpopup,selected";
 const char SIG_CTXPOPUP_DISMISSED[] = "ctxpopup,dismissed";
 const char SIG_EDC_MODIFIED[] = "edc,modified";
+const char SIG_FOCUSED[] = "focused";
 
 static int _enventor_init_count = 0;
 static int _enventor_log_dom = -1;

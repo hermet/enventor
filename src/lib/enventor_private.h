@@ -26,6 +26,7 @@ extern const char SIG_PROGRAM_RUN[];
 extern const char SIG_CTXPOPUP_SELECTED[];
 extern const char SIG_CTXPOPUP_DISMISSED[];
 extern const char SIG_EDC_MODIFIED[];
+extern const char SIG_FOCUSED[];
 
 typedef struct viewer_s view_data;
 typedef struct syntax_color_s color_data;

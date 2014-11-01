@@ -786,6 +786,14 @@ err:
    return ret;
 }
 
+static void
+edit_focused_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                void *event_info EINA_UNUSED)
+{
+   edit_data *ed = data;
+   evas_object_smart_callback_call(ed->enventor, SIG_FOCUSED, NULL);
+}
+
 /*****************************************************************************/
 /* Externally accessible calls                                               */
 /*****************************************************************************/
@@ -1002,6 +1010,7 @@ edit_init(Evas_Object *enventor)
    Evas_Object *en_edit = elm_entry_add(layout);
    elm_entry_context_menu_disabled_set(en_edit, EINA_TRUE);
    elm_entry_line_wrap_set(en_edit, ELM_WRAP_NONE);
+   evas_object_smart_callback_add(en_edit, "focused", edit_focused_cb, ed);
    evas_object_smart_callback_add(en_edit, "changed,user", edit_changed_cb, ed);
    evas_object_smart_callback_add(en_edit, "cursor,changed,manual",
                                   edit_cursor_changed_manual_cb, ed);
