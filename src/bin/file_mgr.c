@@ -107,9 +107,10 @@ warning_open(file_mgr_data *fmd)
 }
 
 static void
-enventor_edc_modified_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event)
+enventor_edc_modified_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                         void *event_info)
 {
-   file_mgr_data *fmd = g_fmd;
+   file_mgr_data *fmd = data;
    Enventor_EDC_Modified *modified = event;
 
    if (modified->self_changed)
