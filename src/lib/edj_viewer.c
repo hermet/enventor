@@ -174,6 +174,7 @@ edj_changed_cb(void *data, int type EINA_UNUSED, void *event)
    if (vd->edj_monitor != ev->monitor) return ECORE_CALLBACK_PASS_ON;
 
    //FIXME: why it need to add monitor again??
+   eio_monitor_del(vd->edj_monitor);
    vd->edj_monitor = eio_monitor_add(build_edj_path_get());
    if (!vd->edj_monitor) EINA_LOG_ERR("Failed to add Eio_Monitor!");
 
