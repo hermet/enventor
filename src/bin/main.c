@@ -640,19 +640,6 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    Ecore_Event_Key *event = ev;
    app_data *ad = data;
 
-   //Shift Key
-   if (!strcmp("Shift_L", event->key))
-     {
-        ad->shift_pressed = EINA_TRUE;
-        return ECORE_CALLBACK_DONE;
-     }
-
-   if (ad->ctrl_pressed)
-     {
-        if (ad->shift_pressed) return template_insert_patch(ad, event->key);
-        else return ctrl_func(ad, event->key);
-     }
-
    //Main Menu
    if (!strcmp(event->key, "Escape"))
      {
@@ -675,6 +662,19 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
 
    if (menu_activated_get() > 0) return ECORE_CALLBACK_PASS_ON;
    if (file_mgr_warning_is_opened()) return ECORE_CALLBACK_PASS_ON;
+
+   //Shift Key
+   if (!strcmp("Shift_L", event->key))
+     {
+        ad->shift_pressed = EINA_TRUE;
+        return ECORE_CALLBACK_DONE;
+     }
+
+   if (ad->ctrl_pressed)
+     {
+        if (ad->shift_pressed) return template_insert_patch(ad, event->key);
+        else return ctrl_func(ad, event->key);
+     }
 
    //Control Key
    if (!strcmp("Control_L", event->key))
