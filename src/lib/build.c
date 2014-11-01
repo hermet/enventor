@@ -247,4 +247,5 @@ build_edc_path_set(const char *edc_path)
    if (bd->edc_path == edc_path) return;
    eina_stringshare_del(bd->edc_path);
    bd->edc_path = eina_stringshare_add(edc_path);
+   bd->build_cmd_changed = EINA_TRUE;
 }
