@@ -253,7 +253,7 @@ setting_open(void)
    evas_object_show(box2);
    elm_box_pack_end(box, box2);
 
-   Evas_Object *label, *box3;
+   Evas_Object *box3;
 
    //Font Size
    box3 = elm_box_add(box2);
