@@ -1,8 +1,6 @@
 void menu_init(Evas_Object *enventor);
 void menu_term(void);
 void menu_toggle(void);
-void menu_ctxpopup_register(Evas_Object *ctxpopup);
-void menu_ctxpopup_unregister(Evas_Object *ctxpopup);
 void menu_edc_new(Eina_Bool template_new);
 void menu_edc_save(void);
 void menu_edc_load(void);

@@ -380,6 +380,21 @@ class Enventor.Object (Elm_Widget, Efl.File) {
             @in size_t n;
          }
       }
+      ctxpopup_visible_get {
+         /*@
+         @brief
+         @warning
+         @see
+         @ingroup Enventor */
+         return: Eina_Bool;
+      }
+      ctxpopup_dismiss {
+         /*@
+         @brief
+         @warning
+         @see
+         @ingroup Enventor */
+      }
    }
    implements {
       class.constructor;

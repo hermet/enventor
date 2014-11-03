@@ -344,6 +344,20 @@ _enventor_object_ctxpopup_set(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd,
 }
 
 EOLIAN static Eina_Bool
+_enventor_object_ctxpopup_visible_get(Eo *obj EINA_UNUSED,
+                                      Enventor_Object_Data *pd)
+{
+   edit_ctxpopup_visible_get(pd->ed);
+}
+
+EOLIAN static void
+_enventor_object_ctxpopup_dismiss(Eo *obj EINA_UNUSED,
+                                  Enventor_Object_Data *pd)
+{
+   edit_ctxpopup_dismiss(pd->ed);
+}
+
+EOLIAN static Eina_Bool
 _enventor_object_dummy_swallow_get(Eo *obj EINA_UNUSED,
                                    Enventor_Object_Data *pd)
 {

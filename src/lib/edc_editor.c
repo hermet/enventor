@@ -27,6 +27,7 @@ struct editor_s
    Evas_Object *en_line;
    Evas_Object *scroller;
    Evas_Object *layout;
+   Evas_Object *ctxpopup;
    Evas_Object *enventor;
 
    syntax_helper *sh;
@@ -53,7 +54,7 @@ struct editor_s
    Eina_Bool on_select_recover : 1;
    Eina_Bool auto_indent : 1;
    Eina_Bool part_highlight : 1;
-   Eina_Bool ctxpopup: 1;
+   Eina_Bool ctxpopup_enabled : 1;
    Eina_Bool on_save : 1;
 };
 
@@ -295,6 +296,15 @@ ctxpopup_preview_dismiss_cb(void *data, Evas_Object *obj,
    if (skip_focus) return;
    elm_object_disabled_set(ed->layout, EINA_FALSE);
    elm_object_focus_set(ed->en_edit, EINA_TRUE);
+   evas_object_smart_callback_call(ed->enventor, SIG_CTXPOPUP_DISMISSED, NULL);
+}
+
+static void
+ctxpopup_del_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+                void *event_info EINA_UNUSED)
+{
+   edit_data *ed = data;
+   ed->ctxpopup = NULL;
 }
 
 //This function is called when user press up/down key or mouse wheel up/down
@@ -349,9 +359,8 @@ preview_img_relay_show(edit_data *ed, Evas_Object *ctxpopup, Eina_Bool next)
                                     cursor_pos);
      }
 end:
-#if 0
-   menu_ctxpopup_unregister(ctxpopup);
-#endif
+   evas_object_event_callback_del(ctxpopup, EVAS_CALLBACK_DEL, ctxpopup_del_cb);
+   ed->ctxpopup = NULL;
    elm_ctxpopup_dismiss(ctxpopup);
 }
 
@@ -410,9 +419,8 @@ image_preview_show(edit_data *ed, char *cur, Evas_Coord x, Evas_Coord y)
 
         evas_object_move(ctxpopup, x, y);
         evas_object_show(ctxpopup);
-#if 0
-        menu_ctxpopup_register(ctxpopup);
-#endif
+        evas_object_event_callback_add(ctxpopup, EVAS_CALLBACK_DEL, ctxpopup_del_cb, ed);
+        ed->ctxpopup = ctxpopup;
         elm_object_disabled_set(ed->layout, EINA_TRUE);
         succeed = EINA_TRUE;
      }
@@ -443,9 +451,8 @@ candidate_list_show(edit_data *ed, char *text, char *cur, char *selected)
    evas_pointer_output_xy_get(evas_object_evas_get(ed->en_edit), &x, &y);
    evas_object_move(ctxpopup, x, y);
    evas_object_show(ctxpopup);
-#if 0
-   menu_ctxpopup_register(ctxpopup);
-#endif
+   evas_object_event_callback_add(ctxpopup, EVAS_CALLBACK_DEL, ctxpopup_del_cb, ed);
+   ed->ctxpopup = ctxpopup;
    elm_object_disabled_set(ed->layout, EINA_TRUE);
 }
 
@@ -468,7 +475,7 @@ edit_cursor_double_clicked_cb(void *data, Evas_Object *obj,
    edit_data *ed = data;
 
    if (ed->ctrl_pressed) return;
-   if (!ed->ctxpopup) return;
+   if (!ed->ctxpopup_enabled) return;
 
    char *selected = (char *) elm_entry_selection_get(obj);
    if (!selected) return;
@@ -1036,7 +1043,7 @@ edit_init(Evas_Object *enventor)
    ed->linenumber = EINA_TRUE;
    ed->auto_indent = EINA_TRUE;
    ed->part_highlight = EINA_TRUE;
-   ed->ctxpopup = EINA_TRUE;
+   ed->ctxpopup_enabled = EINA_TRUE;
    ed->cur_line = -1;
    ed->select_pos = -1;
    ed->font_scale = 1;
@@ -1279,12 +1286,24 @@ edit_auto_indent_get(edit_data *ed)
 Eina_Bool
 edit_ctxpopup_get(edit_data *ed)
 {
-   return ed->ctxpopup;
+   return ed->ctxpopup_enabled;
 }
 
 void
 edit_ctxpopup_set(edit_data *ed, Eina_Bool ctxpopup)
 {
    ctxpopup = !!ctxpopup;
-   ed->ctxpopup = ctxpopup;
+   ed->ctxpopup_enabled = ctxpopup;
+}
+
+Eina_Bool
+edit_ctxpopup_visible_get(edit_data *ed)
+{
+   return (ed->ctxpopup ? EINA_TRUE : EINA_FALSE);
+}
+
+void
+edit_ctxpopup_dismiss(edit_data *ed)
+{
+   elm_ctxpopup_dismiss(ed->ctxpopup);
 }

@@ -15,6 +15,7 @@ typedef struct app_s
    Eina_Bool ctrl_pressed : 1;
    Eina_Bool shift_pressed : 1;
    Eina_Bool template_new : 1;
+   Eina_Bool menu_opened : 1;
 } app_data;
 
 int main(int argc, char **argv);
@@ -414,6 +415,15 @@ enventor_ctxpopup_selected_cb(void *data EINA_UNUSED, Evas_Object *obj,
 }
 
 static void
+enventor_ctxpopup_dismissed_cb(void *data EINA_UNUSED, Evas_Object *obj,
+                               void *event_info EINA_UNUSED)
+{
+   app_data *ad = data;
+   if (ad->menu_opened)
+     enventor_object_focus_set(obj, EINA_FALSE);
+}
+
+static void
 enventor_focused_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
                     void *event_info EINA_UNUSED)
 {
@@ -438,6 +448,8 @@ enventor_setup(app_data *ad)
                                   enventor_program_run_cb, ad);
    evas_object_smart_callback_add(enventor, "ctxpopup,selected",
                                   enventor_ctxpopup_selected_cb, ad);
+   evas_object_smart_callback_add(enventor, "ctxpopup,dismissed",
+                                  enventor_ctxpopup_dismissed_cb, ad);
    evas_object_smart_callback_add(enventor, "focused",
                                   enventor_focused_cb, ad);
 
@@ -664,7 +676,13 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
              file_mgr_warning_close();
              return ECORE_CALLBACK_DONE;
           }
+        if (enventor_object_ctxpopup_visible_get(ad->enventor))
+          {
+             enventor_object_ctxpopup_dismiss(ad->enventor);
+             return ECORE_CALLBACK_DONE;
+          }
 
+        ad->menu_opened = EINA_FALSE;
         menu_toggle();
         return ECORE_CALLBACK_DONE;
      }
@@ -695,6 +713,9 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    //README
    if (!strcmp(event->key, "F1"))
      {
+        if (enventor_object_ctxpopup_visible_get(ad->enventor))
+          enventor_object_ctxpopup_dismiss(ad->enventor);
+        ad->menu_opened = EINA_TRUE;
         menu_about();
         return ECORE_CALLBACK_DONE;
      }
@@ -702,18 +723,27 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    //New
    if (!strcmp(event->key, "F2"))
      {
+        if (enventor_object_ctxpopup_visible_get(ad->enventor))
+          enventor_object_ctxpopup_dismiss(ad->enventor);
+        ad->menu_opened = EINA_TRUE;
         menu_edc_new(EINA_FALSE);
         return ECORE_CALLBACK_DONE;
      }
    //Save
    if (!strcmp(event->key, "F3"))
      {
+        if (enventor_object_ctxpopup_visible_get(ad->enventor))
+          enventor_object_ctxpopup_dismiss(ad->enventor);
+        ad->menu_opened = EINA_TRUE;
         menu_edc_save();
         return ECORE_CALLBACK_DONE;
      }
    //Load
    if (!strcmp(event->key, "F4"))
      {
+        if (enventor_object_ctxpopup_visible_get(ad->enventor))
+          enventor_object_ctxpopup_dismiss(ad->enventor);
+        ad->menu_opened = EINA_TRUE;
         menu_edc_load();
         return ECORE_CALLBACK_DONE;
      }
@@ -747,6 +777,9 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    //Setting
    if (!strcmp(event->key, "F12"))
      {
+        if (enventor_object_ctxpopup_visible_get(ad->enventor))
+          enventor_object_ctxpopup_dismiss(ad->enventor);
+        ad->menu_opened = EINA_TRUE;
         menu_setting();
         return ECORE_CALLBACK_DONE;
      }

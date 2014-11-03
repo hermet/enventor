@@ -15,7 +15,6 @@ struct menu_s
    Evas_Object *fileselector_layout;
    Evas_Object *about_layout;
 
-   Evas_Object *ctxpopup;
    Evas_Object *enventor;
 
    const char *last_accessed_path;
@@ -663,14 +662,6 @@ menu_open(menu_data *md)
    md->active_request++;
 }
 
-static void
-ctxpopup_del_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
-                void *event_info EINA_UNUSED)
-{
-   menu_data *md = data;
-   md->ctxpopup = NULL;
-}
-
 void
 menu_init(Evas_Object *enventor)
 {
@@ -763,11 +754,6 @@ menu_toggle(void)
         about_close(md);
         return;
      }
-   if (md->ctxpopup)
-     {
-        elm_ctxpopup_dismiss(md->ctxpopup);
-        return;
-     }
 
    //Main Menu 
    if (md->active_request) menu_close(md);
@@ -775,24 +761,6 @@ menu_toggle(void)
      {
         menu_open(md);
      }
-}
-
-void
-menu_ctxpopup_unregister(Evas_Object *ctxpopup)
-{
-   menu_data *md = g_md;
-   evas_object_event_callback_del(ctxpopup, EVAS_CALLBACK_DEL, ctxpopup_del_cb);
-   if (ctxpopup == md->ctxpopup) md->ctxpopup = NULL;
-}
-
-void
-menu_ctxpopup_register(Evas_Object *ctxpopup)
-{
-   menu_data *md = g_md;
-   md->ctxpopup = ctxpopup;
-   if (!ctxpopup) return;
-   evas_object_event_callback_add(ctxpopup, EVAS_CALLBACK_DEL, ctxpopup_del_cb,
-                                  md);
 }
 
 int
