@@ -57,7 +57,7 @@ AC_SUBST(ENVENTOR_VERSION_MINOR)
 EFL_ENABLE_EO_API_SUPPORT
 EFL_ENABLE_BETA_API_SUPPORT
 
-efl_version="1.10.0"
+efl_version="1.12.0"
 requirement_enventor=" \
 eo >= ${efl_version} \
 eina >= ${efl_version} \

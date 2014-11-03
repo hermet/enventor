@@ -8,11 +8,11 @@ it does a lot.
  
 [Requirements]
   
-  efl (>= 1.10.0)
-  elementary (>= 1.10.0)
+  efl (>= 1.12.0)
+  elementary (>= 1.12.0)
   
 Please note that some features may not quite function correctly or completely
-less EFL 1.10. Newer would be better.
+less EFL 1.12. Newer would be better.
   
 Please see http://www.enlightenment.org for information on these.
   
