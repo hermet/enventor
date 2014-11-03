@@ -290,13 +290,13 @@ ctxpopup_preview_dismiss_cb(void *data, Evas_Object *obj,
 {
    edit_data *ed = data;
    int skip_focus = (int)(uintptr_t) evas_object_data_get(obj, "continue");
-   evas_object_smart_callback_call(ed->enventor, SIG_CTXPOPUP_DISMISSED, NULL);
-   evas_object_del(obj);
 
    //Since the ctxpopup will be shown again, Don't revert the focus.
    if (skip_focus) return;
    elm_object_disabled_set(ed->layout, EINA_FALSE);
    elm_object_focus_set(ed->en_edit, EINA_TRUE);
+   evas_object_smart_callback_call(ed->enventor, SIG_CTXPOPUP_DISMISSED, NULL);
+   evas_object_del(obj);
 }
 
 static void
@@ -339,6 +339,8 @@ preview_img_relay_show(edit_data *ed, Evas_Object *ctxpopup, Eina_Bool next)
         /* Since the ctxpopup will be shown again,
            Don't revert the focus in the dismiss cb. */
         evas_object_data_set(ctxpopup, "continue", (void *) 1);
+        evas_object_event_callback_del(ctxpopup, EVAS_CALLBACK_DEL,
+                                       ctxpopup_del_cb);
 
         //Set the entry selection region to next image.
         const char *colon = parser_colon_pos_get(NULL, text);
@@ -359,8 +361,6 @@ preview_img_relay_show(edit_data *ed, Evas_Object *ctxpopup, Eina_Bool next)
                                     cursor_pos);
      }
 end:
-   evas_object_event_callback_del(ctxpopup, EVAS_CALLBACK_DEL, ctxpopup_del_cb);
-   ed->ctxpopup = NULL;
    elm_ctxpopup_dismiss(ctxpopup);
 }
 
