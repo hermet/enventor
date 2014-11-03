@@ -99,8 +99,13 @@ slider_layout_set(Evas_Object *ctxpopup, attr_value *attr, double slider_val,
    elm_layout_file_set(layout, EDJE_PATH, "slider_layout");
    elm_object_content_set(ctxpopup, layout);
 
+   /* FIXME: Disable slider and it's button's focus since scroller has weired
+      focus region show from this. Actually we don't need focus from here
+      slider. */
+
    //Slider
    Evas_Object *slider = elm_slider_add(layout);
+   elm_object_focus_allow_set(slider, EINA_FALSE);
    if (integer) elm_slider_unit_format_set(slider, "%1.0f");
    else elm_slider_unit_format_set(slider, "%1.2f");
    elm_slider_span_size_set(slider, 120);
@@ -115,6 +120,7 @@ slider_layout_set(Evas_Object *ctxpopup, attr_value *attr, double slider_val,
 
    //Minus Button
    btn = elm_button_add(layout);
+   elm_object_focus_allow_set(btn, EINA_FALSE);
    evas_object_smart_callback_add(btn, "clicked", btn_minus_cb, slider);
    elm_object_part_content_set(layout, "elm.swallow.minus", btn);
 
@@ -125,6 +131,7 @@ slider_layout_set(Evas_Object *ctxpopup, attr_value *attr, double slider_val,
 
    //Plus Button
    btn = elm_button_add(layout);
+   elm_object_focus_allow_set(btn, EINA_FALSE);
    evas_object_smart_callback_add(btn, "clicked", btn_plus_cb, slider);
    elm_object_part_content_set(layout, "elm.swallow.plus", btn);
 
