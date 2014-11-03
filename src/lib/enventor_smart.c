@@ -347,7 +347,7 @@ EOLIAN static Eina_Bool
 _enventor_object_ctxpopup_visible_get(Eo *obj EINA_UNUSED,
                                       Enventor_Object_Data *pd)
 {
-   edit_ctxpopup_visible_get(pd->ed);
+   return edit_ctxpopup_visible_get(pd->ed);
 }
 
 EOLIAN static void
