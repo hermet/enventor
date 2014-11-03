@@ -290,13 +290,13 @@ ctxpopup_preview_dismiss_cb(void *data, Evas_Object *obj,
 {
    edit_data *ed = data;
    int skip_focus = (int)(uintptr_t) evas_object_data_get(obj, "continue");
+   evas_object_smart_callback_call(ed->enventor, SIG_CTXPOPUP_DISMISSED, NULL);
    evas_object_del(obj);
 
    //Since the ctxpopup will be shown again, Don't revert the focus.
    if (skip_focus) return;
    elm_object_disabled_set(ed->layout, EINA_FALSE);
    elm_object_focus_set(ed->en_edit, EINA_TRUE);
-   evas_object_smart_callback_call(ed->enventor, SIG_CTXPOPUP_DISMISSED, NULL);
 }
 
 static void
