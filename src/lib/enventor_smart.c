@@ -333,14 +333,14 @@ EOLIAN static Eina_Bool
 _enventor_object_ctxpopup_get(Eo *obj EINA_UNUSED,
                               Enventor_Object_Data *pd)
 {
-   return edit_ctxpopup_get(pd->ed);
+   return edit_ctxpopup_enabled_get(pd->ed);
 }
 
 EOLIAN static void
 _enventor_object_ctxpopup_set(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd,
-                                  Eina_Bool ctxpopup)
+                              Eina_Bool ctxpopup)
 {
-   edit_ctxpopup_set(pd->ed, ctxpopup);
+   edit_ctxpopup_enabled_set(pd->ed, ctxpopup);
 }
 
 EOLIAN static Eina_Bool

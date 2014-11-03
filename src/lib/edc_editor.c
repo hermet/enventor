@@ -419,7 +419,8 @@ image_preview_show(edit_data *ed, char *cur, Evas_Coord x, Evas_Coord y)
 
         evas_object_move(ctxpopup, x, y);
         evas_object_show(ctxpopup);
-        evas_object_event_callback_add(ctxpopup, EVAS_CALLBACK_DEL, ctxpopup_del_cb, ed);
+        evas_object_event_callback_add(ctxpopup, EVAS_CALLBACK_DEL,
+                                       ctxpopup_del_cb, ed);
         ed->ctxpopup = ctxpopup;
         elm_object_disabled_set(ed->layout, EINA_TRUE);
         succeed = EINA_TRUE;
@@ -1284,16 +1285,16 @@ edit_auto_indent_get(edit_data *ed)
 }
 
 Eina_Bool
-edit_ctxpopup_get(edit_data *ed)
+edit_ctxpopup_enabled_get(edit_data *ed)
 {
    return ed->ctxpopup_enabled;
 }
 
 void
-edit_ctxpopup_set(edit_data *ed, Eina_Bool ctxpopup)
+edit_ctxpopup_enabled_set(edit_data *ed, Eina_Bool enabled)
 {
-   ctxpopup = !!ctxpopup;
-   ed->ctxpopup_enabled = ctxpopup;
+   enabled = !!enabled;
+   ed->ctxpopup_enabled = enabled;
 }
 
 Eina_Bool
@@ -1305,5 +1306,5 @@ edit_ctxpopup_visible_get(edit_data *ed)
 void
 edit_ctxpopup_dismiss(edit_data *ed)
 {
-   elm_ctxpopup_dismiss(ed->ctxpopup);
+   if (ed->ctxpopup) elm_ctxpopup_dismiss(ed->ctxpopup);
 }
