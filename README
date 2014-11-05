@@ -24,7 +24,7 @@ Once you have met requirements, compiling and installing is simple:
   $ ./autogen.sh
   $ make
   $ sudo make install
- 
+  $ sudo ldconfig (it may need on Linux System) 
  
 [Short Cut Keys]
  
