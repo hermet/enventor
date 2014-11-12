@@ -57,14 +57,14 @@ static Eina_Bool
 template_insert_patch(app_data *ad, const char *key)
 {
    Edje_Part_Type part_type;
-#if 0
+
    if (config_live_edit_get())
      {
         stats_info_msg_update("Insertion of template code is disabled "
                               "while in Live Edit mode");
         return ECORE_CALLBACK_DONE;
      }
-#endif
+
    if (!strcmp(key, "a") || !strcmp(key, "A"))
      part_type = EDJE_PART_TYPE_TABLE;
    else if (!strcmp(key, "b") || !strcmp(key, "B"))
@@ -93,9 +93,10 @@ template_insert_patch(app_data *ad, const char *key)
      part_type = EDJE_PART_TYPE_NONE;
 
    char syntax[12];
-   if (enventor_object_template_part_insert(ad->enventor, part_type, REL1_X,
-                                            REL1_Y, REL2_X, REL2_Y, syntax,
-                                            sizeof(syntax)))
+   if (enventor_object_template_part_insert(ad->enventor, part_type,
+                                            ENVENTOR_TEMPLATE_INSERT_DEFAULT,
+                                            REL1_X, REL1_Y, REL2_X, REL2_Y,
+                                            syntax, sizeof(syntax)))
      {
         char msg[64];
         snprintf(msg, sizeof(msg), "Template code inserted, (%s)", syntax);
@@ -535,16 +536,15 @@ dummy_swallow_toggle(app_data *ad)
 static void
 default_template_insert(app_data *ad)
 {
-#if 0
    if (config_live_edit_get())
      {
         stats_info_msg_update("Insertion of template code is disabled "
                               "while in Live Edit mode");
         return;
      }
-#endif
+
    char syntax[12];
-   if (enventor_object_template_insert(ad->enventor, syntax, sizeof(syntax)))
+   if (enventor_object_template_insert(ad->enventor, ENVENTOR_TEMPLATE_INSERT_DEFAULT, syntax, sizeof(syntax)))
      {
         char msg[64];
         snprintf(msg, sizeof(msg), "Template code inserted, (%s)", syntax);
@@ -643,9 +643,7 @@ ctrl_func(app_data *ad, const char *key)
    //Live Edit
    if (!strcmp(key, "e") || !strcmp(key, "E"))
      {
-#if 0
         live_edit_toggle();
-#endif
         return ECORE_CALLBACK_DONE;
      }
 
@@ -799,6 +797,7 @@ init(app_data *ad, int argc, char **argv)
    enventor_setup(ad);
    file_mgr_init(ad->enventor);
    tools_set(ad->enventor);
+   live_edit_init(ad->enventor);
 
    base_gui_show();
 
@@ -816,9 +815,7 @@ static void
 term(app_data *ad EINA_UNUSED)
 {
    menu_term();
-#if 0
    live_edit_term();
-#endif
    stats_term();
    base_gui_term();
    file_mgr_term();

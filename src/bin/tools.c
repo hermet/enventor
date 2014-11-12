@@ -87,13 +87,12 @@ console_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 {
    base_console_toggle();
 }
-#if 0
+
 static void
 live_edit_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    live_edit_toggle();
 }
-#endif
 
 static Evas_Object *
 tools_btn_create(Evas_Object *parent, const char *icon, const char *label,
@@ -146,12 +145,12 @@ tools_create(Evas_Object *parent, Evas_Object *enventor)
    evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
    elm_box_pack_end(box, btn);
-/*
+
    btn = tools_btn_create(box, "live_edit", "LiveEdit", live_edit_cb, NULL);
    evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
    elm_box_pack_end(box, btn);
-*/
+
    sp = elm_separator_add(box);
    evas_object_show(sp);
    elm_box_pack_end(box, sp);

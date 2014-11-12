@@ -27,6 +27,11 @@ typedef struct
    Eina_Bool self_changed : 1;
 } Enventor_EDC_Modified;
 
+typedef enum {
+   ENVENTOR_TEMPLATE_INSERT_DEFAULT,
+   ENVENTOR_TEMPLATE_INSERT_LIVE_EDIT
+} Enventor_Template_Insert_Type;
+
 EAPI int enventor_init(int argc, char **argv);
 EAPI int enventor_shutdown(void);
 EAPI Evas_Object *enventor_object_add(Evas_Object *parent);

@@ -7,7 +7,7 @@
 #include <Elementary_Cursor.h>
 #include <Enventor.h>
 #include "common.h"
-#if 0
+
 typedef struct menu_data_s
 {
    const char *name;
@@ -199,16 +199,15 @@ key_down_cb(void *data, int type EINA_UNUSED, void *ev)
 
    if (!strcmp(event->key, "Return"))
      {
-#if 0
-        template_part_insert(ld->ed,
-                             MENU_ITEMS[ld->cur_part_data->type].type,
-                             TEMPLATE_INSERT_LIVE_EDIT,
-                             ld->cur_part_data->rel1_x,
-                             ld->cur_part_data->rel1_y,
-                             ld->cur_part_data->rel2_x,
-                             ld->cur_part_data->rel2_y,
-                             view_group_name_get(VIEW_DATA));
-#endif
+        enventor_object_template_part_insert(ld->enventor,
+                                             MENU_ITEMS[ld->cur_part_data->type].type,
+                                             ENVENTOR_TEMPLATE_INSERT_LIVE_EDIT,
+                                             ld->cur_part_data->rel1_x,
+                                             ld->cur_part_data->rel1_y,
+                                             ld->cur_part_data->rel2_x,
+                                             ld->cur_part_data->rel2_y,
+                                             NULL, 0);
+        enventor_object_save(ld->enventor, config_edc_path_get());
      }
    else if (strcmp(event->key, "Delete")) return EINA_TRUE;
 
@@ -308,9 +307,9 @@ live_edit_toggle(void)
 {
    live_data *ld = g_ld;
    Eina_Bool on = !config_live_edit_get();
-   Evas_Object *event_obj = view_obj_get(VIEW_DATA);
+   Evas_Object *event_obj = enventor_object_live_view_get(ld->enventor);
    if (!event_obj) return;
-#if 0
+
    if (on)
      {
         evas_object_event_callback_add(event_obj, EVAS_CALLBACK_MOUSE_UP,
@@ -328,7 +327,6 @@ live_edit_toggle(void)
    else stats_info_msg_update("Live View Edit Mode Disabled.");
 
    config_live_edit_set(on);
-#endif
 }
 
 void
@@ -373,5 +371,3 @@ live_edit_term()
    free(ld);
    g_ld = NULL;
 }
-
-#endif

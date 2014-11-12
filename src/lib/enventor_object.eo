@@ -358,6 +358,7 @@ class Enventor.Object (Elm_Widget, Efl.File) {
          @ingroup Enventor */
          return: Eina_Bool;
          params {
+            @in Enventor_Template_Insert_Type insert_type; /*@ ... */
             @in char *syntax; /*@ ... */
             @in size_t n;
          }
@@ -372,6 +373,7 @@ class Enventor.Object (Elm_Widget, Efl.File) {
          return: Eina_Bool;
          params {
             @in Edje_Part_Type type; /*@ ... */
+            @in Enventor_Template_Insert_Type insert_type; /*@ ... */
             @in float rel1_x; /*@ ... */
             @in float rel1_y; /*@ ... */
             @in float rel2_x; /*@ ... */
@@ -394,6 +396,16 @@ class Enventor.Object (Elm_Widget, Efl.File) {
          @warning
          @see
          @ingroup Enventor */
+      }
+      disabled_set {
+         /*@
+         @brief
+         @warning
+         @see
+         @ingroup Enventor */
+         params {
+            @in Eina_Bool disabled; /*@ ... */
+         }
       }
    }
    implements {

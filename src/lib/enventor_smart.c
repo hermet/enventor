@@ -496,20 +496,30 @@ _enventor_object_live_view_get(Eo *obj EINA_UNUSED,
 
 EOLIAN static Eina_Bool
 _enventor_object_template_insert(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd,
+                                 Enventor_Template_Insert_Type insert_type,
                                  char *syntax, size_t n)
 {
-   return template_insert(pd->ed, TEMPLATE_INSERT_DEFAULT, syntax, n);
+   return template_insert(pd->ed, insert_type, syntax, n);
 }
 
 EOLIAN static Eina_Bool
 _enventor_object_template_part_insert(Eo *obj EINA_UNUSED,
                                       Enventor_Object_Data *pd,
-                                      Edje_Part_Type part, float rel1_x,
-                                      float rel1_y, float rel2_x, float rel2_y,
-                                      char *syntax, size_t n)
+                                      Edje_Part_Type part,
+                                      Enventor_Template_Insert_Type insert_type,
+                                      float rel1_x, float rel1_y, float rel2_x,
+                                      float rel2_y, char *syntax, size_t n)
 {
-   return template_part_insert(pd->ed, part, TEMPLATE_INSERT_DEFAULT, rel1_x,
-                              rel1_y, rel2_x, rel2_y, NULL, syntax, n);
+   return template_part_insert(pd->ed, part, insert_type, rel1_x, rel1_y, rel2_x,
+                               rel2_y, NULL, syntax, n);
+}
+
+EOLIAN static void
+_enventor_object_disabled_set(Eo *obj EINA_UNUSED,
+                              Enventor_Object_Data *pd,
+                              Eina_Bool disabled)
+{
+   edit_disabled_set(pd->ed, disabled);
 }
 
 

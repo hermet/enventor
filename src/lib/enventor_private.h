@@ -57,12 +57,6 @@ struct attr_value_s
    Eina_Bool program : 1;
 };
 
-typedef enum {
-   TEMPLATE_INSERT_DEFAULT,
-   TEMPLATE_INSERT_LIVE_EDIT
-} Template_Insert_Type;
-
-
 /* auto_comp */
 void autocomp_init(void);
 void autocomp_term(void);
@@ -178,8 +172,8 @@ void view_string_list_free(Eina_List *list);
 
 
 /* template */
-Eina_Bool template_part_insert(edit_data *ed, Edje_Part_Type part_type, Template_Insert_Type insert_type, float rel1_x, float rel1_y, float rel2_x, float rel2_y, const Eina_Stringshare *group_name, char *syntax, size_t n);
-Eina_Bool template_insert(edit_data *ed, Template_Insert_Type insert_type, char *syntax, size_t n);
+Eina_Bool template_part_insert(edit_data *ed, Edje_Part_Type part_type, Enventor_Template_Insert_Type insert_type, float rel1_x, float rel1_y, float rel2_x, float rel2_y, const Eina_Stringshare *group_name, char *syntax, size_t n);
+Eina_Bool template_insert(edit_data *ed, Enventor_Template_Insert_Type insert_type, char *syntax, size_t n);
 
 
 /* ctxpopup */

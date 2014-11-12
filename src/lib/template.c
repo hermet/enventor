@@ -37,7 +37,7 @@ image_description_add(edit_data *ed)
    if (images_block)
       {
          elm_entry_cursor_pos_set(edit_entry, cursor_pos);
-         template_insert(ed, TEMPLATE_INSERT_LIVE_EDIT, NULL, 0);
+         template_insert(ed, ENVENTOR_TEMPLATE_INSERT_LIVE_EDIT, NULL, 0);
       }
    else
       {
@@ -89,12 +89,12 @@ textblock_style_add(edit_data *ed, const char *style_name)
 
 static int
 template_part_insert_cursor_pos_set(edit_data *ed,
-                                    Template_Insert_Type insert_type,
+                                    Enventor_Template_Insert_Type insert_type,
                                     const Eina_Stringshare *group_name)
 {
    int cursor_pos = -1;
    Evas_Object *edit_entry = edit_entry_get(ed);
-   if (insert_type == TEMPLATE_INSERT_LIVE_EDIT)
+   if (insert_type == ENVENTOR_TEMPLATE_INSERT_LIVE_EDIT)
      {
         cursor_pos = parser_end_of_parts_block_pos_get(edit_entry, group_name);
         if (cursor_pos != -1)
@@ -114,11 +114,15 @@ template_part_insert_cursor_pos_set(edit_data *ed,
 
 Eina_Bool
 template_part_insert(edit_data *ed, Edje_Part_Type part_type,
-                     Template_Insert_Type insert_type, float rel1_x,
+                     Enventor_Template_Insert_Type insert_type, float rel1_x,
                      float rel1_y, float rel2_x, float rel2_y,
                      const Eina_Stringshare *group_name, char *syntax, size_t n)
 {
    Evas_Object *edit_entry = edit_entry_get(ed);
+
+   if (insert_type == ENVENTOR_TEMPLATE_INSERT_LIVE_EDIT)
+     group_name = view_group_name_get(VIEW_DATA);
+
    int cursor_pos = template_part_insert_cursor_pos_set(ed, insert_type,
                                                         group_name);
    if (cursor_pos == -1) return EINA_FALSE;
@@ -221,14 +225,14 @@ template_part_insert(edit_data *ed, Edje_Part_Type part_type,
      }
 
    //add new line only in live edit mode
-   if (insert_type == TEMPLATE_INSERT_LIVE_EDIT)
+   if (insert_type == ENVENTOR_TEMPLATE_INSERT_LIVE_EDIT)
      elm_entry_entry_insert(edit_entry, "<br/>");
 
    /* Increase (part name + body + relatives + tail) line. But line increase
       count should be -1 in entry template insertion because the
       cursor position would be taken one line additionally. */
    int line_inc = 1 + line_cnt + 2 + TEMPLATE_PART_TALE_LINE_CNT;
-   if (insert_type == TEMPLATE_INSERT_DEFAULT) line_inc--;
+   if (insert_type == ENVENTOR_TEMPLATE_INSERT_DEFAULT) line_inc--;
    edit_line_increase(ed, line_inc);
 
    int cursor_pos2 = elm_entry_cursor_pos_get(edit_entry);
@@ -236,7 +240,7 @@ template_part_insert(edit_data *ed, Edje_Part_Type part_type,
 
    elm_entry_cursor_pos_set(edit_entry, cursor_pos);
 
-   if (insert_type == TEMPLATE_INSERT_LIVE_EDIT)
+   if (insert_type == ENVENTOR_TEMPLATE_INSERT_LIVE_EDIT)
      {
         if (part_type == EDJE_PART_TYPE_IMAGE)
           image_description_add(ed);
@@ -250,7 +254,8 @@ template_part_insert(edit_data *ed, Edje_Part_Type part_type,
 }
 
 Eina_Bool
-template_insert(edit_data *ed, Template_Insert_Type insert_type, char *syntax, size_t n)
+template_insert(edit_data *ed, Enventor_Template_Insert_Type insert_type,
+                char *syntax, size_t n)
 {
    Evas_Object *entry = edit_entry_get(ed);
    Eina_Stringshare *paragh = edit_cur_paragh_get(ed);
@@ -260,7 +265,7 @@ template_insert(edit_data *ed, Template_Insert_Type insert_type, char *syntax, s
    if (!strcmp(paragh, "parts"))
      {
         ret = template_part_insert(ed, EDJE_PART_TYPE_IMAGE,
-                                   TEMPLATE_INSERT_DEFAULT,
+                                   ENVENTOR_TEMPLATE_INSERT_DEFAULT,
                                    REL1_X, REL1_Y, REL2_X, REL2_Y, NULL, syntax,
                                    n);
         goto end;
@@ -317,7 +322,7 @@ template_insert(edit_data *ed, Template_Insert_Type insert_type, char *syntax, s
 
    /* Line increase count should be -1 in entry template insertion because the
       cursor position would be taken one line additionally. */
-   if (insert_type == TEMPLATE_INSERT_DEFAULT) line_cnt--;
+   if (insert_type == ENVENTOR_TEMPLATE_INSERT_DEFAULT) line_cnt--;
    edit_line_increase(ed, line_cnt);
 
    int cursor_pos2 = elm_entry_cursor_pos_get(entry);
