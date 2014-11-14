@@ -353,8 +353,8 @@ static void
 enventor_cursor_line_changed_cb(void *data EINA_UNUSED, Evas_Object *obj,
                                 void *event_info)
 {
-   int linenumber = (int) event_info;
-   stats_line_num_update(linenumber, enventor_object_max_line_get(obj));
+   Enventor_Cursor_Line *cur_line = (Enventor_Cursor_Line *)event_info;
+   stats_line_num_update(cur_line->line, enventor_object_max_line_get(obj));
 }
 
 static void

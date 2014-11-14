@@ -24,6 +24,16 @@ typedef struct
 
 typedef struct
 {
+   int line;
+} Enventor_Cursor_Line;
+
+typedef struct
+{
+   int line;
+} Enventor_Max_Line;
+
+typedef struct
+{
    Eina_Bool self_changed : 1;
 } Enventor_EDC_Modified;
 

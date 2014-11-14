@@ -534,8 +534,10 @@ cur_line_pos_set(edit_data *ed, Eina_Bool force)
    if (!force && (ed->cur_line == line)) return;
    ed->cur_line = line;
 
+   Enventor_Cursor_Line cur_line;
+   cur_line.line = line;
    evas_object_smart_callback_call(ed->enventor, SIG_CURSOR_LINE_CHANGED,
-                                   (void *)line);
+                                   &cur_line);
 }
 
 void
@@ -785,8 +787,10 @@ err:
    if (utf8_edit) eina_file_map_free(file, utf8_edit);
    if (file) eina_file_close(file);
 
+   Enventor_Max_Line max_line;
+   max_line.line = ed->line_max;
    evas_object_smart_callback_call(ed->enventor, SIG_MAX_LINE_CHANGED,
-                                   (void *)ed->line_max);
+                                   &max_line);
 
    if (ed->view_sync_cb)
      ed->view_sync_cb(ed->view_sync_cb_data, NULL, group_name);
@@ -1214,8 +1218,10 @@ edit_line_increase(edit_data *ed, int cnt)
      }
    elm_entry_calc_force(ed->en_line);
 
+   Enventor_Max_Line max_line;
+   max_line.line = ed->line_max;
    evas_object_smart_callback_call(ed->enventor, SIG_MAX_LINE_CHANGED,
-                                   (void *)ed->line_max);
+                                   &max_line);
 }
 
 void
@@ -1246,8 +1252,10 @@ edit_line_decrease(edit_data *ed, int cnt)
 
    if (ed->line_max < 1) line_init(ed);
 
+   Enventor_Max_Line max_line;
+   max_line.line = ed->line_max;
    evas_object_smart_callback_call(ed->enventor, SIG_MAX_LINE_CHANGED,
-                                   (void *)ed->line_max);
+                                   &max_line);
 }
 
 void
