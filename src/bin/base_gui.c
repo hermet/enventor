@@ -28,6 +28,15 @@ win_focused_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
    goto_close();
 }
 
+static void
+win_resize_cb(void *data EINA_UNUSED, Evas *o EINA_UNUSED, Evas_Object *obj,
+              void *event_info EINA_UNUSED)
+{
+   Evas_Coord w, h;
+   evas_object_geometry_get(obj, NULL, NULL, &w, &h);
+   config_win_size_set(w, h);
+}
+
 /*****************************************************************************/
 /* Externally accessible calls                                               */
 /*****************************************************************************/
@@ -176,6 +185,13 @@ base_gui_init(void)
    Evas_Object *win = elm_win_util_standard_add(elm_app_name_get(),
                                                 "Enventor");
    elm_win_focus_highlight_enabled_set(win, EINA_TRUE);
+
+   Evas_Coord w, h;
+   config_win_size_get(&w, &h);
+   if ((w > 0) && (w > 0))
+     evas_object_resize(win, w, h);
+
+   evas_object_event_callback_add(win, EVAS_CALLBACK_RESIZE, win_resize_cb, NULL);
    evas_object_smart_callback_add(win, "delete,request", win_delete_request_cb,
                                   NULL);
    evas_object_smart_callback_add(win, "focused", win_focused_cb, NULL);

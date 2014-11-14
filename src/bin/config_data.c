@@ -22,6 +22,7 @@ typedef struct config_s
    void (*update_cb)(void *data);
    void *update_cb_data;
    Evas_Coord_Size view_size;
+   Evas_Coord win_size_w, win_size_h;
 
    Eina_Bool stats_bar;
    Eina_Bool linenumber;
@@ -209,6 +210,10 @@ eddc_init(void)
                                  view_scale, EET_T_DOUBLE);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "console_size",
                                  console_size, EET_T_DOUBLE);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "win_size_w",
+                                 win_size_w, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "win_size_h",
+                                 win_size_h, EET_T_INT);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "stats_bar", stats_bar,
                                  EET_T_UCHAR);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "linenumber",
@@ -699,6 +704,24 @@ config_console_size_set(double size)
 {
    config_data *cd = g_cd;
    cd->console_size = size;
+}
+
+void
+config_win_size_set(Evas_Coord w, Evas_Coord h)
+{
+   config_data *cd = g_cd;
+
+   cd->win_size_w = w;
+   cd->win_size_h = h;
+}
+
+void
+config_win_size_get(Evas_Coord *w, Evas_Coord *h)
+{
+   config_data *cd = g_cd;
+
+   if (w) *w = cd->win_size_w;
+   if (h) *h = cd->win_size_h;
 }
 
 Eina_Bool
