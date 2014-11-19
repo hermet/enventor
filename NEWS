@@ -17,7 +17,7 @@ Improvements:
    * Support "-to" command line option to open template menu at launching.
    * Support multiple Enventor app processes.
    * Improve GUIs.
-   * Generate template parts with radom names.
+   * Generate template parts with random names.
 
 Fixes:
    * Fixed auto completion popup to be shown even if entry cursor is moved up and down.
