@@ -21,7 +21,9 @@ lib_LTLIBRARIES = libenventor.la
 includes_HEADERS = \
    Enventor_Legacy.h \
    Enventor.h \
-   Enventor_Eo.h
+   Enventor_Eo.h \
+   enventor_object.eo.h \
+   enventor_object.eo.legacy.h
 includesdir = $(includedir)/enventor-@ENVENTOR_VERSION_MAJOR@
 
 libenventor_la_SOURCES = \
