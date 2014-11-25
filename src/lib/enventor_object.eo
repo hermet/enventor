@@ -407,6 +407,29 @@ class Enventor.Object (Elm_Widget, Efl.File) {
             @in Eina_Bool disabled; /*@ ... */
          }
       }
+      live_view_size_set {
+         /*@
+         @brief
+         @warning
+         @see
+         @ingroup Enventor */
+         params {
+            @in Evas_Coord w; /*@ ... */
+            @in Evas_Coord h; /*@ ... */
+         }
+      }
+      live_view_size_get {
+         /*@
+         @brief
+         @warning
+         @see
+         @ingroup Enventor */
+         params {
+            @in Evas_Coord *w; /*@ ... */
+            @in Evas_Coord *h; /*@ ... */
+         }
+      }
+
    }
    implements {
       class.constructor;

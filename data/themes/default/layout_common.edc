@@ -11,6 +11,7 @@ images {
    image: "live_rel2_dragable.png" COMP;
    image: "live_bg_glow_in.png" COMP;
    image: "bevel_out.png" COMP;
+   image: "pm_fill.png" COMP;
 }
 
 styles {
@@ -1443,6 +1444,28 @@ group { name: "live_edit_layout";
       }
       program { name: "emit_drag_signal";
          action: SIGNAL_EMIT "drag" "rel2_dragable";
+      }
+   }
+}
+
+group { name: "viewer_layout_bg";
+   parts {
+      part { name: "bg";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            rel1.to: "elm.swallow.content";
+            rel2.to: "elm.swallow.content";
+            image.normal: "pm_fill.png";
+            fill {
+               size.relative: 0 0;
+               size.offset: 64 64;
+            }
+         }
+      }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+         }
       }
    }
 }

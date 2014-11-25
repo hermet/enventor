@@ -13,6 +13,7 @@
 struct viewer_s
 {
    Evas_Object *layout;
+   Evas_Object *base;
    Evas_Object *scroller;
    Evas_Object *event_rect;
    Evas_Object *enventor;
@@ -31,6 +32,9 @@ struct viewer_s
    void (*del_cb)(void *data);
    void *data;
 
+   /* view size configured by application */
+   Evas_Coord_Size view_config_size;
+
    Eina_Bool edj_reload_need : 1;
 };
 
@@ -39,12 +43,20 @@ struct viewer_s
 /*****************************************************************************/
 
 static void
-view_obj_min_update(Evas_Object *obj)
+view_obj_min_update(view_data *vd)
 {
    Evas_Coord w, h;
    double scale = edj_mgr_view_scale_get();
-   edje_object_size_min_calc(obj, &w, &h);
-   evas_object_size_hint_min_set(obj, ((double)w * scale), ((double)h * scale));
+
+   edje_object_size_min_calc(vd->layout, &w, &h);
+
+   if (vd->view_config_size.w > 0)
+     w = vd->view_config_size.w;
+
+   if (vd->view_config_size.h > 0)
+     h = vd->view_config_size.h;
+
+   evas_object_size_hint_min_set(vd->layout, ((double)w * scale), ((double)h * scale));
 }
 
 static Eina_Bool
@@ -66,7 +78,7 @@ file_set_timer_cb(void *data)
         return ECORE_CALLBACK_CANCEL;
      }
 
-   view_obj_min_update(vd->layout);
+   view_obj_min_update(vd);
    edj_mgr_reload_need_set(EINA_TRUE);
 
    return ECORE_CALLBACK_RENEW;
@@ -153,7 +165,7 @@ exe_del_event_cb(void *data, int type EINA_UNUSED, void *event EINA_UNUSED)
         return ECORE_CALLBACK_DONE;
      }
 
-   view_obj_min_update(vd->layout);
+   view_obj_min_update(vd);
    view_part_highlight_set(vd, vd->part_name);
    dummy_obj_update(vd->layout);
 #if 0
@@ -208,14 +220,26 @@ layout_resize_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 {
    static Enventor_Live_View_Size size;
    view_data *vd = data;
-   evas_object_geometry_get(obj, NULL, NULL, &size.w, &size.h);
+   view_size_get(vd, &size.w, &size.h);
    evas_object_smart_callback_call(vd->enventor, SIG_LIVE_VIEW_RESIZED, &size);
+}
+
+static Evas_Object *
+base_create(Evas_Object *parent)
+{
+   Evas_Object *base = elm_layout_add(parent);
+   elm_layout_file_set(base, EDJE_PATH, "viewer_layout_bg");
+   evas_object_size_hint_weight_set(base, EVAS_HINT_EXPAND,
+                                    EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(base, 0.5, 0.5);
+
+   return base;
 }
 
 static Evas_Object *
 view_obj_create(view_data *vd, const char *file_path, const char *group)
 {
-   Evas *e = evas_object_evas_get(vd->scroller);
+   Evas *e = evas_object_evas_get(vd->base);
    Evas_Object *layout = edje_edit_object_add(e);
    if (!edje_object_file_set(layout, file_path, group))
      {
@@ -233,8 +257,6 @@ view_obj_create(view_data *vd, const char *file_path, const char *group)
                                     EVAS_HINT_EXPAND);
    evas_object_event_callback_add(layout, EVAS_CALLBACK_RESIZE,
                                   layout_resize_cb, vd);
-   view_obj_min_update(layout);
-
    return layout;
 }
 
@@ -263,11 +285,17 @@ view_obj_idler_cb(void *data)
 {
    view_data *vd = data;
 
+   vd->base = base_create(vd->scroller);
+
    vd->layout = view_obj_create(vd, build_edj_path_get(), vd->group_name);
+   view_obj_min_update(vd);
    view_scale_set(vd, edj_mgr_view_scale_get());
 
    event_layer_set(vd);
-   elm_object_content_set(vd->scroller, vd->layout);
+
+   elm_object_part_content_set(vd->base, "elm.swallow.content",
+                               vd->layout);
+   elm_object_content_set(vd->scroller, vd->base);
 
    if (eo_do(vd->enventor, enventor_obj_dummy_swallow_get()))
      dummy_obj_new(vd->layout);
@@ -319,6 +347,9 @@ view_init(Evas_Object *enventor, const char *group,
       we check the ECORE_EXE_EVENT_DEL additionally. */
    vd->exe_del_event =
       ecore_event_handler_add(ECORE_EXE_EVENT_DEL, exe_del_event_cb, vd);
+
+   vd->view_config_size.w = 0;
+   vd->view_config_size.h = 0;
 
    return vd;
 }
@@ -437,7 +468,7 @@ view_scale_set(view_data *vd, double scale)
    elm_scroller_region_get(vd->scroller, &sx, &sy, &sw, &sh);
 
    edje_object_scale_set(vd->layout, scale);
-   view_obj_min_update(vd->layout);
+   view_obj_min_update(vd);
 
    //adjust scroller position according to the scale change.
    int minw, minh;
@@ -453,6 +484,34 @@ view_scale_set(view_data *vd, double scale)
 
    elm_scroller_region_show(vd->scroller, ((Evas_Coord) cx) - (sw / 2),
                             ((Evas_Coord) cy) - (sh / 2), sw, sh);
+}
+
+void
+view_size_set(view_data *vd, Evas_Coord w, Evas_Coord h)
+{
+   double scale = edj_mgr_view_scale_get();
+
+   vd->view_config_size.w = w;
+   vd->view_config_size.h = h;
+
+   evas_object_size_hint_min_set(vd->layout, ((double)w * scale),
+                                 ((double)h * scale));
+   evas_object_size_hint_max_set(vd->layout, ((double)w * scale),
+                                 ((double)h * scale));
+}
+
+void
+view_size_get(view_data *vd, Evas_Coord *w, Evas_Coord *h)
+{
+   if (!w || !h) return;
+
+   evas_object_geometry_get(vd->layout, NULL , NULL, w, h);
+
+   if (vd->view_config_size.w > 0)
+     *w = vd->view_config_size.w;
+
+   if (vd->view_config_size.h > 0)
+     *h = vd->view_config_size.h;
 }
 
 Eina_List *

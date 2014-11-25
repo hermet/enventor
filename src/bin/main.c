@@ -136,6 +136,16 @@ config_update_cb(void *data)
    enventor_object_part_highlight_set(enventor, config_part_highlight_get());
    enventor_object_live_view_scale_set(enventor, config_view_scale_get());
 
+   Evas_Coord w, h;
+   if (config_view_size_configurable_get())
+     config_view_size_get(&w, &h);
+   else
+     {
+        w = 0;
+        h = 0;
+     }
+   enventor_object_live_view_size_set(enventor, w, h);
+
    base_tools_toggle(EINA_FALSE);
    base_statusbar_toggle(EINA_FALSE);
 

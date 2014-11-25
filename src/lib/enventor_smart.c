@@ -310,6 +310,22 @@ _enventor_object_live_view_scale_set(Eo *obj EINA_UNUSED,
    edj_mgr_view_scale_set(scale);
 }
 
+EOLIAN static void
+_enventor_object_live_view_size_set(Eo *obj EINA_UNUSED,
+                                    Enventor_Object_Data *pd EINA_UNUSED,
+                                    Evas_Coord w, Evas_Coord h)
+{
+   view_size_set(VIEW_DATA, w, h);
+}
+
+EOLIAN static void
+_enventor_object_live_view_size_get(Eo *obj EINA_UNUSED,
+                                    Enventor_Object_Data *pd EINA_UNUSED,
+                                    Evas_Coord *w, Evas_Coord *h)
+{
+   view_size_get(VIEW_DATA, w, h);
+}
+
 EOLIAN static double
 _enventor_object_live_view_scale_get(Eo *obj EINA_UNUSED,
                                      Enventor_Object_Data *pd EINA_UNUSED)

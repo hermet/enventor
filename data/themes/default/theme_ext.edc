@@ -886,7 +886,6 @@ group { name: "elm/ctxpopup/bg/enventor";
 group { name: "elm/panes/vertical/enventor";
    images.image: "downlight_glow_left.png" COMP;
    images.image: "downlight_glow_right.png" COMP;
-   images.image: "pm_fill.png" COMP;
    parts {
       part { name: "whole"; type: SPACER;
          description { state: "default" 0.0;
@@ -910,15 +909,11 @@ group { name: "elm/panes/vertical/enventor";
             max: 0 0;
          }
       }
-      part { name: "left_bg"; type: IMAGE;
+      part { name: "left_bg"; type: RECT;
          description { state: "default" 0.0;
             rel1.to: "elm.swallow.left";
             rel2.to: "elm.swallow.left";
-            image.normal: "pm_fill.png";
-            fill {
-               size.relative: 0 0;
-               size.offset: 64 64;
-            }
+            color: 0 0 0 175;
          }
       }
       part { name: "right_bg"; type: RECT;

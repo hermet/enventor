@@ -18,6 +18,10 @@ struct setting_s
    Evas_Object *toggle_swallow;
    Evas_Object *toggle_indent;
    Evas_Object *toggle_autocomp;
+
+   Evas_Object *view_size_w_entry;
+   Evas_Object *view_size_h_entry;
+   Evas_Object *toggle_view_size;
 };
 
 typedef struct setting_s setting_data;
@@ -113,6 +117,11 @@ setting_apply_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
    config_dummy_swallow_set(elm_check_state_get(sd->toggle_swallow));
    config_auto_indent_set(elm_check_state_get(sd->toggle_indent));
    config_auto_complete_set(elm_check_state_get(sd->toggle_autocomp));
+   config_view_size_configurable_set(elm_check_state_get(sd->toggle_view_size));
+
+   Evas_Coord w = (Evas_Coord)atoi(elm_entry_entry_get(sd->view_size_w_entry));
+   Evas_Coord h = (Evas_Coord)atoi(elm_entry_entry_get(sd->view_size_h_entry));
+   config_view_size_set(w, h);
 
    config_apply();
 
@@ -178,9 +187,22 @@ toggle_create(Evas_Object *parent, const char *text, Eina_Bool state)
    return toggle;
 }
 
+static void
+toggle_view_size_changed_cb(void *data, Evas_Object *obj,
+                            void *event_info EINA_UNUSED)
+{
+   setting_data *sd = data;
+   Eina_Bool toggle_on = elm_check_state_get(obj);
+
+   elm_object_disabled_set(sd->view_size_w_entry, !toggle_on);
+   elm_object_disabled_set(sd->view_size_h_entry, !toggle_on);
+}
+
 void
 setting_open(void)
 {
+   static Elm_Entry_Filter_Accept_Set digits_filter_data;
+   static Elm_Entry_Filter_Limit_Size limit_filter_data;
    setting_data *sd = g_sd;
    if (sd) return;
 
@@ -352,6 +374,83 @@ setting_open(void)
                                 config_auto_indent_get());
    elm_box_pack_end(box2, toggle_indent);
 
+
+   //View Size
+   box3 = elm_box_add(box2);
+   elm_box_horizontal_set(box3, EINA_TRUE);
+   evas_object_size_hint_weight_set(box3, EVAS_HINT_EXPAND, 0);
+   evas_object_size_hint_align_set(box3, EVAS_HINT_FILL, 0);
+   evas_object_show(box3);
+
+   elm_box_pack_end(box2, box3);
+
+   //Entry (Live View Size)
+   Evas_Object *view_size_guide = entry_create(box3);
+   elm_object_text_set(view_size_guide, "Live View Size");
+   elm_entry_scrollable_set(view_size_guide, EINA_FALSE);
+   elm_entry_editable_set(view_size_guide, EINA_FALSE);
+   elm_box_pack_end(box3, view_size_guide);
+
+   Evas_Coord w, h;
+   char w_str[5], h_str[5];
+   config_view_size_get(&w, &h);
+   snprintf(w_str, sizeof(w_str), "%d", w);
+   snprintf(h_str, sizeof(h_str), "%d", h);
+
+   //Entry (View Width)
+   Evas_Object *view_size_w_entry = entry_create(box3);
+   evas_object_size_hint_weight_set(view_size_w_entry, EVAS_HINT_EXPAND, 0);
+   evas_object_size_hint_align_set(view_size_w_entry, EVAS_HINT_FILL, 0);
+
+   digits_filter_data.accepted = "0123456789";
+   digits_filter_data.rejected = NULL;
+   elm_entry_markup_filter_append(view_size_w_entry,
+                                  elm_entry_filter_accept_set,
+                                  &digits_filter_data);
+   limit_filter_data.max_char_count = 4;
+   limit_filter_data.max_byte_count = 0;
+   elm_entry_markup_filter_append(view_size_w_entry,
+                                  elm_entry_filter_limit_size,
+                                  &limit_filter_data);
+
+   elm_object_text_set(view_size_w_entry, w_str);
+   elm_object_disabled_set(view_size_w_entry,
+                           !config_view_size_configurable_get());
+   elm_box_pack_end(box3, view_size_w_entry);
+
+   //Entry (X)
+   view_size_guide = entry_create(box3);
+   elm_object_text_set(view_size_guide, "X");
+   elm_entry_scrollable_set(view_size_guide, EINA_FALSE);
+   elm_entry_editable_set(view_size_guide, EINA_FALSE);
+   elm_box_pack_end(box3, view_size_guide);
+
+   //Entry (View Height)
+   Evas_Object *view_size_h_entry = entry_create(box3);
+   evas_object_size_hint_weight_set(view_size_h_entry, EVAS_HINT_EXPAND, 0);
+   evas_object_size_hint_align_set(view_size_h_entry, EVAS_HINT_FILL, 0);
+
+   elm_entry_markup_filter_append(view_size_h_entry,
+                                  elm_entry_filter_accept_set,
+                                  &digits_filter_data);
+   elm_entry_markup_filter_append(view_size_h_entry,
+                                  elm_entry_filter_limit_size,
+                                  &limit_filter_data);
+
+   elm_object_text_set(view_size_h_entry, h_str);
+   elm_object_disabled_set(view_size_h_entry,
+                           !config_view_size_configurable_get());
+   elm_box_pack_end(box3, view_size_h_entry);
+
+   //Toggle (View Size)
+   Evas_Object *toggle_view_size;
+   toggle_view_size = toggle_create(box3, NULL,
+                                    config_view_size_configurable_get());
+   evas_object_smart_callback_add(toggle_view_size, "changed",
+                                  toggle_view_size_changed_cb, sd);
+   elm_box_pack_end(box3, toggle_view_size);
+
+
    Evas_Object *btn;
 
    //Apply Button
@@ -387,6 +486,9 @@ setting_open(void)
    sd->toggle_swallow = toggle_swallow;
    sd->toggle_indent = toggle_indent;
    sd->toggle_autocomp = toggle_autocomp;
+   sd->view_size_w_entry = view_size_w_entry;
+   sd->view_size_h_entry = view_size_h_entry;
+   sd->toggle_view_size = toggle_view_size;
 
    menu_activate_request();
 }

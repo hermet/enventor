@@ -28,6 +28,8 @@ void config_apply(void);
 void config_edc_path_set(const char *edc_path);
 void config_view_size_get(Evas_Coord *w, Evas_Coord *h);
 void config_view_size_set(Evas_Coord w, Evas_Coord h);
+Eina_Bool config_view_size_configurable_get(void);
+void config_view_size_configurable_set(Eina_Bool configurable);
 Eina_Bool config_part_highlight_get(void);
 void config_part_highlight_set(Eina_Bool highlight);
 Eina_Bool config_dummy_swallow_get(void);

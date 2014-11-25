@@ -32,6 +32,7 @@ typedef struct config_s
    Eina_Bool tools;
    Eina_Bool auto_complete;
    Eina_Bool live_edit;
+   Eina_Bool view_size_configurable;
 } config_data;
 
 static config_data *g_cd = NULL;
@@ -149,6 +150,7 @@ config_load(void)
         cd->tools = EINA_TRUE;
         cd->auto_complete = EINA_TRUE;
         cd->live_edit = EINA_FALSE;
+        cd->view_size_configurable = EINA_FALSE;
      }
 
    g_cd = cd;
@@ -690,6 +692,20 @@ config_view_size_get(Evas_Coord *w, Evas_Coord *h)
 
    if (w) *w = cd->view_size.w;
    if (h) *h = cd->view_size.h;
+}
+
+void
+config_view_size_configurable_set(Eina_Bool configurable)
+{
+   config_data *cd = g_cd;
+   cd->view_size_configurable = configurable;
+}
+
+Eina_Bool
+config_view_size_configurable_get(void)
+{
+   config_data *cd = g_cd;
+   return cd->view_size_configurable;
 }
 
 double
