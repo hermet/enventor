@@ -440,7 +440,7 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    eina_inarray_push(td->attrs, &attr);
 
    memset(&attr, 0x00, sizeof(parser_attr));
-   attr.keyword = eina_stringshare_add("align");
+   attr.keyword = eina_stringshare_add("align:");
    attr.value.min = 0.0;
    attr.value.max = 1.0;
    attr.value.type = ATTR_VALUE_FLOAT;
