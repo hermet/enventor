@@ -300,25 +300,25 @@ setting_open(void)
 
    elm_box_pack_end(box3, slider_font);
 
-   //Toggle (Tools)
-   Evas_Object *toggle_tools = toggle_create(box2, "Tools",
-                                             config_tools_get());
-   elm_box_pack_end(box2, toggle_tools);
-
    //Toggle (Line Number)
    Evas_Object *toggle_linenum = toggle_create(box2, "Line Number",
                                                config_linenumber_get());
    elm_box_pack_end(box2, toggle_linenum);
 
-   //Toggle (Dummy Swallow)
-   Evas_Object *toggle_swallow = toggle_create(box2, "Dummy Swallow",
-                                 config_dummy_swallow_get());
-   elm_box_pack_end(box2, toggle_swallow);
+   //Toggle (Auto Indentation)
+   Evas_Object *toggle_indent = toggle_create(box2, "Auto Indentation",
+                                config_auto_indent_get());
+   elm_box_pack_end(box2, toggle_indent);
 
    //Toggle (Auto Complete)
    Evas_Object *toggle_autocomp = toggle_create(box2, "Auto Completion",
                                   config_auto_complete_get());
    elm_box_pack_end(box2, toggle_autocomp);
+
+   //Toggle (Tools)
+   Evas_Object *toggle_tools = toggle_create(box2, "Tools",
+                                             config_tools_get());
+   elm_box_pack_end(box2, toggle_tools);
 
    Evas_Object *separator = elm_separator_add(box);
    evas_object_show(separator);
@@ -357,24 +357,6 @@ setting_open(void)
 
    elm_box_pack_end(box3, slider_view);
 
-   //Toggle (Status)
-   Evas_Object *toggle_stats = toggle_create(box2, "Status",
-                                             config_stats_bar_get());
-   elm_box_pack_end(box2, toggle_stats);
-
-
-   //Toggle (Part Highlighting)
-   Evas_Object *toggle_highlight = toggle_create(box2, "Part Highlighting",
-                                   config_part_highlight_get());
-   elm_box_pack_end(box2, toggle_highlight);
-
-
-   //Toggle (Auto Indentation)
-   Evas_Object *toggle_indent = toggle_create(box2, "Auto Indentation",
-                                config_auto_indent_get());
-   elm_box_pack_end(box2, toggle_indent);
-
-
    //View Size
    box3 = elm_box_add(box2);
    elm_box_horizontal_set(box3, EINA_TRUE);
@@ -384,12 +366,12 @@ setting_open(void)
 
    elm_box_pack_end(box2, box3);
 
-   //Entry (Live View Size)
-   Evas_Object *view_size_guide = entry_create(box3);
-   elm_object_text_set(view_size_guide, "Live View Size");
-   elm_entry_scrollable_set(view_size_guide, EINA_FALSE);
-   elm_entry_editable_set(view_size_guide, EINA_FALSE);
-   elm_box_pack_end(box3, view_size_guide);
+   //Entry (View Size)
+   Evas_Object *entry_view_size = entry_create(box3);
+   elm_object_text_set(entry_view_size, "View Size");
+   elm_entry_scrollable_set(entry_view_size, EINA_FALSE);
+   elm_entry_editable_set(entry_view_size, EINA_FALSE);
+   elm_box_pack_end(box3, entry_view_size);
 
    Evas_Coord w, h;
    char w_str[5], h_str[5];
@@ -398,49 +380,49 @@ setting_open(void)
    snprintf(h_str, sizeof(h_str), "%d", h);
 
    //Entry (View Width)
-   Evas_Object *view_size_w_entry = entry_create(box3);
-   evas_object_size_hint_weight_set(view_size_w_entry, EVAS_HINT_EXPAND, 0);
-   evas_object_size_hint_align_set(view_size_w_entry, EVAS_HINT_FILL, 0);
+   Evas_Object *entry_view_size_w = entry_create(box3);
+   evas_object_size_hint_weight_set(entry_view_size_w, EVAS_HINT_EXPAND, 0);
+   evas_object_size_hint_align_set(entry_view_size_w, EVAS_HINT_FILL, 0);
 
    digits_filter_data.accepted = "0123456789";
    digits_filter_data.rejected = NULL;
-   elm_entry_markup_filter_append(view_size_w_entry,
+   elm_entry_markup_filter_append(entry_view_size_w,
                                   elm_entry_filter_accept_set,
                                   &digits_filter_data);
    limit_filter_data.max_char_count = 4;
    limit_filter_data.max_byte_count = 0;
-   elm_entry_markup_filter_append(view_size_w_entry,
+   elm_entry_markup_filter_append(entry_view_size_w,
                                   elm_entry_filter_limit_size,
                                   &limit_filter_data);
 
-   elm_object_text_set(view_size_w_entry, w_str);
-   elm_object_disabled_set(view_size_w_entry,
+   elm_object_text_set(entry_view_size_w, w_str);
+   elm_object_disabled_set(entry_view_size_w,
                            !config_view_size_configurable_get());
-   elm_box_pack_end(box3, view_size_w_entry);
+   elm_box_pack_end(box3, entry_view_size_w);
 
    //Entry (X)
-   view_size_guide = entry_create(box3);
-   elm_object_text_set(view_size_guide, "X");
-   elm_entry_scrollable_set(view_size_guide, EINA_FALSE);
-   elm_entry_editable_set(view_size_guide, EINA_FALSE);
-   elm_box_pack_end(box3, view_size_guide);
+   Evas_Object *entry_view_size_x = entry_create(box3);
+   elm_object_text_set(entry_view_size_x, "X");
+   elm_entry_scrollable_set(entry_view_size_x, EINA_FALSE);
+   elm_entry_editable_set(entry_view_size_x, EINA_FALSE);
+   elm_box_pack_end(box3, entry_view_size_x);
 
    //Entry (View Height)
-   Evas_Object *view_size_h_entry = entry_create(box3);
-   evas_object_size_hint_weight_set(view_size_h_entry, EVAS_HINT_EXPAND, 0);
-   evas_object_size_hint_align_set(view_size_h_entry, EVAS_HINT_FILL, 0);
+   Evas_Object *entry_view_size_h = entry_create(box3);
+   evas_object_size_hint_weight_set(entry_view_size_h, EVAS_HINT_EXPAND, 0);
+   evas_object_size_hint_align_set(entry_view_size_h, EVAS_HINT_FILL, 0);
 
-   elm_entry_markup_filter_append(view_size_h_entry,
+   elm_entry_markup_filter_append(entry_view_size_h,
                                   elm_entry_filter_accept_set,
                                   &digits_filter_data);
-   elm_entry_markup_filter_append(view_size_h_entry,
+   elm_entry_markup_filter_append(entry_view_size_h,
                                   elm_entry_filter_limit_size,
                                   &limit_filter_data);
 
-   elm_object_text_set(view_size_h_entry, h_str);
-   elm_object_disabled_set(view_size_h_entry,
+   elm_object_text_set(entry_view_size_h, h_str);
+   elm_object_disabled_set(entry_view_size_h,
                            !config_view_size_configurable_get());
-   elm_box_pack_end(box3, view_size_h_entry);
+   elm_box_pack_end(box3, entry_view_size_h);
 
    //Toggle (View Size)
    Evas_Object *toggle_view_size;
@@ -450,6 +432,20 @@ setting_open(void)
                                   toggle_view_size_changed_cb, sd);
    elm_box_pack_end(box3, toggle_view_size);
 
+   //Toggle (Part Highlighting)
+   Evas_Object *toggle_highlight = toggle_create(box2, "Part Highlighting",
+                                   config_part_highlight_get());
+   elm_box_pack_end(box2, toggle_highlight);
+
+   //Toggle (Dummy Swallow)
+   Evas_Object *toggle_swallow = toggle_create(box2, "Dummy Swallow",
+                                 config_dummy_swallow_get());
+   elm_box_pack_end(box2, toggle_swallow);
+
+   //Toggle (Status)
+   Evas_Object *toggle_stats = toggle_create(box2, "Status",
+                                             config_stats_bar_get());
+   elm_box_pack_end(box2, toggle_stats);
 
    Evas_Object *btn;
 
@@ -486,8 +482,8 @@ setting_open(void)
    sd->toggle_swallow = toggle_swallow;
    sd->toggle_indent = toggle_indent;
    sd->toggle_autocomp = toggle_autocomp;
-   sd->view_size_w_entry = view_size_w_entry;
-   sd->view_size_h_entry = view_size_h_entry;
+   sd->view_size_w_entry = entry_view_size_w;
+   sd->view_size_h_entry = entry_view_size_h;
    sd->toggle_view_size = toggle_view_size;
 
    menu_activate_request();
