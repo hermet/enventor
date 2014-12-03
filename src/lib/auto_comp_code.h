@@ -152,6 +152,12 @@ const char *AUTOCOMP_ASPECT[AUTOCOMP_ASPECT_LINE_CNT] =
    "aspect: ;",
 };
 
+#define AUTOCOMP_ASPECT_MODE_LINE_CNT 1
+const char *AUTOCOMP_ASPECT_MODE[AUTOCOMP_ASPECT_MODE_LINE_CNT] =
+{
+   "aspect_mode: BOTH;",
+};
+
 #define AUTOCOMP_ASPECT_PREFERENCE_LINE_CNT 1
 const char *AUTOCOMP_ASPECT_PREFERENCE[AUTOCOMP_ASPECT_PREFERENCE_LINE_CNT] =
 {
@@ -383,4 +389,34 @@ const char *AUTOCOMP_PADDING[AUTOCOMP_PADDING_LINE_CNT] =
    "padding: ;",
 };
 
-#define COMPSET_CNT 58
+#define AUTOCOMP_POSITION_LINE_CNT 1
+const char *AUTOCOMP_POSITION[AUTOCOMP_POSITION_LINE_CNT] =
+{
+   "position: ;",
+};
+
+#define AUTOCOMP_PREFER_LINE_CNT 1
+const char *AUTOCOMP_PREFER[AUTOCOMP_PREFER_LINE_CNT] =
+{
+   "prefer: ;",
+};
+
+#define AUTOCOMP_SPAN_LINE_CNT 1
+const char *AUTOCOMP_SPAN[AUTOCOMP_SPAN_LINE_CNT] =
+{
+   "span: ;",
+};
+
+#define AUTOCOMP_SPREAD_LINE_CNT 1
+const char *AUTOCOMP_SPREAD[AUTOCOMP_SPREAD_LINE_CNT] =
+{
+   "spread: ;",
+};
+
+#define AUTOCOMP_WEIGHT_LINE_CNT 1
+const char *AUTOCOMP_WEIGHT[AUTOCOMP_WEIGHT_LINE_CNT] =
+{
+   "weight: ;",
+};
+
+#define COMPSET_CNT 64

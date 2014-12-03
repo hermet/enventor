@@ -66,6 +66,7 @@ group "syntax_color_group" struct {
             value "key" string: "after";
             value "key" string: "alias";
             value "key" string: "align";
+            value "key" string: "aspect_mode";
             value "key" string: "aspect_preference";
             value "key" string: "aspect";
             value "key" string: "backface_cull";
@@ -106,12 +107,16 @@ group "syntax_color_group" struct {
             value "key" string: "padding:";
             value "key" string: "perspective:";
             value "key" string: "perspective_on";
+            value "key" string: "position";
+            value "key" string: "prefer";
             value "key" string: "relative";
             value "key" string: "repch";
             value "key" string: "repeat_events";
             value "key" string: "scale";
             value "key" string: "select_mode";
             value "key" string: "signal";
+            value "key" string: "span";
+            value "key" string: "spread";
             value "key" string: "state";
             value "key" string: "style";
             value "key" string: "smooth";
@@ -129,6 +134,7 @@ group "syntax_color_group" struct {
             value "key" string: "type";
             value "key" string: "tween";
             value "key" string: "visible";
+            value "key" string: "weight";
             value "key" string: "x:";
             value "key" string: "y:";
             value "key" string: "z:";
@@ -175,6 +181,7 @@ group "syntax_color_group" struct {
             value "key" string: "MSG_STRING_INT";
             value "key" string: "MSG_STRING_SET";
             value "key" string: "MSG_STRING";
+            value "key" string: "NEITHER";
             value "key" string: "NONE";
             value "key" string: "ON_HOLD";
             value "key" string: "OUTLINE_SOFT_SHADOW";

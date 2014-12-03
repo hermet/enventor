@@ -298,15 +298,28 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    attr.value.type = ATTR_VALUE_CONSTANT;
    eina_inarray_push(td->attrs, &attr);
 
-   Eina_Array *aspect = eina_array_new(4);
-   eina_array_push(aspect, eina_stringshare_add("NONE"));
-   eina_array_push(aspect, eina_stringshare_add("VERTICAL"));
-   eina_array_push(aspect, eina_stringshare_add("HORIZONTAL"));
-   eina_array_push(aspect, eina_stringshare_add("BOTH"));
+   Eina_Array *aspect_mode = eina_array_new(5);
+   eina_array_push(aspect_mode, eina_stringshare_add("NONE"));
+   eina_array_push(aspect_mode, eina_stringshare_add("NEITHER"));
+   eina_array_push(aspect_mode, eina_stringshare_add("VERTICAL"));
+   eina_array_push(aspect_mode, eina_stringshare_add("HORIZONTAL"));
+   eina_array_push(aspect_mode, eina_stringshare_add("BOTH"));
+
+   memset(&attr, 0x00, sizeof(parser_attr));
+   attr.keyword = eina_stringshare_add("aspect_mode:");
+   attr.value.strs = aspect_mode;
+   attr.value.type = ATTR_VALUE_CONSTANT;
+   eina_inarray_push(td->attrs, &attr);
+
+   Eina_Array *aspect_prefer = eina_array_new(4);
+   eina_array_push(aspect_prefer, eina_stringshare_add("NONE"));
+   eina_array_push(aspect_prefer, eina_stringshare_add("VERTICAL"));
+   eina_array_push(aspect_prefer, eina_stringshare_add("HORIZONTAL"));
+   eina_array_push(aspect_prefer, eina_stringshare_add("BOTH"));
 
    memset(&attr, 0x00, sizeof(parser_attr));
    attr.keyword = eina_stringshare_add("aspect_preference:");
-   attr.value.strs = aspect;
+   attr.value.strs = aspect_prefer;
    attr.value.type = ATTR_VALUE_CONSTANT;
    eina_inarray_push(td->attrs, &attr);
 

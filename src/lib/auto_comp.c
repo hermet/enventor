@@ -84,6 +84,7 @@ init_thread_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
    COMPDATA_SET(ad, "color2", AUTOCOMP_COLOR2, 1, 0);
    COMPDATA_SET(ad, "color3", AUTOCOMP_COLOR3, 1, 0);
    COMPDATA_SET(ad, "aspect", AUTOCOMP_ASPECT, 1, 0);
+   COMPDATA_SET(ad, "aspect_mode",AUTOCOMP_ASPECT_MODE, 1, 0);
    COMPDATA_SET(ad, "aspect_preference", AUTOCOMP_ASPECT_PREFERENCE, 1, 0);
    COMPDATA_SET(ad, "normal", AUTOCOMP_NORMAL, 2, 0);
    COMPDATA_SET(ad, "effect", AUTOCOMP_EFFECT, 0, 0);
@@ -118,6 +119,11 @@ init_thread_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
    COMPDATA_SET(ad, "items",AUTOCOMP_ITEMS, 2, 1);
    COMPDATA_SET(ad, "layout",AUTOCOMP_LAYOUT, 2, 0);
    COMPDATA_SET(ad, "padding",AUTOCOMP_PADDING, 1, 0);
+   COMPDATA_SET(ad, "position", AUTOCOMP_POSITION, 1, 0);
+   COMPDATA_SET(ad, "prefer", AUTOCOMP_PREFER, 1, 0);
+   COMPDATA_SET(ad, "span", AUTOCOMP_SPAN, 1, 0);
+   COMPDATA_SET(ad, "spread", AUTOCOMP_SPREAD, 1, 0);
+   COMPDATA_SET(ad, "weight", AUTOCOMP_WEIGHT, 1, 0);
 }
 
 static void
