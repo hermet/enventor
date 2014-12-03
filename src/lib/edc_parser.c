@@ -420,7 +420,7 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    memset(&attr, 0x00, sizeof(parser_attr));
    attr.keyword = eina_stringshare_add("mouse_events:");
    attr.value.min = 0;
-   attr.value.max = 1000;
+   attr.value.max = 1;
    attr.value.type = ATTR_VALUE_INTEGER;
    eina_inarray_push(td->attrs, &attr);
 
