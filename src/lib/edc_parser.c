@@ -280,7 +280,7 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    attr.value.type = ATTR_VALUE_CONSTANT;
    eina_inarray_push(td->attrs, &attr);
 
-   Eina_Array *trans = eina_array_new(10);
+   Eina_Array *trans = eina_array_new(11);
    eina_array_push(trans, eina_stringshare_add("LINEAR"));
    eina_array_push(trans, eina_stringshare_add("ACCELERATE"));
    eina_array_push(trans, eina_stringshare_add("DECELERATE"));
@@ -291,6 +291,7 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    eina_array_push(trans, eina_stringshare_add("DIVISOR_INTERP"));
    eina_array_push(trans, eina_stringshare_add("BOUNCE"));
    eina_array_push(trans, eina_stringshare_add("SPRING"));
+   eina_array_push(trans, eina_stringshare_add("CUBIC_BEZIER"));
 
    memset(&attr, 0x00, sizeof(parser_attr));
    attr.keyword = eina_stringshare_add("transition:");
