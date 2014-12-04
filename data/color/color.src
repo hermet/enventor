@@ -152,6 +152,7 @@ group "syntax_color_group" struct {
             value "key" string: "BOTTOM";
             value "key" string: "BOUNCE";
             value "key" string: "BOX";
+            value "key" string: "CUBIC_BEZIER";
             value "key" string: "COMP";
             value "key" string: "CURRENT";
             value "key" string: "DECELERATE_FACTOR";
