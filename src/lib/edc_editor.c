@@ -276,6 +276,31 @@ ctxpopup_candidate_selected_cb(void *data, Evas_Object *obj, void *event_info)
 {
    edit_data *ed = data;
    const char *text = event_info;
+   char *ch;
+   int cur_pos, end_pos;
+   int i;
+
+   cur_pos = elm_entry_cursor_pos_get(ed->en_edit);
+   elm_entry_cursor_line_end_set(ed->en_edit);
+   end_pos = elm_entry_cursor_pos_get(ed->en_edit);
+
+   for (i = cur_pos; i <= end_pos; i++)
+   {
+      elm_entry_cursor_pos_set(ed->en_edit, i);
+      ch = elm_entry_cursor_content_get(ed->en_edit);
+      if (!strcmp(ch, ";"))
+        {
+           //1 more space for end_pos to replace until ';'.
+           end_pos = elm_entry_cursor_pos_get(ed->en_edit) + 1;
+           break;
+        }
+   }
+
+   elm_entry_cursor_pos_set(ed->en_edit, cur_pos);
+   elm_entry_cursor_selection_begin(ed->en_edit);
+   elm_entry_cursor_pos_set(ed->en_edit, end_pos);
+   elm_entry_cursor_selection_end(ed->en_edit);
+
    redoundo_text_relative_push(ed->rd, text);
    elm_entry_entry_insert(ed->en_edit, text);
    elm_ctxpopup_dismiss(obj);
@@ -438,12 +463,14 @@ image_preview_show(edit_data *ed, char *cur, Evas_Coord x, Evas_Coord y)
 static void
 candidate_list_show(edit_data *ed, char *text, char *cur, char *selected)
 {
-   attr_value * attr = parser_attribute_get(ed->pd, text, cur);
+   attr_value * attr = parser_attribute_get(ed->pd, text, cur, selected);
    if (!attr) return;
+
+   parser_attribute_value_set(attr, cur);
 
    //Show up the list of the types
    Evas_Object *ctxpopup =
-      ctxpopup_candidate_list_create(ed, attr, atof(selected),
+      ctxpopup_candidate_list_create(ed, attr,
                                      ctxpopup_candidate_dismiss_cb,
                                      ctxpopup_candidate_selected_cb);
    if (!ctxpopup) return;

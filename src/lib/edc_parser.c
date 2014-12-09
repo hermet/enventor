@@ -7,6 +7,11 @@
 #include <Enventor.h>
 #include "enventor_private.h"
 
+const char ATTR_PREPEND_COLON[] = ": ";
+const char ATTR_PREPEND_NONE[] = " ";
+const char ATTR_APPEND_SEMICOLON[] = ";";
+const char ATTR_APPEND_STATE_VAL[] = " 0.0;";
+
 struct parser_s
 {
    Eina_Inarray *attrs;
@@ -18,7 +23,6 @@ typedef struct parser_attr_s
 {
    Eina_Stringshare *keyword;
    attr_value value;
-   Eina_Bool instring : 1;
 } parser_attr;
 
 typedef struct cur_name_thread_data_s
@@ -263,9 +267,11 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    eina_array_push(types, eina_stringshare_add("SPACER"));
 
    memset(&attr, 0x00, sizeof(parser_attr));
-   attr.keyword = eina_stringshare_add("type:");
+   attr.keyword = eina_stringshare_add("type");
    attr.value.strs = types;
    attr.value.type = ATTR_VALUE_CONSTANT;
+   attr.value.prepend_str = ATTR_PREPEND_COLON;
+   attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
 
    Eina_Array *comps = eina_array_new(4);
@@ -275,9 +281,11 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    eina_array_push(comps, eina_stringshare_add("LOSSY"));
 
    memset(&attr, 0x00, sizeof(parser_attr));
-   attr.keyword = eina_stringshare_add("image:");
+   attr.keyword = eina_stringshare_add("image");
    attr.value.strs = comps;
    attr.value.type = ATTR_VALUE_CONSTANT;
+   attr.value.prepend_str = ATTR_PREPEND_COLON;
+   attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
 
    Eina_Array *trans = eina_array_new(11);
@@ -294,9 +302,11 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    eina_array_push(trans, eina_stringshare_add("CUBIC_BEZIER"));
 
    memset(&attr, 0x00, sizeof(parser_attr));
-   attr.keyword = eina_stringshare_add("transition:");
+   attr.keyword = eina_stringshare_add("transition");
    attr.value.strs = trans;
    attr.value.type = ATTR_VALUE_CONSTANT;
+   attr.value.prepend_str = ATTR_PREPEND_COLON;
+   attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
 
    Eina_Array *aspect_mode = eina_array_new(5);
@@ -307,9 +317,11 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    eina_array_push(aspect_mode, eina_stringshare_add("BOTH"));
 
    memset(&attr, 0x00, sizeof(parser_attr));
-   attr.keyword = eina_stringshare_add("aspect_mode:");
+   attr.keyword = eina_stringshare_add("aspect_mode");
    attr.value.strs = aspect_mode;
    attr.value.type = ATTR_VALUE_CONSTANT;
+   attr.value.prepend_str = ATTR_PREPEND_COLON;
+   attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
 
    Eina_Array *aspect_prefer = eina_array_new(4);
@@ -319,9 +331,11 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    eina_array_push(aspect_prefer, eina_stringshare_add("BOTH"));
 
    memset(&attr, 0x00, sizeof(parser_attr));
-   attr.keyword = eina_stringshare_add("aspect_preference:");
+   attr.keyword = eina_stringshare_add("aspect_preference");
    attr.value.strs = aspect_prefer;
    attr.value.type = ATTR_VALUE_CONSTANT;
+   attr.value.prepend_str = ATTR_PREPEND_COLON;
+   attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
 
    Eina_Array *effect = eina_array_new(11);
@@ -338,9 +352,11 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    eina_array_push(effect, eina_stringshare_add("GLOW"));
 
    memset(&attr, 0x00, sizeof(parser_attr));
-   attr.keyword = eina_stringshare_add("effect:");
+   attr.keyword = eina_stringshare_add("effect");
    attr.value.strs = effect;
    attr.value.type = ATTR_VALUE_CONSTANT;
+   attr.value.prepend_str = ATTR_PREPEND_COLON;
+   attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
 
    Eina_Array *action = eina_array_new(23);
@@ -369,148 +385,194 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    eina_array_push(action, eina_stringshare_add("PHYSICS_ROT_SET"));
 
    memset(&attr, 0x00, sizeof(parser_attr));
-   attr.keyword = eina_stringshare_add("action:");
+   attr.keyword = eina_stringshare_add("action");
    attr.value.strs = action;
    attr.value.type = ATTR_VALUE_CONSTANT;
+   attr.value.prepend_str = ATTR_PREPEND_COLON;
+   attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
 
    //Type: Integer
    memset(&attr, 0x00, sizeof(parser_attr));
-   attr.keyword = eina_stringshare_add("color:");
+   attr.keyword = eina_stringshare_add("color");
+   attr.value.cnt = 4;
    attr.value.min = 0;
    attr.value.max = 255;
    attr.value.type = ATTR_VALUE_INTEGER;
+   attr.value.prepend_str = ATTR_PREPEND_COLON;
+   attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
 
    memset(&attr, 0x00, sizeof(parser_attr));
-   attr.keyword = eina_stringshare_add("color2:");
+   attr.keyword = eina_stringshare_add("color2");
+   attr.value.cnt = 4;
    attr.value.min = 0;
    attr.value.max = 255;
    attr.value.type = ATTR_VALUE_INTEGER;
+   attr.value.prepend_str = ATTR_PREPEND_COLON;
+   attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
 
    memset(&attr, 0x00, sizeof(parser_attr));
-   attr.keyword = eina_stringshare_add("color3:");
+   attr.keyword = eina_stringshare_add("color3");
+   attr.value.cnt = 4;
    attr.value.min = 0;
    attr.value.max = 255;
    attr.value.type = ATTR_VALUE_INTEGER;
+   attr.value.prepend_str = ATTR_PREPEND_COLON;
+   attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
 
    memset(&attr, 0x00, sizeof(parser_attr));
-   attr.keyword = eina_stringshare_add("scale:");
+   attr.keyword = eina_stringshare_add("scale");
+   attr.value.cnt = 1;
    attr.value.min = 0;
    attr.value.max = 1;
    attr.value.type = ATTR_VALUE_INTEGER;
+   attr.value.prepend_str = ATTR_PREPEND_COLON;
+   attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
 
    memset(&attr, 0x00, sizeof(parser_attr));
-   attr.keyword = eina_stringshare_add("fixed:");
+   attr.keyword = eina_stringshare_add("fixed");
+   attr.value.cnt = 2;
    attr.value.min = 0;
    attr.value.max = 1;
    attr.value.type = ATTR_VALUE_INTEGER;
+   attr.value.prepend_str = ATTR_PREPEND_COLON;
+   attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
 
    memset(&attr, 0x00, sizeof(parser_attr));
-   attr.keyword = eina_stringshare_add("size:");
+   attr.keyword = eina_stringshare_add("size");
+   attr.value.cnt = 1;
    attr.value.min = 1;
    attr.value.max = 255;
    attr.value.type = ATTR_VALUE_INTEGER;
+   attr.value.prepend_str = ATTR_PREPEND_COLON;
+   attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
 
    memset(&attr, 0x00, sizeof(parser_attr));
-   attr.keyword = eina_stringshare_add("min:");
+   attr.keyword = eina_stringshare_add("min");
+   attr.value.cnt = 2;
    attr.value.min = 0;
    attr.value.max = 1000;
    attr.value.type = ATTR_VALUE_INTEGER;
+   attr.value.prepend_str = ATTR_PREPEND_COLON;
+   attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
 
    memset(&attr, 0x00, sizeof(parser_attr));
-   attr.keyword = eina_stringshare_add("max:");
+   attr.keyword = eina_stringshare_add("max");
+   attr.value.cnt = 2;
    attr.value.min = 0;
    attr.value.max = 1000;
    attr.value.type = ATTR_VALUE_INTEGER;
+   attr.value.prepend_str = ATTR_PREPEND_COLON;
+   attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
 
    memset(&attr, 0x00, sizeof(parser_attr));
-   attr.keyword = eina_stringshare_add("mouse_events:");
+   attr.keyword = eina_stringshare_add("mouse_events");
+   attr.value.cnt = 1;
    attr.value.min = 0;
    attr.value.max = 1;
    attr.value.type = ATTR_VALUE_INTEGER;
+   attr.value.prepend_str = ATTR_PREPEND_COLON;
+   attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
 
    //Type: Float
    memset(&attr, 0x00, sizeof(parser_attr));
-   attr.keyword = eina_stringshare_add("relative:");
+   attr.keyword = eina_stringshare_add("relative");
+   attr.value.cnt = 2;
    attr.value.min = 0.0;
    attr.value.max = 1;
    attr.value.type = ATTR_VALUE_FLOAT;
+   attr.value.prepend_str = ATTR_PREPEND_COLON;
+   attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
 
    memset(&attr, 0x00, sizeof(parser_attr));
-   attr.keyword = eina_stringshare_add("aspect:");
+   attr.keyword = eina_stringshare_add("aspect");
+   attr.value.cnt = 2;
    attr.value.min = 0.0;
    attr.value.max = 1.0;
    attr.value.type = ATTR_VALUE_FLOAT;
+   attr.value.prepend_str = ATTR_PREPEND_COLON;
+   attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
 
    memset(&attr, 0x00, sizeof(parser_attr));
-   attr.keyword = eina_stringshare_add("align:");
+   attr.keyword = eina_stringshare_add("align");
+   attr.value.cnt = 2;
    attr.value.min = 0.0;
    attr.value.max = 1.0;
    attr.value.type = ATTR_VALUE_FLOAT;
+   attr.value.prepend_str = ATTR_PREPEND_COLON;
+   attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
 
    //Type: Part
    memset(&attr, 0x00, sizeof(parser_attr));
-   attr.keyword = eina_stringshare_add("target:");
-   attr.instring = EINA_TRUE;
+   attr.keyword = eina_stringshare_add("target");
    attr.value.type = ATTR_VALUE_PART;
+   attr.value.prepend_str = ATTR_PREPEND_COLON;
+   attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
 
    memset(&attr, 0x00, sizeof(parser_attr));
-   attr.keyword = eina_stringshare_add("to:");
-   attr.instring = EINA_TRUE;
+   attr.keyword = eina_stringshare_add("to");
    attr.value.type = ATTR_VALUE_PART;
+   attr.value.prepend_str = ATTR_PREPEND_COLON;
+   attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
 
    memset(&attr, 0x00, sizeof(parser_attr));
-   attr.keyword = eina_stringshare_add("source:");
-   attr.instring = EINA_TRUE;
+   attr.keyword = eina_stringshare_add("source");
    attr.value.type = ATTR_VALUE_PART;
+   attr.value.prepend_str = ATTR_PREPEND_COLON;
+   attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
 
    //Type: State
    memset(&attr, 0x00, sizeof(parser_attr));
    attr.keyword = eina_stringshare_add("STATE_SET");
-   attr.instring = EINA_TRUE;
    attr.value.type = ATTR_VALUE_STATE;
+   attr.value.prepend_str = ATTR_PREPEND_NONE;
+   attr.value.append_str = ATTR_APPEND_STATE_VAL;
    attr.value.program = EINA_TRUE;
    eina_inarray_push(td->attrs, &attr);
 
    memset(&attr, 0x00, sizeof(parser_attr));
-   attr.keyword = eina_stringshare_add("inherit:");
-   attr.instring = EINA_TRUE;
+   attr.keyword = eina_stringshare_add("inherit");
    attr.value.type = ATTR_VALUE_STATE;
+   attr.value.prepend_str = ATTR_PREPEND_COLON;
+   attr.value.append_str = ATTR_APPEND_STATE_VAL;
    eina_inarray_push(td->attrs, &attr);
 
    //Type: Image
    memset(&attr, 0x00, sizeof(parser_attr));
-   attr.keyword = eina_stringshare_add("normal:");
-   attr.instring = EINA_TRUE;
+   attr.keyword = eina_stringshare_add("normal");
    attr.value.type = ATTR_VALUE_IMAGE;
+   attr.value.prepend_str = ATTR_PREPEND_COLON;
+   attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
 
    memset(&attr, 0x00, sizeof(parser_attr));
-   attr.keyword = eina_stringshare_add("tween:");
-   attr.instring = EINA_TRUE;
+   attr.keyword = eina_stringshare_add("tween");
    attr.value.type = ATTR_VALUE_IMAGE;
+   attr.value.prepend_str = ATTR_PREPEND_COLON;
+   attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
 
    //Type: Program
    memset(&attr, 0x00, sizeof(parser_attr));
-   attr.keyword = eina_stringshare_add("after:");
-   attr.instring = EINA_TRUE;
+   attr.keyword = eina_stringshare_add("after");
    attr.value.type = ATTR_VALUE_PROGRAM;
+   attr.value.prepend_str = ATTR_PREPEND_COLON;
+   attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
 }
 
@@ -646,45 +708,71 @@ parser_colon_pos_get(parser_data *pd EINA_UNUSED, const char *cur)
 }
 
 attr_value *
-parser_attribute_get(parser_data *pd, const char *text, const char *cur)
+parser_attribute_get(parser_data *pd, const char *text, const char *cur,
+                     const char *selected)
 {
    if (!text || !cur) return NULL;
    if ((*cur == ';') || (*cur == ':')) return NULL;
 
    parser_attr *attr;
    Eina_Bool instring = EINA_FALSE;
-   Eina_Bool necessary = EINA_FALSE;
 
    char *p = (char *) cur;
 
    while (p >= text)
      {
-        if (*p == ':')
-          {
-             necessary = EINA_TRUE;
-             break;
-          }
         if (*p == '\"') instring = !instring;
         p--;
      }
-   if (!p || !necessary) return NULL;
-
-   while (p > text)
-     {
-        if ((*p == ';') || (*p == '.') || (*p == ' ')) break;
-        p--;
-     }
-
-   if (!p) return NULL;
-   if (p != text) p++;
+   if (instring) return NULL;
 
    EINA_INARRAY_FOREACH(pd->attrs, attr)
      {
-        if ((instring == attr->instring) && strstr(p, attr->keyword))
-          return &attr->value;
+        if (!strcmp(selected, attr->keyword))
+             return &attr->value;
      }
 
    return NULL;
+}
+
+/* Function is_numberic is refer to the following url.
+   http://rosettacode.org/wiki/Determine_if_a_string_is_numeric#C */
+static Eina_Bool
+is_numberic(const char *str)
+{
+   Eina_Bool ret = EINA_FALSE;
+   char *p;
+
+   if (!str || (*str == '\0') || isspace(*str))
+     return EINA_FALSE;
+
+   strtod(str, &p);
+   if (*p == '\0') ret = EINA_TRUE;
+
+   return ret;
+}
+
+void
+parser_attribute_value_set(attr_value *value, char *cur)
+{
+   const char token[4] = " ;:";
+   char *str = strtok(cur, token);
+   int i;
+
+   if (!str) return;
+   str = strtok(NULL, token); //Skip the keyword
+
+   //Initialize attribute values
+   for (i = 0; i < value->cnt; i++)
+     value->val[i] = 0;
+
+   for (i = 0; str && (i < value->cnt); str = strtok(NULL, token))
+     {
+        if (!is_numberic(str)) continue;
+
+        value->val[i] = atof(str);
+        i++;
+     }
 }
 
 Eina_Stringshare *

@@ -14,6 +14,7 @@
 #define REL2_X 0.75f
 #define REL2_Y 0.75f
 #define VIEW_DATA edj_mgr_view_get(NULL)
+#define ATTR_VALUE_MAX_CNT 4
 
 extern char EDJE_PATH[PATH_MAX];
 extern const char SIG_CURSOR_LINE_CHANGED[];
@@ -51,9 +52,13 @@ typedef enum attr_value_type
 struct attr_value_s
 {
    Eina_Array *strs;
+   int cnt;
+   float val[ATTR_VALUE_MAX_CNT];
    float min;
    float max;
    attr_value_type type;
+   const char *prepend_str;
+   const char *append_str;
    Eina_Bool program : 1;
 };
 
@@ -82,7 +87,8 @@ void parser_cur_name_get(parser_data *pd, Evas_Object *entry, void (*cb)(void *d
 void parser_cur_group_name_get(parser_data *pd, Evas_Object *entry, void (*cb)(void *data, Eina_Stringshare *part_name, Eina_Stringshare *group_name), void *data);
 Eina_Stringshare *parser_cur_name_fast_get(Evas_Object *entry, const char *scope);
 Eina_Bool parser_type_name_compare(parser_data *pd, const char *str);
-attr_value *parser_attribute_get(parser_data *pd, const char *text, const char *cur);
+attr_value *parser_attribute_get(parser_data *pd, const char *text, const char *cur, const char *selected);
+void parser_attribute_value_set(attr_value *attr, char *cur);
 Eina_Stringshare *parser_paragh_name_get(parser_data *pd, Evas_Object *entry);
 char *parser_name_get(parser_data *pd, const char *cur);
 void parser_cancel(parser_data *pd);
@@ -179,7 +185,7 @@ Eina_Bool template_insert(edit_data *ed, Enventor_Template_Insert_Type insert_ty
 
 
 /* ctxpopup */
-Evas_Object *ctxpopup_candidate_list_create(edit_data *ed, attr_value *attr, double slider_val, Evas_Smart_Cb ctxpopup_dismiss_cb, Evas_Smart_Cb ctxpopup_selected_cb);
+Evas_Object *ctxpopup_candidate_list_create(edit_data *ed, attr_value *attr, Evas_Smart_Cb ctxpopup_dismiss_cb, Evas_Smart_Cb ctxpopup_selected_cb);
 Evas_Object *ctxpopup_img_preview_create(edit_data*ed, const char *imgpath, Evas_Smart_Cb ctxpopup_dismiss_cb, Evas_Smart_Cb ctxpopup_relay_cb);
 
 
