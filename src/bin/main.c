@@ -694,11 +694,10 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    if (menu_activated_get() > 0) return ECORE_CALLBACK_PASS_ON;
    if (file_mgr_warning_is_opened()) return ECORE_CALLBACK_PASS_ON;
 
-   enventor_object_ctxpopup_dismiss(ad->enventor);
-
    //Shift Key
    if (!strcmp("Shift_L", event->key))
      {
+        enventor_object_ctxpopup_dismiss(ad->enventor);
         ad->shift_pressed = EINA_TRUE;
         return ECORE_CALLBACK_DONE;
      }
@@ -712,6 +711,7 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    //Control Key
    if (!strcmp("Control_L", event->key))
      {
+        enventor_object_ctxpopup_dismiss(ad->enventor);
         ad->ctrl_pressed = EINA_TRUE;
         return ECORE_CALLBACK_PASS_ON;
      }
@@ -719,54 +719,63 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    //README
    if (!strcmp(event->key, "F1"))
      {
+        enventor_object_ctxpopup_dismiss(ad->enventor);
         menu_about();
         return ECORE_CALLBACK_DONE;
      }
    //New
    if (!strcmp(event->key, "F2"))
      {
+        enventor_object_ctxpopup_dismiss(ad->enventor);
         menu_edc_new(EINA_FALSE);
         return ECORE_CALLBACK_DONE;
      }
    //Save
    if (!strcmp(event->key, "F3"))
      {
+        enventor_object_ctxpopup_dismiss(ad->enventor);
         menu_edc_save();
         return ECORE_CALLBACK_DONE;
      }
    //Load
    if (!strcmp(event->key, "F4"))
      {
+        enventor_object_ctxpopup_dismiss(ad->enventor);
         menu_edc_load();
         return ECORE_CALLBACK_DONE;
      }
    //Line Number
    if (!strcmp(event->key, "F5"))
      {
+        enventor_object_ctxpopup_dismiss(ad->enventor);
         config_linenumber_set(!config_linenumber_get());
         return ECORE_CALLBACK_DONE;
      }
    //Tools
    if (!strcmp(event->key, "F9"))
      {
+        enventor_object_ctxpopup_dismiss(ad->enventor);
         base_tools_toggle(EINA_TRUE);
         return ECORE_CALLBACK_DONE;
      }
    //Console
    if (!strcmp(event->key, "F10"))
      {
+        enventor_object_ctxpopup_dismiss(ad->enventor);
         base_console_toggle();
         return ECORE_CALLBACK_DONE;
      }
    //Statusbar
    if (!strcmp(event->key, "F11"))
      {
+        enventor_object_ctxpopup_dismiss(ad->enventor);
         base_statusbar_toggle(EINA_TRUE);
         return ECORE_CALLBACK_DONE;
      }
    //Setting
    if (!strcmp(event->key, "F12"))
      {
+        enventor_object_ctxpopup_dismiss(ad->enventor);
         menu_setting();
         return ECORE_CALLBACK_DONE;
      }
