@@ -109,6 +109,7 @@ static void
 ctxpopup_del_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
                 void *event_info EINA_UNUSED)
 {
+   elm_config_focus_autoscroll_mode_set(ELM_FOCUS_AUTOSCROLL_MODE_SHOW);
    free(data);
 }
 
@@ -121,13 +122,8 @@ slider_layout_create(Evas_Object *parent, attr_value *attr,
    elm_layout_file_set(layout, EDJE_PATH, "slider_layout");
    evas_object_show(layout);
 
-   /* FIXME: Disable slider and it's button's focus since scroller has weired
-      focus region show from this. Actually we don't need focus from here
-      slider. */
-
    //Slider
    Evas_Object *slider = elm_slider_add(layout);
-   elm_object_focus_allow_set(slider, EINA_FALSE);
    if (integer) elm_slider_unit_format_set(slider, "%1.0f");
    else elm_slider_unit_format_set(slider, "%1.2f");
    elm_slider_span_size_set(slider, 120);
@@ -142,7 +138,6 @@ slider_layout_create(Evas_Object *parent, attr_value *attr,
 
    //Minus Button
    btn = elm_button_add(layout);
-   elm_object_focus_allow_set(btn, EINA_FALSE);
    evas_object_smart_callback_add(btn, "clicked", btn_minus_cb, slider);
    elm_object_part_content_set(layout, "elm.swallow.minus", btn);
 
@@ -153,7 +148,6 @@ slider_layout_create(Evas_Object *parent, attr_value *attr,
 
    //Plus Button
    btn = elm_button_add(layout);
-   elm_object_focus_allow_set(btn, EINA_FALSE);
    evas_object_smart_callback_add(btn, "clicked", btn_plus_cb, slider);
    elm_object_part_content_set(layout, "elm.swallow.plus", btn);
 
@@ -355,6 +349,8 @@ ctxpopup_img_preview_create(edit_data *ed,
    Evas_Object *ctxpopup = elm_ctxpopup_add(edit_obj_get(ed));
    if (!ctxpopup) return NULL;
 
+   elm_config_focus_autoscroll_mode_set(ELM_FOCUS_AUTOSCROLL_MODE_NONE);
+
    elm_object_style_set(ctxpopup, "enventor");
    elm_ctxpopup_direction_priority_set(ctxpopup, ELM_CTXPOPUP_DIRECTION_LEFT,
                                        ELM_CTXPOPUP_DIRECTION_UP,
@@ -406,6 +402,8 @@ ctxpopup_candidate_list_create(edit_data *ed, attr_value *attr,
    //create ctxpopup
    Evas_Object *ctxpopup = elm_ctxpopup_add(edit_obj_get(ed));
    if (!ctxpopup) return NULL;
+
+   elm_config_focus_autoscroll_mode_set(ELM_FOCUS_AUTOSCROLL_MODE_NONE);
 
    elm_object_style_set(ctxpopup, "enventor");
    elm_ctxpopup_direction_priority_set(ctxpopup, ELM_CTXPOPUP_DIRECTION_RIGHT,
