@@ -391,8 +391,21 @@ enventor_live_view_resized_cb(void *data EINA_UNUSED,
 {
    if (!config_stats_bar_get()) return;
    Enventor_Live_View_Size *size = event_info;
-   config_view_size_set(size->w, size->h);
    stats_view_size_update(size->w, size->h);
+
+   if (!config_view_size_configurable_get())
+     config_view_size_set(size->w, size->h);
+}
+
+static void
+enventor_live_view_loaded_cb(void *data EINA_UNUSED, Evas_Object *obj,
+                             void *event_info)
+{
+   if (!config_view_size_configurable_get()) return;
+
+   Evas_Coord w, h;
+   config_view_size_get(&w, &h);
+   enventor_object_live_view_size_set(obj, w, h);
 }
 
 static void
@@ -448,6 +461,8 @@ enventor_setup(app_data *ad)
                                   enventor_cursor_group_changed_cb, ad);
    evas_object_smart_callback_add(enventor, "compile,error",
                                   enventor_compile_error_cb, ad);
+   evas_object_smart_callback_add(enventor, "live_view,loaded",
+                                  enventor_live_view_loaded_cb, ad);
    evas_object_smart_callback_add(enventor, "live_view,cursor,moved",
                                   enventor_live_view_cursor_moved_cb, ad);
    evas_object_smart_callback_add(enventor, "live_view,resized",
