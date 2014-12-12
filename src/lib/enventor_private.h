@@ -21,6 +21,7 @@ extern const char SIG_CURSOR_LINE_CHANGED[];
 extern const char SIG_CURSOR_GROUP_CHANGED[];
 extern const char SIG_MAX_LINE_CHANGED[];
 extern const char SIG_COMPILE_ERROR[];
+extern const char SIG_LIVE_VIEW_LOADED[];
 extern const char SIG_LIVE_VIEW_CURSOR_MOVED[];
 extern const char SIG_LIVE_VIEW_RESIZED[];
 extern const char SIG_PROGRAM_RUN[];

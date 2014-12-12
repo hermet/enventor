@@ -448,6 +448,7 @@ class Enventor.Object (Elm_Widget, Efl.File) {
    events {
       cursor,line,changed;
       cursor,group,changed;
+      live_view,loaded;
       live_view,cursor,moved;
       live_view,resized;
       max_line,changed;

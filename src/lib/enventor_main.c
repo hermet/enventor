@@ -11,6 +11,7 @@
 char EDJE_PATH[PATH_MAX];
 const char SIG_CURSOR_LINE_CHANGED[] = "cursor,line,changed";
 const char SIG_CURSOR_GROUP_CHANGED[]= "cursor,group,changed";
+const char SIG_LIVE_VIEW_LOADED[] = "live_view,loaded";
 const char SIG_LIVE_VIEW_CURSOR_MOVED[] = "live_view,cursor,moved";
 const char SIG_LIVE_VIEW_RESIZED[] = "live_view,resized";
 const char SIG_MAX_LINE_CHANGED[] = "max_line,changed";

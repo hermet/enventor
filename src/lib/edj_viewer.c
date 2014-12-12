@@ -303,6 +303,8 @@ view_obj_idler_cb(void *data)
    vd->idler = NULL;
    if (vd->part_name) view_part_highlight_set(vd, vd->part_name);
 
+   evas_object_smart_callback_call(vd->enventor, SIG_LIVE_VIEW_LOADED,
+                                   (void*)edj_mgr_obj_get());
    return ECORE_CALLBACK_CANCEL;
 }
 
