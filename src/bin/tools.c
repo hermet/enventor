@@ -150,7 +150,7 @@ tools_create(Evas_Object *parent, Evas_Object *enventor)
    evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
    elm_box_pack_end(box, btn);
 
-   btn = tools_btn_create(box, "live_edit", "LiveEdit", "Live Edit Mode",
+   btn = tools_btn_create(box, "live_edit", "LiveEdit", "Live View Edit",
                           live_edit_cb, NULL);
    evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
@@ -160,7 +160,7 @@ tools_create(Evas_Object *parent, Evas_Object *enventor)
    evas_object_show(sp);
    elm_box_pack_end(box, sp);
 
-   btn = tools_btn_create(box, "lines", "Lines", "Editor Line Numbers",
+   btn = tools_btn_create(box, "lines", "Lines", "Line Numbers",
                           lines_cb, enventor);
    evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
