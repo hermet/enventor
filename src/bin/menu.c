@@ -339,12 +339,14 @@ prev_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
 }
 
 static Evas_Object *
-btn_create(Evas_Object *parent, const char *label, Evas_Smart_Cb cb, void *data)
+btn_create(Evas_Object *parent, const char *label, const char *tooltip_msg,
+           Evas_Smart_Cb cb, void *data)
 {
    Evas_Object *btn;
 
    btn  = elm_button_add(parent);
    elm_object_style_set(btn, "anchor");
+   elm_object_tooltip_text_set(btn, tooltip_msg);
    elm_object_scale_set(btn, 1.25);
    evas_object_smart_callback_add(btn, "clicked", cb, data);
    elm_object_text_set(btn, label);
@@ -627,34 +629,35 @@ menu_open(menu_data *md)
    Evas_Object *btn;
 
    //Button(New)
-   btn = btn_create(layout, "New", new_btn_cb, md);
+   btn = btn_create(layout, "New", "New File (F2)", new_btn_cb, md);
    elm_object_focus_set(btn, EINA_TRUE);
    elm_object_part_content_set(layout, "elm.swallow.new_btn", btn);
 
    //Button(Save)
-   btn = btn_create(layout, "Save", save_btn_cb, md);
+   btn = btn_create(layout, "Save", "Save File (F3)", save_btn_cb, md);
    elm_object_part_content_set(layout, "elm.swallow.save_btn", btn);
 
    //Button(Load)
-   btn = btn_create(layout, "Load", load_btn_cb, md);
+   btn = btn_create(layout, "Load", "Load File (F4)", load_btn_cb, md);
    elm_object_part_content_set(layout, "elm.swallow.load_btn", btn);
 
    //Button(Setting)
-   btn = btn_create(layout, "Setting", setting_btn_cb, md);
+   btn = btn_create(layout, "Setting", "Setting (F12)", setting_btn_cb, md);
    elm_object_part_content_set(layout, "elm.swallow.setting_btn", btn);
 
    //Button(About)
-   btn = btn_create(layout, "About", about_btn_cb, md);
+   btn = btn_create(layout, "About", "About Enventor (F1)", about_btn_cb, md);
    elm_object_part_content_set(layout, "elm.swallow.about_btn", btn);
 
    //Button(Exit)
-   btn = btn_create(layout, "Exit", exit_btn_cb, md);
+   btn = btn_create(layout, "Exit", "Exit Enventor", exit_btn_cb, md);
    elm_object_part_content_set(layout, "elm.swallow.exit_btn", btn);
 
    //Button(Prev)
    btn = elm_button_add(layout);
    elm_object_style_set(btn, "anchor");
    evas_object_smart_callback_add(btn, "clicked", prev_btn_cb, md);
+   elm_object_tooltip_text_set(btn, "Close Enventor Menu (Esc)");
    elm_object_text_set(btn, "Back");
    elm_object_part_content_set(layout, "elm.swallow.prev_btn", btn);
 
