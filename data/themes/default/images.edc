@@ -1,6 +1,6 @@
 images {
-   image: "plus.png" COMP;
-   image: "minus.png" COMP;
+   image: "sym_up_light_normal.png" COMP;
+   image: "sym_down_light_normal.png" COMP;
    image: "menu.png" COMP;
    image: "find.png" COMP;
    image: "highlight.png" COMP;
@@ -106,23 +106,23 @@ group { name: "swallow_s";
    }
 }
 
-group { name: "plus";
+group { name: "up";
    parts {
       part { name: "img";
          type: IMAGE;
          description { state: "default" 0.0;
-            image.normal: "plus.png";
+            image.normal: "sym_up_light_normal.png";
          }
       }
    }
 }
 
-group { name: "minus";
+group { name: "down";
    parts {
       part { name: "img";
          type: IMAGE;
          description { state: "default" 0.0;
-            image.normal: "minus.png";
+            image.normal: "sym_down_light_normal.png";
          }
       }
    }

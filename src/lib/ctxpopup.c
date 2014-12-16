@@ -19,27 +19,47 @@ typedef struct ctxpopup_data_s {
 /*****************************************************************************/
 
 static void
-btn_plus_cb(void *data, Evas_Object *obj EINA_UNUSED,
+btn_up_cb(void *data, Evas_Object *obj EINA_UNUSED,
             void *event_info EINA_UNUSED)
 {
-   Evas_Object *slider = data;
+   Evas_Object *layout = data;
+   Evas_Object *slider = elm_object_part_content_get(layout,
+                                                     "elm.swallow.slider");
+   Evas_Object *entry = elm_object_part_content_get(layout,
+                                                    "elm.swallow.entry");
    attr_value *attr = evas_object_data_get(slider, "attr");
+   Eina_Bool integer = (Eina_Bool)(int) evas_object_data_get(slider, "integer");
    double value = elm_slider_value_get(slider);
+   char buf[128];
 
-   if (attr->type & ATTR_VALUE_INTEGER) elm_slider_value_set(slider, value + 1);
-   else elm_slider_value_set(slider, value + 0.01);
+   if (attr->type & ATTR_VALUE_INTEGER) value += 1;
+   else value += 0.01;
+
+   if (integer) snprintf(buf, sizeof(buf), "%1.0f", value);
+   else snprintf(buf, sizeof(buf), "%1.2f", value);
+   elm_object_text_set(entry, buf);
 }
 
 static void
-btn_minus_cb(void *data, Evas_Object *obj EINA_UNUSED,
+btn_down_cb(void *data, Evas_Object *obj EINA_UNUSED,
              void *event_info EINA_UNUSED)
 {
-   Evas_Object *slider = data;
+   Evas_Object *layout = data;
+   Evas_Object *slider = elm_object_part_content_get(layout,
+                                                     "elm.swallow.slider");
+   Evas_Object *entry = elm_object_part_content_get(layout,
+                                                    "elm.swallow.entry");
    attr_value *attr = evas_object_data_get(slider, "attr");
+   Eina_Bool integer = (Eina_Bool)(int) evas_object_data_get(slider, "integer");
    double value = elm_slider_value_get(slider);
+   char buf[128];
 
-   if (attr->type & ATTR_VALUE_INTEGER) elm_slider_value_set(slider, value - 1);
-   else elm_slider_value_set(slider, value - 0.01);
+   if (attr->type & ATTR_VALUE_INTEGER) value -= 1;
+   else value -= 0.01;
+
+   if (integer) snprintf(buf, sizeof(buf), "%1.0f", value);
+   else snprintf(buf, sizeof(buf), "%1.2f", value);
+   elm_object_text_set(entry, buf);
 }
 
 static void
@@ -113,47 +133,136 @@ ctxpopup_del_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
    free(data);
 }
 
+static void
+slider_changed_cb(void *data, Evas_Object *obj, void *event_info)
+{
+   Evas_Object *entry = data;
+   double val = elm_slider_value_get(obj);
+   char buf[128];
+   Eina_Bool integer = (Eina_Bool)(int) evas_object_data_get(obj, "integer");
+
+   if (integer) snprintf(buf, sizeof(buf), "%1.0f", val);
+   else snprintf(buf, sizeof(buf), "%1.2f", val);
+   elm_object_text_set(entry, buf);
+}
+
+static void
+entry_changed_cb(void *data, Evas_Object *obj, void *event_info)
+{
+   Evas_Object *slider = data;
+   double text_val, val, min_val, max_val;
+   char buf[128];
+   Eina_Bool integer = (Eina_Bool)(int) evas_object_data_get(slider, "integer");
+
+   text_val = atof(elm_object_text_get(obj));
+   elm_slider_min_max_get(slider, &min_val, &max_val);
+
+   if (text_val < min_val) val = min_val;
+   else if (text_val > max_val) val = max_val;
+   else val = text_val;
+
+   if (val != text_val)
+     {
+        if (integer) snprintf(buf, sizeof(buf), "%1.0f", val);
+        else snprintf(buf, sizeof(buf), "%1.2f", val);
+        elm_object_text_set(obj, buf);
+     }
+   else
+     elm_slider_value_set(slider, val);
+}
+
 static Evas_Object *
 slider_layout_create(Evas_Object *parent, attr_value *attr,
-                     double slider_val, Eina_Bool integer)
+                     const char *type, double slider_val, Eina_Bool integer)
 {
    //Layout
    Evas_Object *layout = elm_layout_add(parent);
    elm_layout_file_set(layout, EDJE_PATH, "slider_layout");
    evas_object_show(layout);
 
+   //Type
+   if (type)
+     elm_object_part_text_set(layout, "elm.text.type", type);
+
    //Slider
    Evas_Object *slider = elm_slider_add(layout);
-   if (integer) elm_slider_unit_format_set(slider, "%1.0f");
-   else elm_slider_unit_format_set(slider, "%1.2f");
    elm_slider_span_size_set(slider, 120);
    elm_slider_indicator_show_set(slider, EINA_FALSE);
    elm_slider_min_max_set(slider, attr->min, attr->max);
    elm_slider_value_set(slider, slider_val);
    evas_object_data_set(slider, "attr", attr);
+   evas_object_data_set(slider, "integer", (void *)(int) integer);
+
+   char slider_min[16];
+   char slider_max[16];
+   if (integer)
+     {
+        snprintf(slider_min, sizeof(slider_min), "%1.0f", attr->min);
+        snprintf(slider_max, sizeof(slider_max), "%1.0f", attr->max);
+     }
+   else
+     {
+        snprintf(slider_min, sizeof(slider_min), "%1.2f", attr->min);
+        snprintf(slider_max, sizeof(slider_max), "%1.2f", attr->max);
+     }
+   elm_object_part_text_set(layout, "elm.text.slider_min", slider_min);
+   elm_object_part_text_set(layout, "elm.text.slider_max", slider_max);
    elm_object_part_content_set(layout, "elm.swallow.slider", slider);
+
+   //Entry
+   char buf[128];
+   Evas_Object *entry = elm_entry_add(layout);
+   elm_entry_context_menu_disabled_set(entry, EINA_TRUE);
+   elm_entry_single_line_set(entry, EINA_TRUE);
+   evas_object_size_hint_weight_set(entry, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   if (integer) snprintf(buf, sizeof(buf), "%1.0f", slider_val);
+   else snprintf(buf, sizeof(buf), "%1.2f", slider_val);
+   elm_object_text_set(entry, buf);
+   elm_object_part_content_set(layout, "elm.swallow.entry", entry);
+
+   Elm_Entry_Filter_Accept_Set digits_filter_data;
+   Elm_Entry_Filter_Limit_Size limit_filter_data;
+   if (integer)
+     {
+        digits_filter_data.accepted = "0123456789";
+        digits_filter_data.rejected = NULL;
+        limit_filter_data.max_char_count = 4;
+     }
+   else
+     {
+        digits_filter_data.accepted = ".0123456789";
+        digits_filter_data.rejected = NULL;
+        limit_filter_data.max_char_count = 5;
+     }
+   elm_entry_markup_filter_append(entry, elm_entry_filter_accept_set,
+                                  &digits_filter_data);
+   elm_entry_markup_filter_append(entry, elm_entry_filter_limit_size,
+                                  &limit_filter_data);
+
+   evas_object_smart_callback_add(slider, "changed", slider_changed_cb, entry);
+   evas_object_smart_callback_add(entry, "changed", entry_changed_cb, slider);
 
    Evas_Object *btn;
    Evas_Object *img;
 
-   //Minus Button
+   //Up Button
    btn = elm_button_add(layout);
-   evas_object_smart_callback_add(btn, "clicked", btn_minus_cb, slider);
-   elm_object_part_content_set(layout, "elm.swallow.minus", btn);
+   evas_object_smart_callback_add(btn, "clicked", btn_up_cb, layout);
+   elm_object_part_content_set(layout, "elm.swallow.up", btn);
 
-   //Minus Image
+   //Up Image
    img = elm_image_add(btn);
-   elm_image_file_set(img, EDJE_PATH, "minus");
+   elm_image_file_set(img, EDJE_PATH, "up");
    elm_object_content_set(btn, img);
 
-   //Plus Button
+   //Down Button
    btn = elm_button_add(layout);
-   evas_object_smart_callback_add(btn, "clicked", btn_plus_cb, slider);
-   elm_object_part_content_set(layout, "elm.swallow.plus", btn);
+   evas_object_smart_callback_add(btn, "clicked", btn_down_cb, layout);
+   elm_object_part_content_set(layout, "elm.swallow.down", btn);
 
-   //Plus Image
+   //Down Image
    img = elm_image_add(btn);
-   elm_image_file_set(img, EDJE_PATH, "plus");
+   elm_image_file_set(img, EDJE_PATH, "down");
    elm_object_content_set(btn, img);
 
    return layout;
@@ -164,7 +273,7 @@ slider_layout_set(Evas_Object *ctxpopup, attr_value *attr, Eina_Bool integer)
 {
    Eina_Stringshare *type;
    Eina_Array_Iterator itr;
-   int i;
+   unsigned int i;
 
    //Box
    Evas_Object *box = elm_box_add(ctxpopup);
@@ -175,9 +284,10 @@ slider_layout_set(Evas_Object *ctxpopup, attr_value *attr, Eina_Bool integer)
 
    //Layout
    Evas_Object *layout;
-   for (i = 0; i < attr->cnt; i++)
+   EINA_ARRAY_ITER_NEXT(attr->strs, i, type, itr)
      {
-        layout = slider_layout_create(box, attr, attr->val[i], integer);
+        layout = slider_layout_create(box, attr, type, attr->val[i], integer);
+        if (i % 2) elm_object_signal_emit(layout, "odd,item,set", "");
         elm_box_pack_end(box, layout);
      }
 

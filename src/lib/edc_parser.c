@@ -393,8 +393,15 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    eina_inarray_push(td->attrs, &attr);
 
    //Type: Integer
+   Eina_Array *rgba = eina_array_new(4);
+   eina_array_push(rgba, eina_stringshare_add("R:"));
+   eina_array_push(rgba, eina_stringshare_add("G:"));
+   eina_array_push(rgba, eina_stringshare_add("B:"));
+   eina_array_push(rgba, eina_stringshare_add("A:"));
+
    memset(&attr, 0x00, sizeof(parser_attr));
    attr.keyword = eina_stringshare_add("color");
+   attr.value.strs = rgba;
    attr.value.cnt = 4;
    attr.value.min = 0;
    attr.value.max = 255;
@@ -402,9 +409,16 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    attr.value.prepend_str = ATTR_PREPEND_COLON;
    attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
+
+   rgba = eina_array_new(4);
+   eina_array_push(rgba, eina_stringshare_add("R:"));
+   eina_array_push(rgba, eina_stringshare_add("G:"));
+   eina_array_push(rgba, eina_stringshare_add("B:"));
+   eina_array_push(rgba, eina_stringshare_add("A:"));
 
    memset(&attr, 0x00, sizeof(parser_attr));
    attr.keyword = eina_stringshare_add("color2");
+   attr.value.strs = rgba;
    attr.value.cnt = 4;
    attr.value.min = 0;
    attr.value.max = 255;
@@ -412,9 +426,16 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    attr.value.prepend_str = ATTR_PREPEND_COLON;
    attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
+
+   rgba = eina_array_new(4);
+   eina_array_push(rgba, eina_stringshare_add("R:"));
+   eina_array_push(rgba, eina_stringshare_add("G:"));
+   eina_array_push(rgba, eina_stringshare_add("B:"));
+   eina_array_push(rgba, eina_stringshare_add("A:"));
 
    memset(&attr, 0x00, sizeof(parser_attr));
    attr.keyword = eina_stringshare_add("color3");
+   attr.value.strs = rgba;
    attr.value.cnt = 4;
    attr.value.min = 0;
    attr.value.max = 255;
@@ -423,8 +444,12 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
 
+   Eina_Array *scale = eina_array_new(1);
+   eina_array_push(scale, eina_stringshare_add("Scale:"));
+
    memset(&attr, 0x00, sizeof(parser_attr));
    attr.keyword = eina_stringshare_add("scale");
+   attr.value.strs = scale;
    attr.value.cnt = 1;
    attr.value.min = 0;
    attr.value.max = 1;
@@ -433,8 +458,13 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
 
+   Eina_Array *xy = eina_array_new(2);
+   eina_array_push(xy, eina_stringshare_add("X:"));
+   eina_array_push(xy, eina_stringshare_add("Y:"));
+
    memset(&attr, 0x00, sizeof(parser_attr));
    attr.keyword = eina_stringshare_add("fixed");
+   attr.value.strs = xy;
    attr.value.cnt = 2;
    attr.value.min = 0;
    attr.value.max = 1;
@@ -443,8 +473,12 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
 
+   Eina_Array *size = eina_array_new(1);
+   eina_array_push(size, eina_stringshare_add("Size:"));
+
    memset(&attr, 0x00, sizeof(parser_attr));
    attr.keyword = eina_stringshare_add("size");
+   attr.value.strs = size;
    attr.value.cnt = 1;
    attr.value.min = 1;
    attr.value.max = 255;
@@ -453,8 +487,13 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
 
+   Eina_Array *wh = eina_array_new(2);
+   eina_array_push(wh, eina_stringshare_add("W:"));
+   eina_array_push(wh, eina_stringshare_add("H:"));
+
    memset(&attr, 0x00, sizeof(parser_attr));
    attr.keyword = eina_stringshare_add("min");
+   attr.value.strs = wh;
    attr.value.cnt = 2;
    attr.value.min = 0;
    attr.value.max = 1000;
@@ -462,9 +501,14 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    attr.value.prepend_str = ATTR_PREPEND_COLON;
    attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
+
+   wh = eina_array_new(2);
+   eina_array_push(wh, eina_stringshare_add("W:"));
+   eina_array_push(wh, eina_stringshare_add("H:"));
 
    memset(&attr, 0x00, sizeof(parser_attr));
    attr.keyword = eina_stringshare_add("max");
+   attr.value.strs = wh;
    attr.value.cnt = 2;
    attr.value.min = 0;
    attr.value.max = 1000;
@@ -473,8 +517,12 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
 
+   Eina_Array *mouse_events = eina_array_new(1);
+   eina_array_push(mouse_events, eina_stringshare_add("Mouse Events:"));
+
    memset(&attr, 0x00, sizeof(parser_attr));
    attr.keyword = eina_stringshare_add("mouse_events");
+   attr.value.strs = mouse_events;
    attr.value.cnt = 1;
    attr.value.min = 0;
    attr.value.max = 1;
@@ -484,8 +532,13 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    eina_inarray_push(td->attrs, &attr);
 
    //Type: Float
+   xy = eina_array_new(2);
+   eina_array_push(xy, eina_stringshare_add("X:"));
+   eina_array_push(xy, eina_stringshare_add("Y:"));
+
    memset(&attr, 0x00, sizeof(parser_attr));
    attr.keyword = eina_stringshare_add("relative");
+   attr.value.strs = xy;
    attr.value.cnt = 2;
    attr.value.min = 0.0;
    attr.value.max = 1;
@@ -494,8 +547,13 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
 
+   wh = eina_array_new(2);
+   eina_array_push(wh, eina_stringshare_add("W:"));
+   eina_array_push(wh, eina_stringshare_add("H:"));
+
    memset(&attr, 0x00, sizeof(parser_attr));
    attr.keyword = eina_stringshare_add("aspect");
+   attr.value.strs = wh;
    attr.value.cnt = 2;
    attr.value.min = 0.0;
    attr.value.max = 1.0;
@@ -504,8 +562,13 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
 
+   xy = eina_array_new(2);
+   eina_array_push(xy, eina_stringshare_add("X:"));
+   eina_array_push(xy, eina_stringshare_add("Y:"));
+
    memset(&attr, 0x00, sizeof(parser_attr));
    attr.keyword = eina_stringshare_add("align");
+   attr.value.strs = xy;
    attr.value.cnt = 2;
    attr.value.min = 0.0;
    attr.value.max = 1.0;
