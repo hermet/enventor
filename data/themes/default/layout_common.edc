@@ -1565,7 +1565,7 @@ group { name: "slider_layout";
          type: RECT;
          scale: 1;
          description { state: "default" 0.0;
-            min: 278 52;
+            min: 240 1;
             color: 56 56 56 255;
          }
          description { state: "odd" 0.0;
@@ -1581,7 +1581,7 @@ group { name: "slider_layout";
             rel2.to: "base";
             rel2.relative: 0.0 1.0;
             align: 0.0 0.5;
-            min: 50 0;
+            min: 35 0;
             fixed: 1 0;
          }
       }
@@ -1590,12 +1590,13 @@ group { name: "slider_layout";
          scale: 1;
          description { state: "default" 0.0;
             rel1.to: "text_base";
+            rel1.offset: 5 0;
             rel2.to: "text_base";
             align: 0.0 0.5;
             fixed: 1 0;
             text {
                font: FN;
-               size: 12;
+               size: 10;
                align: 0.0 0.5;
                min: 1 0;
                ellipsis: -1;
@@ -1611,7 +1612,7 @@ group { name: "slider_layout";
             rel1.relative: 1.0 0.0;
             rel2.to: "text_base";
             align: 0.0 0.5;
-            min: 10 0;
+            min: 5 0;
             fixed: 1 0;
          }
       }
@@ -1627,7 +1628,7 @@ group { name: "slider_layout";
             fixed: 1 1;
             text {
                font: FN;
-               size: 10;
+               size: 8;
                align: 0.0 0.0;
                min: 1 1;
                ellipsis: -1;
@@ -1647,7 +1648,7 @@ group { name: "slider_layout";
             fixed: 1 1;
             text {
                font: FN;
-               size: 10;
+               size: 8;
                align: 0.0 0.5;
                min: 1 1;
                ellipsis: -1;
@@ -1662,69 +1663,58 @@ group { name: "slider_layout";
             rel1.to_x: "padding1";
             rel1.to_y: "elm.text.slider_min";
             rel1.relative: 1.0 1.0;
-            rel2.to: "padding2";
-            rel2.relative: 0.0 1.0;
+            rel2.to: "padding1";
+            rel2.relative: 1.0 1.0;
+            align: 0 0;
+            min: 125 0;
+            fixed: 1 0;
          }
       }
       part { name: "padding2";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            rel1.to_x: "entry_base";
-            rel1.to_y: "base";
-            rel2.to_x: "entry_base";
-            rel2.to_y: "base";
-            rel2.relative: 0.0 1.0;
-            align: 1.0 0.5;
-            min: 10 0;
+            rel1.to_x: "elm.swallow.slider";
+            rel2.to_x: "elm.swallow.slider";
+            rel1.relative: 1.0 0.0;
+            rel2.relative: 1.0 1.0;
+            align: 0.0 0.5;
+            min: 5 0;
             fixed: 1 0;
-         }
-      }
-      part { name: "entry_base";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: 40 0;
-            fixed: 1 0;
-            align: 1.0 0.5;
-            rel1.to_x: "elm.swallow.up";
-            rel1.to_y: "base";
-            rel2.to_x: "elm.swallow.down";
-            rel2.to_y: "base";
-            rel2.relative: 0.0 1.0;
          }
       }
       part { name: "elm.swallow.entry";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
-            rel1.to: "entry_base";
-            rel2.to: "entry_base";
-         }
-      }
-      part { name: "elm.swallow.up";
-         type: SWALLOW;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: 24 24;
-            fixed: 1 1;
-            align: 1.0 1.0;
-            rel1.to: "base";
-            rel1.relative: 1.0 0.5;
-            rel2.to: "base";
-            rel2.relative: 1.0 0.5;
+            rel1.to_x: "padding2";
+            rel2.to_x: "elm.swallow.down";
+            rel2.relative: 0 1;
+            align: 1 0.5;
+            max: 30 999999;
          }
       }
       part { name: "elm.swallow.down";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
-            min: 24 24;
+            min: 10 20;
             fixed: 1 1;
-            align: 1.0 0.0;
-            rel1.to: "base";
+            align: 1.0 0.5;
+            rel1.to: "elm.swallow.up";
+            rel1.relative: 0.0 0.5;
+            rel2.to: "elm.swallow.up";
+            rel2.relative: 0.0 0.5;
+         }
+      }
+      part { name: "elm.swallow.up";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 10 20;
+            fixed: 1 1;
+            align: 1.0 0.5;
             rel1.relative: 1.0 0.5;
-            rel2.to: "base";
             rel2.relative: 1.0 0.5;
          }
       }

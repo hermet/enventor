@@ -65,4 +65,6 @@ EXTRA_DIST = \
    live_text.png \
    live_textblock.png \
    live_edit.png \
-   new.png
+   new.png \
+   slider_up.png \
+   slider_down.png

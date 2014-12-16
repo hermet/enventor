@@ -1,6 +1,6 @@
 images {
-   image: "sym_up_light_normal.png" COMP;
-   image: "sym_down_light_normal.png" COMP;
+   image: "slider_up.png" COMP;
+   image: "slider_down.png" COMP;
    image: "menu.png" COMP;
    image: "find.png" COMP;
    image: "highlight.png" COMP;
@@ -111,7 +111,7 @@ group { name: "up";
       part { name: "img";
          type: IMAGE;
          description { state: "default" 0.0;
-            image.normal: "sym_up_light_normal.png";
+            image.normal: "slider_up.png";
          }
       }
    }
@@ -122,7 +122,7 @@ group { name: "down";
       part { name: "img";
          type: IMAGE;
          description { state: "default" 0.0;
-            image.normal: "sym_down_light_normal.png";
+            image.normal: "slider_down.png";
          }
       }
    }
