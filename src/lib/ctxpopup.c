@@ -218,8 +218,8 @@ toggle_layout_create(Evas_Object *parent, attr_value *attr,
    //Toggle
    Evas_Object *toggle = elm_check_add(layout);
    elm_object_style_set(toggle, "toggle");
-   elm_object_part_text_set(toggle, "on", "Enable");
-   elm_object_part_text_set(toggle, "off", "Disable");
+   elm_object_part_text_set(toggle, "on", "On");
+   elm_object_part_text_set(toggle, "off", "Off");
    elm_check_state_set(toggle, toggle_val);
    evas_object_data_set(toggle, "attr", attr);
    elm_object_part_content_set(layout, "elm.swallow.toggle", toggle);
