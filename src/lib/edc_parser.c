@@ -392,6 +392,31 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
 
+   Eina_Array *signal = eina_array_new(15);
+   eina_array_push(signal, eina_stringshare_add("\"mouse,down,*\""));
+   eina_array_push(signal, eina_stringshare_add("\"mouse,down,1\""));
+   eina_array_push(signal, eina_stringshare_add("\"mouse,down,2\""));
+   eina_array_push(signal, eina_stringshare_add("\"mouse,down,3\""));
+   eina_array_push(signal, eina_stringshare_add("\"mouse,up,*\""));
+   eina_array_push(signal, eina_stringshare_add("\"mouse,up,1\""));
+   eina_array_push(signal, eina_stringshare_add("\"mouse,up,2\""));
+   eina_array_push(signal, eina_stringshare_add("\"mouse,up,3\""));
+   eina_array_push(signal, eina_stringshare_add("\"mouse,clicked,*\""));
+   eina_array_push(signal, eina_stringshare_add("\"mouse,clicked,1\""));
+   eina_array_push(signal, eina_stringshare_add("\"mouse,clicked,2\""));
+   eina_array_push(signal, eina_stringshare_add("\"mouse,clicked,3\""));
+   eina_array_push(signal, eina_stringshare_add("\"mouse,move\""));
+   eina_array_push(signal, eina_stringshare_add("\"mouse,in\""));
+   eina_array_push(signal, eina_stringshare_add("\"mouse,out\""));
+
+   memset(&attr, 0x00, sizeof(parser_attr));
+   attr.keyword = eina_stringshare_add("signal");
+   attr.value.strs = signal;
+   attr.value.type = ATTR_VALUE_CONSTANT;
+   attr.value.prepend_str = ATTR_PREPEND_COLON;
+   attr.value.append_str = ATTR_APPEND_SEMICOLON;
+   eina_inarray_push(td->attrs, &attr);
+
    //Type: Integer
    Eina_Array *rgba = eina_array_new(4);
    eina_array_push(rgba, eina_stringshare_add("R:"));
