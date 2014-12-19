@@ -602,6 +602,107 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
 
+   Eina_Array *time = eina_array_new(1);
+   eina_array_push(time, eina_stringshare_add("Time:"));
+
+   memset(&attr, 0x00, sizeof(parser_attr));
+   attr.keyword = eina_stringshare_add("LINEAR");
+   attr.value.strs = time;
+   attr.value.cnt = 1;
+   attr.value.min = 0.0;
+   attr.value.max = 5.0;
+   attr.value.type = ATTR_VALUE_FLOAT;
+   attr.value.prepend_str = ATTR_PREPEND_NONE;
+   attr.value.append_str = ATTR_APPEND_SEMICOLON;
+   eina_inarray_push(td->attrs, &attr);
+
+   time = eina_array_new(1);
+   eina_array_push(time, eina_stringshare_add("Time:"));
+
+   memset(&attr, 0x00, sizeof(parser_attr));
+   attr.keyword = eina_stringshare_add("ACCELERATE");
+   attr.value.strs = time;
+   attr.value.cnt = 1;
+   attr.value.min = 0.0;
+   attr.value.max = 5.0;
+   attr.value.type = ATTR_VALUE_FLOAT;
+   attr.value.prepend_str = ATTR_PREPEND_NONE;
+   attr.value.append_str = ATTR_APPEND_SEMICOLON;
+   eina_inarray_push(td->attrs, &attr);
+
+   time = eina_array_new(1);
+   eina_array_push(time, eina_stringshare_add("Time:"));
+
+   memset(&attr, 0x00, sizeof(parser_attr));
+   attr.keyword = eina_stringshare_add("DECELERATE");
+   attr.value.strs = time;
+   attr.value.cnt = 1;
+   attr.value.min = 0.0;
+   attr.value.max = 5.0;
+   attr.value.type = ATTR_VALUE_FLOAT;
+   attr.value.prepend_str = ATTR_PREPEND_NONE;
+   attr.value.append_str = ATTR_APPEND_SEMICOLON;
+   eina_inarray_push(td->attrs, &attr);
+
+   time = eina_array_new(1);
+   eina_array_push(time, eina_stringshare_add("Time:"));
+
+   memset(&attr, 0x00, sizeof(parser_attr));
+   attr.keyword = eina_stringshare_add("SINUSOIDAL");
+   attr.value.strs = time;
+   attr.value.cnt = 1;
+   attr.value.min = 0.0;
+   attr.value.max = 5.0;
+   attr.value.type = ATTR_VALUE_FLOAT;
+   attr.value.prepend_str = ATTR_PREPEND_NONE;
+   attr.value.append_str = ATTR_APPEND_SEMICOLON;
+   eina_inarray_push(td->attrs, &attr);
+
+   Eina_Array *time_factor = eina_array_new(2);
+   eina_array_push(time_factor, eina_stringshare_add("Time:"));
+   eina_array_push(time_factor, eina_stringshare_add("Factor:"));
+
+   memset(&attr, 0x00, sizeof(parser_attr));
+   attr.keyword = eina_stringshare_add("ACCELERATE_FACTOR");
+   attr.value.strs = time_factor;
+   attr.value.cnt = 2;
+   attr.value.min = 0.0;
+   attr.value.max = 5.0;
+   attr.value.type = ATTR_VALUE_FLOAT;
+   attr.value.prepend_str = ATTR_PREPEND_NONE;
+   attr.value.append_str = ATTR_APPEND_SEMICOLON;
+   eina_inarray_push(td->attrs, &attr);
+
+   time_factor = eina_array_new(2);
+   eina_array_push(time_factor, eina_stringshare_add("Time:"));
+   eina_array_push(time_factor, eina_stringshare_add("Factor:"));
+
+   memset(&attr, 0x00, sizeof(parser_attr));
+   attr.keyword = eina_stringshare_add("DECELERATE_FACTOR");
+   attr.value.strs = time_factor;
+   attr.value.cnt = 2;
+   attr.value.min = 0.0;
+   attr.value.max = 5.0;
+   attr.value.type = ATTR_VALUE_FLOAT;
+   attr.value.prepend_str = ATTR_PREPEND_NONE;
+   attr.value.append_str = ATTR_APPEND_SEMICOLON;
+   eina_inarray_push(td->attrs, &attr);
+
+   time_factor = eina_array_new(2);
+   eina_array_push(time_factor, eina_stringshare_add("Time:"));
+   eina_array_push(time_factor, eina_stringshare_add("Factor:"));
+
+   memset(&attr, 0x00, sizeof(parser_attr));
+   attr.keyword = eina_stringshare_add("SINUSOIDAL_FACTOR");
+   attr.value.strs = time_factor;
+   attr.value.cnt = 2;
+   attr.value.min = 0.0;
+   attr.value.max = 5.0;
+   attr.value.type = ATTR_VALUE_FLOAT;
+   attr.value.prepend_str = ATTR_PREPEND_NONE;
+   attr.value.append_str = ATTR_APPEND_SEMICOLON;
+   eina_inarray_push(td->attrs, &attr);
+
    //Type: Part
    memset(&attr, 0x00, sizeof(parser_attr));
    attr.keyword = eina_stringshare_add("target");
