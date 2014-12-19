@@ -453,7 +453,7 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    attr.value.cnt = 1;
    attr.value.min = 0;
    attr.value.max = 1;
-   attr.value.type = ATTR_VALUE_INTEGER;
+   attr.value.type = ATTR_VALUE_BOOLEAN;
    attr.value.prepend_str = ATTR_PREPEND_COLON;
    attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
@@ -468,7 +468,7 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    attr.value.cnt = 2;
    attr.value.min = 0;
    attr.value.max = 1;
-   attr.value.type = ATTR_VALUE_INTEGER;
+   attr.value.type = ATTR_VALUE_BOOLEAN;
    attr.value.prepend_str = ATTR_PREPEND_COLON;
    attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
@@ -526,7 +526,7 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    attr.value.cnt = 1;
    attr.value.min = 0;
    attr.value.max = 1;
-   attr.value.type = ATTR_VALUE_INTEGER;
+   attr.value.type = ATTR_VALUE_BOOLEAN;
    attr.value.prepend_str = ATTR_PREPEND_COLON;
    attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);

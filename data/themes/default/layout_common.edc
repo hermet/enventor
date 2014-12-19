@@ -1559,6 +1559,91 @@ group { name: "preview_layout";
    }
 }
 
+group { name: "toggle_layout";
+   parts {
+      part { name: "base";
+         type: RECT;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 150 1;
+            color: 56 56 56 255;
+         }
+         description { state: "odd" 0.0;
+            inherit: "default" 0.0;
+            color: 64 64 64 255;
+         }
+      }
+      part { name: "text_base";
+         type: SPACER;
+         description { state: "default" 0.0;
+            rel1.to: "base";
+            rel2.to: "base";
+            rel2.relative: 0.0 1.0;
+            align: 0.0 0.5;
+            min: 35 0;
+            fixed: 1 0;
+         }
+      }
+      part { name: "elm.text.type";
+         type: TEXT;
+         description { state: "default" 0.0;
+            rel1.to: "text_base";
+            rel1.offset: 5 0;
+            rel2.to: "text_base";
+            align: 0.0 0.5;
+            fixed: 1 0;
+            text {
+               font: FN;
+               size: 10;
+               align: 0.0 0.5;
+               min: 1 0;
+               ellipsis: -1;
+            }
+            color: COL_NM;
+         }
+      }
+      part { name: "padding1";
+         type: SPACER;
+         description { state: "default" 0.0;
+            rel1.to: "text_base";
+            rel1.relative: 1.0 0.0;
+            rel2.to: "text_base";
+            align: 0.0 0.5;
+            min: 5 0;
+            fixed: 1 0;
+         }
+      }
+      part { name: "elm.swallow.toggle";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            rel1.to: "padding1";
+            rel1.relative: 1.0 0.0;
+            rel2.to: "padding2";
+            rel2.relative: 0.0 1.0;
+         }
+      }
+      part { name: "padding2";
+         type: SPACER;
+         description { state: "default" 0.0;
+            rel1.to: "base";
+            rel1.relative: 1.0 0.0;
+            rel2.to: "base";
+            align: 1.0 0.5;
+            min: 5 0;
+            fixed: 1 0;
+         }
+      }
+   }
+   programs {
+      program { name: "odd_item_set";
+         signal: "odd,item,set";
+         source: "";
+         action: STATE_SET "odd" 0.0;
+         target: "base";
+      }
+   }
+}
+
 group { name: "slider_layout";
    parts {
       part { name: "base";

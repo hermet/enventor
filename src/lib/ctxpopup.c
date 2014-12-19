@@ -78,6 +78,37 @@ ctxpopup_it_cb(void *data, Evas_Object *obj, void *event_info)
 }
 
 static void
+toggle_dismiss_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
+{
+   attr_value *attr = data;
+   Evas_Object *box = elm_object_content_get(obj);
+   Evas_Object *layout;
+   Evas_Object *toggle;
+   Eina_List *box_children = elm_box_children_get(box);
+   Eina_List *l;
+   char candidate[512];
+   char buf[128];
+
+   if (eina_list_count(box_children) == 0) return;
+
+   snprintf(candidate, sizeof(candidate), "%s", attr->prepend_str);
+
+   EINA_LIST_FOREACH(box_children, l, layout)
+     {
+        toggle = elm_object_part_content_get(layout,
+                                             "elm.swallow.toggle");
+        snprintf(buf, sizeof(buf), "%d", (int) elm_check_state_get(toggle));
+        strcat(candidate, buf);
+        strcat(candidate, " ");
+     }
+   candidate[strlen(candidate) - 1] = '\0'; //Remove last appended " ".
+   strcat(candidate, attr->append_str);
+
+   ctxpopup_data *ctxdata = evas_object_data_get(obj, "ctxpopup_data");
+   ctxdata->selected_cb(ctxdata->data, obj, candidate);
+}
+
+static void
 slider_dismiss_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
 {
    attr_value *attr = data;
@@ -169,6 +200,60 @@ entry_changed_cb(void *data, Evas_Object *obj, void *event_info)
      }
    else
      elm_slider_value_set(slider, val);
+}
+
+static Evas_Object *
+toggle_layout_create(Evas_Object *parent, attr_value *attr,
+                     const char *type, Eina_Bool toggle_val)
+{
+   //Layout
+   Evas_Object *layout = elm_layout_add(parent);
+   elm_layout_file_set(layout, EDJE_PATH, "toggle_layout");
+   evas_object_show(layout);
+
+   //Type
+   if (type)
+     elm_object_part_text_set(layout, "elm.text.type", type);
+
+   //Toggle
+   Evas_Object *toggle = elm_check_add(layout);
+   elm_object_style_set(toggle, "toggle");
+   elm_object_part_text_set(toggle, "on", "Enable");
+   elm_object_part_text_set(toggle, "off", "Disable");
+   elm_check_state_set(toggle, toggle_val);
+   evas_object_data_set(toggle, "attr", attr);
+   elm_object_part_content_set(layout, "elm.swallow.toggle", toggle);
+
+   return layout;
+}
+
+static void
+toggle_layout_set(Evas_Object *ctxpopup, attr_value *attr)
+{
+   Eina_Stringshare *type;
+   Eina_Array_Iterator itr;
+   unsigned int i;
+
+   //Box
+   Evas_Object *box = elm_box_add(ctxpopup);
+   evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND,
+                                    EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(box, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_show(box);
+
+   //Layout
+   Evas_Object *layout;
+   EINA_ARRAY_ITER_NEXT(attr->strs, i, type, itr)
+     {
+        layout = toggle_layout_create(box, attr, type,
+                                      (Eina_Bool) roundf(attr->val[i]));
+        if (i % 2) elm_object_signal_emit(layout, "odd,item,set", "");
+        elm_box_pack_end(box, layout);
+     }
+
+   elm_object_content_set(ctxpopup, box);
+   evas_object_smart_callback_add(ctxpopup, "dismissed", toggle_dismiss_cb,
+                                  (void *) attr);
 }
 
 static Evas_Object *
@@ -533,6 +618,11 @@ ctxpopup_candidate_list_create(edit_data *ed, attr_value *attr,
 
    switch (attr->type)
      {
+        case ATTR_VALUE_BOOLEAN:
+          {
+             toggle_layout_set(ctxpopup, attr);
+             break;
+          }
         case ATTR_VALUE_INTEGER:
           {
              slider_layout_set(ctxpopup, attr, EINA_TRUE);

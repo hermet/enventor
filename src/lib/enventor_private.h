@@ -41,13 +41,14 @@ typedef struct editor_s edit_data;
 
 typedef enum attr_value_type
 {
-   ATTR_VALUE_INTEGER = 1,
-   ATTR_VALUE_FLOAT = 2,
-   ATTR_VALUE_CONSTANT = 4,
-   ATTR_VALUE_PART = 8,
-   ATTR_VALUE_STATE = 16,
-   ATTR_VALUE_IMAGE = 32,
-   ATTR_VALUE_PROGRAM = 64
+   ATTR_VALUE_BOOLEAN = 1,
+   ATTR_VALUE_INTEGER = 2,
+   ATTR_VALUE_FLOAT = 4,
+   ATTR_VALUE_CONSTANT = 8,
+   ATTR_VALUE_PART = 16,
+   ATTR_VALUE_STATE = 32,
+   ATTR_VALUE_IMAGE = 64,
+   ATTR_VALUE_PROGRAM = 128
 } attr_value_type;
 
 struct attr_value_s
