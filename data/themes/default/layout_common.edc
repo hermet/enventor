@@ -1450,6 +1450,13 @@ group { name: "live_edit_layout";
 
 group { name: "viewer_layout_bg";
    parts {
+      part { name: "clipper";
+         type: RECT;
+         description { state: "default" 0.0;
+            rel1.to: "bg";
+            rel2.to: "bg";
+         }
+      }
       part { name: "bg";
          type: IMAGE;
          description { state: "default" 0.0;
@@ -1464,6 +1471,7 @@ group { name: "viewer_layout_bg";
       }
       part { name: "elm.swallow.content";
          type: SWALLOW;
+         clip_to: "clipper";
          description { state: "default" 0.0;
          }
       }
