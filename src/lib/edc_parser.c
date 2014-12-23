@@ -483,6 +483,48 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
 
+   Eina_Array *smooth = eina_array_new(1);
+   eina_array_push(smooth, eina_stringshare_add("Smooth:"));
+
+   memset(&attr, 0x00, sizeof(parser_attr));
+   attr.keyword = eina_stringshare_add("smooth");
+   attr.value.strs = smooth;
+   attr.value.cnt = 1;
+   attr.value.min = 0;
+   attr.value.max = 1;
+   attr.value.type = ATTR_VALUE_BOOLEAN;
+   attr.value.prepend_str = ATTR_PREPEND_COLON;
+   attr.value.append_str = ATTR_APPEND_SEMICOLON;
+   eina_inarray_push(td->attrs, &attr);
+
+   Eina_Array *visible = eina_array_new(1);
+   eina_array_push(visible, eina_stringshare_add("Visibility:"));
+
+   memset(&attr, 0x00, sizeof(parser_attr));
+   attr.keyword = eina_stringshare_add("visible");
+   attr.value.strs = visible;
+   attr.value.cnt = 1;
+   attr.value.min = 0;
+   attr.value.max = 1;
+   attr.value.type = ATTR_VALUE_BOOLEAN;
+   attr.value.prepend_str = ATTR_PREPEND_COLON;
+   attr.value.append_str = ATTR_APPEND_SEMICOLON;
+   eina_inarray_push(td->attrs, &attr);
+
+   Eina_Array *onoff = eina_array_new(1);
+   eina_array_push(onoff, eina_stringshare_add("Map:"));
+
+   memset(&attr, 0x00, sizeof(parser_attr));
+   attr.keyword = eina_stringshare_add("on");
+   attr.value.strs = onoff;
+   attr.value.cnt = 1;
+   attr.value.min = 0;
+   attr.value.max = 1;
+   attr.value.type = ATTR_VALUE_BOOLEAN;
+   attr.value.prepend_str = ATTR_PREPEND_COLON;
+   attr.value.append_str = ATTR_APPEND_SEMICOLON;
+   eina_inarray_push(td->attrs, &attr);
+
    Eina_Array *xy = eina_array_new(2);
    eina_array_push(xy, eina_stringshare_add("X:"));
    eina_array_push(xy, eina_stringshare_add("Y:"));
