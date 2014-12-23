@@ -401,6 +401,12 @@ const char *AUTOCOMP_PREFER[AUTOCOMP_PREFER_LINE_CNT] =
    "prefer: ;",
 };
 
+#define AUTOCOMP_SMOOTH_LINE_CNT 1
+const char *AUTOCOMP_SMOOTH[AUTOCOMP_SMOOTH_LINE_CNT] =
+{
+   "smooth: ;",
+};
+
 #define AUTOCOMP_SPAN_LINE_CNT 1
 const char *AUTOCOMP_SPAN[AUTOCOMP_SPAN_LINE_CNT] =
 {
@@ -419,4 +425,4 @@ const char *AUTOCOMP_WEIGHT[AUTOCOMP_WEIGHT_LINE_CNT] =
    "weight: ;",
 };
 
-#define COMPSET_CNT 64
+#define COMPSET_CNT 65

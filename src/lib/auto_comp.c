@@ -121,6 +121,7 @@ init_thread_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
    COMPDATA_SET(ad, "padding",AUTOCOMP_PADDING, 1, 0);
    COMPDATA_SET(ad, "position", AUTOCOMP_POSITION, 1, 0);
    COMPDATA_SET(ad, "prefer", AUTOCOMP_PREFER, 1, 0);
+   COMPDATA_SET(ad, "smooth", AUTOCOMP_SMOOTH, 1, 0);
    COMPDATA_SET(ad, "span", AUTOCOMP_SPAN, 1, 0);
    COMPDATA_SET(ad, "spread", AUTOCOMP_SPREAD, 1, 0);
    COMPDATA_SET(ad, "weight", AUTOCOMP_WEIGHT, 1, 0);
