@@ -66,6 +66,7 @@ group "syntax_color_group" struct {
             value "key" string: "after";
             value "key" string: "alias";
             value "key" string: "align";
+            value "key" string: "anti_alias";
             value "key" string: "aspect_mode";
             value "key" string: "aspect_preference";
             value "key" string: "aspect";
