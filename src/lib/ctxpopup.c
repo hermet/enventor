@@ -86,7 +86,7 @@ toggle_dismiss_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
    Evas_Object *toggle;
    Eina_List *box_children = elm_box_children_get(box);
    Eina_List *l;
-   char candidate[512];
+   char candidate[512] = {0};
    char buf[128];
 
    if (eina_list_count(box_children) == 0) return;
@@ -117,7 +117,7 @@ slider_dismiss_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
    Evas_Object *slider;
    Eina_List *box_children = elm_box_children_get(box);
    Eina_List *l;
-   char candidate[512];
+   char candidate[512] = {0};
    char buf[128];
 
    if (eina_list_count(box_children) == 0) return;
