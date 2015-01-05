@@ -44,6 +44,12 @@ struct syntax_color_s
    Eina_Bool ready: 1;
 };
 
+typedef struct color_hash_foreach_data
+{
+   Eina_Stringshare *cur_col;
+   Eina_Stringshare *new_col;
+} color_hash_foreach_data;
+
 static Eet_Data_Descriptor *edd_scg = NULL;
 static Eet_Data_Descriptor *edd_color = NULL;
 static syntax_color_group *scg = NULL;
@@ -691,6 +697,138 @@ color_term(color_data *cd)
      eina_stringshare_del(cd->cols[i]);
 
    free(cd);
+}
+
+static Eina_Bool
+color_hash_foreach_cb(const Eina_Hash *hash, const void *key, void *data, void *fdata)
+{
+   Eina_Inarray *inarray = data;
+   color_hash_foreach_data *fd = fdata;
+   color_tuple *tuple;
+
+   EINA_INARRAY_FOREACH(inarray, tuple)
+     {
+        if (tuple->col == fd->cur_col)
+          tuple->col = fd->new_col;
+     }
+   return EINA_TRUE;
+}
+
+void
+color_set(color_data *cd, Enventor_Syntax_Color_Type color_type, const char *val)
+{
+   Eina_Stringshare *col;
+   color_hash_foreach_data fd;
+
+   switch (color_type)
+     {
+        case ENVENTOR_SYNTAX_COLOR_STRING:
+          {
+             eina_stringshare_del(cd->col_string);
+             cd->col_string = eina_stringshare_add(val);
+             break;
+          }
+        case ENVENTOR_SYNTAX_COLOR_COMMENT:
+          {
+             eina_stringshare_del(cd->col_comment);
+             cd->col_comment = eina_stringshare_add(val);
+             break;
+          }
+        case ENVENTOR_SYNTAX_COLOR_MACRO:
+          {
+             eina_stringshare_del(cd->col_macro);
+             cd->col_macro = eina_stringshare_add(val);
+             break;
+          }
+        case ENVENTOR_SYNTAX_COLOR_SYMBOL:
+          {
+             col = eina_stringshare_add(val);
+             fd.cur_col = cd->cols[0];
+             fd.new_col = col;
+             eina_hash_foreach(cd->color_hash, color_hash_foreach_cb, &fd);
+             eina_stringshare_del(cd->cols[0]);
+             cd->cols[0] = col;
+             break;
+          }
+        case ENVENTOR_SYNTAX_COLOR_MAIN_KEYWORD:
+          {
+             col = eina_stringshare_add(val);
+             fd.cur_col = cd->cols[1];
+             fd.new_col = col;
+             eina_hash_foreach(cd->color_hash, color_hash_foreach_cb, &fd);
+             eina_stringshare_del(cd->cols[1]);
+             cd->cols[1] = col;
+             break;
+          }
+        case ENVENTOR_SYNTAX_COLOR_SUB_KEYWORD:
+          {
+             col = eina_stringshare_add(val);
+             fd.cur_col = cd->cols[2];
+             fd.new_col = col;
+             eina_hash_foreach(cd->color_hash, color_hash_foreach_cb, &fd);
+             eina_stringshare_del(cd->cols[2]);
+             cd->cols[2] = col;
+             break;
+          }
+        case ENVENTOR_SYNTAX_COLOR_CONSTANT:
+          {
+             col = eina_stringshare_add(val);
+             fd.cur_col = cd->cols[3];
+             fd.new_col = col;
+             eina_hash_foreach(cd->color_hash, color_hash_foreach_cb, &fd);
+             eina_stringshare_del(cd->cols[3]);
+             cd->cols[3] = col;
+             break;
+          }
+        case ENVENTOR_SYNTAX_COLOR_SCRIPT_FUNC:
+          {
+             col = eina_stringshare_add(val);
+             fd.cur_col = cd->cols[4];
+             fd.new_col = col;
+             eina_hash_foreach(cd->color_hash, color_hash_foreach_cb, &fd);
+             eina_stringshare_del(cd->cols[4]);
+             cd->cols[4] = col;
+             break;
+          }
+        case ENVENTOR_SYNTAX_COLOR_SCRIPT_KEYWORD:
+          {
+             col = eina_stringshare_add(val);
+             fd.cur_col = cd->cols[5];
+             fd.new_col = col;
+             eina_hash_foreach(cd->color_hash, color_hash_foreach_cb, &fd);
+             eina_stringshare_del(cd->cols[5]);
+             cd->cols[5] = col;
+             break;
+          }
+     }
+}
+
+const char *
+color_get(color_data *cd, Enventor_Syntax_Color_Type color_type)
+{
+   switch (color_type)
+     {
+        case ENVENTOR_SYNTAX_COLOR_STRING:
+          return (const char *) cd->col_string;
+        case ENVENTOR_SYNTAX_COLOR_COMMENT:
+          return (const char *) cd->col_comment;
+        case ENVENTOR_SYNTAX_COLOR_MACRO:
+          return (const char *) cd->col_macro;
+        case ENVENTOR_SYNTAX_COLOR_SYMBOL:
+          return (const char *) cd->cols[0];
+        case ENVENTOR_SYNTAX_COLOR_MAIN_KEYWORD:
+          return (const char *) cd->cols[1];
+        case ENVENTOR_SYNTAX_COLOR_SUB_KEYWORD:
+          return (const char *) cd->cols[2];
+        case ENVENTOR_SYNTAX_COLOR_CONSTANT:
+          return (const char *) cd->cols[3];
+        case ENVENTOR_SYNTAX_COLOR_SCRIPT_FUNC:
+          return (const char *) cd->cols[4];
+        case ENVENTOR_SYNTAX_COLOR_SCRIPT_KEYWORD:
+          return (const char *) cd->cols[5];
+        default:
+          return NULL;
+     }
 }
 
 const char *

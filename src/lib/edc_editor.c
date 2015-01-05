@@ -884,6 +884,19 @@ edit_save(edit_data *ed, const char *file)
 }
 
 void
+edit_syntax_color_set(edit_data *ed, Enventor_Syntax_Color_Type color_type,
+                      const char *val)
+{
+   color_set(syntax_color_data_get(ed->sh), color_type, val);
+}
+
+const char *
+edit_syntax_color_get(edit_data *ed, Enventor_Syntax_Color_Type color_type)
+{
+   return color_get(syntax_color_data_get(ed->sh), color_type);
+}
+
+void
 edit_syntax_color_full_apply(edit_data *ed, Eina_Bool force)
 {
    int lock;

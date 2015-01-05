@@ -42,6 +42,18 @@ typedef enum {
    ENVENTOR_TEMPLATE_INSERT_LIVE_EDIT
 } Enventor_Template_Insert_Type;
 
+typedef enum {
+   ENVENTOR_SYNTAX_COLOR_STRING,
+   ENVENTOR_SYNTAX_COLOR_COMMENT,
+   ENVENTOR_SYNTAX_COLOR_MACRO,
+   ENVENTOR_SYNTAX_COLOR_SYMBOL,
+   ENVENTOR_SYNTAX_COLOR_MAIN_KEYWORD,
+   ENVENTOR_SYNTAX_COLOR_SUB_KEYWORD,
+   ENVENTOR_SYNTAX_COLOR_CONSTANT,
+   ENVENTOR_SYNTAX_COLOR_SCRIPT_FUNC,
+   ENVENTOR_SYNTAX_COLOR_SCRIPT_KEYWORD
+} Enventor_Syntax_Color_Type;
+
 EAPI int enventor_init(int argc, char **argv);
 EAPI int enventor_shutdown(void);
 EAPI Evas_Object *enventor_object_add(Evas_Object *parent);

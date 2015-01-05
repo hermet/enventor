@@ -76,6 +76,8 @@ Eina_Bool autocomp_event_dispatch(const char *key);
 /* syntax color */
 color_data *color_init(Eina_Strbuf *strbuf);
 void color_term(color_data *cd);
+void color_set(color_data *cd, Enventor_Syntax_Color_Type color_type, const char *val);
+const char *color_get(color_data *cd, Enventor_Syntax_Color_Type color_type);
 const char *color_cancel(color_data *cd, const char *str, int length, int from_pos, int to_pos, char **from, char **to);
 const char *color_apply(color_data *cd, const char *str, int length, char *from, char *to);
 Eina_Bool color_ready(color_data *cd);
@@ -214,6 +216,8 @@ Eina_Stringshare *edit_cur_part_name_get(edit_data *ed);
 Eina_Stringshare *edit_cur_paragh_get(edit_data *ed);
 int edit_max_line_get(edit_data *ed);
 void edit_goto(edit_data *ed, int line);
+void edit_syntax_color_set(edit_data *ed, Enventor_Syntax_Color_Type color_type, const char *val);
+const char *edit_syntax_color_get(edit_data *ed, Enventor_Syntax_Color_Type color_type);
 void edit_syntax_color_full_apply(edit_data *ed, Eina_Bool force);
 void edit_syntax_color_partial_apply(edit_data *ed, double interval);
 Evas_Object *edit_entry_get(edit_data *ed);

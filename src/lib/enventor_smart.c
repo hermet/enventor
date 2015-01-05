@@ -475,6 +475,23 @@ _enventor_object_line_goto(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd,
 }
 
 EOLIAN static void
+_enventor_object_syntax_color_set(Eo *obj EINA_UNUSED,
+                                  Enventor_Object_Data *pd,
+                                  Enventor_Syntax_Color_Type color_type,
+                                  const char *val)
+{
+   edit_syntax_color_set(pd->ed, color_type, val);
+}
+
+EOLIAN static const char *
+_enventor_object_syntax_color_get(Eo *obj EINA_UNUSED,
+                                  Enventor_Object_Data *pd,
+                                  Enventor_Syntax_Color_Type color_type)
+{
+   return edit_syntax_color_get(pd->ed, color_type);
+}
+
+EOLIAN static void
 _enventor_object_syntax_color_full_apply(Eo *obj EINA_UNUSED,
                                          Enventor_Object_Data *pd,
                                          Eina_Bool force)

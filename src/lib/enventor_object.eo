@@ -329,6 +329,29 @@ class Enventor.Object (Elm_Widget, Efl.File) {
             @in int line; /*@ ... */
          }
       }
+      syntax_color_set {
+         /*@
+         @brief
+         @warning
+         @see
+         @ingroup Enventor */
+         params {
+            @in Enventor_Syntax_Color_Type color_type; /*@ ... */
+            @in const(char) *val; /*@ ... */
+         }
+      }
+      syntax_color_get {
+         /*@
+         @brief
+         @return
+         @warning
+         @see
+         @ingroup Enventor */
+         return: const(char) *;
+         params {
+            @in Enventor_Syntax_Color_Type color_type; /*@ ... */
+         }
+      }
       syntax_color_full_apply {
          /*@
          @brief
