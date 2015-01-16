@@ -1,9 +1,8 @@
 #ifndef __ENVENTOR_PRIVATE_H__
 #define __ENVENTOR_PRIVATE_H__
 
-#define QUOT "\""
-#define QUOT_C '\"'
-#define QUOT_LEN 1
+#define QUOT "&quot;"
+#define QUOT_LEN 6
 #define EOL "<br/>"
 #define EOL_LEN 5
 #define TAB "<tab/>"

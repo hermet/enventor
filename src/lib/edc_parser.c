@@ -68,7 +68,7 @@ group_name_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    while (p <= end)
      {
         //Skip "" range
-        if (*p == *quot)
+        if (!strncmp(p, quot, quot_len))
           {
              p += quot_len;
              p = strstr(p, quot);
@@ -146,7 +146,7 @@ cur_name_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    while (p <= end)
      {
         //Skip "" range
-        if (*p == *quot)
+        if (!strncmp(p, quot, quot_len))
           {
              p += quot_len;
              p = strstr(p, quot);
@@ -851,6 +851,7 @@ group_beginning_pos_get(const char* source, const char *group_name)
 {
    const char* GROUP_SYNTAX_NAME = "group";
    const char *quot = QUOT;
+   const int quot_len = QUOT_LEN;
 
    const char *pos = strstr(source, GROUP_SYNTAX_NAME);
 
@@ -859,7 +860,8 @@ group_beginning_pos_get(const char* source, const char *group_name)
    {
       const char *name = strstr(pos, quot);
       if (!name) return NULL;
-      pos = strstr(++name, quot);
+      name += quot_len;
+      pos = strstr(name, quot);
       if (!pos) return NULL;
       if (!strncmp(name, group_name, strlen(group_name)))
         return pos;
@@ -1054,7 +1056,7 @@ parser_paragh_name_get(parser_data *pd EINA_UNUSED, Evas_Object *entry)
    while (cur <= end)
      {
         //Skip "" range
-        if (*cur == *quot)
+        if (!strncmp(cur, quot, quot_len))
           {
              cur += quot_len;
              cur = strstr(cur, quot);
@@ -1118,7 +1120,7 @@ parser_cur_name_fast_get(Evas_Object *entry, const char *scope)
    while (p <= end)
      {
         //Skip "" range
-        if (*p == *quot)
+        if (!strncmp(p, quot, quot_len))
           {
              p += quot_len;
              p = strstr(p, quot);
