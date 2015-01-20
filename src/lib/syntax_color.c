@@ -390,7 +390,7 @@ string_apply(Eina_Strbuf *strbuf, char **cur, char **prev,
 
    char buf[128];
 
-   eina_strbuf_append_length(strbuf, *prev, (*cur - *prev) + 1);
+   eina_strbuf_append_length(strbuf, *prev, (*cur - *prev));
 
    if (!inside_string)
      snprintf(buf, sizeof(buf), "<color=#%s>%s", col, QUOT);
