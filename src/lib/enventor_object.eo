@@ -274,6 +274,17 @@ class Enventor.Object (Elm_Widget, Efl.File) {
          @ingroup Enventor */
          return: int;
       }
+      cursor_pos_set {
+         /*@
+         @brief
+         @return
+         @warning
+         @see
+         @ingroup Enventor */
+         params {
+            @in int position; /*@ ... */
+         }
+      }
       select_none {
          /*@
          @brief

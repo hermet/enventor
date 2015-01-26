@@ -421,6 +421,14 @@ _enventor_object_cursor_pos_get(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
    return elm_entry_cursor_pos_get(edit_entry_get(pd->ed));
 }
 
+EOLIAN static void
+_enventor_object_cursor_pos_set(Eo *obj EINA_UNUSED,
+                                Enventor_Object_Data *pd,
+                                int position)
+{
+   elm_entry_cursor_pos_set(edit_entry_get(pd->ed), position);
+}
+
 EOLIAN static const char *
 _enventor_object_selection_get(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
 {
