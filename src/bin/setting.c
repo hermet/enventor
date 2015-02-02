@@ -1,4 +1,3 @@
-#include <Elementary.h>
 #include "common.h"
 
 struct setting_s

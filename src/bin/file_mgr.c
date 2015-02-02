@@ -2,10 +2,7 @@
 #include "config.h"
 #endif
 
-#define ENVENTOR_BETA_API_SUPPORT 1
-
 #include <Eio.h>
-#include <Enventor.h>
 #include "common.h"
 
 typedef struct file_mgr_s {

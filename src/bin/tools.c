@@ -2,9 +2,6 @@
 #include "config.h"
 #endif
 
-#define ENVENTOR_BETA_API_SUPPORT 1
-
-#include <Enventor.h>
 #include "common.h"
 
 static void

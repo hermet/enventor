@@ -1,4 +1,3 @@
-#include <Elementary.h>
 #include "common.h"
 
 typedef struct statusbar_s

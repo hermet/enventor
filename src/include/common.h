@@ -10,6 +10,9 @@ typedef struct statusbar_s stats_data;
 #define REL2_X 0.75f
 #define REL2_Y 0.75f
 
+#define ENVENTOR_BETA_API_SUPPORT 1
+#include <Enventor.h>
+
 #include "menu.h"
 #include "statusbar.h"
 #include "config_data.h"

@@ -1,4 +1,3 @@
-#include <Elementary.h>
 #include "common.h"
 
 static const double TRANSIT_TIME = 0.25;
