@@ -1,26 +1,25 @@
 #include "common.h"
+#include "text_setting.h"
 
 struct setting_s
 {
    Evas_Object *setting_layout;
+
+   Evas_Object *general_layout;
+
    Evas_Object *img_path_entry;
    Evas_Object *snd_path_entry;
    Evas_Object *fnt_path_entry;
    Evas_Object *dat_path_entry;
 
-   Evas_Object *slider_font;
    Evas_Object *slider_view;
-   Evas_Object *toggle_tools;
-   Evas_Object *toggle_stats;
-   Evas_Object *toggle_linenum;
-   Evas_Object *toggle_highlight;
-   Evas_Object *toggle_swallow;
-   Evas_Object *toggle_indent;
-   Evas_Object *toggle_autocomp;
-
    Evas_Object *view_size_w_entry;
    Evas_Object *view_size_h_entry;
    Evas_Object *toggle_view_size;
+   Evas_Object *toggle_highlight;
+   Evas_Object *toggle_swallow;
+   Evas_Object *toggle_stats;
+   Evas_Object *toggle_tools;
 };
 
 typedef struct setting_s setting_data;
@@ -89,6 +88,9 @@ setting_dismiss_done_cb(void *data, Evas_Object *obj EINA_UNUSED,
                         const char *source EINA_UNUSED)
 {
    setting_data *sd = data;
+
+   text_setting_term();
+
    evas_object_del(sd->setting_layout);
    sd->setting_layout = NULL;
    menu_deactivate_request();
@@ -107,20 +109,19 @@ setting_apply_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
    config_edc_snd_path_set(elm_object_text_get(sd->snd_path_entry));
    config_edc_fnt_path_set(elm_object_text_get(sd->fnt_path_entry));
    config_edc_dat_path_set(elm_object_text_get(sd->dat_path_entry));
-   config_font_scale_set((float) elm_slider_value_get(sd->slider_font));
    config_view_scale_set(elm_slider_value_get(sd->slider_view));
    config_tools_set(elm_check_state_get(sd->toggle_tools));
    config_stats_bar_set(elm_check_state_get(sd->toggle_stats));
-   config_linenumber_set(elm_check_state_get(sd->toggle_linenum));
    config_part_highlight_set(elm_check_state_get(sd->toggle_highlight));
    config_dummy_swallow_set(elm_check_state_get(sd->toggle_swallow));
-   config_auto_indent_set(elm_check_state_get(sd->toggle_indent));
-   config_auto_complete_set(elm_check_state_get(sd->toggle_autocomp));
    config_view_size_configurable_set(elm_check_state_get(sd->toggle_view_size));
+   text_setting_config_set();
 
    Evas_Coord w = (Evas_Coord)atoi(elm_entry_entry_get(sd->view_size_w_entry));
    Evas_Coord h = (Evas_Coord)atoi(elm_entry_entry_get(sd->view_size_h_entry));
    config_view_size_set(w, h);
+
+   text_setting_syntax_color_save();
 
    config_apply();
 
@@ -149,16 +150,19 @@ setting_reset_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
    dat_path_entry_update(sd->dat_path_entry,
                          (Eina_List *)config_edc_dat_path_list_get());
 
-   elm_slider_value_set(sd->slider_font, (double) config_font_scale_get());
    elm_slider_value_set(sd->slider_view, (double) config_view_scale_get());
 
    elm_check_state_set(sd->toggle_tools, config_tools_get());
    elm_check_state_set(sd->toggle_stats, config_stats_bar_get());
-   elm_check_state_set(sd->toggle_linenum, config_linenumber_get());
    elm_check_state_set(sd->toggle_highlight, config_part_highlight_get());
    elm_check_state_set(sd->toggle_swallow, config_dummy_swallow_get());
-   elm_check_state_set(sd->toggle_indent, config_auto_indent_get());
-   elm_check_state_set(sd->toggle_autocomp, config_auto_complete_get());
+
+   text_setting_font_scale_set((double) config_font_scale_get());
+   text_setting_linenumber_set(config_linenumber_get());
+   text_setting_auto_indent_set(config_auto_indent_get());
+   text_setting_auto_complete_set(config_auto_complete_get());
+
+   text_setting_syntax_color_reset();
 }
 
 static Evas_Object *
@@ -197,33 +201,17 @@ toggle_view_size_changed_cb(void *data, Evas_Object *obj,
    elm_object_disabled_set(sd->view_size_h_entry, !toggle_on);
 }
 
-void
-setting_open(void)
+static Evas_Object *
+general_layout_create(setting_data *sd, Evas_Object *parent)
 {
    static Elm_Entry_Filter_Accept_Set digits_filter_data;
    static Elm_Entry_Filter_Limit_Size limit_filter_data;
-   setting_data *sd = g_sd;
-   if (sd) return;
-
-   sd = calloc(1, sizeof(setting_data));
-   if (!sd)
-     {
-        EINA_LOG_ERR("Failed to allocate Memory!");
-        return;
-     }
-   g_sd = sd;
-
-   search_close();
-   goto_close();
 
    //Layout
-   Evas_Object *layout = elm_layout_add(base_win_get());
-   elm_layout_file_set(layout, EDJE_PATH, "setting_layout");
-   elm_object_signal_callback_add(layout, "elm,state,dismiss,done", "",
-                                  setting_dismiss_done_cb, sd);
+   Evas_Object *layout = elm_layout_add(parent);
+   elm_layout_file_set(layout, EDJE_PATH, "general_layout");
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_show(layout);
-   base_win_resize_object_add(layout);
 
    //Image Path Entry
    Evas_Object *img_path_entry = entry_create(layout);
@@ -259,91 +247,14 @@ setting_open(void)
 
    //Box
    Evas_Object *box = elm_box_add(scroller);
-   elm_box_horizontal_set(box, EINA_TRUE);
    evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(box, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_show(box);
 
    elm_object_content_set(scroller, box);
 
-   //Left Box
-   Evas_Object *box2 = elm_box_add(box);
-   elm_box_padding_set(box2, 1, 1);
-   evas_object_size_hint_weight_set(box2, EVAS_HINT_EXPAND, 0);
-   evas_object_size_hint_align_set(box2, EVAS_HINT_FILL, 0);
-   evas_object_show(box2);
-   elm_box_pack_end(box, box2);
-
-   Evas_Object *box3;
-
-   //Font Size
-   box3 = elm_box_add(box2);
-   elm_box_horizontal_set(box3, EINA_TRUE);
-   evas_object_size_hint_weight_set(box3, EVAS_HINT_EXPAND, 0);
-   evas_object_size_hint_align_set(box3, EVAS_HINT_FILL, 0);
-   evas_object_show(box3);
-
-   elm_box_pack_end(box2, box3);
-
-   //Font Size (Slider)
-   Evas_Object *slider_font = elm_slider_add(box3);
-   evas_object_size_hint_weight_set(slider_font, EVAS_HINT_EXPAND, 0);
-   evas_object_size_hint_align_set(slider_font, 0, 0);
-   elm_slider_span_size_set(slider_font, 190);
-   elm_slider_indicator_show_set(slider_font, EINA_FALSE);
-   elm_slider_unit_format_set(slider_font, "%1.1fx");
-   elm_slider_min_max_set(slider_font, MIN_FONT_SCALE, MAX_FONT_SCALE);
-   elm_slider_value_set(slider_font, (double) config_font_scale_get());
-   elm_object_text_set(slider_font, "Font Size");
-   evas_object_show(slider_font);
-
-   elm_box_pack_end(box3, slider_font);
-
-   //Toggle (Line Number)
-   Evas_Object *toggle_linenum = toggle_create(box2, "Line Number",
-                                               config_linenumber_get());
-   elm_box_pack_end(box2, toggle_linenum);
-
-   //Toggle (Auto Indentation)
-   Evas_Object *toggle_indent = toggle_create(box2, "Auto Indentation",
-                                config_auto_indent_get());
-   elm_box_pack_end(box2, toggle_indent);
-
-   //Toggle (Auto Complete)
-   Evas_Object *toggle_autocomp = toggle_create(box2, "Auto Completion",
-                                  config_auto_complete_get());
-   elm_box_pack_end(box2, toggle_autocomp);
-
-   //Toggle (Tools)
-   Evas_Object *toggle_tools = toggle_create(box2, "Tools",
-                                             config_tools_get());
-   elm_box_pack_end(box2, toggle_tools);
-
-   Evas_Object *separator = elm_separator_add(box);
-   evas_object_show(separator);
-   elm_box_pack_end(box, separator);
-
-   //Right Box
-   box2 = elm_box_add(box);
-   elm_box_padding_set(box2, 1, 1);
-   evas_object_size_hint_weight_set(box2, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(box2, EVAS_HINT_FILL, 0);
-   evas_object_show(box2);
-
-   elm_box_pack_end(box, box2);
-
-   //View Scale
-   box3 = elm_box_add(box2);
-   elm_box_padding_set(box2, 1, 1);
-   elm_box_horizontal_set(box3, EINA_TRUE);
-   evas_object_size_hint_weight_set(box3, EVAS_HINT_EXPAND, 0);
-   evas_object_size_hint_align_set(box3, EVAS_HINT_FILL, 0);
-   evas_object_show(box3);
-
-   elm_box_pack_end(box2, box3);
-
    //View Scale (Slider)
-   Evas_Object *slider_view = elm_slider_add(box2);
+   Evas_Object *slider_view = elm_slider_add(box);
    evas_object_size_hint_weight_set(slider_view, EVAS_HINT_EXPAND, 0);
    evas_object_size_hint_align_set(slider_view, 0, 0);
    elm_slider_span_size_set(slider_view, 190);
@@ -354,10 +265,19 @@ setting_open(void)
    elm_object_text_set(slider_view, "View Scale");
    evas_object_show(slider_view);
 
-   elm_box_pack_end(box3, slider_view);
+   elm_box_pack_end(box, slider_view);
 
    //View Size
-   box3 = elm_box_add(box2);
+   Evas_Object *box2 = elm_box_add(box);
+   elm_box_horizontal_set(box2, EINA_TRUE);
+   evas_object_size_hint_weight_set(box2, EVAS_HINT_EXPAND, 0);
+   evas_object_size_hint_align_set(box2, EVAS_HINT_FILL, 0);
+   evas_object_show(box2);
+
+   elm_box_pack_end(box, box2);
+
+   //Box for View Size Entries
+   Evas_Object *box3 = elm_box_add(box2);
    elm_box_horizontal_set(box3, EINA_TRUE);
    evas_object_size_hint_weight_set(box3, EVAS_HINT_EXPAND, 0);
    evas_object_size_hint_align_set(box3, EVAS_HINT_FILL, 0);
@@ -366,7 +286,7 @@ setting_open(void)
    elm_box_pack_end(box2, box3);
 
    //Entry (View Size)
-   Evas_Object *entry_view_size = entry_create(box3);
+   Evas_Object *entry_view_size = entry_create(box2);
    elm_object_text_set(entry_view_size, "View Size");
    elm_entry_scrollable_set(entry_view_size, EINA_FALSE);
    elm_entry_editable_set(entry_view_size, EINA_FALSE);
@@ -425,26 +345,126 @@ setting_open(void)
 
    //Toggle (View Size)
    Evas_Object *toggle_view_size;
-   toggle_view_size = toggle_create(box3, NULL,
+   toggle_view_size = toggle_create(box2, NULL,
                                     config_view_size_configurable_get());
    evas_object_smart_callback_add(toggle_view_size, "changed",
                                   toggle_view_size_changed_cb, sd);
-   elm_box_pack_end(box3, toggle_view_size);
+   elm_box_pack_end(box2, toggle_view_size);
 
    //Toggle (Part Highlighting)
-   Evas_Object *toggle_highlight = toggle_create(box2, "Part Highlighting",
-                                   config_part_highlight_get());
-   elm_box_pack_end(box2, toggle_highlight);
+   Evas_Object *toggle_highlight = toggle_create(box, "Part Highlighting",
+                                                 config_part_highlight_get());
+   elm_box_pack_end(box, toggle_highlight);
 
    //Toggle (Dummy Swallow)
-   Evas_Object *toggle_swallow = toggle_create(box2, "Dummy Swallow",
-                                 config_dummy_swallow_get());
-   elm_box_pack_end(box2, toggle_swallow);
+   Evas_Object *toggle_swallow = toggle_create(box, "Dummy Swallow",
+                                               config_dummy_swallow_get());
+   elm_box_pack_end(box, toggle_swallow);
 
    //Toggle (Status)
-   Evas_Object *toggle_stats = toggle_create(box2, "Status",
+   Evas_Object *toggle_stats = toggle_create(box, "Status",
                                              config_stats_bar_get());
-   elm_box_pack_end(box2, toggle_stats);
+   elm_box_pack_end(box, toggle_stats);
+
+   //Toggle (Tools)
+   Evas_Object *toggle_tools = toggle_create(box, "Tools",
+                                             config_tools_get());
+   elm_box_pack_end(box, toggle_tools);
+
+   sd->general_layout = layout;
+   sd->img_path_entry = img_path_entry;
+   sd->snd_path_entry = snd_path_entry;
+   sd->fnt_path_entry = fnt_path_entry;
+   sd->dat_path_entry = dat_path_entry;
+   sd->slider_view = slider_view;
+   sd->view_size_w_entry = entry_view_size_w;
+   sd->view_size_h_entry = entry_view_size_h;
+   sd->toggle_view_size = toggle_view_size;
+   sd->toggle_highlight = toggle_highlight;
+   sd->toggle_swallow = toggle_swallow;
+   sd->toggle_stats = toggle_stats;
+   sd->toggle_tools = toggle_tools;
+
+   return layout;
+}
+
+static void
+general_tab_cb(void *data, Evas_Object *obj EINA_UNUSED,
+               void *event_info EINA_UNUSED)
+{
+   setting_data *sd = data;
+   Evas_Object *content;
+
+   if (!sd->setting_layout) return;
+
+   content = elm_object_part_content_get(sd->setting_layout,
+                                         "elm.swallow.content");
+
+   if (content == sd->general_layout) return;
+
+   elm_object_part_content_unset(sd->setting_layout, "elm.swallow.content");
+   evas_object_hide(content);
+
+   elm_object_part_content_set(sd->setting_layout, "elm.swallow.content",
+                               sd->general_layout);
+   elm_object_focus_set(sd->img_path_entry, EINA_TRUE);
+}
+
+static void
+text_setting_tab_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                   void *event_info EINA_UNUSED)
+{
+   setting_data *sd = data;
+   text_setting_layout_show(sd->setting_layout);
+}
+
+void
+setting_open(void)
+{
+   setting_data *sd = g_sd;
+   if (sd) return;
+
+   sd = calloc(1, sizeof(setting_data));
+   if (!sd)
+     {
+        EINA_LOG_ERR("Failed to allocate Memory!");
+        return;
+     }
+   g_sd = sd;
+
+   text_setting_init();
+
+   search_close();
+   goto_close();
+
+   //Layout
+   Evas_Object *layout = elm_layout_add(base_win_get());
+   elm_layout_file_set(layout, EDJE_PATH, "setting_layout");
+   elm_object_signal_callback_add(layout, "elm,state,dismiss,done", "",
+                                  setting_dismiss_done_cb, sd);
+   evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_show(layout);
+   base_win_resize_object_add(layout);
+
+   //Tabbar
+   Evas_Object *tabbar = elm_toolbar_add(layout);
+   elm_toolbar_shrink_mode_set(tabbar, ELM_TOOLBAR_SHRINK_EXPAND);
+   elm_toolbar_select_mode_set(tabbar, ELM_OBJECT_SELECT_MODE_ALWAYS);
+   evas_object_size_hint_weight_set(tabbar, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+
+   elm_toolbar_item_append(tabbar, NULL, "General", general_tab_cb, sd);
+   elm_toolbar_item_append(tabbar, NULL, "Text Editor", text_setting_tab_cb, sd);
+
+   elm_object_part_content_set(layout, "elm.swallow.tabbar", tabbar);
+
+   //General layout
+   Evas_Object *general_layout = general_layout_create(sd, layout);
+   elm_object_part_content_set(layout, "elm.swallow.content", general_layout);
+
+   //Text setting layout
+   Evas_Object *text_setting_layout;
+   text_setting_layout = text_setting_layout_create(layout);
+   evas_object_hide(text_setting_layout);
 
    Evas_Object *btn;
 
@@ -467,23 +487,6 @@ setting_open(void)
    elm_object_part_content_set(layout, "elm.swallow.cancel_btn", btn);
 
    sd->setting_layout = layout;
-   sd->setting_layout = layout;
-   sd->img_path_entry = img_path_entry;
-   sd->snd_path_entry = snd_path_entry;
-   sd->fnt_path_entry = fnt_path_entry;
-   sd->dat_path_entry = dat_path_entry;
-   sd->slider_font = slider_font;
-   sd->slider_view = slider_view;
-   sd->toggle_tools = toggle_tools;
-   sd->toggle_stats = toggle_stats;
-   sd->toggle_linenum = toggle_linenum;
-   sd->toggle_highlight = toggle_highlight;
-   sd->toggle_swallow = toggle_swallow;
-   sd->toggle_indent = toggle_indent;
-   sd->toggle_autocomp = toggle_autocomp;
-   sd->view_size_w_entry = entry_view_size_w;
-   sd->view_size_h_entry = entry_view_size_h;
-   sd->toggle_view_size = toggle_view_size;
 
    menu_activate_request();
 }

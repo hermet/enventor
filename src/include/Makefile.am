@@ -11,6 +11,7 @@ EXTRA_DIST = common.h \
 	newfile.h \
 	goto.h \
 	setting.h \
+	text_setting.h \
 	search.h \
 	live_edit.h \
 	console.h \

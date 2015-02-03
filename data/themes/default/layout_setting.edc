@@ -28,8 +28,8 @@ group { name: "setting_layout";
          scale: 1;
          clip_to: "clipper";
          description {
-            min: 600 350;
-            max: 600 350;
+            min: 600 380;
+            max: 600 380;
             fixed: 1 1;
             image.normal: "frame_bg.png";
             image.border: 10 10 10 10;
@@ -104,307 +104,39 @@ group { name: "setting_layout";
             color: COL_HI;
          }
       }
-      part { name: "img_path_frame";
-         type: SPACER;
-         description {
-            rel1 {to: "title_frame"; relative: 0 1;}
-            rel2 {to: "title_frame"; relative: 1 1;}
-            align: 0.5 0;
-            min: 0 30;
-            fixed: 0 1;
-         }
-      }
-      part { name: "snd_path_frame";
-         type: SPACER;
-         scale: 1;
-         description {
-            rel1 {to: "img_path_frame"; relative: 0 1;}
-            rel2 {to: "img_path_frame"; relative: 1 1;}
-            align: 0.5 0;
-            min: 0 30;
-            fixed: 0 1;
-         }
-      }
-      part { name: "fnt_path_frame";
-         type: SPACER;
-         scale: 1;
-         description {
-            rel1 {to: "snd_path_frame"; relative: 0 1;}
-            rel2 {to: "snd_path_frame"; relative: 1 1;}
-            align: 0.5 0;
-            min: 0 30;
-            fixed: 0 1;
-         }
-      }
-      part { name: "dat_path_frame";
-         type: SPACER;
-         scale: 1;
-         description {
-            rel1 {to: "fnt_path_frame"; relative: 0 1;}
-            rel2 {to: "fnt_path_frame"; relative: 1 1;}
-            align: 0.5 0;
-            min: 0 30;
-            fixed: 0 1;
-         }
-      }
-      part { name: "preference_frame";
-         type: SPACER;
-         scale: 1;
-         description {
-            rel1 {to: "dat_path_frame"; relative: 0 1; offset: 0 5;}
-            rel2 {to: "dat_path_frame"; relative: 1 1;}
-            align: 0.5 0;
-            min: 0 140;
-            fixed: 0 1;
-         }
-      }
-      part { name: "img_path_icon";
-         type: IMAGE;
-         scale: 1;
-         clip_to: "clipper";
-         description {
-            align: 0 0.5;
-            min: 20 20;
-            max: 20 20;
-            fixed: 1 1;
-            rel1.to: "img_path_frame";
-            rel2.to: "img_path_frame";
-            image.normal: "folder.png";
-         }
-      }
-      part { name: "img_path_guide";
-         type: TEXT;
-         scale: 1;
-         clip_to: "clipper";
-         effect: SHADOW BOTTOM;
-         description {
-            rel1 {to: "img_path_icon"; relative: 1 0; offset: 5 1;}
-            rel2 {to: "img_path_icon"; relative: 1 1;}
-            color: COL_NM;
-            align: 0 0.5;
-            fixed: 1 1;
-            text {
-               font: FN;
-               text: "Image Paths:";
-               size: 11;
-               align: 0 0.5;
-               min: 1 0;
-               ellipsis: -1;
-            }
-         }
-      }
-      part { name: "elm.swallow.img_path_entry";
+      part { name: "elm.swallow.tabbar";
          type: SWALLOW;
          scale: 1;
          clip_to: "clipper";
-         description {
-            align: 0 0;
-            fixed: 1 1;
-            rel1.to_x: "img_path_guide";
-            rel1.to_y: "img_path_guide";
-            rel1.offset: 5 0;
-            rel1.relative: 1 0;
-            rel2.to: "img_path_frame";
+         description { state: "default" 0.0;
+            min: 0 25;
+            max: -1 25;
+            align: 0.5 0.0;
+            fixed: 0 1;
+            rel1 {to: "title_frame"; relative: 0.0 1.0; offset: 0 5;}
+            rel2.to: "title_frame";
          }
       }
-      part { name: "snd_path_icon";
-         type: IMAGE;
-         scale: 1;
-         clip_to: "clipper";
-         description {
-            align: 0 0.5;
-            min: 20 20;
-            max: 20 20;
-            fixed: 1 1;
-            rel1.to: "snd_path_frame";
-            rel2.to: "snd_path_frame";
-            image.normal: "folder.png";
-         }
-      }
-      part { name: "snd_path_guide";
-         type: TEXT;
-         effect: SHADOW BOTTOM;
-         scale: 1;
-         clip_to: "clipper";
-         description {
-            rel1 {to: "snd_path_icon"; relative: 1 0; offset: 5 1;}
-            rel2 {to: "snd_path_icon"; relative: 1 1;}
-            color: COL_NM;
-            align: 0 0.5;
-            fixed: 1 1;
-            text {
-               font: FN;
-               text: "Sound Paths:";
-               size: 11;
-               align: 0 0.5;
-               min: 1 0;
-               ellipsis: -1;
-            }
-         }
-      }
-      part { name: "elm.swallow.snd_path_entry";
+      part { name: "elm.swallow.content";
          type: SWALLOW;
          scale: 1;
          clip_to: "clipper";
-         description {
-            align: 0 0;
-            fixed: 1 1;
-            rel1.to_x: "snd_path_guide";
-            rel1.to_y: "snd_path_guide";
-            rel1.offset: 5 0;
-            rel1.relative: 1 0;
-            rel2.to: "snd_path_frame";
-         }
-      }
-      part { name: "fnt_path_icon";
-         type: IMAGE;
-         scale: 1;
-         clip_to: "clipper";
-         description {
-            align: 0 0.5;
-            min: 20 20;
-            max: 20 20;
-            fixed: 1 1;
-            rel1.to: "fnt_path_frame";
-            rel2.to: "fnt_path_frame";
-            image.normal: "folder.png";
-         }
-      }
-      part { name: "fnt_path_guide";
-         type: TEXT;
-         effect: SHADOW BOTTOM;
-         scale: 1;
-         clip_to: "clipper";
-         description {
-            rel1 {to: "fnt_path_icon"; relative: 1 0; offset: 5 1;}
-            rel2 {to: "fnt_path_icon"; relative: 1 1;}
-            color: COL_NM;
-            align: 0 0.5;
-            fixed: 1 1;
-            text {
-               font: FN;
-               text: "Font Paths:";
-               size: 11;
-               align: 0 0.5;
-               min: 1 0;
-               ellipsis: -1;
+         description { state: "default" 0.0;
+            rel1 {
+               to: "elm.swallow.tabbar";
+               relative: 0.0 1.0;
             }
-         }
-      }
-      part { name: "elm.swallow.fnt_path_entry";
-         type: SWALLOW;
-         scale: 1;
-         clip_to: "clipper";
-         description {
-            align: 0 0;
-            fixed: 1 1;
-            rel1.to_x: "fnt_path_guide";
-            rel1.to_y: "fnt_path_guide";
-            rel1.offset: 17 0;
-            rel1.relative: 1 0;
-            rel2.to: "fnt_path_frame";
-         }
-      }
-      part { name: "dat_path_icon";
-         type: IMAGE;
-         scale: 1;
-         clip_to: "clipper";
-         description {
-            align: 0 0.5;
-            min: 20 20;
-            max: 20 20;
-            fixed: 1 1;
-            rel1.to: "dat_path_frame";
-            rel2.to: "dat_path_frame";
-            image.normal: "folder.png";
-         }
-      }
-      part { name: "dat_path_guide";
-         type: TEXT;
-         effect: SHADOW BOTTOM;
-         scale: 1;
-         clip_to: "clipper";
-         description {
-            rel1 {to: "dat_path_icon"; relative: 1 0; offset: 5 1;}
-            rel2 {to: "dat_path_icon"; relative: 1 1;}
-            color: COL_NM;
-            align: 0 0.5;
-            fixed: 1 1;
-            text {
-               font: FN;
-               text: "Data Paths:";
-               size: 11;
-               align: 0 0.5;
-               min: 1 0;
-               ellipsis: -1;
+            rel2 {
+               to_x: "base_frame";
+               to_y: "elm.swallow.reset_btn";
+               relative: 1.0 0.0;
+               offset: -1 -11;
             }
-         }
-      }
-      part { name: "elm.swallow.dat_path_entry";
-         type: SWALLOW;
-         scale: 1;
-         clip_to: "clipper";
-         description {
-            align: 0 0;
-            fixed: 1 1;
-            rel1.to_x: "dat_path_guide";
-            rel1.to_y: "dat_path_guide";
-            rel1.offset: 14 0;
-            rel1.relative: 1 0;
-            rel2.to: "dat_path_frame";
-         }
-      }
-      part { name: "preference_icon";
-         type: IMAGE;
-         scale: 1;
-         clip_to: "clipper";
-         description {
-            align: 0 0;
-            min: 20 20;
-            max: 20 20;
-            fixed: 1 1;
-            rel1.to: "preference_frame";
-            rel2.to: "preference_frame";
-            image.normal: "preference.png";
-         }
-      }
-      part { name: "preference_guide";
-         type: TEXT;
-         effect: SHADOW BOTTOM;
-         scale: 1;
-         clip_to: "clipper";
-         description {
-            rel1 {to: "preference_icon"; relative: 1 0; offset: 5 1;}
-            rel2 {to: "preference_icon"; relative: 1 1;}
-            color: COL_NM;
-            align: 0 0;
-            fixed: 1 1;
-            text {
-               font: FN;
-               text: "Preferences:";
-               size: 11;
-               align: 0 0;
-               min: 1 0;
-               ellipsis: -1;
-            }
-         }
-      }
-      part { name: "elm.swallow.preference";
-         type: SWALLOW;
-         scale: 1;
-         clip_to: "clipper";
-         description {
-            rel1.to_x: "preference_guide";
-            rel1.to_y: "preference_guide";
-            rel1.offset: 0 5;
-            rel1.relative: 0 1;
-            rel2.to: "preference_frame";
          }
       }
       part { name: "elm.swallow.apply_btn";
          type: SWALLOW;
          scale: 1;
-         clip_to: "clipper";
          description {
             align: 1 0.5;
             min: 50 25;
@@ -418,7 +150,6 @@ group { name: "setting_layout";
       part { name: "elm.swallow.reset_btn";
          type: SWALLOW;
          scale: 1;
-         clip_to: "clipper";
          description {
             align: 0.5 1;
             min: 50 25;
@@ -432,7 +163,6 @@ group { name: "setting_layout";
       part { name: "elm.swallow.cancel_btn";
          type: SWALLOW;
          scale: 1;
-         clip_to: "clipper";
          description {
             align: 0 0.5;
             min: 50 25;
@@ -491,6 +221,376 @@ group { name: "setting_layout";
       }
       program { name: "dismiss_done";
          action: SIGNAL_EMIT "elm,state,dismiss,done" "";
+      }
+   }
+}
+
+group { name: "general_layout";
+   parts {
+      part { name: "base_frame";
+         type: SPACER;
+         scale: 1;
+         description {
+            min: 580 265;
+            max: 580 265;
+            fixed: 1 1;
+         }
+      }
+      part { name: "img_path_frame";
+         type: SPACER;
+         description {
+            rel1 {to: "base_frame"; relative: 0 0;}
+            rel2 {to: "base_frame"; relative: 1 0;}
+            align: 0.5 0;
+            min: 0 30;
+            fixed: 0 1;
+         }
+      }
+      part { name: "snd_path_frame";
+         type: SPACER;
+         scale: 1;
+         description {
+            rel1 {to: "img_path_frame"; relative: 0 1;}
+            rel2 {to: "img_path_frame"; relative: 1 1;}
+            align: 0.5 0;
+            min: 0 30;
+            fixed: 0 1;
+         }
+      }
+      part { name: "fnt_path_frame";
+         type: SPACER;
+         scale: 1;
+         description {
+            rel1 {to: "snd_path_frame"; relative: 0 1;}
+            rel2 {to: "snd_path_frame"; relative: 1 1;}
+            align: 0.5 0;
+            min: 0 30;
+            fixed: 0 1;
+         }
+      }
+      part { name: "dat_path_frame";
+         type: SPACER;
+         scale: 1;
+         description {
+            rel1 {to: "fnt_path_frame"; relative: 0 1;}
+            rel2 {to: "fnt_path_frame"; relative: 1 1;}
+            align: 0.5 0;
+            min: 0 30;
+            fixed: 0 1;
+         }
+      }
+      part { name: "preference_frame";
+         type: SPACER;
+         scale: 1;
+         description {
+            rel1 {to: "dat_path_frame"; relative: 0 1; offset: 0 5;}
+            rel2 {to: "dat_path_frame"; relative: 1 1;}
+            align: 0.5 0;
+            min: 0 140;
+            fixed: 0 1;
+         }
+      }
+      part { name: "img_path_icon";
+         type: IMAGE;
+         scale: 1;
+         description {
+            align: 0 0.5;
+            min: 20 20;
+            max: 20 20;
+            fixed: 1 1;
+            rel1.to: "img_path_frame";
+            rel2.to: "img_path_frame";
+            image.normal: "folder.png";
+         }
+      }
+      part { name: "img_path_guide";
+         type: TEXT;
+         scale: 1;
+         effect: SHADOW BOTTOM;
+         description {
+            rel1 {to: "img_path_icon"; relative: 1 0; offset: 5 1;}
+            rel2 {to: "img_path_icon"; relative: 1 1;}
+            color: COL_NM;
+            align: 0 0.5;
+            fixed: 1 1;
+            text {
+               font: FN;
+               text: "Image Paths:";
+               size: 11;
+               align: 0 0.5;
+               min: 1 0;
+               ellipsis: -1;
+            }
+         }
+      }
+      part { name: "elm.swallow.img_path_entry";
+         type: SWALLOW;
+         scale: 1;
+         description {
+            align: 0 0;
+            fixed: 1 1;
+            rel1.to_x: "img_path_guide";
+            rel1.to_y: "img_path_guide";
+            rel1.offset: 5 0;
+            rel1.relative: 1 0;
+            rel2.to: "img_path_frame";
+         }
+      }
+      part { name: "snd_path_icon";
+         type: IMAGE;
+         scale: 1;
+         description {
+            align: 0 0.5;
+            min: 20 20;
+            max: 20 20;
+            fixed: 1 1;
+            rel1.to: "snd_path_frame";
+            rel2.to: "snd_path_frame";
+            image.normal: "folder.png";
+         }
+      }
+      part { name: "snd_path_guide";
+         type: TEXT;
+         effect: SHADOW BOTTOM;
+         scale: 1;
+         description {
+            rel1 {to: "snd_path_icon"; relative: 1 0; offset: 5 1;}
+            rel2 {to: "snd_path_icon"; relative: 1 1;}
+            color: COL_NM;
+            align: 0 0.5;
+            fixed: 1 1;
+            text {
+               font: FN;
+               text: "Sound Paths:";
+               size: 11;
+               align: 0 0.5;
+               min: 1 0;
+               ellipsis: -1;
+            }
+         }
+      }
+      part { name: "elm.swallow.snd_path_entry";
+         type: SWALLOW;
+         scale: 1;
+         description {
+            align: 0 0;
+            fixed: 1 1;
+            rel1.to_x: "snd_path_guide";
+            rel1.to_y: "snd_path_guide";
+            rel1.offset: 5 0;
+            rel1.relative: 1 0;
+            rel2.to: "snd_path_frame";
+         }
+      }
+      part { name: "fnt_path_icon";
+         type: IMAGE;
+         scale: 1;
+         description {
+            align: 0 0.5;
+            min: 20 20;
+            max: 20 20;
+            fixed: 1 1;
+            rel1.to: "fnt_path_frame";
+            rel2.to: "fnt_path_frame";
+            image.normal: "folder.png";
+         }
+      }
+      part { name: "fnt_path_guide";
+         type: TEXT;
+         effect: SHADOW BOTTOM;
+         scale: 1;
+         description {
+            rel1 {to: "fnt_path_icon"; relative: 1 0; offset: 5 1;}
+            rel2 {to: "fnt_path_icon"; relative: 1 1;}
+            color: COL_NM;
+            align: 0 0.5;
+            fixed: 1 1;
+            text {
+               font: FN;
+               text: "Font Paths:";
+               size: 11;
+               align: 0 0.5;
+               min: 1 0;
+               ellipsis: -1;
+            }
+         }
+      }
+      part { name: "elm.swallow.fnt_path_entry";
+         type: SWALLOW;
+         scale: 1;
+         description {
+            align: 0 0;
+            fixed: 1 1;
+            rel1.to_x: "fnt_path_guide";
+            rel1.to_y: "fnt_path_guide";
+            rel1.offset: 17 0;
+            rel1.relative: 1 0;
+            rel2.to: "fnt_path_frame";
+         }
+      }
+      part { name: "dat_path_icon";
+         type: IMAGE;
+         scale: 1;
+         description {
+            align: 0 0.5;
+            min: 20 20;
+            max: 20 20;
+            fixed: 1 1;
+            rel1.to: "dat_path_frame";
+            rel2.to: "dat_path_frame";
+            image.normal: "folder.png";
+         }
+      }
+      part { name: "dat_path_guide";
+         type: TEXT;
+         effect: SHADOW BOTTOM;
+         scale: 1;
+         description {
+            rel1 {to: "dat_path_icon"; relative: 1 0; offset: 5 1;}
+            rel2 {to: "dat_path_icon"; relative: 1 1;}
+            color: COL_NM;
+            align: 0 0.5;
+            fixed: 1 1;
+            text {
+               font: FN;
+               text: "Data Paths:";
+               size: 11;
+               align: 0 0.5;
+               min: 1 0;
+               ellipsis: -1;
+            }
+         }
+      }
+      part { name: "elm.swallow.dat_path_entry";
+         type: SWALLOW;
+         scale: 1;
+         description {
+            align: 0 0;
+            fixed: 1 1;
+            rel1.to_x: "dat_path_guide";
+            rel1.to_y: "dat_path_guide";
+            rel1.offset: 14 0;
+            rel1.relative: 1 0;
+            rel2.to: "dat_path_frame";
+         }
+      }
+      part { name: "preference_icon";
+         type: IMAGE;
+         scale: 1;
+         description {
+            align: 0 0;
+            min: 20 20;
+            max: 20 20;
+            fixed: 1 1;
+            rel1.to: "preference_frame";
+            rel2.to: "preference_frame";
+            image.normal: "preference.png";
+         }
+      }
+      part { name: "preference_guide";
+         type: TEXT;
+         effect: SHADOW BOTTOM;
+         scale: 1;
+         description {
+            rel1 {to: "preference_icon"; relative: 1 0; offset: 5 1;}
+            rel2 {to: "preference_icon"; relative: 1 1;}
+            color: COL_NM;
+            align: 0 0;
+            fixed: 1 1;
+            text {
+               font: FN;
+               text: "Preferences:";
+               size: 11;
+               align: 0 0;
+               min: 1 0;
+               ellipsis: -1;
+            }
+         }
+      }
+      part { name: "elm.swallow.preference";
+         type: SWALLOW;
+         scale: 1;
+         description {
+            rel1.to_x: "preference_guide";
+            rel1.to_y: "preference_guide";
+            rel1.offset: 0 5;
+            rel1.relative: 0 1;
+            rel2.to: "preference_frame";
+         }
+      }
+   }
+}
+
+group { name: "text_setting_layout";
+   parts {
+      part { name: "base_frame";
+         type: SPACER;
+         scale: 1;
+         description {
+            min: 580 265;
+            max: 580 265;
+            fixed: 1 1;
+         }
+      }
+      part { name: "text_setting_guide";
+         type: TEXT;
+         scale: 1;
+         effect: SHADOW BOTTOM;
+         description {
+            rel1 {to: "base_frame"; relative: 0 0; offset: 5 0;}
+            rel2 {to: "base_frame"; relative: 0.5 0;}
+            color: COL_NM;
+            min: 0 20;
+            align: 0 0;
+            fixed: 0 1;
+            text {
+               font: FN;
+               text: "Double click a keyword to change its color :";
+               size: 11;
+               align: 0 0.5;
+               min: 1 0;
+               ellipsis: -1;
+            }
+         }
+      }
+      part { name: "text_setting_frame";
+         type: SPACER;
+         scale: 1;
+         description {
+            rel1 {to_x: "base_frame"; to_y: "text_setting_guide"; relative: 0 1;}
+            rel2 {to: "base_frame"; relative: 0.5 0;}
+            align: 0.5 0;
+            min: 0 245;
+            fixed: 0 1;
+         }
+      }
+      part { name: "elm.swallow.text_setting";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            fixed: 0 1;
+            rel1.to: "text_setting_frame";
+            rel2.to: "text_setting_frame";
+         }
+      }
+      part { name: "preference_frame";
+         type: SPACER;
+         scale: 1;
+         description {
+            rel1 {to: "base_frame"; relative: 0.5 0; offset: 5 0;}
+            rel2 {to: "base_frame"; relative: 1 0;}
+            align: 0.5 0;
+            min: 0 90;
+            fixed: 0 1;
+         }
+      }
+      part { name: "elm.swallow.preference";
+         type: SWALLOW;
+         scale: 1;
+         description {
+            rel1.to: "preference_frame";
+            rel2.to: "preference_frame";
+         }
       }
    }
 }
