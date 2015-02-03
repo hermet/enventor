@@ -110,6 +110,56 @@ template_insert_patch(app_data *ad, const char *key)
 }
 
 static void
+syntax_color_update(Evas_Object *enventor)
+{
+   const char *config_color;
+   const char *enventor_color;
+   Eina_Bool color_changed = EINA_FALSE;
+   Enventor_Syntax_Color_Type color_type;
+
+   color_type = ENVENTOR_SYNTAX_COLOR_STRING;
+   for (; color_type < ENVENTOR_SYNTAX_COLOR_LAST; color_type++)
+     {
+        config_color = config_syntax_color_get(color_type);
+        if (config_color)
+          {
+             enventor_color = enventor_object_syntax_color_get(enventor,
+                                                               color_type);
+             if (strcmp(config_color, enventor_color))
+               {
+                  enventor_object_syntax_color_set(enventor, color_type,
+                                                   config_color);
+                  color_changed = EINA_TRUE;
+               }
+          }
+     }
+
+   if (color_changed)
+     enventor_object_syntax_color_full_apply(enventor, EINA_TRUE);
+}
+
+static void
+syntax_color_init(Evas_Object *enventor)
+{
+   const char *config_color;
+   const char *enventor_color;
+   Eina_Bool color_changed = EINA_FALSE;
+   Enventor_Syntax_Color_Type color_type;
+
+   color_type = ENVENTOR_SYNTAX_COLOR_STRING;
+   for (; color_type < ENVENTOR_SYNTAX_COLOR_LAST; color_type++)
+     {
+        config_color = config_syntax_color_get(color_type);
+        if (!config_color)
+          {
+             enventor_color = enventor_object_syntax_color_get(enventor,
+                                                               color_type);
+             config_syntax_color_set(color_type, enventor_color);
+          }
+     }
+}
+
+static void
 config_update_cb(void *data)
 {
    app_data *ad = data;
@@ -132,6 +182,8 @@ config_update_cb(void *data)
    enventor_object_dummy_swallow_set(enventor, config_dummy_swallow_get());
    enventor_object_part_highlight_set(enventor, config_part_highlight_get());
    enventor_object_live_view_scale_set(enventor, config_view_scale_get());
+
+   syntax_color_update(enventor);
 
    Evas_Coord w, h;
    if (config_view_size_configurable_get())
@@ -839,6 +891,10 @@ init(app_data *ad, int argc, char **argv)
    menu_init(ad->enventor);
 
    template_show(ad);
+
+   //Initialize syntax color.
+   syntax_color_init(ad->enventor);
+   syntax_color_update(ad->enventor);
 
    return EINA_TRUE;
 }

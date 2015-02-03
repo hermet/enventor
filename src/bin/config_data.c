@@ -14,6 +14,8 @@ typedef struct config_s
    Eina_Strbuf *edc_fnt_path_buf; //pre-stored font paths for edc compile.
    Eina_Strbuf *edc_dat_path_buf; //pre-stored data paths for edc compile.
 
+   Eina_List *syntax_color_list;
+
    float font_scale;
    double view_scale;
    double console_size;
@@ -36,6 +38,7 @@ typedef struct config_s
 
 static config_data *g_cd = NULL;
 static Eet_Data_Descriptor *edd_base = NULL;
+static Eet_Data_Descriptor *edd_color = NULL;
 
 static void
 config_edj_path_update(config_data *cd)
@@ -186,6 +189,13 @@ config_load(void)
    else cd->edc_dat_path_buf =
      config_paths_buf_set(cd->edc_dat_path_list, " -dd ");
 
+   if (!cd->syntax_color_list)
+     {
+        Enventor_Syntax_Color_Type color_type = ENVENTOR_SYNTAX_COLOR_STRING;
+        for (; color_type < ENVENTOR_SYNTAX_COLOR_LAST; color_type++)
+          cd->syntax_color_list = eina_list_append(cd->syntax_color_list, NULL);
+     }
+
    return cd;
 }
 
@@ -205,6 +215,8 @@ eddc_init(void)
                                        "edc_fnt_path_list", edc_fnt_path_list);
    EET_DATA_DESCRIPTOR_ADD_LIST_STRING(edd_base, config_data,
                                        "edc_dat_path_list", edc_dat_path_list);
+   EET_DATA_DESCRIPTOR_ADD_LIST_STRING(edd_base, config_data,
+                                       "syntax_color_list", syntax_color_list);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "font_scale", font_scale,
                                  EET_T_FLOAT);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "view_scale",
@@ -278,6 +290,8 @@ config_term(void)
    EINA_LIST_FREE(cd->edc_snd_path_list, str) eina_stringshare_del(str);
    EINA_LIST_FREE(cd->edc_fnt_path_list, str) eina_stringshare_del(str);
    EINA_LIST_FREE(cd->edc_dat_path_list, str) eina_stringshare_del(str);
+
+   EINA_LIST_FREE(cd->syntax_color_list, str) eina_stringshare_del(str);
 
    if (cd->edc_img_path_buf) eina_strbuf_free(cd->edc_img_path_buf);
    if (cd->edc_snd_path_buf) eina_strbuf_free(cd->edc_snd_path_buf);
@@ -535,6 +549,28 @@ config_edj_path_get(void)
 {
    config_data *cd = g_cd;
    return cd->edj_path;
+}
+
+void
+config_syntax_color_set(Enventor_Syntax_Color_Type color_type,
+                        const char *val)
+{
+   config_data *cd = g_cd;
+   Eina_List *target_list;
+
+   target_list = eina_list_nth_list(cd->syntax_color_list, color_type);
+   if (!target_list) return;
+
+   eina_stringshare_del(eina_list_data_get(target_list));
+   if (val)
+     eina_list_data_set(target_list, eina_stringshare_add(val));
+}
+
+const char *
+config_syntax_color_get(Enventor_Syntax_Color_Type color_type)
+{
+   config_data *cd = g_cd;
+   return (const char *) eina_list_nth(cd->syntax_color_list, color_type);
 }
 
 Eina_Bool
