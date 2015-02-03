@@ -19,6 +19,8 @@ Eina_List *config_edc_img_path_list_get(void);
 Eina_List *config_edc_snd_path_list_get(void);
 Eina_List *config_edc_fnt_path_list_get(void);
 Eina_List *config_edc_dat_path_list_get(void);
+void config_syntax_color_set(Enventor_Syntax_Color_Type color_type, const char *val);
+const char *config_syntax_color_get(Enventor_Syntax_Color_Type color_type);
 void config_update_cb_set(void (*cb)(void *data), void *data);
 void config_stats_bar_set(Eina_Bool enabled);
 void config_linenumber_set(Eina_Bool enabled);
