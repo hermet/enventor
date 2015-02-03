@@ -22,7 +22,6 @@ enventor_SOURCES = \
 	goto.c \
 	newfile.c \
 	setting.c \
-	text_setting.c \
 	globals.c \
 	live_edit.c \
 	console.c \

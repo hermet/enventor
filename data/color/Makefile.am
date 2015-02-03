@@ -7,8 +7,7 @@ color.src
 
 filesdir = $(datadir)/$(PACKAGE)/color
 files_DATA = \
-color.eet \
-syntax_template.dat
+color.eet
 
 %.eet: %.src
 	$(EET_EET) -e \
