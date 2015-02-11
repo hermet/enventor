@@ -38,7 +38,12 @@ newfile_set(Evas_Object *enventor, Eina_Bool template_new)
    if (template_new && config_edc_path_get())
      sprintf(path, "%s", config_edc_path_get());
    else
-     sprintf(path, DEFAULT_EDC_PATH_FORMAT, getpid());
+     {
+        Eina_Tmpstr *tmp_path;
+        eina_file_mkstemp(DEFAULT_EDC_FORMAT, &tmp_path);
+        sprintf(path, "%s", (const char *)tmp_path);
+        eina_tmpstr_del(tmp_path);
+     }
    success = eina_file_copy(buf, path,
                             EINA_FILE_COPY_DATA, NULL, NULL);
    if (!success)
@@ -52,13 +57,13 @@ newfile_set(Evas_Object *enventor, Eina_Bool template_new)
 }
 
 void
-newfile_default_set(void)
+newfile_default_set(Eina_Bool default_edc)
 {
    Eina_Bool success = EINA_TRUE;
    char buf[PATH_MAX];
    snprintf(buf, sizeof(buf), "%s/templates/basic.edc",
             elm_app_data_dir_get());
-   if (!ecore_file_exists(config_edc_path_get()))
+   if (default_edc)
      {
         success = eina_file_copy(buf,config_edc_path_get(),
                                  EINA_FILE_COPY_DATA, NULL, NULL);

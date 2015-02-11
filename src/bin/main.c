@@ -278,7 +278,7 @@ tools_set(Evas_Object *enventor)
    base_tools_set(tools);
 }
 
-static void
+static Eina_Bool
 args_dispatch(int argc, char **argv, char *edc_path, char *img_path,
               char *snd_path, char *fnt_path, char *dat_path,
               Eina_Bool *template_new)
@@ -358,10 +358,17 @@ args_dispatch(int argc, char **argv, char *edc_path, char *img_path,
      }
 
 defaults:
-   if (default_edc) sprintf(edc_path, DEFAULT_EDC_PATH_FORMAT, getpid());
+   if (default_edc)
+     {
+        Eina_Tmpstr *tmp_path;
+        eina_file_mkstemp(DEFAULT_EDC_FORMAT, &tmp_path);
+        sprintf(edc_path, "%s", (const char *)tmp_path);
+        eina_tmpstr_del(tmp_path);
+     }
+   return default_edc;
 }
 
-static void
+static Eina_Bool
 config_data_set(app_data *ad, int argc, char **argv)
 {
    char edc_path[PATH_MAX] = { 0, };
@@ -371,11 +378,14 @@ config_data_set(app_data *ad, int argc, char **argv)
    char dat_path[PATH_MAX] = { 0, };
    Eina_Bool template_new = EINA_FALSE;
 
-   args_dispatch(argc, argv, edc_path, img_path, snd_path, fnt_path, dat_path,
-                 &template_new);
+   Eina_Bool default_edc = args_dispatch(argc, argv, edc_path, img_path,
+                                         snd_path, fnt_path, dat_path,
+                                         &template_new);
    config_init(edc_path, img_path, snd_path, fnt_path, dat_path);
    config_update_cb_set(config_update_cb, ad);
    ad->template_new = template_new;
+
+   return default_edc;
 }
 
 static void
@@ -876,8 +886,8 @@ init(app_data *ad, int argc, char **argv)
 
    elm_setup();
 
-   config_data_set(ad, argc, argv);
-   newfile_default_set();
+   Eina_Bool default_edc = config_data_set(ad, argc, argv);
+   newfile_default_set(default_edc);
    base_gui_init();
    statusbar_set();
    enventor_setup(ad);

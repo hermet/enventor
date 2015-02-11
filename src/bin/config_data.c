@@ -53,10 +53,10 @@ config_edj_path_update(config_data *cd)
      {
         char filename[PATH_MAX];
         snprintf(filename, (ext - file) + 1, "%s", file);
-        snprintf(buf, sizeof(buf), "%s_XXXXXX.edj", filename);
+        snprintf(buf, sizeof(buf), "%s.edj", filename);
      }
    else
-     snprintf(buf, sizeof(buf), "%s_XXXXXX.edj", file);
+     snprintf(buf, sizeof(buf), "%s.edj", file);
 
    if (!eina_file_mkstemp(buf, &tmp_path))
      {
