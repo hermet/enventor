@@ -168,9 +168,6 @@ exe_del_event_cb(void *data, int type EINA_UNUSED, void *event EINA_UNUSED)
    view_obj_min_update(vd);
    view_part_highlight_set(vd, vd->part_name);
    dummy_obj_update(vd->layout);
-#if 0
-   base_console_reset();
-#endif
 
    vd->edj_reload_need = EINA_FALSE;
 

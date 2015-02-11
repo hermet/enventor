@@ -564,6 +564,8 @@ edc_save(app_data *ad)
 {
    char buf[PATH_MAX];
 
+   base_console_reset();
+
    if (enventor_object_save(ad->enventor, config_edc_path_get()))
      {
         if (config_stats_bar_get())
