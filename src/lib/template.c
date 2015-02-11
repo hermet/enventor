@@ -240,13 +240,11 @@ template_part_insert(edit_data *ed, Edje_Part_Type part_type,
 
    elm_entry_cursor_pos_set(edit_entry, cursor_pos);
 
-   if (insert_type == ENVENTOR_TEMPLATE_INSERT_LIVE_EDIT)
-     {
-        if (part_type == EDJE_PART_TYPE_IMAGE)
-          image_description_add(ed);
-        else if (part_type == EDJE_PART_TYPE_TEXTBLOCK)
-          textblock_style_add(ed, random_name);
-     }
+   if (part_type == EDJE_PART_TYPE_IMAGE)
+     image_description_add(ed);
+   else if (part_type == EDJE_PART_TYPE_TEXTBLOCK)
+     textblock_style_add(ed, random_name);
+
    edit_syntax_color_partial_apply(ed, 0);
    edit_changed_set(ed, EINA_TRUE);
 
