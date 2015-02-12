@@ -50,9 +50,9 @@ typedef struct type_init_thread_data_s
 static void
 group_name_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
-   const char *quot = QUOT;
+   const char *quot = QUOT_UTF8;
    const char *group = "group";
-   const int quot_len = QUOT_LEN;
+   const int quot_len = QUOT_UTF8_LEN;
    const int group_len = 5;  //strlen("group");
 
    cur_name_td *td = data;
@@ -122,11 +122,11 @@ end:
 static void
 cur_name_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
-   const char *quot = QUOT;
+   const char *quot = QUOT_UTF8;
    const char *part = "part";
    const char *parts = "parts";
    const char *group = "group";
-   const int quot_len = QUOT_LEN;
+   const int quot_len = QUOT_UTF8_LEN;
    const int part_len = 4; //strlen("part");
    const int parts_len = 5; //strlen("parts");
    const int group_len = 5;  //strlen("group");
@@ -850,8 +850,8 @@ static const char *
 group_beginning_pos_get(const char* source, const char *group_name)
 {
    const char* GROUP_SYNTAX_NAME = "group";
-   const char *quot = QUOT;
-   const int quot_len = QUOT_LEN;
+   const char *quot = QUOT_UTF8;
+   const int quot_len = QUOT_UTF8_LEN;
 
    const char *pos = strstr(source, GROUP_SYNTAX_NAME);
 
@@ -1045,8 +1045,8 @@ parser_paragh_name_get(parser_data *pd EINA_UNUSED, Evas_Object *entry)
    int cur_pos = elm_entry_cursor_pos_get(entry);
    if (cur_pos < 1) return NULL;
 
-   const char *quot = QUOT;
-   int quot_len = QUOT_LEN;
+   const char *quot = QUOT_UTF8;
+   int quot_len = QUOT_UTF8_LEN;
    char *cur = utf8;
    char *end = cur + cur_pos;
    char *stack[20];
@@ -1098,8 +1098,8 @@ parser_paragh_name_get(parser_data *pd EINA_UNUSED, Evas_Object *entry)
 Eina_Stringshare*
 parser_cur_name_fast_get(Evas_Object *entry, const char *scope)
 {
-   const char *quot = QUOT;
-   const int quot_len = QUOT_LEN;
+   const char *quot = QUOT_UTF8;
+   const int quot_len = QUOT_UTF8_LEN;
    const int scope_len = strlen(scope);
 
    const char *text = elm_entry_entry_get(entry);

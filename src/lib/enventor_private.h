@@ -3,6 +3,8 @@
 
 #define QUOT "&quot;"
 #define QUOT_LEN 6
+#define QUOT_UTF8 "\""
+#define QUOT_UTF8_LEN 1
 #define EOL "<br/>"
 #define EOL_LEN 5
 #define TAB "<tab/>"
