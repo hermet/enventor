@@ -289,7 +289,7 @@ general_layout_create(setting_data *sd, Evas_Object *parent)
    //Box for View Size Entries
    Evas_Object *box3 = elm_box_add(box2);
    elm_box_horizontal_set(box3, EINA_TRUE);
-   evas_object_size_hint_weight_set(box3, EVAS_HINT_EXPAND, 0);
+   evas_object_size_hint_weight_set(box3, 0.25, 0);
    evas_object_size_hint_align_set(box3, EVAS_HINT_FILL, 0);
    evas_object_show(box3);
 
