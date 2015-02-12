@@ -25,7 +25,7 @@ struct text_setting_s
 typedef struct text_setting_s text_setting_data;
 
 Evas_Object *text_setting_layout_create(Evas_Object *parent);
-void text_setting_layout_show(Evas_Object *setting_layout);
+void text_setting_layout_show(Evas_Object *setting_layout, Evas_Object *tabbar, Evas_Object *apply_btn, Evas_Object *reset_btn, Evas_Object *cancel_btn);
 void text_setting_syntax_color_reset(void);
 void text_setting_syntax_color_save(void);
 void text_setting_config_set(void);

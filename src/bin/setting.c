@@ -5,6 +5,8 @@ struct setting_s
 {
    Evas_Object *setting_layout;
 
+   Evas_Object *tabbar;
+
    Evas_Object *general_layout;
 
    Evas_Object *img_path_entry;
@@ -20,6 +22,10 @@ struct setting_s
    Evas_Object *toggle_swallow;
    Evas_Object *toggle_stats;
    Evas_Object *toggle_tools;
+
+   Evas_Object *apply_btn;
+   Evas_Object *reset_btn;
+   Evas_Object *cancel_btn;
 };
 
 typedef struct setting_s setting_data;
@@ -412,6 +418,15 @@ general_tab_cb(void *data, Evas_Object *obj EINA_UNUSED,
    elm_object_part_content_set(sd->setting_layout, "elm.swallow.content",
                                sd->general_layout);
    elm_object_focus_set(sd->img_path_entry, EINA_TRUE);
+
+   //Set a custom chain to set the focus order.
+   Eina_List *custom_chain = NULL;
+   custom_chain = eina_list_append(custom_chain, sd->tabbar);
+   custom_chain = eina_list_append(custom_chain, sd->general_layout);
+   custom_chain = eina_list_append(custom_chain, sd->apply_btn);
+   custom_chain = eina_list_append(custom_chain, sd->reset_btn);
+   custom_chain = eina_list_append(custom_chain, sd->cancel_btn);
+   elm_object_focus_custom_chain_set(sd->setting_layout, custom_chain);
 }
 
 static void
@@ -419,7 +434,8 @@ text_setting_tab_cb(void *data, Evas_Object *obj EINA_UNUSED,
                    void *event_info EINA_UNUSED)
 {
    setting_data *sd = data;
-   text_setting_layout_show(sd->setting_layout);
+   text_setting_layout_show(sd->setting_layout, sd->tabbar, sd->apply_btn,
+                            sd->reset_btn, sd->cancel_btn);
 }
 
 void
@@ -470,27 +486,32 @@ setting_open(void)
    text_setting_layout = text_setting_layout_create(layout);
    evas_object_hide(text_setting_layout);
 
-   Evas_Object *btn;
-
    //Apply Button
-   btn = elm_button_add(layout);
-   elm_object_text_set(btn, "Apply");
-   evas_object_smart_callback_add(btn, "clicked", setting_apply_btn_cb, sd);
-   elm_object_part_content_set(layout, "elm.swallow.apply_btn", btn);
+   Evas_Object *apply_btn = elm_button_add(layout);
+   elm_object_text_set(apply_btn, "Apply");
+   evas_object_smart_callback_add(apply_btn, "clicked", setting_apply_btn_cb,
+                                  sd);
+   elm_object_part_content_set(layout, "elm.swallow.apply_btn", apply_btn);
 
    //Reset Button
-   btn = elm_button_add(layout);
-   elm_object_text_set(btn, "Reset");
-   evas_object_smart_callback_add(btn, "clicked", setting_reset_btn_cb, sd);
-   elm_object_part_content_set(layout, "elm.swallow.reset_btn", btn);
+   Evas_Object *reset_btn = elm_button_add(layout);
+   elm_object_text_set(reset_btn, "Reset");
+   evas_object_smart_callback_add(reset_btn, "clicked", setting_reset_btn_cb,
+                                  sd);
+   elm_object_part_content_set(layout, "elm.swallow.reset_btn", reset_btn);
 
    //Cancel Button
-   btn = elm_button_add(layout);
-   elm_object_text_set(btn, "Cancel");
-   evas_object_smart_callback_add(btn, "clicked", setting_cancel_btn_cb, sd);
-   elm_object_part_content_set(layout, "elm.swallow.cancel_btn", btn);
+   Evas_Object *cancel_btn = elm_button_add(layout);
+   elm_object_text_set(cancel_btn, "Cancel");
+   evas_object_smart_callback_add(cancel_btn, "clicked", setting_cancel_btn_cb,
+                                  sd);
+   elm_object_part_content_set(layout, "elm.swallow.cancel_btn", cancel_btn);
 
    sd->setting_layout = layout;
+   sd->tabbar = tabbar;
+   sd->apply_btn = apply_btn;
+   sd->reset_btn = reset_btn;
+   sd->cancel_btn = cancel_btn;
 
    menu_activate_request();
 }

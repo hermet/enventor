@@ -758,7 +758,9 @@ text_setting_layout_create(Evas_Object *parent)
 }
 
 void
-text_setting_layout_show(Evas_Object *setting_layout)
+text_setting_layout_show(Evas_Object *setting_layout, Evas_Object *tabbar,
+                         Evas_Object *apply_btn, Evas_Object *reset_btn,
+                         Evas_Object *cancel_btn)
 {
    text_setting_data *tsd = g_tsd;
    Evas_Object *content;
@@ -776,6 +778,15 @@ text_setting_layout_show(Evas_Object *setting_layout)
    elm_object_part_content_set(setting_layout, "elm.swallow.content",
                                tsd->text_setting_layout);
    elm_object_focus_set(tsd->slider_font, EINA_TRUE);
+
+   //Set a custom chain to set the focus order.
+   Eina_List *custom_chain = NULL;
+   custom_chain = eina_list_append(custom_chain, tabbar);
+   custom_chain = eina_list_append(custom_chain, tsd->text_setting_layout);
+   custom_chain = eina_list_append(custom_chain, apply_btn);
+   custom_chain = eina_list_append(custom_chain, reset_btn);
+   custom_chain = eina_list_append(custom_chain, cancel_btn);
+   elm_object_focus_custom_chain_set(setting_layout, custom_chain);
 }
 
 void
