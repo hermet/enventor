@@ -177,6 +177,16 @@ entry_create(Evas_Object *parent)
 }
 
 static Evas_Object *
+label_create(Evas_Object *parent, const char *text)
+{
+   Evas_Object *label = elm_label_add(parent);
+   elm_object_text_set(label, text);
+   evas_object_show(label);
+
+   return label;
+}
+
+static Evas_Object *
 toggle_create(Evas_Object *parent, const char *text, Eina_Bool state)
 {
    Evas_Object *toggle = elm_check_add(parent);
@@ -285,12 +295,9 @@ general_layout_create(setting_data *sd, Evas_Object *parent)
 
    elm_box_pack_end(box2, box3);
 
-   //Entry (View Size)
-   Evas_Object *entry_view_size = entry_create(box2);
-   elm_object_text_set(entry_view_size, "View Size");
-   elm_entry_scrollable_set(entry_view_size, EINA_FALSE);
-   elm_entry_editable_set(entry_view_size, EINA_FALSE);
-   elm_box_pack_end(box3, entry_view_size);
+   //Label (View Size)
+   Evas_Object *label_view_size = label_create(box2, "View Size");
+   elm_box_pack_end(box3, label_view_size);
 
    Evas_Coord w, h;
    char w_str[5], h_str[5];
@@ -319,12 +326,9 @@ general_layout_create(setting_data *sd, Evas_Object *parent)
                            !config_view_size_configurable_get());
    elm_box_pack_end(box3, entry_view_size_w);
 
-   //Entry (X)
-   Evas_Object *entry_view_size_x = entry_create(box3);
-   elm_object_text_set(entry_view_size_x, "X");
-   elm_entry_scrollable_set(entry_view_size_x, EINA_FALSE);
-   elm_entry_editable_set(entry_view_size_x, EINA_FALSE);
-   elm_box_pack_end(box3, entry_view_size_x);
+   //Label (X)
+   Evas_Object *label_view_size_x = label_create(box3, "X");
+   elm_box_pack_end(box3, label_view_size_x);
 
    //Entry (View Height)
    Evas_Object *entry_view_size_h = entry_create(box3);
