@@ -34,21 +34,24 @@ image_description_add(edit_data *ed)
 
    Eina_Bool images_block = parser_images_pos_get(edit_entry, &cursor_pos);
    if (cursor_pos == -1) return;
+
+   elm_entry_cursor_pos_set(edit_entry, cursor_pos);
+   elm_entry_cursor_line_begin_set(edit_entry);
+   int cursor_pos1 = elm_entry_cursor_pos_get(edit_entry);
+   int cursor_pos2;
    if (images_block)
-      {
-         elm_entry_cursor_pos_set(edit_entry, cursor_pos);
-         template_insert(ed, ENVENTOR_TEMPLATE_INSERT_LIVE_EDIT, NULL, 0);
-      }
+     {
+        template_insert(ed, ENVENTOR_TEMPLATE_INSERT_LIVE_EDIT, NULL, 0);
+        cursor_pos2 = elm_entry_cursor_pos_get(edit_entry);
+     }
    else
-      {
-         elm_entry_cursor_pos_set(edit_entry, cursor_pos);
-         elm_entry_cursor_line_begin_set(edit_entry);
-         int cursor_pos1 = elm_entry_cursor_pos_get(edit_entry);
-         elm_entry_entry_insert(edit_entry, TEMPLATE_IMG_BLOCK);
-         edit_line_increase(ed, TEMPLATE_IMG_BLOCK_LINE_CNT);
-         int cursor_pos2 = elm_entry_cursor_pos_get(edit_entry);
-         edit_redoundo_region_push(ed, cursor_pos1, cursor_pos2);
-      }
+     {
+        elm_entry_entry_insert(edit_entry, TEMPLATE_IMG_BLOCK);
+        edit_line_increase(ed, TEMPLATE_IMG_BLOCK_LINE_CNT);
+        cursor_pos2 = elm_entry_cursor_pos_get(edit_entry);
+        edit_redoundo_region_push(ed, cursor_pos1, cursor_pos2);
+     }
+   cursor_pos_to_restore += (cursor_pos2 - cursor_pos1);
    elm_entry_cursor_pos_set(edit_entry, cursor_pos_to_restore);
 }
 
@@ -84,6 +87,7 @@ textblock_style_add(edit_data *ed, const char *style_name)
    int cursor_pos2 = elm_entry_cursor_pos_get(edit_entry);
    edit_redoundo_region_push(ed, cursor_pos1, cursor_pos2);
 
+   cursor_pos_to_restore += (cursor_pos2 - cursor_pos1);
    elm_entry_cursor_pos_set(edit_entry, cursor_pos_to_restore);
 }
 
@@ -325,6 +329,9 @@ template_insert(edit_data *ed, Enventor_Template_Insert_Type insert_type,
 
    int cursor_pos2 = elm_entry_cursor_pos_get(entry);
    edit_redoundo_region_push(ed, cursor_pos1, cursor_pos2);
+
+   if (!strcmp(paragh, "images"))
+     cursor_pos += (cursor_pos2 - cursor_pos1);
 
    elm_entry_cursor_pos_set(entry, cursor_pos);
 
