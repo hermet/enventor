@@ -296,8 +296,18 @@ general_layout_create(setting_data *sd, Evas_Object *parent)
    elm_box_pack_end(box, box2);
 
    //Label (View Size)
-   Evas_Object *label_view_size = label_create(box2, "View Size");
-   elm_box_pack_end(box2, label_view_size);
+
+   /* This layout is intended to put the label aligned to left side
+      far from 3 pixels. */
+   Evas_Object *layout_padding3 = elm_layout_add(box2);
+   elm_layout_file_set(layout_padding3, EDJE_PATH, "padding3_layout");
+   evas_object_show(layout_padding3);
+
+   elm_box_pack_end(box2, layout_padding3);
+
+   Evas_Object *label_view_size = label_create(layout_padding3, "View Size");
+   elm_object_part_content_set(layout_padding3, "elm.swallow.content",
+                               label_view_size);
 
    Evas_Coord w, h;
    char w_str[5], h_str[5];

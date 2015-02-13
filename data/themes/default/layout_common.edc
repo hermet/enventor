@@ -2529,6 +2529,17 @@ group { name: "main_layout";
    }
 }
 
+group { name: "padding3_layout";
+    parts {
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            rel1.offset: 3 0;
+         }
+      }
+   }
+}
+
 group { name: "edit_layout";
    parts {
       part { name: "base_clip";
