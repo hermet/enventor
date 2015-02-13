@@ -111,6 +111,9 @@ enventor_edc_modified_cb(void *data, Evas_Object *obj EINA_UNUSED,
    file_mgr_data *fmd = data;
    Enventor_EDC_Modified *modified = event_info;
 
+   //Reset console messages.
+   base_console_reset();
+
    if (modified->self_changed)
      {
         fmd->edc_modified = 0;
