@@ -403,7 +403,7 @@ elm_setup()
       elm_config_profiel_set() */
    char *engine = getenv("ELM_ENGINE");
    if (engine && !strncmp(engine, "gl", strlen("gl")))
-     elm_config_preferred_engine_set("opengl_x11");
+     elm_config_accel_preference_set("3d");
 
    elm_config_focus_highlight_clip_disabled_set(EINA_FALSE);
    elm_config_scroll_bounce_enabled_set(EINA_FALSE);
