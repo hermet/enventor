@@ -96,8 +96,13 @@ enventor_init(int argc, char **argv)
         _enventor_log_dom = EINA_LOG_DOMAIN_GLOBAL;
      }
 
+   elm_app_compile_bin_dir_set(PACKAGE_BIN_DIR);
+   elm_app_compile_data_dir_set(PACKAGE_DATA_DIR);
+   elm_app_compile_lib_dir_set(PACKAGE_LIB_DIR);
+   elm_app_info_set(enventor_init, "enventor", "images/logo.png");
+
    snprintf(EDJE_PATH, sizeof(EDJE_PATH), "%s/themes/enventor.edj",
-            PACKAGE_DATA_DIR);
+            elm_app_data_dir_get());
 
    srand(time(NULL));
 
