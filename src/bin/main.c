@@ -876,13 +876,13 @@ template_show(app_data *ad)
 static Eina_Bool
 init(app_data *ad, int argc, char **argv)
 {
-   enventor_init(argc, argv);
-
    ecore_event_handler_add(ECORE_EVENT_KEY_DOWN, main_key_down_cb, ad);
    ecore_event_handler_add(ECORE_EVENT_KEY_UP, main_key_up_cb, ad);
    ecore_event_handler_add(ECORE_EVENT_MOUSE_WHEEL, main_mouse_wheel_cb, ad);
 
    elm_setup();
+
+   enventor_init(argc, argv);
 
    Eina_Bool default_edc = config_data_set(ad, argc, argv);
    newfile_default_set(default_edc);
