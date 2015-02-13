@@ -719,13 +719,13 @@ text_setting_layout_create(Evas_Object *parent)
    //Font Size (Slider)
    Evas_Object *slider_font = elm_slider_add(box2);
    evas_object_size_hint_weight_set(slider_font, EVAS_HINT_EXPAND, 0);
-   evas_object_size_hint_align_set(slider_font, 0, 0);
+   evas_object_size_hint_align_set(slider_font, EVAS_HINT_FILL, 0);
    elm_slider_span_size_set(slider_font, 190);
    elm_slider_indicator_show_set(slider_font, EINA_FALSE);
    elm_slider_unit_format_set(slider_font, "%1.1fx");
    elm_slider_min_max_set(slider_font, MIN_FONT_SCALE, MAX_FONT_SCALE);
    elm_slider_value_set(slider_font, tsd->font_scale);
-   elm_object_text_set(slider_font, "Font Size");
+   elm_object_text_set(slider_font, "Font Size ");
    evas_object_smart_callback_add(slider_font, "changed",
                                   font_scale_slider_changed_cb, tsd);
    evas_object_show(slider_font);

@@ -272,38 +272,32 @@ general_layout_create(setting_data *sd, Evas_Object *parent)
    //View Scale (Slider)
    Evas_Object *slider_view = elm_slider_add(box);
    evas_object_size_hint_weight_set(slider_view, EVAS_HINT_EXPAND, 0);
-   evas_object_size_hint_align_set(slider_view, 0, 0);
+   evas_object_size_hint_align_set(slider_view, EVAS_HINT_FILL, 0);
    elm_slider_span_size_set(slider_view, 190);
    elm_slider_indicator_show_set(slider_view, EINA_FALSE);
    elm_slider_unit_format_set(slider_view, "%1.2fx");
    elm_slider_min_max_set(slider_view, MIN_VIEW_SCALE, MAX_VIEW_SCALE);
    elm_slider_value_set(slider_view, (double) config_view_scale_get());
-   elm_object_text_set(slider_view, "View Scale");
+   elm_object_text_set(slider_view, "View Scale ");
    evas_object_show(slider_view);
 
    elm_box_pack_end(box, slider_view);
 
    //View Size
+
+   //Box for View Size
    Evas_Object *box2 = elm_box_add(box);
    elm_box_horizontal_set(box2, EINA_TRUE);
+   elm_box_padding_set(box2, 5 * elm_config_scale_get(), 0);
    evas_object_size_hint_weight_set(box2, EVAS_HINT_EXPAND, 0);
    evas_object_size_hint_align_set(box2, EVAS_HINT_FILL, 0);
    evas_object_show(box2);
 
    elm_box_pack_end(box, box2);
 
-   //Box for View Size Entries
-   Evas_Object *box3 = elm_box_add(box2);
-   elm_box_horizontal_set(box3, EINA_TRUE);
-   evas_object_size_hint_weight_set(box3, 0.25, 0);
-   evas_object_size_hint_align_set(box3, EVAS_HINT_FILL, 0);
-   evas_object_show(box3);
-
-   elm_box_pack_end(box2, box3);
-
    //Label (View Size)
    Evas_Object *label_view_size = label_create(box2, "View Size");
-   elm_box_pack_end(box3, label_view_size);
+   elm_box_pack_end(box2, label_view_size);
 
    Evas_Coord w, h;
    char w_str[5], h_str[5];
@@ -312,8 +306,8 @@ general_layout_create(setting_data *sd, Evas_Object *parent)
    snprintf(h_str, sizeof(h_str), "%d", h);
 
    //Entry (View Width)
-   Evas_Object *entry_view_size_w = entry_create(box3);
-   evas_object_size_hint_weight_set(entry_view_size_w, EVAS_HINT_EXPAND, 0);
+   Evas_Object *entry_view_size_w = entry_create(box2);
+   evas_object_size_hint_weight_set(entry_view_size_w, 0.15, 0);
    evas_object_size_hint_align_set(entry_view_size_w, EVAS_HINT_FILL, 0);
 
    digits_filter_data.accepted = "0123456789";
@@ -330,15 +324,15 @@ general_layout_create(setting_data *sd, Evas_Object *parent)
    elm_object_text_set(entry_view_size_w, w_str);
    elm_object_disabled_set(entry_view_size_w,
                            !config_view_size_configurable_get());
-   elm_box_pack_end(box3, entry_view_size_w);
+   elm_box_pack_end(box2, entry_view_size_w);
 
    //Label (X)
-   Evas_Object *label_view_size_x = label_create(box3, "X");
-   elm_box_pack_end(box3, label_view_size_x);
+   Evas_Object *label_view_size_x = label_create(box2, "X");
+   elm_box_pack_end(box2, label_view_size_x);
 
    //Entry (View Height)
-   Evas_Object *entry_view_size_h = entry_create(box3);
-   evas_object_size_hint_weight_set(entry_view_size_h, EVAS_HINT_EXPAND, 0);
+   Evas_Object *entry_view_size_h = entry_create(box2);
+   evas_object_size_hint_weight_set(entry_view_size_h, 0.15, 0);
    evas_object_size_hint_align_set(entry_view_size_h, EVAS_HINT_FILL, 0);
 
    elm_entry_markup_filter_append(entry_view_size_h,
@@ -351,7 +345,7 @@ general_layout_create(setting_data *sd, Evas_Object *parent)
    elm_object_text_set(entry_view_size_h, h_str);
    elm_object_disabled_set(entry_view_size_h,
                            !config_view_size_configurable_get());
-   elm_box_pack_end(box3, entry_view_size_h);
+   elm_box_pack_end(box2, entry_view_size_h);
 
    //Toggle (View Size)
    Evas_Object *toggle_view_size;
