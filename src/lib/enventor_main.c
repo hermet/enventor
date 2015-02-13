@@ -96,6 +96,7 @@ enventor_init(int argc, char **argv)
         _enventor_log_dom = EINA_LOG_DOMAIN_GLOBAL;
      }
 
+   //FIXME: These should be moved to bin side.
    elm_app_compile_bin_dir_set(PACKAGE_BIN_DIR);
    elm_app_compile_data_dir_set(PACKAGE_DATA_DIR);
    elm_app_compile_lib_dir_set(PACKAGE_LIB_DIR);
