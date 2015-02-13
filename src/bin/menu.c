@@ -233,6 +233,7 @@ about_open(menu_data *md)
    elm_entry_scrollable_set(entry, EINA_TRUE);
    elm_entry_line_wrap_set(entry, EINA_TRUE);
    elm_entry_editable_set(entry, EINA_FALSE);
+   elm_entry_line_wrap_set(entry, ELM_WRAP_MIXED);
    evas_object_show(entry);
    elm_object_focus_set(entry, EINA_TRUE);
    elm_object_part_content_set(layout, "elm.swallow.entry", entry);
