@@ -447,7 +447,7 @@ color_ctxpopup_create(Evas_Object *parent,
 
    elm_config_focus_autoscroll_mode_set(ELM_FOCUS_AUTOSCROLL_MODE_NONE);
 
-   elm_object_style_set(ctxpopup, "enventor");
+   elm_object_style_set(ctxpopup, elm_app_name_get());
    evas_object_data_set(ctxpopup, "color_keyword", selected_color_keyword);
    elm_ctxpopup_direction_priority_set(ctxpopup, ELM_CTXPOPUP_DIRECTION_RIGHT,
                                        ELM_CTXPOPUP_DIRECTION_LEFT,
