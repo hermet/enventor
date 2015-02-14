@@ -60,6 +60,9 @@ v_unpress_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
     double size = elm_panes_content_right_size_get(obj);
     if (pd->vert.last_size[0] != size) pd->vert.last_size[1] = size;
     config_console_size_set(size);
+
+   double origin = elm_panes_content_right_size_get(pd->vert.obj);
+   if (origin == 0.0) pd->vert.state = PANES_EDITORS_EXPAND;
 }
 
 static void
@@ -97,6 +100,13 @@ panes_v_full_view_cancel(panes_data *pd)
 {
    pd->vert.origin = elm_panes_content_right_size_get(pd->vert.obj);
    pd->vert.delta = pd->vert.last_size[1] - pd->vert.origin;
+
+   //init console size to default
+   if (pd->vert.delta == 0.0)
+     {
+        pd->vert.delta = DEFAULT_CONSOLE_SIZE;
+        config_console_size_set(DEFAULT_CONSOLE_SIZE);
+     }
 
    Elm_Transit *transit = elm_transit_add();
    elm_transit_effect_add(transit, transit_op_v, pd, NULL);

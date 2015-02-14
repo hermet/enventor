@@ -143,7 +143,7 @@ config_load(void)
           }
         cd->font_scale = 1.0f;
         cd->view_scale = 1;
-        cd->console_size = 0.175;
+        cd->console_size = DEFAULT_CONSOLE_SIZE;
         cd->stats_bar = EINA_TRUE;
         cd->linenumber = EINA_TRUE;
         cd->part_highlight = EINA_TRUE;
