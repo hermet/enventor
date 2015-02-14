@@ -22,6 +22,7 @@ struct setting_s
    Evas_Object *toggle_swallow;
    Evas_Object *toggle_stats;
    Evas_Object *toggle_tools;
+   Evas_Object *toggle_console;
 
    Evas_Object *apply_btn;
    Evas_Object *reset_btn;
@@ -117,6 +118,7 @@ setting_apply_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
    config_edc_dat_path_set(elm_object_text_get(sd->dat_path_entry));
    config_view_scale_set(elm_slider_value_get(sd->slider_view));
    config_tools_set(elm_check_state_get(sd->toggle_tools));
+   config_console_set(elm_check_state_get(sd->toggle_console));
    config_stats_bar_set(elm_check_state_get(sd->toggle_stats));
    config_part_highlight_set(elm_check_state_get(sd->toggle_highlight));
    config_dummy_swallow_set(elm_check_state_get(sd->toggle_swallow));
@@ -158,6 +160,7 @@ setting_reset_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 
    elm_slider_value_set(sd->slider_view, (double) config_view_scale_get());
 
+   elm_check_state_set(sd->toggle_console, config_console_get());
    elm_check_state_set(sd->toggle_tools, config_tools_get());
    elm_check_state_set(sd->toggle_stats, config_stats_bar_get());
    elm_check_state_set(sd->toggle_highlight, config_part_highlight_get());
@@ -385,6 +388,11 @@ general_layout_create(setting_data *sd, Evas_Object *parent)
                                              config_tools_get());
    elm_box_pack_end(box, toggle_tools);
 
+   //Toggle (Console)
+   Evas_Object *toggle_console = toggle_create(box, "Auto Hiding Console",
+                                               config_console_get());
+   elm_box_pack_end(box, toggle_console);
+
    sd->general_layout = layout;
    sd->img_path_entry = img_path_entry;
    sd->snd_path_entry = snd_path_entry;
@@ -398,6 +406,7 @@ general_layout_create(setting_data *sd, Evas_Object *parent)
    sd->toggle_swallow = toggle_swallow;
    sd->toggle_stats = toggle_stats;
    sd->toggle_tools = toggle_tools;
+   sd->toggle_console = toggle_console;
 
    return layout;
 }

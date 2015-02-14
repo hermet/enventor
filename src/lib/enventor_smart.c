@@ -133,6 +133,7 @@ _enventor_object_evas_object_smart_add(Eo *obj, Enventor_Object_Data *pd)
    evas_object_smart_member_add(edit_obj_get(pd->ed), obj);
    elm_widget_can_focus_set(obj, EINA_FALSE);
 
+   //FIXME: Called twice ?? Why?
    ecore_event_handler_add(EIO_MONITOR_FILE_MODIFIED, file_modified_cb, pd);
 }
 

@@ -31,6 +31,7 @@ typedef struct config_s
    Eina_Bool dummy_swallow;
    Eina_Bool auto_indent;
    Eina_Bool tools;
+   Eina_Bool console;
    Eina_Bool auto_complete;
    Eina_Bool live_edit;
    Eina_Bool view_size_configurable;
@@ -150,6 +151,7 @@ config_load(void)
         cd->dummy_swallow = EINA_TRUE;
         cd->auto_indent = EINA_TRUE;
         cd->tools = EINA_TRUE;
+        cd->console = EINA_TRUE;
         cd->auto_complete = EINA_TRUE;
         cd->live_edit = EINA_FALSE;
         cd->view_size_configurable = EINA_FALSE;
@@ -243,6 +245,8 @@ eddc_init(void)
                                  auto_indent, EET_T_UCHAR);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "tools",
                                  tools, EET_T_UCHAR);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "console",
+                                 console, EET_T_UCHAR);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "auto_complete",
                                     auto_complete, EET_T_UCHAR);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data,
@@ -780,6 +784,20 @@ config_win_size_get(Evas_Coord *w, Evas_Coord *h)
 
    if (w) *w = cd->win_size_w;
    if (h) *h = cd->win_size_h;
+}
+
+Eina_Bool
+config_console_get(void)
+{
+   config_data *cd = g_cd;
+   return cd->console;
+}
+
+void
+config_console_set(Eina_Bool enabled)
+{
+   config_data *cd = g_cd;
+   cd->console = enabled;
 }
 
 Eina_Bool

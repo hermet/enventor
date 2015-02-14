@@ -197,6 +197,7 @@ config_update_cb(void *data)
 
    base_tools_toggle(EINA_FALSE);
    base_statusbar_toggle(EINA_FALSE);
+   base_console_auto_hide();
 
    //previous build was failed, Need to rebuild then reload the edj.
 #if 0

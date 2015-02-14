@@ -12,7 +12,7 @@ void base_tools_set(Evas_Object *tools);
 void base_enventor_full_view(void);
 void base_live_view_full_view(void);
 void base_editors_full_view(void);
-void base_console_full_view(void);
+void base_console_auto_hide(void);
 void base_console_toggle(void);
 void base_live_view_set(Evas_Object *live_view);
 void base_enventor_set(Evas_Object *enventor);

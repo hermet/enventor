@@ -5,6 +5,7 @@ typedef struct base_s
    Evas_Object *win;
    Evas_Object *layout;
    Evas_Object *console;
+   Eina_Bool console_msg : 1;
 } base_data;
 
 static base_data *g_bd = NULL;
@@ -44,9 +45,10 @@ void
 base_error_msg_set(const char *msg)
 {
    base_data *bd = g_bd;
-   if (panes_editors_full_view_get()) base_editors_full_view();
    elm_object_signal_emit(bd->layout, "elm,state,alert,show", "");
    console_text_set(bd->console, msg);
+   panes_editors_full_view(EINA_FALSE);
+   bd->console_msg = EINA_TRUE;
 }
 
 void
@@ -131,7 +133,7 @@ base_enventor_full_view(void)
 void
 base_editors_full_view(void)
 {
-   panes_editors_full_view();
+   base_console_toggle();
 }
 
 void
@@ -147,9 +149,22 @@ base_live_view_set(Evas_Object *live_view)
 }
 
 void
-base_console_toggle()
+base_console_auto_hide(void)
 {
-   panes_editors_full_view();
+   base_data *bd = g_bd;
+
+   if (!config_console_get()) return;
+   if (bd->console_msg) return;
+   panes_editors_full_view(EINA_TRUE);
+}
+
+void
+base_console_toggle(void)
+{
+   if (panes_editors_full_view_get())
+     panes_editors_full_view(EINA_FALSE);
+   else
+     panes_editors_full_view(EINA_TRUE);
 }
 
 void
@@ -165,6 +180,8 @@ base_console_reset(void)
 {
    base_data *bd = g_bd;
    console_text_set(bd->console, "");
+   bd->console_msg = EINA_FALSE;
+   if (config_console_get()) panes_editors_full_view(EINA_TRUE);
 }
 
 Eina_Bool
@@ -215,6 +232,9 @@ base_gui_init(void)
    //Console
    Evas_Object *console = console_create(panes);
    panes_console_set(console);
+
+   if (config_console_get())
+     panes_editors_full_view(EINA_TRUE);
 
    bd->win = win;
    bd->layout = layout;
