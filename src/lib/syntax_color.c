@@ -904,17 +904,14 @@ color_apply(color_data *cd, const char *src, int length, char *from, char *to)
         if (to && (cur > to)) goto finished;
      }
 
-   //Same with origin source.
-   if (prev == src)
-     str = src;
-   //Some color syntax is applied.
-   else
-     {
 finished:
-        //append leftovers.
-        if (prev < cur) eina_strbuf_append(strbuf, prev);
-        str = eina_strbuf_string_get(strbuf);
-     }
+   //append leftovers.
+   if ((prev == src) || (prev < cur)) eina_strbuf_append(strbuf, prev);
+
+   //prepend default color(white).
+   eina_strbuf_prepend(strbuf, "<color=#FFFFFFFF>");
+   eina_strbuf_append(strbuf, "</color>");
+   str = eina_strbuf_string_get(strbuf);
 
    macro_keys_free(cd);
 
