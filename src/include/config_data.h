@@ -40,8 +40,6 @@ void config_auto_indent_set(Eina_Bool auto_indent);
 Eina_Bool config_auto_indent_get(void);
 void config_auto_complete_set(Eina_Bool auto_complete);
 Eina_Bool config_auto_complete_get(void);
-Eina_Bool config_live_edit_get(void);
-void config_live_edit_set(Eina_Bool live_edit);
 void config_font_scale_set(float font_scale);
 float config_font_scale_get(void);
 void config_view_scale_set(double view_scale);

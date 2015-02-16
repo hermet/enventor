@@ -33,7 +33,6 @@ typedef struct config_s
    Eina_Bool tools;
    Eina_Bool console;
    Eina_Bool auto_complete;
-   Eina_Bool live_edit;
    Eina_Bool view_size_configurable;
 } config_data;
 
@@ -153,7 +152,6 @@ config_load(void)
         cd->tools = EINA_TRUE;
         cd->console = EINA_TRUE;
         cd->auto_complete = EINA_TRUE;
-        cd->live_edit = EINA_FALSE;
         cd->view_size_configurable = EINA_FALSE;
      }
 
@@ -673,20 +671,6 @@ config_font_scale_get(void)
 {
    config_data *cd = g_cd;
    return cd->font_scale;
-}
-
-Eina_Bool
-config_live_edit_get(void)
-{
-   config_data *cd = g_cd;
-   return cd->live_edit;
-}
-
-void
-config_live_edit_set(Eina_Bool live_edit)
-{
-   config_data *cd = g_cd;
-   cd->live_edit = live_edit;
 }
 
 void

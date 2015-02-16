@@ -26,6 +26,8 @@ typedef struct live_editor_s
    cur_part_data *cur_part_data;
 
    Ecore_Event_Handler *key_down_handler;
+
+   Eina_Bool on : 1;
 } live_data;
 
 const int MENU_ITEMS_NUM = 6;
@@ -303,33 +305,39 @@ void
 live_edit_toggle(void)
 {
    live_data *ld = g_ld;
-   Eina_Bool on = !config_live_edit_get();
+   ld->on = !ld->on;
    Evas_Object *event_obj = enventor_object_live_view_get(ld->enventor);
    if (!event_obj) return;
 
-   if (on)
+   if (ld->on)
      {
         evas_object_event_callback_add(event_obj, EVAS_CALLBACK_MOUSE_UP,
                                        layout_mouse_up_cb, ld);
+        stats_info_msg_update("Live View Edit Mode Enabled.");
      }
    else
      {
         evas_object_event_callback_del(event_obj, EVAS_CALLBACK_MOUSE_UP,
                                        layout_mouse_up_cb);
         live_edit_reset(ld);
+        stats_info_msg_update("Live View Edit Mode Disabled.");
      }
-   enventor_object_disabled_set(ld->enventor, on);
 
-   if (on) stats_info_msg_update("Live View Edit Mode Enabled.");
-   else stats_info_msg_update("Live View Edit Mode Disabled.");
+   enventor_object_disabled_set(ld->enventor, ld->on);
+}
 
-   config_live_edit_set(on);
+Eina_Bool
+live_edit_get(void)
+{
+   live_data *ld = g_ld;
+   return ld->on;
 }
 
 void
 live_edit_cancel(void)
 {
-   if (!config_live_edit_get()) return;
+   live_data *ld = g_ld;
+   if (!ld->on) return;
    live_edit_toggle();
 }
 

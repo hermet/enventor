@@ -55,7 +55,7 @@ template_insert_patch(app_data *ad, const char *key)
 {
    Edje_Part_Type part_type;
 
-   if (config_live_edit_get())
+   if (live_edit_get())
      {
         stats_info_msg_update("Insertion of template code is disabled "
                               "while in Live Edit mode");
@@ -621,7 +621,7 @@ dummy_swallow_toggle(app_data *ad)
 static void
 default_template_insert(app_data *ad)
 {
-   if (config_live_edit_get())
+   if (live_edit_get())
      {
         stats_info_msg_update("Insertion of template code is disabled "
                               "while in Live Edit mode");
