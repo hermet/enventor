@@ -305,6 +305,8 @@ live_edit_toggle(void)
    Evas_Object *live_view = enventor_object_live_view_get(ld->enventor);
    if (!live_view) return;
 
+   enventor_object_disabled_set(ld->enventor, ld->on);
+
    if (ld->on)
      {
         ld->ctxpopup = ctxpopup_create(live_view, ld);
@@ -315,8 +317,6 @@ live_edit_toggle(void)
         live_edit_reset(ld);
         stats_info_msg_update("Live View Edit Mode Disabled.");
      }
-
-   enventor_object_disabled_set(ld->enventor, ld->on);
 }
 
 Eina_Bool
@@ -344,16 +344,11 @@ live_edit_init(Evas_Object *enventor)
         return;
      }
    g_ld = ld;
-
    ld->enventor = enventor;
-
-   ld->ctxpopup = NULL;
-   ld->layout = NULL;
-   ld->key_down_handler = NULL;
 }
 
 void
-live_edit_term()
+live_edit_term(void)
 {
    live_data *ld = g_ld;
    evas_object_del(ld->ctxpopup);
