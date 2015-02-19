@@ -69,18 +69,6 @@ cur_part_value_update(live_data *ld, Evas_Object *edje)
    ld->cur_part_data.h = h;
 }
 
-static Evas_Object *
-create_live_edit_layout(live_data *ld)
-{
-   Evas_Object *live_view = enventor_object_live_view_get(ld->enventor);
-   Evas_Object *layout = elm_layout_add(live_view);
-   elm_layout_file_set(layout, EDJE_PATH,  "live_edit_layout");
-   evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(layout, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_object_part_content_set(live_view, "elm.swallow.live_edit", layout);
-   return layout;
-}
-
 static void
 part_info_update(live_data *ld)
 {
@@ -219,7 +207,11 @@ live_edit_layer_set(live_data *ld)
    ld->key_down_handler = ecore_event_handler_add(ECORE_EVENT_KEY_DOWN,
                                                   key_down_cb,
                                                   ld);
-   Evas_Object *layout = create_live_edit_layout(ld);
+   //Create Live View Layout
+   Evas_Object *live_view = enventor_object_live_view_get(ld->enventor);
+   Evas_Object *layout = elm_layout_add(live_view);
+   elm_layout_file_set(layout, EDJE_PATH,  "live_edit_layout");
+   elm_object_part_content_set(live_view, "elm.swallow.live_edit", layout);
 
    edje_object_signal_callback_add(elm_layout_edje_get(layout),
                                    "drag", "rel1_dragable",
