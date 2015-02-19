@@ -262,6 +262,7 @@ ctxpopup_dismissed_cb(void *data, Evas_Object *obj,
                       void *event_info EINA_UNUSED)
 {
    live_data *ld = data;
+   if (!ld->layout) live_edit_toggle();
    evas_object_del(obj);
    ld->ctxpopup = NULL;
 }
