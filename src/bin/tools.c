@@ -10,13 +10,8 @@ menu_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
    Evas_Object *enventor = data;
 
    if (live_edit_get()) live_edit_cancel();
-
-   if (search_is_opened() || goto_is_opened())
-     {
-        goto_close();
-        search_close();
-        enventor_object_focus_set(enventor, EINA_TRUE);
-     }
+   if (search_is_opened()) search_close();
+   if (goto_is_opened()) goto_close();
 
    enventor_object_focus_set(enventor, EINA_TRUE);
 
