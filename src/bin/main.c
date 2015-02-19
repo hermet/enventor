@@ -744,9 +744,14 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    //Main Menu
    if (!strcmp(event->key, "Escape"))
      {
-        if (search_is_opened() || goto_is_opened())
+        if (goto_is_opened())
           {
              goto_close();
+             enventor_object_focus_set(ad->enventor, EINA_TRUE);
+             return ECORE_CALLBACK_DONE;
+          }
+        if (search_is_opened())
+          {
              search_close();
              enventor_object_focus_set(ad->enventor, EINA_TRUE);
              return ECORE_CALLBACK_DONE;
