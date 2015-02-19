@@ -249,7 +249,7 @@ ctxpopup_it_selected_cb(void *data, Evas_Object *obj, void *event_info)
 {
    live_data *ld = g_ld;
    const Elm_Object_Item *it = event_info;
-   ld->cur_part_data.type = data;
+   ld->cur_part_data.type = (unsigned int) data;
    live_edit_layer_set(ld);
    elm_ctxpopup_dismiss(obj);
 
