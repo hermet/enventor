@@ -13,8 +13,6 @@ menu_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
    if (search_is_opened()) search_close();
    if (goto_is_opened()) goto_close();
 
-   enventor_object_focus_set(enventor, EINA_TRUE);
-
    menu_toggle();
 }
 
