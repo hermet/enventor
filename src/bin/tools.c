@@ -9,12 +9,17 @@ menu_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 {
    Evas_Object *enventor = data;
 
+   if (live_edit_get()) live_edit_cancel();
+
    if (search_is_opened() || goto_is_opened())
      {
         goto_close();
         search_close();
         enventor_object_focus_set(enventor, EINA_TRUE);
      }
+
+   enventor_object_focus_set(enventor, EINA_TRUE);
+
    menu_toggle();
 }
 
@@ -65,6 +70,7 @@ find_cb(void *data, Evas_Object *obj EINA_UNUSED,
         void *event_info EINA_UNUSED)
 {
    Evas_Object *enventor = data;
+   live_edit_cancel();
    if (search_is_opened()) search_close();
    else search_open(enventor);
 }
@@ -74,6 +80,7 @@ goto_cb(void *data, Evas_Object *obj EINA_UNUSED,
         void *event_info EINA_UNUSED)
 {
    Evas_Object *enventor = data;
+   live_edit_cancel();
    if (goto_is_opened()) goto_close();
    else goto_open(enventor);
 }
@@ -88,6 +95,8 @@ console_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 static void
 live_edit_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
+   if (search_is_opened()) search_close();
+   if (goto_is_opened()) goto_close();
    live_edit_toggle();
 }
 
