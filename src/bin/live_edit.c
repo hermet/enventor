@@ -246,8 +246,7 @@ ctxpopup_it_selected_cb(void *data, Evas_Object *obj, void *event_info)
    live_edit_layer_set(ld);
    elm_ctxpopup_dismiss(obj);
 
-   stats_info_msg_update("Click and drag the mouse in the Live View to insert "
-                         "the part.");
+   stats_info_msg_update("Click and drag the mouse in the Live View.");
 }
 
 static void
