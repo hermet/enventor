@@ -48,7 +48,7 @@ static const char *LIVE_EDIT_NEW_PART_DATA_STR =
                    "    W: %5d H: %5d";
 
 #define LIVE_EDIT_NEW_PART_REL_STR_MAX_LEN 16
-static const char *LIVE_EDIT_NEW_PART_REL_STR = "   %.2f %.2f";
+static const char *LIVE_EDIT_NEW_PART_REL_STR = "%.2f %.2f";
 
 static void
 cur_part_value_update(live_data *ld, Evas_Object *edje)
@@ -83,8 +83,8 @@ part_info_update(live_data *ld)
             CTXPOPUP_ITEMS[ld->cur_part_data.type].name,
             ld->cur_part_data.x, ld->cur_part_data.y,
             ld->cur_part_data.w, ld->cur_part_data.h);
-   edje_object_part_text_set(layout,
-                             "elm.text.info", part_info);
+//   edje_object_part_text_set(layout,
+//                             "elm.text.info", part_info);
    snprintf(part_info,
             LIVE_EDIT_NEW_PART_REL_STR_MAX_LEN, LIVE_EDIT_NEW_PART_REL_STR,
             ld->cur_part_data.rel1_x, ld->cur_part_data.rel1_y);

@@ -55,9 +55,6 @@ EXTRA_DIST = \
    downlight_glow_left.png \
    downlight_glow_right.png \
    disabler.png \
-   live_bg_glow_in.png \
-   live_rel1_dragable.png \
-   live_rel2_dragable.png \
    live_image.png \
    live_rectangle.png \
    live_swallow.png \
