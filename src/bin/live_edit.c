@@ -16,6 +16,7 @@ typedef struct live_editor_s
    Evas_Object *ctxpopup;
    Evas_Object *layout;
    Evas_Object *enventor;
+   Evas_Object *trigger;
 
    struct {
       unsigned int type;
@@ -280,10 +281,9 @@ ctxpopup_create(Evas_Object *parent, live_data *ld)
 
    evas_object_smart_callback_add(ctxpopup, "dismissed", ctxpopup_dismissed_cb,
                                   ld);
-   Evas_Coord x, y;
-   evas_pointer_output_xy_get(evas_object_evas_get(parent), &x, NULL);
-   evas_object_geometry_get(parent, NULL, &y, NULL, NULL);
-   evas_object_move(ctxpopup, x, y);
+   Evas_Coord x, y, w, h;
+   evas_object_geometry_get(ld->trigger, &x, &y, &w, &h);
+   evas_object_move(ctxpopup, (x + (w/2)), (y + h));
    evas_object_show(ctxpopup);
 
    return ctxpopup;
@@ -328,7 +328,7 @@ live_edit_cancel(void)
 }
 
 void
-live_edit_init(Evas_Object *enventor)
+live_edit_init(Evas_Object *enventor, Evas_Object *trigger)
 {
    live_data *ld = calloc(1, sizeof(live_data));
    if (!ld)
@@ -338,6 +338,7 @@ live_edit_init(Evas_Object *enventor)
      }
    g_ld = ld;
    ld->enventor = enventor;
+   ld->trigger = trigger;
 }
 
 void

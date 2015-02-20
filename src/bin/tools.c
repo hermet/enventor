@@ -86,7 +86,7 @@ console_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 }
 
 static void
-live_edit_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
+live_edit_cb(void *data, Evas_Object *obj, void *event_info)
 {
    if (search_is_opened()) search_close();
    if (goto_is_opened()) goto_close();
@@ -155,6 +155,7 @@ tools_create(Evas_Object *parent, Evas_Object *enventor)
    evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
    elm_box_pack_end(box, btn);
+   evas_object_data_set(box, "live_edit", btn);
 
    sp = elm_separator_add(box);
    evas_object_show(sp);
@@ -198,4 +199,10 @@ tools_create(Evas_Object *parent, Evas_Object *enventor)
    evas_object_show(box);
 
    return box;
+}
+
+Evas_Object *
+tools_live_edit_get(Evas_Object *tools)
+{
+   return evas_object_data_get(tools, "live_edit");
 }

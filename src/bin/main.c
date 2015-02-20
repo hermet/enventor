@@ -272,11 +272,12 @@ main_mouse_wheel_cb(void *data, int type EINA_UNUSED, void *ev)
    return ECORE_CALLBACK_PASS_ON;
 }
 
-static void
+static Evas_Object *
 tools_set(Evas_Object *enventor)
 {
    Evas_Object *tools = tools_create(base_layout_get(), enventor);
    base_tools_set(tools);
+   return tools;
 }
 
 static Eina_Bool
@@ -887,6 +888,13 @@ template_show(app_data *ad)
      menu_edc_new(EINA_TRUE);
 }
 
+static void
+live_edit_set(Evas_Object *enventor, Evas_Object *tools)
+{
+   Evas_Object *trigger = tools_live_edit_get(tools);
+   live_edit_init(enventor, trigger);
+}
+
 static Eina_Bool
 init(app_data *ad, int argc, char **argv)
 {
@@ -904,8 +912,8 @@ init(app_data *ad, int argc, char **argv)
    statusbar_set();
    enventor_setup(ad);
    file_mgr_init(ad->enventor);
-   tools_set(ad->enventor);
-   live_edit_init(ad->enventor);
+   Evas_Object *tools = tools_set(ad->enventor);
+   live_edit_set(ad->enventor, tools);
 
    base_gui_show();
 
