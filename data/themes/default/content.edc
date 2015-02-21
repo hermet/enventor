@@ -105,3 +105,40 @@ group { name: "part_highlight";
       }
    }
 }
+
+group { name: "ctrl_pt";
+   parts {
+      part { name: "base";
+         type: RECT;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 8 8;
+            fixed: 1 1;
+            rel1.relative: 0.5 0.5;
+            rel2.relative: 0.5 0.5;
+         }
+         description { state: "anim" 0.0;
+            inherit: "default" 0.0;
+            color: COL_HI_S;
+         }
+      }
+   }
+   programs {
+      program { name: "load";
+         signal: "load";
+         after: "anim";
+      }
+      program { name: "anim";
+         action: STATE_SET "anim" 0.0;
+         target: "base";
+         transition: LINEAR 0.5;
+         after: "anim2";
+      }
+      program { name: "anim2";
+         action: STATE_SET "default" 0.0;
+         target: "base";
+         transition: LINEAR 0.5;
+         after: "anim";
+      }
+   }
+}

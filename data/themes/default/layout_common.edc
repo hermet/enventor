@@ -11,12 +11,6 @@ images {
    image: "pm_fill.png" COMP;
 }
 
-styles {
-     style { name: "entry_live_edit_style";
-        base: "font="FN" font_size=10 text_class=entry color=#3399ff style=glow glow_color=#3399ff18 valign=1 ellipsis=1.0 wrap=none";
-     }
-}
-
 group { name: "about_layout";
    parts {
       part { name: "clipper";
@@ -1290,12 +1284,8 @@ group { name: "search_layout";
 }
 
 group { name: "live_edit_layout";
+   data.item: "ctrl_size" "8";
    parts {
-      part { name: "base";
-         type: SPACER;
-         description { state: "default" 0.0;
-         }
-      }
       part { name: "clipper";
          type: RECT;
          description { state: "default" 0.0;
@@ -1310,19 +1300,24 @@ group { name: "live_edit_layout";
          scale: 1;
          clip_to: "clipper";
          description { state: "default" 0.0;
-            rel1.to: "rel1_dragable";
-            rel2.to: "rel2_dragable";
+         }
+      }
+      part { name: "cursor_body";
+         type: RECT;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
          }
       }
       part { name: "frame_l";
          type: RECT;
-         repeat_events: 1;
+         mouse_events: 0;
+         clip_to: "clipper";
+         scale: 1;
          description { state: "default" 0.0;
             align: 0 0.5;
             rel1.relative: 0 0;
             rel2.relative: 0 1;
-            rel1.to: "elm.swallow.symbol";
-            rel2.to: "elm.swallow.symbol";
             min: 1 0;
             fixed: 1 0;
          }
@@ -1333,13 +1328,13 @@ group { name: "live_edit_layout";
       }
       part { name: "frame_r";
          type: RECT;
-         repeat_events: 1;
+         mouse_events: 0;
+         clip_to: "clipper";
+         scale: 1;
          description { state: "default" 0.0;
             align: 1 0.5;
             rel1.relative: 1 0;
             rel2.relative: 1 1;
-            rel1.to: "elm.swallow.symbol";
-            rel2.to: "elm.swallow.symbol";
             min: 1 0;
             fixed: 1 0;
          }
@@ -1350,13 +1345,13 @@ group { name: "live_edit_layout";
       }
       part { name: "frame_t";
          type: RECT;
-         repeat_events: 1;
+         mouse_events: 0;
+         clip_to: "clipper";
+         scale: 1;
          description { state: "default" 0.0;
             align: 0.5 0;
             rel1.relative: 0 0;
             rel2.relative: 1 0;
-            rel1.to: "elm.swallow.symbol";
-            rel2.to: "elm.swallow.symbol";
             min: 0 1;
             fixed: 0 1;
          }
@@ -1367,13 +1362,13 @@ group { name: "live_edit_layout";
       }
       part { name: "frame_b";
          type: RECT;
-         repeat_events: 1;
+         mouse_events: 0;
+         clip_to: "clipper";
+         scale: 1;
          description { state: "default" 0.0;
             align: 0.5 1;
             rel1.relative: 0 1;
             rel2.relative: 1 1;
-            rel1.to: "elm.swallow.symbol";
-            rel2.to: "elm.swallow.symbol";
             min: 0 1;
             fixed: 0 1;
          }
@@ -1382,70 +1377,24 @@ group { name: "live_edit_layout";
             color: 51 153 255 127;
          }
       }
-      part { name: "rel1_dragable";
-         scale: 1;
-         clip_to: "clipper";
-         type: RECT;
-         description { state: "default" 0.0;
-            min: 8 8;
-            fixed: 1 1;
-            rel1.relative: 0 0;
-            rel2.relative: 0 0;
-            align: 0 0;
-         }
-         description { state: "anim" 0.0;
-            inherit: "default" 0.0;
-            color: 51 153 255 255;
-            //min: 10 10;
-         }
-         dragable {
-            confine: "base";
-            x: 1 1 0;
-            y: 1 1 0;
-         }
-      }
       part { name: "elm.text.rel1";
          type: TEXT;
          effect: OUTLINE;
          scale: 1;
          mouse_events: 0;
+         clip_to: "clipper";
          description { state: "default" 0.0;
-            rel1.to: "rel1_dragable";
-            rel2.to_y: "rel1_dragable";
-            rel1.relative: 1 0;
             rel1.offset: 10 10;
             color: 255 255 255 255;
-            align: 0 0.5;
+            align: 0 0;
             fixed: 1 1;
             text {
                font: FN;
                size: 10;
-               align: 0 0.5;
+               align: 0 0;
                min: 1 0;
                ellipsis: -1;
             }
-         }
-      }
-      part { name: "rel2_dragable";
-         scale: 1;
-         clip_to: "clipper";
-         type: RECT;
-         description { state: "default" 0.0;
-            min: 8 8;
-            fixed: 1 1;
-            rel1.relative: 1 1;
-            rel2.relative: 1 1;
-            align: 1 1;
-         }
-         description { state: "anim" 0.0;
-            inherit: "default" 0.0;
-            color: 51 153 255 255;
-            //min: 10 10;
-         }
-         dragable {
-            confine: "base";
-            x: 1 1 0;
-            y: 1 1 0;
          }
       }
       part { name: "elm.text.rel2";
@@ -1453,77 +1402,33 @@ group { name: "live_edit_layout";
          effect: OUTLINE;
          scale: 1;
          mouse_events: 0;
+         clip_to: "clipper";
          description { state: "default" 0.0;
-            rel1.to_y: "rel2_dragable";
             rel1.offset: 0 -11;
-            rel2.to: "rel2_dragable";
-            rel2.relative: 0 1;
             rel2.offset: -11 -11;
             color: 255 255 255 255;
-            align: 1 0.5;
+            align: 1 1;
             fixed: 1 1;
             text {
                font: FN;
                size: 10;
-               align: 1 0.5;
+               align: 1 1;
                min: 1 0;
                ellipsis: -1;
             }
          }
       }
-/*      part { name: "info_bg";
-         type: RECT;
-         scale: 1;
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            rel1.to: "elm.swallow.symbol";
-            rel2.to: "elm.swallow.symbol";
-            min: 130 50;
-            max: 130 50;
-            fixed: 1 1;
-            color: 0 0 0 0;
-         }
-         description { state: "show" 0.0;
-            inherit:"default" 0.0;
-            color: 0 0 0 175;
-         }
-      }
-      part { name: "elm.text.info";
-         type: TEXTBLOCK;
-         scale: 1;
-         mouse_events: 0;
-         description {
-            text.style: "entry_live_edit_style";
-            rel1.to: "info_bg";
-            rel2.to: "info_bg";
-         }
-      } */
    }
    programs {
       program { name: "on_load_init";
          signal: "load";
-         source: "";
-         script {
-            set_drag(PART:"rel1_dragable", 0.2, 0.2);
-            set_drag(PART:"rel2_dragable", 0.8, 0.8);
-         }
-         after: "on_load_show";
-         after: "anim";
-      }
-      program { name: "on_load_show";
          action: STATE_SET "show" 0.0;
          target: "clipper";
-         //target: "info_bg";
          transition: DECELERATE 0.25;
-         after: "emit_drag_signal";
-      }
-      program { name: "emit_drag_signal";
-         action: SIGNAL_EMIT "drag" "rel2_dragable";
+         after: "anim";
       }
       program { name: "anim";
          action: STATE_SET "anim" 0.0;
-         target: "rel1_dragable";
-         target: "rel2_dragable";
          target: "frame_l";
          target: "frame_r";
          target: "frame_t";
@@ -1533,8 +1438,6 @@ group { name: "live_edit_layout";
       }
       program { name: "anim2";
          action: STATE_SET "default" 0.0;
-         target: "rel1_dragable";
-         target: "rel2_dragable";
          target: "frame_l";
          target: "frame_r";
          target: "frame_t";
