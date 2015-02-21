@@ -1406,7 +1406,7 @@ group { name: "live_edit_layout";
       }
       part { name: "elm.text.rel1";
          type: TEXT;
-         effect: GLOW;
+         effect: OUTLINE;
          scale: 1;
          mouse_events: 0;
          description { state: "default" 0.0;
@@ -1450,7 +1450,7 @@ group { name: "live_edit_layout";
       }
       part { name: "elm.text.rel2";
          type: TEXT;
-         effect: GLOW;
+         effect: OUTLINE;
          scale: 1;
          mouse_events: 0;
          description { state: "default" 0.0;
