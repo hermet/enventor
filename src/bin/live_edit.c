@@ -8,7 +8,7 @@
 typedef struct ctxpopup_it_data_s
 {
    const char *name;
-   int type;
+   Edje_Part_Type type;
 } ctxpopup_it_data;
 
 typedef struct live_editor_s
@@ -23,7 +23,7 @@ typedef struct live_editor_s
       float rel1_x, rel1_y;
       float rel2_x, rel2_y;
       Evas_Coord x, y, w, h;
-   } cur_part_data;
+   } part_info;
 
    Ecore_Event_Handler *key_down_handler;
 
@@ -60,14 +60,14 @@ cur_part_value_update(live_data *ld, Evas_Object *edje)
    config_view_size_get(&view_w, &view_h);
    edje_object_part_geometry_get(edje, "elm.swallow.symbol", &x, &y, &w, &h);
 
-   ld->cur_part_data.rel1_x = ((float) x) / ((float) view_w);
-   ld->cur_part_data.rel1_y = ((float) y) / ((float) view_h);
-   ld->cur_part_data.rel2_x = ((float) (x + w)) / ((float) view_w);
-   ld->cur_part_data.rel2_y = ((float) (y + h)) / ((float) view_h);
-   ld->cur_part_data.x = x;
-   ld->cur_part_data.y = y;
-   ld->cur_part_data.w = w;
-   ld->cur_part_data.h = h;
+   ld->part_info.rel1_x = ((float) x) / ((float) view_w);
+   ld->part_info.rel1_y = ((float) y) / ((float) view_h);
+   ld->part_info.rel2_x = ((float) (x + w)) / ((float) view_w);
+   ld->part_info.rel2_y = ((float) (y + h)) / ((float) view_h);
+   ld->part_info.x = x;
+   ld->part_info.y = y;
+   ld->part_info.w = w;
+   ld->part_info.h = h;
 }
 
 static void
@@ -81,26 +81,24 @@ part_info_update(live_data *ld)
 
    snprintf(part_info,
             LIVE_EDIT_NEW_PART_DATA_MAX_LEN, LIVE_EDIT_NEW_PART_DATA_STR,
-            CTXPOPUP_ITEMS[ld->cur_part_data.type].name,
-            ld->cur_part_data.x, ld->cur_part_data.y,
-            ld->cur_part_data.w, ld->cur_part_data.h);
+            CTXPOPUP_ITEMS[ld->part_info.type].name,
+            ld->part_info.x, ld->part_info.y,
+            ld->part_info.w, ld->part_info.h);
 //   edje_object_part_text_set(layout,
 //                             "elm.text.info", part_info);
    snprintf(part_info,
             LIVE_EDIT_NEW_PART_REL_STR_MAX_LEN, LIVE_EDIT_NEW_PART_REL_STR,
-            ld->cur_part_data.rel1_x, ld->cur_part_data.rel1_y);
+            ld->part_info.rel1_x, ld->part_info.rel1_y);
    edje_object_part_text_set(layout, "elm.text.rel1", part_info);
    snprintf(part_info,
             LIVE_EDIT_NEW_PART_REL_STR_MAX_LEN, LIVE_EDIT_NEW_PART_REL_STR,
-            ld->cur_part_data.rel2_x, ld->cur_part_data.rel2_y);
+            ld->part_info.rel2_x, ld->part_info.rel2_y);
    edje_object_part_text_set(layout, "elm.text.rel2", part_info);
 }
 
 static void
-dragable_geometry_changed_cb(void *data,
-                                   Evas_Object *obj EINA_UNUSED,
-                                   const char *emission EINA_UNUSED,
-                                   const char *source EINA_UNUSED)
+layout_drag_cb(void *data, Evas_Object *obj EINA_UNUSED,
+               const char *emission EINA_UNUSED, const char *source EINA_UNUSED)
 {
    //TODO: recalc on viewport size changed
    live_data *ld = data;
@@ -116,17 +114,17 @@ new_part_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
 
    Evas_Coord view_w, view_h;
    config_view_size_get(&view_w, &view_h);
-   int cur_x = ld->cur_part_data.x + ev->cur.canvas.x - ev->prev.canvas.x;
-   int cur_y = ld->cur_part_data.y + ev->cur.canvas.y - ev->prev.canvas.y;
+   int cur_x = ld->part_info.x + ev->cur.canvas.x - ev->prev.canvas.x;
+   int cur_y = ld->part_info.y + ev->cur.canvas.y - ev->prev.canvas.y;
 
    if ((cur_x >= 0) && (cur_y >= 0) &&
-       (cur_x <= view_w - ld->cur_part_data.w) &&
-       (cur_y <= view_h - ld->cur_part_data.h))
+       (cur_x <= view_w - ld->part_info.w) &&
+       (cur_y <= view_h - ld->part_info.h))
      {
         double dx = ((float) cur_x / (float) view_w) -
-           ld->cur_part_data.rel1_x;
+           ld->part_info.rel1_x;
         double dy = ((float) cur_y / (float) view_h) -
-           ld->cur_part_data.rel1_y;
+           ld->part_info.rel1_y;
         edje_object_part_drag_step(elm_layout_edje_get(ld->layout),
                                    "rel1_dragable", dx, dy);
         edje_object_part_drag_step(elm_layout_edje_get(ld->layout),
@@ -160,7 +158,7 @@ symbol_set(live_data *ld)
 {
    char buf[PATH_MAX];
    snprintf(buf, sizeof(buf), "%s_bg",
-            CTXPOPUP_ITEMS[ld->cur_part_data.type].name);
+            CTXPOPUP_ITEMS[ld->part_info.type].name);
    Evas_Object *bg_layout = elm_layout_add(ld->layout);
    elm_layout_file_set(bg_layout, EDJE_PATH, buf);
    elm_object_part_content_set(ld->layout, "elm.swallow.symbol", bg_layout);
@@ -187,12 +185,12 @@ key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    if (!strcmp(event->key, "Return"))
      {
         enventor_object_template_part_insert(ld->enventor,
-                                             CTXPOPUP_ITEMS[ld->cur_part_data.type].type,
+                                             CTXPOPUP_ITEMS[ld->part_info.type].type,
                                              ENVENTOR_TEMPLATE_INSERT_LIVE_EDIT,
-                                             ld->cur_part_data.rel1_x,
-                                             ld->cur_part_data.rel1_y,
-                                             ld->cur_part_data.rel2_x,
-                                             ld->cur_part_data.rel2_y,
+                                             ld->part_info.rel1_x,
+                                             ld->part_info.rel1_y,
+                                             ld->part_info.rel2_x,
+                                             ld->part_info.rel2_y,
                                              NULL, 0);
         enventor_object_save(ld->enventor, config_edc_path_get());
      }
@@ -213,21 +211,16 @@ live_edit_layer_set(live_data *ld)
    Evas_Object *layout = elm_layout_add(live_view);
    elm_layout_file_set(layout, EDJE_PATH,  "live_edit_layout");
    elm_object_part_content_set(live_view, "elm.swallow.live_edit", layout);
-
-   edje_object_signal_callback_add(elm_layout_edje_get(layout),
-                                   "drag", "rel1_dragable",
-                                   dragable_geometry_changed_cb, ld);
-   edje_object_signal_callback_add(elm_layout_edje_get(layout),
-                                   "drag", "rel2_dragable",
-                                   dragable_geometry_changed_cb, ld);
-   edje_object_signal_callback_add(elm_layout_edje_get(layout),
-                                   "mouse,down,1", "elm.swallow.symbol",
+   elm_object_signal_callback_add(layout, "drag", "rel1_dragable",
+                                   layout_drag_cb, ld);
+   elm_object_signal_callback_add(layout, "drag", "rel2_dragable",
+                                   layout_drag_cb, ld);
+   elm_object_signal_callback_add(layout, "mouse,down,1", "elm.swallow.symbol",
                                    new_part_mouse_down_cb, ld);
-   edje_object_signal_callback_add(elm_layout_edje_get(layout),
-                                   "mouse,up,1", "elm.swallow.symbol",
+   elm_object_signal_callback_add(layout, "mouse,up,1", "elm.swallow.symbol",
                                    new_part_mouse_up_cb, ld);
-   elm_layout_part_cursor_set(layout, "elm.swallow.symbol",
-                              ELM_CURSOR_FLEUR);
+ //  elm_layout_part_cursor_set(layout, "elm.swallow.symbol",
+ //                             ELM_CURSOR_FLEUR);
    elm_layout_part_cursor_set(layout, "rel1_dragable",
                               ELM_CURSOR_TOP_LEFT_CORNER);
    elm_layout_part_cursor_set(layout, "rel2_dragable",
@@ -242,7 +235,7 @@ ctxpopup_it_selected_cb(void *data, Evas_Object *obj, void *event_info)
 {
    live_data *ld = g_ld;
    const Elm_Object_Item *it = event_info;
-   ld->cur_part_data.type = (unsigned int) data;
+   ld->part_info.type = (unsigned int) data;
    live_edit_layer_set(ld);
    elm_ctxpopup_dismiss(obj);
 
