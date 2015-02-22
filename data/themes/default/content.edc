@@ -159,5 +159,11 @@ group { name: "ctrl_pt";
          target: "clipper";
          transition: LINEAR 0.125;
       }
+      program { name: "hide,instance";
+         signal: "elm,state,hide,instance";
+         source: "";
+         action: STATE_SET "hide" 0.0;
+         target: "clipper";
+      }
    }
 }

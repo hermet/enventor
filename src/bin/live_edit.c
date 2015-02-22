@@ -194,7 +194,7 @@ cp_top_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
    //Align Line
    evas_object_move(ld->align_line[0], lx + 1, y - 1);
    evas_object_resize(ld->align_line[0], lw - 2, 1);
-   evas_object_show(ld->align_line[0]);
+   elm_object_signal_emit(ld->align_line[0], "elm,state,show", "");
 }
 
 static void
@@ -221,7 +221,7 @@ cp_bottom_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
    //Align Line
    evas_object_move(ld->align_line[0], lx + 1, y - 1);
    evas_object_resize(ld->align_line[0], lw - 2, 1);
-   evas_object_show(ld->align_line[0]);
+   elm_object_signal_emit(ld->align_line[0], "elm,state,show", "");
 }
 
 static void
@@ -254,12 +254,12 @@ cp_rel1_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
    //Horizontal
    evas_object_move(ld->align_line[0], lx + 1, y - 1);
    evas_object_resize(ld->align_line[0], lw - 2, 1);
-   evas_object_show(ld->align_line[0]);
+   elm_object_signal_emit(ld->align_line[0], "elm,state,show", "");
 
    //Vertical
    evas_object_move(ld->align_line[1], x - 1, ly + 1);
    evas_object_resize(ld->align_line[1], 1, lh - 2);
-   evas_object_show(ld->align_line[1]);
+   elm_object_signal_emit(ld->align_line[1], "elm,state,show", "");
 }
 
 static void
@@ -292,12 +292,12 @@ cp_rel2_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
    //Horizontal
    evas_object_move(ld->align_line[0], lx + 1, y - 1);
    evas_object_resize(ld->align_line[0], lw - 2, 1);
-   evas_object_show(ld->align_line[0]);
+   elm_object_signal_emit(ld->align_line[0], "elm,state,show", "");
 
    //Vertical
    evas_object_move(ld->align_line[1], x - 1, ly + 1);
    evas_object_resize(ld->align_line[1], 1, lh - 2);
-   evas_object_show(ld->align_line[1]);
+   elm_object_signal_emit(ld->align_line[1], "elm,state,show", "");
 }
 
 static void
@@ -334,12 +334,12 @@ cp_rel3_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
    //Horizontal
    evas_object_move(ld->align_line[0], lx + 1, y - 1);
    evas_object_resize(ld->align_line[0], lw - 2, 1);
-   evas_object_show(ld->align_line[0]);
+   elm_object_signal_emit(ld->align_line[0], "elm,state,show", "");
 
    //Vertical
    evas_object_move(ld->align_line[1], x - 1, ly + 1);
    evas_object_resize(ld->align_line[1], 1, lh - 2);
-   evas_object_show(ld->align_line[1]);
+   elm_object_signal_emit(ld->align_line[1], "elm,state,show", "");
 }
 
 static void
@@ -376,12 +376,12 @@ cp_rel4_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
    //Horizontal
    evas_object_move(ld->align_line[0], lx + 1, y - 1);
    evas_object_resize(ld->align_line[0], lw - 2, 1);
-   evas_object_show(ld->align_line[0]);
+   elm_object_signal_emit(ld->align_line[0], "elm,state,show", "");
 
    //Vertical
    evas_object_move(ld->align_line[1], x - 1, ly + 1);
    evas_object_resize(ld->align_line[1], 1, lh - 2);
-   evas_object_show(ld->align_line[1]);
+   elm_object_signal_emit(ld->align_line[1], "elm,state,show", "");
 }
 
 static void
@@ -408,7 +408,7 @@ cp_left_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
    //Align Line
    evas_object_move(ld->align_line[0], x - 1, ly + 1);
    evas_object_resize(ld->align_line[0], 1, lh - 2);
-   evas_object_show(ld->align_line[0]);
+   elm_object_signal_emit(ld->align_line[0], "elm,state,show", "");
 }
 
 static void
@@ -435,7 +435,7 @@ cp_right_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
    //Align Line
    evas_object_move(ld->align_line[0], x - 1, ly + 1);
    evas_object_resize(ld->align_line[0], 1, lh - 2);
-   evas_object_show(ld->align_line[0]);
+   elm_object_signal_emit(ld->align_line[0], "elm,state,show", "");
 }
 
 static void
@@ -483,7 +483,7 @@ align_lines_hide(live_data *ld)
 {
    int i;
    for (i = 0; i < ALIGN_LINES_CNT; i++)
-     evas_object_hide(ld->align_line[i]);
+     elm_object_signal_emit(ld->align_line[i], "elm,state,hide", "");
 }
 
 static void
@@ -637,22 +637,22 @@ layout_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
    //Rel1 Horizontal
    evas_object_move(ld->align_line[0], lx + 1, y);
    evas_object_resize(ld->align_line[0], lw - 2, 1);
-   evas_object_show(ld->align_line[0]);
+   elm_object_signal_emit(ld->align_line[0], "elm,state,show", "");
 
    //Rel1 Vertical
    evas_object_move(ld->align_line[1], x, ly + 1);
    evas_object_resize(ld->align_line[1], 1, lh - 2);
-   evas_object_show(ld->align_line[1]);
+   elm_object_signal_emit(ld->align_line[1], "elm,state,show", "");
 
    //Rel2 Horizontal
    evas_object_move(ld->align_line[2], lx + 1, y + h);
    evas_object_resize(ld->align_line[2], lw - 2, 1);
-   evas_object_show(ld->align_line[2]);
+   elm_object_signal_emit(ld->align_line[2], "elm,state,show", "");
 
    //Rel2 Vertical
    evas_object_move(ld->align_line[3], x + w, ly + 1);
    evas_object_resize(ld->align_line[3], 1, lh - 2);
-   evas_object_show(ld->align_line[3]);
+   elm_object_signal_emit(ld->align_line[3], "elm,state,show", "");
 }
 
 static void
@@ -705,6 +705,8 @@ align_line_init(live_data *ld)
      {
         Evas_Object *layout = elm_layout_add(ld->layout);
         elm_layout_file_set(layout, EDJE_PATH,  "ctrl_pt");
+        evas_object_show(layout);
+        elm_object_signal_emit(layout, "elm,state,hide,instance", "");
         ld->align_line[i] = layout;
      }
 }
