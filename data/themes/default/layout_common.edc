@@ -1420,12 +1420,17 @@ group { name: "live_edit_layout";
       }
    }
    programs {
-      program { name: "on_load_init";
+      program { name: "on_load";
          signal: "load";
          action: STATE_SET "show" 0.0;
          target: "clipper";
-         transition: DECELERATE 0.25;
          after: "anim";
+         after: "clip_init";
+      }
+      program { name: "clip_init";
+         action: STATE_SET "show" 0.0;
+         target: "clipper";
+         transition: DECELERATE 0.25;
       }
       program { name: "anim";
          action: STATE_SET "anim" 0.0;
