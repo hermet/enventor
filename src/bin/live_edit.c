@@ -104,8 +104,9 @@ key_down_cb(void *data, int type EINA_UNUSED, void *ev)
 
    if (!strcmp(event->key, "Return"))
      {
+        int type = CTXPOPUP_ITEMS[ld->part_info.type].type;
         enventor_object_template_part_insert(ld->enventor,
-                                             CTXPOPUP_ITEMS[ld->part_info.type].type,
+                                             type,
                                              ENVENTOR_TEMPLATE_INSERT_LIVE_EDIT,
                                              ld->part_info.rel1_x,
                                              ld->part_info.rel1_y,
@@ -114,7 +115,8 @@ key_down_cb(void *data, int type EINA_UNUSED, void *ev)
                                              NULL, 0);
         enventor_object_save(ld->enventor, config_edc_path_get());
      }
-   else if (strcmp(event->key, "Delete")) return EINA_TRUE;
+   else if (strcmp(event->key, "Delete") &&
+            strcmp(event->key, "BackSpace")) return EINA_TRUE;
 
    live_edit_cancel();
    return EINA_TRUE;
