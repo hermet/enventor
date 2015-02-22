@@ -76,15 +76,6 @@ text_update(live_data *ld)
 
    char part_info[LIVE_EDIT_NEW_PART_DATA_MAX_LEN];
 
-#if 0
-   snprintf(part_info,
-            LIVE_EDIT_NEW_PART_DATA_MAX_LEN, LIVE_EDIT_NEW_PART_DATA_STR,
-            CTXPOPUP_ITEMS[ld->part_info.type].name,
-            ld->part_info.x, ld->part_info.y,
-            ld->part_info.w, ld->part_info.h);
-   edje_object_part_text_set(layout,
-                             "elm.text.info", part_info);
-#endif
    snprintf(part_info,
             LIVE_EDIT_NEW_PART_REL_STR_MAX_LEN, LIVE_EDIT_NEW_PART_REL_STR,
             ld->part_info.rel1_x, ld->part_info.rel1_y);
