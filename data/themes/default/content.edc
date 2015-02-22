@@ -112,8 +112,6 @@ group { name: "ctrl_pt";
          type: RECT;
          scale: 1;
          description { state: "default" 0.0;
-            rel1.relative: 0.5 0.5;
-            rel2.relative: 0.5 0.5;
          }
          description { state: "anim" 0.0;
             inherit: "default" 0.0;
