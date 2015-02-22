@@ -96,25 +96,28 @@ live_edit_symbol_set(live_data *ld)
    elm_object_part_content_set(ld->layout, "elm.swallow.symbol", layout_symbol);
 }
 
+static void
+live_edit_insert(live_data *ld)
+{
+   int type = CTXPOPUP_ITEMS[ld->part_info.type].type;
+   enventor_object_template_part_insert(ld->enventor,
+                                        type,
+                                        ENVENTOR_TEMPLATE_INSERT_LIVE_EDIT,
+                                        ld->part_info.rel1_x,
+                                        ld->part_info.rel1_y,
+                                        ld->part_info.rel2_x,
+                                        ld->part_info.rel2_y,
+                                        NULL, 0);
+   enventor_object_save(ld->enventor, config_edc_path_get());
+}
+
 static Eina_Bool
 key_down_cb(void *data, int type EINA_UNUSED, void *ev)
 {
    Ecore_Event_Key *event = ev;
    live_data *ld = data;
 
-   if (!strcmp(event->key, "Return"))
-     {
-        int type = CTXPOPUP_ITEMS[ld->part_info.type].type;
-        enventor_object_template_part_insert(ld->enventor,
-                                             type,
-                                             ENVENTOR_TEMPLATE_INSERT_LIVE_EDIT,
-                                             ld->part_info.rel1_x,
-                                             ld->part_info.rel1_y,
-                                             ld->part_info.rel2_x,
-                                             ld->part_info.rel2_y,
-                                             NULL, 0);
-        enventor_object_save(ld->enventor, config_edc_path_get());
-     }
+   if (!strcmp(event->key, "Return")) live_edit_insert(ld);
    else if (strcmp(event->key, "Delete") &&
             strcmp(event->key, "BackSpace")) return EINA_TRUE;
 
@@ -547,8 +550,19 @@ layout_mouse_up_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
 
 static void
 layout_mouse_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
-                     void *event_info EINA_UNUSED)
+                     void *event_info)
 {
+   Evas_Event_Mouse_Down *ev = event_info;
+   live_data *ld = data;
+
+   //insert part on double click
+   if (ev->flags & EVAS_BUTTON_DOUBLE_CLICK)
+     {
+        live_edit_insert(ld);
+        live_edit_cancel();
+        return;
+     }
+
    evas_object_event_callback_add(obj, EVAS_CALLBACK_MOUSE_MOVE,
                                   layout_mouse_move_cb, data);
 }
