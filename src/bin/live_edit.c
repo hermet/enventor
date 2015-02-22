@@ -444,6 +444,10 @@ cp_mouse_move_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
    //Dispatch to actual mouse move call
    Ctrl_Pt cp = (Ctrl_Pt) evas_object_data_get(obj, "index");
 
+   //Show Control Point
+   live_data *ld = data;
+   elm_object_signal_emit(ld->ctrl_pt[cp], "elm,state,show", "");
+
    switch (cp)
      {
         case Ctrl_Pt_Rel1:
@@ -471,7 +475,6 @@ cp_mouse_move_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
           cp_right_mouse_move_cb(data, e, obj, event_info);
           break;
      }
-   live_data *ld = data;
    live_edit_update(ld);
 }
 
@@ -491,6 +494,11 @@ cp_mouse_up_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
                                   cp_mouse_move_cb);
    live_data *ld = data;
    align_lines_hide(ld);
+
+   //Show All Control Points
+   int i;
+   for (i = 0; i < Ctrl_Pt_Cnt; i++)
+     elm_object_signal_emit(ld->ctrl_pt[i], "elm,state,show", "");
 }
 
 static void
@@ -500,6 +508,12 @@ cp_mouse_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
    evas_object_event_callback_add(obj, EVAS_CALLBACK_MOUSE_MOVE,
                                   cp_mouse_move_cb, data);
    evas_object_layer_set(obj, EVAS_LAYER_MAX);
+
+   //Hide All Control Points
+   live_data *ld = data;
+   int i;
+   for (i = 0; i < Ctrl_Pt_Cnt; i++)
+     elm_object_signal_emit(ld->ctrl_pt[i], "elm,state,hide", "");
 }
 
 static void
@@ -649,6 +663,12 @@ layout_mouse_up_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
                                   layout_mouse_move_cb);
    live_data *ld = data;
    align_lines_hide(ld);
+
+   //Show hidden control points
+   elm_object_signal_emit(ld->ctrl_pt[Ctrl_Pt_Top], "elm,state,show", "");
+   elm_object_signal_emit(ld->ctrl_pt[Ctrl_Pt_Bottom], "elm,state,show", "");
+   elm_object_signal_emit(ld->ctrl_pt[Ctrl_Pt_Left], "elm,state,show", "");
+   elm_object_signal_emit(ld->ctrl_pt[Ctrl_Pt_Right], "elm,state,show", "");
 }
 
 static void
@@ -668,6 +688,12 @@ layout_mouse_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
 
    evas_object_event_callback_add(obj, EVAS_CALLBACK_MOUSE_MOVE,
                                   layout_mouse_move_cb, data);
+
+   //Hide unnecessary control points
+   elm_object_signal_emit(ld->ctrl_pt[Ctrl_Pt_Top], "elm,state,hide", "");
+   elm_object_signal_emit(ld->ctrl_pt[Ctrl_Pt_Bottom], "elm,state,hide", "");
+   elm_object_signal_emit(ld->ctrl_pt[Ctrl_Pt_Left], "elm,state,hide", "");
+   elm_object_signal_emit(ld->ctrl_pt[Ctrl_Pt_Right], "elm,state,hide", "");
 }
 
 static void

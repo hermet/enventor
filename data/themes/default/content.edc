@@ -108,9 +108,18 @@ group { name: "part_highlight";
 
 group { name: "ctrl_pt";
    parts {
+      part { name: "clipper";
+         type: RECT;
+         description { state: "default" 0.0;
+         }
+         description { state: "hide" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 0;
+         }
+      }
       part { name: "base";
          type: RECT;
-         scale: 1;
+         clip_to: "clipper";
          description { state: "default" 0.0;
          }
          description { state: "anim" 0.0;
@@ -135,6 +144,20 @@ group { name: "ctrl_pt";
          target: "base";
          transition: LINEAR 0.5;
          after: "anim";
+      }
+      program { name: "show";
+         signal: "elm,state,show";
+         source: "";
+         action: STATE_SET "default" 0.0;
+         target: "clipper";
+         transition: LINEAR 0.125;
+      }
+      program { name: "hide";
+         signal: "elm,state,hide";
+         source: "";
+         action: STATE_SET "hide" 0.0;
+         target: "clipper";
+         transition: LINEAR 0.125;
       }
    }
 }
