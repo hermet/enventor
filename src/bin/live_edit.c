@@ -5,6 +5,8 @@
 #include <Elementary_Cursor.h>
 #include "common.h"
 
+#define ALIGN_LINES_CNT 4
+
 typedef enum
 {
    Ctrl_Pt_Rel1 = 0,
@@ -32,6 +34,7 @@ typedef struct live_editor_s
    Evas_Object *enventor;
    Evas_Object *trigger;
    Evas_Object *ctrl_pt[Ctrl_Pt_Cnt];
+   Evas_Object *align_line[ALIGN_LINES_CNT];
    double half_ctrl_size;
 
    struct {
@@ -177,8 +180,8 @@ cp_top_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
    Evas_Coord y = ev->cur.canvas.y;
 
    //Limit to boundary
-   Evas_Coord ly, lh;
-   evas_object_geometry_get(ld->live_view, NULL, &ly, NULL, &lh);
+   Evas_Coord lx, ly, lw, lh;
+   evas_object_geometry_get(ld->live_view, &lx, &ly, &lw, &lh);
 
    Evas_Coord rel2_y;
    evas_object_geometry_get(ld->ctrl_pt[Ctrl_Pt_Rel2], NULL, &rel2_y,
@@ -187,6 +190,11 @@ cp_top_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
    if ((y - ld->half_ctrl_size) > rel2_y) y = (rel2_y + ld->half_ctrl_size);
 
    ld->part_info.rel1_y = ((double) (y - ly) / (double) lh);
+
+   //Align Line
+   evas_object_move(ld->align_line[0], lx + 1, y - 1);
+   evas_object_resize(ld->align_line[0], lw - 2, 1);
+   evas_object_show(ld->align_line[0]);
 }
 
 static void
@@ -199,8 +207,8 @@ cp_bottom_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
    Evas_Coord y = ev->cur.canvas.y;
 
    //Limit to boundary
-   Evas_Coord ly, lh;
-   evas_object_geometry_get(ld->live_view, NULL, &ly, NULL, &lh);
+   Evas_Coord lx, ly, lw, lh;
+   evas_object_geometry_get(ld->live_view, &lx, &ly, &lw, &lh);
 
    Evas_Coord rel1_y;
    evas_object_geometry_get(ld->ctrl_pt[Ctrl_Pt_Rel1], NULL, &rel1_y,
@@ -209,6 +217,11 @@ cp_bottom_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
    if (rel1_y > (y + ld->half_ctrl_size)) y = (rel1_y - ld->half_ctrl_size);
 
    ld->part_info.rel2_y = ((double) (y - ly) / (double) lh);
+
+   //Align Line
+   evas_object_move(ld->align_line[0], lx + 1, y - 1);
+   evas_object_resize(ld->align_line[0], lw - 2, 1);
+   evas_object_show(ld->align_line[0]);
 }
 
 static void
@@ -235,6 +248,18 @@ cp_rel1_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
 
    ld->part_info.rel1_x = ((double) (x - lx) / (double) lw);
    ld->part_info.rel1_y = ((double) (y - ly) / (double) lh);
+
+   //Align Lines
+
+   //Horizontal
+   evas_object_move(ld->align_line[0], lx + 1, y - 1);
+   evas_object_resize(ld->align_line[0], lw - 2, 1);
+   evas_object_show(ld->align_line[0]);
+
+   //Vertical
+   evas_object_move(ld->align_line[1], x - 1, ly + 1);
+   evas_object_resize(ld->align_line[1], 1, lh - 2);
+   evas_object_show(ld->align_line[1]);
 }
 
 static void
@@ -261,6 +286,18 @@ cp_rel2_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
 
    ld->part_info.rel2_x = ((double) (x - lx) / (double) lw);
    ld->part_info.rel2_y = ((double) (y - ly) / (double) lh);
+
+   //Align Lines
+
+   //Horizontal
+   evas_object_move(ld->align_line[0], lx + 1, y - 1);
+   evas_object_resize(ld->align_line[0], lw - 2, 1);
+   evas_object_show(ld->align_line[0]);
+
+   //Vertical
+   evas_object_move(ld->align_line[1], x - 1, ly + 1);
+   evas_object_resize(ld->align_line[1], 1, lh - 2);
+   evas_object_show(ld->align_line[1]);
 }
 
 static void
@@ -291,6 +328,18 @@ cp_rel3_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
 
    ld->part_info.rel2_x = ((double) (x - lx) / (double) lw);
    ld->part_info.rel1_y = ((double) (y - ly) / (double) lh);
+
+   //Align Lines
+
+   //Horizontal
+   evas_object_move(ld->align_line[0], lx + 1, y - 1);
+   evas_object_resize(ld->align_line[0], lw - 2, 1);
+   evas_object_show(ld->align_line[0]);
+
+   //Vertical
+   evas_object_move(ld->align_line[1], x - 1, ly + 1);
+   evas_object_resize(ld->align_line[1], 1, lh - 2);
+   evas_object_show(ld->align_line[1]);
 }
 
 static void
@@ -321,6 +370,18 @@ cp_rel4_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
 
    ld->part_info.rel1_x = ((double) (x - lx) / (double) lw);
    ld->part_info.rel2_y = ((double) (y - ly) / (double) lh);
+
+   //Align Lines
+
+   //Horizontal
+   evas_object_move(ld->align_line[0], lx + 1, y - 1);
+   evas_object_resize(ld->align_line[0], lw - 2, 1);
+   evas_object_show(ld->align_line[0]);
+
+   //Vertical
+   evas_object_move(ld->align_line[1], x - 1, ly + 1);
+   evas_object_resize(ld->align_line[1], 1, lh - 2);
+   evas_object_show(ld->align_line[1]);
 }
 
 static void
@@ -333,8 +394,8 @@ cp_left_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
    Evas_Coord x = ev->cur.canvas.x;
 
    //Limit to boundary
-   Evas_Coord lx, lw;
-   evas_object_geometry_get(ld->live_view, &lx, NULL, &lw, NULL);
+   Evas_Coord lx, ly, lw, lh;
+   evas_object_geometry_get(ld->live_view, &lx, &ly, &lw, &lh);
 
    Evas_Coord rel2_x;
    evas_object_geometry_get(ld->ctrl_pt[Ctrl_Pt_Rel2], &rel2_x, NULL,
@@ -343,6 +404,11 @@ cp_left_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
    if ((x - ld->half_ctrl_size) > rel2_x) x = (rel2_x + ld->half_ctrl_size);
 
    ld->part_info.rel1_x = ((double) (x - lx) / (double) lw);
+
+   //Align Line
+   evas_object_move(ld->align_line[0], x - 1, ly + 1);
+   evas_object_resize(ld->align_line[0], 1, lh - 2);
+   evas_object_show(ld->align_line[0]);
 }
 
 static void
@@ -355,8 +421,8 @@ cp_right_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
    Evas_Coord x = ev->cur.canvas.x;
 
    //Limit to boundary
-   Evas_Coord lx, lw;
-   evas_object_geometry_get(ld->live_view, &lx, NULL, &lw, NULL);
+   Evas_Coord lx, ly, lw, lh;
+   evas_object_geometry_get(ld->live_view, &lx, &ly, &lw, &lh);
 
    Evas_Coord rel1_x;
    evas_object_geometry_get(ld->ctrl_pt[Ctrl_Pt_Rel1], &rel1_x, NULL,
@@ -365,6 +431,11 @@ cp_right_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
    if (rel1_x > (x + ld->half_ctrl_size)) x = (rel1_x - ld->half_ctrl_size);
 
    ld->part_info.rel2_x = ((double) (x - lx) / (double) lw);
+
+   //Align Line
+   evas_object_move(ld->align_line[0], x - 1, ly + 1);
+   evas_object_resize(ld->align_line[0], 1, lh - 2);
+   evas_object_show(ld->align_line[0]);
 }
 
 static void
@@ -405,11 +476,21 @@ cp_mouse_move_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 }
 
 static void
+align_lines_hide(live_data *ld)
+{
+   int i;
+   for (i = 0; i < ALIGN_LINES_CNT; i++)
+     evas_object_hide(ld->align_line[i]);
+}
+
+static void
 cp_mouse_up_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
                void *event_info EINA_UNUSED)
 {
    evas_object_event_callback_del(obj, EVAS_CALLBACK_MOUSE_MOVE,
                                   cp_mouse_move_cb);
+   live_data *ld = data;
+   align_lines_hide(ld);
 }
 
 static void
@@ -420,8 +501,6 @@ cp_mouse_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
                                   cp_mouse_move_cb, data);
    evas_object_layer_set(obj, EVAS_LAYER_MAX);
 }
-
-
 
 static void
 ctrl_pt_init(live_data *ld)
@@ -538,6 +617,28 @@ layout_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
 
    text_update(ld);
    ctrl_pt_update(ld);
+
+   //Align Lines
+
+   //Rel1 Horizontal
+   evas_object_move(ld->align_line[0], lx + 1, y);
+   evas_object_resize(ld->align_line[0], lw - 2, 1);
+   evas_object_show(ld->align_line[0]);
+
+   //Rel1 Vertical
+   evas_object_move(ld->align_line[1], x, ly + 1);
+   evas_object_resize(ld->align_line[1], 1, lh - 2);
+   evas_object_show(ld->align_line[1]);
+
+   //Rel2 Horizontal
+   evas_object_move(ld->align_line[2], lx + 1, y + h);
+   evas_object_resize(ld->align_line[2], lw - 2, 1);
+   evas_object_show(ld->align_line[2]);
+
+   //Rel2 Vertical
+   evas_object_move(ld->align_line[3], x + w, ly + 1);
+   evas_object_resize(ld->align_line[3], 1, lh - 2);
+   evas_object_show(ld->align_line[3]);
 }
 
 static void
@@ -546,6 +647,8 @@ layout_mouse_up_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
 {
    evas_object_event_callback_del(obj, EVAS_CALLBACK_MOUSE_MOVE,
                                   layout_mouse_move_cb);
+   live_data *ld = data;
+   align_lines_hide(ld);
 }
 
 static void
@@ -565,6 +668,19 @@ layout_mouse_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
 
    evas_object_event_callback_add(obj, EVAS_CALLBACK_MOUSE_MOVE,
                                   layout_mouse_move_cb, data);
+}
+
+static void
+align_line_init(live_data *ld)
+{
+   //Create Align Lines
+   int i;
+   for (i = 0; i < ALIGN_LINES_CNT; i++)
+     {
+        Evas_Object *layout = elm_layout_add(ld->layout);
+        elm_layout_file_set(layout, EDJE_PATH,  "ctrl_pt");
+        ld->align_line[i] = layout;
+     }
 }
 
 static void
@@ -599,6 +715,7 @@ live_edit_layer_set(live_data *ld)
    live_edit_update(ld);
    live_edit_symbol_set(ld);
    ctrl_pt_init(ld);
+   align_line_init(ld);
 }
 
 static void
@@ -709,6 +826,13 @@ live_edit_cancel(void)
      {
         evas_object_del(ld->ctrl_pt[i]);
         ld->ctrl_pt[i] = NULL;
+     }
+
+   //Delete Align Lines
+   for (i = 0; i < ALIGN_LINES_CNT; i++)
+     {
+        evas_object_del(ld->align_line[i]);
+        ld->align_line[i] = NULL;
      }
 
    ld->on = EINA_FALSE;
