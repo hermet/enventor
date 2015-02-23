@@ -193,7 +193,7 @@ cp_top_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
 
    //Align Line
    evas_object_move(ld->align_line[0], lx + 1, y - 1);
-   evas_object_resize(ld->align_line[0], lw - 2, 1);
+   evas_object_resize(ld->align_line[0], lw - 2, 1 * elm_config_scale_get());
    elm_object_signal_emit(ld->align_line[0], "elm,state,show", "");
 }
 
@@ -219,8 +219,9 @@ cp_bottom_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
    ld->part_info.rel2_y = ((double) (y - ly) / (double) lh);
 
    //Align Line
+   if ((rel1_y + ld->half_ctrl_size) > y) y = (rel1_y + ld->half_ctrl_size);
    evas_object_move(ld->align_line[0], lx + 1, y - 1);
-   evas_object_resize(ld->align_line[0], lw - 2, 1);
+   evas_object_resize(ld->align_line[0], lw - 2, 1 * elm_config_scale_get());
    elm_object_signal_emit(ld->align_line[0], "elm,state,show", "");
 }
 
@@ -253,12 +254,12 @@ cp_rel1_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
 
    //Horizontal
    evas_object_move(ld->align_line[0], lx + 1, y - 1);
-   evas_object_resize(ld->align_line[0], lw - 2, 1);
+   evas_object_resize(ld->align_line[0], lw - 2, 1 * elm_config_scale_get());
    elm_object_signal_emit(ld->align_line[0], "elm,state,show", "");
 
    //Vertical
    evas_object_move(ld->align_line[1], x - 1, ly + 1);
-   evas_object_resize(ld->align_line[1], 1, lh - 2);
+   evas_object_resize(ld->align_line[1], 1 * elm_config_scale_get(), lh - 2);
    elm_object_signal_emit(ld->align_line[1], "elm,state,show", "");
 }
 
@@ -290,13 +291,15 @@ cp_rel2_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
    //Align Lines
 
    //Horizontal
+   if ((rel1_y + ld->half_ctrl_size) > y) y = (rel1_y + ld->half_ctrl_size);
    evas_object_move(ld->align_line[0], lx + 1, y - 1);
-   evas_object_resize(ld->align_line[0], lw - 2, 1);
+   evas_object_resize(ld->align_line[0], lw - 2, 1 * elm_config_scale_get());
    elm_object_signal_emit(ld->align_line[0], "elm,state,show", "");
 
    //Vertical
+   if ((rel1_x + ld->half_ctrl_size) > x) x = (rel1_x + ld->half_ctrl_size);
    evas_object_move(ld->align_line[1], x - 1, ly + 1);
-   evas_object_resize(ld->align_line[1], 1, lh - 2);
+   evas_object_resize(ld->align_line[1], 1 * elm_config_scale_get(), lh - 2);
    elm_object_signal_emit(ld->align_line[1], "elm,state,show", "");
 }
 
@@ -333,12 +336,13 @@ cp_rel3_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
 
    //Horizontal
    evas_object_move(ld->align_line[0], lx + 1, y - 1);
-   evas_object_resize(ld->align_line[0], lw - 2, 1);
+   evas_object_resize(ld->align_line[0], lw - 2, 1 * elm_config_scale_get());
    elm_object_signal_emit(ld->align_line[0], "elm,state,show", "");
 
    //Vertical
+   if ((rel1_x + ld->half_ctrl_size) > x) x = (rel1_x + ld->half_ctrl_size);
    evas_object_move(ld->align_line[1], x - 1, ly + 1);
-   evas_object_resize(ld->align_line[1], 1, lh - 2);
+   evas_object_resize(ld->align_line[1], 1 * elm_config_scale_get(), lh - 2);
    elm_object_signal_emit(ld->align_line[1], "elm,state,show", "");
 }
 
@@ -374,13 +378,14 @@ cp_rel4_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
    //Align Lines
 
    //Horizontal
+   if ((rel1_y + ld->half_ctrl_size) > y) y = (rel1_y + ld->half_ctrl_size);
    evas_object_move(ld->align_line[0], lx + 1, y - 1);
-   evas_object_resize(ld->align_line[0], lw - 2, 1);
+   evas_object_resize(ld->align_line[0], lw - 2, 1 * elm_config_scale_get());
    elm_object_signal_emit(ld->align_line[0], "elm,state,show", "");
 
    //Vertical
    evas_object_move(ld->align_line[1], x - 1, ly + 1);
-   evas_object_resize(ld->align_line[1], 1, lh - 2);
+   evas_object_resize(ld->align_line[1], 1 * elm_config_scale_get(), lh - 2);
    elm_object_signal_emit(ld->align_line[1], "elm,state,show", "");
 }
 
@@ -407,7 +412,7 @@ cp_left_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
 
    //Align Line
    evas_object_move(ld->align_line[0], x - 1, ly + 1);
-   evas_object_resize(ld->align_line[0], 1, lh - 2);
+   evas_object_resize(ld->align_line[0], 1 * elm_config_scale_get(), lh - 2);
    elm_object_signal_emit(ld->align_line[0], "elm,state,show", "");
 }
 
@@ -433,8 +438,9 @@ cp_right_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
    ld->part_info.rel2_x = ((double) (x - lx) / (double) lw);
 
    //Align Line
+   if ((rel1_x + ld->half_ctrl_size) > x) x = (rel1_x + ld->half_ctrl_size);
    evas_object_move(ld->align_line[0], x - 1, ly + 1);
-   evas_object_resize(ld->align_line[0], 1, lh - 2);
+   evas_object_resize(ld->align_line[0], 1 * elm_config_scale_get(), lh - 2);
    elm_object_signal_emit(ld->align_line[0], "elm,state,show", "");
 }
 
@@ -636,22 +642,22 @@ layout_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
 
    //Rel1 Horizontal
    evas_object_move(ld->align_line[0], lx + 1, y);
-   evas_object_resize(ld->align_line[0], lw - 2, 1);
+   evas_object_resize(ld->align_line[0], lw - 2, 1 * elm_config_scale_get());
    elm_object_signal_emit(ld->align_line[0], "elm,state,show", "");
 
    //Rel1 Vertical
    evas_object_move(ld->align_line[1], x, ly + 1);
-   evas_object_resize(ld->align_line[1], 1, lh - 2);
+   evas_object_resize(ld->align_line[1], 1 * elm_config_scale_get(), lh - 2);
    elm_object_signal_emit(ld->align_line[1], "elm,state,show", "");
 
    //Rel2 Horizontal
    evas_object_move(ld->align_line[2], lx + 1, y + h);
-   evas_object_resize(ld->align_line[2], lw - 2, 1);
+   evas_object_resize(ld->align_line[2], lw - 2, 1 * elm_config_scale_get());
    elm_object_signal_emit(ld->align_line[2], "elm,state,show", "");
 
    //Rel2 Vertical
    evas_object_move(ld->align_line[3], x + w, ly + 1);
-   evas_object_resize(ld->align_line[3], 1, lh - 2);
+   evas_object_resize(ld->align_line[3], 1 * elm_config_scale_get(), lh - 2);
    elm_object_signal_emit(ld->align_line[3], "elm,state,show", "");
 }
 
