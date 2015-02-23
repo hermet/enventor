@@ -1199,6 +1199,7 @@ group { name: "elm/button/base/enventor";
       }
       swallow { "elm.swallow.content"; nomouse;
          clip_to: "icon_clip";
+         scale: 1;
          desc { "default";
             fixed: 1 0;
             align: 0.0 0.5;
