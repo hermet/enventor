@@ -1102,11 +1102,12 @@ group { name: "goto_layout";
          scale: 1;
          description { state: "default" 0.0;
             rel1.relative: 1 0;
-            rel2.relative: 1 1;
+            rel2.relative: 1 0;
             rel1.to_y: "elm.text.msg";
+            rel2.to_y: "elm.text.msg";
             rel1.offset: 5 0;
-            rel2.offset: -3 -3;
-            min: 75 0;
+            rel2.offset: -3 -1;
+            min: 75 25;
             align: 1 0;
             fixed: 1 1;
          }
