@@ -71,8 +71,10 @@ line_init(edit_data *ed)
    char buf[MAX_LINE_DIGIT_CNT];
 
    ed->line_max = 1;
+   elm_entry_entry_set(ed->en_line, "<color=#656565FF>");
    snprintf(buf, sizeof(buf), "%d", ed->line_max);
-   elm_entry_entry_set(ed->en_line, buf);
+   elm_entry_entry_append(ed->en_line, buf);
+   elm_entry_entry_append(ed->en_line, "</color>");
 }
 
 static void
@@ -762,7 +764,6 @@ edit_edc_load(edit_data *ed, const char *file_path)
    Eina_Stringshare *group_name = NULL;
    char *utf8_edit = NULL;
    char *markup_edit = NULL;
-   char *markup_line = NULL;
    int line_num = 1;
    Eina_Bool ret = EINA_FALSE;
 
@@ -785,14 +786,13 @@ edit_edc_load(edit_data *ed, const char *file_path)
      {
         line_num++;
         ++p;
-        sprintf(buf, "\n%d", line_num);
+        sprintf(buf, "<br/>%d", line_num);
         if (!eina_strbuf_append(strbuf_line, buf)) goto err;
      }
+   if (!eina_strbuf_prepend(strbuf_line, "<color=#656565FF>")) goto err;
+   if (!eina_strbuf_append(strbuf_line, "</color>")) goto err;
 
-   markup_line = elm_entry_utf8_to_markup(eina_strbuf_string_get(strbuf_line));
-   if (!markup_line) goto err;
-   elm_entry_entry_append(ed->en_line, markup_line);
-   free(markup_line);
+   elm_entry_entry_append(ed->en_line, eina_strbuf_string_get(strbuf_line));
 
    markup_edit = elm_entry_utf8_to_markup(utf8_edit);
    if (!markup_edit) goto err;
@@ -1050,7 +1050,6 @@ edit_init(Evas_Object *enventor)
 
    //Line Number Entry
    Evas_Object *en_line = elm_entry_add(layout);
-   evas_object_color_set(en_line, 101, 101, 101, 255);
    elm_entry_editable_set(en_line, EINA_FALSE);
    elm_entry_line_wrap_set(en_line, ELM_WRAP_NONE);
    elm_object_focus_allow_set(en_line, EINA_FALSE);
@@ -1247,15 +1246,38 @@ edit_entry_get(edit_data *ed)
 void
 edit_line_increase(edit_data *ed, int cnt)
 {
+   char *utf8_line;
+   char *markup_line;
    char buf[MAX_LINE_DIGIT_CNT];
    int i;
 
+   //Prepend the max line number again to preserve </color> markup.
+   Evas_Object *textblock = elm_entry_textblock_get(ed->en_line);
+   Evas_Textblock_Cursor *cur1 = evas_object_textblock_cursor_new(textblock);
+   evas_textblock_cursor_paragraph_last(cur1);
+   evas_textblock_cursor_paragraph_prev(cur1);
+
+   if (ed->line_max == 1)
+     snprintf(buf, sizeof(buf), "%d", ed->line_max);
+   else
+     snprintf(buf, sizeof(buf), "<br/>%d", ed->line_max);
+   evas_object_textblock_text_markup_prepend(cur1, buf);
+
+   //Prepend new line numbers.
    for (i = 0; i < cnt; i++)
      {
         ed->line_max++;
         snprintf(buf, sizeof(buf), "<br/>%d", ed->line_max);
-        elm_entry_entry_append(ed->en_line, buf);
+        evas_object_textblock_text_markup_prepend(cur1, buf);
      }
+
+   //Remove the duplicated max line number.
+   Evas_Textblock_Cursor *cur2 = evas_object_textblock_cursor_new(textblock);
+   evas_textblock_cursor_paragraph_last(cur2);
+   evas_textblock_cursor_range_delete(cur1, cur2);
+   evas_textblock_cursor_free(cur1);
+   evas_textblock_cursor_free(cur2);
+
    elm_entry_calc_force(ed->en_line);
 
    Enventor_Max_Line max_line;
