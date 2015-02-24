@@ -129,8 +129,8 @@ rect_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
    Evas_Coord x, y, w, h;
    evas_object_geometry_get(obj, &x, &y, &w, &h);
 
-   cursor.x = ev->cur.canvas.x;
-   cursor.y = ev->cur.canvas.y;
+   cursor.x = ev->cur.canvas.x - x;
+   cursor.y = ev->cur.canvas.y - y;
    cursor.relx = (float) ((ev->cur.canvas.x - x) / (float) w);
    cursor.rely = (float) ((ev->cur.canvas.y - y) / (float) h);
 
