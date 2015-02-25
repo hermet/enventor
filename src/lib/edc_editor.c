@@ -1308,7 +1308,6 @@ void
 edit_disabled_set(edit_data *ed, Eina_Bool disabled)
 {
    elm_object_focus_allow_set(ed->layout, disabled);
-   elm_entry_editable_set(ed->en_line, !disabled);
    elm_entry_editable_set(ed->en_edit, !disabled);
 
    if (disabled)
