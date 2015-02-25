@@ -1456,8 +1456,6 @@ group { name: "viewer_layout";
       part { name: "cur_clipper";
          type: RECT;
          description { state: "default" 0.0;
-            rel1.relative: -1 0;
-            rel2.relative: 0 1;
             color: 255 255 255 0;
          }
          description { state: "switched" 0.0;
