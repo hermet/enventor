@@ -121,18 +121,18 @@ info_text_update(live_data *ld)
    //Rel1
    evas_object_geometry_get(ld->ctrl_pt[Ctrl_Pt_Rel1], &rx, &ry, &rw, &rh);
    evas_object_geometry_get(ld->info_text[Info_Text_Rel1], NULL, NULL, &w, &h);
-   x = rx - w;
+   x = (rx + rw);
    y = ry - h;
-   if (x < lx) x = (rx + rw);
+   if ((x + w) > (lx + lw)) x = (rx - w);
    if (y < ly) y = (ry + rh);
    evas_object_move(ld->info_text[Info_Text_Rel1], x, y);
 
    //Rel2
    evas_object_geometry_get(ld->ctrl_pt[Ctrl_Pt_Rel2], &rx, &ry, &rw, &rh);
    evas_object_geometry_get(ld->info_text[Info_Text_Rel2], NULL, NULL, &w, &h);
-   x = (rx + rw);
+   x = (rx - w);
    y = (ry + rh);
-   if ((x + w) > (lx + lw)) x = (rx - w);
+   if (x < lx) x = (rx + rw);
    if ((y + h) > (ly + lh)) y = (ry - h);
    evas_object_move(ld->info_text[Info_Text_Rel2], x, y);
 
@@ -820,7 +820,7 @@ ctxpopup_it_selected_cb(void *data, Evas_Object *obj, void *event_info)
 
    elm_ctxpopup_dismiss(obj);
 
-   stats_info_msg_update("Click and drag the mouse in the Live View.");
+   stats_info_msg_update("Double click the part to confirm.");
 }
 
 static void
