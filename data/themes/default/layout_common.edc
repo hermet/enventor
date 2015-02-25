@@ -1378,47 +1378,6 @@ group { name: "live_edit_layout";
             color: 51 153 255 127;
          }
       }
-      part { name: "elm.text.rel1";
-         type: TEXT;
-         effect: OUTLINE;
-         scale: 1;
-         mouse_events: 0;
-         clip_to: "clipper";
-         description { state: "default" 0.0;
-            rel1.offset: 10 10;
-            color: 255 255 255 255;
-            align: 0 0;
-            fixed: 1 1;
-            text {
-               font: FN;
-               size: 10;
-               align: 0 0;
-               min: 1 0;
-               ellipsis: -1;
-            }
-         }
-      }
-      part { name: "elm.text.rel2";
-         type: TEXT;
-         effect: OUTLINE;
-         scale: 1;
-         mouse_events: 0;
-         clip_to: "clipper";
-         description { state: "default" 0.0;
-            rel1.offset: 0 -11;
-            rel2.offset: -11 -11;
-            color: 255 255 255 255;
-            align: 1 1;
-            fixed: 1 1;
-            text {
-               font: FN;
-               size: 10;
-               align: 1 1;
-               min: 1 0;
-               ellipsis: -1;
-            }
-         }
-      }
    }
    programs {
       program { name: "on_load";

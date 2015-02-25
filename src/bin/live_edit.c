@@ -7,6 +7,9 @@
 
 #define ALIGN_LINES_CNT 4
 
+#define CTRL_PT_LAYER 3
+#define INFO_TEXT_LAYER (CTRL_PT_LAYER+1)
+
 typedef enum
 {
    Ctrl_Pt_Rel1 = 0,
@@ -19,6 +22,14 @@ typedef enum
    Ctrl_Pt_Right,
    Ctrl_Pt_Cnt
 } Ctrl_Pt;
+
+typedef enum
+{
+   Info_Text_Rel1 = 0,
+   Info_Text_Rel2,
+   Info_Text_Size,
+   Info_Text_Cnt
+} Info_Text;
 
 typedef struct ctxpopup_it_data_s
 {
@@ -35,6 +46,7 @@ typedef struct live_editor_s
    Evas_Object *trigger;
    Evas_Object *ctrl_pt[Ctrl_Pt_Cnt];
    Evas_Object *align_line[ALIGN_LINES_CNT];
+   Evas_Object *info_text[Info_Text_Cnt];
    double half_ctrl_size;
 
    struct {
@@ -62,30 +74,68 @@ static const ctxpopup_it_data CTXPOPUP_ITEMS[] =
 
 static live_data *g_ld = NULL;
 
-#define LIVE_EDIT_NEW_PART_DATA_MAX_LEN 80
-static const char *LIVE_EDIT_NEW_PART_DATA_STR =
-                   "    %s<br/>"
-                   "    X: %5d  Y: %5d<br/>"
-                   "    W: %5d H: %5d";
-
-#define LIVE_EDIT_NEW_PART_REL_STR_MAX_LEN 16
-static const char *LIVE_EDIT_NEW_PART_REL_STR = "%.2f %.2f";
-
 static void
-text_update(live_data *ld)
+info_text_update(live_data *ld)
 {
-   Evas_Object *layout = elm_layout_edje_get(ld->layout);
+   //Update Text
+   char buf[256];
 
-   char part_info[LIVE_EDIT_NEW_PART_DATA_MAX_LEN];
+   Evas_Coord lx, ly, lw, lh;
+   evas_object_geometry_get(ld->live_view, &lx, &ly, &lw, &lh);
 
-   snprintf(part_info,
-            LIVE_EDIT_NEW_PART_REL_STR_MAX_LEN, LIVE_EDIT_NEW_PART_REL_STR,
-            ld->part_info.rel1_x, ld->part_info.rel1_y);
-   edje_object_part_text_set(layout, "elm.text.rel1", part_info);
-   snprintf(part_info,
-            LIVE_EDIT_NEW_PART_REL_STR_MAX_LEN, LIVE_EDIT_NEW_PART_REL_STR,
-            ld->part_info.rel2_x, ld->part_info.rel2_y);
-   edje_object_part_text_set(layout, "elm.text.rel2", part_info);
+   //Rel1
+   snprintf(buf, sizeof(buf), "%.2f %.2f (%d %d)",
+            ld->part_info.rel1_x, ld->part_info.rel1_y,
+            (int) (ld->part_info.rel1_x * (double) lw),
+            (int) (ld->part_info.rel1_y * (double) lh));
+  evas_object_text_text_set(ld->info_text[Info_Text_Rel1], buf);
+
+   //Rel2
+   snprintf(buf, sizeof(buf), "%.2f %.2f (%d %d)",
+            ld->part_info.rel2_x, ld->part_info.rel2_y,
+            (int) (ld->part_info.rel2_x * (double) lw),
+            (int) (ld->part_info.rel2_y * (double) lh));
+   evas_object_text_text_set(ld->info_text[Info_Text_Rel2], buf);
+
+   //Size
+   Evas_Coord layout_x, layout_y, layout_w, layout_h;
+   evas_object_geometry_get(ld->layout, &layout_x, &layout_y, &layout_w,
+                            &layout_h);
+   snprintf(buf, sizeof(buf), "[%d x %d]", layout_w, layout_h);
+   evas_object_text_text_set(ld->info_text[Info_Text_Size], buf);
+
+
+   //Update Position
+   Evas_Coord x, y, w, h;
+   Evas_Coord rx, ry, rw, rh;
+
+   //Rel1
+   evas_object_geometry_get(ld->ctrl_pt[Ctrl_Pt_Rel1], &rx, &ry, &rw, &rh);
+   evas_object_geometry_get(ld->info_text[Info_Text_Rel1], NULL, NULL, &w, &h);
+   x = rx - w;
+   y = ry - h;
+   if (x < lx) x = (rx + rw);
+   if (y < ly) y = (ry + rh);
+   evas_object_move(ld->info_text[Info_Text_Rel1], x, y);
+
+   //Rel2
+   evas_object_geometry_get(ld->ctrl_pt[Ctrl_Pt_Rel2], &rx, &ry, &rw, &rh);
+   evas_object_geometry_get(ld->info_text[Info_Text_Rel2], NULL, NULL, &w, &h);
+   x = (rx + rw);
+   y = (ry + rh);
+   if ((x + w) > (lx + lw)) x = (rx - w);
+   if ((y + h) > (ly + lh)) y = (ry - h);
+   evas_object_move(ld->info_text[Info_Text_Rel2], x, y);
+
+   //Size
+   evas_object_geometry_get(ld->info_text[Info_Text_Size], NULL, NULL, &w, &h);
+   x = (layout_x + (layout_w/2)) - (w/2);
+   y = (layout_y + (layout_h/2)) - (h/2);
+   if (x < lx) x = lx;
+   if (y < lx) y = ly;
+   if ((x + w) > (lx + lw)) x = ((lx + lw) - w);
+   if ((y + h) > (ly + lh)) y = ((ly + lh) - h);
+   evas_object_move(ld->info_text[Info_Text_Size], x, y);
 }
 
 static void
@@ -512,7 +562,7 @@ cp_mouse_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
 {
    evas_object_event_callback_add(obj, EVAS_CALLBACK_MOUSE_MOVE,
                                   cp_mouse_move_cb, data);
-   evas_object_layer_set(obj, EVAS_LAYER_MAX);
+   evas_object_layer_set(obj, CTRL_PT_LAYER);
 
    //Hide All Control Points
    live_data *ld = data;
@@ -563,7 +613,6 @@ ctrl_pt_init(live_data *ld)
    elm_object_cursor_set(ld->ctrl_pt[Ctrl_Pt_Left], ELM_CURSOR_LEFT_SIDE);
    elm_object_cursor_set(ld->ctrl_pt[Ctrl_Pt_Right], ELM_CURSOR_RIGHT_SIDE);
 
-
    ctrl_pt_update(ld);
 }
 
@@ -586,7 +635,7 @@ live_edit_update(live_data *ld)
 {
    layout_update(ld);
    ctrl_pt_update(ld);
-   text_update(ld);
+   info_text_update(ld);
 }
 
 static void
@@ -634,8 +683,8 @@ layout_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
 
    evas_object_move(obj, x, y);
 
-   text_update(ld);
    ctrl_pt_update(ld);
+   info_text_update(ld);
 
    //Align Lines
 
@@ -717,6 +766,29 @@ align_line_init(live_data *ld)
 }
 
 static void
+info_text_init(live_data *ld)
+{
+   //Create Info Texts
+   int i;
+   Evas *e = evas_object_evas_get(ld->layout);
+   double scale = elm_config_scale_get();
+   for (i = 0; i < Info_Text_Cnt; i++)
+     {
+        Evas_Object *text = evas_object_text_add(e);
+        evas_object_pass_events_set(text, EINA_TRUE);
+        evas_object_layer_set(text, INFO_TEXT_LAYER);
+        evas_object_text_font_set(text, LIVE_EDIT_FONT,
+                                  ( LIVE_EDIT_FONT_SIZE * scale));
+        evas_object_text_style_set(text, EVAS_TEXT_STYLE_OUTLINE);
+        evas_object_text_outline_color_set(text, 0, 0, 0, 255);
+        evas_object_show(text);
+        ld->info_text[i] = text;
+     }
+
+   info_text_update(ld);
+}
+
+static void
 live_edit_layer_set(live_data *ld)
 {
    ld->key_down_handler = ecore_event_handler_add(ECORE_EVENT_KEY_DOWN,
@@ -749,6 +821,7 @@ live_edit_layer_set(live_data *ld)
    live_edit_symbol_set(ld);
    ctrl_pt_init(ld);
    align_line_init(ld);
+   info_text_init(ld);
 }
 
 static void
@@ -758,6 +831,7 @@ ctxpopup_it_selected_cb(void *data, Evas_Object *obj, void *event_info)
    const Elm_Object_Item *it = event_info;
    ld->part_info.type = (unsigned int) data;
    live_edit_layer_set(ld);
+
    elm_ctxpopup_dismiss(obj);
 
    stats_info_msg_update("Click and drag the mouse in the Live View.");
@@ -866,6 +940,13 @@ live_edit_cancel(void)
      {
         evas_object_del(ld->align_line[i]);
         ld->align_line[i] = NULL;
+     }
+
+   //Delete Info Texts
+   for (i = 0; i < Info_Text_Cnt; i++)
+     {
+        evas_object_del(ld->info_text[i]);
+        ld->info_text[i] = NULL;
      }
 
    ld->on = EINA_FALSE;
