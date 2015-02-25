@@ -816,6 +816,7 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    if (!strcmp(event->key, "F2"))
      {
         enventor_object_ctxpopup_dismiss(ad->enventor);
+        live_edit_cancel();
         menu_edc_new(EINA_FALSE);
         return ECORE_CALLBACK_DONE;
      }
@@ -823,6 +824,7 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    if (!strcmp(event->key, "F3"))
      {
         enventor_object_ctxpopup_dismiss(ad->enventor);
+        live_edit_cancel();
         menu_edc_save();
         return ECORE_CALLBACK_DONE;
      }
@@ -830,6 +832,7 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    if (!strcmp(event->key, "F4"))
      {
         enventor_object_ctxpopup_dismiss(ad->enventor);
+        live_edit_cancel();
         menu_edc_load();
         return ECORE_CALLBACK_DONE;
      }
@@ -865,6 +868,7 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    //Setting
    if (!strcmp(event->key, "F12"))
      {
+        live_edit_cancel();
         enventor_object_ctxpopup_dismiss(ad->enventor);
         menu_setting();
         return ECORE_CALLBACK_DONE;
