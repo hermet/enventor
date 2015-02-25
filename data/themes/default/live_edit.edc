@@ -32,6 +32,7 @@ group { name: "TEXT_bg";
       part { name: "text";
          type: TEXT;
          effect: SHADOW;
+         scale: 1;
          description { state: "default" 0.0;
             color: 255 255 255 255;
             color3: 0 0 0 128;
@@ -48,6 +49,7 @@ group { name: "TEXTBLOCK_bg";
    parts {
       part { name: "text";
          type: TEXTBLOCK;
+         scale: 1;
          description { state: "default" 0.0;
             color: 255 255 255 255;
             text {
