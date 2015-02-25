@@ -1521,11 +1521,6 @@ group { name: "viewer_layout";
             rel2.to: "cur_clipper";
          }
       }
-      part { name: "elm.swallow.live_edit";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-         }
-      }
    }
    programs {
       program { name: "switch_instant";
