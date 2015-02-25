@@ -31,13 +31,14 @@ group { name: "TEXT_bg";
    parts {
       part { name: "text";
          type: TEXT;
-         effect: SHADOW;
          scale: 1;
+         effect: FAR_SOFT_SHADOW;
          description { state: "default" 0.0;
-            color: 255 255 255 255;
-            color3: 0 0 0 128;
+            color: 0 136 170 255;
+            color2: 0 136 170 50;
+            color3: 0 136 170 25;
             text {
-               size: 10;
+               size: 50;
                font: FN;
                text: "TEXT";
             }
