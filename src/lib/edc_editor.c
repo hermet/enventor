@@ -266,7 +266,7 @@ ctxpopup_candidate_dismiss_cb(void *data, Evas_Object *obj,
 {
    edit_data *ed = data;
    evas_object_del(obj);
-   elm_object_disabled_set(ed->layout, EINA_FALSE);
+   elm_entry_editable_set(ed->en_edit, EINA_TRUE);
    elm_object_focus_set(ed->en_edit, EINA_TRUE);
    evas_object_smart_callback_call(ed->enventor, SIG_CTXPOPUP_DISMISSED, NULL);
 }
@@ -318,7 +318,7 @@ ctxpopup_preview_dismiss_cb(void *data, Evas_Object *obj,
 
    //Since the ctxpopup will be shown again, Don't revert the focus.
    if (skip_focus) return;
-   elm_object_disabled_set(ed->layout, EINA_FALSE);
+   elm_entry_editable_set(ed->en_edit, EINA_TRUE);
    elm_object_focus_set(ed->en_edit, EINA_TRUE);
    evas_object_smart_callback_call(ed->enventor, SIG_CTXPOPUP_DISMISSED, NULL);
    evas_object_del(obj);
@@ -447,7 +447,7 @@ image_preview_show(edit_data *ed, char *cur, Evas_Coord x, Evas_Coord y)
         evas_object_event_callback_add(ctxpopup, EVAS_CALLBACK_DEL,
                                        ctxpopup_del_cb, ed);
         ed->ctxpopup = ctxpopup;
-        elm_object_disabled_set(ed->layout, EINA_TRUE);
+        elm_entry_editable_set(ed->en_edit, EINA_FALSE);
         succeed = EINA_TRUE;
      }
    else
@@ -481,7 +481,7 @@ candidate_list_show(edit_data *ed, char *text, char *cur, char *selected)
    evas_object_show(ctxpopup);
    evas_object_event_callback_add(ctxpopup, EVAS_CALLBACK_DEL, ctxpopup_del_cb, ed);
    ed->ctxpopup = ctxpopup;
-   elm_object_disabled_set(ed->layout, EINA_TRUE);
+   elm_entry_editable_set(ed->en_edit, EINA_FALSE);
 }
 
 static void
@@ -1307,8 +1307,9 @@ edit_redoundo_region_push(edit_data *ed, int cursor_pos1, int cursor_pos2)
 void
 edit_disabled_set(edit_data *ed, Eina_Bool disabled)
 {
-   elm_object_disabled_set(ed->layout, disabled);
    elm_object_focus_allow_set(ed->layout, disabled);
+   elm_entry_editable_set(ed->en_line, !disabled);
+   elm_entry_editable_set(ed->en_edit, !disabled);
 
    if (disabled)
      {
