@@ -5,8 +5,6 @@
 #include <Elementary_Cursor.h>
 #include "common.h"
 
-#define ALIGN_LINES_CNT 4
-
 #define CTRL_PT_LAYER 3
 #define INFO_TEXT_LAYER (CTRL_PT_LAYER+1)
 
@@ -31,6 +29,15 @@ typedef enum
    Info_Text_Cnt
 } Info_Text;
 
+typedef enum
+{
+   Align_Line_Top = 0,
+   Align_Line_Bottom,
+   Align_Line_Left,
+   Align_Line_Right,
+   Align_Line_Cnt
+} Align_Line;
+
 typedef struct ctxpopup_it_data_s
 {
    const char *name;
@@ -45,7 +52,7 @@ typedef struct live_editor_s
    Evas_Object *enventor;
    Evas_Object *trigger;
    Evas_Object *ctrl_pt[Ctrl_Pt_Cnt];
-   Evas_Object *align_line[ALIGN_LINES_CNT];
+   Evas_Object *align_line[Align_Line_Cnt];
    Evas_Object *info_text[Info_Text_Cnt];
    double half_ctrl_size;
 
@@ -241,9 +248,10 @@ cp_top_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
    ld->part_info.rel1_y = ((double) (y - ly) / (double) lh);
 
    //Align Line
-   evas_object_move(ld->align_line[0], lx + 1, y - 1);
-   evas_object_resize(ld->align_line[0], lw - 2, 1 * elm_config_scale_get());
-   elm_object_signal_emit(ld->align_line[0], "elm,state,show", "");
+   evas_object_move(ld->align_line[Align_Line_Top], (lx + 1), (y - 1));
+   evas_object_resize(ld->align_line[Align_Line_Top], (lw - 2),
+                      (1 * elm_config_scale_get()));
+   elm_object_signal_emit(ld->align_line[Align_Line_Top], "elm,state,show", "");
 }
 
 static void
@@ -269,9 +277,11 @@ cp_bottom_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
 
    //Align Line
    if ((rel1_y + ld->half_ctrl_size) > y) y = (rel1_y + ld->half_ctrl_size);
-   evas_object_move(ld->align_line[0], lx + 1, y - 1);
-   evas_object_resize(ld->align_line[0], lw - 2, 1 * elm_config_scale_get());
-   elm_object_signal_emit(ld->align_line[0], "elm,state,show", "");
+   evas_object_move(ld->align_line[Align_Line_Bottom], (lx + 1), (y - 1));
+   evas_object_resize(ld->align_line[Align_Line_Bottom], (lw - 2),
+                      (1 * elm_config_scale_get()));
+   elm_object_signal_emit(ld->align_line[Align_Line_Bottom], "elm,state,show",
+                          "");
 }
 
 static void
@@ -300,16 +310,16 @@ cp_rel1_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
    ld->part_info.rel1_y = ((double) (y - ly) / (double) lh);
 
    //Align Lines
+   evas_object_move(ld->align_line[Align_Line_Top], (lx + 1), (y - 1));
+   evas_object_resize(ld->align_line[Align_Line_Top], (lw - 2),
+                      (1 * elm_config_scale_get()));
+   elm_object_signal_emit(ld->align_line[Align_Line_Top], "elm,state,show", "");
 
-   //Horizontal
-   evas_object_move(ld->align_line[0], lx + 1, y - 1);
-   evas_object_resize(ld->align_line[0], lw - 2, 1 * elm_config_scale_get());
-   elm_object_signal_emit(ld->align_line[0], "elm,state,show", "");
-
-   //Vertical
-   evas_object_move(ld->align_line[1], x - 1, ly + 1);
-   evas_object_resize(ld->align_line[1], 1 * elm_config_scale_get(), lh - 2);
-   elm_object_signal_emit(ld->align_line[1], "elm,state,show", "");
+   evas_object_move(ld->align_line[Align_Line_Left], (x - 1), (ly + 1));
+   evas_object_resize(ld->align_line[Align_Line_Left],
+                      (1 * elm_config_scale_get()), (lh - 2));
+   elm_object_signal_emit(ld->align_line[Align_Line_Left], "elm,state,show",
+                          "");
 }
 
 static void
@@ -338,18 +348,19 @@ cp_rel2_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
    ld->part_info.rel2_y = ((double) (y - ly) / (double) lh);
 
    //Align Lines
-
-   //Horizontal
    if ((rel1_y + ld->half_ctrl_size) > y) y = (rel1_y + ld->half_ctrl_size);
-   evas_object_move(ld->align_line[0], lx + 1, y - 1);
-   evas_object_resize(ld->align_line[0], lw - 2, 1 * elm_config_scale_get());
-   elm_object_signal_emit(ld->align_line[0], "elm,state,show", "");
+   evas_object_move(ld->align_line[Align_Line_Bottom], (lx + 1), (y - 1));
+   evas_object_resize(ld->align_line[Align_Line_Bottom], (lw - 2),
+                      (1 * elm_config_scale_get()));
+   elm_object_signal_emit(ld->align_line[Align_Line_Bottom], "elm,state,show",
+                          "");
 
-   //Vertical
    if ((rel1_x + ld->half_ctrl_size) > x) x = (rel1_x + ld->half_ctrl_size);
-   evas_object_move(ld->align_line[1], x - 1, ly + 1);
-   evas_object_resize(ld->align_line[1], 1 * elm_config_scale_get(), lh - 2);
-   elm_object_signal_emit(ld->align_line[1], "elm,state,show", "");
+   evas_object_move(ld->align_line[Align_Line_Right], (x - 1), (ly + 1));
+   evas_object_resize(ld->align_line[Align_Line_Right],
+                      (1 * elm_config_scale_get()), (lh - 2));
+   elm_object_signal_emit(ld->align_line[Align_Line_Right], "elm,state,show",
+                          "");
 }
 
 static void
@@ -382,17 +393,17 @@ cp_rel3_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
    ld->part_info.rel1_y = ((double) (y - ly) / (double) lh);
 
    //Align Lines
+   evas_object_move(ld->align_line[Align_Line_Top], (lx + 1), (y - 1));
+   evas_object_resize(ld->align_line[Align_Line_Top], (lw - 2),
+                      (1 * elm_config_scale_get()));
+   elm_object_signal_emit(ld->align_line[Align_Line_Top], "elm,state,show", "");
 
-   //Horizontal
-   evas_object_move(ld->align_line[0], lx + 1, y - 1);
-   evas_object_resize(ld->align_line[0], lw - 2, 1 * elm_config_scale_get());
-   elm_object_signal_emit(ld->align_line[0], "elm,state,show", "");
-
-   //Vertical
    if ((rel1_x + ld->half_ctrl_size) > x) x = (rel1_x + ld->half_ctrl_size);
-   evas_object_move(ld->align_line[1], x - 1, ly + 1);
-   evas_object_resize(ld->align_line[1], 1 * elm_config_scale_get(), lh - 2);
-   elm_object_signal_emit(ld->align_line[1], "elm,state,show", "");
+   evas_object_move(ld->align_line[Align_Line_Right], (x - 1), (ly + 1));
+   evas_object_resize(ld->align_line[Align_Line_Right],
+                      (1 * elm_config_scale_get()), (lh - 2));
+   elm_object_signal_emit(ld->align_line[Align_Line_Right], "elm,state,show",
+                          "");
 }
 
 static void
@@ -425,17 +436,18 @@ cp_rel4_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
    ld->part_info.rel2_y = ((double) (y - ly) / (double) lh);
 
    //Align Lines
-
-   //Horizontal
    if ((rel1_y + ld->half_ctrl_size) > y) y = (rel1_y + ld->half_ctrl_size);
-   evas_object_move(ld->align_line[0], lx + 1, y - 1);
-   evas_object_resize(ld->align_line[0], lw - 2, 1 * elm_config_scale_get());
-   elm_object_signal_emit(ld->align_line[0], "elm,state,show", "");
+   evas_object_move(ld->align_line[Align_Line_Bottom], (lx + 1), (y - 1));
+   evas_object_resize(ld->align_line[Align_Line_Bottom], (lw - 2),
+                      (1 * elm_config_scale_get()));
+   elm_object_signal_emit(ld->align_line[Align_Line_Bottom], "elm,state,show",
+                          "");
 
-   //Vertical
-   evas_object_move(ld->align_line[1], x - 1, ly + 1);
-   evas_object_resize(ld->align_line[1], 1 * elm_config_scale_get(), lh - 2);
-   elm_object_signal_emit(ld->align_line[1], "elm,state,show", "");
+   evas_object_move(ld->align_line[Align_Line_Left], (x - 1), (ly + 1));
+   evas_object_resize(ld->align_line[Align_Line_Left],
+                      (1 * elm_config_scale_get()), (lh - 2));
+   elm_object_signal_emit(ld->align_line[Align_Line_Left], "elm,state,show",
+                          "");
 }
 
 static void
@@ -460,9 +472,11 @@ cp_left_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
    ld->part_info.rel1_x = ((double) (x - lx) / (double) lw);
 
    //Align Line
-   evas_object_move(ld->align_line[0], x - 1, ly + 1);
-   evas_object_resize(ld->align_line[0], 1 * elm_config_scale_get(), lh - 2);
-   elm_object_signal_emit(ld->align_line[0], "elm,state,show", "");
+   evas_object_move(ld->align_line[Align_Line_Left], (x - 1), (ly + 1));
+   evas_object_resize(ld->align_line[Align_Line_Left],
+                      (1 * elm_config_scale_get()), (lh - 2));
+   elm_object_signal_emit(ld->align_line[Align_Line_Left], "elm,state,show",
+                          "");
 }
 
 static void
@@ -488,9 +502,11 @@ cp_right_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
 
    //Align Line
    if ((rel1_x + ld->half_ctrl_size) > x) x = (rel1_x + ld->half_ctrl_size);
-   evas_object_move(ld->align_line[0], x - 1, ly + 1);
-   evas_object_resize(ld->align_line[0], 1 * elm_config_scale_get(), lh - 2);
-   elm_object_signal_emit(ld->align_line[0], "elm,state,show", "");
+   evas_object_move(ld->align_line[Align_Line_Right], (x - 1), (ly + 1));
+   evas_object_resize(ld->align_line[Align_Line_Right],
+                      (1 * elm_config_scale_get()), (lh - 2));
+   elm_object_signal_emit(ld->align_line[Align_Line_Right], "elm,state,show",
+                          "");
 }
 
 static void
@@ -537,7 +553,7 @@ static void
 align_lines_hide(live_data *ld)
 {
    int i;
-   for (i = 0; i < ALIGN_LINES_CNT; i++)
+   for (i = 0; i < Align_Line_Cnt; i++)
      elm_object_signal_emit(ld->align_line[i], "elm,state,hide", "");
 }
 
@@ -687,26 +703,28 @@ layout_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
    info_text_update(ld);
 
    //Align Lines
+   evas_object_move(ld->align_line[Align_Line_Top], (lx + 1), y);
+   evas_object_resize(ld->align_line[Align_Line_Top], (lw - 2),
+                      (1 * elm_config_scale_get()));
+   elm_object_signal_emit(ld->align_line[Align_Line_Top], "elm,state,show", "");
 
-   //Rel1 Horizontal
-   evas_object_move(ld->align_line[0], lx + 1, y);
-   evas_object_resize(ld->align_line[0], lw - 2, 1 * elm_config_scale_get());
-   elm_object_signal_emit(ld->align_line[0], "elm,state,show", "");
+   evas_object_move(ld->align_line[Align_Line_Left], x, (ly + 1));
+   evas_object_resize(ld->align_line[Align_Line_Left],
+                      (1 * elm_config_scale_get()), (lh - 2));
+   elm_object_signal_emit(ld->align_line[Align_Line_Left], "elm,state,show",
+                          "");
 
-   //Rel1 Vertical
-   evas_object_move(ld->align_line[1], x, ly + 1);
-   evas_object_resize(ld->align_line[1], 1 * elm_config_scale_get(), lh - 2);
-   elm_object_signal_emit(ld->align_line[1], "elm,state,show", "");
+   evas_object_move(ld->align_line[Align_Line_Bottom], (lx + 1), (y + h));
+   evas_object_resize(ld->align_line[Align_Line_Bottom], (lw - 2),
+                      (1 * elm_config_scale_get()));
+   elm_object_signal_emit(ld->align_line[Align_Line_Bottom], "elm,state,show",
+                          "");
 
-   //Rel2 Horizontal
-   evas_object_move(ld->align_line[2], lx + 1, y + h);
-   evas_object_resize(ld->align_line[2], lw - 2, 1 * elm_config_scale_get());
-   elm_object_signal_emit(ld->align_line[2], "elm,state,show", "");
-
-   //Rel2 Vertical
-   evas_object_move(ld->align_line[3], x + w, ly + 1);
-   evas_object_resize(ld->align_line[3], 1 * elm_config_scale_get(), lh - 2);
-   elm_object_signal_emit(ld->align_line[3], "elm,state,show", "");
+   evas_object_move(ld->align_line[Align_Line_Right], (x + w), (ly + 1));
+   evas_object_resize(ld->align_line[Align_Line_Right],
+                     (1 * elm_config_scale_get()), (lh - 2));
+   elm_object_signal_emit(ld->align_line[Align_Line_Right], "elm,state,show",
+                          "");
 }
 
 static void
@@ -755,7 +773,7 @@ align_line_init(live_data *ld)
 {
    //Create Align Lines
    int i;
-   for (i = 0; i < ALIGN_LINES_CNT; i++)
+   for (i = 0; i < Align_Line_Cnt; i++)
      {
         Evas_Object *layout = elm_layout_add(ld->layout);
         elm_layout_file_set(layout, EDJE_PATH,  "ctrl_pt");
@@ -936,7 +954,7 @@ live_edit_cancel(void)
      }
 
    //Delete Align Lines
-   for (i = 0; i < ALIGN_LINES_CNT; i++)
+   for (i = 0; i < Align_Line_Cnt; i++)
      {
         evas_object_del(ld->align_line[i]);
         ld->align_line[i] = NULL;
