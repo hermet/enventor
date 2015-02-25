@@ -41,7 +41,6 @@ typedef struct live_editor_s
       unsigned int type;
       float rel1_x, rel1_y;
       float rel2_x, rel2_y;
-      Evas_Coord x, y, w, h;
    } part_info;
 
    Ecore_Event_Handler *key_down_handler;
