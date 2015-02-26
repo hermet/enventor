@@ -53,6 +53,10 @@ auto_indent_toggle(app_data *ad)
 static void
 enventor_common_setup(Evas_Object *enventor)
 {
+   const char *font_name;
+   const char *font_style;
+   config_font_get(&font_name, &font_style);
+   enventor_object_font_set(enventor, font_name, font_style);
    enventor_object_font_scale_set(enventor, config_font_scale_get());
    enventor_object_live_view_scale_set(enventor, config_view_scale_get());
    enventor_object_linenumber_set(enventor, config_linenumber_get());
@@ -535,6 +539,7 @@ enventor_setup(app_data *ad)
                                   enventor_ctxpopup_dismissed_cb, ad);
    evas_object_smart_callback_add(enventor, "focused",
                                   enventor_focused_cb, ad);
+
    evas_object_size_hint_expand_set(enventor, EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
    evas_object_size_hint_fill_set(enventor, EVAS_HINT_FILL, EVAS_HINT_FILL);

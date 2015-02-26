@@ -8,6 +8,7 @@ typedef struct color_keyword_s
 struct text_setting_s
 {
    Evas_Object *text_setting_layout;
+   Evas_Object *text_edit_entry;
    Evas_Object *color_ctxpopup;
 
    Evas_Object *slider_font;
@@ -19,6 +20,8 @@ struct text_setting_s
    char *syntax_template_format;
    char *syntax_template_str;
 
+   const char *font_name;
+   const char *font_style;
    double font_scale;
 };
 
@@ -29,6 +32,7 @@ void text_setting_layout_show(Evas_Object *setting_layout, Evas_Object *tabbar, 
 void text_setting_syntax_color_reset(void);
 void text_setting_syntax_color_save(void);
 void text_setting_config_set(void);
+void text_setting_font_set(const char *font_name, const char *font_style);
 void text_setting_font_scale_set(double font_scale);
 void text_setting_linenumber_set(Eina_Bool enabled);
 void text_setting_auto_indent_set(Eina_Bool enabled);

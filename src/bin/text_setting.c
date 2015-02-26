@@ -1,10 +1,22 @@
 #include "common.h"
 #include "text_setting.h"
 
+#define UNSUPPORTED_FONT_CNT 28
+#define UNSUPPORTED_FONT_MAX_LEN 32
 #define COLOR_KEYWORD_MAX_CNT 76
 #define SYNTAX_TEMPLATE_MAX_LEN 3072
 #define SYNTAX_TEMPLATE_FONT_SIZE 10
 #define SYNTAX_COLOR_LEN 7
+
+static char unsupported_font_list[UNSUPPORTED_FONT_CNT][UNSUPPORTED_FONT_MAX_LEN] =
+{
+   "Dingbats", "KacstArt", "KacstBook", "KacstDecorative", "KacstDigital",
+   "KacstFarsi", "KacstLetter", "KacstNaskh", "KacstOffice", "KacstPen",
+   "KacstPoster", "KacstQurn", "KacstScreen", "KacstTitle", "KacstTitleL",
+   "LKLUG", "Lohit Bengali", "Lohit Gujarati", "Lohit Punjabi", "Lohit Tamil",
+   "OpenSymbol", "Pothana2000", "Saab", "Standard Symbols L", "Symbol",
+   "Vemana2000", "ori1Uni", "mry_KacstQurn"
+};
 
 static char color_val[ENVENTOR_SYNTAX_COLOR_LAST][SYNTAX_COLOR_LEN] = {{0}};
 
@@ -642,6 +654,27 @@ text_setting_double_clicked_cb(void *data, Evas_Object *obj,
 }
 
 static Evas_Object *
+label_create(Evas_Object *parent, const char *text)
+{
+   Evas_Object *label = elm_label_add(parent);
+   elm_object_text_set(label, text);
+   evas_object_show(label);
+
+   return label;
+}
+
+static Evas_Object *
+list_create(Evas_Object *parent)
+{
+   Evas_Object *list = elm_list_add(parent);
+   evas_object_size_hint_weight_set(list, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(list, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_show(list);
+
+   return list;
+}
+
+static Evas_Object *
 toggle_create(Evas_Object *parent, const char *text, Eina_Bool state)
 {
    Evas_Object *toggle = elm_check_add(parent);
@@ -666,6 +699,81 @@ font_scale_slider_changed_cb(void *data, Evas_Object *obj,
    syntax_template_apply();
 }
 
+static int
+font_cmp_cb(const void *data1,
+            const void *data2)
+{
+   if (!data1) return 1;
+   if (!data2) return -1;
+   return strcmp(data1, data2);
+}
+
+static void
+font_style_selected_cb(void *data, Evas_Object *obj,
+                       void *event_info EINA_UNUSED)
+{
+   Evas_Object *list_font_name = data;
+   Elm_Object_Item *font_name_it = elm_list_selected_item_get(list_font_name);
+   Elm_Object_Item *font_style_it = elm_list_selected_item_get(obj);
+   const char *font_name = elm_object_item_text_get(font_name_it);
+   const char *font_style = elm_object_item_text_get(font_style_it);
+
+   text_setting_font_set(font_name, font_style);
+}
+
+static void
+font_name_selected_cb(void *data, Evas_Object *obj,
+                      void *event_info EINA_UNUSED)
+{
+   Evas_Object *list_font_style = data;
+   Elm_Object_Item *it = elm_list_selected_item_get(obj);
+   const char *font_name = elm_object_item_text_get(it);
+   elm_list_clear(list_font_style);
+
+   //Append Items of Font Style List
+   Elm_Font_Properties *efp;
+   Eina_List *font_list;
+   Eina_List *l, *ll;
+   char *font, *style;
+   font_list = evas_font_available_list(evas_object_evas_get(obj));
+   font_list = eina_list_sort(font_list, eina_list_count(font_list),
+                              font_cmp_cb);
+   EINA_LIST_FOREACH(font_list, l, font)
+     {
+        efp = elm_font_properties_get(font);
+        if (efp)
+          {
+             if (!strcmp(font_name, efp->name))
+               {
+                  EINA_LIST_FOREACH(efp->styles, ll, style)
+                    {
+                       elm_list_item_append(list_font_style, style, NULL, NULL,
+                                            font_style_selected_cb, obj);
+                    }
+               }
+             elm_font_properties_free(efp);
+          }
+     }
+   elm_list_go(list_font_style);
+
+   text_setting_font_set(font_name, NULL);
+}
+
+static Eina_Bool
+is_supported_font(const char *font_name)
+{
+   if (!font_name) return EINA_FALSE;
+
+   int i;
+   for (i = 0; i < UNSUPPORTED_FONT_CNT; i++)
+     {
+        if (!strcmp(font_name, unsupported_font_list[i]))
+          return EINA_FALSE;
+     }
+
+   return EINA_TRUE;
+}
+
 Evas_Object *
 text_setting_layout_create(Evas_Object *parent)
 {
@@ -679,12 +787,21 @@ text_setting_layout_create(Evas_Object *parent)
 
    //Text Editor
    Evas_Object *entry = elm_entry_add(layout);
+   char style_name[128];
+   snprintf(style_name, sizeof(style_name), "%s_setting", elm_app_name_get());
+   elm_object_style_set(entry, style_name);
    elm_entry_context_menu_disabled_set(entry, EINA_TRUE);
    elm_entry_line_wrap_set(entry, ELM_WRAP_NONE);
    elm_entry_scrollable_set(entry, EINA_TRUE);
    elm_entry_editable_set(entry, EINA_FALSE);
    evas_object_size_hint_weight_set(entry, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(entry, EVAS_HINT_FILL, EVAS_HINT_FILL);
+
+   //Font information
+   const char *font_name;
+   const char *font_style;
+   config_font_get(&font_name, &font_style);
+   text_setting_font_set(font_name, font_style);
 
    tsd->font_scale = (double) config_font_scale_get();
    char *syntax_template_str = syntax_template_create(tsd->font_scale);
@@ -747,7 +864,91 @@ text_setting_layout_create(Evas_Object *parent)
                                                 config_auto_complete_get());
    elm_box_pack_end(box, toggle_autocomp);
 
+   //Font Name and Style (Box)
+   box = elm_box_add(layout);
+   elm_box_horizontal_set(box, EINA_TRUE);
+   evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   elm_object_part_content_set(layout, "elm.swallow.font", box);
+
+   //Font Name (Box)
+   box2 = elm_box_add(box);
+   evas_object_size_hint_weight_set(box2, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(box2, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_show(box2);
+
+   elm_box_pack_end(box, box2);
+
+   //Font Name (Label)
+
+   /* This layout is intended to put the label aligned to left side
+      far from 3 pixels. */
+   Evas_Object *layout_padding3 = elm_layout_add(box2);
+   elm_layout_file_set(layout_padding3, EDJE_PATH, "padding3_layout");
+   evas_object_show(layout_padding3);
+
+   elm_box_pack_end(box2, layout_padding3);
+
+   Evas_Object *label_font_name = label_create(layout_padding3, "Font Name");
+   elm_object_part_content_set(layout_padding3, "elm.swallow.content",
+                               label_font_name);
+
+   //Font Name (List)
+   Evas_Object *list_font_name = list_create(box2);
+   elm_box_pack_end(box2, list_font_name);
+
+   //Font Style (Box)
+   box2 = elm_box_add(box);
+   evas_object_size_hint_weight_set(box2, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(box2, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_show(box2);
+
+   elm_box_pack_end(box, box2);
+
+   //Font Style (Label)
+
+   /* This layout is intended to put the label aligned to left side
+      far from 3 pixels. */
+   layout_padding3 = elm_layout_add(box2);
+   elm_layout_file_set(layout_padding3, EDJE_PATH, "padding3_layout");
+   evas_object_show(layout_padding3);
+
+   elm_box_pack_end(box2, layout_padding3);
+
+   Evas_Object *label_font_style = label_create(layout_padding3, "Font Style");
+   elm_object_part_content_set(layout_padding3, "elm.swallow.content",
+                               label_font_style);
+
+   //Font Style (List)
+   Evas_Object *list_font_style = list_create(box2);
+   elm_box_pack_end(box2, list_font_style);
+
+   //Append Items of Font Name List
+   Elm_Font_Properties *efp;
+   Eina_List *font_list;
+   Eina_List *l;
+   char *font;
+   char prev_font[128] = {0};
+   font_list = evas_font_available_list(evas_object_evas_get(parent));
+   font_list = eina_list_sort(font_list, eina_list_count(font_list),
+                              font_cmp_cb);
+   EINA_LIST_FOREACH(font_list, l, font)
+     {
+        efp = elm_font_properties_get(font);
+        if (efp)
+          {
+             if (strcmp(prev_font, efp->name) && is_supported_font(efp->name))
+               {
+                  elm_list_item_append(list_font_name, efp->name, NULL, NULL,
+                                       font_name_selected_cb, list_font_style);
+                  snprintf(prev_font, sizeof(prev_font), "%s", efp->name);
+               }
+             elm_font_properties_free(efp);
+          }
+     }
+   elm_list_go(list_font_name);
+
    tsd->text_setting_layout = layout;
+   tsd->text_edit_entry = entry;
    tsd->slider_font = slider_font;
    tsd->toggle_linenum = toggle_linenum;
    tsd->toggle_indent = toggle_indent;
@@ -793,10 +994,37 @@ text_setting_config_set(void)
 {
    text_setting_data *tsd = g_tsd;
 
+   config_font_set(tsd->font_name, tsd->font_style);
    config_font_scale_set((float) elm_slider_value_get(tsd->slider_font));
    config_linenumber_set(elm_check_state_get(tsd->toggle_linenum));
    config_auto_indent_set(elm_check_state_get(tsd->toggle_indent));
    config_auto_complete_set(elm_check_state_get(tsd->toggle_autocomp));
+}
+
+static void
+text_setting_font_apply(const char *font_name, const char *font_style)
+{
+   text_setting_data *tsd = g_tsd;
+
+   char text_class_name[32];
+   snprintf(text_class_name, sizeof(text_class_name), "%s_setting_entry",
+            elm_app_name_get());
+
+   char *font = elm_font_fontconfig_name_get(font_name, font_style);
+   edje_text_class_set(text_class_name, font, -100);
+   elm_font_fontconfig_name_free(font);
+
+   elm_entry_calc_force(tsd->text_edit_entry);
+}
+
+void
+text_setting_font_set(const char *font_name, const char *font_style)
+{
+   text_setting_data *tsd = g_tsd;
+
+   eina_stringshare_replace(&tsd->font_name, font_name);
+   eina_stringshare_replace(&tsd->font_style, font_style);
+   text_setting_font_apply(font_name, font_style);
 }
 
 void
@@ -858,6 +1086,8 @@ text_setting_term(void)
      free(tsd->syntax_template_format);
    if (tsd->syntax_template_str)
      free(tsd->syntax_template_str);
+   eina_stringshare_del(tsd->font_name);
+   eina_stringshare_del(tsd->font_style);
    free(tsd);
    g_tsd = NULL;
 }
