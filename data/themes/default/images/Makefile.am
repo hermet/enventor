@@ -64,4 +64,5 @@ EXTRA_DIST = \
    live_edit.png \
    new.png \
    slider_up.png \
-   slider_down.png
+   slider_down.png \
+   save.png

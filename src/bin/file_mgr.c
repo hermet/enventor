@@ -146,6 +146,32 @@ file_mgr_edc_modified_get(void)
    return ((fmd->edc_modified == 2) ? EINA_TRUE : EINA_FALSE);
 }
 
+void
+file_mgr_edc_save(void)
+{
+   char buf[PATH_MAX];
+   file_mgr_data *fmd = g_fmd;
+
+   if (enventor_object_save(fmd->enventor, config_edc_path_get()))
+     {
+        if (config_stats_bar_get())
+          {
+             snprintf(buf, sizeof(buf), "File saved. \"%s\"",
+                      config_edc_path_get());
+          }
+     }
+   else
+     {
+        if (config_stats_bar_get())
+          {
+             snprintf(buf, sizeof(buf), "Already saved. \"%s\"",
+                      config_edc_path_get());
+          }
+
+     }
+   stats_info_msg_update(buf);
+}
+
 Eina_Bool
 file_mgr_warning_is_opened(void)
 {

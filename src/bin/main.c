@@ -572,31 +572,6 @@ enventor_setup(app_data *ad)
 }
 
 static void
-edc_save(app_data *ad)
-{
-   char buf[PATH_MAX];
-
-   if (enventor_object_save(ad->enventor, config_edc_path_get()))
-     {
-        if (config_stats_bar_get())
-          {
-             snprintf(buf, sizeof(buf), "File saved. \"%s\"",
-                      config_edc_path_get());
-          }
-     }
-   else
-     {
-        if (config_stats_bar_get())
-          {
-             snprintf(buf, sizeof(buf), "Already saved. \"%s\"",
-                      config_edc_path_get());
-          }
-
-     }
-   stats_info_msg_update(buf);
-}
-
-static void
 part_highlight_toggle(app_data *ad)
 {
    config_part_highlight_set(!config_part_highlight_get());
@@ -651,7 +626,7 @@ ctrl_func(app_data *ad, const char *key)
    //Save
    if (!strcmp(key, "s") || !strcmp(key, "S"))
      {
-        edc_save(ad);
+        file_mgr_edc_save();
         return ECORE_CALLBACK_DONE;
      }
   //Delete Line

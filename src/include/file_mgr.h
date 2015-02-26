@@ -5,3 +5,4 @@ void file_mgr_init(Evas_Object *enventor);
 void file_mgr_term(void);
 int file_mgr_edc_modified_get(void);
 void file_mgr_reset(void);
+void file_mgr_edc_save(void);

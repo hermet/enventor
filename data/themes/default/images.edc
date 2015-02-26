@@ -9,6 +9,7 @@ images {
    image: "status.png" COMP;
    image: "swallow_s.png" COMP;
    image: "goto.png" COMP;
+   image: "save.png" COMP;
    image: "live_image.png" COMP;
    image: "live_rectangle.png" COMP;
    image: "live_swallow.png" COMP;
@@ -134,6 +135,17 @@ group { name: "live_edit";
          type: IMAGE;
          description { state: "default" 0.0;
             image.normal: "live_edit.png";
+         }
+      }
+   }
+}
+
+group { name: "save";
+   parts {
+      part { name: "img";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            image.normal: "save.png";
          }
       }
    }
