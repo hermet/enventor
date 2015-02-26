@@ -210,6 +210,8 @@ void edit_view_sync_cb_set(edit_data *ed, void (*cb)(void *data, Eina_Stringshar
 void edit_view_sync(edit_data *ed);
 void edit_font_scale_set(edit_data *ed, double font_scale);
 double edit_font_scale_get(edit_data *ed);
+void edit_font_set(edit_data *ed, const char *font_name, const char *font_style);
+void edit_font_get(edit_data *ed, const char **font_name, const char **font_style);
 void edit_part_highlight_toggle(edit_data *ed, Eina_Bool msg);
 void edit_line_delete(edit_data *ed);
 Eina_Stringshare *edit_cur_prog_name_get(edit_data *ed);
