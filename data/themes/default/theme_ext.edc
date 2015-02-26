@@ -1185,8 +1185,6 @@ group { name: "elm/button/base/enventor";
    parts {
       spacer { "base";
          desc { "default";
-            rel1.offset: 0 0;
-            rel2.offset: 0 0;
          }
       }
       rect { "icon_clip";
@@ -1206,8 +1204,8 @@ group { name: "elm/button/base/enventor";
             rel1.offset: 0 4;
             rel1.to: "base";
             rel2.relative: 0.0 1.0;
-            rel2.offset: 0 -5;
             rel2.to: "base";
+            min: 16 16;
             max: 16 16;
             visible: 0;
          }
@@ -1219,10 +1217,8 @@ group { name: "elm/button/base/enventor";
          }
          desc { "icononly";
             inherit: "default";
-            fixed: 0 0;
-            align: 0.5 0.5;
-            rel2.relative: 1.0 1.0;
-            rel2.offset: -1 -5;
+            fixed: 1 1;
+            align: 0 0.5;
             visible: 1;
          }
       }
