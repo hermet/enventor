@@ -643,35 +643,6 @@ syntax_color_full_update(edit_data *ed, Eina_Bool thread)
      }
 }
 
-static void
-edit_redoundo(edit_data *ed, Eina_Bool undo)
-{
-   int lines;
-   Eina_Bool changed;
-
-   if (undo) lines = redoundo_undo(ed->rd, &changed);
-   else lines = redoundo_redo(ed->rd, &changed);
-   if (!changed)
-     {
-#if 0
-        if (undo) stats_info_msg_update("No text to be undo.");
-        else stats_info_msg_update("No text to be redo.");
-#endif
-        return;
-     }
-
-#if 0
-   if (undo) stats_info_msg_update("Undo text.");
-   else stats_info_msg_update("Redo text.");
-#endif
-
-   if (lines > 0) edit_line_increase(ed, lines);
-   else edit_line_decrease(ed, abs(lines));
-
-   edit_changed_set(ed, EINA_TRUE);
-   syntax_color_full_update(ed, EINA_TRUE);
-}
-
 static Eina_Bool
 key_down_cb(void *data, int type EINA_UNUSED, void *ev)
 {
@@ -1359,4 +1330,23 @@ void
 edit_ctxpopup_dismiss(edit_data *ed)
 {
    if (ed->ctxpopup) elm_ctxpopup_dismiss(ed->ctxpopup);
+}
+
+Eina_Bool
+edit_redoundo(edit_data *ed, Eina_Bool undo)
+{
+   int lines;
+   Eina_Bool changed;
+
+   if (undo) lines = redoundo_undo(ed->rd, &changed);
+   else lines = redoundo_redo(ed->rd, &changed);
+   if (!changed) return EINA_FALSE;
+
+   if (lines > 0) edit_line_increase(ed, lines);
+   else edit_line_decrease(ed, abs(lines));
+
+   edit_changed_set(ed, EINA_TRUE);
+   syntax_color_full_update(ed, EINA_TRUE);
+
+   return EINA_TRUE;
 }

@@ -463,7 +463,24 @@ class Enventor.Object (Elm_Widget, Efl.File) {
             @in Evas_Coord *h; /*@ ... */
          }
       }
-
+      redo {
+         /*@
+         @brief
+         @return
+         @warning
+         @see
+         @ingroup Enventor */
+         return: Eina_Bool;
+      }
+      undo {
+         /*@
+         @brief
+         @return
+         @warning
+         @see
+         @ingroup Enventor */
+         return: Eina_Bool;
+      }
    }
    implements {
       class.constructor;
@@ -491,6 +508,6 @@ class Enventor.Object (Elm_Widget, Efl.File) {
       ctxpopup,selected;
       ctxpopup,dismissed;
       edc,modified;
-		focused;
+      focused;
    }
 }

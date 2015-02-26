@@ -564,6 +564,17 @@ _enventor_object_disabled_set(Eo *obj EINA_UNUSED,
    edit_disabled_set(pd->ed, disabled);
 }
 
+EOLIAN static Eina_Bool
+_enventor_object_redo(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
+{
+   return edit_redoundo(pd->ed, EINA_FALSE);
+}
+
+EOLIAN static Eina_Bool
+_enventor_object_undo(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
+{
+   return edit_redoundo(pd->ed, EINA_TRUE);
+}
 
 /*****************************************************************************/
 /* Externally accessible calls                                               */
