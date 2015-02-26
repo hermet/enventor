@@ -481,6 +481,20 @@ _enventor_object_font_scale_get(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
    return edit_font_scale_get(pd->ed);
 }
 
+EOLIAN static void
+_enventor_object_font_set(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd,
+                          const char *font_name, const char *font_style)
+{
+   edit_font_set(pd->ed, font_name, font_style);
+}
+
+EOLIAN static void
+_enventor_object_font_get(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd,
+                          const char **font_name, const char **font_style)
+{
+   edit_font_get(pd->ed, font_name, font_style);
+}
+
 EOLIAN static int
 _enventor_object_max_line_get(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
 {

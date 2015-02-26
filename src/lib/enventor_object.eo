@@ -481,6 +481,28 @@ class Enventor.Object (Elm_Widget, Efl.File) {
          @ingroup Enventor */
          return: Eina_Bool;
       }
+      font_set {
+         /*@
+         @brief
+         @warning
+         @see
+         @ingroup Enventor */
+         params {
+            @in const(char) *font_name; /*@ ... */
+            @in const(char) *font_style; /*@ ... */
+         }
+      }
+      font_get {
+         /*@
+         @brief
+         @warning
+         @see
+         @ingroup Enventor */
+         params {
+            @in const(char) **font_name; /*@ ... */
+            @in const(char) **font_style; /*@ ... */
+         }
+      }
    }
    implements {
       class.constructor;
