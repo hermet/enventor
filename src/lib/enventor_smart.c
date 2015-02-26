@@ -579,7 +579,12 @@ enventor_object_add(Evas_Object *parent)
 EAPI Eina_Bool
 enventor_object_file_set(Evas_Object *obj, const char *file)
 {
+#if EO_LATEST
+   Eina_Bool ret;
+   return eo_do_ret(obj, ret, efl_file_set(file, NULL));
+#else
    return eo_do(obj, efl_file_set(file, NULL));
+#endif
 }
 
 #include "enventor_object.eo.c"
