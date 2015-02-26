@@ -93,14 +93,14 @@ info_text_update(live_data *ld)
    config_view_size_get(&lw, &lh);
 
    //Rel1
-   snprintf(buf, sizeof(buf), "%.2f %.2f (%d %d)",
+   snprintf(buf, sizeof(buf), "%.2f %.2f (%d, %d)",
             ld->part_info.rel1_x, ld->part_info.rel1_y,
             (int) round(ld->part_info.rel1_x * (double) lw),
             (int) round(ld->part_info.rel1_y * (double) lh));
   evas_object_text_text_set(ld->info_text[Info_Text_Rel1], buf);
 
    //Rel2
-   snprintf(buf, sizeof(buf), "%.2f %.2f (%d %d)",
+   snprintf(buf, sizeof(buf), "%.2f %.2f (%d, %d)",
             ld->part_info.rel2_x, ld->part_info.rel2_y,
             (int) round(ld->part_info.rel2_x * (double) lw),
             (int) round(ld->part_info.rel2_y * (double) lh));
