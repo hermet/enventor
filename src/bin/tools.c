@@ -155,7 +155,7 @@ tools_create(Evas_Object *parent, Evas_Object *enventor)
    evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
    elm_box_pack_end(box, btn);
 
-   btn = tools_btn_create(box, "line", "Goto Lines (Ctrl + L)",
+   btn = tools_btn_create(box, "goto", "Goto Lines (Ctrl + L)",
                           goto_cb, enventor);
    evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
