@@ -100,6 +100,28 @@ save_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
    file_mgr_edc_save();
 }
 
+static void
+redo_cb(void *data, Evas_Object *obj EINA_UNUSED,
+        void *event_info EINA_UNUSED)
+{
+   Evas_Object *enventor = data;
+   if (enventor_object_redo(enventor))
+     stats_info_msg_update("Redo text.");
+   else
+     stats_info_msg_update("No text to be redo.");
+}
+
+static void
+undo_cb(void *data, Evas_Object *obj EINA_UNUSED,
+        void *event_info EINA_UNUSED)
+{
+   Evas_Object *enventor = data;
+   if (enventor_object_undo(enventor))
+     stats_info_msg_update("Undo text.");
+   else
+     stats_info_msg_update("No text to be undo.");
+}
+
 static Evas_Object *
 tools_btn_create(Evas_Object *parent, const char *icon,
                  const char *tooltip_msg, Evas_Smart_Cb func, void *data)
@@ -145,6 +167,18 @@ tools_create(Evas_Object *parent, Evas_Object *enventor)
 
    btn = tools_btn_create(box, "save","Save File (Ctrl + S)",
                           save_cb, enventor);
+   evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
+   elm_box_pack_end(box, btn);
+
+   btn = tools_btn_create(box, "undo", "Undo Text (Ctrl + Z)",
+                          undo_cb, enventor);
+   evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
+   elm_box_pack_end(box, btn);
+
+   btn = tools_btn_create(box, "redo", "Redo Text (Ctrl + R)",
+                          redo_cb, enventor);
    evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
    elm_box_pack_end(box, btn);

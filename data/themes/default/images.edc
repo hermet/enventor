@@ -10,6 +10,8 @@ images {
    image: "swallow_s.png" COMP;
    image: "goto.png" COMP;
    image: "save.png" COMP;
+   image: "redo.png" COMP;
+   image: "undo.png" COMP;
    image: "live_image.png" COMP;
    image: "live_rectangle.png" COMP;
    image: "live_swallow.png" COMP;
@@ -146,6 +148,28 @@ group { name: "save";
          type: IMAGE;
          description { state: "default" 0.0;
             image.normal: "save.png";
+         }
+      }
+   }
+}
+
+group { name: "undo";
+   parts {
+      part { name: "img";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            image.normal: "undo.png";
+         }
+      }
+   }
+}
+
+group { name: "redo";
+   parts {
+      part { name: "img";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            image.normal: "redo.png";
          }
       }
    }

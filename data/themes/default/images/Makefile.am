@@ -65,4 +65,6 @@ EXTRA_DIST = \
    new.png \
    slider_up.png \
    slider_down.png \
-   save.png
+   save.png \
+   redo.png \
+   undo.png
