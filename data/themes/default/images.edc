@@ -21,161 +21,7 @@ images {
    image: "live_edit.png" COMP;
 }
 
-group { name: "goto";
-   parts {
-      part { name: "img";
-         type: IMAGE;
-         description { state: "default" 0.0;
-            image.normal: "goto.png";
-         }
-      }
-   }
-}
-
-group { name: "menu";
-   parts {
-      part { name: "img";
-         type: IMAGE;
-         description { state: "default" 0.0;
-            image.normal: "menu.png";
-         }
-      }
-   }
-}
-
-group { name: "find";
-   parts {
-      part { name: "img";
-         type: IMAGE;
-         description { state: "default" 0.0;
-            image.normal: "find.png";
-         }
-      }
-   }
-}
-
-group { name: "highlight";
-   parts {
-      part { name: "img";
-         type: IMAGE;
-         description { state: "default" 0.0;
-            image.normal: "highlight.png";
-         }
-      }
-   }
-}
-
-group { name: "lines";
-   parts {
-      part { name: "img";
-         type: IMAGE;
-         description { state: "default" 0.0;
-            image.normal: "lines.png";
-         }
-      }
-   }
-}
-
-group { name: "console";
-   parts {
-      part { name: "img";
-         type: IMAGE;
-         description { state: "default" 0.0;
-            image.normal: "console.png";
-         }
-      }
-   }
-}
-
-group { name: "status";
-   parts {
-      part { name: "img";
-         type: IMAGE;
-         description { state: "default" 0.0;
-            image.normal: "status.png";
-         }
-      }
-   }
-}
-
-group { name: "swallow_s";
-   parts {
-      part { name: "img";
-         type: IMAGE;
-         description { state: "default" 0.0;
-            image.normal: "swallow_s.png";
-         }
-      }
-   }
-}
-
-group { name: "up";
-   parts {
-      part { name: "img";
-         type: IMAGE;
-         description { state: "default" 0.0;
-            image.normal: "slider_up.png";
-         }
-      }
-   }
-}
-
-group { name: "down";
-   parts {
-      part { name: "img";
-         type: IMAGE;
-         description { state: "default" 0.0;
-            image.normal: "slider_down.png";
-         }
-      }
-   }
-}
-
-group { name: "live_edit";
-   parts {
-      part { name: "img";
-         type: IMAGE;
-         description { state: "default" 0.0;
-            image.normal: "live_edit.png";
-         }
-      }
-   }
-}
-
-group { name: "save";
-   parts {
-      part { name: "img";
-         type: IMAGE;
-         description { state: "default" 0.0;
-            image.normal: "save.png";
-         }
-      }
-   }
-}
-
-group { name: "undo";
-   parts {
-      part { name: "img";
-         type: IMAGE;
-         description { state: "default" 0.0;
-            image.normal: "undo.png";
-         }
-      }
-   }
-}
-
-group { name: "redo";
-   parts {
-      part { name: "img";
-         type: IMAGE;
-         description { state: "default" 0.0;
-            image.normal: "redo.png";
-         }
-      }
-   }
-}
-
-#define ADD_LIVE_EDIT_ICON_GROUP(_group_name, _image_path) \
+#define ICON_GROUP(_group_name, _image_path) \
    group { name: _group_name; \
       parts { \
          part { name: "img"; \
@@ -185,12 +31,25 @@ group { name: "redo";
          } \
       } \
    }
+ICON_GROUP("goto", "goto.png")
+ICON_GROUP("menu", "menu.png")
+ICON_GROUP("find", "find.png")
+ICON_GROUP("highlight", "highlight.png")
+ICON_GROUP("lines", "lines.png")
+ICON_GROUP("console", "console.png")
+ICON_GROUP("status", "status.png")
+ICON_GROUP("swallow_s", "swallow_s.png")
+ICON_GROUP("up", "slider_up.png")
+ICON_GROUP("down", "slider_down.png")
+ICON_GROUP("live_edit", "live_edit.png")
+ICON_GROUP("save", "save.png")
+ICON_GROUP("undo", "undo.png")
+ICON_GROUP("redo", "redo.png")
+ICON_GROUP("IMAGE", "live_image.png")
+ICON_GROUP("RECT", "live_rectangle.png")
+ICON_GROUP("SPACER", "live_spacer.png")
+ICON_GROUP("SWALLOW", "live_swallow.png")
+ICON_GROUP("TEXT", "live_text.png")
+ICON_GROUP("TEXTBLOCK", "live_textblock.png")
 
-ADD_LIVE_EDIT_ICON_GROUP("IMAGE", "live_image.png")
-ADD_LIVE_EDIT_ICON_GROUP("RECT", "live_rectangle.png")
-ADD_LIVE_EDIT_ICON_GROUP("SPACER", "live_spacer.png")
-ADD_LIVE_EDIT_ICON_GROUP("SWALLOW", "live_swallow.png")
-ADD_LIVE_EDIT_ICON_GROUP("TEXT", "live_text.png")
-ADD_LIVE_EDIT_ICON_GROUP("TEXTBLOCK", "live_textblock.png")
-
-#undef ADD_LIVE_EDIT_ICON_GROUP
+#undef ICON_GROUP
