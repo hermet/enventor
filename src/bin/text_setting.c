@@ -54,7 +54,7 @@ static text_setting_data *g_tsd = NULL;
 
 static void
 syntax_template_set(char *syntax_template_str, char *syntax_template_format,
-                    double font_scale)
+                    const char *font_tag, double font_scale)
 {
    if (!syntax_template_str || !syntax_template_format) return;
 
@@ -98,6 +98,14 @@ syntax_template_set(char *syntax_template_str, char *syntax_template_format,
             color_val[color_type_list[70]], color_val[color_type_list[71]],
             color_val[color_type_list[72]], color_val[color_type_list[73]],
             color_val[color_type_list[74]], color_val[color_type_list[75]]);
+
+   if (font_tag)
+     {
+        char *buf = strdup(syntax_template_str);
+        snprintf(syntax_template_str, SYNTAX_TEMPLATE_MAX_LEN, "%s%s</font>",
+                 font_tag, buf);
+        free(buf);
+     }
 }
 
 static void
@@ -110,7 +118,7 @@ syntax_template_apply(void)
    Evas_Object *entry = elm_object_part_content_get(layout,
                                                     "elm.swallow.text_setting");
    syntax_template_set(tsd->syntax_template_str, tsd->syntax_template_format,
-                       tsd->font_scale);
+                       tsd->cur_font_tag, tsd->font_scale);
    elm_entry_entry_set(entry, tsd->syntax_template_str);
 }
 
@@ -535,7 +543,7 @@ syntax_template_format_create_err:
 }
 
 static char *
-syntax_template_create(double font_scale)
+syntax_template_create(const char *font_tag, double font_scale)
 {
    text_setting_data *tsd = g_tsd;
    char *syntax_template_format = syntax_template_format_create();
@@ -545,7 +553,8 @@ syntax_template_create(double font_scale)
    syntax_template_str = calloc(1, sizeof(char) * SYNTAX_TEMPLATE_MAX_LEN);
    if (!syntax_template_str) goto syntax_template_create_err;
 
-   syntax_template_set(syntax_template_str, syntax_template_format, font_scale);
+   syntax_template_set(syntax_template_str, syntax_template_format, font_tag,
+                       font_scale);
 
    color_keyword *color_keyword_list;
    color_keyword_list = color_keyword_list_create(syntax_template_str);
@@ -614,6 +623,9 @@ text_setting_double_clicked_cb(void *data, Evas_Object *obj,
    int i;
    int pos;
    int x, y;
+   int orig_tag_len = 0;
+   int cur_tag_len = 0;
+   int tag_diff = 0;
 
    syntax_template_str = elm_entry_entry_get(obj);
    if (!syntax_template_str) return;
@@ -623,11 +635,17 @@ text_setting_double_clicked_cb(void *data, Evas_Object *obj,
 
    pos = color_keyword_pos_get(syntax_template_str, selected_str);
 
+   /* Calculate the translated keyword position based on the difference of
+      the font tag lengths. */
+   if (tsd->orig_font_tag) orig_tag_len = strlen(tsd->orig_font_tag);
+   if (tsd->cur_font_tag) cur_tag_len = strlen(tsd->cur_font_tag);
+   tag_diff = cur_tag_len - orig_tag_len;
+
    for (i = 0; i < COLOR_KEYWORD_MAX_CNT; i++)
      {
         selected_color_keyword = tsd->color_keyword_list + i;
-        if ((pos >= selected_color_keyword->pos_begin) &&
-            (pos <= selected_color_keyword->pos_end))
+        if ((pos >= (selected_color_keyword->pos_begin + tag_diff)) &&
+            (pos <= (selected_color_keyword->pos_end + tag_diff)))
           {
              ctxpopup = color_ctxpopup_create(tsd->text_setting_layout,
                                               selected_color_keyword);
@@ -640,6 +658,27 @@ text_setting_double_clicked_cb(void *data, Evas_Object *obj,
              break;
           }
      }
+}
+
+static Evas_Object *
+label_create(Evas_Object *parent, const char *text)
+{
+   Evas_Object *label = elm_label_add(parent);
+   elm_object_text_set(label, text);
+   evas_object_show(label);
+
+   return label;
+}
+
+static Evas_Object *
+list_create(Evas_Object *parent)
+{
+   Evas_Object *list = elm_list_add(parent);
+   evas_object_size_hint_weight_set(list, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(list, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_show(list);
+
+   return list;
 }
 
 static Evas_Object *
@@ -667,6 +706,89 @@ font_scale_slider_changed_cb(void *data, Evas_Object *obj,
    syntax_template_apply();
 }
 
+static int
+font_cmp_cb(const void *data1,
+            const void *data2)
+{
+   if (!data1) return 1;
+   if (!data2) return -1;
+   return strcmp(data1, data2);
+}
+
+static void
+font_style_selected_cb(void *data, Evas_Object *obj,
+                       void *event_info EINA_UNUSED)
+{
+   Evas_Object *list_font_name = data;
+   Elm_Object_Item *font_name_it = elm_list_selected_item_get(list_font_name);
+   Elm_Object_Item *font_style_it = elm_list_selected_item_get(obj);
+   const char *font_name = elm_object_item_text_get(font_name_it);
+   const char *font_style = elm_object_item_text_get(font_style_it);
+
+   text_setting_font_set(font_name, font_style);
+}
+
+static void
+font_name_selected_cb(void *data, Evas_Object *obj,
+                      void *event_info EINA_UNUSED)
+{
+   Evas_Object *list_font_style = data;
+   Elm_Object_Item *it = elm_list_selected_item_get(obj);
+   const char *font_name = elm_object_item_text_get(it);
+   elm_list_clear(list_font_style);
+
+   //Append Items of Font Style List
+   Elm_Font_Properties *efp;
+   Eina_List *font_list;
+   Eina_List *l, *ll;
+   char *font, *style;
+   font_list = evas_font_available_list(evas_object_evas_get(obj));
+   font_list = eina_list_sort(font_list, eina_list_count(font_list),
+                              font_cmp_cb);
+   EINA_LIST_FOREACH(font_list, l, font)
+     {
+        efp = elm_font_properties_get(font);
+        if (efp)
+          {
+             if (!strcmp(font_name, efp->name))
+               {
+                  EINA_LIST_FOREACH(efp->styles, ll, style)
+                    {
+                       elm_list_item_append(list_font_style, style, NULL, NULL,
+                                            font_style_selected_cb, obj);
+                    }
+               }
+             elm_font_properties_free(efp);
+          }
+     }
+   elm_list_go(list_font_style);
+
+   text_setting_font_set(font_name, NULL);
+}
+
+static char *
+font_tag_create(const char *font_name, const char *font_style)
+{
+   text_setting_data *tsd = g_tsd;
+
+   if (!font_name) return NULL;
+
+   Eina_Strbuf *strbuf = eina_strbuf_new();
+   eina_strbuf_append(strbuf, "<font=");
+   eina_strbuf_append(strbuf, font_name);
+   if (font_style)
+     {
+        eina_strbuf_append(strbuf, ":style=");
+        eina_strbuf_append(strbuf, font_style);
+     }
+   eina_strbuf_append(strbuf, ">");
+
+   char *font_tag = strdup(eina_strbuf_string_get(strbuf));
+   eina_strbuf_free(strbuf);
+
+   return font_tag;
+}
+
 Evas_Object *
 text_setting_layout_create(Evas_Object *parent)
 {
@@ -687,8 +809,19 @@ text_setting_layout_create(Evas_Object *parent)
    evas_object_size_hint_weight_set(entry, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(entry, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
+   //Font information
+   const char *font_name;
+   const char *font_style;
+   config_font_get(&font_name, &font_style);
+   eina_stringshare_replace(&tsd->font_name, font_name);
+   eina_stringshare_replace(&tsd->font_style, font_style);
+   eina_stringshare_replace(&tsd->orig_font_tag,
+                            font_tag_create(tsd->font_name, tsd->font_style));
+   eina_stringshare_replace(&tsd->cur_font_tag, tsd->orig_font_tag);
    tsd->font_scale = (double) config_font_scale_get();
-   char *syntax_template_str = syntax_template_create(tsd->font_scale);
+
+   char *syntax_template_str =
+      syntax_template_create(tsd->orig_font_tag, tsd->font_scale);
    elm_entry_entry_set(entry, syntax_template_str);
    evas_object_smart_callback_add(entry, "clicked,double",
                                   text_setting_double_clicked_cb, tsd);
@@ -748,6 +881,90 @@ text_setting_layout_create(Evas_Object *parent)
                                                 config_auto_complete_get());
    elm_box_pack_end(box, toggle_autocomp);
 
+
+   //Font Name and Style (Box)
+   box = elm_box_add(layout);
+   elm_box_horizontal_set(box, EINA_TRUE);
+   evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   elm_object_part_content_set(layout, "elm.swallow.font", box);
+
+   //Font Name (Box)
+   box2 = elm_box_add(box);
+   evas_object_size_hint_weight_set(box2, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(box2, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_show(box2);
+
+   elm_box_pack_end(box, box2);
+
+   //Font Name (Label)
+
+   /* This layout is intended to put the label aligned to left side
+      far from 3 pixels. */
+   Evas_Object *layout_padding3 = elm_layout_add(box2);
+   elm_layout_file_set(layout_padding3, EDJE_PATH, "padding3_layout");
+   evas_object_show(layout_padding3);
+
+   elm_box_pack_end(box2, layout_padding3);
+
+   Evas_Object *label_font_name = label_create(layout_padding3, "Font Name");
+   elm_object_part_content_set(layout_padding3, "elm.swallow.content",
+                               label_font_name);
+
+   //Font Name (List)
+   Evas_Object *list_font_name = list_create(box2);
+   elm_box_pack_end(box2, list_font_name);
+
+   //Font Style (Box)
+   box2 = elm_box_add(box);
+   evas_object_size_hint_weight_set(box2, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(box2, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_show(box2);
+
+   elm_box_pack_end(box, box2);
+
+   //Font Style (Label)
+
+   /* This layout is intended to put the label aligned to left side
+      far from 3 pixels. */
+   layout_padding3 = elm_layout_add(box2);
+   elm_layout_file_set(layout_padding3, EDJE_PATH, "padding3_layout");
+   evas_object_show(layout_padding3);
+
+   elm_box_pack_end(box2, layout_padding3);
+
+   Evas_Object *label_font_style = label_create(layout_padding3, "Font Style");
+   elm_object_part_content_set(layout_padding3, "elm.swallow.content",
+                               label_font_style);
+
+   //Font Style (List)
+   Evas_Object *list_font_style = list_create(box2);
+   elm_box_pack_end(box2, list_font_style);
+
+   //Append Items of Font Name List
+   Elm_Font_Properties *efp;
+   Eina_List *font_list;
+   Eina_List *l;
+   char *font;
+   char prev_font[128] = {0};
+   font_list = evas_font_available_list(evas_object_evas_get(parent));
+   font_list = eina_list_sort(font_list, eina_list_count(font_list),
+                              font_cmp_cb);
+   EINA_LIST_FOREACH(font_list, l, font)
+     {
+        efp = elm_font_properties_get(font);
+        if (efp)
+          {
+             if (strcmp(prev_font, efp->name))
+               {
+                  elm_list_item_append(list_font_name, efp->name, NULL, NULL,
+                                       font_name_selected_cb, list_font_style);
+                  snprintf(prev_font, sizeof(prev_font), "%s", efp->name);
+               }
+             elm_font_properties_free(efp);
+          }
+     }
+   elm_list_go(list_font_name);
+
    tsd->text_setting_layout = layout;
    tsd->slider_font = slider_font;
    tsd->toggle_linenum = toggle_linenum;
@@ -794,10 +1011,23 @@ text_setting_config_set(void)
 {
    text_setting_data *tsd = g_tsd;
 
+   config_font_set(tsd->font_name, tsd->font_style);
    config_font_scale_set((float) elm_slider_value_get(tsd->slider_font));
    config_linenumber_set(elm_check_state_get(tsd->toggle_linenum));
    config_auto_indent_set(elm_check_state_get(tsd->toggle_indent));
    config_auto_complete_set(elm_check_state_get(tsd->toggle_autocomp));
+}
+
+void
+text_setting_font_set(const char *font_name, const char *font_style)
+{
+   text_setting_data *tsd = g_tsd;
+
+   eina_stringshare_replace(&tsd->font_name, font_name);
+   eina_stringshare_replace(&tsd->font_style, font_style);
+   eina_stringshare_replace(&tsd->cur_font_tag,
+                            font_tag_create(font_name, font_style));
+   syntax_template_apply();
 }
 
 void
@@ -859,6 +1089,10 @@ text_setting_term(void)
      free(tsd->syntax_template_format);
    if (tsd->syntax_template_str)
      free(tsd->syntax_template_str);
+   eina_stringshare_del(tsd->font_name);
+   eina_stringshare_del(tsd->font_style);
+   eina_stringshare_del(tsd->orig_font_tag);
+   eina_stringshare_del(tsd->cur_font_tag);
    free(tsd);
    g_tsd = NULL;
 }

@@ -177,6 +177,11 @@ config_update_cb(void *data)
                             config_edc_fnt_path_list_get());
    enventor_object_path_set(enventor, ENVENTOR_RES_DATA,
                             config_edc_dat_path_list_get());
+
+   const char *font_name;
+   const char *font_style;
+   config_font_get(&font_name, &font_style);
+   enventor_object_font_set(enventor, font_name, font_style);
    enventor_object_font_scale_set(enventor, config_font_scale_get());
    enventor_object_linenumber_set(enventor, config_linenumber_get());
    enventor_object_dummy_swallow_set(enventor, config_dummy_swallow_get());
@@ -537,6 +542,10 @@ enventor_setup(app_data *ad)
    evas_object_smart_callback_add(enventor, "focused",
                                   enventor_focused_cb, ad);
 
+   const char *font_name;
+   const char *font_style;
+   config_font_get(&font_name, &font_style);
+   enventor_object_font_set(enventor, font_name, font_style);
    enventor_object_font_scale_set(enventor, config_font_scale_get());
    enventor_object_live_view_scale_set(enventor, config_view_scale_get());
    enventor_object_linenumber_set(enventor, config_linenumber_get());
