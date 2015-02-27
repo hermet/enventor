@@ -5,10 +5,9 @@
 #include "common.h"
 
 static void
-menu_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
+menu_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+        void *event_info EINA_UNUSED)
 {
-   Evas_Object *enventor = data;
-
    if (live_edit_get()) live_edit_cancel();
    if (search_is_opened()) search_close();
    if (goto_is_opened()) goto_close();
@@ -86,7 +85,8 @@ console_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 }
 
 static void
-live_edit_cb(void *data, Evas_Object *obj, void *event_info)
+live_edit_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+             void *event_info EINA_UNUSED)
 {
    if (search_is_opened()) search_close();
    if (goto_is_opened()) goto_close();

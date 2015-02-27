@@ -19,3 +19,5 @@ void base_enventor_set(Evas_Object *enventor);
 void base_gui_term(void);
 void base_console_reset(void);
 void base_error_msg_set(const char *msg);
+void base_console_full_view(void);
+

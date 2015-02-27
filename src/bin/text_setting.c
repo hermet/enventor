@@ -6,7 +6,7 @@
 #define SYNTAX_TEMPLATE_FONT_SIZE 10
 #define SYNTAX_COLOR_LEN 7
 
-static char color_val[ENVENTOR_SYNTAX_COLOR_LAST][SYNTAX_COLOR_LEN] = {0};
+static char color_val[ENVENTOR_SYNTAX_COLOR_LAST][SYNTAX_COLOR_LEN] = {{0}};
 
 static int color_type_list[COLOR_KEYWORD_MAX_CNT] =
 {
@@ -219,7 +219,7 @@ color_btn_down_cb(void *data, Evas_Object *obj EINA_UNUSED,
 }
 
 static void
-color_ctxpopup_dismiss_cb(void *data, Evas_Object *obj,
+color_ctxpopup_dismiss_cb(void *data EINA_UNUSED, Evas_Object *obj,
                           void *event_info EINA_UNUSED)
 {
    evas_object_del(obj);
@@ -397,13 +397,12 @@ convert_hexadecimal_to_decimal(char *hexadecimal)
 static void
 color_slider_layout_set(Evas_Object *ctxpopup)
 {
-   text_setting_data *tsd = g_tsd;
    Eina_Array *type_array;
    Eina_Stringshare *type;
    Eina_Array_Iterator itr;
    unsigned int i;
    const char *color;
-   char color_rgb_str[3][3] = {0};
+   char color_rgb_str[3][3] = {{0}};
    int color_rgb_val[3];
    color_keyword *selected_color_keyword;
    selected_color_keyword = evas_object_data_get(ctxpopup, "color_keyword");

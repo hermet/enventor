@@ -143,7 +143,6 @@ syntax_color_init(Evas_Object *enventor)
 {
    const char *config_color;
    const char *enventor_color;
-   Eina_Bool color_changed = EINA_FALSE;
    Enventor_Syntax_Color_Type color_type;
 
    color_type = ENVENTOR_SYNTAX_COLOR_STRING;
@@ -465,7 +464,7 @@ enventor_live_view_resized_cb(void *data EINA_UNUSED,
 
 static void
 enventor_live_view_loaded_cb(void *data EINA_UNUSED, Evas_Object *obj,
-                             void *event_info)
+                             void *event_info EINA_UNUSED)
 {
    if (!config_view_size_configurable_get()) return;
 

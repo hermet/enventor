@@ -165,7 +165,7 @@ ctxpopup_del_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 }
 
 static void
-slider_changed_cb(void *data, Evas_Object *obj, void *event_info)
+slider_changed_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
 {
    Evas_Object *entry = data;
    double val = elm_slider_value_get(obj);
@@ -178,7 +178,7 @@ slider_changed_cb(void *data, Evas_Object *obj, void *event_info)
 }
 
 static void
-entry_changed_cb(void *data, Evas_Object *obj, void *event_info)
+entry_changed_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
 {
    Evas_Object *slider = data;
    double text_val, val, min_val, max_val;

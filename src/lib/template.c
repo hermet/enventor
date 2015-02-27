@@ -183,6 +183,11 @@ template_part_insert(edit_data *ed, Edje_Part_Type part_type,
            t = (char **) &TEMPLATE_PART_IMAGE;
            strncpy(syntax, "Image", n);
            break;
+        //for avoiding compiler warning.
+        case EDJE_PART_TYPE_MESH_NODE:
+        case EDJE_PART_TYPE_LIGHT:
+        case EDJE_PART_TYPE_CAMERA:
+           break;
      }
 
    //Insert first line of the part block with generated name.

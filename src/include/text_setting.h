@@ -38,3 +38,5 @@ void text_setting_font_scale_set(double font_scale);
 void text_setting_linenumber_set(Eina_Bool enabled);
 void text_setting_auto_indent_set(Eina_Bool enabled);
 void text_setting_auto_complete_set(Eina_Bool enabled);
+void text_setting_term(void);
+void text_setting_init(void);

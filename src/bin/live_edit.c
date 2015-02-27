@@ -241,7 +241,8 @@ ctrl_pt_update(live_data *ld)
 }
 
 static void
-cp_top_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
+cp_top_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
+                     Evas_Object *obj EINA_UNUSED,
                      void *event_info)
 {
    live_data *ld = data;
@@ -266,8 +267,9 @@ cp_top_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
 }
 
 static void
-cp_bottom_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
-                       void *event_info)
+cp_bottom_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
+                        Evas_Object *obj EINA_UNUSED,
+                        void *event_info)
 {
    live_data *ld = data;
    Evas_Event_Mouse_Move *ev = event_info;
@@ -328,7 +330,8 @@ align_line_update(live_data *ld)
 }
 
 static void
-cp_rel1_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
+cp_rel1_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
+                      Evas_Object *obj EINA_UNUSED,
                       void *event_info)
 {
    live_data *ld = data;
@@ -359,7 +362,8 @@ cp_rel1_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
 }
 
 static void
-cp_rel2_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
+cp_rel2_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
+                      Evas_Object *obj EINA_UNUSED,
                       void *event_info)
 {
    live_data *ld = data;
@@ -391,7 +395,8 @@ cp_rel2_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
 }
 
 static void
-cp_rel3_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
+cp_rel3_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
+                      Evas_Object *obj EINA_UNUSED,
                       void *event_info)
 {
    live_data *ld = data;
@@ -426,7 +431,8 @@ cp_rel3_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
 }
 
 static void
-cp_rel4_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
+cp_rel4_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
+                      Evas_Object *obj EINA_UNUSED,
                       void *event_info)
 {
    live_data *ld = data;
@@ -462,7 +468,8 @@ cp_rel4_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
 }
 
 static void
-cp_left_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
+cp_left_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
+                      Evas_Object *obj EINA_UNUSED,
                       void *event_info)
 {
    live_data *ld = data;
@@ -488,7 +495,8 @@ cp_left_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
 }
 
 static void
-cp_right_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
+cp_right_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
+                       Evas_Object *obj EINA_UNUSED,
                        void *event_info)
 {
    live_data *ld = data;
@@ -548,6 +556,8 @@ cp_mouse_move_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
           break;
         case Ctrl_Pt_Right:
           cp_right_mouse_move_cb(data, e, obj, event_info);
+          break;
+        case Ctrl_Pt_Cnt: //for avoiding compiler warning.
           break;
      }
    live_edit_update(ld);
@@ -841,10 +851,10 @@ live_edit_layer_set(live_data *ld)
 }
 
 static void
-ctxpopup_it_selected_cb(void *data, Evas_Object *obj, void *event_info)
+ctxpopup_it_selected_cb(void *data, Evas_Object *obj,
+                        void *event_info EINA_UNUSED)
 {
    live_data *ld = g_ld;
-   const Elm_Object_Item *it = event_info;
    ld->part_info.type = (unsigned int) data;
    live_edit_layer_set(ld);
 

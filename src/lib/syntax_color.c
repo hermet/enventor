@@ -695,7 +695,8 @@ color_term(color_data *cd)
 }
 
 static Eina_Bool
-color_hash_foreach_cb(const Eina_Hash *hash, const void *key, void *data, void *fdata)
+color_hash_foreach_cb(const Eina_Hash *hash EINA_UNUSED,
+                      const void *key EINA_UNUSED, void *data, void *fdata)
 {
    Eina_Inarray *inarray = data;
    color_hash_foreach_data *fd = fdata;
@@ -795,6 +796,8 @@ color_set(color_data *cd, Enventor_Syntax_Color_Type color_type, const char *val
              cd->cols[5] = col;
              break;
           }
+        case ENVENTOR_SYNTAX_COLOR_LAST:  //avoiding compiler warning
+          break;
      }
 }
 

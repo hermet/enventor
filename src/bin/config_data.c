@@ -40,7 +40,6 @@ typedef struct config_s
 
 static config_data *g_cd = NULL;
 static Eet_Data_Descriptor *edd_base = NULL;
-static Eet_Data_Descriptor *edd_color = NULL;
 
 static void
 config_edj_path_update(config_data *cd)

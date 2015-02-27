@@ -239,5 +239,6 @@ void edit_ctxpopup_dismiss(edit_data *ed);
 Eina_Bool edit_load(edit_data *ed, const char *edc_path);
 void edit_selection_clear(edit_data *ed);
 Eina_Bool edit_redoundo(edit_data *ed, Eina_Bool undo);
+void edit_disabled_set(edit_data *ed, Eina_Bool disabled);
 
 #endif
