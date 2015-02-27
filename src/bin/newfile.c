@@ -43,6 +43,7 @@ newfile_set(Evas_Object *enventor, Eina_Bool template_new)
         eina_file_mkstemp(DEFAULT_EDC_FORMAT, &tmp_path);
         sprintf(path, "%s", (const char *)tmp_path);
         eina_tmpstr_del(tmp_path);
+        config_edc_path_set(path);
      }
    success = eina_file_copy(buf, path,
                             EINA_FILE_COPY_DATA, NULL, NULL);
