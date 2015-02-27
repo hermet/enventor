@@ -330,16 +330,6 @@ slider_layout_create(Evas_Object *parent, attr_value *attr,
    Evas_Object *btn;
    Evas_Object *img;
 
-   //Up Button
-   btn = elm_button_add(layout);
-   evas_object_smart_callback_add(btn, "clicked", btn_up_cb, layout);
-   elm_object_part_content_set(layout, "elm.swallow.up", btn);
-
-   //Up Image
-   img = elm_image_add(btn);
-   elm_image_file_set(img, EDJE_PATH, "up");
-   elm_object_content_set(btn, img);
-
    //Down Button
    btn = elm_button_add(layout);
    evas_object_smart_callback_add(btn, "clicked", btn_down_cb, layout);
@@ -348,6 +338,16 @@ slider_layout_create(Evas_Object *parent, attr_value *attr,
    //Down Image
    img = elm_image_add(btn);
    elm_image_file_set(img, EDJE_PATH, "down");
+   elm_object_content_set(btn, img);
+
+   //Up Button
+   btn = elm_button_add(layout);
+   evas_object_smart_callback_add(btn, "clicked", btn_up_cb, layout);
+   elm_object_part_content_set(layout, "elm.swallow.up", btn);
+
+   //Up Image
+   img = elm_image_add(btn);
+   elm_image_file_set(img, EDJE_PATH, "up");
    elm_object_content_set(btn, img);
 
    return layout;
