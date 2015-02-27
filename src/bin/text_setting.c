@@ -768,8 +768,6 @@ font_name_selected_cb(void *data, Evas_Object *obj,
 static char *
 font_tag_create(const char *font_name, const char *font_style)
 {
-   text_setting_data *tsd = g_tsd;
-
    if (!font_name) return NULL;
 
    Eina_Strbuf *strbuf = eina_strbuf_new();
