@@ -2,7 +2,6 @@
  #include "config.h"
 #endif
 
-#define ENVENTOR_BETA_API_SUPPORT 1
 #define EDJE_EDIT_IS_UNSTABLE_AND_I_KNOW_ABOUT_IT 1
 #define ENVENTOR_BUILD
 
