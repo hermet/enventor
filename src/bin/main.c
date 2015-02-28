@@ -321,7 +321,6 @@ args_dispatch(int argc, char **argv, char *edc_path, char *img_path,
      }
    else goto defaults;
 
-   //edc image path
    int cur_arg = 2;
 
    while (cur_arg < argc)
@@ -351,6 +350,7 @@ args_dispatch(int argc, char **argv, char *edc_path, char *img_path,
              sprintf(dat_path, "%s", argv[cur_arg + 1]);
              cur_arg += 2;
           }
+        ++cur_arg;
      }
 
 defaults:
