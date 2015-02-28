@@ -129,10 +129,18 @@ rect_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
    Evas_Coord x, y, w, h;
    evas_object_geometry_get(obj, &x, &y, &w, &h);
 
-   cursor.x = ev->cur.canvas.x - x;
-   cursor.y = ev->cur.canvas.y - y;
    cursor.relx = (float) ((ev->cur.canvas.x - x) / (float) w);
    cursor.rely = (float) ((ev->cur.canvas.y - y) / (float) h);
+
+   if (vd->view_config_size.w > 0)
+     cursor.x = (((double)vd->view_config_size.w) * cursor.relx);
+   else
+     cursor.x = (ev->cur.canvas.x - x);
+
+   if (vd->view_config_size.h > 0)
+     cursor.y = (((double)vd->view_config_size.h) * cursor.rely);
+   else
+     cursor.y = (ev->cur.canvas.y - y);
 
    evas_object_smart_callback_call(vd->enventor, SIG_LIVE_VIEW_CURSOR_MOVED,
                                    &cursor);
