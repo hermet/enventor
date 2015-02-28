@@ -1281,9 +1281,6 @@ edit_part_highlight_get(edit_data *ed)
 Eina_Bool
 edit_load(edit_data *ed, const char *edc_path)
 {
-#if 0
-   live_edit_cancel();
-#endif
    parser_cancel(ed->pd);
    elm_entry_entry_set(ed->en_edit, "");
    elm_entry_entry_set(ed->en_line, "");
