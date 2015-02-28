@@ -499,6 +499,8 @@ view_scale_set(view_data *vd, double scale)
 void
 view_size_set(view_data *vd, Evas_Coord w, Evas_Coord h)
 {
+   if (!vd) return;
+
    double scale = edj_mgr_view_scale_get();
 
    vd->view_config_size.w = w;

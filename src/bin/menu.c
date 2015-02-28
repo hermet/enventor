@@ -429,6 +429,10 @@ fileselector_save_done_cb(void *data, Evas_Object *obj, void *event_info)
      enventor_object_modified_set(md->enventor, EINA_TRUE);
    config_edc_path_set(selected);
 
+   Eina_List *list = eina_list_append(NULL, config_edj_path_get());
+   enventor_object_path_set(md->enventor, ENVENTOR_OUT_EDJ, list);
+   eina_list_free(list);
+
    if (!enventor_object_save(md->enventor, selected))
      {
         char buf[PATH_MAX];
@@ -439,11 +443,7 @@ fileselector_save_done_cb(void *data, Evas_Object *obj, void *event_info)
                                "elm,action,msg,show", "");
         return;
      }
-#if 0
-   edj_mgr_reload_need_set(EINA_TRUE);
-#endif
-   config_apply();
-
+   enventor_object_file_set(md->enventor, selected);
    base_title_set(selected);
    file_mgr_reset();
    fileselector_close(md);

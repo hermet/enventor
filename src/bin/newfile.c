@@ -44,6 +44,10 @@ newfile_set(Evas_Object *enventor, Eina_Bool template_new)
         sprintf(path, "%s", (const char *)tmp_path);
         eina_tmpstr_del(tmp_path);
         config_edc_path_set(path);
+
+        Eina_List *list = eina_list_append(NULL, config_edj_path_get());
+        enventor_object_path_set(enventor, ENVENTOR_OUT_EDJ, list);
+        eina_list_free(list);
      }
    success = eina_file_copy(buf, path,
                             EINA_FILE_COPY_DATA, NULL, NULL);

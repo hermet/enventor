@@ -202,16 +202,6 @@ config_update_cb(void *data)
    base_tools_toggle(EINA_FALSE);
    base_statusbar_toggle(EINA_FALSE);
    base_console_auto_hide();
-
-   //previous build was failed, Need to rebuild then reload the edj.
-#if 0
-   if (edj_mgr_reload_need_get())
-     {
-        build_edc();
-        edj_mgr_clear();
-        //edc_view_set(stats_group_name_get());
-     }
-#endif
 }
 
 static Eina_Bool

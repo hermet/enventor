@@ -291,6 +291,18 @@ _enventor_object_path_set(Eo *obj EINA_UNUSED,
                           Enventor_Object_Data *pd EINA_UNUSED,
                           Enventor_Path_Type type, const Eina_List *pathes)
 {
+   //edj file is changed
+   if (type == ENVENTOR_OUT_EDJ)
+     {
+        const char *path = eina_list_data_get(pathes);
+        const char *ppath = build_edj_path_get();
+        if (path && ppath && strcmp(path, ppath))
+          {
+             edj_mgr_clear();
+             eina_stringshare_del(pd->group_name);
+             pd->group_name = NULL;
+          }
+     }
    return build_path_set(type, pathes);
 }
 
