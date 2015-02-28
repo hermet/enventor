@@ -3,7 +3,6 @@
 #endif
 
 #define ENVENTOR_BETA_API_SUPPORT 1
-#define ENVENTOR_BUILD
 
 #include <Enventor.h>
 #include <Eio.h>

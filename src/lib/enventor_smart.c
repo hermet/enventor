@@ -3,7 +3,6 @@
 #endif
 
 #define ELM_INTERNAL_API_ARGESFSDFEFC 1
-#define ENVENTOR_BUILD
 
 #include <Enventor.h>
 #include <Eio.h>

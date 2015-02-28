@@ -2,8 +2,6 @@
  #include "config.h"
 #endif
 
-#define ENVENTOR_BUILD
-
 #include <Enventor.h>
 #include <Eio.h>
 #include "enventor_private.h"

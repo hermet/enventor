@@ -3,7 +3,6 @@
 #endif
 
 #define EDJE_EDIT_IS_UNSTABLE_AND_I_KNOW_ABOUT_IT 1
-#define ENVENTOR_BUILD
 
 #include <Enventor.h>
 #include <Edje_Edit.h>

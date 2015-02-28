@@ -5,7 +5,7 @@
 # ifdef EAPI
 #  undef EAPI
 # endif
-# ifdef ENVENTOR_BUILD
+# ifdef ENVENTOR_WIN32_BUILD_SUPPORT
 #  define EAPI __declspec(dllexport)
 # else
 #  define EAPI __declspec(dllimport)
