@@ -1,7 +1,7 @@
 ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
 ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
 m4_define([v_maj], [0])
-m4_define([v_min], [4])
+m4_define([v_min], [5])
 m4_define([v_mic], [0])
 #m4_define([v_rev], m4_esyscmd([(git rev-list --count HEAD 2>/dev/null || echo 0) | tr -d '\n']))dnl
 ##--   When released, remove the dnl on the below line
@@ -58,7 +58,7 @@ EFL_ENABLE_EO_API_SUPPORT
 EFL_ENABLE_BETA_API_SUPPORT
 EFL_ENABLE_EO_LATEST
 
-efl_version="1.12.0"
+efl_version="1.13.0"
 requirement_enventor=" \
 eo >= ${efl_version} \
 eina >= ${efl_version} \

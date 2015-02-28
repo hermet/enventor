@@ -1,20 +1,20 @@
-[Enventor v0.4.0]
+[Enventor v0.5.0]
  
-This is an EDC editor with some convenient functions. It's brand new and was
-only started near the begining of June 2013, so expecting it to do everything a
-mature script editor does is a bit premature, but considering it's young age,
-it does a lot.
+This is an EDC editor with some convenient functions. It's brand new and was only started near the begining of June 2013, so expecting it to do everything a mature script editor does is a bit premature, but considering it's young age, it does a lot.
  
  
 [Requirements]
   
-  efl (>= 1.12.0)
-  elementary (>= 1.12.0)
+  efl (>= 1.13.0)
+  elementary (>= 1.13.0)
   
-Please note that some features may not quite function correctly or completely
-less EFL 1.12. Newer would be better.
+Please note that some features may not quite function correctly or completely less EFL 1.13. Newer would be better.
   
-Please see http://www.enlightenment.org for information on these.
+Please see next sites for more information on these.
+ 
+http://www.enlightenment.org
+https://phab.enlightenment.org/w/projects/enventor/
+http://www.openhub.net/p/enventor 
   
  
 [Compiling]
@@ -94,7 +94,7 @@ $ enventor sample.edc -id ./images -sd ./sounds
   
 A lots of developers have joined in Enventor project. Here listed are the dedicated Enventor developers but there are much more people who've gladly contributed for Enventor improvement. For list of whole contributors, See AUTHORS file.
  
-Copyright (C) 2013 - 2014 by:
+Copyright (C) 2013 - 2015 by:
  
 Hermet (Chuneon Park)
 Jaehyun Cho
