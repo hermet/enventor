@@ -47,10 +47,6 @@ struct editor_s
    void *view_sync_cb_data;
    int select_pos;
    double font_scale;
-   const char *font_name;
-   const char *font_style;
-
-   Eina_Strbuf *cachebuf;
 
    Eina_Bool edit_changed : 1;
    Eina_Bool linenumber : 1;
@@ -68,12 +64,6 @@ struct editor_s
 
 static Eina_Bool
 image_preview_show(edit_data *ed, char *cur, Evas_Coord x, Evas_Coord y);
-static const char *
-font_cancel(edit_data *ed, const char *src);
-static const char *
-font_apply(edit_data *ed, const char *src);
-static void
-edit_font_apply(edit_data *ed);
 
 static void
 line_init(edit_data *ed)
@@ -82,7 +72,7 @@ line_init(edit_data *ed)
 
    ed->line_max = 1;
    snprintf(buf, sizeof(buf), "%d", ed->line_max);
-   elm_entry_entry_set(ed->en_line, font_apply(ed, buf));
+   elm_entry_entry_set(ed->en_line, buf);
 }
 
 static void
@@ -128,91 +118,6 @@ entry_recover(edit_data *ed, int cursor_pos)
    free(utf8);
 }
 
-static const char *
-font_cancel(edit_data *ed, const char *src)
-{
-   if (!src) return NULL;
-
-   Eina_Strbuf *strbuf = ed->cachebuf;
-   eina_strbuf_reset(strbuf);
-   eina_strbuf_append(strbuf, src);
-
-   const char *base = eina_strbuf_string_get(strbuf);
-   char *start_tag = NULL;
-   char *end_tag = NULL;
-   size_t start_index;
-   size_t end_index;
-
-   start_tag = strstr(base, "<font=");
-   if (!start_tag) return src;
-
-   //Remove <font=> tag
-   end_tag = strstr(start_tag, ">");
-   start_index = start_tag - base;
-   end_index = (end_tag + 1) - base;
-   eina_strbuf_remove(strbuf, start_index, end_index);
-
-   //Remove </font> tag
-   start_tag = strstr(base, "</font>");
-   end_tag = strstr(start_tag, ">");
-   start_index = start_tag - base;
-   end_index = (end_tag + 1) - base;
-   eina_strbuf_remove(strbuf, start_index, end_index);
-
-   return eina_strbuf_string_get(strbuf);
-}
-
-static const char *
-font_apply(edit_data *ed, const char *src)
-{
-   if (!src) return NULL;
-
-   char *buf = strdup(src);
-   Eina_Strbuf *strbuf = ed->cachebuf;
-   eina_strbuf_reset(strbuf);
-   eina_strbuf_append(strbuf, buf);
-   free(buf);
-
-   if (ed->font_name)
-     {
-        eina_strbuf_prepend(strbuf, ">");
-        if (ed->font_style)
-          {
-             eina_strbuf_prepend(strbuf, ed->font_style);
-             eina_strbuf_prepend(strbuf, ":style=");
-          }
-        eina_strbuf_prepend(strbuf, ed->font_name);
-        eina_strbuf_prepend(strbuf, "<font=");
-
-        eina_strbuf_append(strbuf, "</font>");
-     }
-
-   return eina_strbuf_string_get(strbuf);
-}
-
-static void
-edit_font_apply(edit_data *ed)
-{
-   const char *markup_edit = elm_entry_entry_get(ed->en_edit);
-   const char *markup_line = elm_entry_entry_get(ed->en_line);
-   const char *translated_edit;
-   const char *translated_line;
-   int pos;
-
-   //Apply font tag to Edit entry.
-   pos = elm_entry_cursor_pos_get(ed->en_edit);
-   translated_edit = font_cancel(ed, markup_edit);
-   translated_edit = font_apply(ed, translated_edit);
-   elm_entry_entry_set(ed->en_edit, translated_edit);
-   entry_recover(ed, pos);
-
-   //Apply font tag to Line entry.
-   translated_line = font_cancel(ed, markup_line);
-   translated_line = font_apply(ed, translated_line);
-   elm_entry_entry_set(ed->en_line, translated_line);
-   elm_entry_calc_force(ed->en_line);
-}
-
 static void
 syntax_color_apply(edit_data *ed, Eina_Bool partial)
 {
@@ -234,8 +139,6 @@ syntax_color_apply(edit_data *ed, Eina_Bool partial)
    const char *translated = color_apply(syntax_color_data_get(ed->sh), utf8,
                                         strlen(utf8), from, to);
    if (!translated) return;
-
-   translated = font_apply(ed, translated);
 
    /* I'm not sure this will be problem.
       But it can avoid entry_object_text_escaped_set() in Edje.
@@ -277,9 +180,6 @@ syntax_color_thread_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
    if (!utf8) return;
    td->translated = color_apply(syntax_color_data_get(td->ed->sh), utf8,
                                 strlen(utf8), NULL, NULL);
-
-   td->translated = font_apply(td->ed, td->translated);
-   elm_entry_calc_force(td->ed->en_edit);
 }
 
 static void
@@ -862,7 +762,7 @@ edit_edc_load(edit_data *ed, const char *file_path)
 
    markup_line = elm_entry_utf8_to_markup(eina_strbuf_string_get(strbuf_line));
    if (!markup_line) goto err;
-   elm_entry_entry_append(ed->en_line, font_apply(ed, markup_line));
+   elm_entry_entry_append(ed->en_line, markup_line);
    free(markup_line);
 
    markup_edit = elm_entry_utf8_to_markup(utf8_edit);
@@ -1164,8 +1064,6 @@ edit_init(Evas_Object *enventor)
    ed->select_pos = -1;
    ed->font_scale = 1;
 
-   ed->cachebuf = eina_strbuf_new();
-
    ed->rd = redoundo_init(en_edit);
    evas_object_data_set(ed->en_edit, "redoundo", ed->rd);
 
@@ -1182,10 +1080,6 @@ void
 edit_term(edit_data *ed)
 {
    if (!ed) return;
-
-   if (ed->font_name) eina_stringshare_del(ed->font_name);
-   if (ed->font_style) eina_stringshare_del(ed->font_style);
-   eina_strbuf_free(ed->cachebuf);
 
    syntax_helper *sh = ed->sh;
    parser_data *pd = ed->pd;
@@ -1242,21 +1136,6 @@ double
 edit_font_scale_get(edit_data *ed)
 {
    return ed->font_scale;
-}
-
-void
-edit_font_set(edit_data *ed, const char *font_name, const char *font_style)
-{
-   eina_stringshare_replace(&ed->font_name, font_name);
-   eina_stringshare_replace(&ed->font_style, font_style);
-   edit_font_apply(ed);
-}
-
-void
-edit_font_get(edit_data *ed, const char **font_name, const char **font_style)
-{
-   if (font_name) *font_name = ed->font_name;
-   if (font_style) *font_style = ed->font_style;
 }
 
 void
@@ -1336,15 +1215,8 @@ edit_entry_get(edit_data *ed)
 void
 edit_line_increase(edit_data *ed, int cnt)
 {
-   const char *text;
-   const char *translated;
    char buf[MAX_LINE_DIGIT_CNT];
    int i;
-
-   //Remove font tag
-   text = elm_entry_entry_get(ed->en_line);
-   translated = font_cancel(ed, text);
-   elm_entry_entry_set(ed->en_line, translated);
 
    for (i = 0; i < cnt; i++)
      {
@@ -1352,12 +1224,6 @@ edit_line_increase(edit_data *ed, int cnt)
         snprintf(buf, sizeof(buf), "<br/>%d", ed->line_max);
         elm_entry_entry_append(ed->en_line, buf);
      }
-
-   //Restore font tag
-   text = elm_entry_entry_get(ed->en_line);
-   translated = font_apply(ed, text);
-   elm_entry_entry_set(ed->en_line, translated);
-
    elm_entry_calc_force(ed->en_line);
 
    Enventor_Max_Line max_line;
