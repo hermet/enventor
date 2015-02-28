@@ -1285,7 +1285,7 @@ edit_load(edit_data *ed, const char *edc_path)
    elm_entry_entry_set(ed->en_edit, "");
    elm_entry_entry_set(ed->en_line, "");
    Eina_Bool ret = edit_edc_load(ed, edc_path);
-   edit_changed_set(ed, EINA_TRUE);
+   if (ret) edit_changed_set(ed, EINA_TRUE);
    edj_mgr_reload_need_set(EINA_TRUE);
    redoundo_clear(ed->rd);
 

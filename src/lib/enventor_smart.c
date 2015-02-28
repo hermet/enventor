@@ -218,8 +218,8 @@ _enventor_object_efl_file_file_set(Eo *obj EINA_UNUSED,
 {
    eio_monitor_del(pd->edc_monitor);
    build_edc_path_set(file);
-   if (!edit_load(pd->ed, file)) goto err;
    autocomp_target_set(pd->ed);
+   if (!edit_load(pd->ed, file)) goto err;
    pd->edc_monitor = eio_monitor_add(file);
    build_edc();
    edit_changed_set(pd->ed, EINA_FALSE);
