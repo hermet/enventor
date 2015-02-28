@@ -19,10 +19,6 @@ struct text_setting_s
    char *syntax_template_format;
    char *syntax_template_str;
 
-   const char *font_name;
-   const char *font_style;
-   const char *orig_font_tag;
-   const char *cur_font_tag;
    double font_scale;
 };
 
@@ -33,7 +29,6 @@ void text_setting_layout_show(Evas_Object *setting_layout, Evas_Object *tabbar, 
 void text_setting_syntax_color_reset(void);
 void text_setting_syntax_color_save(void);
 void text_setting_config_set(void);
-void text_setting_font_set(const char *font_name, const char *font_style);
 void text_setting_font_scale_set(double font_scale);
 void text_setting_linenumber_set(Eina_Bool enabled);
 void text_setting_auto_indent_set(Eina_Bool enabled);

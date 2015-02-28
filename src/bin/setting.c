@@ -166,10 +166,6 @@ setting_reset_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
    elm_check_state_set(sd->toggle_highlight, config_part_highlight_get());
    elm_check_state_set(sd->toggle_swallow, config_dummy_swallow_get());
 
-   const char *font_name;
-   const char *font_style;
-   config_font_get(&font_name, &font_style);
-   text_setting_font_set(font_name, font_style);
    text_setting_font_scale_set((double) config_font_scale_get());
    text_setting_linenumber_set(config_linenumber_get());
    text_setting_auto_indent_set(config_auto_indent_get());

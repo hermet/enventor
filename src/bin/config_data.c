@@ -4,8 +4,6 @@ typedef struct config_s
 {
    const char *edc_path;
    const char *edj_path;
-   const char *font_name;
-   const char *font_style;
 
    Eina_List *edc_img_path_list;
    Eina_List *edc_snd_path_list;
@@ -218,10 +216,6 @@ eddc_init(void)
                                        "edc_dat_path_list", edc_dat_path_list);
    EET_DATA_DESCRIPTOR_ADD_LIST_STRING(edd_base, config_data,
                                        "syntax_color_list", syntax_color_list);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "font_name", font_name,
-                                 EET_T_STRING);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "font_style", font_style,
-                                 EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "font_scale", font_scale,
                                  EET_T_FLOAT);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "view_scale",
@@ -656,24 +650,6 @@ config_auto_complete_get(void)
 {
    config_data *cd = g_cd;
    return cd->auto_complete;
-}
-
-void
-config_font_set(const char *font_name, const char *font_style)
-{
-   config_data *cd = g_cd;
-
-   eina_stringshare_replace(&cd->font_name, font_name);
-   eina_stringshare_replace(&cd->font_style, font_style);
-}
-
-void
-config_font_get(const char **font_name, const char **font_style)
-{
-   config_data *cd = g_cd;
-
-   if (font_name) *font_name = cd->font_name;
-   if (font_style) *font_style = cd->font_style;
 }
 
 void
