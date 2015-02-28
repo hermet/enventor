@@ -1,3 +1,21 @@
+/***
+ * Compatible ABI for Win32
+ ***/
+#ifdef _WIN32
+# ifdef EAPI
+#  undef EAPI
+# endif
+# ifdef ENVENTOR_BUILD
+#  define EAPI __declspec(dllexport)
+# else
+#  define EAPI __declspec(dllimport)
+# endif
+# ifdef EOAPI
+#  undef EOAPI
+# endif
+#define EOAPI EAPI
+#endif
+
 typedef enum
 {
    ENVENTOR_OUT_EDJ = 0,
