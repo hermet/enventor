@@ -1,4 +1,51 @@
 ==============
+Enventor 0.5.0
+==============
+
+Changes since Enventor 0.4.0:
+---------------------------
+
+Additions:
+   * Support syntax color customization in setting.
+   * Add console auto hide mode.
+   * Support Live Edit (Ctrl + E).
+   * Add Enventor APIs.
+     - enventor_object_redo(), undo() APIs.
+     - enventor_object_cursor_pos_set() API.
+     - enventor_object_syntax_color_set()/get() APIs.
+   * Add "live_view,loaded" enventor smart callback.
+
+Improvements:
+   * Enable to insert image descirtiption and textblock style in template inserting.
+   * Reset console error message when error is gone.
+   * Add Text Editor mode in setting.
+   * Menu supports tooltip.
+   * Redesign Tools and support tooltip helper.
+   * Redesign candidate popup and it's behavior.
+   * Support more keywords in candidate popup.
+   * Support more keywords in auto completion.
+   * Keep window size set last time.
+
+Fixes:
+   * Fix to monitor empty file in live view.
+   * Fix intinite loop with "-to xxx.edc" in command line.
+   * Fix live view updation problem.
+   * Exporting/Importing Enventor dll for win32.
+   * Fix that edj is not reloaded when newly opened edc is changed.
+   * Fix wrong cursor position on status bar.
+   * Fix to goto window scalable.
+   * Set temporary path to default edc path by eina_file_mkstemp().
+   * Fix to show double quotation marks(") on efl 1.13
+   * Don't dismiss candidate popup on key events.
+   * Disable autoscrolling while ctxpopup is visible.
+   * Fix max value of mouse_events from 1000 to 1
+   * Fix to toggle linenumber properly with Shortcut key(F5)
+   * Fix max value of the mouse_events from 1000 to 1
+   * Fix candidate keyword name "align"
+   * Install missing eo header files
+   * Fix build package dependency.
+
+==============
 Enventor 0.4.0
 ==============
 
