@@ -10,13 +10,6 @@ const char ATTR_PREPEND_NONE[] = " ";
 const char ATTR_APPEND_SEMICOLON[] = ";";
 const char ATTR_APPEND_STATE_VAL[] = " 0.0;";
 
-struct parser_s
-{
-   Eina_Inarray *attrs;
-   Ecore_Thread *thread;
-   Ecore_Thread *init_thread;
-};
-
 typedef struct parser_attr_s
 {
    Eina_Stringshare *keyword;
@@ -25,7 +18,7 @@ typedef struct parser_attr_s
 
 typedef struct cur_name_thread_data_s
 {
-   parser_data *pd;
+   Ecore_Thread *thread;
    char *utf8;
    int cur_pos;
    const char *group_name;
@@ -33,13 +26,23 @@ typedef struct cur_name_thread_data_s
    void (*cb)(void *data, Eina_Stringshare *part_name,
               Eina_Stringshare *group_name);
    void *cb_data;
+   parser_data *pd;
 } cur_name_td;
 
 typedef struct type_init_thread_data_s
 {
    Eina_Inarray *attrs;
+   Ecore_Thread *thread;
    parser_data *pd;
 } type_init_td;
+
+struct parser_s
+{
+   Eina_Inarray *attrs;
+   cur_name_td *cntd;
+   type_init_td *titd;
+};
+
 
 /*****************************************************************************/
 /* Internal method implementation                                            */
@@ -224,7 +227,7 @@ cur_name_thread_end(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
    cur_name_td *td = data;
    td->cb(td->cb_data, td->part_name, td->group_name);
-   td->pd->thread = NULL;
+   td->pd->cntd = NULL;
    free(td);
 }
 
@@ -232,7 +235,7 @@ static void
 cur_name_thread_cancel(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
    cur_name_td *td = data;
-   td->pd->thread = NULL;
+   if (td->pd) td->pd->cntd = NULL;
    free(td->utf8);
    free(td);
 }
@@ -809,7 +812,7 @@ static void
 type_init_thread_end(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
    type_init_td *td = data;
-   td->pd->init_thread = NULL;
+   td->pd->titd = NULL;
    td->pd->attrs = td->attrs;
    free(td);
 }
@@ -818,7 +821,7 @@ static void
 type_init_thread_cancel(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
    type_init_td *td = data;
-   td->pd->init_thread = NULL;
+   if (td->pd) td->pd->titd = NULL;
    free(td);
 }
 
@@ -913,7 +916,7 @@ parser_collections_block_pos_get(const Evas_Object *entry,
 void
 parser_cancel(parser_data *pd)
 {
-   if (pd->thread) ecore_thread_cancel(pd->thread);
+   if (pd->cntd) ecore_thread_cancel(pd->cntd->thread);
 }
 
 char *
@@ -1172,7 +1175,7 @@ parser_cur_group_name_get(parser_data *pd, Evas_Object *entry,
                           void (*cb)(void *data, Eina_Stringshare *part_name,
                           Eina_Stringshare *group_name), void *data)
 {
-   if (pd->thread) ecore_thread_cancel(pd->thread);
+   if (pd->cntd) ecore_thread_cancel(pd->cntd->thread);
 
    const char *text = elm_entry_entry_get(entry);
    if (!text) return;
@@ -1189,12 +1192,13 @@ parser_cur_group_name_get(parser_data *pd, Evas_Object *entry,
      }
 
    td->pd = pd;
+   pd->cntd = td;
    td->utf8 = utf8;
    td->cur_pos = elm_entry_cursor_pos_get(entry);
    td->cb = cb;
    td->cb_data = data;
 
-   pd->thread = ecore_thread_run(group_name_thread_blocking,
+   td->thread = ecore_thread_run(group_name_thread_blocking,
                                  cur_name_thread_end,
                                  cur_name_thread_cancel,
                                  td);
@@ -1205,7 +1209,7 @@ parser_cur_name_get(parser_data *pd, Evas_Object *entry, void (*cb)(void *data,
                     Eina_Stringshare *part_name, Eina_Stringshare *group_name),
                     void *data)
 {
-   if (pd->thread) ecore_thread_cancel(pd->thread);
+   if (pd->cntd) ecore_thread_cancel(pd->cntd->thread);
 
    const char *text = elm_entry_entry_get(entry);
    if (!text) return;
@@ -1222,12 +1226,13 @@ parser_cur_name_get(parser_data *pd, Evas_Object *entry, void (*cb)(void *data,
      }
 
    td->pd = pd;
+   pd->cntd = td;
    td->utf8 = utf8;
    td->cur_pos = elm_entry_cursor_pos_get(entry);
    td->cb = cb;
    td->cb_data = data;
 
-   pd->thread = ecore_thread_run(cur_name_thread_blocking,
+   td->thread = ecore_thread_run(cur_name_thread_blocking,
                                  cur_name_thread_end,
                                  cur_name_thread_cancel,
                                  td);
@@ -1329,17 +1334,26 @@ parser_init(void)
      }
 
    td->pd = pd;
-   pd->init_thread = ecore_thread_run(type_init_thread_blocking,
-                                      type_init_thread_end,
-                                      type_init_thread_cancel, td);
+   pd->titd = td;
+   td->thread = ecore_thread_run(type_init_thread_blocking,
+                                 type_init_thread_end,
+                                 type_init_thread_cancel, td);
    return pd;
 }
 
 void
 parser_term(parser_data *pd)
 {
-   ecore_thread_cancel(pd->thread);
-   ecore_thread_cancel(pd->init_thread);
+   if (pd->cntd)
+     {
+        pd->cntd->pd = NULL;
+        ecore_thread_cancel(pd->cntd->thread);
+     }
+   if (pd->titd)
+     {
+        pd->titd->pd = NULL;
+        ecore_thread_cancel(pd->titd->thread);
+     }
 
    parser_attr *attr;
 
