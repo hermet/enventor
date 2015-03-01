@@ -645,6 +645,12 @@ key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    Ecore_Event_Key *event = ev;
    edit_data *ed = data;
 
+   /* FIXME: seems event fd handler is broken. so key down event
+      is triggered multiple times, to make enventor stable,
+      we put the workaround code here. please remove if this won't
+      be problem anymore */
+   if (event->timestamp == 0) return ECORE_CALLBACK_PASS_ON;
+
    //Control Key
    if (!strcmp("Control_L", event->key))
      {
