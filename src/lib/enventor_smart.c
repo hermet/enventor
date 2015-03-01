@@ -531,6 +531,8 @@ EOLIAN static Eina_Bool
 _enventor_object_save(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd,
                       const char *file)
 {
+   //Update edc file and try to save if the edc path is different.
+   if (build_edc_path_get() != file) edit_changed_set(pd->ed, EINA_TRUE);
    return edit_save(pd->ed, file);
 }
 

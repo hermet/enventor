@@ -424,9 +424,6 @@ fileselector_save_done_cb(void *data, Evas_Object *obj, void *event_info)
         return;
      }
 
-   //Update the edc file and try to save.
-   if (strcmp(config_edc_path_get(), selected))
-     enventor_object_modified_set(md->enventor, EINA_TRUE);
    config_edc_path_set(selected);
 
    Eina_List *list = eina_list_append(NULL, config_edj_path_get());

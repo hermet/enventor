@@ -55,7 +55,6 @@ warning_replace_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
 {
    file_mgr_data *fmd = data;
    enventor_object_file_set(fmd->enventor, config_edc_path_get());
-   enventor_object_modified_set(fmd->enventor, EINA_FALSE);
    warning_close(fmd);
 }
 
