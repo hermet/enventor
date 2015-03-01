@@ -50,6 +50,32 @@ auto_indent_toggle(app_data *ad)
    config_auto_indent_set(toggle);
 }
 
+static void
+enventor_common_setup(Evas_Object *enventor)
+{
+   enventor_object_font_scale_set(enventor, config_font_scale_get());
+   enventor_object_live_view_scale_set(enventor, config_view_scale_get());
+   enventor_object_linenumber_set(enventor, config_linenumber_get());
+   enventor_object_part_highlight_set(enventor, config_part_highlight_get());
+   enventor_object_auto_indent_set(enventor, config_auto_indent_get());
+   enventor_object_auto_complete_set(enventor, config_auto_complete_get());
+   enventor_object_dummy_swallow_set(enventor, config_dummy_swallow_get());
+
+   Eina_List *list = eina_list_append(NULL, config_edj_path_get());
+   enventor_object_path_set(enventor, ENVENTOR_OUT_EDJ, list);
+   eina_list_free(list);
+
+   enventor_object_path_set(enventor, ENVENTOR_RES_IMAGE,
+                            config_edc_img_path_list_get());
+   enventor_object_path_set(enventor, ENVENTOR_RES_SOUND,
+                            config_edc_snd_path_list_get());
+   enventor_object_path_set(enventor, ENVENTOR_RES_FONT,
+                            config_edc_fnt_path_list_get());
+   enventor_object_path_set(enventor, ENVENTOR_RES_DATA,
+                            config_edc_dat_path_list_get());
+   enventor_object_file_set(enventor, config_edc_path_get());
+}
+
 static Eina_Bool
 template_insert_patch(app_data *ad, const char *key)
 {
@@ -164,26 +190,11 @@ config_update_cb(void *data)
    app_data *ad = data;
    Evas_Object *enventor = ad->enventor;
 
-   Eina_List *list = eina_list_append(NULL, config_edj_path_get());
-   enventor_object_path_set(enventor, ENVENTOR_OUT_EDJ, list);
-   eina_list_free(list);
-
-   enventor_object_path_set(enventor, ENVENTOR_RES_IMAGE,
-                            config_edc_img_path_list_get());
-   enventor_object_path_set(enventor, ENVENTOR_RES_SOUND,
-                            config_edc_snd_path_list_get());
-   enventor_object_path_set(enventor, ENVENTOR_RES_FONT,
-                            config_edc_fnt_path_list_get());
-   enventor_object_path_set(enventor, ENVENTOR_RES_DATA,
-                            config_edc_dat_path_list_get());
-   enventor_object_font_scale_set(enventor, config_font_scale_get());
-   enventor_object_linenumber_set(enventor, config_linenumber_get());
-   enventor_object_dummy_swallow_set(enventor, config_dummy_swallow_get());
-   enventor_object_part_highlight_set(enventor, config_part_highlight_get());
-   enventor_object_live_view_scale_set(enventor, config_view_scale_get());
+   enventor_common_setup(enventor);
 
    syntax_color_update(enventor);
 
+   //Live View Size
    Evas_Coord w, h;
    if (config_view_size_configurable_get())
      config_view_size_get(&w, &h);
@@ -525,36 +536,14 @@ enventor_setup(app_data *ad)
                                   enventor_ctxpopup_dismissed_cb, ad);
    evas_object_smart_callback_add(enventor, "focused",
                                   enventor_focused_cb, ad);
-
-   enventor_object_font_scale_set(enventor, config_font_scale_get());
-   enventor_object_live_view_scale_set(enventor, config_view_scale_get());
-   enventor_object_linenumber_set(enventor, config_linenumber_get());
-   enventor_object_part_highlight_set(enventor, config_part_highlight_get());
-   enventor_object_auto_indent_set(enventor, config_auto_indent_get());
-   enventor_object_auto_complete_set(enventor, config_auto_complete_get());
-   enventor_object_dummy_swallow_set(enventor, config_dummy_swallow_get());
-
-   Eina_List *list = eina_list_append(NULL, config_edj_path_get());
-   enventor_object_path_set(enventor, ENVENTOR_OUT_EDJ, list);
-   eina_list_free(list);
-
-   enventor_object_path_set(enventor, ENVENTOR_RES_IMAGE,
-                            config_edc_img_path_list_get());
-   enventor_object_path_set(enventor, ENVENTOR_RES_SOUND,
-                            config_edc_snd_path_list_get());
-   enventor_object_path_set(enventor, ENVENTOR_RES_FONT,
-                            config_edc_fnt_path_list_get());
-   enventor_object_path_set(enventor, ENVENTOR_RES_DATA,
-                            config_edc_dat_path_list_get());
-   enventor_object_file_set(enventor, config_edc_path_get());
-
    evas_object_size_hint_expand_set(enventor, EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
    evas_object_size_hint_fill_set(enventor, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
+   enventor_common_setup(enventor);
+
    base_enventor_set(enventor);
    base_title_set(config_edc_path_get());
-
    base_live_view_set(enventor_object_live_view_get(enventor));
 
    ad->enventor = enventor;
