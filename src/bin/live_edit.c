@@ -916,10 +916,7 @@ live_edit_toggle(void)
         stats_info_msg_update("Select a part to add in Live View.");
      }
    else
-     {
-        live_edit_cancel();
-        stats_info_msg_update("Live View Edit Mode Disabled.");
-     }
+     live_edit_cancel();
 
    ld->on = on;
 }
