@@ -533,7 +533,10 @@ _enventor_object_save(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd,
 {
    //Update edc file and try to save if the edc path is different.
    if (build_edc_path_get() != file) edit_changed_set(pd->ed, EINA_TRUE);
-   return edit_save(pd->ed, file);
+   Eina_Bool saved = edit_save(pd->ed, file);
+   //EDC file is newly generated, we need to reload as the input.
+   if (saved && !pd->edc_monitor) enventor_object_file_set(obj, file);
+   return saved;
 }
 
 EOLIAN static void
