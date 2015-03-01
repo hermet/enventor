@@ -73,7 +73,6 @@ enventor_common_setup(Evas_Object *enventor)
                             config_edc_fnt_path_list_get());
    enventor_object_path_set(enventor, ENVENTOR_RES_DATA,
                             config_edc_dat_path_list_get());
-   enventor_object_file_set(enventor, config_edc_path_get());
 }
 
 static Eina_Bool
@@ -541,6 +540,8 @@ enventor_setup(app_data *ad)
    evas_object_size_hint_fill_set(enventor, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
    enventor_common_setup(enventor);
+
+   enventor_object_file_set(enventor, config_edc_path_get());
 
    base_enventor_set(enventor);
    base_title_set(config_edc_path_get());
