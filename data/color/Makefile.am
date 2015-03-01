@@ -3,7 +3,8 @@ MAINTAINERCLEANFILES = Makefile.in
 EET_EET = @eet_eet@
 
 EXTRA_DIST = \
-color.src
+color.src \
+syntax_template.dat
 
 filesdir = $(datadir)/$(PACKAGE)/color
 files_DATA = \

@@ -21,9 +21,7 @@ EXTRA_DIST = \
    inset_shadow.png \
    logo.png \
    frame_bg.png \
-   minus.png \
    part_highlight.png \
-   plus.png \
    preference.png \
    runner_glow_horiz.png \
    runner_glow_vert.png \
