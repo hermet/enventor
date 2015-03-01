@@ -22,10 +22,6 @@ main_key_up_cb(void *data, int type EINA_UNUSED, void *ev)
    Ecore_Event_Key *event = ev;
    app_data *ad = data;
 
-   /* FIXME: key_up_cb is called twice, i don't know. seems my x system is
-      broken otherwise please remove this. */
-   if (event->timestamp == 0) return ECORE_CALLBACK_DONE;
-
    if (!strcmp("Control_L", event->key))
      ad->ctrl_pressed = EINA_FALSE;
    else if (!strcmp("Shift_L", event->key))
@@ -701,10 +697,6 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
 {
    Ecore_Event_Key *event = ev;
    app_data *ad = data;
-
-   /* FIXME: key_down_cb is called twice, i don't know. seems my x system is
-      broken otherwise please remove this. */
-   if (event->timestamp == 0) return ECORE_CALLBACK_DONE;
 
    //Main Menu
    if (!strcmp(event->key, "Escape"))
