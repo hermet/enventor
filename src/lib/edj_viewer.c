@@ -300,12 +300,9 @@ view_obj_idler_cb(void *data)
    elm_object_part_content_set(vd->base, "elm.swallow.content",
                                vd->layout);
    elm_object_content_set(vd->scroller, vd->base);
-#if EO_LATEST
+
    Eina_Bool ret;
    if (eo_do_ret(vd->enventor, ret, enventor_obj_dummy_swallow_get()))
-#else
-   if (eo_do(vd->enventor, enventor_obj_dummy_swallow_get()))
-#endif
      dummy_obj_new(vd->layout);
 
    vd->idler = NULL;
