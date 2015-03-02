@@ -3,7 +3,7 @@ Enventor 0.5.0
 ==============
 
 Changes since Enventor 0.4.0:
----------------------------
+-----------------------------
 
 Additions:
    * Support syntax color customization in setting.
@@ -45,12 +45,8 @@ Fixes:
    * Install missing eo header files
    * Fix build package dependency.
 
-==============
-Enventor 0.4.0
-==============
-
 Changes since Enventor 0.3.0:
----------------------------
+-----------------------------
 
 Additions:
    * Support Redo/Undo (Ctrl+R/Ctrl+Z)
@@ -78,7 +74,7 @@ Fixes:
    * Fixed dummy object(swallow) was invisible case.
 
 Changes since Enventor 0.2.0:
----------------------------
+-----------------------------
 
 Additions:
    * Go to line (Ctrl+L)
