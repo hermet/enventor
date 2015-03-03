@@ -123,6 +123,8 @@ init_thread_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
    COMPDATA_SET(ad, "span", AUTOCOMP_SPAN, 1, 0);
    COMPDATA_SET(ad, "spread", AUTOCOMP_SPREAD, 1, 0);
    COMPDATA_SET(ad, "weight", AUTOCOMP_WEIGHT, 1, 0);
+   COMPDATA_SET(ad, "ellipsis", AUTOCOMP_ELLIPSIS, 1, 0);
+   COMPDATA_SET(ad, "anti_alias", AUTOCOMP_ANTI_ALIAS, 1, 0);
 }
 
 static void

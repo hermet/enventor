@@ -425,4 +425,16 @@ const char *AUTOCOMP_WEIGHT[AUTOCOMP_WEIGHT_LINE_CNT] =
    "weight: ;",
 };
 
-#define COMPSET_CNT 65
+#define AUTOCOMP_ELLIPSIS_LINE_CNT 1
+const char *AUTOCOMP_ELLIPSIS[AUTOCOMP_ELLIPSIS_LINE_CNT] =
+{
+   "ellipsis: ;",
+};
+
+#define AUTOCOMP_ANTI_ALIAS_LINE_CNT 1
+const char *AUTOCOMP_ANTI_ALIAS[AUTOCOMP_ANTI_ALIAS_LINE_CNT] =
+{
+   "anti_alias: ;",
+};
+
+#define COMPSET_CNT 67
