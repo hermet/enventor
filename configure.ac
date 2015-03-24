@@ -126,6 +126,7 @@ data/images/Makefile
 data/themes/Makefile
 data/themes/default/Makefile
 data/themes/default/images/Makefile
+data/themes/default/sounds/Makefile
 data/templates/Makefile
 data/color/Makefile
 data/sounds/Makefile

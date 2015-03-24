@@ -11,6 +11,72 @@
 #define PANEMIN2 16
 #define PANEWID 32
 
+#define ENABLED_TEXTBLOCK_TAGS                                             \
+   tag: "em" "+ font_style=Oblique";                                       \
+   tag: "hilight" "+ font_weight=Bold style=glow glow_color=#3399ff80";    \
+   tag: "link" "+ color=#3399ff underline=on underline_color=#3399ff";     \
+   tag: "preedit" "+ underline=on underline_color=#3399ff";                \
+   tag: "preedit_sel" "+ backing=on backing_color=#000000 color=#ffffff";  \
+   tag: "title" "+ font_size=26";                                          \
+   tag: "subtitle" "+ font_size=18";                                       \
+   tag: "bigger" "+ font_size=12";                                         \
+   tag: "big" "+ font_size=11";                                            \
+   tag: "small" "+ font_size=8";                                           \
+   tag: "smaller" "+ font_size=7";                                         \
+   tag: "name" "+ color=#888888 font_weight=Bold";                         \
+   tag: "val" "+ color=#ffffff";                                           \
+   tag: "info" "+ color=#3399ff style=glow glow_color=#3399ff30";          \
+   tag: "success" "+ color=#00ff00 style=glow glow_color=#00ff0030";       \
+   tag: "warning" "+ color=#ff7c00 style=glow glow_color=#ff7c0030";       \
+   tag: "failure" "+ color=#ff0000 style=glow glow_color=#ff000030";       \
+   tag: "code" "+ font=Mono style=plain color=#ffffff";                    \
+   tag: "comment" "+ color=#00B000";                                       \
+   tag: "string" "+ color=#ff3a35";                                        \
+   tag: "number" "+ color=#D4D42A font_weight=Bold";                       \
+   tag: "brace" "+ color=#656565";                                         \
+   tag: "type" "+ color=#3399ff";                                          \
+   tag: "class" "+ color=#72AAD4 font_weight=Bold";                        \
+   tag: "function" "+ color=#72AAD4 font_weight=Bold";                     \
+   tag: "param" "+ color=#ffffff";                                         \
+   tag: "keyword" "+ color=#ff9900 font_weight=Bold";                      \
+   tag: "preprocessor" "+ color=#3399ff font_weight=Bold";                 \
+   tag: "line_added" "+ color=#00B000";                                    \
+   tag: "line_removed" "+ color=#ff3a35";                                  \
+   tag: "line_changed" "+ color=#ff9900";
+
+#define DISABLED_TEXTBLOCK_TAGS                                            \
+   tag: "em" "+ font_style=Oblique";                                       \
+   tag: "hilight" "+ font_weight=Bold style=glow glow_color=#3399ff20";    \
+   tag: "link" "+ color=#101820 shadow_color=#66aaff28 underline=on underline_color=#101820"; \
+   tag: "preedit" "+ underline=on underline_color=#3399ff88";              \
+   tag: "preedit_sel" "+ backing=on backing_color=#000000 color=#888888";  \
+   tag: "title" "+ font_size=26";                                          \
+   tag: "subtitle" "+ font_size=18";                                       \
+   tag: "bigger" "+ font_size=12";                                         \
+   tag: "big" "+ font_size=11";                                            \
+   tag: "small" "+ font_size=8";                                           \
+   tag: "smaller" "+ font_size=7";                                         \
+   tag: "name" "+ color=#151515 font_weight=Bold";                         \
+   tag: "val" "+ color=#151515";                                           \
+   tag: "info" "+ color=#3399ff60 style=glow glow_color=#3399ff18";        \
+   tag: "success" "+ color=#00ff0060 style=glow glow_color=#00ff0018";     \
+   tag: "warning" "+ color=#ff7c0060 style=glow glow_color=#ff7c0018";     \
+   tag: "failure" "+ color=#ff000060 style=glow glow_color=#ff000018";     \
+   tag: "code" "+ style=shadow,bottom shadow_color=#ffffff19 font=Mono color=#151515"; \
+   tag: "comment" "+ color=#002800";                                       \
+   tag: "string" "+ color=#300504";                                        \
+   tag: "number" "+ color=#202008 font_weight=Bold";                       \
+   tag: "brace" "+ color=#000000";                                         \
+   tag: "type" "+ color=#101820";                                          \
+   tag: "class" "+ color=#121c20 font_weight=Bold";                        \
+   tag: "function" "+ color=#121c20 font_weight=Bold";                     \
+   tag: "param" "+ color=#151515";                                         \
+   tag: "keyword" "+ color=#201200 font_weight=Bold";                      \
+   tag: "preprocessor" "+ color=#101820 font_weight=Bold";                 \
+   tag: "line_added" "+ color=#002800";                                    \
+   tag: "line_removed" "+ color=#300504";                                  \
+   tag: "line_changed" "+ color=#201200";
+
 group { name: "elm/scroller/base/enventor";
    images.image: "inset_shadow.png" COMP;
    images.image: "bevel_in.png" COMP;
@@ -1422,3 +1488,327 @@ group { name: "elm/button/base/enventor";
 #undef MASK
 #undef DISABLE
 }
+
+group { name: "elm/entry/cursor/enventor";
+   min: 1 0;
+   images.image: "white_bar_vert_glow.png" COMP;
+   parts {
+      part { name: "cursor"; mouse_events: 0;
+         clip_to: "clipper";
+         description { state: "default" 0.0;
+            rel1.offset: -4 -4;
+            rel2.offset: 3 3;
+            image.normal: "white_bar_vert_glow.png";
+            image.border: 4 4 4 4;
+            fill.smooth: 0;
+            color: 255 255 255 0;
+            min: 9 10;
+         }
+         description { state: "visible" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 255;
+         }
+      }
+      part { name: "clipper"; type: RECT;
+         description { state: "default" 0.0;
+            rel1.to: "cursor";
+            rel2.to: "cursor";
+            fixed: 1 1;
+         }
+         description { state: "hidden" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
+      }
+   }
+   programs {
+      program {
+         signal: "selection,start"; source: "elm.text";
+         action: STATE_SET "hidden" 0.0;
+         target: "clipper";
+      }
+      program {
+         signal: "selection,cleared"; source: "elm.text";
+         action: STATE_SET "default" 0.0;
+         target: "clipper";
+      }
+      program {
+         signal: "elm,action,focus"; source: "elm";
+         action: ACTION_STOP;
+         target: "cursor_show";
+         target: "cursor_hide";
+         target: "cursor_show_timer";
+         target: "cursor_hide_timer";
+         after: "cursor_show";
+      }
+      program {
+         signal: "elm,action,unfocus"; source: "elm";
+         action: ACTION_STOP;
+         target: "cursor_show";
+         target: "cursor_hide";
+         target: "cursor_show_timer";
+         target: "cursor_hide_timer";
+         after: "cursor_hide_stop";
+      }
+      program {
+         signal: "elm,action,show,cursor"; source: "elm";
+         action: ACTION_STOP;
+         target: "cursor_show";
+         target: "cursor_hide";
+         target: "cursor_show_timer";
+         target: "cursor_hide_timer";
+         after: "cursor_show";
+      }
+      program { name: "cursor_hide_stop";
+         action: STATE_SET "default" 0.0;
+         target: "cursor";
+      }
+      program { name: "cursor_show";
+         action: STATE_SET "visible" 0.0;
+         target: "cursor";
+         after: "cursor_show_timer";
+      }
+      program { name: "cursor_hide";
+         action: STATE_SET "default" 0.0;
+         target: "cursor";
+         transition: SINUSOIDAL 0.2;
+         after: "cursor_hide_timer";
+      }
+      program { name: "cursor_show_timer";
+         in: 0.5 0.0;
+         after: "cursor_hide";
+      }
+      program { name: "cursor_hide_timer";
+         in: 0.2 0.0;
+         after: "cursor_show";
+      }
+   }
+}
+
+group { name: "elm/entry/selection/enventor";
+   parts {
+      part { name: "base"; type: RECT;
+         description { state: "default" 0.0;
+            color: 51 153 255 255;
+         }
+      }
+   }
+}
+
+group { name: "elm/entry/anchor/enventor";
+   images.image: "horizontal_separated_bar_small_glow.png" COMP;
+   parts {
+      part { name: "bar";
+         description { state: "default" 0.0;
+            image.normal: "horizontal_separated_bar_small_glow.png";
+            image.border: 4 4 4 4;
+            fill.smooth: 0;
+            rel1.relative: 0.0 1.0;
+            rel1.offset: -3 -5;
+            rel2.offset: 2 4;
+         }
+      }
+   }
+}
+
+group { name: "elm/entry/base/enventor";
+   sounds {   
+      sample { name: "key-tap1" LOSSY 64;
+         source: "kbd-tap.wav";
+      }
+      sample { name: "key-tap2" LOSSY 64;
+         source: "kbd-tap2.wav";
+      }
+      sample { name: "key-tap3" LOSSY 64;
+         source: "kbd-tap3.wav";
+      }
+      sample { name: "key-tap4" LOSSY 64;
+         source: "kbd-tap4.wav";
+      }
+      sample { name: "key-tap5" LOSSY 64;
+         source: "kbd-tap5.wav";
+      }
+   }
+   
+   styles {
+      style { name: "entry_style";
+         base: "font="FN" font_size=10 color=#ffffff style=shadow,bottom shadow_color=#00000080 wrap=word text_class=enventor_entry color_class=enventor_entry left_margin=2 right_margin=2";
+         ENABLED_TEXTBLOCK_TAGS
+      }
+      style { name: "entry_nowrap_style";
+         base: "font="FN" font_size=10 color=#ffffff style=shadow,bottom shadow_color=#00000080 text_class=enventor_entry color_class=enventor_entry left_margin=2 right_margin=2";
+         ENABLED_TEXTBLOCK_TAGS
+      }
+      style { name: "entry_disabled_style";
+         base: "font="FN" font_size=10 color=#151515 style=shadow,bottom shadow_color=#ffffff19 wrap=word text_class=enventor_entry color_class=enventor_entry_disabled left_margin=2 right_margin=2";
+         DISABLED_TEXTBLOCK_TAGS
+      }
+      style { name: "entry_nowrap_disabled_style";
+         base: "font="FN" font_size=10 color=#151515 style=shadow,bottom shadow_color=#ffffff19 text_class=enventor_entry color_class=enventor_entry_disabled left_margin=2 right_margin=2";
+         DISABLED_TEXTBLOCK_TAGS
+      }
+      style { name: "entry_guide_style";
+         base: "font="FN" font_size=10 color=#000000 style=shadow,bottom shadow_color=#ffffff19 wrap=word text_class=enventor_entry color_class=enventor_entry_guide left_margin=2 right_margin=2 ellipsis=0.0";
+         DISABLED_TEXTBLOCK_TAGS
+      }
+   }
+//   data.item: "context_menu_orientation" "horizontal";
+   parts {
+      part { name: "elm.guide"; type: TEXTBLOCK; mouse_events: 0;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1.to: "elm.text";
+            rel2.to: "elm.text";
+            text { style: "entry_guide_style";
+               min: 0 1;
+               align: 0.0 0.0;
+            }
+         }
+         description { state: "hidden" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
+      }
+      part { name: "elm.text"; type: TEXTBLOCK;
+         scale: 1;
+         entry_mode: EDITABLE;
+         select_mode: DEFAULT;
+//         select_mode: EXPLICIT;
+         cursor_mode: BEFORE;
+         multiline: 1;
+         source: "elm/entry/selection/enventor"; // selection under
+//         source2: "X"; // selection over
+//         source3: "X"; // cursor under
+         source4: "elm/entry/cursor/enventor"; // cursorover
+//         source5: "elm/entry/anchor/enventor"; // anchor under
+         source6: "elm/entry/anchor/enventor"; // anchor over
+         description { state: "default" 0.0;
+            /* we gotta use 0 0 here, because of scrolled entries */
+            fixed: 0 0;
+            rel1.offset: 2 2;
+            rel2.offset: -3 -3;
+            text { style: "entry_style";
+               min: 0 1;
+               align: 0.0 0.0;
+            }
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            text { style: "entry_disabled_style";
+               min: 0 1;
+            }
+         }
+      }
+   }
+   programs {
+      program {
+         signal: "load"; source: "";
+         action: FOCUS_SET;
+         target: "elm.text";
+      }
+      program {
+         signal: "elm,state,disabled"; source: "elm";
+         action: STATE_SET "disabled" 0.0;
+         target: "elm.text";
+      }
+      program {
+         signal: "elm,state,enabled"; source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.text";
+      }
+      program {
+         signal: "elm,guide,disabled"; source: "elm";
+         action: STATE_SET "hidden" 0.0;
+         target: "elm.guide";
+      }
+      program {
+         signal: "elm,guide,enabled"; source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.guide";
+      }
+      program { name: "key-down";
+         signal: "entry,keydown"; source: "elm.text";
+         script {
+            new buf[32];
+            snprintf(buf, 31, "key-down%i", (rand() % 5) + 1);
+            run_program(get_program_id(buf));
+         }
+      }
+      program { name: "key-down1";
+         action: PLAY_SAMPLE "key-tap1" 1.0;
+      }
+      program { name: "key-down2";
+         action: PLAY_SAMPLE "key-tap2" 1.0;
+      }
+      program { name: "key-down3";
+         action: PLAY_SAMPLE "key-tap3" 1.0;
+      }
+      program { name: "key-down4";
+         action: PLAY_SAMPLE "key-tap4" 1.0;
+      }
+      program { name: "key-down5";
+         action: PLAY_SAMPLE "key-tap5" 1.0;
+      }
+   }
+}
+
+group { name: "elm/entry/base-nowrap/enventor";
+   inherit: "elm/entry/base/enventor";
+   parts {
+      part { name: "elm.guide"; type: TEXTBLOCK; mouse_events: 0;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1.to: "elm.text";
+            rel2.to: "elm.text";
+            text { style: "entry_guide_style";
+               min: 0 1;
+               align: 0.0 0.0;
+            }
+         }
+         description { state: "hidden" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
+      }
+      part { name: "elm.text";
+         description { state: "default" 0.0;
+            text { style: "entry_nowrap_style";
+               min: 1 1;
+               ellipsis: -1;
+               align: 0.0 0.0;
+            }
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            text { style: "entry_nowrap_disabled_style";
+               min: 0 1;
+            }
+         }
+      }
+   }
+}
+
+group { name: "elm/entry/base-nowrap-noedit/enventor";
+   inherit: "elm/entry/base/enventor";
+   parts {
+      part { name: "elm.text";
+         entry_mode: PLAIN;
+         source: "elm/entry/selection/enventor"; // selection under
+         source4: ""; // cursorover
+         source6: "elm/entry/anchor/enventor"; // anchor under
+         description { state: "default" 0.0;
+            text { style: "entry_style";
+               min: 1 1;
+               ellipsis: -1;
+               align: 0.0 0.0;
+            }
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            text { style: "entry_disabled_style";
+            }
+         }
+      }
+   }
+}
+

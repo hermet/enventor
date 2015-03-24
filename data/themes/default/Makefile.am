@@ -1,9 +1,10 @@
 MAINTAINERCLEANFILES = Makefile.in
 
-SUBDIRS = images
+SUBDIRS = images sounds
 
 EDJE_CC = @edje_cc@
-EDJE_FLAGS = -id $(top_srcdir)/data/themes/default/images
+EDJE_FLAGS = -id $(top_srcdir)/data/themes/default/images \
+			 -sd $(top_srcdir)/data/themes/default/sounds
 
 filesdir = $(datadir)/$(PACKAGE)/themes
 files_DATA = enventor.edj
