@@ -125,9 +125,9 @@ entry_recover(edit_data *ed, int cursor_pos)
 static void
 edit_font_apply(edit_data *ed, const char *font_name, const char *font_style)
 {
-   if (!font_name) return;
-
-   char *font = elm_font_fontconfig_name_get(font_name, font_style);
+   char *font = NULL;
+   if (font_name)
+     font = elm_font_fontconfig_name_get(font_name, font_style);
    edje_text_class_set("enventor_entry", font, -100);
    elm_font_fontconfig_name_free(font);
 

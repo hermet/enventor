@@ -1010,7 +1010,9 @@ text_setting_font_apply(const char *font_name, const char *font_style)
    snprintf(text_class_name, sizeof(text_class_name), "%s_setting_entry",
             elm_app_name_get());
 
-   char *font = elm_font_fontconfig_name_get(font_name, font_style);
+   char *font = NULL;
+   if (font_name)
+     font = elm_font_fontconfig_name_get(font_name, font_style);
    edje_text_class_set(text_class_name, font, -100);
    elm_font_fontconfig_name_free(font);
 
