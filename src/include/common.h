@@ -12,7 +12,7 @@ typedef struct statusbar_s stats_data;
 
 #define ENVENTOR_BETA_API_SUPPORT 1
 #include <Enventor.h>
-
+#include <assert.h>
 #include "menu.h"
 #include "statusbar.h"
 #include "config_data.h"

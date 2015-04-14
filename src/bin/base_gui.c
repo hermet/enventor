@@ -45,6 +45,7 @@ void
 base_error_msg_set(const char *msg)
 {
    base_data *bd = g_bd;
+   assert(bd);
    elm_object_signal_emit(bd->layout, "elm,state,alert,show", "");
    console_text_set(bd->console, msg);
    panes_editors_full_view(EINA_FALSE);
@@ -55,6 +56,7 @@ void
 base_title_set(const char *path)
 {
    base_data *bd = g_bd;
+   assert(bd);
    char buf[PATH_MAX];
    snprintf(buf, sizeof(buf), "%s - Enventor", path);
    elm_win_title_set(bd->win, buf);
@@ -64,6 +66,7 @@ void
 base_statusbar_toggle(Eina_Bool config)
 {
    base_data *bd = g_bd;
+   assert(bd);
 
    if (config) config_stats_bar_set(!config_stats_bar_get());
 
@@ -77,6 +80,7 @@ void
 base_tools_toggle(Eina_Bool config)
 {
    base_data *bd = g_bd;
+   assert(bd);
 
    if (config) config_tools_set(!config_tools_get());
 
@@ -90,6 +94,7 @@ Evas_Object *
 base_win_get(void)
 {
    base_data *bd = g_bd;
+   assert(bd && bd->win);
    return bd->win;
 }
 
@@ -97,6 +102,7 @@ Evas_Object *
 base_layout_get(void)
 {
    base_data *bd = g_bd;
+   assert(bd && bd->layout);
    return bd->layout;
 }
 
@@ -104,12 +110,14 @@ void
 base_win_resize_object_add(Evas_Object *resize_obj)
 {
    base_data *bd = g_bd;
+   assert(bd);
    elm_win_resize_object_add(bd->win, resize_obj);
 }
 
 void base_tools_set(Evas_Object *tools)
 {
    base_data *bd = g_bd;
+   assert(bd);
    elm_object_part_content_set(bd->layout, "elm.swallow.tools", tools);
 
    if (config_tools_get())
@@ -152,6 +160,7 @@ void
 base_console_auto_hide(void)
 {
    base_data *bd = g_bd;
+   assert(bd);
 
    if (!config_console_get()) return;
    if (bd->console_msg) return;
@@ -171,6 +180,8 @@ void
 base_gui_term(void)
 {
    base_data *bd = g_bd;
+   assert(bd);
+
    panes_term();
    free(bd);
 }
@@ -179,6 +190,8 @@ void
 base_console_reset(void)
 {
    base_data *bd = g_bd;
+   assert(bd);
+
    console_text_set(bd->console, "");
    bd->console_msg = EINA_FALSE;
    if (config_console_get()) panes_editors_full_view(EINA_TRUE);
