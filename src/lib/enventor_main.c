@@ -113,6 +113,8 @@ enventor_shutdown(void)
         return 0;
      }
 
+   if ((--_enventor_init_count) > 0) return _enventor_init_count;
+
    ecore_event_handler_del(_key_down_handler);
    _key_down_handler = NULL;
 
