@@ -1,4 +1,4 @@
-class Enventor.Object (Elm_Widget, Efl.File) {
+class Enventor.Object (Elm.Widget, Efl.File) {
    eo_prefix: enventor_obj;
    properties {
       part_highlight {
