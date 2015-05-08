@@ -1,7 +1,7 @@
 class Enventor.Object (Elm.Widget, Efl.File) {
    eo_prefix: enventor_obj;
-   properties {
-      part_highlight {
+   methods {
+      @property part_highlight {
          set {
             /*@
             @brief
@@ -21,7 +21,7 @@ class Enventor.Object (Elm.Widget, Efl.File) {
             Eina_Bool part_highlight; /*@ ... */
          }
       }
-      live_view_scale {
+      @property live_view_scale {
          set {
             /*@
             @brief
@@ -41,7 +41,7 @@ class Enventor.Object (Elm.Widget, Efl.File) {
             double scale; /*@ ... */
          }
       }
-      dummy_swallow {
+      @property dummy_swallow {
          set {
             /*@
             @brief
@@ -61,7 +61,7 @@ class Enventor.Object (Elm.Widget, Efl.File) {
             Eina_Bool dummy_swallow; /*@ ... */
          }
       }
-      auto_complete {
+      @property auto_complete {
          set {
             /*@
             @brief
@@ -81,7 +81,7 @@ class Enventor.Object (Elm.Widget, Efl.File) {
             Eina_Bool auto_complete; /*@ ... */
          }
       }
-      auto_indent {
+      @property auto_indent {
          set {
             /*@
             @brief
@@ -101,7 +101,7 @@ class Enventor.Object (Elm.Widget, Efl.File) {
             Eina_Bool auto_indent; /*@ ... */
          }
       }
-      ctxpopup {
+      @property ctxpopup {
          set {
             /*@
             @brief
@@ -121,7 +121,7 @@ class Enventor.Object (Elm.Widget, Efl.File) {
             Eina_Bool ctxpopup; /*@ ... */
          }
 		}
-      focus {
+      @property focus {
          set {
             /*@
             @brief
@@ -141,7 +141,7 @@ class Enventor.Object (Elm.Widget, Efl.File) {
             Eina_Bool focus; /*@ ... */
          }
       }
-      modified {
+      @property modified {
          set {
             /*@
             @brief
@@ -161,7 +161,7 @@ class Enventor.Object (Elm.Widget, Efl.File) {
             Eina_Bool modified; /*@ ... */
          }
       }
-      font_scale {
+      @property font_scale {
          set {
             /*@
             @brief
@@ -181,7 +181,7 @@ class Enventor.Object (Elm.Widget, Efl.File) {
             double font_scale; /*@ ... */
          }
       }
-      linenumber {
+      @property linenumber {
          set {
             /*@
             @brief
@@ -201,8 +201,6 @@ class Enventor.Object (Elm.Widget, Efl.File) {
             bool linenumber; /*@ ... */
          }
       }
-   }
-   methods {
       path_set {
          /*@
          @brief
