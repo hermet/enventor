@@ -303,12 +303,12 @@ args_dispatch(int argc, char **argv, char *edc_path, Eina_List **img_path,
    if (argc == 1) goto defaults;
 
    static const Ecore_Getopt optdesc = {
-     "enventor",
-     NULL,
-     NULL,
-     NULL,
-     NULL,
-     NULL,
+     PACKAGE_NAME,
+     ENVENTOR_USAGE,
+     VERSION,
+     ENVENTOR_COPYRIGHT,
+     ENVENTOR_LICENSE,
+     ENVENTOR_INFO,
      EINA_TRUE,
        {
           ECORE_GETOPT_STORE_TRUE('t', "to", "Open template menu"),
@@ -352,9 +352,7 @@ args_dispatch(int argc, char **argv, char *edc_path, Eina_List **img_path,
         exit(0);
    if (help)
      {
-        fprintf(stderr, "enventor [input file] [--to] "
-                "[--id image path] [--sd sound path] "
-                "[--fd font path] [--dd data path]\n");
+        fprintf(stderr, ENVENTOR_HELP_EXAMPLES);
         exit(0);
      }
 
