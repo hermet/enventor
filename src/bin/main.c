@@ -2,6 +2,7 @@
 #include "config.h"
 #endif
 
+#include <Ecore_Getopt.h>
 #include <Eio.h>
 #include "common.h"
 
@@ -284,39 +285,61 @@ tools_set(Evas_Object *enventor)
 }
 
 static Eina_Bool
-args_dispatch(int argc, char **argv, char *edc_path, char *img_path,
-              char *snd_path, char *fnt_path, char *dat_path,
+args_dispatch(int argc, char **argv, char *edc_path, Eina_List **img_path,
+              Eina_List **snd_path, Eina_List **fnt_path, Eina_List **dat_path,
               Eina_Bool *template_new)
 {
+
+   Eina_List *id = NULL;
+   Eina_List *fd = NULL;
+   Eina_List *sd = NULL;
+   Eina_List *dd = NULL;
+
+   Eina_Bool quit = EINA_FALSE;
+   Eina_Bool help = EINA_FALSE;
    Eina_Bool default_edc = EINA_TRUE;
-   *template_new = EINA_FALSE;
 
    //No arguments. set defaults
    if (argc == 1) goto defaults;
 
-   //Help
-   if ((argc >=2 ) && !strcmp(argv[1], "--help"))
-     {
-        fprintf(stdout, "Usage: enventor [input file] [-to] [-id image path]"
-                "[-sd sound path] [-fd font path] [-dd data path]\n"
-                "\n"
-                "-input file = EDC file to open. If input file is skipped, "
-                "Enventor will open a default template code with a temporary "
-                "file.\n"
-                "-to = Open template menu when you launch Enventor\n"
-                "-id = image resources, that edc includes, path\n"
-                "-sd = sound resources, that edc includes, path\n"
-                "-fd = font resources, that edc includes, path\n"
-                "-dd = data resources, that edc includes, path\n"
-                "\n"
-                "Examples of Enventor command line usage:\n"
-                "$ enventor\n"
-                "$ enventor -to\n"
-                "$ enventor newfile.edc -to\n"
-                "$ enventor sample.edc -id ./images -sd ./sounds\n"
-                "\n");
-        exit(0);
-     }
+   static const Ecore_Getopt optdesc = {
+     "enventor",
+     NULL,
+     NULL,
+     NULL,
+     NULL,
+     NULL,
+     EINA_TRUE,
+       {
+          ECORE_GETOPT_STORE_TRUE('t', "to", "Open template menu"),
+          ECORE_GETOPT_APPEND_METAVAR('i', "id", "Images path",
+                                      "path", ECORE_GETOPT_TYPE_STR),
+          ECORE_GETOPT_APPEND_METAVAR('s', "sd", "Sounds path",
+                                       "path", ECORE_GETOPT_TYPE_STR),
+          ECORE_GETOPT_APPEND_METAVAR('f', "fd", "Fonts path",
+                                      "path", ECORE_GETOPT_TYPE_STR),
+          ECORE_GETOPT_APPEND_METAVAR('d', "dd", "Data path",
+                                      "path", ECORE_GETOPT_TYPE_STR),
+          ECORE_GETOPT_VERSION('v', "version"),
+          ECORE_GETOPT_COPYRIGHT('c', "copyright"),
+          ECORE_GETOPT_LICENSE('l', "license"),
+          ECORE_GETOPT_HELP('h', "help"),
+          ECORE_GETOPT_SENTINEL
+       }
+   };
+
+   Ecore_Getopt_Value values[] = {
+      ECORE_GETOPT_VALUE_BOOL(*template_new),
+      ECORE_GETOPT_VALUE_LIST(id),
+      ECORE_GETOPT_VALUE_LIST(sd),
+      ECORE_GETOPT_VALUE_LIST(fd),
+      ECORE_GETOPT_VALUE_LIST(dd),
+      ECORE_GETOPT_VALUE_BOOL(quit),
+      ECORE_GETOPT_VALUE_BOOL(quit),
+      ECORE_GETOPT_VALUE_BOOL(quit),
+      ECORE_GETOPT_VALUE_BOOL(help),
+      ECORE_GETOPT_VALUE_NONE
+   };
 
    //edc path
    if ((argc >= 2) && strstr(argv[1], ".edc"))
@@ -324,42 +347,15 @@ args_dispatch(int argc, char **argv, char *edc_path, char *img_path,
         sprintf(edc_path, "%s", argv[1]);
         default_edc = EINA_FALSE;
      }
-   else if ((argc >= 2) && !strcmp("-to", argv[1]))
-     {
-        *template_new = EINA_TRUE;
-     }
-   else goto defaults;
 
-   int cur_arg = 2;
-
-   while (cur_arg < argc)
+   if ((ecore_getopt_parse(&optdesc, values, argc, argv) < 0) || quit)
+        exit(0);
+   if (help)
      {
-        if (!strcmp("-to", argv[cur_arg]))
-          {
-             *template_new = EINA_TRUE;
-             cur_arg++;
-          }
-        else if (!strcmp("-id", argv[cur_arg]))
-          {
-             sprintf(img_path, "%s", argv[cur_arg + 1]);
-             cur_arg += 2;
-          }
-        else if (!strcmp("-sd", argv[cur_arg]))
-          {
-             sprintf(snd_path, "%s", argv[cur_arg + 1]);
-             cur_arg += 2;
-          }
-        else if (!strcmp("-fd", argv[cur_arg]))
-          {
-             sprintf(fnt_path, "%s", argv[cur_arg + 1]);
-             cur_arg += 2;
-          }
-        else if (!strcmp("-dd", argv[cur_arg]))
-          {
-             sprintf(dat_path, "%s", argv[cur_arg + 1]);
-             cur_arg += 2;
-          }
-        ++cur_arg;
+        fprintf(stderr, "enventor [input file] [--to] "
+                "[--id image path] [--sd sound path] "
+                "[--fd font path] [--dd data path]\n");
+        exit(0);
      }
 
 defaults:
@@ -370,6 +366,39 @@ defaults:
         sprintf(edc_path, "%s", (const char *)tmp_path);
         eina_tmpstr_del(tmp_path);
      }
+   else
+     {
+        char *s = NULL;
+        EINA_LIST_FREE(id, s)
+          {
+             *img_path = eina_list_append(*img_path, eina_stringshare_add(s));
+             free(s);
+          }
+        id = NULL;
+        EINA_LIST_FREE(sd, s)
+          {
+             *snd_path = eina_list_append(*snd_path, eina_stringshare_add(s));
+             free(s);
+          }
+        sd = NULL;
+        EINA_LIST_FREE(fd, s)
+          {
+             *fnt_path = eina_list_append(*fnt_path, eina_stringshare_add(s));
+             free(s);
+          }
+        fd = NULL;
+        EINA_LIST_FREE(dd, s)
+          {
+             *dat_path = eina_list_append(*dat_path, eina_stringshare_add(s));
+             free(s);
+          }
+     }
+
+   ecore_getopt_list_free(id);
+   ecore_getopt_list_free(fd);
+   ecore_getopt_list_free(sd);
+   ecore_getopt_list_free(dd);
+
    return default_edc;
 }
 
@@ -377,14 +406,14 @@ static Eina_Bool
 config_data_set(app_data *ad, int argc, char **argv)
 {
    char edc_path[PATH_MAX] = { 0, };
-   char img_path[PATH_MAX] = { 0, };
-   char snd_path[PATH_MAX] = { 0, };
-   char fnt_path[PATH_MAX] = { 0, };
-   char dat_path[PATH_MAX] = { 0, };
+   Eina_List *img_path = NULL;
+   Eina_List *snd_path = NULL;
+   Eina_List *fnt_path = NULL;
+   Eina_List *dat_path = NULL;
    Eina_Bool template_new = EINA_FALSE;
 
-   Eina_Bool default_edc = args_dispatch(argc, argv, edc_path, img_path,
-                                         snd_path, fnt_path, dat_path,
+   Eina_Bool default_edc = args_dispatch(argc, argv, edc_path, &img_path,
+                                         &snd_path, &fnt_path, &dat_path,
                                          &template_new);
    config_init(edc_path, img_path, snd_path, fnt_path, dat_path);
    config_update_cb_set(config_update_cb, ad);
