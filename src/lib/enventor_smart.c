@@ -76,10 +76,12 @@ file_modified_cb(void *data, int type EINA_UNUSED, void *event)
 }
 
 static void
-edit_view_sync_cb(void *data, Eina_Stringshare *part_name,
-                  Eina_Stringshare *group_name)
+edit_view_sync_cb(void *data, Eina_Stringshare *state_name, double state_value,
+                  Eina_Stringshare *part_name, Eina_Stringshare *group_name)
 {
    Enventor_Object_Data *pd = data;
+   static Eina_Stringshare *prev_part_name = NULL;
+   
    if (pd->group_name != group_name)
      {
         view_data *vd = edj_mgr_view_get(group_name);
@@ -94,7 +96,26 @@ edit_view_sync_cb(void *data, Eina_Stringshare *part_name,
         evas_object_smart_callback_call(pd->obj, SIG_CURSOR_GROUP_CHANGED,
                                         (void *) group_name);
      }
-   view_part_highlight_set(VIEW_DATA, part_name);
+   if (edit_part_highlight_get(pd->ed))
+     view_part_highlight_set(VIEW_DATA, part_name);
+
+   if (!state_name)
+     {
+        view_part_state_set(VIEW_DATA, prev_part_name, "default", 0.0);
+        eina_stringshare_del(prev_part_name);
+        prev_part_name = NULL;
+        return;
+     }
+      
+   if ((part_name) && (part_name != prev_part_name))
+     {
+       view_part_state_set(VIEW_DATA, prev_part_name, "default", 0.0);
+       eina_stringshare_del(prev_part_name);
+       prev_part_name = NULL;
+     }
+
+   view_part_state_set(VIEW_DATA, part_name, state_name, state_value);
+   prev_part_name = part_name;
 }
 
 static void

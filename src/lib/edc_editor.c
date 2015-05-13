@@ -42,8 +42,8 @@ struct editor_s
    Ecore_Timer *syntax_color_timer;
    Ecore_Thread *syntax_color_thread;
 
-   void (*view_sync_cb)(void *data, Eina_Stringshare *part_name,
-                         Eina_Stringshare *group_name);
+   void (*view_sync_cb)(void *data, Eina_Stringshare *state_name, double state_value,
+                        Eina_Stringshare *part_name, Eina_Stringshare *group_name);
    void *view_sync_cb_data;
    int select_pos;
    double font_scale;
@@ -559,13 +559,14 @@ edit_cursor_double_clicked_cb(void *data, Evas_Object *obj,
 }
 
 static void
-cur_name_get_cb(void *data, Eina_Stringshare *part_name,
-                Eina_Stringshare *group_name)
+cur_name_get_cb(void *data, Eina_Stringshare *state_name, double state_value,
+                Eina_Stringshare *part_name, Eina_Stringshare *group_name)
 {
    edit_data *ed = data;
 
    if (ed->view_sync_cb)
-     ed->view_sync_cb(ed->view_sync_cb_data, part_name, group_name);
+     ed->view_sync_cb(ed->view_sync_cb_data, state_name, state_value,
+                      part_name, group_name);
 }
 
 static void
@@ -815,7 +816,7 @@ err:
                                    &max_line);
 
    if (ed->view_sync_cb)
-     ed->view_sync_cb(ed->view_sync_cb_data, NULL, group_name);
+     ed->view_sync_cb(ed->view_sync_cb_data, NULL, 0.0, NULL, group_name);
 
    return ret;
 }
@@ -834,8 +835,8 @@ edit_focused_cb(void *data, Evas_Object *obj EINA_UNUSED,
 
 void
 edit_view_sync_cb_set(edit_data *ed,
-                      void (*cb)(void *data, Eina_Stringshare *part_name,
-                                 Eina_Stringshare *group_name), void *data)
+                      void (*cb)(void *data, Eina_Stringshare *state_name, double state_value,
+                      Eina_Stringshare *part_name, Eina_Stringshare *group_name), void *data)
 {
    ed->view_sync_cb = cb;
    ed->view_sync_cb_data = data;
@@ -918,10 +919,7 @@ edit_syntax_color_partial_apply(edit_data *ed, double interval)
 void
 edit_view_sync(edit_data *ed)
 {
-   if (!ed->part_highlight)
-     parser_cur_group_name_get(ed->pd, ed->en_edit, cur_name_get_cb, ed);
-   else
-     parser_cur_name_get(ed->pd, ed->en_edit, cur_name_get_cb, ed);
+   parser_cur_state_get(ed->pd, ed->en_edit, cur_name_get_cb, ed);
 }
 
 void

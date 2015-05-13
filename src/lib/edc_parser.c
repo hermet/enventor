@@ -23,8 +23,10 @@ typedef struct cur_name_thread_data_s
    int cur_pos;
    const char *group_name;
    const char *part_name;
-   void (*cb)(void *data, Eina_Stringshare *part_name,
-              Eina_Stringshare *group_name);
+   const char *state_name;
+   double state_value;
+   void (*cb)(void *data, Eina_Stringshare *state_name, double state_value,
+              Eina_Stringshare *part_name, Eina_Stringshare *group_name);
    void *cb_data;
    parser_data *pd;
 } cur_name_td;
@@ -223,10 +225,162 @@ end:
 }
 
 static void
+cur_state_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
+{
+   const char *quot = QUOT_UTF8;
+   const char *description = "description";
+   const char *part = "part";
+   const char *parts = "parts";
+   const char *group = "group";
+   const int quot_len = QUOT_UTF8_LEN;
+   const int description_len = 11;  //strlen("description");
+   const int part_len = 4; //strlen("part");
+   const int parts_len = 5; //strlen("parts");
+   const int group_len = 5;  //strlen("group");
+
+   cur_name_td *td = data;
+   char *utf8 = td->utf8;
+   int cur_pos = td->cur_pos;
+   char *p = utf8;
+   char *end = utf8 + cur_pos;
+
+   int bracket = 0;
+   const char *group_name = NULL;
+   const char *part_name = NULL;
+   int group_name_len = 0;
+   int part_name_len = 0;
+
+   const char *description_name = NULL;
+   int description_name_len = 0;
+   const char *value = NULL;
+   int value_len = 0;
+   double value_convert = 0.0;
+
+   td->part_name =   NULL;
+   td->group_name =  NULL;
+   td->state_name =  NULL;
+
+   while (p <= end)
+     {
+        //Skip "" range
+        if (!strncmp(p, quot, quot_len))
+          {
+             p += quot_len;
+             p = strstr(p, quot);
+             if (!p) goto end;
+             p += quot_len;
+          }
+
+        if (*p == '{')
+          {
+             bracket++;
+             p++;
+             continue;
+          }
+
+        //Check whether outside of part or group
+        if ((*p == '}') && (p < end))
+          {
+             bracket--;
+             p++;
+
+             if (bracket == 1) group_name = NULL;
+             else if (bracket == 3) part_name = NULL;
+
+             continue;
+          }
+        //Check Part in
+        if (strncmp(p, parts, parts_len))
+          {
+             if (!strncmp(p, part, part_len))
+               {
+                  p += part_len;
+                  char *name_begin = strstr(p, quot);
+                  if (!name_begin) goto end;
+                  name_begin += quot_len;
+                  p = name_begin;
+                  char *name_end = strstr(p, quot);
+                  if (!name_end) goto end;
+                  part_name = name_begin;
+                  part_name_len = name_end - name_begin;
+                  p = name_end + quot_len;
+                  bracket++;
+                  continue;
+               }
+         }
+         if (!strncmp(p, description, description_len))
+           {
+              p += description_len;
+              char *name_begin = strstr(p, quot);
+              if (!name_begin) goto end;
+              name_begin += quot_len;
+              p = name_begin;
+              char *name_end = strstr(p, quot);
+              if (!name_end) goto end;
+              description_name = name_begin;
+              description_name_len = name_end - name_begin;
+              p = name_end + quot_len;
+              value = p;
+              bracket++;
+
+              char *value_end = strchr(value, ';');
+              char *value_buf = NULL;
+              while (value < value_end)
+                {
+                   if (isdigit(*value) || *value == '.')
+                     {
+                        value_len = value_end - value;
+                        value_buf = (char *)calloc(1, value_len);
+                        memcpy(value_buf, value, value_len);
+                        break;
+                     }
+                   value++;
+                }
+              value_convert = atof(value_buf);
+              free(value_buf);
+              continue;
+           }
+        //Check Group in
+        if (!strncmp(p, group, group_len))
+          {
+             p += group_len;
+             char *name_begin = strstr(p, quot);
+             if (!name_begin) goto end;
+             name_begin += quot_len;
+             p = name_begin;
+             char *name_end = strstr(p, quot);
+             if (!name_end) goto end;
+             group_name = name_begin;
+             group_name_len = name_end - name_begin;
+             p = name_end + quot_len;
+             bracket++;
+             continue;
+          }
+        p++;
+     }
+
+   if (part_name)
+     part_name = eina_stringshare_add_length(part_name, part_name_len);
+   if (group_name)
+     group_name = eina_stringshare_add_length(group_name, group_name_len);
+   if (description_name)
+     description_name = eina_stringshare_add_length(description_name, description_name_len);
+ 
+   td->part_name = part_name;
+   td->group_name = group_name;
+   td->state_name = description_name;
+   td->state_value = value_convert;
+
+end:
+   free(utf8);
+   td->utf8 = NULL;
+}
+
+static void
 cur_name_thread_end(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
    cur_name_td *td = data;
-   td->cb(td->cb_data, td->part_name, td->group_name);
+   td->cb(td->cb_data,td->state_name, td->state_value,  td->part_name, td->group_name);
    td->pd->cntd = NULL;
    free(td);
 }
@@ -1172,8 +1326,8 @@ end:
 
 void
 parser_cur_group_name_get(parser_data *pd, Evas_Object *entry,
-                          void (*cb)(void *data, Eina_Stringshare *part_name,
-                          Eina_Stringshare *group_name), void *data)
+                          void (*cb)(void *data, Eina_Stringshare *state_name, double state_value,
+                          Eina_Stringshare *part_name, Eina_Stringshare *group_name), void *data)
 {
    if (pd->cntd) ecore_thread_cancel(pd->cntd->thread);
 
@@ -1205,9 +1359,9 @@ parser_cur_group_name_get(parser_data *pd, Evas_Object *entry,
 }
 
 void
-parser_cur_name_get(parser_data *pd, Evas_Object *entry, void (*cb)(void *data,
-                    Eina_Stringshare *part_name, Eina_Stringshare *group_name),
-                    void *data)
+parser_cur_name_get(parser_data *pd, Evas_Object *entry,
+                    void (*cb)(void *data, Eina_Stringshare *state_name, double state_value,
+                    Eina_Stringshare *part_name, Eina_Stringshare *group_name), void *data)
 {
    if (pd->cntd) ecore_thread_cancel(pd->cntd->thread);
 
@@ -1233,6 +1387,40 @@ parser_cur_name_get(parser_data *pd, Evas_Object *entry, void (*cb)(void *data,
    td->cb_data = data;
 
    td->thread = ecore_thread_run(cur_name_thread_blocking,
+                                 cur_name_thread_end,
+                                 cur_name_thread_cancel,
+                                 td);
+}
+
+void
+parser_cur_state_get(parser_data *pd, Evas_Object *entry,
+                     void (*cb)(void *data, Eina_Stringshare *state_name, double state_value,
+                     Eina_Stringshare *part_name, Eina_Stringshare *group_name), void *data)
+{
+   if (pd->cntd) ecore_thread_cancel(pd->cntd->thread);
+
+   const char *text = elm_entry_entry_get(entry);
+   if (!text) return;
+
+   char *utf8 = elm_entry_markup_to_utf8(text);
+   if (!utf8) return;
+
+   cur_name_td *td = calloc(1, sizeof(cur_name_td));
+   if (!td)
+     {
+        free(utf8);
+        EINA_LOG_ERR("Failed to allocate Memory!");
+        return;
+     }
+
+   td->pd = pd;
+   pd->cntd = td;
+   td->utf8 = utf8;
+   td->cur_pos = elm_entry_cursor_pos_get(entry);
+   td->cb = cb;
+   td->cb_data = data;
+
+   td->thread = ecore_thread_run(cur_state_thread_blocking,
                                  cur_name_thread_end,
                                  cur_name_thread_cancel,
                                  td);

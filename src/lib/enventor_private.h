@@ -39,6 +39,7 @@ typedef struct syntax_helper_s syntax_helper;
 typedef struct indent_s indent_data;
 typedef struct redoundo_s redoundo_data;
 typedef struct editor_s edit_data;
+typedef struct state_info_s state_info;
 
 typedef enum attr_value_type
 {
@@ -65,6 +66,13 @@ struct attr_value_s
    Eina_Bool program : 1;
 };
 
+struct state_info_s
+{
+   double value;
+   const char *part;
+   const char *state;
+};
+
 /* auto_comp */
 void autocomp_init(void);
 void autocomp_term(void);
@@ -88,8 +96,9 @@ Eina_Bool color_ready(color_data *cd);
 parser_data *parser_init(void);
 void parser_term(parser_data *pd);
 Eina_Stringshare *parser_first_group_name_get(parser_data *pd, Evas_Object *entry);
-void parser_cur_name_get(parser_data *pd, Evas_Object *entry, void (*cb)(void *data, Eina_Stringshare *part_name, Eina_Stringshare *group_name), void *data);
-void parser_cur_group_name_get(parser_data *pd, Evas_Object *entry, void (*cb)(void *data, Eina_Stringshare *part_name, Eina_Stringshare *group_name), void *data);
+void parser_cur_name_get(parser_data *pd, Evas_Object *entry, void (*cb)(void *data, Eina_Stringshare *state_name, double state_value, Eina_Stringshare *part_name, Eina_Stringshare *group_name), void *data);
+void parser_cur_group_name_get(parser_data *pd, Evas_Object *entry, void (*cb)(void *data, Eina_Stringshare *state_name, double state_value, Eina_Stringshare *part_name, Eina_Stringshare *group_name), void *data);
+void parser_cur_state_get(parser_data *pd, Evas_Object *entry, void (*cb)(void *data, Eina_Stringshare *state_name, double state_value, Eina_Stringshare *part_name, Eina_Stringshare *group_name), void *data);
 Eina_Stringshare *parser_cur_name_fast_get(Evas_Object *entry, const char *scope);
 Eina_Bool parser_type_name_compare(parser_data *pd, const char *str);
 attr_value *parser_attribute_get(parser_data *pd, const char *text, const char *cur, const char *selected);
@@ -103,6 +112,7 @@ int parser_end_of_parts_block_pos_get(const Evas_Object *entry, const char *grou
 Eina_Bool parser_images_pos_get(const Evas_Object *entry, int *ret);
 Eina_Bool parser_styles_pos_get(const Evas_Object *entry, int *ret);
 const char *parser_colon_pos_get(parser_data *pd EINA_UNUSED, const char *cur);
+Eina_Bool parser_state_info_get(Evas_Object *entry, state_info *info);
 
 
 /* syntax helper */
@@ -182,6 +192,7 @@ Eina_List *view_programs_list_get(view_data *vd);
 Eina_List *view_part_states_list_get(view_data *vd, const char *part);
 Eina_List *view_program_targets_get(view_data *vd, const char *prog);
 void view_string_list_free(Eina_List *list);
+void view_part_state_set(view_data *vd, const char *part, const char *description, const double state);
 
 
 /* template */
@@ -206,7 +217,7 @@ Eina_Bool edit_saved_get(edit_data *ed);
 void edit_saved_set(edit_data *ed, Eina_Bool saved);
 Eina_Bool edit_save(edit_data *ed, const char *file);
 void edit_new(edit_data* ed);
-void edit_view_sync_cb_set(edit_data *ed, void (*cb)(void *data, Eina_Stringshare *part_name, Eina_Stringshare *group_name), void *data);
+void edit_view_sync_cb_set(edit_data *ed, void (*cb)(void *data, Eina_Stringshare *state_name, double state_value, Eina_Stringshare *part_name, Eina_Stringshare *group_name), void *data);
 void edit_view_sync(edit_data *ed);
 void edit_font_scale_set(edit_data *ed, double font_scale);
 double edit_font_scale_get(edit_data *ed);
