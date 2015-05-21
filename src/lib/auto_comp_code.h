@@ -55,6 +55,12 @@ const char *AUTOCOMP_TYPE[AUTOCOMP_TYPE_LINE_CNT] =
    "type: IMAGE;",
 };
 
+#define AUTOCOMP_TYPE_PRECISE_IS_INSIDE_CNT 1
+const char *AUTOCOMP_TYPE[AUTOCOMP_TYPE_PRECISE_IS_INSIDE_CNT] =
+{
+   "precise_is_inside: ;",
+};
+
 #define AUTOCOMP_INHERIT_LINE_CNT 1
 const char *AUTOCOMP_INHERIT[AUTOCOMP_INHERIT_LINE_CNT] =
 {
@@ -437,4 +443,4 @@ const char *AUTOCOMP_ANTI_ALIAS[AUTOCOMP_ANTI_ALIAS_LINE_CNT] =
    "anti_alias: ;",
 };
 
-#define COMPSET_CNT 67
+#define COMPSET_CNT 68
