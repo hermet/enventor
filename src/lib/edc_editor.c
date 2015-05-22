@@ -101,6 +101,33 @@ visible_text_region_get(edit_data *ed, int *from_line, int *to_line)
 }
 
 static void
+part_state_update(edit_data *ed)
+{
+   static Eina_Stringshare *part_name = NULL;
+   
+   state_info info = {0, NULL, NULL};
+   if (!parser_state_info_get(ed->en_edit, &info))
+     {
+        view_part_state_set(VIEW_DATA, part_name, "default", 0.0);
+        eina_stringshare_del(part_name);
+        part_name = NULL;
+        return;
+     }
+      
+   if ((part_name) && (part_name != info.part))
+     {
+       view_part_state_set(VIEW_DATA, part_name, "default", 0.0);
+       eina_stringshare_del(part_name);
+       part_name = NULL;
+     }
+
+   view_part_state_set(VIEW_DATA, info.part, info.state, info.value);
+   part_name = info.part;
+
+   eina_stringshare_del(info.state);
+}
+
+static void
 entry_recover(edit_data *ed, int cursor_pos)
 {
    elm_entry_calc_force(ed->en_edit);
@@ -624,6 +651,7 @@ edit_cursor_changed_cb(void *data, Evas_Object *obj EINA_UNUSED,
 {
    edit_data *ed = data;
    cur_line_pos_set(ed, EINA_FALSE);
+   part_state_update(ed);
 }
 
 static void

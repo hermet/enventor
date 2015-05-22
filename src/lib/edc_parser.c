@@ -1295,6 +1295,87 @@ parser_first_group_name_get(parser_data *pd EINA_UNUSED, Evas_Object *entry)
    return NULL;
 }
 
+Eina_Bool
+parser_state_info_get(Evas_Object *entry, state_info *info)
+{
+   if (!info) return EINA_FALSE;
+
+   info->part = parser_cur_name_fast_get(entry, "part");
+   if (!info->part) return EINA_FALSE;
+
+   const char *text = elm_entry_entry_get(entry);
+   if (!text) return EINA_FALSE;
+
+   char *utf8 = elm_entry_markup_to_utf8(text);
+   if (!utf8) return EINA_FALSE;
+
+   int cur_pos = elm_entry_cursor_pos_get(entry);
+
+   char *p = utf8;
+   char *end = utf8 + cur_pos;
+
+   const char *name = NULL;
+   int name_len = 0;
+
+   const char *value = NULL;
+   int value_len = 0;
+   char *value_buf = NULL;;    
+
+   while (p <= end)
+     {
+        //Skip "" range
+        if (!strncmp(p, QUOT_UTF8, QUOT_UTF8_LEN))
+          {
+             p += QUOT_UTF8_LEN;
+             p = strstr(p, QUOT_UTF8);
+             if (!p) goto end;
+             p += QUOT_UTF8_LEN;
+          }
+
+        //11 - length of "description" keyword
+        if (!strncmp(p, "description", 11))
+          {
+             p += 11;
+             char *name_begin = strstr(p, QUOT_UTF8);
+             if (!name_begin) goto end;
+             name_begin += QUOT_UTF8_LEN;
+             p = name_begin;
+             char *name_end = strstr(p, QUOT_UTF8);
+             if (!name_end) goto end;
+             name = name_begin;
+             name_len = name_end - name_begin;
+             p = name_end + QUOT_UTF8_LEN;
+             value = p;
+             continue;
+          }
+
+        p++;
+     }
+
+   if (!value) goto end;
+   char *value_end = strchr(value, ';');
+   while (value < value_end)
+     {
+        if (isdigit(*value) || *value == '.')
+          {
+             value_len = value_end - value;
+             value_buf = (char *)calloc(1, value_len);
+             memcpy(value_buf, value, value_len);
+             break;
+          }
+        value++;
+     }
+
+   info->state = eina_stringshare_add_length(name, name_len);
+   info->value = atof(value_buf);
+   free(value_buf);
+
+end:
+   free(utf8);
+   if (!info->state) return EINA_FALSE;
+   return EINA_TRUE;
+}
+
 Eina_List *
 parser_states_filtered_name_get(Eina_List *states)
 {
