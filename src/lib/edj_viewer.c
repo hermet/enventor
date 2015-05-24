@@ -558,10 +558,3 @@ view_string_list_free(Eina_List *list)
 {
    edje_edit_string_list_free(list);
 }
-
-void
-view_part_state_set(view_data *vd, const char *part, const char *description, const double state)
-{
-   if (!vd) return;
-   edje_edit_part_selected_state_set(vd->layout, part, description, state);
-}

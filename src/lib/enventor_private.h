@@ -39,7 +39,6 @@ typedef struct syntax_helper_s syntax_helper;
 typedef struct indent_s indent_data;
 typedef struct redoundo_s redoundo_data;
 typedef struct editor_s edit_data;
-typedef struct state_info_s state_info;
 
 typedef enum attr_value_type
 {
@@ -64,13 +63,6 @@ struct attr_value_s
    const char *prepend_str;
    const char *append_str;
    Eina_Bool program : 1;
-};
-
-struct state_info_s
-{
-   double value;
-   const char *part;
-   const char *state;
 };
 
 /* auto_comp */
@@ -111,7 +103,6 @@ int parser_end_of_parts_block_pos_get(const Evas_Object *entry, const char *grou
 Eina_Bool parser_images_pos_get(const Evas_Object *entry, int *ret);
 Eina_Bool parser_styles_pos_get(const Evas_Object *entry, int *ret);
 const char *parser_colon_pos_get(parser_data *pd EINA_UNUSED, const char *cur);
-Eina_Bool parser_state_info_get(Evas_Object *entry, state_info *info);
 
 
 /* syntax helper */
@@ -191,7 +182,6 @@ Eina_List *view_programs_list_get(view_data *vd);
 Eina_List *view_part_states_list_get(view_data *vd, const char *part);
 Eina_List *view_program_targets_get(view_data *vd, const char *prog);
 void view_string_list_free(Eina_List *list);
-void view_part_state_set(view_data *vd, const char *part, const char *description, const double state);
 
 
 /* template */
