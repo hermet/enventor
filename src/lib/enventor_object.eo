@@ -18,7 +18,7 @@ class Enventor.Object (Elm.Widget, Efl.File) {
             @ingroup Enventor */
          }
          values {
-            Eina_Bool part_highlight; /*@ ... */
+            part_highlight: bool; /*@ ... */
          }
       }
       @property live_view_scale {
@@ -38,7 +38,7 @@ class Enventor.Object (Elm.Widget, Efl.File) {
             @ingroup Enventor */
          }
          values {
-            double scale; /*@ ... */
+            scale: double; /*@ ... */
          }
       }
       @property dummy_swallow {
@@ -58,7 +58,7 @@ class Enventor.Object (Elm.Widget, Efl.File) {
             @ingroup Enventor */
          }
          values {
-            Eina_Bool dummy_swallow; /*@ ... */
+            dummy_swallow: bool; /*@ ... */
          }
       }
       @property auto_complete {
@@ -78,7 +78,7 @@ class Enventor.Object (Elm.Widget, Efl.File) {
             @ingroup Enventor */
          }
          values {
-            Eina_Bool auto_complete; /*@ ... */
+            auto_complete: bool; /*@ ... */
          }
       }
       @property auto_indent {
@@ -98,7 +98,7 @@ class Enventor.Object (Elm.Widget, Efl.File) {
             @ingroup Enventor */
          }
          values {
-            Eina_Bool auto_indent; /*@ ... */
+            auto_indent: bool; /*@ ... */
          }
       }
       @property ctxpopup {
@@ -118,9 +118,9 @@ class Enventor.Object (Elm.Widget, Efl.File) {
             @ingroup Enventor */
          }
          values {
-            Eina_Bool ctxpopup; /*@ ... */
+            ctxpopup: bool; /*@ ... */
          }
-		}
+      }
       @property focus {
          set {
             /*@
@@ -138,7 +138,7 @@ class Enventor.Object (Elm.Widget, Efl.File) {
             @ingroup Enventor */
          }
          values {
-            Eina_Bool focus; /*@ ... */
+            focus: bool; /*@ ... */
          }
       }
       @property modified {
@@ -158,7 +158,7 @@ class Enventor.Object (Elm.Widget, Efl.File) {
             @ingroup Enventor */
          }
          values {
-            Eina_Bool modified; /*@ ... */
+            modified: bool; /*@ ... */
          }
       }
       @property font_scale {
@@ -178,7 +178,7 @@ class Enventor.Object (Elm.Widget, Efl.File) {
             @ingroup Enventor */
          }
          values {
-            double font_scale; /*@ ... */
+            font_scale: double; /*@ ... */
          }
       }
       @property linenumber {
@@ -198,7 +198,7 @@ class Enventor.Object (Elm.Widget, Efl.File) {
             @ingroup Enventor */
          }
          values {
-            bool linenumber; /*@ ... */
+            linenumber: bool; /*@ ... */
          }
       }
       path_set {
@@ -210,8 +210,8 @@ class Enventor.Object (Elm.Widget, Efl.File) {
          @ingroup Enventor */
          return: Eina_Bool;
          params {
-            @in Enventor_Path_Type type; /*@ ... */
-            @in const(Eina_List) *pathes; /*@ ... */
+            @in type: Enventor_Path_Type; /*@ ... */
+            @in pathes: const(Eina_List) *; /*@ ... */
          }
       }
       path_get {
@@ -223,7 +223,7 @@ class Enventor.Object (Elm.Widget, Efl.File) {
          @ingroup Enventor */
          return: const(Eina_List) *;
          params {
-            @in Enventor_Path_Type type; /*@ ... */
+            @in type: Enventor_Path_Type; /*@ ... */
          }
       }
       max_line_get {
@@ -251,7 +251,7 @@ class Enventor.Object (Elm.Widget, Efl.File) {
          @see
          @ingroup Enventor */
          params {
-            @in const(char) *text; /*@ ... */
+            @in text: const(char) *; /*@ ... */
          }
       }
       selection_get {
@@ -280,7 +280,7 @@ class Enventor.Object (Elm.Widget, Efl.File) {
          @see
          @ingroup Enventor */
          params {
-            @in int position; /*@ ... */
+            @in position: int; /*@ ... */
          }
       }
       select_none {
@@ -297,8 +297,8 @@ class Enventor.Object (Elm.Widget, Efl.File) {
          @see
          @ingroup Enventor */
          params {
-            @in int start; /*@ ... */
-            @in int end; /*@ ... */
+            @in start: int; /*@ ... */
+            @in end: int; /*@ ... */
          }
       }
       line_delete {
@@ -315,9 +315,9 @@ class Enventor.Object (Elm.Widget, Efl.File) {
          @warning
          @see
          @ingroup Enventor */
-         return: Eina_Bool;
+         return: bool;
          params {
-            @in const(char) *file; /*@ ... */
+            @in file: const(char) *; /*@ ... */
          }
       }
       live_view_get {
@@ -335,7 +335,7 @@ class Enventor.Object (Elm.Widget, Efl.File) {
          @see
          @ingroup Enventor */
          params {
-            @in int line; /*@ ... */
+            @in line: int; /*@ ... */
          }
       }
       syntax_color_set {
@@ -345,8 +345,8 @@ class Enventor.Object (Elm.Widget, Efl.File) {
          @see
          @ingroup Enventor */
          params {
-            @in Enventor_Syntax_Color_Type color_type; /*@ ... */
-            @in const(char) *val; /*@ ... */
+            @in color_type: Enventor_Syntax_Color_Type; /*@ ... */
+            @in val: const(char) *; /*@ ... */
          }
       }
       syntax_color_get {
@@ -358,7 +358,7 @@ class Enventor.Object (Elm.Widget, Efl.File) {
          @ingroup Enventor */
          return: const(char) *;
          params {
-            @in Enventor_Syntax_Color_Type color_type; /*@ ... */
+            @in color_type: Enventor_Syntax_Color_Type; /*@ ... */
          }
       }
       syntax_color_full_apply {
@@ -368,7 +368,7 @@ class Enventor.Object (Elm.Widget, Efl.File) {
          @see
          @ingroup Enventor */
          params {
-            @in Eina_Bool force; /*@ ... */
+            @in force: bool; /*@ ... */
          }
       }
       syntax_color_partial_apply {
@@ -378,7 +378,7 @@ class Enventor.Object (Elm.Widget, Efl.File) {
          @see
          @ingroup Enventor */
          params {
-            @in double interval; /*@ ... */
+            @in interval: double; /*@ ... */
          }
       }
       template_insert {
@@ -390,9 +390,9 @@ class Enventor.Object (Elm.Widget, Efl.File) {
          @ingroup Enventor */
          return: Eina_Bool;
          params {
-            @in Enventor_Template_Insert_Type insert_type; /*@ ... */
-            @in char *syntax; /*@ ... */
-            @in size_t n;
+            @in insert_type: Enventor_Template_Insert_Type; /*@ ... */
+            @in syntax: char *; /*@ ... */
+            @in n: size_t;
          }
       }
       template_part_insert {
@@ -404,14 +404,14 @@ class Enventor.Object (Elm.Widget, Efl.File) {
          @ingroup Enventor */
          return: Eina_Bool;
          params {
-            @in Edje_Part_Type type; /*@ ... */
-            @in Enventor_Template_Insert_Type insert_type; /*@ ... */
-            @in float rel1_x; /*@ ... */
-            @in float rel1_y; /*@ ... */
-            @in float rel2_x; /*@ ... */
-            @in float rel2_y; /*@ ... */
-            @in char *syntax; /*@ ... */
-            @in size_t n;
+            @in type: Edje_Part_Type; /*@ ... */
+            @in insert_type: Enventor_Template_Insert_Type; /*@ ... */
+            @in rel1_x: float; /*@ ... */
+            @in rel1_y: float; /*@ ... */
+            @in rel2_x: float; /*@ ... */
+            @in rel2_y: float; /*@ ... */
+            @in syntax: char *; /*@ ... */
+            @in n: size_t;
          }
       }
       ctxpopup_visible_get {
@@ -420,7 +420,7 @@ class Enventor.Object (Elm.Widget, Efl.File) {
          @warning
          @see
          @ingroup Enventor */
-         return: Eina_Bool;
+         return: bool;
       }
       ctxpopup_dismiss {
          /*@
@@ -436,7 +436,7 @@ class Enventor.Object (Elm.Widget, Efl.File) {
          @see
          @ingroup Enventor */
          params {
-            @in Eina_Bool disabled; /*@ ... */
+            @in disabled: bool; /*@ ... */
          }
       }
       live_view_size_set {
@@ -446,8 +446,8 @@ class Enventor.Object (Elm.Widget, Efl.File) {
          @see
          @ingroup Enventor */
          params {
-            @in Evas_Coord w; /*@ ... */
-            @in Evas_Coord h; /*@ ... */
+            @in w: Evas_Coord; /*@ ... */
+            @in h: Evas_Coord; /*@ ... */
          }
       }
       live_view_size_get {
@@ -457,8 +457,8 @@ class Enventor.Object (Elm.Widget, Efl.File) {
          @see
          @ingroup Enventor */
          params {
-            @in Evas_Coord *w; /*@ ... */
-            @in Evas_Coord *h; /*@ ... */
+            @in w: Evas_Coord *; /*@ ... */
+            @in h: Evas_Coord *; /*@ ... */
          }
       }
       redo {
@@ -468,7 +468,7 @@ class Enventor.Object (Elm.Widget, Efl.File) {
          @warning
          @see
          @ingroup Enventor */
-         return: Eina_Bool;
+         return: bool;
       }
       undo {
          /*@
@@ -477,7 +477,7 @@ class Enventor.Object (Elm.Widget, Efl.File) {
          @warning
          @see
          @ingroup Enventor */
-         return: Eina_Bool;
+         return: bool;
       }
       font_set {
          /*@
@@ -486,8 +486,8 @@ class Enventor.Object (Elm.Widget, Efl.File) {
          @see
          @ingroup Enventor */
          params {
-            @in const(char) *font_name; /*@ ... */
-            @in const(char) *font_style; /*@ ... */
+            @in font_name: const(char) *; /*@ ... */
+            @in font_style: const(char) *; /*@ ... */
          }
       }
       font_get {
@@ -497,8 +497,8 @@ class Enventor.Object (Elm.Widget, Efl.File) {
          @see
          @ingroup Enventor */
          params {
-            @in const(char) **font_name; /*@ ... */
-            @in const(char) **font_style; /*@ ... */
+            @in font_name: const(char) **; /*@ ... */
+            @in font_style: const(char) **; /*@ ... */
          }
       }
    }
