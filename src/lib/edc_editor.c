@@ -1328,6 +1328,10 @@ edit_disabled_set(edit_data *ed, Eina_Bool disabled)
      }
    else
      elm_object_signal_emit(ed->layout, "elm,state,enabled", "");
+
+   //Turn off the part highlight in case of disable.
+   if (disabled) view_part_highlight_set(VIEW_DATA, NULL);
+   else if (ed->part_highlight) edit_view_sync(ed);
 }
 
 void
