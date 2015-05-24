@@ -55,6 +55,7 @@ typedef struct live_editor_s
    Evas_Object *ctrl_pt[Ctrl_Pt_Cnt];
    Evas_Object *align_line[Align_Line_Cnt];
    Evas_Object *info_text[Info_Text_Cnt];
+   Evas_Coord_Point move_delta;
    double half_ctrl_size;
 
    struct {
@@ -701,11 +702,8 @@ layout_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
    if (ev->cur.canvas.y > (y + h)) return;
    if (y > ev->cur.canvas.y) return;
 
-   double tmp;
-   tmp = ((double) (ev->cur.canvas.x - ev->prev.canvas.x) * 0.5);
-   x = round(((double) x) + tmp);
-   tmp = ((double) (ev->cur.canvas.y - ev->prev.canvas.y) * 0.5);
-   y = round(((double) y) + tmp);
+   x = ev->cur.canvas.x - ld->move_delta.x;
+   y = ev->cur.canvas.y - ld->move_delta.y;
 
    //limit to live view boundary
    if (lx > x) x = lx;
@@ -765,6 +763,13 @@ layout_mouse_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
         live_edit_cancel();
         return;
      }
+
+   /* Store (cursor - obj position) distance.
+      And keep this distance while obj is moving. */
+   Evas_Coord x, y;
+   evas_object_geometry_get(obj, &x, &y, NULL, NULL);
+   ld->move_delta.x = ev->canvas.x - x;
+   ld->move_delta.y = ev->canvas.y - y;
 
    evas_object_event_callback_add(obj, EVAS_CALLBACK_MOUSE_MOVE,
                                   layout_mouse_move_cb, data);
