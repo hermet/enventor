@@ -279,28 +279,16 @@ config_init(const char *edc_path, Eina_List *edc_img_path,
    if (edc_path[0]) config_edc_path_set(edc_path);
 
    if (edc_img_path)
-     {
-        EINA_LIST_FREE(cd->edc_img_path_list, s) eina_stringshare_del(s);
-        g_cd->edc_img_path_list = edc_img_path;
-     }
+     g_cd->edc_img_path_list = edc_img_path;
 
    if (edc_snd_path)
-     {
-        EINA_LIST_FREE(cd->edc_snd_path_list, s) eina_stringshare_del(s);
-        g_cd->edc_snd_path_list = edc_snd_path;
-     }
+     g_cd->edc_snd_path_list = edc_snd_path;
 
    if (edc_fnt_path)
-     { 
-        EINA_LIST_FREE(cd->edc_fnt_path_list, s) eina_stringshare_del(s);
-        g_cd->edc_fnt_path_list = edc_fnt_path;
-     }
+     g_cd->edc_fnt_path_list = edc_fnt_path;
 
    if (edc_dat_path)
-     {
-        EINA_LIST_FREE(cd->edc_dat_path_list, s) eina_stringshare_del(s);
-        g_cd->edc_dat_path_list = edc_dat_path;
-     }
+     g_cd->edc_dat_path_list = edc_dat_path;
 
 }
 
