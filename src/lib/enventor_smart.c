@@ -81,7 +81,9 @@ edit_view_sync_cb(void *data, Eina_Stringshare *state_name, double state_value,
 {
    Enventor_Object_Data *pd = data;
    static Eina_Stringshare *prev_part_name = NULL;
-   
+
+   edj_mgr_all_views_reload();
+
    if (pd->group_name != group_name)
      {
         view_data *vd = edj_mgr_view_get(group_name);

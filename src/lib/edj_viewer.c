@@ -389,6 +389,12 @@ view_obj_get(view_data *vd)
 }
 
 void
+view_obj_need_reload_set(view_data *vd)
+{
+   vd->edj_reload_need = EINA_TRUE;
+}
+
+void
 view_program_run(view_data *vd, const char *program)
 {
    if (!vd) return;

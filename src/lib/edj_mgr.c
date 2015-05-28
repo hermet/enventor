@@ -238,3 +238,15 @@ edj_mgr_view_scale_get(void)
    return em->view_scale;
 }
 
+void
+edj_mgr_all_views_reload(void)
+{
+   edj_mgr *em = g_em;
+   if (!em) return;
+   Eina_List *l = NULL;
+   edj_data *edj = NULL;
+
+   EINA_LIST_FOREACH(em->edjs, l, edj)
+     view_obj_need_reload_set(edj->vd);
+}
+

@@ -160,6 +160,7 @@ Eina_Bool edj_mgr_reload_need_get(void);
 void edj_mgr_clear(void);
 void edj_mgr_view_scale_set(double scale);
 double edj_mgr_view_scale_get(void);
+void edj_mgr_all_views_reload(void);
 
 
 /* redoundo */
@@ -193,6 +194,7 @@ Eina_List *view_part_states_list_get(view_data *vd, const char *part);
 Eina_List *view_program_targets_get(view_data *vd, const char *prog);
 void view_string_list_free(Eina_List *list);
 void view_part_state_set(view_data *vd, const char *part, const char *description, const double state);
+void view_obj_need_reload_set(view_data *vd);
 
 
 /* template */
