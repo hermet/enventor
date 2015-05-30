@@ -57,6 +57,7 @@ group "syntax_color_group" struct {
             value "key" string: "table";
             value "key" string: "text ";
             value "key" string: "text.";
+            value "key" string: "zoom";
          }
       }
       group "color" struct {
