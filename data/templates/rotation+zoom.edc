@@ -14,9 +14,11 @@ collections {
             }
             description { state: "rotated" 0.0;
                inherit: "default" 0.0;
-               map.rotation.z: 360;
-               map.zoom.x: 0.25;
-               map.zoom.y: 0.25;
+               map {
+                  rotation.z: 360;
+                  zoom.x: 0.25;
+                  zoom.y: 0.25;
+               }
             }
          }
       }
