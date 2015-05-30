@@ -10,6 +10,8 @@ files_DATA = basic.edc \
              clip.edj \
              empty.edc \
              empty.edj \
+             group.edc \
+             group.edj \
              image.edc \
              image.edj \
              map.edc \
@@ -63,6 +65,9 @@ rect.edj: Makefile rect.edc
 
 rotation+zoom.edj: Makefile rotation+zoom.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/rotation+zoom.edc $(builddir)/rotation+zoom.edj
+
+group.edj: Makefile group.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/group.edc $(builddir)/group.edj
 
 image.edj: Makefile image.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/image.edc $(builddir)/image.edj
