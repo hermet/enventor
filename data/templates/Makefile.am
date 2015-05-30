@@ -20,6 +20,8 @@ files_DATA = basic.edc \
              proxy.edj \
              rect.edc \
              rect.edj \
+             rotation+zoom.edc \
+             rotation+zoom.edj \
              sound.edc \
              sound.edj \
              spacer.edc \
@@ -58,6 +60,9 @@ tween.edj: Makefile tween.edc
 
 rect.edj: Makefile rect.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/rect.edc $(builddir)/rect.edj
+
+rotation+zoom.edj: Makefile rotation+zoom.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/rotation+zoom.edc $(builddir)/rotation+zoom.edj
 
 image.edj: Makefile image.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/image.edc $(builddir)/image.edj
