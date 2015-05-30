@@ -13,10 +13,6 @@ collections {
                aspect: 1 1;
                aspect_preference: BOTH;
             }
-            description { state: "hide" 0.0;
-               inherit: "default" 0.0;
-               color: 255 255 255 127;
-            }
          }
          part { name: "rect";
             type: RECT;
@@ -24,6 +20,11 @@ collections {
                rel1.relative: 0.5 0.0;
                rel2.relative: 1.0 0.5;
                color: 0 136 170 255;
+            }
+            description { state: "clicked" 0.0;
+               rel1.relative: 0.65 0.15;
+               rel2.relative: 0.85 0.35;
+               color: 170 136 0 255;
             }
          }
          part { name: "text";
@@ -57,15 +58,15 @@ collections {
       programs {
          program { name: "mouse_down";
             signal: "mouse,down,1";
-            source: "logo";
-            action: STATE_SET "hide" 0.0;
-            target: "logo";
+            source: "rect";
+            action: STATE_SET "clicked" 0.0;
+            target: "rect";
          }
          program { name: "mouse_up";
             signal: "mouse,up,1";
-            source: "logo";
+            source: "rect";
             action: STATE_SET "default" 0.0;
-            target: "logo";
+            target: "rect";
          }
       }
 */
