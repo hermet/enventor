@@ -364,33 +364,31 @@ defaults:
         sprintf(edc_path, "%s", (const char *)tmp_path);
         eina_tmpstr_del(tmp_path);
      }
-   else
-     {
-        char *s = NULL;
-        EINA_LIST_FREE(id, s)
-          {
-             *img_path = eina_list_append(*img_path, eina_stringshare_add(s));
-             free(s);
-          }
-        id = NULL;
-        EINA_LIST_FREE(sd, s)
-          {
-             *snd_path = eina_list_append(*snd_path, eina_stringshare_add(s));
-             free(s);
-          }
-        sd = NULL;
-        EINA_LIST_FREE(fd, s)
-          {
-             *fnt_path = eina_list_append(*fnt_path, eina_stringshare_add(s));
-             free(s);
-          }
-        fd = NULL;
-        EINA_LIST_FREE(dd, s)
-          {
-             *dat_path = eina_list_append(*dat_path, eina_stringshare_add(s));
-             free(s);
-          }
-     }
+
+     char *s = NULL;
+     EINA_LIST_FREE(id, s)
+       {
+          *img_path = eina_list_append(*img_path, eina_stringshare_add(s));
+          free(s);
+       }
+     id = NULL;
+     EINA_LIST_FREE(sd, s)
+       {
+          *snd_path = eina_list_append(*snd_path, eina_stringshare_add(s));
+          free(s);
+       }
+     sd = NULL;
+     EINA_LIST_FREE(fd, s)
+       {
+          *fnt_path = eina_list_append(*fnt_path, eina_stringshare_add(s));
+          free(s);
+       }
+     fd = NULL;
+     EINA_LIST_FREE(dd, s)
+       {
+          *dat_path = eina_list_append(*dat_path, eina_stringshare_add(s));
+          free(s);
+       }
 
    ecore_getopt_list_free(id);
    ecore_getopt_list_free(fd);
