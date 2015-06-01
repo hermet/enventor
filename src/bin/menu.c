@@ -392,6 +392,8 @@ fileselector_save_done_cb(void *data, Evas_Object *obj, void *event_info)
 {
    menu_data *md = data;
    const char *selected = event_info;
+   Eina_Bool is_edc = EINA_FALSE;
+   Eina_Bool is_edj = EINA_FALSE;
 
    eina_stringshare_refplace(&(md->last_accessed_path),
                             elm_fileselector_path_get(obj));
@@ -402,13 +404,14 @@ fileselector_save_done_cb(void *data, Evas_Object *obj, void *event_info)
         return;
      }
 
-   //Filter to read only edc extension file.
-   char *ext = strrchr(selected, '.');
-   if (!ext || strcmp(ext, ".edc"))
+   //Filter to read only edc or edj extensions file.
+   is_edc = eina_str_has_extension(selected, "edc");
+   is_edj = eina_str_has_extension(selected, "edj");
+   if (!is_edc && !is_edj)
      {
         elm_object_part_text_set(md->fileselector_layout,
                                  "elm.text.msg",
-                                 "Support only .edc file.");
+                                 "Support only .edc or .edj file.");
         elm_object_signal_emit(md->fileselector_layout,
                                "elm,action,msg,show", "");
         return;
@@ -424,24 +427,36 @@ fileselector_save_done_cb(void *data, Evas_Object *obj, void *event_info)
         return;
      }
 
-   config_edc_path_set(selected);
-
-   Eina_List *list = eina_list_append(NULL, config_edj_path_get());
-   enventor_object_path_set(md->enventor, ENVENTOR_OUT_EDJ, list);
-   eina_list_free(list);
-
-   if (!enventor_object_save(md->enventor, selected))
+   if (is_edc)
      {
-        char buf[PATH_MAX];
-        snprintf(buf, sizeof(buf), "Failed to save: %s.", selected);
-        elm_object_part_text_set(md->fileselector_layout,
-                                 "elm.text.msg", buf);
-        elm_object_signal_emit(md->fileselector_layout,
-                               "elm,action,msg,show", "");
-        return;
+        config_edc_path_set(selected);
+        Eina_List *list = eina_list_append(NULL, config_edj_path_get());
+        enventor_object_path_set(md->enventor, ENVENTOR_OUT_EDJ, list);
+        eina_list_free(list);
+        if (!enventor_object_save(md->enventor, selected))
+          {
+             char buf[PATH_MAX];
+             snprintf(buf, sizeof(buf), "Failed to save: %s.", selected);
+             elm_object_part_text_set(md->fileselector_layout,
+                                      "elm.text.msg", buf);
+             elm_object_signal_emit(md->fileselector_layout,
+                                    "elm,action,msg,show", "");
+             return;
+          }
+        enventor_object_file_set(md->enventor, selected);
+        base_title_set(selected);
      }
-   enventor_object_file_set(md->enventor, selected);
-   base_title_set(selected);
+   else if (is_edj)
+     {
+        Eina_List *edj_pathes = NULL;
+        edj_pathes = eina_list_append(edj_pathes, selected);
+        enventor_object_path_set(md->enventor, ENVENTOR_OUT_EDJ, edj_pathes);
+        enventor_object_modified_set(md->enventor, EINA_TRUE);
+        enventor_object_save(md->enventor, config_edc_path_get());
+        eina_list_free(edj_pathes);
+
+     }
+
    file_mgr_reset();
    fileselector_close(md);
    menu_close(md);
