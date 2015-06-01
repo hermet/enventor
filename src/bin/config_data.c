@@ -266,9 +266,9 @@ config_edc_path_set(const char *edc_path)
 }
 
 void
-config_init(const char *edc_path, Eina_List *edc_img_path,
-            Eina_List *edc_snd_path, Eina_List *edc_fnt_path,
-            Eina_List *edc_dat_path)
+config_init(const char *edc_path, const char *edj_path,
+            Eina_List *edc_img_path, Eina_List *edc_snd_path,
+            Eina_List *edc_fnt_path, Eina_List *edc_dat_path)
 {
    Eina_Stringshare *s;
    eddc_init();
@@ -277,6 +277,8 @@ config_init(const char *edc_path, Eina_List *edc_img_path,
    g_cd = cd;
 
    if (edc_path[0]) config_edc_path_set(edc_path);
+   if (edj_path[0])
+      eina_stringshare_replace(&cd->edj_path, edj_path);
 
    if (edc_img_path)
      g_cd->edc_img_path_list = edc_img_path;

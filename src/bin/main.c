@@ -285,8 +285,9 @@ tools_set(Evas_Object *enventor)
 }
 
 static Eina_Bool
-args_dispatch(int argc, char **argv, char *edc_path, Eina_List **img_path,
-              Eina_List **snd_path, Eina_List **fnt_path, Eina_List **dat_path,
+args_dispatch(int argc, char **argv, char *edc_path, char *edj_path,
+              Eina_List **img_path, Eina_List **snd_path,
+              Eina_List **fnt_path, Eina_List **dat_path,
               Eina_Bool *template_new)
 {
 
@@ -342,10 +343,18 @@ args_dispatch(int argc, char **argv, char *edc_path, Eina_List **img_path,
    };
 
    //edc path
-   if ((argc >= 2) && strstr(argv[1], ".edc"))
+   int i = 0;
+   for (; i < argc; i++)
      {
-        sprintf(edc_path, "%s", argv[1]);
-        default_edc = EINA_FALSE;
+        if (strstr(argv[i], ".edc"))
+          {
+             sprintf(edc_path, "%s", argv[i]);
+             default_edc = EINA_FALSE;
+          }
+        else if (strstr(argv[i], ".edj"))
+          {
+             sprintf(edj_path, "%s", argv[i]);
+          }
      }
 
    if ((ecore_getopt_parse(&optdesc, values, argc, argv) < 0) || quit)
@@ -402,16 +411,17 @@ static Eina_Bool
 config_data_set(app_data *ad, int argc, char **argv)
 {
    char edc_path[PATH_MAX] = { 0, };
+   char edj_path[PATH_MAX] = { 0, };
    Eina_List *img_path = NULL;
    Eina_List *snd_path = NULL;
    Eina_List *fnt_path = NULL;
    Eina_List *dat_path = NULL;
    Eina_Bool template_new = EINA_FALSE;
 
-   Eina_Bool default_edc = args_dispatch(argc, argv, edc_path, &img_path,
-                                         &snd_path, &fnt_path, &dat_path,
-                                         &template_new);
-   config_init(edc_path, img_path, snd_path, fnt_path, dat_path);
+   Eina_Bool default_edc = args_dispatch(argc, argv, edc_path, edj_path,
+                                         &img_path, &snd_path, &fnt_path,
+                                         &dat_path, &template_new);
+   config_init(edc_path, edj_path, img_path, snd_path, fnt_path, dat_path);
    config_update_cb_set(config_update_cb, ad);
    ad->template_new = template_new;
 

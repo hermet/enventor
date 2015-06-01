@@ -3,7 +3,7 @@
 #define MAX_VIEW_SCALE 5.0
 #define MIN_VIEW_SCALE 0.5
 
-void config_init(const char *edc_path, Eina_List *edc_img_path, Eina_List *edc_snd_path, Eina_List *edc_fnt_path, Eina_List *edc_dat_path);
+void config_init(const char *edc_path, const char *edj_path, Eina_List *edc_img_path, Eina_List *edc_snd_path, Eina_List *edc_fnt_path, Eina_List *edc_dat_path);
 void config_term(void);
 const char *config_edc_path_get(void);
 const char *config_edj_path_get(void);
