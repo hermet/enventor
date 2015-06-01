@@ -9,10 +9,10 @@ typedef struct statusbar_s stats_data;
 $ enventor\n \
 $ enventor --to\n \
 $ enventor newfile.edc --to\n \
-$ enventor sample.edc --id ./images --sd ./sounds\n" 
+$ enventor sample.edc output.edj --id ./images --sd ./sounds\n"
 
 #define ENVENTOR_USAGE \
-"%prog [input file] [--to] [--id image path] [--sd sound path] [--fd font path] [--dd data path]"
+"%prog [input file] [output file]  [--to] [--id image path] [--sd sound path] [--fd font path] [--dd data path]"
 
 #define ENVENTOR_INFO \
 "\nThis is an EDC editor with some convenient functions.\n \
