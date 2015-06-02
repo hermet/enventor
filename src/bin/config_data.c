@@ -18,6 +18,7 @@ typedef struct config_s
 
    Eina_List *syntax_color_list;
 
+   unsigned int version;
    float font_scale;
    double view_scale;
    double console_size;
@@ -133,7 +134,7 @@ config_load(void)
      }
    else EINA_LOG_WARN("Cannot load a config file \"%s\"", buf);
 
-   //failed to load config file. set default values.
+   //failed to load config file, create default structure.
    if (!cd)
      {
         cd = calloc(1, sizeof(config_data));
@@ -142,6 +143,14 @@ config_load(void)
              EINA_LOG_ERR("Failed to allocate Memory!");
              return NULL;
           }
+     }
+   // loaded config is not compatile with current version of Enventor
+   if (cd->version < ENVENTOR_CONFIG_VERSION)
+     {
+        cd->edc_img_path_list = NULL;
+        cd->edc_snd_path_list = NULL;
+        cd->edc_fnt_path_list = NULL;
+        cd->edc_dat_path_list = NULL;
         cd->font_scale = 1.0f;
         cd->view_scale = 1;
         cd->console_size = DEFAULT_CONSOLE_SIZE;
@@ -154,6 +163,7 @@ config_load(void)
         cd->console = EINA_TRUE;
         cd->auto_complete = EINA_TRUE;
         cd->view_size_configurable = EINA_FALSE;
+        cd->version = ENVENTOR_CONFIG_VERSION;
      }
 
    g_cd = cd;
@@ -218,6 +228,7 @@ eddc_init(void)
                                        "edc_dat_path_list", edc_dat_path_list);
    EET_DATA_DESCRIPTOR_ADD_LIST_STRING(edd_base, config_data,
                                        "syntax_color_list", syntax_color_list);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "version", version, EET_T_UINT);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "font_name", font_name,
                                  EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "font_style", font_style,
