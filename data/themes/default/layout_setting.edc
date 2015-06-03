@@ -200,7 +200,7 @@ group { name: "setting_layout";
       program { name: "load";
          signal: "load";
          action: STATE_SET "show" 0.0;
-         transition: "DECELERATE" 0.5;
+         transition: "DECELERATE" 1.0;
          target: "clipper";
          after: "event_blocker_hide";
       }
