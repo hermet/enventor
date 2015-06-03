@@ -94,8 +94,8 @@ enventor_init(int argc, char **argv)
         _enventor_log_dom = EINA_LOG_DOMAIN_GLOBAL;
      }
 
-   snprintf(EDJE_PATH, sizeof(EDJE_PATH), "%s/themes/enventor.edj",
-            elm_app_data_dir_get());
+   snprintf(EDJE_PATH, sizeof(EDJE_PATH), "%s/enventor.edj",
+            ENVENTOR_THEME_PATH);
 
    srand(time(NULL));
 

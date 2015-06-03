@@ -14,7 +14,8 @@ AM_CPPFLAGS = -DPACKAGE_DATA_DIR=\"$(pkgdatadir)\" \
               -DPACKAGE_LIB_DIR=\"$(libdir)\" \
               -I$(top_srcdir)/src/bin \
               -I$(top_srcdir)/src/include \
-              @ENVENTOR_CFLAGS@
+              @ENVENTOR_CFLAGS@ \
+              @ENVENTOR_DEFINE@
 
 lib_LTLIBRARIES = libenventor.la
 
