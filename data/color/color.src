@@ -19,6 +19,8 @@ group "syntax_color_group" struct {
             value "key" string: "!";
             value "key" string: "=";
             value "key" string: "&amp;";
+            value "key" string: "&gt;";
+            value "key" string: "&lt;";
             value "key" string: "|";
             value "key" string: "\\";
          }
