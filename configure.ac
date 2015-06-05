@@ -110,9 +110,6 @@ EFL_WITH_BIN([eolian-cxx], [eolian-cxx], [eolian_cxx])
 AM_CONDITIONAL([HAVE_EOLIAN_GEN], [true])
 AM_CONDITIONAL([HAVE_EOLIAN_CXX], [true])
 
-ENVENTOR_DEFINE=" -DENVENTOR_THEME_PATH=\\\"${datadir}/enventor/themes/\\\" "
-AC_SUBST([ENVENTOR_DEFINE])
-
 AC_CONFIG_FILES([
 Makefile
 src/Makefile
