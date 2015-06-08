@@ -127,6 +127,7 @@ data/themes/default/images/Makefile
 data/themes/default/sounds/Makefile
 data/templates/Makefile
 data/color/Makefile
+data/autocomp/Makefile
 data/sounds/Makefile
 data/about/Makefile
 pc/enventor.pc

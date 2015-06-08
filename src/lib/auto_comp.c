@@ -4,29 +4,30 @@
 
 #include <Enventor.h>
 #include "enventor_private.h"
-#include "auto_comp_code.h"
 
 #define QUEUE_SIZE 20
 #define COMPSET_PAIR_MINIMUM 1
 
-typedef struct comp_set_s
+typedef struct lexem_s
 {
-   Eina_Stringshare *key;
+   Eina_List *nodes;
    char **txt;
+   int txt_count;
    int cursor_offset;
    int line_back;
-   int line_cnt;
-} comp_set;
+   char *name;
+} lexem;
 
 typedef struct autocomp_s
 {
    char queue[QUEUE_SIZE];
    int queue_pos;
-   comp_set compset[COMPSET_CNT];
+   const lexem *lexem_root;
+   lexem *lexem_ptr;
+   Eet_File *source_file;
    edit_data *ed;
    Evas_Object *anchor;
    Evas_Object *list;
-   Eina_List *compset_list;
    Ecore_Thread *init_thread;
    Eina_Bool anchor_visible : 1;
    Eina_Bool initialized : 1;
@@ -35,97 +36,145 @@ typedef struct autocomp_s
 
 static autocomp_data *g_ad = NULL;
 
-#define COMPDATA_SET(ad, key, txt, cursor_offset, line_back) \
-   compdata_set(ad, idx++, key, (char **)(&txt), cursor_offset, line_back, txt##_LINE_CNT)
-
 /*****************************************************************************/
 /* Internal method implementation                                            */
 /*****************************************************************************/
+static Eet_Data_Descriptor *lex_desc = NULL;
 
 static void
-compdata_set(autocomp_data *ad, int idx, char *key, char **txt, int cursor_offset, int line_back, int line_cnt)
+eddc_init(void)
 {
-   ad->compset[idx].key = eina_stringshare_add(key);
-   ad->compset[idx].txt = txt;
-   ad->compset[idx].cursor_offset = cursor_offset;
-   ad->compset[idx].line_back = line_back;
-   ad->compset[idx].line_cnt = line_cnt;
+   Eet_Data_Descriptor_Class eddc;
+
+   EET_EINA_FILE_DATA_DESCRIPTOR_CLASS_SET(&eddc, lexem);
+   lex_desc = eet_data_descriptor_file_new(&eddc);
+
+   EET_DATA_DESCRIPTOR_ADD_LIST(lex_desc, lexem, "nodes", nodes, lex_desc);
+
+   EET_DATA_DESCRIPTOR_ADD_VAR_ARRAY_STRING(lex_desc, lexem, "txt", txt);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(lex_desc, lexem, "cursor_offset", cursor_offset, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(lex_desc, lexem, "line_back", line_back, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(lex_desc, lexem, "name", name, EET_T_STRING);
+}
+
+static void
+autocomp_load(autocomp_data *ad)
+{
+   char buf[PATH_MAX];
+   snprintf(buf, sizeof(buf), "%s/autocomp/autocomp.eet", elm_app_data_dir_get());
+   if (ad->source_file)
+     {
+        if (lex_desc)
+          eet_data_descriptor_free(lex_desc);
+        eet_close(ad->source_file);
+
+     }
+   ad->source_file = eet_open(buf, EET_FILE_MODE_READ);
+
+   ad->lexem_root = (lexem *)eet_data_read(ad->source_file, lex_desc, "node");
+   ad->lexem_ptr = (lexem *)ad->lexem_root;
 }
 
 static void
 init_thread_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
    autocomp_data *ad = data;
-   int idx = 0;
+   eddc_init();
+   autocomp_load(ad);
+}
 
-   COMPDATA_SET(ad, "collections",AUTOCOMP_COLLECTIONS, 2, 1);
-   COMPDATA_SET(ad, "image",AUTOCOMP_IMAGE, 7, 0);
-   COMPDATA_SET(ad, "images",AUTOCOMP_IMAGES, 2, 1);
-   COMPDATA_SET(ad, "set",AUTOCOMP_SET, 4, 1);
-   COMPDATA_SET(ad, "group",AUTOCOMP_GROUP, 4, 1);
-   COMPDATA_SET(ad, "type",AUTOCOMP_TYPE, 0, 0);
-   COMPDATA_SET(ad, "part",AUTOCOMP_PART, 4, 1);
-   COMPDATA_SET(ad, "parts",AUTOCOMP_PARTS, 2, 1);
-   COMPDATA_SET(ad, "description",AUTOCOMP_DESCRIPTION, 8, 1);
-   COMPDATA_SET(ad, "inherit",AUTOCOMP_INHERIT, 6, 0);
-   COMPDATA_SET(ad, "program",AUTOCOMP_PROGRAM, 4, 1);
-   COMPDATA_SET(ad, "programs",AUTOCOMP_PROGRAMS, 2, 1);
-   COMPDATA_SET(ad, "signal",AUTOCOMP_SIGNAL, 2, 0);
-   COMPDATA_SET(ad, "source",AUTOCOMP_SOURCE, 2, 0);
-   COMPDATA_SET(ad, "target",AUTOCOMP_TARGET, 2, 0);
-   COMPDATA_SET(ad, "scale",AUTOCOMP_SCALE, 1, 0);
-   COMPDATA_SET(ad, "rel1",AUTOCOMP_REL1, 2, 1);
-   COMPDATA_SET(ad, "rel2",AUTOCOMP_REL2, 2, 1);
-   COMPDATA_SET(ad, "relative",AUTOCOMP_RELATIVE, 1, 0);
-   COMPDATA_SET(ad, "offset", AUTOCOMP_OFFSET, 1, 0);
-   COMPDATA_SET(ad, "color", AUTOCOMP_COLOR, 1, 0);
-   COMPDATA_SET(ad, "color2", AUTOCOMP_COLOR2, 1, 0);
-   COMPDATA_SET(ad, "color3", AUTOCOMP_COLOR3, 1, 0);
-   COMPDATA_SET(ad, "aspect", AUTOCOMP_ASPECT, 1, 0);
-   COMPDATA_SET(ad, "aspect_mode",AUTOCOMP_ASPECT_MODE, 1, 0);
-   COMPDATA_SET(ad, "aspect_preference", AUTOCOMP_ASPECT_PREFERENCE, 1, 0);
-   COMPDATA_SET(ad, "normal", AUTOCOMP_NORMAL, 2, 0);
-   COMPDATA_SET(ad, "effect", AUTOCOMP_EFFECT, 0, 0);
-   COMPDATA_SET(ad, "text", AUTOCOMP_TEXT, 2, 1);
-   COMPDATA_SET(ad, "font", AUTOCOMP_FONT, 2, 0);
-   COMPDATA_SET(ad, "align", AUTOCOMP_ALIGN, 1, 0);
-   COMPDATA_SET(ad, "size", AUTOCOMP_SIZE, 1, 0);
-   COMPDATA_SET(ad, "action", AUTOCOMP_ACTION, 6, 0);
-   COMPDATA_SET(ad, "transition", AUTOCOMP_TRANSITION, 1, 0);
-   COMPDATA_SET(ad, "after", AUTOCOMP_AFTER, 2, 0);
-   COMPDATA_SET(ad, "styles", AUTOCOMP_STYLES, 2, 1);
-   COMPDATA_SET(ad, "style", AUTOCOMP_STYLE, 4, 1);
-   COMPDATA_SET(ad, "base_scale", AUTOCOMP_BASE_SCALE, 1, 0);
-   COMPDATA_SET(ad, "base", AUTOCOMP_BASE, 2, 0);
-   COMPDATA_SET(ad, "sounds", AUTOCOMP_SOUNDS, 2, 1);
-   COMPDATA_SET(ad, "sample", AUTOCOMP_SAMPLE, 13, 1);
-   COMPDATA_SET(ad, "map", AUTOCOMP_MAP, 2, 1);
-   COMPDATA_SET(ad, "on", AUTOCOMP_ON, 1, 0);
-   COMPDATA_SET(ad, "visible", AUTOCOMP_VISIBLE, 1, 0);
-   COMPDATA_SET(ad, "perspective_on", AUTOCOMP_PERSPECTIVE_ON, 1, 0);
-   COMPDATA_SET(ad, "perspective", AUTOCOMP_PERSPECTIVE, 2, 0);
-   COMPDATA_SET(ad, "backface_cull", AUTOCOMP_BACKFACE_CULL, 1, 0);
-   COMPDATA_SET(ad, "rotation", AUTOCOMP_ROTATION, 2, 1);
-   COMPDATA_SET(ad, "min", AUTOCOMP_MIN, 1, 0);
-   COMPDATA_SET(ad, "max", AUTOCOMP_MAX, 1, 0);
-   COMPDATA_SET(ad, "fixed", AUTOCOMP_FIXED, 1, 0);
-   COMPDATA_SET(ad, "clip_to", AUTOCOMP_CLIP_TO, 2, 0);
-   COMPDATA_SET(ad, "tween", AUTOCOMP_TWEEN, 2, 0);
-   COMPDATA_SET(ad, "box",AUTOCOMP_BOX, 2, 1);
-   COMPDATA_SET(ad, "table",AUTOCOMP_TABLE, 2, 1);
-   COMPDATA_SET(ad, "item",AUTOCOMP_ITEM, 2, 1);
-   COMPDATA_SET(ad, "items",AUTOCOMP_ITEMS, 2, 1);
-   COMPDATA_SET(ad, "layout",AUTOCOMP_LAYOUT, 2, 0);
-   COMPDATA_SET(ad, "padding",AUTOCOMP_PADDING, 1, 0);
-   COMPDATA_SET(ad, "position", AUTOCOMP_POSITION, 1, 0);
-   COMPDATA_SET(ad, "precise_is_inside", AUTOCOMP_PRECISE_IS_INSIDE, 1, 0);
-   COMPDATA_SET(ad, "prefer", AUTOCOMP_PREFER, 1, 0);
-   COMPDATA_SET(ad, "smooth", AUTOCOMP_SMOOTH, 1, 0);
-   COMPDATA_SET(ad, "span", AUTOCOMP_SPAN, 1, 0);
-   COMPDATA_SET(ad, "spread", AUTOCOMP_SPREAD, 1, 0);
-   COMPDATA_SET(ad, "weight", AUTOCOMP_WEIGHT, 1, 0);
-   COMPDATA_SET(ad, "ellipsis", AUTOCOMP_ELLIPSIS, 1, 0);
-   COMPDATA_SET(ad, "anti_alias", AUTOCOMP_ANTI_ALIAS, 1, 0);
+static lexem *
+context_lexem_get(autocomp_data *ad, Evas_Object *entry, int cur_pos)
+{
+
+   Eina_Bool find_flag = EINA_FALSE;
+   Eina_List *l = NULL;
+   Eina_List *nodes = ad->lexem_root->nodes;
+   lexem *data = (lexem *)ad->lexem_root;
+   if (cur_pos <= 1) return data;
+
+   const char *text = elm_entry_entry_get(entry);
+   if (!text) return data;
+   int i = 0;
+
+   char *utf8 = elm_entry_markup_to_utf8(text);
+   if (!utf8) return data;
+
+   char *cur = utf8;
+   char *end = cur + cur_pos;
+   char stack[20][40];
+   int depth = 0;
+   char *help_ptr = NULL;
+   char *help_end_ptr = NULL;
+
+   const char *quot = QUOT_UTF8;
+   const int quot_len = QUOT_UTF8_LEN;
+   int quot_cnt = 0;
+
+   while (cur <= end)
+     {
+        if ((cur!=end) && (!strncmp(cur, quot, quot_len)))
+          quot_cnt++;
+
+        if (*cur == '{')
+          {
+             for (help_end_ptr = cur;
+                  !isalnum(*help_end_ptr);
+                  help_end_ptr--);
+             for (help_ptr = help_end_ptr;
+                  (((isalnum(*help_ptr )) || (*help_ptr == '_')));
+                  help_ptr--);
+             if (help_ptr != utf8)
+               help_ptr++;
+
+             memset(stack[depth], 0x0, 40);
+             strncpy(stack[depth], help_ptr, help_end_ptr - help_ptr + 1);
+             depth++;
+          }
+        if (*cur == '}')
+          {
+             memset(stack[depth], 0x0, 40);
+             depth--;
+          }
+        cur++;
+     }
+
+   free(utf8);
+
+   if (quot_cnt % 2) return NULL;
+
+   for (i = 0; i < depth; i++)
+     {
+        find_flag = EINA_FALSE;
+        EINA_LIST_FOREACH(nodes, l, data)
+          {
+             if (!strncmp(stack[i], data->name, strlen(data->name)))
+               {
+                  nodes = data->nodes;
+                  l = NULL;
+                  find_flag = EINA_TRUE;
+                  break;
+               }
+          }
+        if (!find_flag) return NULL;
+     }
+   return data;
+}
+
+static void
+context_changed(autocomp_data *ad, Evas_Object *edit)
+{
+   if ((!ad->enabled) || (!ad->initialized)) return;
+
+   int cursor_position = elm_entry_cursor_pos_get(edit);
+
+   if (!cursor_position)
+     {
+        ad->lexem_ptr = (lexem *)ad->lexem_root;
+        return;
+     }
+
+   ad->lexem_ptr = context_lexem_get(ad, edit, cursor_position);
 }
 
 static void
@@ -155,7 +204,6 @@ entry_anchor_off(autocomp_data *ad)
         elm_object_tooltip_content_cb_set(ad->anchor, NULL, NULL, NULL);
      }
    ad->anchor_visible = EINA_FALSE;
-   ad->compset_list = eina_list_free(ad->compset_list);
 }
 
 static void
@@ -170,37 +218,15 @@ anchor_unfocused_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 static void
 queue_reset(autocomp_data *ad)
 {
-   if (ad->queue_pos == -1) return;
-   ad->queue_pos = -1;
+   if (ad->queue_pos == 0) return;
+   ad->queue_pos = 0;
    memset(ad->queue, 0x0, sizeof(ad->queue));
    entry_anchor_off(ad);
 }
 
 static void
-compset_list_update(autocomp_data *ad)
-{
-   if (!ad->enabled || !ad->initialized) return;
-   if (ad->queue_pos < COMPSET_PAIR_MINIMUM) return;
-   int i;
-
-   ad->compset_list = eina_list_free(ad->compset_list);
-   for (i = 0; i < COMPSET_CNT; i++)
-     {
-        if (ad->queue[0] == ad->compset[i].key[0])
-          {
-             if (!strncmp(ad->queue, ad->compset[i].key, ad->queue_pos + 1))
-               {
-                  ad->compset_list = eina_list_append(ad->compset_list,
-                                                      &ad->compset[i]);
-               }
-          }
-     }
-}
-
-static void
 push_char(autocomp_data *ad, char c)
 {
-   ad->queue_pos++;
    if (ad->queue_pos == QUEUE_SIZE)
      {
         memset(ad->queue, 0x0, sizeof(ad->queue));
@@ -208,7 +234,7 @@ push_char(autocomp_data *ad, char c)
      }
    ad->queue[ad->queue_pos] = c;
 
-   compset_list_update(ad);
+  ad->queue_pos++;
 }
 
 static void
@@ -220,33 +246,29 @@ pop_char(autocomp_data *ad, int cnt)
    for (i = 0; i < cnt; i++)
      {
         ad->queue[ad->queue_pos] = 0x0;
+        if (ad->queue_pos == 0) break;
         ad->queue_pos--;
-        if (ad->queue_pos < 0) break;
      }
-
-   if (ad->queue_pos == -1) return;
-
-   compset_list_update(ad);
 }
 
 static void
 insert_completed_text(autocomp_data *ad)
 {
-   if (!ad->compset_list) return;
+   if (!ad->lexem_ptr) return;
    Elm_Object_Item *it = elm_list_selected_item_get(ad->list);
 
-   comp_set *compset =  elm_object_item_data_get(it);
-   char **txt = compset->txt;
+   lexem *candidate =  elm_object_item_data_get(it);
+   char **txt = candidate->txt;
    Evas_Object *entry = edit_entry_get(ad->ed);
 
    int space = edit_cur_indent_depth_get(ad->ed);
    int cursor_pos = elm_entry_cursor_pos_get(entry);
 
    //Insert the first line.
-   elm_entry_entry_insert(entry,  txt[0]+ (ad->queue_pos + 1));
+   elm_entry_entry_insert(entry,  txt[0] + (ad->queue_pos));
 
    //Insert last lines
-   if (compset->line_cnt > 1)
+   if (candidate->txt_count > 1)
      {
         //Alloc Empty spaces
         char *p = alloca(space + 1);
@@ -254,7 +276,7 @@ insert_completed_text(autocomp_data *ad)
         p[space] = '\0';
 
         int i;
-        for (i = 1; i < (compset->line_cnt -1); i++)
+        for (i = 1; i < (candidate->txt_count - 1); i++)
           {
              elm_entry_entry_insert(entry, p);
              elm_entry_entry_insert(entry, txt[i]);
@@ -267,9 +289,9 @@ insert_completed_text(autocomp_data *ad)
    redoundo_data *rd = evas_object_data_get(entry, "redoundo");
    redoundo_entry_region_push(rd, cursor_pos, cursor_pos2);
 
-   cursor_pos2 -= (compset->cursor_offset + (compset->line_back * space));
+   cursor_pos2 -= (candidate->cursor_offset + (candidate->line_back * space));
    elm_entry_cursor_pos_set(entry, cursor_pos2);
-   edit_line_increase(ad->ed, (compset->line_cnt - 1));
+   edit_line_increase(ad->ed, (candidate->txt_count - 1));
 }
 
 static void
@@ -285,20 +307,36 @@ entry_tooltip_content_cb(void *data, Evas_Object *obj EINA_UNUSED,
                          Evas_Object *tt EINA_UNUSED)
 {
    autocomp_data *ad = data;
+   Eina_Bool found = EINA_FALSE;
+
+   if (!ad->lexem_ptr) return NULL;
 
    ad->list = elm_list_add(obj);
    elm_object_focus_allow_set(ad->list, EINA_FALSE);
    elm_list_mode_set(ad->list, ELM_LIST_EXPAND);
 
    Eina_List *l;
-   comp_set *compset;
-   EINA_LIST_FOREACH(ad->compset_list, l, compset)
-     elm_list_item_append(ad->list, compset->key, NULL, NULL, NULL, compset);
-   Elm_Object_Item *it = elm_list_first_item_get(ad->list);
+   lexem *lexem_data;
+   Elm_Object_Item *it = NULL;
+   EINA_LIST_FOREACH(ad->lexem_ptr->nodes, l, lexem_data)
+     {
+        if (!strncmp(lexem_data->name, ad->queue, ad->queue_pos))
+          {
+             it = elm_list_item_append(ad->list, lexem_data->name,
+                                       NULL, NULL, NULL, lexem_data);
+             found = EINA_TRUE;
+          }
+     }
+
    elm_list_item_selected_set(it, EINA_TRUE);
    evas_object_smart_callback_add(ad->list, "unfocused", anchor_unfocused_cb,
                                   ad);
    evas_object_event_callback_add(ad->list, EVAS_CALLBACK_DEL, list_del_cb, ad);
+   if (!found)
+     {
+        entry_anchor_off(ad);
+        return NULL;
+     }
    elm_list_go(ad->list);
    evas_object_show(ad->list);
 
@@ -308,47 +346,26 @@ entry_tooltip_content_cb(void *data, Evas_Object *obj EINA_UNUSED,
 static void
 anchor_list_update(autocomp_data *ad)
 {
-   comp_set *compset;
-   Eina_List *items = (Eina_List *) elm_list_items_get(ad->list);
-   Eina_List *l, *ll, *l2;
+   lexem *data;
+   Eina_List *l;
    Elm_Object_Item *it;
-   Eina_Bool found;
+   Eina_Bool found = EINA_FALSE;
 
-   const char *it_name;
-
-   //Remove the non-candidates 
-   EINA_LIST_FOREACH_SAFE(items, l, ll, it)
-     {
-        found = EINA_FALSE;
-        it_name = elm_object_item_text_get(it);
-
-        EINA_LIST_FOREACH(ad->compset_list, l2, compset)
-          {
-             if (compset->key == it_name)
-               {
-                  found = EINA_TRUE;
-                  break;
-               }
-          }
-
-        if (!found) elm_object_item_del(it);
-     }
-
-   items = (Eina_List *) elm_list_items_get(ad->list);
-
+   elm_list_clear(ad->list);
    //Append new candidates
-   EINA_LIST_FOREACH(ad->compset_list, l, compset)
+   EINA_LIST_FOREACH(ad->lexem_ptr->nodes, l, data)
+   {
+      if (!strncmp(data->name, ad->queue, ad->queue_pos))
+        {
+           elm_list_item_append(ad->list, data->name,
+                                NULL, NULL, NULL, data);
+           found = EINA_TRUE;
+        }
+   }
+   if (!found)
      {
-        found = EINA_FALSE;
-        EINA_LIST_FOREACH(items, l2, it)
-          {
-             it_name = elm_object_item_text_get(it);
-             if (it_name != compset->key) continue;
-             found = EINA_TRUE;
-             break;
-          }
-        if (!found) elm_list_item_append(ad->list, compset->key, NULL,
-                                         NULL, NULL, compset);
+        entry_anchor_off(ad);
+        return;
      }
    it = elm_list_first_item_get(ad->list);
    elm_list_item_selected_set(it, EINA_TRUE);
@@ -358,7 +375,7 @@ anchor_list_update(autocomp_data *ad)
 static void
 candidate_list_show(autocomp_data *ad)
 {
-   if (!ad->compset_list)
+   if (!ad->lexem_ptr)
      {
         entry_anchor_off(ad);
         return;
@@ -450,6 +467,7 @@ entry_cursor_changed_cb(void *data EINA_UNUSED, Evas_Object *obj,
    elm_entry_cursor_geometry_get(obj, &cx, &cy, &cw, &ch);
    evas_object_move(ad->anchor, cx + x, cy + y);
    evas_object_resize(ad->anchor, cw, ch);
+   context_changed(ad, edit_entry_get(ad->ed));
 }
 
 static void
@@ -588,7 +606,7 @@ autocomp_init(void)
 
    ad->init_thread = ecore_thread_run(init_thread_cb, init_thread_end_cb,
                                       init_thread_cancel_cb, ad);
-   ad->queue_pos = -1;
+   ad->queue_pos = 0;
    g_ad = ad;
 }
 
@@ -599,9 +617,8 @@ autocomp_term(void)
    evas_object_del(ad->anchor);
    ecore_thread_cancel(ad->init_thread);
 
-   int i;
-   for (i = 0; i < COMPSET_CNT; i++)
-     eina_stringshare_del(ad->compset[i].key);
+   eet_data_descriptor_free(lex_desc);
+   eet_close(ad->source_file);
 
    free(ad);
    g_ad = NULL;
