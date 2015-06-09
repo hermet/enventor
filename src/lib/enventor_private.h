@@ -1,6 +1,8 @@
 #ifndef __ENVENTOR_PRIVATE_H__
 #define __ENVENTOR_PRIVATE_H__
 
+#include "common.h"
+
 #define QUOT "&quot;"
 #define QUOT_LEN 6
 #define QUOT_UTF8 "\""
@@ -17,7 +19,6 @@
 #define VIEW_DATA edj_mgr_view_get(NULL)
 #define ATTR_VALUE_MAX_CNT 4
 
-extern char EDJE_PATH[PATH_MAX];
 extern const char SIG_CURSOR_LINE_CHANGED[];
 extern const char SIG_CURSOR_GROUP_CHANGED[];
 extern const char SIG_MAX_LINE_CHANGED[];

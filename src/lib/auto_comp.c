@@ -61,7 +61,9 @@ static void
 autocomp_load(autocomp_data *ad)
 {
    char buf[PATH_MAX];
-   snprintf(buf, sizeof(buf), "%s/autocomp/autocomp.eet", elm_app_data_dir_get());
+   snprintf(buf, sizeof(buf), "%s/autocomp/autocomp.eet",
+            eina_prefix_data_get(PREFIX));
+
    if (ad->source_file)
      {
         if (lex_desc)

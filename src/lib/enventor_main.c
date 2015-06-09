@@ -7,6 +7,7 @@
 #include "enventor_private.h"
 
 char EDJE_PATH[PATH_MAX];
+Eina_Prefix *PREFIX = NULL;
 const char SIG_CURSOR_LINE_CHANGED[] = "cursor,line,changed";
 const char SIG_CURSOR_GROUP_CHANGED[]= "cursor,group,changed";
 const char SIG_LIVE_VIEW_LOADED[] = "live_view,loaded";
@@ -23,7 +24,6 @@ const char SIG_FOCUSED[] = "focused";
 static int _enventor_init_count = 0;
 static int _enventor_log_dom = -1;
 static Ecore_Event_Handler *_key_down_handler = NULL;
-static Eina_Prefix *pfx = NULL;
 
 static Eina_Bool
 key_down_cb(void *data EINA_UNUSED, int type EINA_UNUSED, void *ev)
@@ -95,12 +95,12 @@ enventor_init(int argc, char **argv)
         _enventor_log_dom = EINA_LOG_DOMAIN_GLOBAL;
      }
 
-   pfx = eina_prefix_new(NULL, enventor_init, "ENVENTOR", "enventor", NULL,
+   PREFIX = eina_prefix_new(NULL, enventor_init, "ENVENTOR", "enventor", NULL,
                          PACKAGE_BIN_DIR, PACKAGE_LIB_DIR,
                          PACKAGE_DATA_DIR, PACKAGE_DATA_DIR);
 
    snprintf(EDJE_PATH, sizeof(EDJE_PATH), "%s/themes/enventor.edj",
-            eina_prefix_data_get(pfx));
+            eina_prefix_data_get(PREFIX));
    srand(time(NULL));
 
    _key_down_handler = ecore_event_handler_add(ECORE_EVENT_KEY_DOWN,
@@ -128,7 +128,7 @@ enventor_shutdown(void)
         eina_log_domain_unregister(_enventor_log_dom);
         _enventor_log_dom = -1;
      }
-   eina_prefix_free(pfx);
+   eina_prefix_free(PREFIX);
 
    elm_shutdown();
    eio_shutdown();
