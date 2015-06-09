@@ -101,11 +101,49 @@ part_obj_geom_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
      }
 
    Evas_Coord x, y, w , h;
-   evas_object_geometry_get(obj, &x, &y, &w, &h);
-   evas_object_move(part_highlight, x, y);
-   evas_object_resize(part_highlight, w, h);
+   if (edje_edit_part_type_get(vd->layout, vd->part_name) == EDJE_PART_TYPE_SPACER)
+     {
+        Evas_Coord scroller_x, scroller_y;
+        Evas_Coord scroller_region_x, scroller_region_y;
+        Evas_Object *scroller_edje = elm_layout_edje_get(vd->scroller);
+        // Clipper need, to clip the highlight object for the  part SPACER,
+        // because position of the highlight object is calculated here,
+        // not in edje. In case, when  the SPACER is placed outside of
+        // scroller region view, the highlight should be hided.
+        Evas_Object *clipper =
+               (Evas_Object *)edje_object_part_object_get(scroller_edje, "clipper");
+
+        elm_scroller_region_get(vd->scroller, &scroller_region_x,
+                                &scroller_region_y, NULL, NULL);
+        evas_object_geometry_get(vd->scroller, &scroller_x, &scroller_y,
+                                 NULL, NULL);
+        evas_object_smart_member_add(part_highlight, vd->scroller);
+        edje_object_part_geometry_get(vd->layout, vd->part_name, &x, &y, &w, &h);
+
+        evas_object_move(part_highlight, x + scroller_x - scroller_region_x + 1,
+                         y + scroller_y - scroller_region_y + 1);
+        evas_object_resize(part_highlight, w, h);
+        evas_object_clip_set(part_highlight, clipper);
+     }
+   else
+     {
+        evas_object_geometry_get(obj, &x, &y, &w, &h);
+        evas_object_move(part_highlight, x, y);
+        evas_object_resize(part_highlight, w, h);
+     }
 
    vd->part_highlight = part_highlight;
+}
+
+static void
+event_highlight_geom_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+                 void *event_info EINA_UNUSED)
+{
+   view_data *vd = (view_data *) data;
+   if (!vd) return;
+
+   if (edje_edit_part_type_get(vd->layout, vd->part_name) == EDJE_PART_TYPE_SPACER)
+     part_obj_geom_cb(vd, evas_object_evas_get(vd->layout), vd->part_obj, NULL);
 }
 
 static void
@@ -281,6 +319,8 @@ event_layer_set(view_data *vd)
                                   layout_del_cb, rect);
    evas_object_event_callback_add(rect, EVAS_CALLBACK_MOUSE_MOVE,
                                   rect_mouse_move_cb, vd);
+   evas_object_event_callback_add(rect, EVAS_CALLBACK_MOUSE_WHEEL,
+                                  event_highlight_geom_cb, vd);
    vd->event_rect = rect;
 }
 
@@ -433,7 +473,6 @@ view_part_highlight_set(view_data *vd, const char *part_name)
 
    Evas_Object *part_obj =
       (Evas_Object *) edje_object_part_object_get(vd->layout, part_name);
-   if (!part_obj) return;
 
    //Delete the previous part callbacks
    if (vd->part_obj)
@@ -451,6 +490,19 @@ view_part_highlight_set(view_data *vd, const char *part_name)
                                   part_obj_geom_cb, vd);
    evas_object_event_callback_add(part_obj, EVAS_CALLBACK_DEL, part_obj_del_cb,
                                   vd);
+
+   evas_object_event_callback_del(vd->layout, EVAS_CALLBACK_RESIZE,
+                                  event_highlight_geom_cb);
+   evas_object_event_callback_del(vd->layout, EVAS_CALLBACK_MOVE,
+                                  event_highlight_geom_cb);
+
+   if (!part_obj)
+     {
+        evas_object_event_callback_add(vd->layout, EVAS_CALLBACK_RESIZE,
+                                       event_highlight_geom_cb, vd);
+        evas_object_event_callback_add(vd->layout, EVAS_CALLBACK_MOVE,
+                                       event_highlight_geom_cb, vd);
+     }
 
    vd->part_obj = part_obj;
    eina_stringshare_replace(&vd->part_name, part_name);
