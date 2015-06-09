@@ -5,6 +5,8 @@
 #include <Enventor.h>
 #include "enventor_private.h"
 
+#define CTXPOPUP_BORDER_SIZE 10
+
 typedef struct ctxpopup_data_s {
    Evas_Smart_Cb selected_cb;
    Evas_Smart_Cb relay_cb;
@@ -231,6 +233,10 @@ toggle_layout_set(Evas_Object *ctxpopup, attr_value *attr)
    Eina_Stringshare *type;
    Eina_Array_Iterator itr;
    unsigned int i;
+   Evas_Coord layout_w = 0, edit_w = 0;
+
+   Evas_Object *edit = elm_object_parent_widget_get(ctxpopup);
+   evas_object_geometry_get(edit, NULL, NULL, &edit_w, NULL);
 
    //Box
    Evas_Object *box = elm_box_add(ctxpopup);
@@ -240,7 +246,7 @@ toggle_layout_set(Evas_Object *ctxpopup, attr_value *attr)
    evas_object_show(box);
 
    //Layout
-   Evas_Object *layout;
+   Evas_Object *layout = NULL;
    EINA_ARRAY_ITER_NEXT(attr->strs, i, type, itr)
      {
         layout = toggle_layout_create(box, attr, type,
@@ -250,8 +256,14 @@ toggle_layout_set(Evas_Object *ctxpopup, attr_value *attr)
      }
 
    elm_object_content_set(ctxpopup, box);
+
+   Evas_Object *edje = elm_layout_edje_get(layout);
+   edje_object_size_min_calc(edje, &layout_w, NULL);
+
    evas_object_smart_callback_add(ctxpopup, "dismissed", toggle_dismiss_cb,
                                   (void *) attr);
+   if (edit_w <= layout_w + CTXPOPUP_BORDER_SIZE)
+     evas_object_del(ctxpopup);
 }
 
 static Evas_Object *
@@ -357,6 +369,10 @@ slider_layout_set(Evas_Object *ctxpopup, attr_value *attr, Eina_Bool integer)
    Eina_Stringshare *type;
    Eina_Array_Iterator itr;
    unsigned int i;
+   Evas_Coord layout_w = 0, edit_w = 0;
+
+   Evas_Object *edit = elm_object_parent_widget_get(ctxpopup);
+   evas_object_geometry_get(edit, NULL, NULL, &edit_w, NULL);
 
    //Box
    Evas_Object *box = elm_box_add(ctxpopup);
@@ -366,7 +382,7 @@ slider_layout_set(Evas_Object *ctxpopup, attr_value *attr, Eina_Bool integer)
    evas_object_show(box);
 
    //Layout
-   Evas_Object *layout;
+   Evas_Object *layout = NULL;
    EINA_ARRAY_ITER_NEXT(attr->strs, i, type, itr)
      {
         layout = slider_layout_create(box, attr, type, attr->val[i], integer);
@@ -377,6 +393,12 @@ slider_layout_set(Evas_Object *ctxpopup, attr_value *attr, Eina_Bool integer)
    elm_object_content_set(ctxpopup, box);
    evas_object_smart_callback_add(ctxpopup, "dismissed", slider_dismiss_cb,
                                   (void *) attr);
+   Evas_Object *edje = elm_layout_edje_get(layout);
+   edje_object_size_min_calc(edje, &layout_w, NULL);
+
+   if (edit_w <= layout_w + CTXPOPUP_BORDER_SIZE)
+     evas_object_del(ctxpopup);
+
 }
 
 static void
