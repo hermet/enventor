@@ -28,7 +28,6 @@ includesdir = $(includedir)/enventor-@ENVENTOR_VERSION_MAJOR@
 
 libenventor_la_SOURCES = \
    enventor_private.h \
-   auto_comp_code.h \
    template_code.h \
    enventor_main.c \
    enventor_smart.c \
