@@ -39,7 +39,7 @@ F10 = Show/Hide Console
 F11 = Show/Hide Status
 F12 = Setting
  
-Ctrl+S = Quick Save + Compile EDC
+Ctrl+S = Quick Save + Update Live View
 Ctrl+I = On/Off Auto Indentation
 Ctrl+O = On/Off Auto Completion
 Ctrl+W = Show/Hide Dummy Swallow
