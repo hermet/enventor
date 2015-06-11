@@ -11,6 +11,7 @@ typedef struct app_s
    Evas_Object *enventor;
 
    Eina_Bool ctrl_pressed : 1;
+   Eina_Bool alt_pressed : 1;
    Eina_Bool template_new : 1;
 } app_data;
 
@@ -24,6 +25,9 @@ main_key_up_cb(void *data, int type EINA_UNUSED, void *ev)
 
    if (!strcmp("Control_L", event->key))
      ad->ctrl_pressed = EINA_FALSE;
+
+   if (!strcmp("Alt_L", event->key))
+     ad->alt_pressed = EINA_FALSE;
 
    return ECORE_CALLBACK_PASS_ON;
 }
@@ -578,6 +582,35 @@ default_template_insert(app_data *ad)
 }
 
 static Eina_Bool
+alt_func(app_data *ad, const char *key)
+{
+   //Full Edit View
+   if (!strcmp(key, "Left"))
+     {
+        base_live_view_full_view();
+        return ECORE_CALLBACK_DONE;
+     }
+   //Full Live View
+   if (!strcmp(key, "Right"))
+     {
+        base_enventor_full_view();
+        return ECORE_CALLBACK_DONE;
+     }
+   //Full Console View
+   if (!strcmp(key, "Up"))
+     {
+        base_console_full_view();
+        return ECORE_CALLBACK_DONE;
+     }
+   //Full Editors View
+   if (!strcmp(key, "Down"))
+     {
+        base_editors_full_view();
+        return ECORE_CALLBACK_DONE;
+     }
+}
+
+static Eina_Bool
 ctrl_func(app_data *ad, const char *key)
 {
    //Save
@@ -622,30 +655,6 @@ ctrl_func(app_data *ad, const char *key)
    if (!strcmp(key, "t") || !strcmp(key, "T"))
      {
         default_template_insert(ad);
-        return ECORE_CALLBACK_DONE;
-     }
-   //Full Edit View
-   if (!strcmp(key, "Left"))
-     {
-        base_live_view_full_view();
-        return ECORE_CALLBACK_DONE;
-     }
-   //Full Live View
-   if (!strcmp(key, "Right"))
-     {
-        base_enventor_full_view();
-        return ECORE_CALLBACK_DONE;
-     }
-   //Full Console View
-   if (!strcmp(key, "Up"))
-     {
-        base_console_full_view();
-        return ECORE_CALLBACK_DONE;
-     }
-   //Full Editors View
-   if (!strcmp(key, "Down"))
-     {
-        base_editors_full_view();
         return ECORE_CALLBACK_DONE;
      }
    //Auto Indentation
@@ -716,15 +725,24 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    if (file_mgr_warning_is_opened()) return ECORE_CALLBACK_PASS_ON;
 
    if (ad->ctrl_pressed)
-     {
-        return ctrl_func(ad, event->key);
-     }
+     return ctrl_func(ad, event->key);
+
+   if (ad->alt_pressed)
+     return alt_func(ad, event->key);
 
    //Control Key
    if (!strcmp("Control_L", event->key))
      {
         enventor_object_ctxpopup_dismiss(ad->enventor);
         ad->ctrl_pressed = EINA_TRUE;
+        return ECORE_CALLBACK_PASS_ON;
+     }
+
+   //Alt Key
+   if (!strcmp("Alt_L", event->key))
+     {
+        enventor_object_ctxpopup_dismiss(ad->enventor);
+        ad->alt_pressed = EINA_TRUE;
         return ECORE_CALLBACK_PASS_ON;
      }
 

@@ -26,13 +26,15 @@ Ctrl+I = On/Off Auto Indentation
 Ctrl+O = On/Off Auto Completion
 Ctrl+W = Show/Hide Dummy Swallow
 Ctrl+H = On/Off Part Highlighting
-Ctrl+Left = On/Off Full Edit View
-Ctrl+Up = On/Off Full Console View
-Ctrl+Down = On/Off Full Editors View
 Ctrl+T = Insert Defaut Template Code
 Ctrl+Mouse Wheel Up = View Scale Up / Font Size Up
 Ctrl+Mouse Wheel Down = View Scale Down / Font Size Down
- 
+
+Alt+Left = On/Off Full Edit View
+Alt+Right = On/Off Full Live View
+Alt+Up = On/Off Full Console View
+Alt+Down = On/Off Full Editors View
+
 Ctrl+A = Select Text All
 Ctrl+Double Click = Select a word
 Ctrl+Z = Undo Text
