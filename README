@@ -50,12 +50,6 @@ Ctrl+Down = On/Off Full Editors View
 Ctrl+T = Insert Defaut Template Code
 Ctrl+Mouse Wheel Up = View Scale Up / Font Size Up
 Ctrl+Mouse Wheel Down = View Scale Down / Font Size Down
-Ctrl+Shift+B = Insert Part Template Code: Textblock
-Ctrl+Shift+I = Insert Part Template Code: Image
-Ctrl+Shift+R = Insert Part Template Code: Rectangle
-Ctrl+Shift+T = Insert Part Template Code: Text
-Ctrl+Shift+S = Insert Part Template Code: Spacer
-Ctrl+Shift+W = Insert Part Template Code: Swallow
  
 Ctrl+A = Select Text All
 Ctrl+Double Click = Select a word

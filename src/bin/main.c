@@ -11,7 +11,6 @@ typedef struct app_s
    Evas_Object *enventor;
 
    Eina_Bool ctrl_pressed : 1;
-   Eina_Bool shift_pressed : 1;
    Eina_Bool template_new : 1;
 } app_data;
 
@@ -25,8 +24,6 @@ main_key_up_cb(void *data, int type EINA_UNUSED, void *ev)
 
    if (!strcmp("Control_L", event->key))
      ad->ctrl_pressed = EINA_FALSE;
-   else if (!strcmp("Shift_L", event->key))
-     ad->shift_pressed = EINA_FALSE;
 
    return ECORE_CALLBACK_PASS_ON;
 }
@@ -78,65 +75,6 @@ enventor_common_setup(Evas_Object *enventor)
                             config_edc_fnt_path_list_get());
    enventor_object_path_set(enventor, ENVENTOR_RES_DATA,
                             config_edc_dat_path_list_get());
-}
-
-static Eina_Bool
-template_insert_patch(app_data *ad, const char *key)
-{
-   Edje_Part_Type part_type;
-
-   if (live_edit_get())
-     {
-        stats_info_msg_update("Insertion of template code is disabled "
-                              "while in Live Edit mode");
-        return ECORE_CALLBACK_DONE;
-     }
-
-   if (!strcmp(key, "a") || !strcmp(key, "A"))
-     part_type = EDJE_PART_TYPE_TABLE;
-   else if (!strcmp(key, "b") || !strcmp(key, "B"))
-     part_type = EDJE_PART_TYPE_TEXTBLOCK;
-   else if (!strcmp(key, "e") || !strcmp(key, "E"))
-     part_type = EDJE_PART_TYPE_EXTERNAL;
-   else if (!strcmp(key, "g") || !strcmp(key, "G"))
-     part_type = EDJE_PART_TYPE_GRADIENT;
-   else if (!strcmp(key, "i") || !strcmp(key, "I"))
-     part_type = EDJE_PART_TYPE_IMAGE;
-   else if (!strcmp(key, "o") || !strcmp(key, "O"))
-     part_type = EDJE_PART_TYPE_GROUP;
-   else if (!strcmp(key, "p") || !strcmp(key, "P"))
-     part_type = EDJE_PART_TYPE_PROXY;
-   else if (!strcmp(key, "r") || !strcmp(key, "R"))
-     part_type = EDJE_PART_TYPE_RECTANGLE;
-   else if (!strcmp(key, "t") || !strcmp(key, "T"))
-     part_type = EDJE_PART_TYPE_TEXT;
-   else if (!strcmp(key, "s") || !strcmp(key, "S"))
-     part_type = EDJE_PART_TYPE_SPACER;
-   else if (!strcmp(key, "w") || !strcmp(key, "W"))
-     part_type = EDJE_PART_TYPE_SWALLOW;
-   else if (!strcmp(key, "x") || !strcmp(key, "X"))
-     part_type = EDJE_PART_TYPE_BOX;
-   else
-     part_type = EDJE_PART_TYPE_NONE;
-
-   char syntax[12];
-   if (enventor_object_template_part_insert(ad->enventor, part_type,
-                                            ENVENTOR_TEMPLATE_INSERT_DEFAULT,
-                                            REL1_X, REL1_Y, REL2_X, REL2_Y,
-                                            syntax, sizeof(syntax)))
-     {
-        char msg[64];
-        snprintf(msg, sizeof(msg), "Template code inserted, (%s)", syntax);
-        stats_info_msg_update(msg);
-        enventor_object_save(ad->enventor, config_edc_path_get());
-     }
-   else
-     {
-        stats_info_msg_update("Can't insert template code here. Move the "
-                              "cursor inside the \"Collections,Images,Parts,"
-                              "Part,Programs\" scope.");
-     }
-   return ECORE_CALLBACK_DONE;
 }
 
 static void
@@ -777,18 +715,9 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    if (menu_activated_get() > 0) return ECORE_CALLBACK_PASS_ON;
    if (file_mgr_warning_is_opened()) return ECORE_CALLBACK_PASS_ON;
 
-   //Shift Key
-   if (!strcmp("Shift_L", event->key))
-     {
-        enventor_object_ctxpopup_dismiss(ad->enventor);
-        ad->shift_pressed = EINA_TRUE;
-        return ECORE_CALLBACK_DONE;
-     }
-
    if (ad->ctrl_pressed)
      {
-        if (ad->shift_pressed) return template_insert_patch(ad, event->key);
-        else return ctrl_func(ad, event->key);
+        return ctrl_func(ad, event->key);
      }
 
    //Control Key
