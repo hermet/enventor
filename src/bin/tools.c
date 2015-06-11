@@ -230,6 +230,7 @@ tools_create(Evas_Object *parent, Evas_Object *enventor)
 
    btn = tools_btn_create(box, "console", "Console Box (Ctrl + Down)",
                           console_cb, NULL);
+   elm_object_tooltip_orient_set(btn, ELM_TOOLTIP_ORIENT_BOTTOM_LEFT);
    evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 1.0, EVAS_HINT_FILL);
    elm_box_pack_end(box, btn);
