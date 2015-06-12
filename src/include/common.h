@@ -12,17 +12,17 @@ $ enventor newfile.edc --to\n \
 $ enventor sample.edc output.edj --id ./images --sd ./sounds\n"
 
 #define ENVENTOR_USAGE \
-"%prog [input file] [output file]  [--to] [--id image path] [--sd sound path] [--fd font path] [--dd data path]"
+"%prog [input file] [output file] [--to] [--id image path] [--sd sound path] [--fd font path] [--dd data path]"
 
 #define ENVENTOR_INFO \
-"\nThis is an EDC editor with some convenient functions.\n \
+"This is an EDC editor with some convenient functions.\n \
 It's brand new and was only started near the begining of June 2013,\n \
 so expecting it to do everything a mature script editor does \n \
 is a bit premature, but considering it's young age, it does a lot. \n \
 \nPlease see next sites for more information on these.\n \
 \n http://www.enlightenment.org \n \
-\n https://phab.enlightenment.org/w/projects/enventor/ \n \
-\n http://www.openhub.net/p/enventor\n"
+https://phab.enlightenment.org/w/projects/enventor/ \n \
+http://www.openhub.net/p/enventor\n"
 
 #define ENVENTOR_COPYRIGHT \
 "Copyright (C) 2013-2015 ChunEon Park and various contributors (see AUTHORS)\n \
