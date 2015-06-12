@@ -9,28 +9,10 @@
 typedef struct app_s
 {
    Evas_Object *enventor;
-
-   Eina_Bool ctrl_pressed : 1;
-   Eina_Bool alt_pressed : 1;
    Eina_Bool template_new : 1;
 } app_data;
 
 int main(int argc, char **argv);
-
-static Eina_Bool
-main_key_up_cb(void *data, int type EINA_UNUSED, void *ev)
-{
-   Ecore_Event_Key *event = ev;
-   app_data *ad = data;
-
-   if (!strcmp("Control_L", event->key))
-     ad->ctrl_pressed = EINA_FALSE;
-
-   if (!strcmp("Alt_L", event->key))
-     ad->alt_pressed = EINA_FALSE;
-
-   return ECORE_CALLBACK_PASS_ON;
-}
 
 void
 auto_comp_toggle(app_data *ad)
@@ -163,7 +145,8 @@ main_mouse_wheel_cb(void *data, int type EINA_UNUSED, void *ev)
    app_data *ad = data;
    Evas_Coord x, y, w, h;
 
-   if (!ad->ctrl_pressed) return ECORE_CALLBACK_PASS_ON;
+   if (event->modifiers != ECORE_EVENT_MODIFIER_CTRL)
+     return ECORE_CALLBACK_PASS_ON;
 
    //View Scale
    Evas_Object *view = enventor_object_live_view_get(ad->enventor);
@@ -582,101 +565,109 @@ default_template_insert(app_data *ad)
 }
 
 static Eina_Bool
-alt_func(app_data *ad, const char *key)
+alt_func(app_data *ad, Ecore_Event_Key *event)
 {
+   if (event->modifiers != ECORE_EVENT_MODIFIER_ALT)
+     return EINA_FALSE;
+
    //Full Edit View
-   if (!strcmp(key, "Left"))
+   if (!strcmp(event->key, "Left"))
      {
         base_live_view_full_view();
-        return ECORE_CALLBACK_DONE;
+        return EINA_TRUE;
      }
    //Full Live View
-   if (!strcmp(key, "Right"))
+   if (!strcmp(event->key, "Right"))
      {
         base_enventor_full_view();
-        return ECORE_CALLBACK_DONE;
+        return EINA_TRUE;
      }
    //Full Console View
-   if (!strcmp(key, "Up"))
+   if (!strcmp(event->key, "Up"))
      {
         base_console_full_view();
-        return ECORE_CALLBACK_DONE;
+        return EINA_TRUE;
      }
    //Full Editors View
-   if (!strcmp(key, "Down"))
+   if (!strcmp(event->key, "Down"))
      {
         base_editors_full_view();
-        return ECORE_CALLBACK_DONE;
+        return EINA_TRUE;
      }
+
+   return EINA_FALSE;
 }
 
 static Eina_Bool
-ctrl_func(app_data *ad, const char *key)
+ctrl_func(app_data *ad, Ecore_Event_Key *event)
 {
+   if (event->modifiers != ECORE_EVENT_MODIFIER_CTRL)
+     return EINA_FALSE;
+
    //Save
-   if (!strcmp(key, "s") || !strcmp(key, "S"))
+   if (!strcmp(event->key, "s") || !strcmp(event->key, "S"))
      {
         file_mgr_edc_save();
-        return ECORE_CALLBACK_DONE;
+        return EINA_TRUE;
      }
   //Delete Line
-   if (!strcmp(key, "d") || !strcmp(key, "D"))
+   if (!strcmp(event->key, "d") || !strcmp(event->key, "D"))
      {
         enventor_object_line_delete(ad->enventor);
-        return ECORE_CALLBACK_DONE;
+        return EINA_TRUE;
      }
    //Find/Replace
-   if (!strcmp(key, "f") || !strcmp(key, "F"))
+   if (!strcmp(event->key, "f") || !strcmp(event->key, "F"))
      {
         live_edit_cancel();
         search_open(ad->enventor);
-        return ECORE_CALLBACK_DONE;
+        return EINA_TRUE;
      }
    //Goto Line
-   if (!strcmp(key, "l") || !strcmp(key, "L"))
+   if (!strcmp(event->key, "l") || !strcmp(event->key, "L"))
      {
         live_edit_cancel();
         goto_open(ad->enventor);
-        return ECORE_CALLBACK_DONE;
+        return EINA_TRUE;
      }
    //Part Highlight
-   if (!strcmp(key, "h") || !strcmp(key, "H"))
+   if (!strcmp(event->key, "h") || !strcmp(event->key, "H"))
      {
         part_highlight_toggle(ad);
-        return ECORE_CALLBACK_DONE;
+        return EINA_TRUE;
      }
    //Swallow Dummy Object
-   if (!strcmp(key, "w") || !strcmp(key, "W"))
+   if (!strcmp(event->key, "w") || !strcmp(event->key, "W"))
      {
         dummy_swallow_toggle(ad);
-        return ECORE_CALLBACK_DONE;
+        return EINA_TRUE;
      }
    //Template Code
-   if (!strcmp(key, "t") || !strcmp(key, "T"))
+   if (!strcmp(event->key, "t") || !strcmp(event->key, "T"))
      {
         default_template_insert(ad);
-        return ECORE_CALLBACK_DONE;
+        return EINA_TRUE;
      }
    //Auto Indentation
-   if (!strcmp(key, "i") || !strcmp(key, "I"))
+   if (!strcmp(event->key, "i") || !strcmp(event->key, "I"))
      {
         auto_indent_toggle(ad);
-        return ECORE_CALLBACK_DONE;
+        return EINA_TRUE;
      }
    //Auto Completion
-   if (!strcmp(key, "o") || !strcmp(key, "O"))
+   if (!strcmp(event->key, "o") || !strcmp(event->key, "O"))
      {
         auto_comp_toggle(ad);
-        return ECORE_CALLBACK_DONE;
+        return EINA_TRUE;
      }
    //Live Edit
-   if (!strcmp(key, "e") || !strcmp(key, "E"))
+   if (!strcmp(event->key, "e") || !strcmp(event->key, "E"))
      {
         live_edit_toggle();
-        return ECORE_CALLBACK_DONE;
+        return EINA_TRUE;
      }
 
-   return ECORE_CALLBACK_PASS_ON;
+   return EINA_FALSE;
 }
 
 static Eina_Bool
@@ -724,17 +715,13 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    if (menu_activated_get() > 0) return ECORE_CALLBACK_PASS_ON;
    if (file_mgr_warning_is_opened()) return ECORE_CALLBACK_PASS_ON;
 
-   if (ad->ctrl_pressed)
-     return ctrl_func(ad, event->key);
-
-   if (ad->alt_pressed)
-     return alt_func(ad, event->key);
+   if (ctrl_func(ad, event)) return ECORE_CALLBACK_DONE;
+   if (alt_func(ad, event)) return ECORE_CALLBACK_DONE;
 
    //Control Key
    if (!strcmp("Control_L", event->key))
      {
         enventor_object_ctxpopup_dismiss(ad->enventor);
-        ad->ctrl_pressed = EINA_TRUE;
         return ECORE_CALLBACK_PASS_ON;
      }
 
@@ -742,7 +729,6 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    if (!strcmp("Alt_L", event->key))
      {
         enventor_object_ctxpopup_dismiss(ad->enventor);
-        ad->alt_pressed = EINA_TRUE;
         return ECORE_CALLBACK_PASS_ON;
      }
 
@@ -844,7 +830,6 @@ static Eina_Bool
 init(app_data *ad, int argc, char **argv)
 {
    ecore_event_handler_add(ECORE_EVENT_KEY_DOWN, main_key_down_cb, ad);
-   ecore_event_handler_add(ECORE_EVENT_KEY_UP, main_key_up_cb, ad);
    ecore_event_handler_add(ECORE_EVENT_MOUSE_WHEEL, main_mouse_wheel_cb, ad);
 
    elm_setup();
