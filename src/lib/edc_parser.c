@@ -278,7 +278,7 @@ cur_state_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
              continue;
           }
 
-        //Check whether outside of part or group
+        //Check whether outside of description or part or group
         if ((*p == '}') && (p < end))
           {
              bracket--;
@@ -286,6 +286,7 @@ cur_state_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
 
              if (bracket == 1) group_name = NULL;
              else if (bracket == 3) part_name = NULL;
+             else if (bracket == 4) description_name = NULL;
 
              continue;
           }
@@ -365,7 +366,7 @@ cur_state_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
      group_name = eina_stringshare_add_length(group_name, group_name_len);
    if (description_name)
      description_name = eina_stringshare_add_length(description_name, description_name_len);
- 
+
    td->part_name = part_name;
    td->group_name = group_name;
    td->state_name = description_name;
