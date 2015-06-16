@@ -383,3 +383,15 @@ redoundo_text_relative_push(redoundo_data *rd, const char *text)
 
    free(utf8);
 }
+
+void
+redoundo_n_diff_cancel(redoundo_data *rd, unsigned int n)
+{
+   if (!rd || !rd->queue || !n) return;
+
+   unsigned int i;
+   for (i = 0; i < n && rd->current_node; i++)
+     rd->current_node = eina_list_prev(rd->current_node);
+   rd->last_diff = (diff_data *)eina_list_data_get(rd->current_node);
+   untracked_diff_free(rd);
+}

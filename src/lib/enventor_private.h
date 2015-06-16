@@ -173,6 +173,7 @@ void redoundo_text_relative_push(redoundo_data *rd, const char *text);
 void redoundo_entry_region_push(redoundo_data *rd, int cursor_pos, int cursor_pos2);
 int redoundo_undo(redoundo_data *rd, Eina_Bool *changed);
 int redoundo_redo(redoundo_data *rd, Eina_Bool *changed);
+void redoundo_n_diff_cancel(redoundo_data *rd, unsigned int n);
 
 
 /* edj_viewer */

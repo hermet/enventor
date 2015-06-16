@@ -255,8 +255,14 @@ edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
           }
 
         if (ed->auto_indent)
-          indent_insert_apply(syntax_indent_data_get(ed->sh), ed->en_edit,
-                              info->change.insert.content, ed->cur_line);
+          {
+            indent_insert_apply(syntax_indent_data_get(ed->sh), ed->en_edit,
+                                info->change.insert.content, ed->cur_line);
+             int increase =
+                parser_line_cnt_get(ed->pd, info->change.insert.content);
+             edit_line_increase(ed, increase);
+          }
+
      }
    else
      {
