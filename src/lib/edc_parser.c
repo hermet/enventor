@@ -260,7 +260,7 @@ cur_state_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    td->group_name =  NULL;
    td->state_name =  NULL;
 
-   while (p <= end)
+   while (p && p <= end)
      {
         //Skip "" range
         if (!strncmp(p, quot, quot_len))
@@ -276,6 +276,20 @@ cur_state_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
              bracket++;
              p++;
              continue;
+          }
+        //Check inside comment
+        if (*p == '/')
+          {
+             if (p[1] == '/')
+               {
+                 p = strchr(p, '\n');
+                 continue;
+               }
+             else if (p[1] == '*')
+               {
+                 p = strstr(p, "*/");
+                 continue;
+               }
           }
 
         //Check whether outside of description or part or group
@@ -337,8 +351,11 @@ cur_state_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
                      }
                    value++;
                 }
-              value_convert = atof(value_buf);
-              free(value_buf);
+              if (value_buf)
+                {
+                  value_convert = atof(value_buf);
+                  free(value_buf);
+                }
               continue;
            }
         //Check Group in

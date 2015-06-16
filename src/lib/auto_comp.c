@@ -122,10 +122,25 @@ context_lexem_thread_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
    const int quot_len = QUOT_UTF8_LEN;
    int quot_cnt = 0;
 
-   while (cur <= end)
+   while (cur && cur <= end)
      {
         if ((cur!=end) && (!strncmp(cur, quot, quot_len)))
           quot_cnt++;
+
+        //Check inside comment
+        if (*cur == '/')
+          {
+             if (cur[1] == '/')
+               {
+                  cur = strchr(cur, '\n');
+                  continue;
+               }
+             else if (cur[1] == '*')
+               {
+                  cur = strstr(cur, "*/");
+                  continue;
+               }
+          }
 
         if (*cur == '{')
           {
@@ -145,7 +160,7 @@ context_lexem_thread_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
         if (*cur == '}')
           {
              memset(stack[depth], 0x0, 40);
-             depth--;
+             if (depth > 0) depth--;
           }
         cur++;
      }
