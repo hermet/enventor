@@ -417,7 +417,7 @@ entry_changed_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
                  void *event_info)
 {
    autocomp_data *ad = g_ad;
-   if (!g_ad) return;
+   if ((!g_ad) || (!ad->enabled)) return;
 
    Elm_Entry_Change_Info *info = event_info;
 
