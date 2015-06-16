@@ -32,7 +32,16 @@ typedef struct autocomp_s
    Eina_Bool anchor_visible : 1;
    Eina_Bool initialized : 1;
    Eina_Bool enabled : 1;
+   Ecore_Thread *cntx_lexem_thread;
 } autocomp_data;
+
+typedef struct ctx_lexem_thread_data_s
+{
+   char *utf8;
+   int cur_pos;
+   lexem *result;
+   autocomp_data *ad;
+} ctx_lexem_td;
 
 static autocomp_data *g_ad = NULL;
 
@@ -85,22 +94,22 @@ init_thread_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
    autocomp_load(ad);
 }
 
-static lexem *
-context_lexem_get(autocomp_data *ad, Evas_Object *entry, int cur_pos)
+static void
+context_lexem_thread_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
+   ctx_lexem_td *td = (ctx_lexem_td *)data;
 
    Eina_Bool find_flag = EINA_FALSE;
    Eina_List *l = NULL;
-   Eina_List *nodes = ad->lexem_root->nodes;
-   lexem *data = (lexem *)ad->lexem_root;
-   if (cur_pos <= 1) return data;
+   Eina_List *nodes = td->ad->lexem_root->nodes;
+   td->result = (lexem *)td->ad->lexem_root;
+   int cur_pos = td->cur_pos;
+   if (cur_pos <= 1) return;
 
-   const char *text = elm_entry_entry_get(entry);
-   if (!text) return data;
    int i = 0;
 
-   char *utf8 = elm_entry_markup_to_utf8(text);
-   if (!utf8) return data;
+   if (!td->utf8) return;
+   char *utf8 = td->utf8;
 
    char *cur = utf8;
    char *end = cur + cur_pos;
@@ -143,24 +152,76 @@ context_lexem_get(autocomp_data *ad, Evas_Object *entry, int cur_pos)
 
    free(utf8);
 
-   if (quot_cnt % 2) return NULL;
+   if (quot_cnt % 2)
+     {
+        td->result = NULL;
+        return;
+     }
 
    for (i = 0; i < depth; i++)
      {
         find_flag = EINA_FALSE;
-        EINA_LIST_FOREACH(nodes, l, data)
+        EINA_LIST_FOREACH(nodes, l, td->result)
           {
-             if (!strncmp(stack[i], data->name, strlen(data->name)))
+             if (!strncmp(stack[i], td->result->name, strlen(td->result->name)))
                {
-                  nodes = data->nodes;
+                  nodes = td->result->nodes;
                   l = NULL;
                   find_flag = EINA_TRUE;
                   break;
                }
           }
-        if (!find_flag) return NULL;
+        if (!find_flag)
+          {
+             td->result = NULL;
+             return;
+          }
      }
-   return data;
+   return;
+}
+
+static void
+context_lexem_thread_end_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
+{
+   ctx_lexem_td *td = (ctx_lexem_td *)data;
+
+   td->ad->lexem_ptr = td->result;
+   td->ad->cntx_lexem_thread = NULL;
+   free(td);
+}
+
+static void
+context_lexem_thread_cancel_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
+{
+   ctx_lexem_td *td = (ctx_lexem_td *)data;
+
+   td->ad->lexem_ptr = (lexem *)td->ad->lexem_root;
+   td->ad->cntx_lexem_thread = NULL;
+   free(td);
+}
+
+void
+context_lexem_get(autocomp_data *ad, Evas_Object *entry)
+{
+   const char *text = elm_entry_entry_get(entry);
+   if (!text)
+     {
+        ad->lexem_ptr = (lexem *)ad->lexem_root;
+        return;
+     }
+
+   if (ad->cntx_lexem_thread)
+      ecore_thread_cancel(ad->cntx_lexem_thread);
+
+   ctx_lexem_td *td = (ctx_lexem_td *)calloc(1, sizeof(ctx_lexem_td));
+   td->utf8 =  elm_entry_markup_to_utf8(text);
+   td->cur_pos = elm_entry_cursor_pos_get(entry);
+   td->ad = ad;
+   td->result = NULL;
+
+   ad->cntx_lexem_thread =  ecore_thread_run(context_lexem_thread_cb,
+                                             context_lexem_thread_end_cb,
+                                             context_lexem_thread_cancel_cb, td);
 }
 
 static void
@@ -176,7 +237,7 @@ context_changed(autocomp_data *ad, Evas_Object *edit)
         return;
      }
 
-   ad->lexem_ptr = context_lexem_get(ad, edit, cursor_position);
+   context_lexem_get(ad, edit);
 }
 
 static void
