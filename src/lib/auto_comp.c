@@ -169,7 +169,7 @@ context_lexem_thread_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
                }
 
              memset(stack[depth], 0x0, MAX_KEYWORD_LENGHT);
-             strncpy(stack[depth], help_ptr, help_end_ptr - help_ptr + 1);
+             strncpy(stack[depth], help_ptr, context_len);
              depth++;
           }
         if (*cur == '.')
@@ -199,12 +199,11 @@ context_lexem_thread_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
           {
              dot_lex = EINA_FALSE;
              memset(stack[depth], 0x0, MAX_KEYWORD_LENGHT);
-             depth--;
+             if (depth > 0) depth--;
           }
         if (*cur == '}')
           {
              memset(stack[depth], 0x0, MAX_KEYWORD_LENGHT);
-             memset(stack[depth], 0x0, 40);
              if (depth > 0) depth--;
           }
         cur++;
@@ -245,11 +244,11 @@ context_lexem_thread_end_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
    ctx_lexem_td *td = (ctx_lexem_td *)data;
 
-   td->ad->lexem_ptr = td->result;
+   td->ad->lexem_ptr = td->result ? td->result : (lexem *)td->ad->lexem_root;
    if (td->ad->cntx_lexem_thread == thread)
      td->ad->cntx_lexem_thread = NULL;
 
-   if (td->list_show)
+   if (td->list_show && td->result)
      candidate_list_show(td->ad);
    free(td);
 }
@@ -260,7 +259,7 @@ context_lexem_thread_cancel_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
    ctx_lexem_td *td = (ctx_lexem_td *)data;
 
    td->ad->lexem_ptr = td->result ? td->result : (lexem *)td->ad->lexem_root;
-   if (td->list_show)
+   if (td->list_show && td->result)
      candidate_list_show(td->ad);
    if (td->ad->cntx_lexem_thread == thread)
      td->ad->cntx_lexem_thread = NULL;
