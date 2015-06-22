@@ -209,8 +209,6 @@ context_lexem_thread_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
         cur++;
      }
 
-   free(utf8);
-
    if (quot_cnt % 2)
      {
         td->result = NULL;
@@ -250,6 +248,7 @@ context_lexem_thread_end_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
 
    if (td->list_show && td->result)
      candidate_list_show(td->ad);
+   free(td->utf8);
    free(td);
 }
 
@@ -263,6 +262,7 @@ context_lexem_thread_cancel_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
      candidate_list_show(td->ad);
    if (td->ad->cntx_lexem_thread == thread)
      td->ad->cntx_lexem_thread = NULL;
+   free(td->utf8);
    free(td);
 }
 
@@ -280,7 +280,7 @@ context_lexem_get(autocomp_data *ad, Evas_Object *entry, Eina_Bool list_show)
       ecore_thread_cancel(ad->cntx_lexem_thread);
 
    ctx_lexem_td *td = (ctx_lexem_td *)calloc(1, sizeof(ctx_lexem_td));
-   td->utf8 =  elm_entry_markup_to_utf8(text);
+   td->utf8 = elm_entry_markup_to_utf8(text);
    td->cur_pos = elm_entry_cursor_pos_get(entry);
    td->ad = ad;
    td->result = NULL;
