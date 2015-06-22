@@ -567,7 +567,7 @@ default_template_insert(app_data *ad)
 static Eina_Bool
 alt_func(app_data *ad, Ecore_Event_Key *event)
 {
-   if (event->modifiers != ECORE_EVENT_MODIFIER_ALT)
+   if (!(event->modifiers & ECORE_EVENT_MODIFIER_ALT))
      return EINA_FALSE;
 
    //Full Edit View
@@ -601,7 +601,7 @@ alt_func(app_data *ad, Ecore_Event_Key *event)
 static Eina_Bool
 ctrl_func(app_data *ad, Ecore_Event_Key *event)
 {
-   if (event->modifiers != ECORE_EVENT_MODIFIER_CTRL)
+   if (!(event->modifiers & ECORE_EVENT_MODIFIER_CTRL))
      return EINA_FALSE;
 
    //Save
