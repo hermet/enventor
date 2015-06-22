@@ -565,7 +565,7 @@ default_template_insert(app_data *ad)
 }
 
 static Eina_Bool
-alt_func(app_data *ad, Ecore_Event_Key *event)
+alt_func(Ecore_Event_Key *event)
 {
    if (!(event->modifiers & ECORE_EVENT_MODIFIER_ALT))
      return EINA_FALSE;
@@ -722,7 +722,7 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    if (file_mgr_warning_is_opened()) return ECORE_CALLBACK_PASS_ON;
 
    if (ctrl_func(ad, event)) return ECORE_CALLBACK_DONE;
-   if (alt_func(ad, event)) return ECORE_CALLBACK_DONE;
+   if (alt_func(event)) return ECORE_CALLBACK_DONE;
 
    //Control Key
    if (!strcmp("Control_L", event->key))
