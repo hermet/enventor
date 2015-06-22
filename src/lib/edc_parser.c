@@ -1152,7 +1152,9 @@ is_numberic(const char *str)
    if (!str || (*str == '\0') || isspace(*str))
      return EINA_FALSE;
 
-   strtod(str, &p);
+   double v = strtod(str, &p);
+   (v);  //trick for avoding unused compiler warning.
+
    if (*p == '\0') ret = EINA_TRUE;
 
    return ret;
