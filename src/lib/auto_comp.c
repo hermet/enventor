@@ -101,6 +101,27 @@ init_thread_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
 }
 
 static void
+lexem_tree_free(lexem **root)
+{
+   lexem *data = NULL;
+   Eina_List *l = NULL;
+
+   if (!(*root)) return;
+
+   EINA_LIST_FOREACH((*root)->nodes, l, data)
+    {
+       if (data->nodes)
+         lexem_tree_free(&data);
+    }
+
+   EINA_LIST_FREE((*root)->nodes, data)
+     {
+        free(data->txt);
+        free(data);
+     }
+}
+
+static void
 context_lexem_thread_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
    ctx_lexem_td *td = (ctx_lexem_td *)data;
@@ -765,6 +786,8 @@ autocomp_term(void)
    autocomp_data *ad = g_ad;
    evas_object_del(ad->anchor);
    ecore_thread_cancel(ad->init_thread);
+
+   lexem_tree_free((lexem **)&ad->lexem_root);
 
    eet_data_descriptor_free(lex_desc);
    eet_close(ad->source_file);
