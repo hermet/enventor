@@ -348,8 +348,7 @@ anchor_unfocused_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 static void
 queue_reset(autocomp_data *ad)
 {
-   if (!ad->queue_pos && !ad->anchor_visible)
-     return;
+   if (ad->queue_pos == -1) return;
    ad->queue_pos = 0;
    memset(ad->queue, 0x0, sizeof(ad->queue));
    entry_anchor_off(ad);
