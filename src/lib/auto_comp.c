@@ -459,7 +459,10 @@ entry_tooltip_content_cb(void *data, Evas_Object *obj EINA_UNUSED,
           }
      }
 
-   elm_list_item_selected_set(elm_list_first_item_get(ad->list), EINA_TRUE);
+   //select first item in default.
+   Elm_Object_Item *it = elm_list_first_item_get(ad->list);
+   if (it) elm_list_item_selected_set(it, EINA_TRUE);
+
    evas_object_smart_callback_add(ad->list, "unfocused", anchor_unfocused_cb,
                                   ad);
    evas_object_event_callback_add(ad->list, EVAS_CALLBACK_DEL, list_del_cb, ad);
