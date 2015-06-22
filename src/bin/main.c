@@ -43,11 +43,13 @@ enventor_common_setup(Evas_Object *enventor)
    enventor_object_font_set(enventor, font_name, font_style);
    enventor_object_font_scale_set(enventor, config_font_scale_get());
    enventor_object_live_view_scale_set(enventor, config_view_scale_get());
-   enventor_object_linenumber_set(enventor, config_linenumber_get());
+   tools_lines_update(enventor, EINA_FALSE);
    enventor_object_part_highlight_set(enventor, config_part_highlight_get());
+   tools_highlight_update(enventor, EINA_FALSE);
    enventor_object_auto_indent_set(enventor, config_auto_indent_get());
    enventor_object_auto_complete_set(enventor, config_auto_complete_get());
-   enventor_object_dummy_swallow_set(enventor, config_dummy_swallow_get());
+   tools_swallow_update(enventor, EINA_FALSE);
+   tools_status_update(NULL, EINA_FALSE);
 
    Eina_List *list = eina_list_append(NULL, config_edj_path_get());
    enventor_object_path_set(enventor, ENVENTOR_OUT_EDJ, list);
@@ -134,7 +136,6 @@ config_update_cb(void *data)
    enventor_object_live_view_size_set(enventor, w, h);
 
    base_tools_toggle(EINA_FALSE);
-   base_statusbar_toggle(EINA_FALSE);
    base_console_auto_hide();
 }
 
@@ -516,29 +517,6 @@ enventor_setup(app_data *ad)
 }
 
 static void
-part_highlight_toggle(app_data *ad)
-{
-   config_part_highlight_set(!config_part_highlight_get());
-   enventor_object_part_highlight_set(ad->enventor,
-                                      config_part_highlight_get());
-   if (config_part_highlight_get())
-     stats_info_msg_update("Part Highlighting Enabled.");
-   else
-     stats_info_msg_update("Part Highlighting Disabled.");
-}
-
-static void
-dummy_swallow_toggle(app_data *ad)
-{
-   config_dummy_swallow_set(!config_dummy_swallow_get());
-   enventor_object_dummy_swallow_set(ad->enventor, config_dummy_swallow_get());
-   if (config_dummy_swallow_get())
-     stats_info_msg_update("Dummy Swallow Enabled.");
-   else
-     stats_info_msg_update("Dummy Swallow Disabled.");
-}
-
-static void
 default_template_insert(app_data *ad)
 {
    if (live_edit_get())
@@ -633,13 +611,13 @@ ctrl_func(app_data *ad, Ecore_Event_Key *event)
    //Part Highlight
    if (!strcmp(event->key, "h") || !strcmp(event->key, "H"))
      {
-        part_highlight_toggle(ad);
+        tools_highlight_update(ad->enventor, EINA_TRUE);
         return EINA_TRUE;
      }
    //Swallow Dummy Object
    if (!strcmp(event->key, "w") || !strcmp(event->key, "W"))
      {
-        dummy_swallow_toggle(ad);
+        tools_swallow_update(ad->enventor, EINA_TRUE);
         return EINA_TRUE;
      }
    //Template Code
@@ -773,8 +751,7 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    if (!strcmp(event->key, "F5"))
      {
         enventor_object_ctxpopup_dismiss(ad->enventor);
-        config_linenumber_set(!config_linenumber_get());
-        enventor_object_linenumber_set(ad->enventor, config_linenumber_get());
+        tools_lines_update(ad->enventor, EINA_TRUE);
         return ECORE_CALLBACK_DONE;
      }
    //Tools
@@ -795,7 +772,7 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    if (!strcmp(event->key, "F11"))
      {
         enventor_object_ctxpopup_dismiss(ad->enventor);
-        base_statusbar_toggle(EINA_TRUE);
+        tools_status_update(NULL, EINA_TRUE);
         return ECORE_CALLBACK_DONE;
      }
    //Setting
@@ -815,7 +792,7 @@ statusbar_set()
 {
    Evas_Object *obj = stats_init(base_layout_get());
    elm_object_part_content_set(base_layout_get(), "elm.swallow.statusbar", obj);
-   base_statusbar_toggle(EINA_FALSE);
+   tools_status_update(NULL, EINA_FALSE);
 }
 
 static void

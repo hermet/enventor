@@ -20,12 +20,7 @@ highlight_cb(void *data, Evas_Object *obj EINA_UNUSED,
              void *event_info EINA_UNUSED)
 {
    Evas_Object *enventor = data;
-   config_part_highlight_set(!config_part_highlight_get());
-   enventor_object_part_highlight_set(enventor, config_part_highlight_get());
-   if (config_part_highlight_get())
-     stats_info_msg_update("Part Highlighting Enabled.");
-   else
-     stats_info_msg_update("Part Highlighting Disabled.");
+   tools_highlight_update(enventor, EINA_TRUE);
 }
 
 static void
@@ -33,28 +28,21 @@ swallow_cb(void *data, Evas_Object *obj EINA_UNUSED,
            void *event_info EINA_UNUSED)
 {
    Evas_Object *enventor = data;
-   config_dummy_swallow_set(!config_dummy_swallow_get());
-   enventor_object_dummy_swallow_set(enventor, config_dummy_swallow_get());
-
-   if (config_dummy_swallow_get())
-     stats_info_msg_update("Dummy Swallow Enabled.");
-   else
-     stats_info_msg_update("Dummy Swallow Disabled.");
+   tools_swallow_update(enventor, EINA_TRUE);
 }
 
 static void
 lines_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 {
    Evas_Object *enventor = data;
-   config_linenumber_set(!config_linenumber_get());
-   enventor_object_linenumber_set(enventor, config_linenumber_get());
+   tools_lines_update(enventor, EINA_TRUE);
 }
 
 static void
 status_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
           void *event_info EINA_UNUSED)
 {
-   base_statusbar_toggle(EINA_TRUE);
+   tools_status_update(NULL, EINA_TRUE);
 }
 
 static void
@@ -250,4 +238,41 @@ Evas_Object *
 tools_live_edit_get(Evas_Object *tools)
 {
    return evas_object_data_get(tools, "live_edit");
+}
+
+void
+tools_highlight_update(Evas_Object *enventor, Eina_Bool toggle)
+{
+   if (toggle) config_part_highlight_set(!config_part_highlight_get());
+   enventor_object_part_highlight_set(enventor,
+                                      config_part_highlight_get());
+   if (config_part_highlight_get())
+     stats_info_msg_update("Part Highlighting Enabled.");
+   else
+     stats_info_msg_update("Part Highlighting Disabled.");
+}
+
+void
+tools_lines_update(Evas_Object *enventor, Eina_Bool toggle)
+{
+   if (toggle) config_linenumber_set(!config_linenumber_get());
+   enventor_object_linenumber_set(enventor, config_linenumber_get());
+}
+
+void
+tools_swallow_update(Evas_Object *enventor, Eina_Bool toggle)
+{
+   if (toggle) config_dummy_swallow_set(!config_dummy_swallow_get());
+   enventor_object_dummy_swallow_set(enventor, config_dummy_swallow_get());
+
+   if (config_dummy_swallow_get())
+     stats_info_msg_update("Dummy Swallow Enabled.");
+   else
+     stats_info_msg_update("Dummy Swallow Disabled.");
+}
+
+void
+tools_status_update(Evas_Object *enventor EINA_UNUSED, Eina_Bool toggle)
+{
+   base_statusbar_toggle(toggle);
 }
