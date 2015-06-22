@@ -501,6 +501,13 @@ class Enventor.Object (Elm.Widget, Efl.File) {
             @in font_style: const(char) **; /*@ ... */
          }
       }
+      auto_complete_list_show {
+         /*@
+         @brief
+         @warning
+         @see
+         @ingroup Enventor */
+      }
    }
    implements {
       class.constructor;

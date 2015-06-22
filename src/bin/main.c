@@ -660,6 +660,12 @@ ctrl_func(app_data *ad, Ecore_Event_Key *event)
         auto_comp_toggle(ad);
         return EINA_TRUE;
      }
+
+   if (!strcmp(event->key, "space"))
+     {
+        enventor_object_auto_complete_list_show(ad->enventor);
+        return EINA_TRUE;
+     }
    //Live Edit
    if (!strcmp(event->key, "e") || !strcmp(event->key, "E"))
      {

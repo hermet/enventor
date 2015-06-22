@@ -646,6 +646,17 @@ list_item_move(autocomp_data *ad, Eina_Bool up)
 /*****************************************************************************/
 
 void
+autocomp_list_show(void)
+{
+   Evas_Object *entry;
+   autocomp_data *ad = g_ad;
+   if (!g_ad || !g_ad->enabled) return;
+
+   entry = edit_entry_get(ad->ed);
+   context_lexem_get(ad, entry, EINA_TRUE);
+}
+
+void
 autocomp_target_set(edit_data *ed)
 {
    autocomp_data *ad = g_ad;

@@ -299,6 +299,13 @@ _enventor_object_auto_complete_get(Eo *obj EINA_UNUSED,
 }
 
 EOLIAN static void
+_enventor_object_auto_complete_list_show(Eo *obj EINA_UNUSED,
+                                   Enventor_Object_Data *pd EINA_UNUSED)
+{
+   autocomp_list_show();
+}
+
+EOLIAN static void
 _enventor_object_modified_set(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd,
                                   Eina_Bool modified)
 {
