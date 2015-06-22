@@ -62,6 +62,8 @@ menu_close(menu_data *md)
 {
    if (!md->menu_layout) return;
    elm_object_signal_emit(md->menu_layout, "elm,state,dismiss", "");
+
+   tools_menu_update(EINA_FALSE);
 }
 
 static void
@@ -672,6 +674,8 @@ menu_open(menu_data *md)
    elm_object_tooltip_text_set(btn, "Close Enventor Menu (Esc)");
    elm_object_text_set(btn, "Back");
    elm_object_part_content_set(layout, "elm.swallow.prev_btn", btn);
+
+   tools_menu_update(EINA_TRUE);
 
    md->menu_layout = layout;
    md->active_request++;

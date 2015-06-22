@@ -912,6 +912,7 @@ live_edit_toggle(void)
 {
    live_data *ld = g_ld;
    Eina_Bool on = !ld->on;
+   ld->on = on;
 
    if (on)
      {
@@ -919,11 +920,10 @@ live_edit_toggle(void)
         ld->live_view = enventor_object_live_view_get(ld->enventor);
         ld->ctxpopup = ctxpopup_create(ld);
         stats_info_msg_update("Select a part to add in Live View.");
+        tools_live_update(ld->enventor, EINA_FALSE);
      }
    else
      live_edit_cancel();
-
-   ld->on = on;
 }
 
 Eina_Bool
@@ -978,6 +978,8 @@ live_edit_cancel(void)
      }
 
    ld->on = EINA_FALSE;
+
+   tools_live_update(ld->enventor, EINA_FALSE);
 }
 
 void

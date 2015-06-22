@@ -1253,7 +1253,20 @@ group { name: "elm/button/base/enventor";
          desc { "default";
          }
       }
+      rect { "icon_highlight";
+         desc { "default";
+         }
+         //This status is for tools selected effect
+         desc { "selected";
+            inherit: "default" 0.0;
+            color: 51 153 255 255;
+         }
+         desc { "clicked";
+            inherit: "selected" 0.0;
+         }
+      }
       rect { "icon_clip";
+         clip_to: "icon_highlight";
          desc { "default";
          }
          desc { "disabled";
@@ -1397,6 +1410,16 @@ group { name: "elm/button/base/enventor";
    }
    programs {
       program {
+         signal: "icon,highlight,enabled"; source: "";
+         action: STATE_SET "selected" "0.0";
+         target: "icon_highlight";
+      }
+      program {
+         signal: "icon,highlight,disabled"; source: "";
+         action: STATE_SET "default" "0.0";
+         target: "icon_highlight";
+      }
+      program {
          signal: "mouse,down,1"; source: "event";
          action: SIGNAL_EMIT "elm,action,press" "elm";
          after: "button_click_anim";
@@ -1405,6 +1428,7 @@ group { name: "elm/button/base/enventor";
          action: STATE_SET "clicked" 0.0;
          target: "base";
          target: "text2";
+         target: "icon_highlight";
       }
       program {
          signal: "mouse,up,1"; source: "event";
@@ -1415,6 +1439,7 @@ group { name: "elm/button/base/enventor";
          action: STATE_SET "default" 0.0;
          target: "base";
          target: "text2";
+         target: "icon_highlight";
       }
       program {
          signal: "elm,anim,activate"; source: "elm";

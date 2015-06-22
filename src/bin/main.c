@@ -35,6 +35,15 @@ auto_indent_toggle(app_data *ad)
 }
 
 static void
+enventor_tools_update(Evas_Object *enventor)
+{
+   tools_lines_update(enventor, EINA_FALSE);
+   tools_highlight_update(enventor, EINA_FALSE);
+   tools_swallow_update(enventor, EINA_FALSE);
+   tools_status_update(enventor, EINA_FALSE);
+}
+
+static void
 enventor_common_setup(Evas_Object *enventor)
 {
    const char *font_name;
@@ -43,13 +52,8 @@ enventor_common_setup(Evas_Object *enventor)
    enventor_object_font_set(enventor, font_name, font_style);
    enventor_object_font_scale_set(enventor, config_font_scale_get());
    enventor_object_live_view_scale_set(enventor, config_view_scale_get());
-   tools_lines_update(enventor, EINA_FALSE);
-   enventor_object_part_highlight_set(enventor, config_part_highlight_get());
-   tools_highlight_update(enventor, EINA_FALSE);
    enventor_object_auto_indent_set(enventor, config_auto_indent_get());
    enventor_object_auto_complete_set(enventor, config_auto_complete_get());
-   tools_swallow_update(enventor, EINA_FALSE);
-   tools_status_update(NULL, EINA_FALSE);
 
    Eina_List *list = eina_list_append(NULL, config_edj_path_get());
    enventor_object_path_set(enventor, ENVENTOR_OUT_EDJ, list);
@@ -121,6 +125,7 @@ config_update_cb(void *data)
    Evas_Object *enventor = ad->enventor;
 
    enventor_common_setup(enventor);
+   enventor_tools_update(enventor);
 
    syntax_color_update(enventor);
 
@@ -205,8 +210,10 @@ main_mouse_wheel_cb(void *data, int type EINA_UNUSED, void *ev)
 static Evas_Object *
 tools_set(Evas_Object *enventor)
 {
-   Evas_Object *tools = tools_create(base_layout_get(), enventor);
+   Evas_Object *tools = tools_init(base_layout_get(), enventor);
    base_tools_set(tools);
+   enventor_tools_update(enventor);
+
    return tools;
 }
 
@@ -850,6 +857,7 @@ term(app_data *ad EINA_UNUSED)
    menu_term();
    live_edit_term();
    stats_term();
+   tools_term();
    base_gui_term();
    file_mgr_term();
    config_term();

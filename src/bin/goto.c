@@ -162,6 +162,8 @@ goto_open(Evas_Object *enventor)
                                btn);
    evas_object_show(win);
 
+   tools_goto_update(enventor, EINA_FALSE);
+
    gd->win = win;
    gd->layout = layout;
    gd->entry = entry;
@@ -180,12 +182,16 @@ void
 goto_close(void)
 {
    goto_data *gd = g_gd;
-
    if (!gd) return;
+
+   Evas_Object *enventor = gd->enventor;
+
    //Save last state
    evas_object_geometry_get(gd->win, NULL, NULL, &win_w, &win_h);
    elm_win_screen_position_get(gd->win, &win_x, &win_y);
    evas_object_del(gd->win);
    free(gd);
    g_gd = NULL;
+
+   tools_goto_update(enventor, EINA_FALSE);
 }

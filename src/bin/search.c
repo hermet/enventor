@@ -405,6 +405,8 @@ search_open(Evas_Object *enventor)
                                btn_replace_all);
    evas_object_show(win);
 
+   tools_search_update(enventor, EINA_FALSE);
+
    sd->win = win;
    sd->enventor = enventor;
    sd->layout = layout;
@@ -427,6 +429,8 @@ search_close(void)
    search_data *sd = g_sd;
    if (!sd) return;
 
+   Evas_Object *enventor = sd->enventor;
+
    enventor_object_select_none(sd->enventor);
    while (sd->syntax_color > 0)
      {
@@ -440,4 +444,6 @@ search_close(void)
    evas_object_del(sd->win);
    free(sd);
    g_sd = NULL;
+
+   tools_search_update(enventor, EINA_FALSE);
 }

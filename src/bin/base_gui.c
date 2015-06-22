@@ -148,6 +148,7 @@ void
 base_console_full_view(void)
 {
    panes_console_full_view();
+   tools_console_update(EINA_TRUE);
 }
 
 void
@@ -165,15 +166,22 @@ base_console_auto_hide(void)
    if (!config_console_get()) return;
    if (bd->console_msg) return;
    panes_editors_full_view(EINA_TRUE);
+   tools_console_update(EINA_FALSE);
 }
 
 void
 base_console_toggle(void)
 {
    if (panes_editors_full_view_get())
-     panes_editors_full_view(EINA_FALSE);
+     {
+        tools_console_update(EINA_TRUE);
+        panes_editors_full_view(EINA_FALSE);
+     }
    else
-     panes_editors_full_view(EINA_TRUE);
+     {
+        tools_console_update(EINA_FALSE);
+        panes_editors_full_view(EINA_TRUE);
+     }
 }
 
 void

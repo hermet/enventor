@@ -62,8 +62,16 @@ v_unpress_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
     config_console_size_set(size);
 
    double origin = elm_panes_content_right_size_get(pd->vert.obj);
-   if (origin == 0.0) pd->vert.state = PANES_EDITORS_EXPAND;
-   else pd->vert.state = PANES_SPLIT_VIEW;
+   if (origin == 0.0)
+     {
+        pd->vert.state = PANES_EDITORS_EXPAND;
+        tools_console_update(EINA_FALSE);
+     }
+   else
+     {
+        pd->vert.state = PANES_SPLIT_VIEW;
+        tools_console_update(EINA_TRUE);
+     }
 }
 
 static void
