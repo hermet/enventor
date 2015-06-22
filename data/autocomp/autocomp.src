@@ -154,6 +154,7 @@ group "lexem" struct {
                value "cursor_offset" int: 2;
                value "line_back" int: 1;
                value "name" string: "images";
+               value "dot" int: 1;
             }
             group "lexem" struct {
                group "nodes" list {
@@ -925,6 +926,7 @@ group "lexem" struct {
                                        value "cursor_offset" int: 2;
                                        value "line_back" int: 1;
                                        value "name" string: "image";
+                                       value "dot" int: 1;
                                     }
                                     group "lexem" struct {
                                        group "nodes" list {
@@ -1219,6 +1221,7 @@ group "lexem" struct {
                                        value "cursor_offset" int: 2;
                                        value "line_back" int: 1;
                                        value "name" string: "rel1";
+                                       value "dot" int: 1;
                                    }
                                     group "lexem" struct {
                                        group "nodes" list {
@@ -1287,6 +1290,7 @@ group "lexem" struct {
                                        value "cursor_offset" int: 2;
                                        value "line_back" int: 1;
                                        value "name" string: "rel2";
+                                       value "dot" int: 1;
                                     }
                                     group "lexem" struct {
                                        group "nodes" list {
@@ -1533,6 +1537,7 @@ group "lexem" struct {
                                        value "cursor_offset" int: 2;
                                        value "line_back" int: 1;
                                        value "name" string: "text";
+                                       value "dot" int: 1;
                                     }
                                     group "lexem" struct {
                                        group "nodes" list {
@@ -2364,6 +2369,7 @@ group "lexem" struct {
          value "cursor_offset" int: 2;
          value "line_back" int: 1;
          value "name" string: "images";
+         value "dot" int: 1;
       }
       group "lexem" struct {
          group "nodes" list {

@@ -18,6 +18,7 @@ typedef struct lexem_s
    int cursor_offset;
    int line_back;
    char *name;
+   int dot;
 } lexem;
 
 typedef struct autocomp_s
@@ -35,6 +36,7 @@ typedef struct autocomp_s
    Eina_Bool initialized : 1;
    Eina_Bool enabled : 1;
    Ecore_Thread *cntx_lexem_thread;
+   Eina_Bool dot_candidate : 1;
 } autocomp_data;
 
 typedef struct ctx_lexem_thread_data_s
@@ -70,6 +72,7 @@ eddc_init(void)
    EET_DATA_DESCRIPTOR_ADD_BASIC(lex_desc, lexem, "cursor_offset", cursor_offset, EET_T_INT);
    EET_DATA_DESCRIPTOR_ADD_BASIC(lex_desc, lexem, "line_back", line_back, EET_T_INT);
    EET_DATA_DESCRIPTOR_ADD_BASIC(lex_desc, lexem, "name", name, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(lex_desc, lexem, "dot", dot, EET_T_INT);
 }
 
 static void
@@ -267,8 +270,9 @@ context_lexem_thread_end_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
    if (td->ad->cntx_lexem_thread == thread)
      td->ad->cntx_lexem_thread = NULL;
 
-   if (td->list_show && td->result)
+   if (td->list_show  || (td->result && td->result->dot && td->ad->dot_candidate))
      candidate_list_show(td->ad);
+   td->ad->dot_candidate = EINA_FALSE;
    free(td->utf8);
    free(td);
 }
@@ -279,10 +283,11 @@ context_lexem_thread_cancel_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
    ctx_lexem_td *td = (ctx_lexem_td *)data;
 
    td->ad->lexem_ptr = td->result ? td->result : (lexem *)td->ad->lexem_root;
-   if (td->list_show && td->result)
+   if (td->list_show || (td->result && td->result->dot && td->ad->dot_candidate))
      candidate_list_show(td->ad);
    if (td->ad->cntx_lexem_thread == thread)
      td->ad->cntx_lexem_thread = NULL;
+   td->ad->dot_candidate = EINA_FALSE;
    free(td->utf8);
    free(td);
 }
@@ -582,7 +587,8 @@ entry_changed_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
           {
              if (info->change.insert.content[0] == '.' && ad->queue_pos > 2)
                {
-                  context_lexem_get(ad, obj, EINA_TRUE);
+                  ad->dot_candidate = EINA_TRUE;
+                  context_lexem_get(ad, obj, EINA_FALSE);
                }
              queue_reset(ad);
           }
