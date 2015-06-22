@@ -399,13 +399,12 @@ tools_search_update(Evas_Object *enventor EINA_UNUSED,
 }
 
 void
-tools_live_update(Evas_Object *enventor EINA_UNUSED,
-                  Eina_Bool toggle EINA_UNUSED)
+tools_live_update(Eina_Bool on)
 {
    tools_data *td = g_td;
    if (!td) return;
 
-   if (live_edit_get())
+   if (on)
      elm_object_signal_emit(td->live_btn, "icon,highlight,enabled", "");
    else
      elm_object_signal_emit(td->live_btn, "icon,highlight,disabled", "");

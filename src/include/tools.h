@@ -7,6 +7,6 @@ void tools_swallow_update(Evas_Object *enventor, Eina_Bool toggle);
 void tools_status_update(Evas_Object *enventor, Eina_Bool toggle);
 void tools_goto_update(Evas_Object *enventor, Eina_Bool toggle);
 void tools_search_update(Evas_Object *enventor, Eina_Bool toggle);
-void tools_live_update(Evas_Object *enventor, Eina_Bool toggle);
+void tools_live_update(Eina_Bool on);
 void tools_console_update(Eina_Bool on);
 void tools_menu_update(Eina_Bool on);
