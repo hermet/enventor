@@ -69,7 +69,7 @@ typedef struct live_editor_s
    Eina_Bool on : 1;
 } live_data;
 
-static void live_edit_update(live_data *ld);
+static void live_edit_update_internal(live_data *ld);
 
 static const ctxpopup_it_data CTXPOPUP_ITEMS[] =
 {
@@ -90,8 +90,7 @@ info_text_update(live_data *ld)
    char buf[256];
 
    Evas_Coord lx, ly, lw, lh;
-   evas_object_geometry_get(ld->live_view, &lx, &ly, NULL, NULL);
-   config_view_size_get(&lw, &lh);
+   evas_object_geometry_get(ld->live_view, &lx, &ly, &lw, &lh);
 
    //Rel1
    snprintf(buf, sizeof(buf), "%.2f %.2f (%d, %d)",
@@ -561,7 +560,7 @@ cp_mouse_move_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
         case Ctrl_Pt_Cnt: //for avoiding compiler warning.
           break;
      }
-   live_edit_update(ld);
+   live_edit_update_internal(ld);
 }
 
 static void
@@ -616,6 +615,7 @@ ctrl_pt_init(live_data *ld)
    for (i = 0; i < Ctrl_Pt_Cnt; i++)
      {
         Evas_Object *layout = elm_layout_add(ld->layout);
+        evas_object_smart_member_add(layout, ld->layout);
         elm_layout_file_set(layout, EDJE_PATH,  "ctrl_pt");
         evas_object_resize(layout, ctrl_size, ctrl_size);
         evas_object_show(layout);
@@ -651,22 +651,28 @@ static void
 layout_update(live_data *ld)
 {
    Evas_Coord x, y, w, h;
+   Evas_Coord scaled_w, scaled_h;
 
    evas_object_geometry_get(ld->live_view, &x, &y, NULL, NULL);
    config_view_size_get(&w, &h);
+   scaled_w = (w * config_view_scale_get());
+   scaled_h = (h * config_view_scale_get());
 
-   Evas_Coord x2 = round(((double) w) * ld->part_info.rel1_x);
-   Evas_Coord y2 = round(((double) h) * ld->part_info.rel1_y);
-   evas_object_move(ld->layout, (x + x2), (y + y2));
+   Evas_Coord x2 = round(((double) scaled_w) * ld->part_info.rel1_x);
+   Evas_Coord y2 = round(((double) scaled_h) * ld->part_info.rel1_y);
+
+   evas_object_move(ld->layout,
+                    (x + x2 + ((w - scaled_w) * 0.5)),
+                    (y + y2 + ((h - scaled_h) * 0.5)));
    Evas_Coord w2 =
-      round(((double) w * (ld->part_info.rel2_x - ld->part_info.rel1_x)));
+     round(((double) scaled_w * (ld->part_info.rel2_x - ld->part_info.rel1_x)));
    Evas_Coord h2 =
-      round(((double) h * (ld->part_info.rel2_y - ld->part_info.rel1_y)));
+     round(((double) scaled_h * (ld->part_info.rel2_y - ld->part_info.rel1_y)));
    evas_object_resize(ld->layout, w2, h2);
 }
 
 static void
-live_edit_update(live_data *ld)
+live_edit_update_internal(live_data *ld)
 {
    layout_update(ld);
    ctrl_pt_update(ld);
@@ -679,7 +685,7 @@ live_view_geom_cb(void *data, Evas *e EINA_UNUSED,
                   Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 {
    live_data *ld = data;
-   live_edit_update(ld);
+   live_edit_update_internal(ld);
 }
 
 static void
@@ -692,6 +698,11 @@ layout_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
    Evas_Coord lx, ly, lw, lh;
    evas_object_geometry_get(ld->live_view, &lx, &ly, NULL, NULL);
    config_view_size_get(&lw, &lh);
+
+   Evas_Coord scaled_w = lw * config_view_scale_get();
+   Evas_Coord scaled_h = lh * config_view_scale_get();
+   Evas_Coord scaled_x = (lx + ((lw - scaled_w) * 0.5));
+   Evas_Coord scaled_y = (ly + ((lh - scaled_h) * 0.5));
 
    Evas_Coord x, y, w, h;
    evas_object_geometry_get(obj, &x, &y, &w, &h);
@@ -706,15 +717,15 @@ layout_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
    y = ev->cur.canvas.y - ld->move_delta.y;
 
    //limit to live view boundary
-   if (lx > x) x = lx;
-   if ((x + w) > (lx + lw)) x -= ((x + w) - (lx + lw));
-   if (ly > y) y = ly;
-   if ((y + h) > (ly + lh)) y -= ((y + h) - (ly + lh));
+   if (scaled_x > x) x = scaled_x;
+   if ((x + w) > (scaled_x + scaled_w)) x -= ((x + w) - (scaled_x + scaled_w));
+   if (scaled_y > y) y = scaled_y;
+   if ((y + h) > (scaled_y + scaled_h)) y -= ((y + h) - (scaled_y + scaled_h));
 
    double orig_rel1_x = ld->part_info.rel1_x;
    double orig_rel1_y = ld->part_info.rel1_y;
-   ld->part_info.rel1_x = ROUNDING(((double) (x - lx) / lw), 2);
-   ld->part_info.rel1_y = ROUNDING(((double) (y - ly) / lh), 2);
+   ld->part_info.rel1_x = ROUNDING(((double) (x - scaled_x) / scaled_w), 2);
+   ld->part_info.rel1_y = ROUNDING(((double) (y - scaled_y) / scaled_h), 2);
    ld->part_info.rel2_x += ROUNDING((ld->part_info.rel1_x - orig_rel1_x), 2);
    ld->part_info.rel2_y += ROUNDING((ld->part_info.rel1_y - orig_rel1_y), 2);
 
@@ -789,6 +800,7 @@ align_line_init(live_data *ld)
    for (i = 0; i < Align_Line_Cnt; i++)
      {
         Evas_Object *layout = elm_layout_add(ld->layout);
+        evas_object_smart_member_add(layout, ld->layout);
         elm_layout_file_set(layout, EDJE_PATH,  "ctrl_pt");
         evas_object_show(layout);
         elm_object_signal_emit(layout, "elm,state,hide,instance", "");
@@ -806,6 +818,7 @@ info_text_init(live_data *ld)
    for (i = 0; i < Info_Text_Cnt; i++)
      {
         Evas_Object *text = evas_object_text_add(e);
+        evas_object_smart_member_add(text, ld->layout);
         evas_object_pass_events_set(text, EINA_TRUE);
         evas_object_layer_set(text, INFO_TEXT_LAYER);
         evas_object_text_font_set(text, LIVE_EDIT_FONT,
@@ -832,6 +845,7 @@ live_edit_layer_set(live_data *ld)
 
    //Create Live View Layout
    Evas_Object *layout = elm_layout_add(ld->live_view);
+   evas_object_smart_member_add(layout, ld->live_view);
    elm_layout_file_set(layout, EDJE_PATH,  "live_edit_layout");
    evas_object_event_callback_add(layout, EVAS_CALLBACK_MOUSE_DOWN,
                                   layout_mouse_down_cb, ld);
@@ -851,7 +865,7 @@ live_edit_layer_set(live_data *ld)
    live_edit_symbol_set(ld);
    ctrl_pt_init(ld);
    align_line_init(ld);
-   live_edit_update(ld);
+   live_edit_update_internal(ld);
    info_text_init(ld);
 }
 
@@ -906,6 +920,13 @@ ctxpopup_create(live_data *ld)
    evas_object_show(ctxpopup);
 
    return ctxpopup;
+}
+
+void
+live_edit_update(void)
+{
+   if (!live_edit_get()) return;
+   live_edit_update_internal(g_ld);
 }
 
 void

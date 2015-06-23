@@ -170,6 +170,9 @@ main_mouse_wheel_cb(void *data, int type EINA_UNUSED, void *ev)
         scale = config_view_scale_get();
         enventor_object_live_view_scale_set(ad->enventor, scale);
 
+        //Just
+        live_edit_update();
+
         char buf[256];
         snprintf(buf, sizeof(buf), "View Scale: %2.2fx", scale);
         stats_info_msg_update(buf);
