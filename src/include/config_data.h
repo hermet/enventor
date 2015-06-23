@@ -53,6 +53,8 @@ void config_config_set(Eina_Bool enabled);
 double config_console_size_get(void);
 void config_console_size_set(double size);
 Eina_Bool config_console_get(void);
+void config_editor_size_set(double size);
+double config_editor_size_get(void);
 void config_console_set(Eina_Bool enabled);
 void config_win_size_get(Evas_Coord *w, Evas_Coord *h);
 void config_win_size_set(Evas_Coord w, Evas_Coord h);

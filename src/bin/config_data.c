@@ -21,6 +21,7 @@ typedef struct config_s
    unsigned int version;
    float font_scale;
    double view_scale;
+   double editor_size;
    double console_size;
 
    void (*update_cb)(void *data);
@@ -151,8 +152,9 @@ config_load(void)
         cd->edc_snd_path_list = NULL;
         cd->edc_fnt_path_list = NULL;
         cd->edc_dat_path_list = NULL;
-        cd->font_scale = 1.0f;
+        cd->font_scale = 1;
         cd->view_scale = 1;
+        cd->editor_size = DEFAULT_EDITOR_SIZE;
         cd->console_size = DEFAULT_CONSOLE_SIZE;
         cd->stats_bar = EINA_TRUE;
         cd->linenumber = EINA_TRUE;
@@ -237,6 +239,8 @@ eddc_init(void)
                                  EET_T_FLOAT);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "view_scale",
                                  view_scale, EET_T_DOUBLE);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "editor_size",
+                                 editor_size, EET_T_DOUBLE);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "console_size",
                                  console_size, EET_T_DOUBLE);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "view_size_w",
@@ -301,7 +305,6 @@ config_init(const char *edc_path, const char *edj_path,
 
    if (edc_dat_path)
      g_cd->edc_dat_path_list = edc_dat_path;
-
 }
 
 void
@@ -781,6 +784,20 @@ config_view_size_configurable_get(void)
 {
    config_data *cd = g_cd;
    return cd->view_size_configurable;
+}
+
+double
+config_editor_size_get(void)
+{
+   config_data *cd = g_cd;
+   return cd->editor_size;
+}
+
+void
+config_editor_size_set(double size)
+{
+   config_data *cd = g_cd;
+   cd->editor_size = size;
 }
 
 double

@@ -1,3 +1,5 @@
+#define DEFAULT_EDITOR_SIZE 0.5
+
 Evas_Object *panes_init(Evas_Object *parent);
 void panes_term(void);
 void panes_text_editor_full_view(void);

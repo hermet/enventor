@@ -87,6 +87,7 @@ h_unpress_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
     panes_data *pd = data;
     double size = elm_panes_content_right_size_get(obj);
     if (pd->horiz.last_size[0] != size) pd->horiz.last_size[1] = size;
+    config_editor_size_set(size);
 }
 
 static void
@@ -309,9 +310,10 @@ panes_init(Evas_Object *parent)
 
    pd->horiz.obj = panes_h;
    pd->horiz.state = PANES_SPLIT_VIEW;
-   pd->horiz.last_size[0] = 0.5;
-   pd->horiz.last_size[1] = 0.5;
+   pd->horiz.last_size[0] = config_editor_size_get();
+   pd->horiz.last_size[1] = config_editor_size_get();
 
+   elm_panes_content_right_size_set(panes_h, config_editor_size_get());
    elm_panes_content_right_size_set(panes_v, config_console_size_get());
 
    return panes_v;
