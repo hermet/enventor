@@ -170,7 +170,7 @@ main_mouse_wheel_cb(void *data, int type EINA_UNUSED, void *ev)
         scale = config_view_scale_get();
         enventor_object_live_view_scale_set(ad->enventor, scale);
 
-        //Just
+        //Just in live edit mode case.
         live_edit_update();
 
         char buf[256];

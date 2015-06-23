@@ -83,6 +83,18 @@ static const ctxpopup_it_data CTXPOPUP_ITEMS[] =
 
 static live_data *g_ld = NULL;
 
+static Evas_Object *
+view_obj_get(live_data *ld)
+{
+   //This is a trick! we got the actual view object from the live edit.
+   Evas_Object *o, *o2, *o3;
+   o = elm_object_part_content_get(ld->live_view, "elm.swallow.content");
+   o2 = elm_object_content_get(o);
+   o3 = elm_object_part_content_get(o2, "elm.swallow.content");
+
+   return o3;
+}
+
 static void
 info_text_update(live_data *ld)
 {
@@ -112,7 +124,6 @@ info_text_update(live_data *ld)
                             &layout_h);
    snprintf(buf, sizeof(buf), "[%d x %d]", layout_w, layout_h);
    evas_object_text_text_set(ld->info_text[Info_Text_Size], buf);
-
 
    //Update Position
    Evas_Coord x, y, w, h;
@@ -154,6 +165,7 @@ live_edit_symbol_set(live_data *ld)
    snprintf(buf, sizeof(buf), "%s_bg", CTXPOPUP_ITEMS[ld->part_info.type].name);
    Evas_Object *layout_symbol = elm_layout_add(ld->layout);
    elm_layout_file_set(layout_symbol, EDJE_PATH, buf);
+   elm_object_scale_set(layout_symbol, config_view_scale_get());
    elm_object_part_content_set(ld->layout, "elm.swallow.symbol", layout_symbol);
 }
 
@@ -250,18 +262,17 @@ cp_top_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
 
    Evas_Coord y = ev->cur.canvas.y;
 
-   //Limit to boundary
-   Evas_Coord lx, ly, lw, lh;
-   evas_object_geometry_get(ld->live_view, &lx, &ly, NULL, NULL);
-   config_view_size_get(&lw, &lh);
+   Evas_Object *view = view_obj_get(ld);
+   Evas_Coord vx, vy, vw, vh;
+   evas_object_geometry_get(view, &vx, &vy, &vw, &vh);
 
    Evas_Coord rel2_y;
    evas_object_geometry_get(ld->ctrl_pt[Ctrl_Pt_Rel2], NULL, &rel2_y,
                             NULL, NULL);
-   if (ly > y) y = ly;
+   if (vy > y) y = vy;
    if ((y - ld->half_ctrl_size) > rel2_y) y = (rel2_y + ld->half_ctrl_size);
 
-   ld->part_info.rel1_y = ROUNDING(((double) (y - ly) / (double) lh), 2);
+   ld->part_info.rel1_y = ROUNDING(((double) (y - vy) / (double) vh), 2);
 
    elm_object_signal_emit(ld->align_line[Align_Line_Top], "elm,state,show", "");
 }
@@ -276,18 +287,17 @@ cp_bottom_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
 
    Evas_Coord y = ev->cur.canvas.y;
 
-   //Limit to boundary
-   Evas_Coord lx, ly, lw, lh;
-   evas_object_geometry_get(ld->live_view, &lx, &ly, NULL, NULL);
-   config_view_size_get(&lw, &lh);
+   Evas_Object *view = view_obj_get(ld);
+   Evas_Coord vx, vy, vw, vh;
+   evas_object_geometry_get(view, &vx, &vy, &vw, &vh);
 
    Evas_Coord rel1_y;
    evas_object_geometry_get(ld->ctrl_pt[Ctrl_Pt_Rel1], NULL, &rel1_y,
                             NULL, NULL);
-   if (y > (ly + lh)) y = (ly + lh);
+   if (y > (vy + vh)) y = (vy + vh);
    if (rel1_y > (y + ld->half_ctrl_size)) y = (rel1_y + ld->half_ctrl_size);
 
-   ld->part_info.rel2_y = ROUNDING(((double) (y - ly) / (double) lh), 2);
+   ld->part_info.rel2_y = ROUNDING(((double) (y - vy) / (double) vh), 2);
 
    elm_object_signal_emit(ld->align_line[Align_Line_Bottom], "elm,state,show",
                           "");
@@ -297,8 +307,17 @@ static void
 align_line_update(live_data *ld)
 {
    Evas_Coord lx, ly, lw, lh;
-   evas_object_geometry_get(ld->live_view, &lx, &ly, NULL, NULL);
-   config_view_size_get(&lw, &lh);
+   evas_object_geometry_get(ld->live_view, &lx, &ly, &lw, &lh);
+
+   Evas_Coord vw, vh;
+   config_view_size_get(&vw, &vh);
+   vw *= config_view_scale_get();
+   vh *= config_view_scale_get();
+
+   lx = (lx + (lw * 0.5)) - (vw * 0.5);
+   ly = (ly + (lh * 0.5)) - (vh * 0.5);
+   lw = vw;
+   lh = vh;
 
    int x, y;
 
@@ -340,21 +359,20 @@ cp_rel1_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
    Evas_Coord x = ev->cur.canvas.x;
    Evas_Coord y = ev->cur.canvas.y;
 
-   //Limit to boundary
-   Evas_Coord lx, ly, lw, lh;
-   evas_object_geometry_get(ld->live_view, &lx, &ly, NULL, NULL);
-   config_view_size_get(&lw, &lh);
+   Evas_Object *view = view_obj_get(ld);
+   Evas_Coord vx, vy, vw, vh;
+   evas_object_geometry_get(view, &vx, &vy, &vw, &vh);
 
    Evas_Coord rel2_x, rel2_y;
    evas_object_geometry_get(ld->ctrl_pt[Ctrl_Pt_Rel2], &rel2_x, &rel2_y,
                             NULL, NULL);
-   if (lx > x) x = lx;
-   if (ly > y) y = ly;
+   if (vx > x) x = vx;
+   if (vy > y) y = vy;
    if ((x - ld->half_ctrl_size) > rel2_x) x = (rel2_x + ld->half_ctrl_size);
    if ((y - ld->half_ctrl_size) > rel2_y) y = (rel2_y + ld->half_ctrl_size);
 
-   ld->part_info.rel1_x = ROUNDING(((double) (x - lx) / (double) lw), 2);
-   ld->part_info.rel1_y = ROUNDING(((double) (y - ly) / (double) lh), 2);
+   ld->part_info.rel1_x = ROUNDING(((double) (x - vx) / (double) vw), 2);
+   ld->part_info.rel1_y = ROUNDING(((double) (y - vy) / (double) vh), 2);
 
    elm_object_signal_emit(ld->align_line[Align_Line_Left], "elm,state,show",
                           "");
@@ -372,21 +390,20 @@ cp_rel2_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
    Evas_Coord x = ev->cur.canvas.x;
    Evas_Coord y = ev->cur.canvas.y;
 
-   //Limit to boundary
-   Evas_Coord lx, ly, lw, lh;
-   evas_object_geometry_get(ld->live_view, &lx, &ly, NULL, NULL);
-   config_view_size_get(&lw, &lh);
+   Evas_Object *view = view_obj_get(ld);
+   Evas_Coord vx, vy, vw, vh;
+   evas_object_geometry_get(view, &vx, &vy, &vw, &vh);
 
    Evas_Coord rel1_x, rel1_y;
    evas_object_geometry_get(ld->ctrl_pt[Ctrl_Pt_Rel1], &rel1_x, &rel1_y,
                             NULL, NULL);
-   if (x > (lx + lw)) x = (lx + lw);
-   if (y > (ly + lh)) y = (ly + lh);
+   if (x > (vx + vw)) x = (vx + vw);
+   if (y > (vy + vh)) y = (vy + vh);
    if (rel1_x > (x + ld->half_ctrl_size)) x = (rel1_x + ld->half_ctrl_size);
    if (rel1_y > (y + ld->half_ctrl_size)) y = (rel1_y + ld->half_ctrl_size);
 
-   ld->part_info.rel2_x = ROUNDING(((double) (x - lx) / (double) lw), 2);
-   ld->part_info.rel2_y = ROUNDING(((double) (y - ly) / (double) lh), 2);
+   ld->part_info.rel2_x = ROUNDING(((double) (x - vx) / (double) vw), 2);
+   ld->part_info.rel2_y = ROUNDING(((double) (y - vy) / (double) vh), 2);
 
    elm_object_signal_emit(ld->align_line[Align_Line_Right], "elm,state,show",
                           "");
@@ -405,25 +422,24 @@ cp_rel3_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
    Evas_Coord x = ev->cur.canvas.x;
    Evas_Coord y = ev->cur.canvas.y;
 
-   //Limit to boundary
-   Evas_Coord lx, ly, lw, lh;
-   evas_object_geometry_get(ld->live_view, &lx, &ly, NULL, NULL);
-   config_view_size_get(&lw, &lh);
+   Evas_Object *view = view_obj_get(ld);
+   Evas_Coord vx, vy, vw, vh;
+   evas_object_geometry_get(view, &vx, &vy, &vw, &vh);
 
    Evas_Coord rel1_x;
    evas_object_geometry_get(ld->ctrl_pt[Ctrl_Pt_Rel1], &rel1_x, NULL,
                             NULL, NULL);
-   if (x > (lx + lw)) x = (lx + lw);
+   if (x > (vx + vw)) x = (vx + vw);
    if (rel1_x > (x + ld->half_ctrl_size)) x = (rel1_x - ld->half_ctrl_size);
 
    Evas_Coord rel2_y;
    evas_object_geometry_get(ld->ctrl_pt[Ctrl_Pt_Rel2], NULL, &rel2_y,
                             NULL, NULL);
-   if (ly > y) y = ly;
+   if (vy > y) y = vy;
    if ((y - ld->half_ctrl_size) > rel2_y) y = (rel2_y + ld->half_ctrl_size);
 
-   ld->part_info.rel2_x = ROUNDING(((double) (x - lx) / (double) lw), 2);
-   ld->part_info.rel1_y = ROUNDING(((double) (y - ly) / (double) lh), 2);
+   ld->part_info.rel2_x = ROUNDING(((double) (x - vx) / (double) vw), 2);
+   ld->part_info.rel1_y = ROUNDING(((double) (y - vy) / (double) vh), 2);
 
    elm_object_signal_emit(ld->align_line[Align_Line_Right], "elm,state,show",
                           "");
@@ -441,25 +457,24 @@ cp_rel4_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
    Evas_Coord x = ev->cur.canvas.x;
    Evas_Coord y = ev->cur.canvas.y;
 
-   //Limit to boundary
-   Evas_Coord lx, ly, lw, lh;
-   evas_object_geometry_get(ld->live_view, &lx, &ly, NULL, NULL);
-   config_view_size_get(&lw, &lh);
+   Evas_Object *view = view_obj_get(ld);
+   Evas_Coord vx, vy, vw, vh;
+   evas_object_geometry_get(view, &vx, &vy, &vw, &vh);
 
    Evas_Coord rel2_x;
    evas_object_geometry_get(ld->ctrl_pt[Ctrl_Pt_Rel2], &rel2_x, NULL,
                             NULL, NULL);
-   if (lx > x) x = lx;
+   if (vx > x) x = vx;
    if ((x - ld->half_ctrl_size) > rel2_x) x = (rel2_x + ld->half_ctrl_size);
 
    Evas_Coord rel1_y;
    evas_object_geometry_get(ld->ctrl_pt[Ctrl_Pt_Rel1], NULL, &rel1_y,
                             NULL, NULL);
-   if (y > (ly + lh)) y = (ly + lh);
+   if (y > (vy + vh)) y = (vy + vh);
    if (rel1_y > (y + ld->half_ctrl_size)) y = (rel1_y + ld->half_ctrl_size);
 
-   ld->part_info.rel1_x = ROUNDING(((double) (x - lx) / (double) lw), 2);
-   ld->part_info.rel2_y = ROUNDING(((double) (y - ly) / (double) lh), 2);
+   ld->part_info.rel1_x = ROUNDING(((double) (x - vx) / (double) vw), 2);
+   ld->part_info.rel2_y = ROUNDING(((double) (y - vy) / (double) vh), 2);
 
    elm_object_signal_emit(ld->align_line[Align_Line_Left], "elm,state,show",
                           "");
@@ -477,18 +492,17 @@ cp_left_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
 
    Evas_Coord x = ev->cur.canvas.x;
 
-   //Limit to boundary
-   Evas_Coord lx, ly, lw, lh;
-   evas_object_geometry_get(ld->live_view, &lx, &ly, NULL, NULL);
-   config_view_size_get(&lw, &lh);
+   Evas_Object *view = view_obj_get(ld);
+   Evas_Coord vx, vy, vw, vh;
+   evas_object_geometry_get(view, &vx, &vy, &vw, &vh);
 
    Evas_Coord rel2_x;
    evas_object_geometry_get(ld->ctrl_pt[Ctrl_Pt_Rel2], &rel2_x, NULL,
                             NULL, NULL);
-   if (lx > x) x = lx;
+   if (vx > x) x = vx;
    if ((x - ld->half_ctrl_size) > rel2_x) x = (rel2_x + ld->half_ctrl_size);
 
-   ld->part_info.rel1_x = ROUNDING(((double) (x - lx) / (double) lw), 2);
+   ld->part_info.rel1_x = ROUNDING(((double) (x - vx) / (double) vw), 2);
 
    elm_object_signal_emit(ld->align_line[Align_Line_Left], "elm,state,show",
                           "");
@@ -504,18 +518,17 @@ cp_right_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
 
    Evas_Coord x = ev->cur.canvas.x;
 
-   //Limit to boundary
-   Evas_Coord lx, ly, lw, lh;
-   evas_object_geometry_get(ld->live_view, &lx, &ly, NULL, NULL);
-   config_view_size_get(&lw, &lh);
+   Evas_Object *view = view_obj_get(ld);
+   Evas_Coord vx, vy, vw, vh;
+   evas_object_geometry_get(view, &vx, &vy, &vw, &vh);
 
    Evas_Coord rel1_x;
    evas_object_geometry_get(ld->ctrl_pt[Ctrl_Pt_Rel1], &rel1_x, NULL,
                             NULL, NULL);
-   if (x > (lx + lw)) x = (lx + lw);
+   if (x > (vx + vw)) x = (vx + vw);
    if (rel1_x > (x + ld->half_ctrl_size)) x = (rel1_x + ld->half_ctrl_size);
 
-   ld->part_info.rel2_x = ROUNDING(((double) (x - lx) / (double) lw), 2);
+   ld->part_info.rel2_x = ROUNDING(((double) (x - vx) / (double) vw), 2);
 
    elm_object_signal_emit(ld->align_line[Align_Line_Right], "elm,state,show",
                           "");
@@ -524,6 +537,9 @@ cp_right_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
 static void
 cp_mouse_move_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
+   Evas_Event_Mouse_Move *ev = event_info;
+   ev->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
+
    //Dispatch to actual mouse move call
    Ctrl_Pt cp = (Ctrl_Pt) evas_object_data_get(obj, "index");
 
@@ -575,6 +591,9 @@ static void
 cp_mouse_up_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
                void *event_info EINA_UNUSED)
 {
+   Evas_Event_Mouse_Up *ev = event_info;
+   ev->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
+
    evas_object_event_callback_del(obj, EVAS_CALLBACK_MOUSE_MOVE,
                                   cp_mouse_move_cb);
    live_data *ld = data;
@@ -590,6 +609,9 @@ static void
 cp_mouse_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
                  void *event_info EINA_UNUSED)
 {
+   Evas_Event_Mouse_Down *ev = event_info;
+   ev->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
+
    evas_object_event_callback_add(obj, EVAS_CALLBACK_MOUSE_MOVE,
                                   cp_mouse_move_cb, data);
    evas_object_layer_set(obj, CTRL_PT_LAYER);
@@ -651,29 +673,23 @@ static void
 layout_update(live_data *ld)
 {
    Evas_Coord x, y, w, h;
-   Evas_Coord scaled_w, scaled_h;
+   Evas_Object *view = view_obj_get(ld);
+   evas_object_geometry_get(view, &x, &y, &w, &h);
 
-   evas_object_geometry_get(ld->live_view, &x, &y, NULL, NULL);
-   config_view_size_get(&w, &h);
-   scaled_w = (w * config_view_scale_get());
-   scaled_h = (h * config_view_scale_get());
-
-   Evas_Coord x2 = round(((double) scaled_w) * ld->part_info.rel1_x);
-   Evas_Coord y2 = round(((double) scaled_h) * ld->part_info.rel1_y);
-
-   evas_object_move(ld->layout,
-                    (x + x2 + ((w - scaled_w) * 0.5)),
-                    (y + y2 + ((h - scaled_h) * 0.5)));
-   Evas_Coord w2 =
-     round(((double) scaled_w * (ld->part_info.rel2_x - ld->part_info.rel1_x)));
-   Evas_Coord h2 =
-     round(((double) scaled_h * (ld->part_info.rel2_y - ld->part_info.rel1_y)));
+   double x2 = round(w * ld->part_info.rel1_x);
+   double y2 = round(h * ld->part_info.rel1_y);
+   evas_object_move(ld->layout, (x + x2), (y + y2));
+   double w2 =
+     round(((double) w * (ld->part_info.rel2_x - ld->part_info.rel1_x)));
+   double h2 =
+     round(((double) h * (ld->part_info.rel2_y - ld->part_info.rel1_y)));
    evas_object_resize(ld->layout, w2, h2);
 }
 
 static void
 live_edit_update_internal(live_data *ld)
 {
+   evas_norender(evas_object_evas_get(ld->layout));
    layout_update(ld);
    ctrl_pt_update(ld);
    align_line_update(ld);
@@ -693,21 +709,18 @@ layout_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
                      void *event_info)
 {
    Evas_Event_Mouse_Move *ev = event_info;
+   if (ev->event_flags & EVAS_EVENT_FLAG_ON_HOLD) return;
+
    live_data *ld = data;
 
-   Evas_Coord lx, ly, lw, lh;
-   evas_object_geometry_get(ld->live_view, &lx, &ly, NULL, NULL);
-   config_view_size_get(&lw, &lh);
+   Evas_Coord vx, vy, vw, vh;  //layout geometry
+   Evas_Object *view = view_obj_get(ld);
+   evas_object_geometry_get(view, &vx, &vy, &vw, &vh);
 
-   Evas_Coord scaled_w = lw * config_view_scale_get();
-   Evas_Coord scaled_h = lh * config_view_scale_get();
-   Evas_Coord scaled_x = (lx + ((lw - scaled_w) * 0.5));
-   Evas_Coord scaled_y = (ly + ((lh - scaled_h) * 0.5));
-
+   //only affect when cursor is inside of the part
    Evas_Coord x, y, w, h;
    evas_object_geometry_get(obj, &x, &y, &w, &h);
 
-   //only affect when cursor is inside of the part
    if (ev->cur.canvas.x > (x + w)) return;
    if (x > ev->cur.canvas.x) return;
    if (ev->cur.canvas.y > (y + h)) return;
@@ -717,15 +730,15 @@ layout_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
    y = ev->cur.canvas.y - ld->move_delta.y;
 
    //limit to live view boundary
-   if (scaled_x > x) x = scaled_x;
-   if ((x + w) > (scaled_x + scaled_w)) x -= ((x + w) - (scaled_x + scaled_w));
-   if (scaled_y > y) y = scaled_y;
-   if ((y + h) > (scaled_y + scaled_h)) y -= ((y + h) - (scaled_y + scaled_h));
+   if (vx > x) x = vx;
+   if ((x + w) > (vx + vw)) x = (vx + vw) - w;
+   if (vy > y) y = vy;
+   if ((y + h) > (vy + vh)) y -= ((y + h) - (vy + vh));
 
    double orig_rel1_x = ld->part_info.rel1_x;
    double orig_rel1_y = ld->part_info.rel1_y;
-   ld->part_info.rel1_x = ROUNDING(((double) (x - scaled_x) / scaled_w), 2);
-   ld->part_info.rel1_y = ROUNDING(((double) (y - scaled_y) / scaled_h), 2);
+   ld->part_info.rel1_x = ROUNDING(((double) (x - vx) / vw), 2);
+   ld->part_info.rel1_y = ROUNDING(((double) (y - vy) / vh), 2);
    ld->part_info.rel2_x += ROUNDING((ld->part_info.rel1_x - orig_rel1_x), 2);
    ld->part_info.rel2_y += ROUNDING((ld->part_info.rel1_y - orig_rel1_y), 2);
 
@@ -748,6 +761,10 @@ static void
 layout_mouse_up_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
                    void *event_info EINA_UNUSED)
 {
+   Evas_Event_Mouse_Up *ev = event_info;
+
+   if (ev->event_flags & EVAS_EVENT_FLAG_ON_HOLD) return;
+
    evas_object_event_callback_del(obj, EVAS_CALLBACK_MOUSE_MOVE,
                                   layout_mouse_move_cb);
    live_data *ld = data;
@@ -766,6 +783,7 @@ layout_mouse_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
 {
    Evas_Event_Mouse_Down *ev = event_info;
    live_data *ld = data;
+   if (ev->event_flags & EVAS_EVENT_FLAG_ON_HOLD) return;
 
    //insert part on double click
    if (ev->flags & EVAS_BUTTON_DOUBLE_CLICK)
@@ -845,7 +863,8 @@ live_edit_layer_set(live_data *ld)
 
    //Create Live View Layout
    Evas_Object *layout = elm_layout_add(ld->live_view);
-   evas_object_smart_member_add(layout, ld->live_view);
+   Evas_Object *view_obj = view_obj_get(ld);
+   evas_object_smart_member_add(layout, view_obj);
    elm_layout_file_set(layout, EDJE_PATH,  "live_edit_layout");
    evas_object_event_callback_add(layout, EVAS_CALLBACK_MOUSE_DOWN,
                                   layout_mouse_down_cb, ld);
@@ -926,7 +945,16 @@ void
 live_edit_update(void)
 {
    if (!live_edit_get()) return;
-   live_edit_update_internal(g_ld);
+
+   live_data *ld = g_ld;
+
+   //Scale up/down of the symbol object.
+   Evas_Object *layout_symbol =
+      elm_object_part_content_get(ld->layout, "elm.swallow.symbol");
+   if (layout_symbol)
+     elm_object_scale_set(layout_symbol, config_view_scale_get());
+
+   live_edit_update_internal(ld);
 }
 
 void

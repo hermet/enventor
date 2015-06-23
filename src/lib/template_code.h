@@ -122,11 +122,12 @@ const char *TEMPLATE_PART_TEXT[TEMPLATE_PART_TEXT_LINE_CNT] =
    "      }<br/>"
 };
 
-#define TEMPLATE_PART_TEXTBLOCK_LINE_CNT 7
+#define TEMPLATE_PART_TEXTBLOCK_LINE_CNT 8
 
 const char *TEMPLATE_PART_TEXTBLOCK[TEMPLATE_PART_TEXTBLOCK_LINE_CNT] =
 {
    "   type: TEXTBLOCK;<br/>",
+   "   scale: 1;<br/>",
    "   description { state: \"default\" 0.0;<br/>",
    "      align: 0.5 0.5;<br/>",
    "      fixed: 0 0;<br/>",
