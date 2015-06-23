@@ -695,6 +695,14 @@ autocomp_list_show(void)
 }
 
 void
+autocomp_reset(void)
+{
+   autocomp_data *ad = g_ad;
+   if (!ad) return;
+   queue_reset(ad);
+}
+
+void
 autocomp_target_set(edit_data *ed)
 {
    autocomp_data *ad = g_ad;

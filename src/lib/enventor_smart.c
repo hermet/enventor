@@ -589,6 +589,8 @@ EOLIAN static void
 _enventor_object_line_delete(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
 {
    edit_line_delete(pd->ed);
+   //Close auto-completion popup if it's shown.
+   autocomp_reset();
 }
 
 EOLIAN static Eo *
