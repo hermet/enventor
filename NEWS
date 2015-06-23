@@ -9,6 +9,7 @@ Additions:
    * Support editor font setting(font name, style, size).
    * Add Enventor APis.
      - enventor_object_font_set()/get() APIs.
+     - enventor_object_auto_complete_list_show() API.
 
 Removes:
    * Get rid of template insert feature per parts.
