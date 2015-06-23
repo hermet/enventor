@@ -374,7 +374,7 @@ anchor_unfocused_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 static void
 queue_reset(autocomp_data *ad)
 {
-   if (ad->queue_pos == -1) return;
+   if ((ad->queue_pos == 0) && (!ad->anchor_visible)) return;
    ad->queue_pos = 0;
    memset(ad->queue, 0x0, sizeof(ad->queue));
    entry_anchor_off(ad);
@@ -473,6 +473,18 @@ entry_tooltip_content_cb(void *data, Evas_Object *obj EINA_UNUSED,
    elm_object_focus_allow_set(ad->list, EINA_FALSE);
    elm_list_mode_set(ad->list, ELM_LIST_EXPAND);
 
+   //compute list size to prevent over-sizing than enventor window.
+   Evas_Coord y, y2, h;
+   evas_object_geometry_get(edit_obj_get(ad->ed), NULL, &y, NULL, &h);
+   evas_object_geometry_get(ad->anchor, NULL, &y2, NULL, NULL);
+   Elm_Tooltip_Orient tooltip_orient =
+      elm_object_tooltip_orient_get(ad->anchor);
+   Evas_Coord mh;
+   if (tooltip_orient == ELM_TOOLTIP_ORIENT_BOTTOM) mh = (h - y2);
+   else mh = (y2 - y);
+   evas_object_size_hint_max_set(ad->list, 999999, mh);
+
+   //add keywords
    Eina_List *l;
    lexem *lexem_data;
    EINA_LIST_FOREACH(ad->lexem_ptr->nodes, l, lexem_data)
@@ -489,8 +501,6 @@ entry_tooltip_content_cb(void *data, Evas_Object *obj EINA_UNUSED,
    Elm_Object_Item *it = elm_list_first_item_get(ad->list);
    if (it) elm_list_item_selected_set(it, EINA_TRUE);
 
-   evas_object_smart_callback_add(ad->list, "unfocused", anchor_unfocused_cb,
-                                  ad);
    evas_object_event_callback_add(ad->list, EVAS_CALLBACK_DEL, list_del_cb, ad);
    if (!found)
      {
@@ -616,7 +626,7 @@ entry_cursor_changed_manual_cb(void *data EINA_UNUSED,
 {
    autocomp_data *ad = g_ad;
    if (!g_ad) return;
-   entry_anchor_off(ad);
+   if (ad->anchor_visible) entry_anchor_off(ad);
 }
 
 static void
@@ -641,7 +651,7 @@ entry_press_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 {
    autocomp_data *ad = g_ad;
    if (!g_ad) return;
-   entry_anchor_off(ad);
+   if (ad->anchor_visible) entry_anchor_off(ad);
 }
 
 static void
@@ -650,7 +660,7 @@ entry_move_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
 {
    autocomp_data *ad = g_ad;
    if (!g_ad) return;
-   entry_anchor_off(ad);
+   if (ad->anchor_visible) entry_anchor_off(ad);
 }
 
 static void
@@ -658,6 +668,7 @@ list_item_move(autocomp_data *ad, Eina_Bool up)
 {
    Evas_Object *entry = edit_entry_get(ad->ed);
    evas_object_smart_callback_del(entry, "unfocused", anchor_unfocused_cb);
+   elm_object_focus_allow_set(ad->list, EINA_TRUE);
 
    Elm_Object_Item *it = elm_list_selected_item_get(ad->list);
    if (up) it = elm_list_item_prev(it);
@@ -737,14 +748,14 @@ autocomp_event_dispatch(const char *key)
    //Reset queue.
    if (!ad->anchor_visible)
      {
-        if (!strcmp(key, "Up") || !strcmp(key, "Down") || !strcmp(key, "Left") ||
-            !strcmp(key, "Right"))
+        if (!strcmp(key, "Up") || !strcmp(key, "Down") ||
+            !strcmp(key, "Left") || !strcmp(key, "Right"))
           queue_reset(ad);
         return EINA_FALSE;
      }
 
    //Cancel the auto complete.
-   if (!strcmp(key, "BackSpace"))
+   if (!strcmp(key, "BackSpace") || !strcmp(key, "Escape"))
      {
         queue_reset(ad);
         return EINA_TRUE;
