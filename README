@@ -45,8 +45,8 @@ Ctrl+O - On/Off Auto Completion
 Ctrl+W - Show/Hide Dummy Swallow
 Ctrl+H - On/Off Part Highlighting
 Ctrl+T - Insert Defaut Template Code
-Ctrl+Mouse Wheel Up - View Scale Up / Font Size Up
-Ctrl+Mouse Wheel Down - View Scale Down / Font Size Down
+Ctrl+Mouse Wheel Up - View Zoom In (Only if view size is set) / Font Size Up
+Ctrl+Mouse Wheel Down - View Zoom Out (Only if view size is set) / Font Size Down
 
 Alt+Left - On/Off Full Edit View
 Alt+Right - On/Off Full Live View

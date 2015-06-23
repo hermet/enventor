@@ -751,7 +751,8 @@ double
 config_view_scale_get(void)
 {
    config_data *cd = g_cd;
-   return cd->view_scale;
+   if (cd->view_size_configurable) return cd->view_scale;
+   else return 1;
 }
 
 void
