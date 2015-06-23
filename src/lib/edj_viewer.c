@@ -44,18 +44,13 @@ struct viewer_s
 static void
 view_obj_min_update(view_data *vd)
 {
-   Evas_Coord w, h;
    double scale = edj_mgr_view_scale_get();
-
-   edje_object_size_min_calc(vd->layout, &w, &h);
-
-   if (vd->view_config_size.w > 0)
-     w = vd->view_config_size.w;
-
-   if (vd->view_config_size.h > 0)
-     h = vd->view_config_size.h;
-
-   evas_object_size_hint_min_set(vd->layout, ((double)w * scale), ((double)h * scale));
+   evas_object_size_hint_min_set(vd->layout,
+                                 ((double)vd->view_config_size.w * scale),
+                                 ((double)vd->view_config_size.h * scale));
+   evas_object_size_hint_max_set(vd->layout,
+                                 ((double)vd->view_config_size.w * scale),
+                                 ((double)vd->view_config_size.h * scale));
 }
 
 static Eina_Bool
@@ -556,15 +551,9 @@ view_size_set(view_data *vd, Evas_Coord w, Evas_Coord h)
 {
    if (!vd) return;
 
-   double scale = edj_mgr_view_scale_get();
-
    vd->view_config_size.w = w;
    vd->view_config_size.h = h;
-
-   evas_object_size_hint_min_set(vd->layout, ((double)w * scale),
-                                 ((double)h * scale));
-   evas_object_size_hint_max_set(vd->layout, ((double)w * scale),
-                                 ((double)h * scale));
+   view_obj_min_update(vd);
 }
 
 void
