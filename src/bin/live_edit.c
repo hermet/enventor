@@ -874,6 +874,7 @@ ctxpopup_dismissed_cb(void *data, Evas_Object *obj,
 {
    live_data *ld = data;
    if (!ld->layout) live_edit_cancel();
+   evas_object_focus_set(ld->live_view, EINA_TRUE);
    evas_object_del(obj);
    ld->ctxpopup = NULL;
 }
