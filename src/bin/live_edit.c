@@ -308,26 +308,26 @@ align_line_update(live_data *ld)
    y = round(((double) y) + ld->half_ctrl_size);
    evas_object_move(ld->align_line[Align_Line_Top], (lx + 1), y);
    evas_object_resize(ld->align_line[Align_Line_Top], (lw - 2),
-                      (1 * elm_config_scale_get()));
+                      (ELM_SCALE_SIZE(1)));
 
    //Bottom
    evas_object_geometry_get(ld->ctrl_pt[Ctrl_Pt_Bottom], NULL, &y, NULL, NULL);
    y = round(((double) y) + ld->half_ctrl_size);
    evas_object_move(ld->align_line[Align_Line_Bottom], (lx + 1), (y - 1));
    evas_object_resize(ld->align_line[Align_Line_Bottom], (lw - 2),
-                      (1 * elm_config_scale_get()));
+                      ELM_SCALE_SIZE(1));
    //Left
    evas_object_geometry_get(ld->ctrl_pt[Ctrl_Pt_Left], &x, NULL, NULL, NULL);
    x = round(((double) x) + ld->half_ctrl_size);
    evas_object_move(ld->align_line[Align_Line_Left], x, (ly + 1));
    evas_object_resize(ld->align_line[Align_Line_Left],
-                      (1 * elm_config_scale_get()), (lh - 2));
+                      ELM_SCALE_SIZE(1), (lh - 2));
    //Right
    evas_object_geometry_get(ld->ctrl_pt[Ctrl_Pt_Right], &x, NULL, NULL, NULL);
    x = round(((double) x) + ld->half_ctrl_size);
    evas_object_move(ld->align_line[Align_Line_Right], (x - 1), (ly + 1));
    evas_object_resize(ld->align_line[Align_Line_Right],
-                      (1 * elm_config_scale_get()), (lh - 2));
+                      ELM_SCALE_SIZE(1), (lh - 2));
 }
 
 static void
@@ -608,7 +608,7 @@ ctrl_pt_init(live_data *ld)
    //Ctrl Point Size
    Evas_Object *edje = elm_layout_edje_get(ld->layout);
    double ctrl_size = atof(edje_object_data_get(edje, "ctrl_size"));
-   ctrl_size *= elm_config_scale_get();
+   ctrl_size = ELM_SCALE_SIZE(ctrl_size);
    ld->half_ctrl_size = ctrl_size * 0.5;
 
    //Create Control Points
