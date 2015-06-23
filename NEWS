@@ -1,6 +1,47 @@
 ==============
-Enventor 0.5.0
+Enventor 0.6.0
 ==============
+
+Changes since Enventor 0.5.0:
+-----------------------------
+
+Additions:
+   * Support editor font setting(font name, style, size).
+   * Add Enventor APis.
+     - enventor_object_font_set()/get() APIs.
+
+Removes:
+   * Get rid of template insert feature per parts.
+
+Improvements:
+   * Support more keywords in auto completion.
+   * Support more syntax color keywords
+   * Update live view with the current part that cursor positioned in.
+   * Improve live edit dragging handling.
+   * Introduce new command line arguments.
+   * Add more new file templates.
+   * Support edj output file path set.
+   * Update previous enventor config file properly by version info.
+   * Support saving edj file from file dialog.
+   * Enhance auto completion feature.
+   * Support part highlighting for SPACER type.
+   * Change short-cut keys for split views.
+   * Apply auto indentation when code is pasted.
+   * Support toggle effect on Tools GUI.
+   * Store/Restore editor split view status.
+   * Change live view scaling to zoom in/out concept.
+
+Fixes:
+   * Fix the compatibility to eo syntax change.
+   * Fix library initialization count corruption.
+   * Disable part highlight on Live Edit mode.
+   * Fix the live view to update by groups correctly.
+   * Fix wrong candidate popup position.
+   * Fix context corruption of font/view scale up/down.
+   * Fix auto completion popup sizing issue.
+   * Close auto completion popup if the line is deleted.
+   * Fix focus highlight remaining issue when live edit item is selected.
+   * Zoom up/down properly on live edit mode.
 
 Changes since Enventor 0.4.0:
 -----------------------------
