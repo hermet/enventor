@@ -7,7 +7,7 @@
 
 #define QUEUE_SIZE 20
 #define COMPSET_PAIR_MINIMUM 1
-#define MAX_CONTEXT_STACK 20
+#define MAX_CONTEXT_STACK 40
 #define MAX_KEYWORD_LENGHT 40
 
 typedef struct lexem_s
@@ -140,8 +140,8 @@ context_lexem_thread_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
    int i = 0;
 
    if (!td->utf8) return;
-   char *utf8 = td->utf8;
 
+   char *utf8 = td->utf8;
    char *cur = utf8;
    char *end = cur + cur_pos;
    char stack[MAX_CONTEXT_STACK][MAX_KEYWORD_LENGHT];
@@ -195,6 +195,7 @@ context_lexem_thread_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
              memset(stack[depth], 0x0, MAX_KEYWORD_LENGHT);
              strncpy(stack[depth], help_ptr, context_len);
              depth++;
+             if (depth == MAX_CONTEXT_STACK) break;
           }
         if (*cur == '.')
           {
@@ -217,6 +218,7 @@ context_lexem_thread_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
              memset(stack[depth], 0x0, MAX_KEYWORD_LENGHT);
              strncpy(stack[depth], help_ptr, context_len);
              depth++;
+             if (depth == MAX_CONTEXT_STACK) break;
              dot_lex = EINA_TRUE;
          }
         if ((*cur == ';') && dot_lex)
@@ -247,7 +249,6 @@ context_lexem_thread_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
              if (!strncmp(stack[i], td->result->name, strlen(td->result->name)))
                {
                   nodes = td->result->nodes;
-                  l = NULL;
                   find_flag = EINA_TRUE;
                   break;
                }
@@ -258,7 +259,6 @@ context_lexem_thread_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
              return;
           }
      }
-   return;
 }
 
 static void
@@ -267,8 +267,7 @@ context_lexem_thread_end_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
    ctx_lexem_td *td = (ctx_lexem_td *)data;
 
    td->ad->lexem_ptr = td->result ? td->result : (lexem *)td->ad->lexem_root;
-   if (td->ad->cntx_lexem_thread == thread)
-     td->ad->cntx_lexem_thread = NULL;
+   td->ad->cntx_lexem_thread = NULL;
 
    if (td->list_show  || (td->result && td->result->dot && td->ad->dot_candidate))
      candidate_list_show(td->ad);
@@ -285,8 +284,7 @@ context_lexem_thread_cancel_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
    td->ad->lexem_ptr = td->result ? td->result : (lexem *)td->ad->lexem_root;
    if (td->list_show || (td->result && td->result->dot && td->ad->dot_candidate))
      candidate_list_show(td->ad);
-   if (td->ad->cntx_lexem_thread == thread)
-     td->ad->cntx_lexem_thread = NULL;
+   td->ad->cntx_lexem_thread = NULL;
    td->ad->dot_candidate = EINA_FALSE;
    free(td->utf8);
    free(td);
@@ -301,9 +299,7 @@ context_lexem_get(autocomp_data *ad, Evas_Object *entry, Eina_Bool list_show)
         ad->lexem_ptr = (lexem *)ad->lexem_root;
         return;
      }
-
-   if (ad->cntx_lexem_thread)
-      ecore_thread_cancel(ad->cntx_lexem_thread);
+   ecore_thread_cancel(ad->cntx_lexem_thread);
 
    ctx_lexem_td *td = (ctx_lexem_td *)calloc(1, sizeof(ctx_lexem_td));
    td->utf8 = elm_entry_markup_to_utf8(text);
@@ -314,7 +310,8 @@ context_lexem_get(autocomp_data *ad, Evas_Object *entry, Eina_Bool list_show)
 
    ad->cntx_lexem_thread =  ecore_thread_run(context_lexem_thread_cb,
                                              context_lexem_thread_end_cb,
-                                             context_lexem_thread_cancel_cb, td);
+                                             context_lexem_thread_cancel_cb,
+                                             td);
 }
 
 static void
