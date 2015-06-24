@@ -184,7 +184,7 @@ warning_open(menu_data *md, Evas_Smart_Cb yes_cb, Evas_Smart_Cb save_cb)
    elm_object_part_text_set(layout, "elm.text.desc",
                             "Without save, you will lose last changes!");
    elm_object_part_text_set(layout, "elm.text.question",
-                            "Will you save this changes?");
+                            "Will you save changes?");
    elm_object_signal_callback_add(layout, "elm,state,dismiss,done", "",
                                   warning_dismiss_done, md);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -212,7 +212,6 @@ warning_open(menu_data *md, Evas_Smart_Cb yes_cb, Evas_Smart_Cb save_cb)
    elm_object_text_set(btn, "Cancel");
    evas_object_smart_callback_add(btn, "clicked", warning_no_btn_cb, md);
    elm_object_part_content_set(layout, "elm.swallow.btn3", btn);
-
 
    md->warning_layout = layout;
    menu_activate_request();
