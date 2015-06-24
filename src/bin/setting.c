@@ -285,7 +285,7 @@ general_layout_create(setting_data *sd, Evas_Object *parent)
    elm_slider_unit_format_set(slider_view, "%1.2fx");
    elm_slider_min_max_set(slider_view, MIN_VIEW_SCALE, MAX_VIEW_SCALE);
    elm_slider_value_set(slider_view, (double) config_view_scale_get());
-   elm_object_text_set(slider_view, "View Scale ");
+   elm_object_text_set(slider_view, "Live View Scale");
    evas_object_show(slider_view);
 
    elm_box_pack_end(box, slider_view);
@@ -312,7 +312,7 @@ general_layout_create(setting_data *sd, Evas_Object *parent)
 
    elm_box_pack_end(box2, layout_padding3);
 
-   Evas_Object *label_view_size = label_create(layout_padding3, "View Size");
+   Evas_Object *label_view_size = label_create(layout_padding3, "Fixed Live View Size");
    elm_object_part_content_set(layout_padding3, "elm.swallow.content",
                                label_view_size);
 
