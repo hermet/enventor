@@ -730,6 +730,7 @@ main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    if (!strcmp(event->key, "F1"))
      {
         enventor_object_ctxpopup_dismiss(ad->enventor);
+        live_edit_cancel();
         menu_about();
         return ECORE_CALLBACK_DONE;
      }
