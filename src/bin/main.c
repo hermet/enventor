@@ -151,7 +151,9 @@ main_mouse_wheel_cb(void *data, int type EINA_UNUSED, void *ev)
    app_data *ad = data;
    Evas_Coord x, y, w, h;
 
-   if (event->modifiers != ECORE_EVENT_MODIFIER_CTRL)
+   if ((event->modifiers & (ECORE_EVENT_MODIFIER_SHIFT | ECORE_EVENT_MODIFIER_CTRL
+                            | ECORE_EVENT_MODIFIER_ALT | ECORE_EVENT_MODIFIER_WIN))
+       != ECORE_EVENT_MODIFIER_CTRL)
      return ECORE_CALLBACK_PASS_ON;
 
    //View Scale
