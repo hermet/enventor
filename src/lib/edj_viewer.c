@@ -98,25 +98,22 @@ part_obj_geom_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
    Evas_Coord x, y, w , h;
    if (edje_edit_part_type_get(vd->layout, vd->part_name) == EDJE_PART_TYPE_SPACER)
      {
-        Evas_Coord scroller_x, scroller_y;
-        Evas_Coord scroller_region_x, scroller_region_y;
         Evas_Object *scroller_edje = elm_layout_edje_get(vd->scroller);
         // Clipper need, to clip the highlight object for the  part SPACER,
         // because position of the highlight object is calculated here,
         // not in edje. In case, when  the SPACER is placed outside of
         // scroller region view, the highlight should be hided.
         Evas_Object *clipper =
-               (Evas_Object *)edje_object_part_object_get(scroller_edje, "clipper");
+           (Evas_Object *)edje_object_part_object_get(scroller_edje,
+                                                      "clipper");
 
-        elm_scroller_region_get(vd->scroller, &scroller_region_x,
-                                &scroller_region_y, NULL, NULL);
-        evas_object_geometry_get(vd->scroller, &scroller_x, &scroller_y,
-                                 NULL, NULL);
         evas_object_smart_member_add(part_highlight, vd->scroller);
-        edje_object_part_geometry_get(vd->layout, vd->part_name, &x, &y, &w, &h);
+        edje_object_part_geometry_get(vd->layout, vd->part_name,
+                                      &x, &y, &w, &h);
+        Evas_Coord lx, ly;
+        evas_object_geometry_get(vd->layout, &lx, &ly, NULL, NULL);
 
-        evas_object_move(part_highlight, x + scroller_x - scroller_region_x + 1,
-                         y + scroller_y - scroller_region_y + 1);
+        evas_object_move(part_highlight, (x + lx), (y + ly));
         evas_object_resize(part_highlight, w, h);
         evas_object_clip_set(part_highlight, clipper);
      }
