@@ -77,7 +77,7 @@ build_cmd_set(build_data *bd)
    Eina_Strbuf *strbuf_snd = NULL;
    Eina_Strbuf *strbuf_fnt = NULL;
    Eina_Strbuf *strbuf_dat = NULL;
-
+   Eina_Strbuf *strbuf = NULL;
    //Image
    strbuf_img = strbuf_path_get(bd, ENVENTOR_RES_IMAGE, " -id ");
    if (!strbuf_img) goto err;
@@ -91,7 +91,7 @@ build_cmd_set(build_data *bd)
    strbuf_dat = strbuf_path_get(bd, ENVENTOR_RES_DATA, " -dd ");
    if (!strbuf_dat) goto err;
 
-   Eina_Strbuf *strbuf = eina_strbuf_new();
+   strbuf = eina_strbuf_new();
    if (!strbuf)
      {
         EINA_LOG_ERR("Failed to new strbuf");

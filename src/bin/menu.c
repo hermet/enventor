@@ -245,13 +245,16 @@ about_open(menu_data *md)
    char buf[PATH_MAX];
    snprintf(buf, sizeof(buf), "%s/about/ABOUT", elm_app_data_dir_get());
 
+   Eina_Strbuf *strbuf = NULL;
+   Eina_Iterator *itr = NULL;
+
    Eina_File *file = eina_file_open(buf, EINA_FALSE);
    if (!file) goto err;
 
-   Eina_Iterator *itr = eina_file_map_lines(file);
+   itr = eina_file_map_lines(file);
    if (!itr) goto err;
 
-   Eina_Strbuf *strbuf = eina_strbuf_new();
+   strbuf = eina_strbuf_new();
    if (!strbuf) goto err;
 
    Eina_File_Line *line;

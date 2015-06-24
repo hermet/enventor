@@ -137,8 +137,8 @@ template_part_insert(edit_data *ed, Edje_Part_Type part_type,
    memset(p, ' ', space);
    p[space] = '\0';
 
-   int line_cnt;
-   char **t;
+   int line_cnt = 0;
+   char **t = NULL;
    char buf[64];
 
    switch(part_type)
