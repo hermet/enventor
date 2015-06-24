@@ -174,6 +174,7 @@ indent_space_get(indent_data *id, Evas_Object *entry)
    int pos = elm_entry_cursor_pos_get(entry);
    char *src = elm_entry_markup_to_utf8(elm_entry_entry_get(entry));
    int space = indent_depth_get(id, src, pos);
+   if (space < 0) space = 0;
    space *= TAB_SPACE;
    free(src);
 
@@ -286,15 +287,41 @@ indent_text_auto_format(indent_data *id EINA_UNUSED,
    Eina_List *l = NULL;
    Eina_Stringshare *line;
    evas_textblock_cursor_line_char_first(cur_start);
+   evas_textblock_cursor_line_char_last(cur_end);
    int space = indent_space_get(id, entry);
+
+   utf8 = evas_textblock_cursor_range_text_get(cur_start, cur_end,
+                                               EVAS_TEXTBLOCK_TEXT_PLAIN);
+   utf8_ptr = utf8 + strlen(utf8);
+   while (utf8_ptr && (utf8_ptr >= utf8))
+     {
+        if (utf8_ptr[0] != ' ')
+         {
+            if ((utf8_ptr[0] == '}') && (space > 0))
+              space -= TAB_SPACE;
+            if (!evas_textblock_cursor_paragraph_next(cur_start))
+             {
+                code_lines = eina_list_prepend(code_lines,
+                                               eina_stringshare_add("<br/>"));
+                evas_textblock_cursor_line_char_last(cur_start);
+             }
+            break;
+         }
+        utf8_ptr--;
+     }
+   free(utf8);
 
    EINA_LIST_FOREACH(code_lines, l, line)
     {
-       if (strstr(line, "}")) space -= TAB_SPACE;
+       if (strstr(line, "}") && (space > 0))
+         space -= TAB_SPACE;
        char *p = alloca(space + 1);
        memset(p, ' ', space);
        p[space] = '\0';
-       eina_strbuf_append_printf(buf, "%s%s<br/>", p, line);
+       if (strcmp(line, "<br/>"))
+         eina_strbuf_append_printf(buf, "%s%s<br/>", p, line);
+       else
+         eina_strbuf_append_length(buf, "<br/>", 5);
        memset(p, 0x0, space);
        if (strstr(line, "{")) space += TAB_SPACE;
        eina_stringshare_del(line);
@@ -304,7 +331,7 @@ indent_text_auto_format(indent_data *id EINA_UNUSED,
   frmt_buf = eina_strbuf_string_steal(buf);
   tb_cur_pos = evas_textblock_cursor_pos_get(cur_start);
   evas_textblock_cursor_pos_set(cur_end, tb_cur_pos);
-  tb_cur_pos = evas_textblock_cursor_pos_get(cur_end);
+
   evas_object_textblock_text_markup_prepend(cur_start, frmt_buf);
 
   // Cancel last added diff, that was created when text pasted into entry.
