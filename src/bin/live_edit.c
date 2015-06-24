@@ -637,7 +637,7 @@ ctrl_pt_init(live_data *ld)
    for (i = 0; i < Ctrl_Pt_Cnt; i++)
      {
         Evas_Object *layout = elm_layout_add(ld->layout);
-        evas_object_smart_member_add(layout, ld->layout);
+        evas_object_smart_member_add(layout, ld->live_view);
         elm_layout_file_set(layout, EDJE_PATH,  "ctrl_pt");
         evas_object_resize(layout, ctrl_size, ctrl_size);
         evas_object_show(layout);
@@ -836,7 +836,7 @@ info_text_init(live_data *ld)
    for (i = 0; i < Info_Text_Cnt; i++)
      {
         Evas_Object *text = evas_object_text_add(e);
-        evas_object_smart_member_add(text, ld->layout);
+        evas_object_smart_member_add(text, ld->live_view);
         evas_object_pass_events_set(text, EINA_TRUE);
         evas_object_layer_set(text, INFO_TEXT_LAYER);
         evas_object_text_font_set(text, LIVE_EDIT_FONT,
