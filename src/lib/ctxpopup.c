@@ -28,7 +28,7 @@ btn_up_cb(void *data, Evas_Object *obj EINA_UNUSED,
    Evas_Object *entry = elm_object_part_content_get(layout,
                                                     "elm.swallow.entry");
    attr_value *attr = evas_object_data_get(slider, "attr");
-   Eina_Bool integer = (Eina_Bool)(int) evas_object_data_get(slider, "integer");
+   void *integer = evas_object_data_get(slider, "integer");
    double value = elm_slider_value_get(slider);
    char buf[128];
 
@@ -50,7 +50,7 @@ btn_down_cb(void *data, Evas_Object *obj EINA_UNUSED,
    Evas_Object *entry = elm_object_part_content_get(layout,
                                                     "elm.swallow.entry");
    attr_value *attr = evas_object_data_get(slider, "attr");
-   Eina_Bool integer = (Eina_Bool)(int) evas_object_data_get(slider, "integer");
+   void *integer = evas_object_data_get(slider, "integer");
    double value = elm_slider_value_get(slider);
    char buf[128];
 
@@ -170,7 +170,7 @@ slider_changed_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
    Evas_Object *entry = data;
    double val = elm_slider_value_get(obj);
    char buf[128];
-   Eina_Bool integer = (Eina_Bool)(int) evas_object_data_get(obj, "integer");
+   void *integer = evas_object_data_get(obj, "integer");
 
    if (integer) snprintf(buf, sizeof(buf), "%1.0f", val);
    else snprintf(buf, sizeof(buf), "%1.2f", val);
@@ -183,7 +183,7 @@ entry_changed_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
    Evas_Object *slider = data;
    double text_val, val, min_val, max_val;
    char buf[128];
-   Eina_Bool integer = (Eina_Bool)(int) evas_object_data_get(slider, "integer");
+   void *integer = evas_object_data_get(slider, "integer");
 
    text_val = atof(elm_object_text_get(obj));
    elm_slider_min_max_get(slider, &min_val, &max_val);
@@ -286,7 +286,7 @@ slider_layout_create(Evas_Object *parent, attr_value *attr,
    elm_slider_min_max_set(slider, attr->min, attr->max);
    elm_slider_value_set(slider, slider_val);
    evas_object_data_set(slider, "attr", attr);
-   evas_object_data_set(slider, "integer", (void *)(int) integer);
+   evas_object_data_set(slider, "integer", integer ? &integer : NULL);
 
    char slider_min[16];
    char slider_max[16];
