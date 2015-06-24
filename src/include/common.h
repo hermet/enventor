@@ -7,12 +7,12 @@ typedef struct statusbar_s stats_data;
 #define ENVENTOR_HELP_EXAMPLES \
 "Examples of Enventor command line usage:\n \
 $ enventor\n \
-$ enventor --to\n \
-$ enventor newfile.edc --to\n \
-$ enventor sample.edc output.edj --id ./images --sd ./sounds\n"
+$ enventor -t\n \
+$ enventor newfile.edc -t\n \
+$ enventor sample.edc output.edj -i ./images -s ./sounds\n"
 
 #define ENVENTOR_USAGE \
-"%prog [input file] [output file] [--to] [--id image path] [--sd sound path] [--fd font path] [--dd data path]"
+"%prog [input file] [output file] [-t] [-i image path] [-s sound path] [-f font path] [-d data path]"
 
 #define ENVENTOR_INFO \
 "This is an EDC editor with some convenient functions.\n \
