@@ -46,6 +46,7 @@ Fixes:
    * Fix focus highlight remaining issue when live edit item is selected.
    * Zoom up/down properly on live edit mode.
    * Cancel live edit if the about(F1) is activated.
+   * Ctrl + wheel works even with numlock.
 
 Changes since Enventor 0.4.0:
 -----------------------------
