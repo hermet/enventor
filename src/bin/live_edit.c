@@ -84,15 +84,29 @@ static const ctxpopup_it_data CTXPOPUP_ITEMS[] =
 static live_data *g_ld = NULL;
 
 static Evas_Object *
+view_scroller_get(live_data *ld)
+{
+   //This is a trick! we got the actual view object from the live edit.
+   if (!ld->live_view) return NULL;
+   return elm_object_part_content_get(ld->live_view,
+                                      "elm.swallow.content");
+}
+
+static Evas_Object *
 view_obj_get(live_data *ld)
 {
    //This is a trick! we got the actual view object from the live edit.
-   Evas_Object *o, *o2, *o3;
-   o = elm_object_part_content_get(ld->live_view, "elm.swallow.content");
-   o2 = elm_object_content_get(o);
-   o3 = elm_object_part_content_get(o2, "elm.swallow.content");
+   Evas_Object *o = view_scroller_get(ld);
+   Evas_Object *o2 = elm_object_content_get(o);
+   return elm_object_part_content_get(o2, "elm.swallow.content");
+}
 
-   return o3;
+static void
+view_scroll_cb(void *data, Evas_Object *obj EINA_UNUSED,
+               void *event_info EINA_UNUSED)
+{
+   live_data *ld = data;
+   live_edit_update_internal(ld);
 }
 
 static void
@@ -875,6 +889,9 @@ live_edit_layer_set(live_data *ld)
 
    ld->layout = layout;
 
+   evas_object_smart_callback_add(view_scroller_get(ld), "scroll",
+                                  view_scroll_cb, ld);
+
    //Initial Layout Geometry
    ld->part_info.rel1_x = LIVE_EDIT_REL1;
    ld->part_info.rel1_y = LIVE_EDIT_REL1;
@@ -1001,6 +1018,10 @@ live_edit_cancel(void)
                                   live_view_geom_cb);
    evas_object_event_callback_del(ld->live_view, EVAS_CALLBACK_MOVE,
                                   live_view_geom_cb);
+
+   evas_object_smart_callback_del(view_scroller_get(ld),
+                                  "scroll",
+                                  view_scroll_cb);
    ld->live_view = NULL;
 
    evas_object_del(ld->layout);
