@@ -239,29 +239,29 @@ edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 
    if (info->insert)
      {
+        int increase = 0;
         if ((info->change.insert.plain_length == 1)&&
             (info->change.insert.content[0] == ' ')) return;
 
         if (!strcmp(info->change.insert.content, EOL))
           {
-             edit_line_increase(ed, 1);
+             increase++;
              syntax_color = EINA_FALSE;
           }
         else
           {
-             int increase =
+             increase =
                 parser_line_cnt_get(ed->pd, info->change.insert.content);
-             edit_line_increase(ed, increase);
           }
 
         if (ed->auto_indent)
           {
-            indent_insert_apply(syntax_indent_data_get(ed->sh), ed->en_edit,
+             increase = indent_insert_apply(syntax_indent_data_get(ed->sh), ed->en_edit,
                                 info->change.insert.content, ed->cur_line);
-             int increase =
-                parser_line_cnt_get(ed->pd, info->change.insert.content);
              edit_line_increase(ed, increase);
           }
+        else
+           edit_line_increase(ed, increase);
 
      }
    else

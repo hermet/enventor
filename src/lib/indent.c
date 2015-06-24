@@ -231,10 +231,11 @@ indent_delete_apply(indent_data *id EINA_UNUSED, Evas_Object *entry,
    return EINA_FALSE;
 }
 
-static void
+static int
 indent_text_auto_format(indent_data *id EINA_UNUSED,
                         Evas_Object *entry, const char *insert)
 {
+   int line_cnt = 0;
    char *utf8 = evas_textblock_text_markup_to_utf8(NULL, insert);
    int utf8_size = strlen(utf8);
 
@@ -276,7 +277,7 @@ indent_text_auto_format(indent_data *id EINA_UNUSED,
      }
    free(utf8);
 
-   if (!code_lines) return;
+   if (!code_lines) return line_cnt;
    tb_cur_pos = evas_textblock_cursor_pos_get(cur_end);
    evas_textblock_cursor_pos_set(cur_start, tb_cur_pos - utf8_size);
    evas_textblock_cursor_range_delete(cur_start, cur_end);
@@ -297,6 +298,7 @@ indent_text_auto_format(indent_data *id EINA_UNUSED,
        memset(p, 0x0, space);
        if (strstr(line, "{")) space += TAB_SPACE;
        eina_stringshare_del(line);
+       line_cnt++;
     }
 
   frmt_buf = eina_strbuf_string_steal(buf);
@@ -313,10 +315,10 @@ indent_text_auto_format(indent_data *id EINA_UNUSED,
   eina_strbuf_free(buf);
   free(frmt_buf);
   evas_textblock_cursor_free(cur_start);
-  return;
+  return line_cnt;
 }
 
-void
+int
 indent_insert_apply(indent_data *id, Evas_Object *entry, const char *insert,
                     int cur_line)
 {
@@ -325,12 +327,16 @@ indent_insert_apply(indent_data *id, Evas_Object *entry, const char *insert,
      {
         if (insert[0] == '}')
           indent_insert_bracket_case(id, entry, cur_line);
+        return 0;
      }
    else
      {
         if (!strcmp(insert, EOL))
-          indent_insert_br_case(id, entry);
+          {
+            indent_insert_br_case(id, entry);
+            return 1;
+          }
         else
-          indent_text_auto_format(id, entry, insert);
+          return indent_text_auto_format(id, entry, insert);
      }
 }

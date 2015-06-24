@@ -129,7 +129,7 @@ indent_data *syntax_indent_data_get(syntax_helper *sh);
 indent_data *indent_init(Eina_Strbuf *strbuf);
 void indent_term(indent_data *id);
 int indent_space_get(indent_data *id, Evas_Object *entry);
-void indent_insert_apply(indent_data *id, Evas_Object *entry, const char *insert, int cur_line);
+int indent_insert_apply(indent_data *id, Evas_Object *entry, const char *insert, int cur_line);
 Eina_Bool indent_delete_apply(indent_data *id, Evas_Object *entry, const char *del, int cur_line);
 
 
