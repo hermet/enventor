@@ -32,6 +32,7 @@ Improvements:
    * Support toggle effect on Tools GUI.
    * Store/Restore editor split view status.
    * Change live view scaling to zoom in/out concept.
+   * Adjust live view zoom range. (0.1 ~ 10.0)
 
 Fixes:
    * Fix the compatibility to eo syntax change.
