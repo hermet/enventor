@@ -13,6 +13,7 @@ Additions:
 
 Removes:
    * Get rid of template insert feature per parts.
+   * Get rid of tooltips from menu buttons.
 
 Improvements:
    * Support more keywords in auto completion.
