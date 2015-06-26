@@ -406,28 +406,22 @@ fileselector_save_done_cb(void *data, Evas_Object *obj, void *event_info)
         fileselector_close(md);
         return;
      }
-
-   //Filter to read only edc or edj extensions file.
-   is_edc = eina_str_has_extension(selected, "edc");
-   is_edj = eina_str_has_extension(selected, "edj");
-   if (!is_edc && !is_edj)
-     {
-        elm_object_part_text_set(md->fileselector_layout,
-                                 "elm.text.msg",
-                                 "Support only .edc or .edj file.");
-        elm_object_signal_emit(md->fileselector_layout,
-                               "elm,action,msg,show", "");
-        return;
-     }
-
-   //Directory?
-   if (ecore_file_is_dir(selected))
+   else if (ecore_file_is_dir(selected))
      {
         elm_object_part_text_set(md->fileselector_layout,
                                  "elm.text.msg", "Choose a file to save");
         elm_object_signal_emit(md->fileselector_layout,
                                "elm,action,msg,show", "");
         return;
+     }
+
+   //Filter to read only edc or edj extensions file.
+   is_edc = eina_str_has_extension(selected, "edc");
+   is_edj = eina_str_has_extension(selected, "edj");
+   if (!is_edc && !is_edj)
+     {
+        selected = eina_stringshare_printf("%s.edc", selected);
+        is_edc = EINA_TRUE;
      }
 
    if (is_edc)
@@ -444,6 +438,7 @@ fileselector_save_done_cb(void *data, Evas_Object *obj, void *event_info)
                                       "elm.text.msg", buf);
              elm_object_signal_emit(md->fileselector_layout,
                                     "elm,action,msg,show", "");
+             eina_stringshare_del(selected);
              return;
           }
         enventor_object_file_set(md->enventor, selected);
