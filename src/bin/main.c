@@ -151,10 +151,8 @@ main_mouse_wheel_cb(void *data, int type EINA_UNUSED, void *ev)
    app_data *ad = data;
    Evas_Coord x, y, w, h;
 
-   if ((event->modifiers & (ECORE_EVENT_MODIFIER_SHIFT | ECORE_EVENT_MODIFIER_CTRL
-                            | ECORE_EVENT_MODIFIER_ALT | ECORE_EVENT_MODIFIER_WIN))
-       != ECORE_EVENT_MODIFIER_CTRL)
-     return ECORE_CALLBACK_PASS_ON;
+   if (!EVENT_KEY_MODIFIER_CHECK(CTRL, event->modifiers))
+      return ECORE_CALLBACK_PASS_ON;
 
    //View Scale
    Evas_Object *view = enventor_object_live_view_get(ad->enventor);
@@ -557,8 +555,8 @@ default_template_insert(app_data *ad)
 static Eina_Bool
 alt_func(Ecore_Event_Key *event)
 {
-   if (!(event->modifiers & ECORE_EVENT_MODIFIER_ALT))
-     return EINA_FALSE;
+   if (!EVENT_KEY_MODIFIER_CHECK(ALT, event->modifiers))
+       return EINA_FALSE;
 
    //Full Edit View
    if (!strcmp(event->key, "Left"))
@@ -591,9 +589,8 @@ alt_func(Ecore_Event_Key *event)
 static Eina_Bool
 ctrl_func(app_data *ad, Ecore_Event_Key *event)
 {
-   if (!(event->modifiers & ECORE_EVENT_MODIFIER_CTRL))
-     return EINA_FALSE;
-
+   if (!EVENT_KEY_MODIFIER_CHECK(CTRL, event->modifiers))
+         return EINA_FALSE;
    //Save
    if (!strcmp(event->key, "s") || !strcmp(event->key, "S"))
      {
