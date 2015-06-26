@@ -665,7 +665,6 @@ list_item_move(autocomp_data *ad, Eina_Bool up)
 {
    Evas_Object *entry = edit_entry_get(ad->ed);
    evas_object_smart_callback_del(entry, "unfocused", anchor_unfocused_cb);
-   elm_object_focus_allow_set(ad->list, EINA_TRUE);
 
    Elm_Object_Item *it = elm_list_selected_item_get(ad->list);
    if (up) it = elm_list_item_prev(it);
