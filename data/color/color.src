@@ -54,7 +54,8 @@ group "syntax_color_group" struct {
             value "key" string: "rotation";
             value "key" string: "sample";
             value "key" string: "script";
-            value "key" string: "set";
+            value "key" string: "set.";
+            value "key" string: "set ";
             value "key" string: "sounds";
             value "key" string: "styles";
             value "key" string: "swallow";
