@@ -32,6 +32,7 @@ group "syntax_color_group" struct {
             value "key" string: "collections";
             value "key" string: "data";
             value "key" string: "description";
+            value "key" string: "desc";
             value "key" string: "dragable";
             value "key" string: "fill";
             value "key" string: "group";
@@ -47,6 +48,7 @@ group "syntax_color_group" struct {
             value "key" string: "programs";
             value "key" string: "program";
             value "key" string: "perspective ";
+            value "key" string: "rect";
             value "key" string: "rel1";
             value "key" string: "rel2";
             value "key" string: "rotation";
@@ -55,6 +57,7 @@ group "syntax_color_group" struct {
             value "key" string: "set";
             value "key" string: "sounds";
             value "key" string: "styles";
+            value "key" string: "swallow";
             value "key" string: "size ";
             value "key" string: "table";
             value "key" string: "text ";
