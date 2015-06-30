@@ -125,12 +125,12 @@ end:
 static void
 cur_state_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
-#define PART_SYNTAX_CNT 7
+#define PART_SYNTAX_CNT 9
 
    const char *GROUP = "group";
    const char *PARTS = "parts";
-   const char *PART[PART_SYNTAX_CNT] =
-     { "part", "image", "text", "swallow", "rect", "group", "spacer" };
+   const char *PART[PART_SYNTAX_CNT] = { "part", "image", "textblock",
+        "swallow", "rect", "group", "spacer", "proxy", "text" };
    const char *DESC[2] = { "desc", "description" };
    const int DESC_LEN[2] = { 4, 11 };
 
