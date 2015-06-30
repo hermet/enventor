@@ -933,9 +933,9 @@ group "lexem" struct {
                                        }
                                        group "txt" var_array {
                                            count 1;
-                                           value "string" string: "inherit: \"\" 0.0;";
+                                           value "string" string: "inherit: \"\";";
                                        }
-                                       value "cursor_offset" int: 6;
+                                       value "cursor_offset" int: 2;
                                        value "line_back" int: 0;
                                        value "name" string: "inherit";
                                     }
@@ -1553,12 +1553,12 @@ group "lexem" struct {
                                  }
                                   group "txt" var_array {
                                      count 2;
-                                     value "string" string: "description { state: \"\" 0.0;<br/>";
+                                     value "string" string: "desc { \"\";<br/>";
                                      value "string" string: "}";
                                  }
-                                 value "cursor_offset" int: 8;
+                                 value "cursor_offset" int: 4;
                                  value "line_back" int: 1;
-                                 value "name" string: "description";
+                                 value "name" string: "desc";
                                }
                                group "lexem" struct {
                                  group "nodes" list {
@@ -1967,7 +1967,7 @@ group "lexem" struct {
                             }
                             group "txt" var_array {
                                 count 2;
-                                value "string" string: "part { name: \"\";<br/>";
+                                value "string" string: "part { \"\";<br/>";
                                 value "string" string: "}";
                             }
                             value "cursor_offset" int: 4;
@@ -1994,9 +1994,9 @@ group "lexem" struct {
                                }
                                group "txt" var_array {
                                    count 1;
-                                   value "string" string: "action: STATE_SET \"\" 0.0;";
+                                   value "string" string: "action: STATE_SET \"\";";
                                }
-                               value "cursor_offset" int: 6;
+                               value "cursor_offset" int: 2;
                                value "line_back" int: 0;
                                value "name" string: "action";
                              }
@@ -2091,12 +2091,11 @@ group "lexem" struct {
                              }
                           }
                           group "txt" var_array {
-                              count 3;
-                              value "string" string: "program {<br/>";
-                              value "string" string: "   <br/>";
+                              count 2;
+                              value "string" string: "program { \"\";<br/>";
                               value "string" string: "}";
                           }
-                          value "cursor_offset" int: 2;
+                          value "cursor_offset" int: 4;
                           value "line_back" int: 1;
                           value "name" string: "program";
                         }
@@ -2114,7 +2113,7 @@ group "lexem" struct {
                }
                group "txt" var_array {
                    count 2;
-                   value "string" string: "group { name: \"\";<br/>";
+                   value "string" string: "group { \"\";<br/>";
                    value "string" string: "}";
                }
                value "cursor_offset" int: 4;
