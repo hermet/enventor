@@ -10,6 +10,8 @@ typedef struct app_s
 {
    Evas_Object *enventor;
    Eina_Bool template_new : 1;
+   Eina_Bool on_saving : 1;
+   Eina_Bool lazy_save : 1;
 } app_data;
 
 int main(int argc, char **argv);
@@ -465,10 +467,36 @@ enventor_program_run_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 }
 
 static void
-enventor_ctxpopup_selected_cb(void *data EINA_UNUSED, Evas_Object *obj,
+enventor_ctxpopup_changed_cb(void *data, Evas_Object *obj,
+                             void *event_info EINA_UNUSED)
+{
+   app_data *ad = data;
+   if (!enventor_object_modified_get(obj)) return;
+   if (ad->on_saving)
+     {
+        ad->lazy_save = EINA_TRUE;
+        return;
+     }
+   ad->on_saving = EINA_TRUE;
+   enventor_object_save(obj, config_edc_path_get());
+}
+
+static void
+enventor_live_view_updated_cb(void *data, Evas_Object *obj,
                               void *event_info EINA_UNUSED)
 {
-   enventor_object_save(obj, config_edc_path_get());
+   app_data *ad = data;
+
+   if (ad->lazy_save && enventor_object_modified_get(obj))
+     {
+        enventor_object_save(obj, config_edc_path_get());
+        ad->lazy_save = EINA_FALSE;
+     }
+   else
+     {
+        ad->lazy_save = EINA_FALSE;
+        ad->on_saving = EINA_FALSE;
+     }
 }
 
 static void
@@ -502,10 +530,12 @@ enventor_setup(app_data *ad)
                                   enventor_live_view_cursor_moved_cb, ad);
    evas_object_smart_callback_add(enventor, "live_view,resized",
                                   enventor_live_view_resized_cb, ad);
+   evas_object_smart_callback_add(enventor, "live_view,updated",
+                                  enventor_live_view_updated_cb, ad);
    evas_object_smart_callback_add(enventor, "program,run",
                                   enventor_program_run_cb, ad);
-   evas_object_smart_callback_add(enventor, "ctxpopup,selected",
-                                  enventor_ctxpopup_selected_cb, ad);
+   evas_object_smart_callback_add(enventor, "ctxpopup,changed",
+                                  enventor_ctxpopup_changed_cb, ad);
    evas_object_smart_callback_add(enventor, "ctxpopup,dismissed",
                                   enventor_ctxpopup_dismissed_cb, ad);
    evas_object_smart_callback_add(enventor, "focused",

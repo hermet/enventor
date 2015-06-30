@@ -24,10 +24,11 @@ extern const char SIG_CURSOR_GROUP_CHANGED[];
 extern const char SIG_MAX_LINE_CHANGED[];
 extern const char SIG_COMPILE_ERROR[];
 extern const char SIG_LIVE_VIEW_LOADED[];
+extern const char SIG_LIVE_VIEW_UPDATED[];
 extern const char SIG_LIVE_VIEW_CURSOR_MOVED[];
 extern const char SIG_LIVE_VIEW_RESIZED[];
 extern const char SIG_PROGRAM_RUN[];
-extern const char SIG_CTXPOPUP_SELECTED[];
+extern const char SIG_CTXPOPUP_CHANGED[];
 extern const char SIG_CTXPOPUP_DISMISSED[];
 extern const char SIG_EDC_MODIFIED[];
 extern const char SIG_FOCUSED[];
@@ -206,7 +207,7 @@ Eina_Bool template_insert(edit_data *ed, Enventor_Template_Insert_Type insert_ty
 
 
 /* ctxpopup */
-Evas_Object *ctxpopup_candidate_list_create(edit_data *ed, attr_value *attr, Evas_Smart_Cb ctxpopup_dismiss_cb, Evas_Smart_Cb ctxpopup_selected_cb);
+Evas_Object *ctxpopup_candidate_list_create(edit_data *ed, attr_value *attr, Evas_Smart_Cb ctxpopup_dismiss_cb, Evas_Smart_Cb ctxpopup_changed_cb);
 Evas_Object *ctxpopup_img_preview_create(edit_data*ed, const char *imgpath, Evas_Smart_Cb ctxpopup_dismiss_cb, Evas_Smart_Cb ctxpopup_relay_cb);
 
 

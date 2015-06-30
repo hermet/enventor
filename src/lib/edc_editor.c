@@ -298,11 +298,17 @@ static void
 ctxpopup_candidate_selected_cb(void *data, Evas_Object *obj, void *event_info)
 {
    edit_data *ed = data;
+   elm_ctxpopup_dismiss(obj);
+}
+
+static void
+ctxpopup_candidate_changed_cb(void *data, Evas_Object *obj, void *event_info)
+{
+   edit_data *ed = data;
    const char *text = event_info;
    char *ch;
    int cur_pos, end_pos;
    int i;
-
    cur_pos = elm_entry_cursor_pos_get(ed->en_edit);
    elm_entry_cursor_line_end_set(ed->en_edit);
    end_pos = elm_entry_cursor_pos_get(ed->en_edit);
@@ -326,9 +332,12 @@ ctxpopup_candidate_selected_cb(void *data, Evas_Object *obj, void *event_info)
 
    redoundo_text_relative_push(ed->rd, text);
    elm_entry_entry_insert(ed->en_edit, text);
-   elm_ctxpopup_dismiss(obj);
+   elm_entry_calc_force(ed->en_edit);
+
+   elm_entry_cursor_pos_set(ed->en_edit, cur_pos);
+
    edit_changed_set(ed, EINA_TRUE);
-   evas_object_smart_callback_call(ed->enventor, SIG_CTXPOPUP_SELECTED,
+   evas_object_smart_callback_call(ed->enventor, SIG_CTXPOPUP_CHANGED,
                                    (void *)text);
 }
 
@@ -495,7 +504,7 @@ candidate_list_show(edit_data *ed, char *text, char *cur, char *selected)
    Evas_Object *ctxpopup =
       ctxpopup_candidate_list_create(ed, attr,
                                      ctxpopup_candidate_dismiss_cb,
-                                     ctxpopup_candidate_selected_cb);
+                                     ctxpopup_candidate_changed_cb);
    if (!ctxpopup) return;
 
    int x, y;

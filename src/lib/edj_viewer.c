@@ -210,6 +210,9 @@ exe_del_event_cb(void *data, int type EINA_UNUSED, void *event EINA_UNUSED)
 
    vd->edj_reload_need = EINA_FALSE;
 
+   evas_object_smart_callback_call(vd->enventor, SIG_LIVE_VIEW_UPDATED,
+                                   edj_mgr_obj_get());
+
    return ECORE_CALLBACK_PASS_ON;
 }
 
@@ -288,7 +291,7 @@ view_obj_create(view_data *vd, const char *file_path, const char *group)
         vd->edj_monitor = eio_monitor_add(file_path);
         if (!vd->edj_monitor) EINA_LOG_ERR("Failed to add Eio_Monitor");
         evas_object_smart_callback_call(vd->enventor, SIG_LIVE_VIEW_LOADED,
-                                        (void*)edj_mgr_obj_get());
+                                        edj_mgr_obj_get());
      }
 
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND,

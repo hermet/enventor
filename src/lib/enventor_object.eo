@@ -526,13 +526,14 @@ class Enventor.Object (Elm.Widget, Efl.File) {
    events {
       cursor,line,changed;
       cursor,group,changed;
+      live_view,updated;
       live_view,loaded;
       live_view,cursor,moved;
       live_view,resized;
       max_line,changed;
       compile,error;
       program,run;
-      ctxpopup,selected;
+      ctxpopup,changed;
       ctxpopup,dismissed;
       edc,modified;
       focused;
