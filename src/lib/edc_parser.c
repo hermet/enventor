@@ -125,19 +125,21 @@ end:
 static void
 cur_state_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
-   const char *quot = QUOT_UTF8;
-   const char *description = "description";
-   const char *part = "part";
-   const char *parts = "parts";
-   const char *group = "group";
-   const int quot_len = QUOT_UTF8_LEN;
-   const int description_len = 11;  //strlen("description");
+#define PART_SYNTAX_CNT 7
+
+   const char *GROUP = "group";
+   const char *PARTS = "parts";
+   const char *PART[PART_SYNTAX_CNT] =
+     { "part", "image", "text", "swallow", "rect", "group", "spacer" };
+   const char *DESC[2] = { "desc", "description" };
+   const int DESC_LEN[2] = { 4, 11 };
 
    cur_name_td *td = data;
    char *utf8 = td->utf8;
    int cur_pos = td->cur_pos;
    char *p = utf8;
    char *end = utf8 + cur_pos;
+   int i;
 
    int bracket = 0;
    const char *group_name = NULL;
@@ -158,14 +160,15 @@ cur_state_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    while (p && p <= end)
      {
         //Skip "" range
-        if (!strncmp(p, quot, quot_len))
+        if (!strncmp(p, QUOT_UTF8, QUOT_UTF8_LEN))
           {
-             p += quot_len;
-             p = strstr(p, quot);
+             p += QUOT_UTF8_LEN;
+             p = strstr(p, QUOT_UTF8);
              if (!p) goto end;
-             p += quot_len;
+             p += QUOT_UTF8_LEN;
           }
 
+        //Enter one depth into Bracket.
         if (*p == '{')
           {
              bracket++;
@@ -186,7 +189,6 @@ cur_state_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
                  continue;
                }
           }
-
         //Check whether outside of description or part or group
         if ((*p == '}') && (p < end))
           {
@@ -200,74 +202,105 @@ cur_state_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
              continue;
           }
         //Check Part in
-        if (strncmp(p, parts, strlen(parts)))
+        if (bracket == 3)
           {
-             if (!strncmp(p, part, strlen(part)))
+             if (strncmp(p, PARTS, strlen(PARTS)))
                {
-                  p += strlen(part);
-                  char *name_begin = strstr(p, quot);
+                  int part_idx = -1;
+                  int part_len;
+
+                  //part ? image ? swallow ? text ? rect ?
+                  for (i = 0; i < PART_SYNTAX_CNT; i++)
+                    {
+                       part_len = strlen(PART[i]);
+                       if (!strncmp(p, PART[i], part_len))
+                         {
+                            part_idx = i;
+                            break;
+                         }
+                    }
+
+                  //we got a part!
+                  if (part_idx != -1)
+                    {
+                       p += part_len;
+                       char *name_begin = strstr(p, QUOT_UTF8);
+                       if (!name_begin) goto end;
+                       name_begin += QUOT_UTF8_LEN;
+                       p = name_begin;
+                       char *name_end = strstr(p, QUOT_UTF8);
+                       if (!name_end) goto end;
+                       part_name = name_begin;
+                       part_name_len = name_end - name_begin;
+                       p = name_end + QUOT_UTF8_LEN;
+                       bracket++;
+                       continue;
+                    }
+               }
+          }
+        //Check Description in
+        if (bracket == 4)
+          {
+             //description? or desc?
+             int desc_idx = -1;
+             if (!strncmp(p, DESC[0], DESC_LEN[0])) desc_idx = 0;
+             else if (!strncmp(p, DESC[1], DESC_LEN[1])) desc_idx = 1;
+
+             //we got a description!
+             if (desc_idx != -1)
+               {
+                  p += DESC_LEN[desc_idx];
+                  char *name_begin = strstr(p, QUOT_UTF8);
                   if (!name_begin) goto end;
-                  name_begin += quot_len;
+                  name_begin += QUOT_UTF8_LEN;
                   p = name_begin;
-                  char *name_end = strstr(p, quot);
+                  char *name_end = strstr(p, QUOT_UTF8);
                   if (!name_end) goto end;
-                  part_name = name_begin;
-                  part_name_len = name_end - name_begin;
-                  p = name_end + quot_len;
+                  desc_name = name_begin;
+                  desc_name_len = name_end - name_begin;
+                  p = name_end + QUOT_UTF8_LEN;
+                  value = p;
+                  bracket++;
+
+                  char *value_end = strchr(value, ';');
+                  char *value_buf = NULL;
+                  while (value < value_end)
+                    {
+                       if (isdigit(*value) || *value == '.')
+                         {
+                            value_len = value_end - value;
+                            value_buf = (char *)calloc(1, value_len);
+                            memcpy(value_buf, value, value_len);
+                            break;
+                         }
+                       value++;
+                    }
+                  if (value_buf)
+                    {
+                       value_convert = atof(value_buf);
+                       free(value_buf);
+                    }
+                  continue;
+               }
+          }
+        //Check Group in
+        if (bracket == 1)
+          {
+             if (!strncmp(p, GROUP, strlen(GROUP)))
+               {
+                  p += strlen(GROUP);
+                  char *name_begin = strstr(p, QUOT_UTF8);
+                  if (!name_begin) goto end;
+                  name_begin += QUOT_UTF8_LEN;
+                  p = name_begin;
+                  char *name_end = strstr(p, QUOT_UTF8);
+                  if (!name_end) goto end;
+                  group_name = name_begin;
+                  group_name_len = name_end - name_begin;
+                  p = name_end + QUOT_UTF8_LEN;
                   bracket++;
                   continue;
                }
-         }
-         if (!strncmp(p, description, description_len))
-           {
-              p += description_len;
-              char *name_begin = strstr(p, quot);
-              if (!name_begin) goto end;
-              name_begin += quot_len;
-              p = name_begin;
-              char *name_end = strstr(p, quot);
-              if (!name_end) goto end;
-              desc_name = name_begin;
-              desc_name_len = name_end - name_begin;
-              p = name_end + quot_len;
-              value = p;
-              bracket++;
-
-              char *value_end = strchr(value, ';');
-              char *value_buf = NULL;
-              while (value < value_end)
-                {
-                   if (isdigit(*value) || *value == '.')
-                     {
-                        value_len = value_end - value;
-                        value_buf = (char *)calloc(1, value_len);
-                        memcpy(value_buf, value, value_len);
-                        break;
-                     }
-                   value++;
-                }
-              if (value_buf)
-                {
-                  value_convert = atof(value_buf);
-                  free(value_buf);
-                }
-              continue;
-           }
-        //Check Group in
-        if (!strncmp(p, group, strlen(group)))
-          {
-             p += strlen(group);
-             char *name_begin = strstr(p, quot);
-             if (!name_begin) goto end;
-             name_begin += quot_len;
-             p = name_begin;
-             char *name_end = strstr(p, quot);
-             if (!name_end) goto end;
-             group_name = name_begin;
-             group_name_len = name_end - name_begin;
-             p = name_end + quot_len;
-             bracket++;
-             continue;
           }
         p++;
      }
