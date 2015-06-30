@@ -35,6 +35,7 @@ static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_CURSOR_GROUP_CHANGED, ""},
    {SIG_LIVE_VIEW_CURSOR_MOVED, ""},
    {SIG_LIVE_VIEW_RESIZED, ""},
+   {SIG_LIVE_VIEW_LOADED, ""},
    {SIG_MAX_LINE_CHANGED, ""},
    {SIG_COMPILE_ERROR, ""},
    {SIG_PROGRAM_RUN, ""},

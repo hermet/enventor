@@ -69,10 +69,12 @@ file_set_animator_cb(void *data)
         vd->edj_monitor = eio_monitor_add(build_edj_path_get());
         if (!vd->edj_monitor) EINA_LOG_ERR("Failed to add Eio_Monitor");
         vd->animator = NULL;
+        view_obj_min_update(vd);
+        evas_object_smart_callback_call(vd->enventor, SIG_LIVE_VIEW_LOADED,
+                                        (void*)edj_mgr_obj_get());
         return ECORE_CALLBACK_CANCEL;
      }
 
-   view_obj_min_update(vd);
    edj_mgr_reload_need_set(EINA_TRUE);
 
    return ECORE_CALLBACK_RENEW;
@@ -285,6 +287,8 @@ view_obj_create(view_data *vd, const char *file_path, const char *group)
         eio_monitor_del(vd->edj_monitor);
         vd->edj_monitor = eio_monitor_add(file_path);
         if (!vd->edj_monitor) EINA_LOG_ERR("Failed to add Eio_Monitor");
+        evas_object_smart_callback_call(vd->enventor, SIG_LIVE_VIEW_LOADED,
+                                        (void*)edj_mgr_obj_get());
      }
 
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND,
@@ -340,8 +344,6 @@ view_obj_idler_cb(void *data)
    vd->idler = NULL;
    if (vd->part_name) view_part_highlight_set(vd, vd->part_name);
 
-   evas_object_smart_callback_call(vd->enventor, SIG_LIVE_VIEW_LOADED,
-                                   (void*)edj_mgr_obj_get());
    return ECORE_CALLBACK_CANCEL;
 }
 
