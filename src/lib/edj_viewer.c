@@ -24,7 +24,7 @@ struct viewer_s
    Eina_Stringshare *part_name;
 
    Ecore_Idler *idler;
-   Ecore_Timer *timer;
+   Ecore_Animator *animator;
    Eio_Monitor *edj_monitor;
    Ecore_Event_Handler *monitor_event;
    Ecore_Event_Handler *exe_del_event;
@@ -54,12 +54,12 @@ view_obj_min_update(view_data *vd)
 }
 
 static Eina_Bool
-file_set_timer_cb(void *data)
+file_set_animator_cb(void *data)
 {
    view_data *vd = data;
    if (!vd->layout)
      {
-        vd->timer = NULL;
+        vd->animator = NULL;
         return ECORE_CALLBACK_CANCEL;
      }
 
@@ -68,7 +68,7 @@ file_set_timer_cb(void *data)
         eio_monitor_del(vd->edj_monitor);
         vd->edj_monitor = eio_monitor_add(build_edj_path_get());
         if (!vd->edj_monitor) EINA_LOG_ERR("Failed to add Eio_Monitor");
-        vd->timer = NULL;
+        vd->animator = NULL;
         return ECORE_CALLBACK_CANCEL;
      }
 
@@ -278,7 +278,7 @@ view_obj_create(view_data *vd, const char *file_path, const char *group)
    if (!edje_object_file_set(layout, file_path, group))
      {
         //FIXME: more optimized way?
-        vd->timer = ecore_timer_add(1, file_set_timer_cb, vd);
+        vd->animator = ecore_animator_add(file_set_animator_cb, vd);
      }
    else
      {
@@ -406,7 +406,7 @@ view_term(view_data *vd)
                                     part_obj_del_cb);
    evas_object_del(vd->scroller);
    ecore_idler_del(vd->idler);
-   ecore_timer_del(vd->timer);
+   ecore_animator_del(vd->animator);
    eio_monitor_del(vd->edj_monitor);
    ecore_event_handler_del(vd->monitor_event);
    ecore_event_handler_del(vd->exe_del_event);
