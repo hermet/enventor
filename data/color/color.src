@@ -57,6 +57,7 @@ group "syntax_color_group" struct {
             value "key" string: "set.";
             value "key" string: "set ";
             value "key" string: "sounds";
+            value "key" string: "spacer";
             value "key" string: "styles";
             value "key" string: "swallow";
             value "key" string: "size ";
