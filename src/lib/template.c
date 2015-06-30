@@ -140,33 +140,34 @@ template_part_insert(edit_data *ed, Edje_Part_Type part_type,
    int line_cnt = 0;
    char **t = NULL;
    char buf[64];
+   char type_name[20];
 
    switch(part_type)
      {
         case EDJE_PART_TYPE_RECTANGLE:
            line_cnt = TEMPLATE_PART_RECT_LINE_CNT;
            t = (char **) &TEMPLATE_PART_RECT;
-           strncpy(syntax, "Rect", n);
+           strncpy(type_name, "rect\0", 5);
            break;
         case EDJE_PART_TYPE_TEXT:
            line_cnt = TEMPLATE_PART_TEXT_LINE_CNT;
            t = (char **) &TEMPLATE_PART_TEXT;
-           strncpy(syntax, "Text", n);
+           strncpy(type_name, "text\0", 5);
            break;
         case EDJE_PART_TYPE_SWALLOW:
            line_cnt = TEMPLATE_PART_SWALLOW_LINE_CNT;
            t = (char **) &TEMPLATE_PART_SWALLOW;
-           strncpy(syntax, "Swallow", n);
+           strncpy(type_name, "swallow\0", 8);
            break;
         case EDJE_PART_TYPE_TEXTBLOCK:
            line_cnt = TEMPLATE_PART_TEXTBLOCK_LINE_CNT;
            t = (char **) &TEMPLATE_PART_TEXTBLOCK;
-           strncpy(syntax, "Textblock", n);
+           strncpy(type_name, "textblock\0", 10);
            break;
         case EDJE_PART_TYPE_SPACER:
            line_cnt = TEMPLATE_PART_SPACER_LINE_CNT;
            t = (char **) &TEMPLATE_PART_SPACER;
-           strncpy(syntax, "Spacer", n);
+           strncpy(type_name, "spacer\0", 7);
            break;
         case EDJE_PART_TYPE_IMAGE:
         case EDJE_PART_TYPE_NONE:
@@ -179,7 +180,7 @@ template_part_insert(edit_data *ed, Edje_Part_Type part_type,
         case EDJE_PART_TYPE_LAST:
            line_cnt = TEMPLATE_PART_IMAGE_LINE_CNT;
            t = (char **) &TEMPLATE_PART_IMAGE;
-           strncpy(syntax, "Image", n);
+           strncpy(type_name, "image\0", 6);
            break;
         //for avoiding compiler warning.
         case EDJE_PART_TYPE_MESH_NODE:
@@ -194,7 +195,7 @@ template_part_insert(edit_data *ed, Edje_Part_Type part_type,
    template_random_string_create(random_name, 9);
 
    elm_entry_entry_insert(edit_entry, p);
-   snprintf(first_line, 40, "part { name: \"%s\";<br/>", random_name);
+   snprintf(first_line, 40, "%s { \"%s\";<br/>", type_name, random_name);
    elm_entry_entry_insert(edit_entry, first_line);
 
    //Insert part body
@@ -254,6 +255,8 @@ template_part_insert(edit_data *ed, Edje_Part_Type part_type,
 
    edit_syntax_color_partial_apply(ed, 0);
    edit_changed_set(ed, EINA_TRUE);
+
+   strncpy(syntax, type_name, n);
 
    return EINA_TRUE;
 }

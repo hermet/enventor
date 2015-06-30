@@ -38,11 +38,10 @@ const char *TEMPLATE_PART_TALE[TEMPLATE_PART_TALE_LINE_CNT] =
    "}"
 };
 
-#define TEMPLATE_PART_IMAGE_LINE_CNT 9
+#define TEMPLATE_PART_IMAGE_LINE_CNT 8
 
 const char *TEMPLATE_PART_IMAGE[TEMPLATE_PART_IMAGE_LINE_CNT] =
 {
-   "   type: IMAGE;<br/>",
    "   scale: 1;<br/>",
    "   desc { \"default\";<br/>",
    "      align: 0.5 0.5;<br/>",
@@ -53,11 +52,10 @@ const char *TEMPLATE_PART_IMAGE[TEMPLATE_PART_IMAGE_LINE_CNT] =
    "      //aspect: 1 1;<br/>"
 };
 
-#define TEMPLATE_PART_RECT_LINE_CNT 8
+#define TEMPLATE_PART_RECT_LINE_CNT 7
 
 const char *TEMPLATE_PART_RECT[TEMPLATE_PART_RECT_LINE_CNT] =
 {
-   "   type: RECT;<br/>",
    "   scale: 1;<br/>",
    "   desc { \"default\";<br/>",
    "      color: 0 136 170 255;<br/>",
@@ -67,11 +65,10 @@ const char *TEMPLATE_PART_RECT[TEMPLATE_PART_RECT_LINE_CNT] =
    "      visible: 1;<br/>"
 };
 
-#define TEMPLATE_PART_SWALLOW_LINE_CNT 7
+#define TEMPLATE_PART_SWALLOW_LINE_CNT 6
 
 const char *TEMPLATE_PART_SWALLOW[TEMPLATE_PART_SWALLOW_LINE_CNT] =
 {
-   "   type: SWALLOW;<br/>",
    "   scale: 1;<br/>",
    "   desc { \"default\";<br/>",
    "      align: 0.5 0.5;<br/>",
@@ -80,11 +77,10 @@ const char *TEMPLATE_PART_SWALLOW[TEMPLATE_PART_SWALLOW_LINE_CNT] =
    "      visible: 1;<br/>"
 };
 
-#define TEMPLATE_PART_SPACER_LINE_CNT 6
+#define TEMPLATE_PART_SPACER_LINE_CNT 5
 
 const char *TEMPLATE_PART_SPACER[TEMPLATE_PART_SPACER_LINE_CNT] =
 {
-   "   type: SPACER;<br/>",
    "   scale: 1;<br/>",
    "   desc { \"default\";<br/>",
    "      align: 0.5 0.5;<br/>",
@@ -92,11 +88,10 @@ const char *TEMPLATE_PART_SPACER[TEMPLATE_PART_SPACER_LINE_CNT] =
    "      min: 0 0;<br/>"
 };
 
-#define TEMPLATE_PART_TEXT_LINE_CNT 18
+#define TEMPLATE_PART_TEXT_LINE_CNT 17
 
 const char *TEMPLATE_PART_TEXT[TEMPLATE_PART_TEXT_LINE_CNT] =
 {
-   "   type: TEXT;<br/>",
    "   scale: 1;<br/>",
    "   effect: FAR_SOFT_SHADOW;<br/>",
    "   desc { \"default\";<br/>",
@@ -116,11 +111,10 @@ const char *TEMPLATE_PART_TEXT[TEMPLATE_PART_TEXT_LINE_CNT] =
    "      }<br/>"
 };
 
-#define TEMPLATE_PART_TEXTBLOCK_LINE_CNT 8
+#define TEMPLATE_PART_TEXTBLOCK_LINE_CNT 7
 
 const char *TEMPLATE_PART_TEXTBLOCK[TEMPLATE_PART_TEXTBLOCK_LINE_CNT] =
 {
-   "   type: TEXTBLOCK;<br/>",
    "   scale: 1;<br/>",
    "   desc { \"default\";<br/>",
    "      align: 0.5 0.5;<br/>",
