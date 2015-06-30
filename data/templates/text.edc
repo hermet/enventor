@@ -1,11 +1,10 @@
 collections {
-   group { name: "main";
+   group { "main";
       parts {
-         part { name: "text";
-            type: TEXT;
+         text { "text";
             scale: 1;
             effect: FAR_SOFT_SHADOW;
-            description { state: "default" 0.0;
+            desc { "default";
                rel1.relative: 0.0 0.0;
                rel2.relative: 1.0 1.0;
                color: 0 136 170 255;

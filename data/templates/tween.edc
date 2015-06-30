@@ -13,11 +13,10 @@ collections {
       image: "TRIAB-11.png" COMP;
       image: "TRIAB-12.png" COMP;
    }
-   group { name: "main";
+   group { "main";
       parts {
-         part { name: "image";
-            type: IMAGE;
-            description { state: "default" 0.0;
+         image { "image";
+            desc { "default";
                image.normal: "TRIAB-01.png";
                image.tween: "TRIAB-02.png";
                image.tween: "TRIAB-03.png";
@@ -36,10 +35,9 @@ collections {
          }
       }
       programs {
-         program { name: "tween_anim";
+         program { "tween_anim";
             signal: "load";
-            source: "";
-            action: STATE_SET "default" 0.0;
+            action: STATE_SET "default";
             transition: LINEAR 1;
             target: "image";
             after: "tween_anim";

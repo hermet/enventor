@@ -2,18 +2,17 @@ collections {
    images {
       image: "logo.png" COMP;
    }
-   group { name: "main";
+   group { "main";
       parts {
-         part { name: "logo";
-            type: IMAGE;
-            description { state: "default" 0.0;
+         image { "logo";
+            desc { "default";
                image.normal: "logo.png";
                aspect: 1 1;
                aspect_preference: BOTH;
                map.on: 1;
             }
-            description { state: "rotated" 0.0;
-               inherit: "default" 0.0;
+            desc { "rotated";
+               inherit: "default";
                map {
                   rotation.z: 360;
                   zoom.x: 0.25;
@@ -23,16 +22,15 @@ collections {
          }
       }
       programs {
-         program { name: "anim1";
+         program { "anim1";
             signal: "load";
-            source: "";
-            action: STATE_SET "rotated" 0.0;
+            action: STATE_SET "rotated";
             target: "logo";
             transition: ACCELERATE 2;
             after: "anim2";
          }
-         program { name: "anim2";
-            action: STATE_SET "default" 0.0;
+         program { "anim2";
+            action: STATE_SET "default";
             target: "logo";
             transition: ACCELERATE 2.0;
             after: "anim1";

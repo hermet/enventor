@@ -1,14 +1,13 @@
 collections {
-   group { name: "main";
+   group { "main";
       parts {
-         part { name: "rect";
-            type: RECT;
-            description { state: "default" 0.0;
+         rect { "rect";
+            desc { "default";
                rel1.relative: 0.0 0.0;
                rel2.relative: 0.25 0.25;
                color: 255 255 0 255;
             }
-            description { state: "changed" 0.0;
+            desc { "changed";
                rel1.relative: 0.5 0.5;
                rel2.relative: 1.0 1.0;
                color: 0 136 170 255;
@@ -16,16 +15,15 @@ collections {
          }
       }
       programs {
-         program { name: "anim1";
+         program { "anim1";
             signal: "load";
-            source: "";
-            action: STATE_SET "changed" 0.0;
+            action: STATE_SET "changed";
             target: "rect";
             transition: ACCELERATE 1;
             after: "anim2";
          }
-         program { name: "anim2";
-            action: STATE_SET "default" 0.0;
+         program { "anim2";
+            action: STATE_SET "default";
             target: "rect";
             transition: DECELERATE 2;
             after: "anim1";

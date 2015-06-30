@@ -1,15 +1,14 @@
 collections {
    styles {
-      style { name: "text_style";
+      style { "text_style";
          base: "font="Sans" font_size=30 text_class=entry color=#0088AA style=shadow,bottom shadow_color=#00000080 valign=0.5 ellipsis=1.0 wrap=none align=center";
       }
    }
-   group { name: "main";
+   group { "main";
       parts {
-         part { name: "text";
-            type: TEXTBLOCK;
+         textblock { "text";
             scale: 1;
-            description { state: "default" 0.0;
+            desc { "default";
                rel1.relative: 0.0 0.0;
                rel2.relative: 1.0 1.0;
                text {

@@ -1,31 +1,28 @@
 collections {
-   group { name: "main";
+   group { "main";
       parts {
-         part { name: "rect";
-            type: RECT;
-            description { state: "default" 0.0;
+         rect { "rect";
+            desc { "default";
                rel1.relative: 0.0 0.0;
                rel2.relative: 1.0 0.5;
                color: 0 136 170 255;
             }
          }
-         part { name: "group";
-            type: GROUP;
+         group { "group";
             source: "my_group";
-            description { state: "default" 0.0;
+            desc { "default";
                rel1.relative: 0.0 0.5;
                rel2.relative: 1.0 1.0;
             }
          }
       }
    }
-   group { name: "my_group";
+   group { "my_group";
       parts {
-         part { name: "text";
-            type: TEXT;
+         text { "text";
             scale: 1;
             effect: FAR_SOFT_SHADOW;
-            description { state: "default" 0.0;
+            desc { "default";
                color: 0 136 170 255;
                color2: 0 136 170 50;
                color3: 0 136 170 25;
