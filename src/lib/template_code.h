@@ -1,14 +1,12 @@
-#define TEMPLATE_GROUP_LINE_CNT 28
+#define TEMPLATE_GROUP_LINE_CNT 26
 
 const char *TEMPLATE_GROUP[TEMPLATE_GROUP_LINE_CNT] =
 {
-   "group { name: \"XXX\";<br/>",
+   "group { \"XXX\";<br/>",
    "   parts {<br/>",
-   "      part { name: \"XXX\";<br/>",
-   "         type: IMAGE;<br/>",
+   "      image { \"XXX\";<br/>",
    "         scale: 1;<br/>",
-   "         mouse_events: 1;<br/>",
-   "         description { state: \"default\" 0.0;<br/>",
+   "         desc { \"default\";<br/>",
    "            rel1 { relative: 0.25 0.25; offset: 0 0; /*to: \"XXX\";*/ }<br/>",
    "            rel2 { relative: 0.75 0.75; offset: -1 -1; /*to: \"XXX\";*/ }<br/>",
    "            align: 0.5 0.5;<br/>",
@@ -21,10 +19,10 @@ const char *TEMPLATE_GROUP[TEMPLATE_GROUP_LINE_CNT] =
    "      }<br/>",
    "   }<br/>",
    "   programs {<br/>",
-   "      program { name: \"XXX\";<br/>",
+   "      program { \"XXX\";<br/>",
    "         //signal: \"XXX\";<br/>",
    "         //source: \"XXX\";<br/>",
-   "         action: STATE_SET \"default\" 0.0;<br/>",
+   "         action: STATE_SET \"default\";<br/>",
    "         target: \"XXX\";<br/>",
    "         //transition: LINEAR 1.0;<br/>",
    "      }<br/>",
@@ -40,14 +38,13 @@ const char *TEMPLATE_PART_TALE[TEMPLATE_PART_TALE_LINE_CNT] =
    "}"
 };
 
-#define TEMPLATE_PART_IMAGE_LINE_CNT 10
+#define TEMPLATE_PART_IMAGE_LINE_CNT 9
 
 const char *TEMPLATE_PART_IMAGE[TEMPLATE_PART_IMAGE_LINE_CNT] =
 {
    "   type: IMAGE;<br/>",
    "   scale: 1;<br/>",
-   "   mouse_events: 1;<br/>",
-   "   description { state: \"default\" 0.0;<br/>",
+   "   desc { \"default\";<br/>",
    "      align: 0.5 0.5;<br/>",
    "      fixed: 0 0;<br/>",
    "      min: 0 0;<br/>",
@@ -56,14 +53,13 @@ const char *TEMPLATE_PART_IMAGE[TEMPLATE_PART_IMAGE_LINE_CNT] =
    "      //aspect: 1 1;<br/>"
 };
 
-#define TEMPLATE_PART_RECT_LINE_CNT 9
+#define TEMPLATE_PART_RECT_LINE_CNT 8
 
 const char *TEMPLATE_PART_RECT[TEMPLATE_PART_RECT_LINE_CNT] =
 {
    "   type: RECT;<br/>",
    "   scale: 1;<br/>",
-   "   mouse_events: 1;<br/>",
-   "   description { state: \"default\" 0.0;<br/>",
+   "   desc { \"default\";<br/>",
    "      color: 0 136 170 255;<br/>",
    "      align: 0.5 0.5;<br/>",
    "      fixed: 0 0;<br/>",
@@ -71,14 +67,13 @@ const char *TEMPLATE_PART_RECT[TEMPLATE_PART_RECT_LINE_CNT] =
    "      visible: 1;<br/>"
 };
 
-#define TEMPLATE_PART_SWALLOW_LINE_CNT 8
+#define TEMPLATE_PART_SWALLOW_LINE_CNT 7
 
 const char *TEMPLATE_PART_SWALLOW[TEMPLATE_PART_SWALLOW_LINE_CNT] =
 {
    "   type: SWALLOW;<br/>",
    "   scale: 1;<br/>",
-   "   mouse_events: 1;<br/>",
-   "   description { state: \"default\" 0.0;<br/>",
+   "   desc { \"default\";<br/>",
    "      align: 0.5 0.5;<br/>",
    "      fixed: 0 0;<br/>",
    "      min: 0 0;<br/>",
@@ -91,21 +86,20 @@ const char *TEMPLATE_PART_SPACER[TEMPLATE_PART_SPACER_LINE_CNT] =
 {
    "   type: SPACER;<br/>",
    "   scale: 1;<br/>",
-   "   description { state: \"default\" 0.0;<br/>",
+   "   desc { \"default\";<br/>",
    "      align: 0.5 0.5;<br/>",
    "      fixed: 0 0;<br/>",
    "      min: 0 0;<br/>"
 };
 
-#define TEMPLATE_PART_TEXT_LINE_CNT 19
+#define TEMPLATE_PART_TEXT_LINE_CNT 18
 
 const char *TEMPLATE_PART_TEXT[TEMPLATE_PART_TEXT_LINE_CNT] =
 {
    "   type: TEXT;<br/>",
    "   scale: 1;<br/>",
-   "   mouse_events: 1;<br/>",
    "   effect: FAR_SOFT_SHADOW;<br/>",
-   "   description { state: \"default\" 0.0;<br/>",
+   "   desc { \"default\";<br/>",
    "      align: 0.5 0.5;<br/>",
    "      fixed: 0 0;<br/>",
    "      min: 0 0;<br/>",
@@ -128,7 +122,7 @@ const char *TEMPLATE_PART_TEXTBLOCK[TEMPLATE_PART_TEXTBLOCK_LINE_CNT] =
 {
    "   type: TEXTBLOCK;<br/>",
    "   scale: 1;<br/>",
-   "   description { state: \"default\" 0.0;<br/>",
+   "   desc { \"default\";<br/>",
    "      align: 0.5 0.5;<br/>",
    "      fixed: 0 0;<br/>",
    "      min: 0 0;<br/>",
@@ -140,7 +134,7 @@ const char *TEMPLATE_PART_TEXTBLOCK[TEMPLATE_PART_TEXTBLOCK_LINE_CNT] =
 
 const char *TEMPLATE_DESC[TEMPLATE_DESC_LINE_CNT] =
 {
-   "description { state: \"XXX\" 0.0;<br/>",
+   "desc { \"XXX\";<br/>",
    "   //inherit: \"default\";<br/>",
    "   rel1 { relative: 0.0 0.0; offset: 0 0; /*to: \"XXX\";*/ }<br/>",
    "   rel2 { relative: 1.0 1.0; offset: -1 -1; /*to: \"XXX\";*/ }<br/>",
@@ -156,10 +150,10 @@ const char *TEMPLATE_DESC[TEMPLATE_DESC_LINE_CNT] =
 
 const char *TEMPLATE_PROG[TEMPLATE_PROG_LINE_CNT] =
 {
-   "program { name: \"XXX\";<br/>",
+   "program { \"XXX\";<br/>",
    "   //signal: \"XXX\";<br/>",
    "   //source: \"XXX\";<br/>",
-   "   action: STATE_SET \"default\" 0.0;<br/>",
+   "   action: STATE_SET \"default\";<br/>",
    "   target: \"XXX\";<br/>",
    "   //transition: LINEAR 1.0;<br/>",
    "}"
@@ -183,7 +177,7 @@ const char *TEMPLATE_IMG_BLOCK = "   images {<br/>"
 const char *TEMPLATE_TEXTBLOCK_STYLE_BLOCK[TEMPLATE_TEXTBLOCK_STYLE_LINE_CNT] =
 {
    "   styles {<br/>",
-   "      style { name: \"%s\";<br/>"
+   "      style { \"%s\";<br/>"
    "         base: \"font=\"Sans\" font_size=30 text_class=entry color=#0088AA style=shadow,bottom shadow_color=#00000080 valign=0.5 ellipsis=1.0 wrap=none align=center\";<br/>"
    "      }<br/>",
    "   }<br/>"
