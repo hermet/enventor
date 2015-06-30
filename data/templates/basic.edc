@@ -2,11 +2,10 @@ collections {
    images {
       image: "logo.png" COMP;
    }
-   group { name: "main";
+   group { "main";
       parts {
-         part { name: "logo";
-            type: IMAGE;
-            description { state: "default" 0.0;
+         image { "logo";
+            desc { "default";
                rel1.relative: 0.0 0.0;
                rel2.relative: 0.5 0.5;
                image.normal: "logo.png";
@@ -14,24 +13,22 @@ collections {
                aspect_preference: BOTH;
             }
          }
-         part { name: "rect";
-            type: RECT;
-            description { state: "default" 0.0;
+         rect { "rect";
+            desc { "default";
                rel1.relative: 0.5 0.0;
                rel2.relative: 1.0 0.5;
                color: 0 136 170 255;
             }
-            description { state: "clicked" 0.0;
+            desc { "clicked";
                rel1.relative: 0.65 0.15;
                rel2.relative: 0.85 0.35;
                color: 170 136 0 255;
             }
          }
-         part { name: "text";
-            type: TEXT;
+         text { "text";
             scale: 1;
             effect: FAR_SOFT_SHADOW;
-            description { state: "default" 0.0;
+            desc { "default";
                rel1.relative: 0.0 0.5;
                rel2.relative: 0.5 1.0;
                color: 0 136 170 255;
@@ -45,9 +42,8 @@ collections {
                }
             }
          }
-         part { name: "content";
-            type: SWALLOW;
-            description { state: "default" 0.0;
+         swallow { "content";
+            desc { "default";
                rel1.relative: 0.5 0.5;
                rel2.relative: 1.0 1.0;
             }
@@ -55,16 +51,16 @@ collections {
       }
 /*
       programs {
-         program { name: "mouse_down";
+         program { "mouse_down";
             signal: "mouse,down,1";
             source: "rect";
-            action: STATE_SET "clicked" 0.0;
+            action: STATE_SET "clicked";
             target: "rect";
          }
-         program { name: "mouse_up";
+         program { "mouse_up";
             signal: "mouse,up,1";
             source: "rect";
-            action: STATE_SET "default" 0.0;
+            action: STATE_SET "default";
             target: "rect";
          }
       }

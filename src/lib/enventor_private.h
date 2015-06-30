@@ -99,7 +99,6 @@ Eina_Bool color_ready(color_data *cd);
 parser_data *parser_init(void);
 void parser_term(parser_data *pd);
 Eina_Stringshare *parser_first_group_name_get(parser_data *pd, Evas_Object *entry);
-void parser_cur_name_get(parser_data *pd, Evas_Object *entry, void (*cb)(void *data, Eina_Stringshare *state_name, double state_value, Eina_Stringshare *part_name, Eina_Stringshare *group_name), void *data);
 void parser_cur_group_name_get(parser_data *pd, Evas_Object *entry, void (*cb)(void *data, Eina_Stringshare *state_name, double state_value, Eina_Stringshare *part_name, Eina_Stringshare *group_name), void *data);
 void parser_cur_state_get(parser_data *pd, Evas_Object *entry, void (*cb)(void *data, Eina_Stringshare *state_name, double state_value, Eina_Stringshare *part_name, Eina_Stringshare *group_name), void *data);
 Eina_Stringshare *parser_cur_name_fast_get(Evas_Object *entry, const char *scope);
