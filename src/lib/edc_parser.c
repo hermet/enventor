@@ -234,9 +234,6 @@ cur_state_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    const char *group = "group";
    const int quot_len = QUOT_UTF8_LEN;
    const int description_len = 11;  //strlen("description");
-   const int part_len = 4; //strlen("part");
-   const int parts_len = 5; //strlen("parts");
-   const int group_len = 5;  //strlen("group");
 
    cur_name_td *td = data;
    char *utf8 = td->utf8;
@@ -250,8 +247,8 @@ cur_state_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    int group_name_len = 0;
    int part_name_len = 0;
 
-   const char *description_name = NULL;
-   int description_name_len = 0;
+   const char *desc_name = NULL;
+   int desc_name_len = 0;
    const char *value = NULL;
    int value_len = 0;
    double value_convert = 0.0;
@@ -300,16 +297,16 @@ cur_state_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
 
              if (bracket == 1) group_name = NULL;
              else if (bracket == 3) part_name = NULL;
-             else if (bracket == 4) description_name = NULL;
+             else if (bracket == 4) desc_name = NULL;
 
              continue;
           }
         //Check Part in
-        if (strncmp(p, parts, parts_len))
+        if (strncmp(p, parts, strlen(parts)))
           {
-             if (!strncmp(p, part, part_len))
+             if (!strncmp(p, part, strlen(part)))
                {
-                  p += part_len;
+                  p += strlen(part);
                   char *name_begin = strstr(p, quot);
                   if (!name_begin) goto end;
                   name_begin += quot_len;
@@ -332,8 +329,8 @@ cur_state_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
               p = name_begin;
               char *name_end = strstr(p, quot);
               if (!name_end) goto end;
-              description_name = name_begin;
-              description_name_len = name_end - name_begin;
+              desc_name = name_begin;
+              desc_name_len = name_end - name_begin;
               p = name_end + quot_len;
               value = p;
               bracket++;
@@ -359,9 +356,9 @@ cur_state_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
               continue;
            }
         //Check Group in
-        if (!strncmp(p, group, group_len))
+        if (!strncmp(p, group, strlen(group)))
           {
-             p += group_len;
+             p += strlen(group);
              char *name_begin = strstr(p, quot);
              if (!name_begin) goto end;
              name_begin += quot_len;
@@ -381,12 +378,12 @@ cur_state_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
      part_name = eina_stringshare_add_length(part_name, part_name_len);
    if (group_name)
      group_name = eina_stringshare_add_length(group_name, group_name_len);
-   if (description_name)
-     description_name = eina_stringshare_add_length(description_name, description_name_len);
+   if (desc_name)
+     desc_name = eina_stringshare_add_length(desc_name, desc_name_len);
 
    td->part_name = part_name;
    td->group_name = group_name;
-   td->state_name = description_name;
+   td->state_name = desc_name;
    td->state_value = value_convert;
 
 end:
