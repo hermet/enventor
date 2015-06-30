@@ -125,12 +125,13 @@ end:
 static void
 cur_state_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
-#define PART_SYNTAX_CNT 9
+#define PART_SYNTAX_CNT 13
 
    const char *GROUP = "group";
    const char *PARTS = "parts";
    const char *PART[PART_SYNTAX_CNT] = { "part", "image", "textblock",
-        "swallow", "rect", "group", "spacer", "proxy", "text" };
+        "swallow", "rect", "group", "spacer", "proxy", "text", "gradient",
+        "box", "table", "external" };
    const char *DESC[2] = { "desc", "description" };
    const int DESC_LEN[2] = { 4, 11 };
 
@@ -351,29 +352,6 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
                          4);
 
    //FIXME: construct from the configuration file.
-
-   //Type: Constant
-   Eina_Array *types = eina_array_new(12);
-   eina_array_push(types, eina_stringshare_add("RECT"));
-   eina_array_push(types, eina_stringshare_add("TEXT"));
-   eina_array_push(types, eina_stringshare_add("IMAGE"));
-   eina_array_push(types, eina_stringshare_add("SWALLOW"));
-   eina_array_push(types, eina_stringshare_add("TEXTBLOCK"));
-   eina_array_push(types, eina_stringshare_add("GRADIENT"));
-   eina_array_push(types, eina_stringshare_add("GROUP"));
-   eina_array_push(types, eina_stringshare_add("BOX"));
-   eina_array_push(types, eina_stringshare_add("TABLE"));
-   eina_array_push(types, eina_stringshare_add("EXTERNAL"));
-   eina_array_push(types, eina_stringshare_add("PROXY"));
-   eina_array_push(types, eina_stringshare_add("SPACER"));
-
-   memset(&attr, 0x00, sizeof(parser_attr));
-   attr.keyword = eina_stringshare_add("type");
-   attr.value.strs = types;
-   attr.value.type = ATTR_VALUE_CONSTANT;
-   attr.value.prepend_str = ATTR_PREPEND_COLON;
-   attr.value.append_str = ATTR_APPEND_SEMICOLON;
-   eina_inarray_push(td->attrs, &attr);
 
    Eina_Array *comps = eina_array_new(4);
    eina_array_push(comps, eina_stringshare_add("RAW"));

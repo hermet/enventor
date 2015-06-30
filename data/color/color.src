@@ -34,7 +34,9 @@ group "syntax_color_group" struct {
             value "key" string: "description";
             value "key" string: "desc";
             value "key" string: "dragable";
+            value "key" string: "external";
             value "key" string: "fill";
+            value "key" string: "gradient";
             value "key" string: "group";
             value "key" string: "images";
             value "key" string: "image ";
@@ -162,7 +164,6 @@ group "syntax_color_group" struct {
             value "key" string: "BOTH";
             value "key" string: "BOTTOM";
             value "key" string: "BOUNCE";
-            value "key" string: "BOX";
             value "key" string: "CUBIC_BEZIER";
             value "key" string: "COMP";
             value "key" string: "CURRENT";
@@ -172,15 +173,11 @@ group "syntax_color_group" struct {
             value "key" string: "DIVISOR_INTERP";
             value "key" string: "EDITABLE";
             value "key" string: "EXPLICIT";
-            value "key" string: "EXTERNAL";
             value "key" string: "FAR_SHADOW";
             value "key" string: "FAR_SOFT_SHADOW";
             value "key" string: "FOCUS_SET";
             value "key" string: "GLOW";
-            value "key" string: "GRADIENT";
-            value "key" string: "GROUP";
             value "key" string: "HORIZONTAL";
-            value "key" string: "IMAGE";
             value "key" string: "LINEAR";
             value "key" string: "LOSSY";
             value "key" string: "MSG_FLOAT_SET";
@@ -204,9 +201,7 @@ group "syntax_color_group" struct {
             value "key" string: "PLAIN";
             value "key" string: "PLAY_SAMPLE";
             value "key" string: "PROGRAM";
-            value "key" string: "PROXY";
             value "key" string: "RAW";
-            value "key" string: "RECT";
             value "key" string: "SHADOW";
             value "key" string: "SIGNAL_EMIT";
             value "key" string: "SINUSOIDAL_FACTOR";
@@ -214,13 +209,8 @@ group "syntax_color_group" struct {
             value "key" string: "SOFT_OUTLINE";
             value "key" string: "SOFT_SHADOW";
             value "key" string: "SOLID";
-            value "key" string: "SPACER";
             value "key" string: "SPRING";
             value "key" string: "STATE_SET";
-            value "key" string: "SWALLOW";
-            value "key" string: "TABLE";
-            value "key" string: "TEXTBLOCK";
-            value "key" string: "TEXT";
             value "key" string: "USER";
             value "key" string: "VERTICAL";
          }
