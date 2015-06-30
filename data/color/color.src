@@ -47,6 +47,7 @@ group "syntax_color_group" struct {
             value "key" string: "part";
             value "key" string: "programs";
             value "key" string: "program";
+            value "key" string: "proxy";
             value "key" string: "perspective ";
             value "key" string: "rect";
             value "key" string: "rel1";
