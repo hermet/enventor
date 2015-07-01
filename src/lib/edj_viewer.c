@@ -53,6 +53,17 @@ view_obj_min_update(view_data *vd)
                                  ((double)vd->view_config_size.h * scale));
 }
 
+static void
+view_obj_create_post_job(view_data *vd)
+{
+   eio_monitor_del(vd->edj_monitor);
+   vd->edj_monitor = eio_monitor_add(build_edj_path_get());
+   if (!vd->edj_monitor) EINA_LOG_ERR("Failed to add Eio_Monitor");
+   view_obj_min_update(vd);
+   evas_object_smart_callback_call(vd->enventor, SIG_LIVE_VIEW_LOADED,
+                                   (void*)edj_mgr_obj_get());
+}
+
 static Eina_Bool
 file_set_animator_cb(void *data)
 {
@@ -65,13 +76,8 @@ file_set_animator_cb(void *data)
 
    if (edje_object_file_set(vd->layout, build_edj_path_get(), vd->group_name))
      {
-        eio_monitor_del(vd->edj_monitor);
-        vd->edj_monitor = eio_monitor_add(build_edj_path_get());
-        if (!vd->edj_monitor) EINA_LOG_ERR("Failed to add Eio_Monitor");
+        view_obj_create_post_job(vd);
         vd->animator = NULL;
-        view_obj_min_update(vd);
-        evas_object_smart_callback_call(vd->enventor, SIG_LIVE_VIEW_LOADED,
-                                        (void*)edj_mgr_obj_get());
         return ECORE_CALLBACK_CANCEL;
      }
 
@@ -275,30 +281,20 @@ base_create(Evas_Object *parent)
    return base;
 }
 
-static Evas_Object *
-view_obj_create(view_data *vd, const char *file_path, const char *group)
+static void
+view_obj_create(view_data *vd)
 {
    Evas *e = evas_object_evas_get(vd->base);
-   Evas_Object *layout = edje_edit_object_add(e);
-   if (!edje_object_file_set(layout, file_path, group))
-     {
-        //FIXME: more optimized way?
-        vd->animator = ecore_animator_add(file_set_animator_cb, vd);
-     }
+   vd->layout = edje_edit_object_add(e);
+   if (!edje_object_file_set(vd->layout, build_edj_path_get(), vd->group_name))
+     vd->animator = ecore_animator_add(file_set_animator_cb, vd);
    else
-     {
-        eio_monitor_del(vd->edj_monitor);
-        vd->edj_monitor = eio_monitor_add(file_path);
-        if (!vd->edj_monitor) EINA_LOG_ERR("Failed to add Eio_Monitor");
-        evas_object_smart_callback_call(vd->enventor, SIG_LIVE_VIEW_LOADED,
-                                        edj_mgr_obj_get());
-     }
+     view_obj_create_post_job(vd);
 
-   evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND,
+   evas_object_size_hint_weight_set(vd->layout, EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
-   evas_object_event_callback_add(layout, EVAS_CALLBACK_RESIZE,
+   evas_object_event_callback_add(vd->layout, EVAS_CALLBACK_RESIZE,
                                   layout_resize_cb, vd);
-   return layout;
 }
 
 static void
@@ -330,8 +326,7 @@ view_obj_idler_cb(void *data)
 
    vd->base = base_create(vd->scroller);
 
-   vd->layout = view_obj_create(vd, build_edj_path_get(), vd->group_name);
-   view_obj_min_update(vd);
+   view_obj_create(vd);
    view_scale_set(vd, edj_mgr_view_scale_get());
 
    event_layer_set(vd);
