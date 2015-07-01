@@ -25,8 +25,12 @@ struct viewer_s
 
    Ecore_Idler *idler;
    Ecore_Animator *animator;
+   Ecore_Timer *timer;
    Eio_Monitor *edj_monitor;
-   Ecore_Event_Handler *monitor_event;
+   Eina_List *img_monitors;
+   Eio_Monitor *img_monitor;
+   Ecore_Event_Handler *edj_monitor_event;
+   Ecore_Event_Handler *img_monitor_event;
    Ecore_Event_Handler *exe_del_event;
    void (*del_cb)(void *data);
    void *data;
@@ -41,6 +45,40 @@ struct viewer_s
 /* Internal method implementation                                            */
 /*****************************************************************************/
 
+static Eina_Bool
+img_changed_animator_cb(void *data)
+{
+   view_data *vd = data;
+   Eina_File *file = eina_file_open(eio_monitor_path_get(vd->img_monitor),
+                                    EINA_FALSE);
+   if (!file) return ECORE_CALLBACK_RENEW;
+
+   vd->edj_reload_need = EINA_TRUE;
+   vd->timer = NULL;
+   vd->img_monitor = NULL;
+   build_edc();
+   eina_file_close(file);
+   return ECORE_CALLBACK_CANCEL;
+}
+
+static Eina_Bool
+img_changed_cb(void *data, int type EINA_UNUSED, void *event)
+{
+   view_data *vd = data;
+   Eio_Monitor_Event *ev = event;
+   Eina_List *l;
+   Eio_Monitor *monitor = NULL;
+   EINA_LIST_FOREACH(vd->img_monitors, l, monitor)
+     {
+        if (ev->monitor != monitor) continue;
+        vd->img_monitor = monitor;
+        ecore_timer_del(vd->timer);
+        vd->timer = ecore_timer_add(0.025, img_changed_animator_cb, vd);
+        return ECORE_CALLBACK_DONE;
+     }
+   return ECORE_CALLBACK_PASS_ON;
+}
+
 static void
 view_obj_min_update(view_data *vd)
 {
@@ -54,6 +92,44 @@ view_obj_min_update(view_data *vd)
 }
 
 static void
+view_images_monitor_set(view_data *vd)
+{
+   Eina_List *l, *l2;
+   char *path, *img;
+   char buf[PATH_MAX];
+   Eio_Monitor *monitor;
+
+   //Free the previous monitors
+   EINA_LIST_FREE(vd->img_monitors, monitor)
+     eio_monitor_del(monitor);
+
+   Eina_List *imgs = edje_edit_images_list_get(vd->layout);
+   Eina_List *paths = build_path_get(ENVENTOR_PATH_TYPE_IMAGE);
+
+   Eina_List *imgs_pathes = NULL;
+
+   //List up new image pathes and add monitors
+   EINA_LIST_FOREACH(imgs, l, img)
+     {
+        EINA_LIST_FOREACH(paths, l2, path)
+          {
+             if (path[strlen(path) - 1] == '/')
+               snprintf(buf, sizeof(buf), "%s%s", path, img);
+             else
+               snprintf(buf, sizeof(buf), "%s/%s", path, img);
+             if (ecore_file_exists(buf))
+               {
+                  monitor = eio_monitor_add(buf);
+                  vd->img_monitors = eina_list_append(vd->img_monitors,
+                                                      monitor);
+               }
+          }
+     }
+
+   edje_edit_string_list_free(imgs);
+}
+
+static void
 view_obj_create_post_job(view_data *vd)
 {
    eio_monitor_del(vd->edj_monitor);
@@ -62,6 +138,7 @@ view_obj_create_post_job(view_data *vd)
    view_obj_min_update(vd);
    evas_object_smart_callback_call(vd->enventor, SIG_LIVE_VIEW_LOADED,
                                    (void*)edj_mgr_obj_get());
+   view_images_monitor_set(vd);
 }
 
 static Eina_Bool
@@ -210,6 +287,7 @@ exe_del_event_cb(void *data, int type EINA_UNUSED, void *event EINA_UNUSED)
         return ECORE_CALLBACK_DONE;
      }
 
+   view_images_monitor_set(vd);
    view_obj_min_update(vd);
    view_part_highlight_set(vd, vd->part_name);
    dummy_obj_update(vd->layout);
@@ -377,8 +455,10 @@ view_init(Evas_Object *enventor, const char *group,
    vd->data = data;
    view_part_highlight_set(vd, NULL);
 
-   vd->monitor_event =
+   vd->edj_monitor_event =
       ecore_event_handler_add(EIO_MONITOR_FILE_MODIFIED, edj_changed_cb, vd);
+   vd->img_monitor_event =
+      ecore_event_handler_add(EIO_MONITOR_FILE_MODIFIED, img_changed_cb, vd);
 
    /* Is this required?? Suddenly, something is changed and
       it won't successful with EIO_MONITOR_FILE_MODIFIED to reload the edj file
@@ -407,8 +487,15 @@ view_term(view_data *vd)
    evas_object_del(vd->scroller);
    ecore_idler_del(vd->idler);
    ecore_animator_del(vd->animator);
+   ecore_timer_del(vd->timer);
    eio_monitor_del(vd->edj_monitor);
-   ecore_event_handler_del(vd->monitor_event);
+
+   Eio_Monitor *monitor;
+   EINA_LIST_FREE(vd->img_monitors, monitor)
+      eio_monitor_del(monitor);
+
+   ecore_event_handler_del(vd->edj_monitor_event);
+   ecore_event_handler_del(vd->img_monitor_event);
    ecore_event_handler_del(vd->exe_del_event);
 
    free(vd);
