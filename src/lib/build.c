@@ -79,16 +79,16 @@ build_cmd_set(build_data *bd)
    Eina_Strbuf *strbuf_dat = NULL;
    Eina_Strbuf *strbuf = NULL;
    //Image
-   strbuf_img = strbuf_path_get(bd, ENVENTOR_RES_IMAGE, " -id ");
+   strbuf_img = strbuf_path_get(bd, ENVENTOR_PATH_TYPE_IMAGE, " -id ");
    if (!strbuf_img) goto err;
 
-   strbuf_snd = strbuf_path_get(bd, ENVENTOR_RES_SOUND, " -sd ");
+   strbuf_snd = strbuf_path_get(bd, ENVENTOR_PATH_TYPE_SOUND, " -sd ");
    if (!strbuf_snd) goto err;
 
-   strbuf_fnt = strbuf_path_get(bd, ENVENTOR_RES_FONT, " -fd ");
+   strbuf_fnt = strbuf_path_get(bd, ENVENTOR_PATH_TYPE_FONT, " -fd ");
    if (!strbuf_fnt) goto err;
 
-   strbuf_dat = strbuf_path_get(bd, ENVENTOR_RES_DATA, " -dd ");
+   strbuf_dat = strbuf_path_get(bd, ENVENTOR_PATH_TYPE_DATA, " -dd ");
    if (!strbuf_dat) goto err;
 
    strbuf = eina_strbuf_new();
@@ -101,7 +101,7 @@ build_cmd_set(build_data *bd)
    eina_strbuf_append_printf(strbuf,
       "edje_cc -fastcomp %s %s -id %s/images -sd %s/sounds -fd %s/fonts -dd %s/data %s %s %s %s",
       bd->edc_path,
-      (char *) eina_list_data_get(bd->pathes_list[ENVENTOR_OUT_EDJ]),
+      (char *) eina_list_data_get(bd->pathes_list[ENVENTOR_PATH_TYPE_EDJ]),
       elm_app_data_dir_get(),
       elm_app_data_dir_get(),
       elm_app_data_dir_get(),
@@ -211,7 +211,7 @@ build_path_set(Enventor_Path_Type type, const Eina_List *pathes)
    Eina_List *l;
 
    //don't allow null edj path
-   if (!pathes && (type == ENVENTOR_OUT_EDJ)) return EINA_FALSE;
+   if (!pathes && (type == ENVENTOR_PATH_TYPE_EDJ)) return EINA_FALSE;
 
    EINA_LIST_FREE(bd->pathes_list[type], path)
      eina_stringshare_del(path);
@@ -228,7 +228,7 @@ const char *
 build_edj_path_get(void)
 {
    build_data *bd = g_bd;
-   return eina_list_data_get(bd->pathes_list[ENVENTOR_OUT_EDJ]);
+   return eina_list_data_get(bd->pathes_list[ENVENTOR_PATH_TYPE_EDJ]);
 }
 
 const char *

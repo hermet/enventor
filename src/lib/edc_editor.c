@@ -438,7 +438,7 @@ image_preview_show(edit_data *ed, char *cur, Evas_Coord x, Evas_Coord y)
    char fullpath[PATH_MAX];
 
    //1.Find the image path.
-   Eina_List *list = build_path_get(ENVENTOR_RES_IMAGE);
+   Eina_List *list = build_path_get(ENVENTOR_PATH_TYPE_IMAGE);
    Eina_List *l;
    char *path;
    Eina_Bool found = EINA_FALSE;

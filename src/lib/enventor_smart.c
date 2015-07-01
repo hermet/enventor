@@ -326,7 +326,7 @@ _enventor_object_path_set(Eo *obj EINA_UNUSED,
                           Enventor_Path_Type type, const Eina_List *pathes)
 {
    //edj file is changed
-   if (type == ENVENTOR_OUT_EDJ)
+   if (type == ENVENTOR_PATH_TYPE_EDJ)
      {
         const char *path = eina_list_data_get(pathes);
         const char *ppath = build_edj_path_get();

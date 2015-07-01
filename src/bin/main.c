@@ -58,16 +58,16 @@ enventor_common_setup(Evas_Object *enventor)
    enventor_object_auto_complete_set(enventor, config_auto_complete_get());
 
    Eina_List *list = eina_list_append(NULL, config_edj_path_get());
-   enventor_object_path_set(enventor, ENVENTOR_OUT_EDJ, list);
+   enventor_object_path_set(enventor, ENVENTOR_PATH_TYPE_EDJ, list);
    eina_list_free(list);
 
-   enventor_object_path_set(enventor, ENVENTOR_RES_IMAGE,
+   enventor_object_path_set(enventor, ENVENTOR_PATH_TYPE_IMAGE,
                             config_edc_img_path_list_get());
-   enventor_object_path_set(enventor, ENVENTOR_RES_SOUND,
+   enventor_object_path_set(enventor, ENVENTOR_PATH_TYPE_SOUND,
                             config_edc_snd_path_list_get());
-   enventor_object_path_set(enventor, ENVENTOR_RES_FONT,
+   enventor_object_path_set(enventor, ENVENTOR_PATH_TYPE_FONT,
                             config_edc_fnt_path_list_get());
-   enventor_object_path_set(enventor, ENVENTOR_RES_DATA,
+   enventor_object_path_set(enventor, ENVENTOR_PATH_TYPE_DATA,
                             config_edc_dat_path_list_get());
 }
 

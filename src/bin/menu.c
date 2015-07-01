@@ -428,7 +428,7 @@ fileselector_save_done_cb(void *data, Evas_Object *obj, void *event_info)
      {
         config_edc_path_set(selected);
         Eina_List *list = eina_list_append(NULL, config_edj_path_get());
-        enventor_object_path_set(md->enventor, ENVENTOR_OUT_EDJ, list);
+        enventor_object_path_set(md->enventor, ENVENTOR_PATH_TYPE_EDJ, list);
         eina_list_free(list);
         if (!enventor_object_save(md->enventor, selected))
           {
@@ -448,7 +448,8 @@ fileselector_save_done_cb(void *data, Evas_Object *obj, void *event_info)
      {
         Eina_List *edj_pathes = NULL;
         edj_pathes = eina_list_append(edj_pathes, selected);
-        enventor_object_path_set(md->enventor, ENVENTOR_OUT_EDJ, edj_pathes);
+        enventor_object_path_set(md->enventor, ENVENTOR_PATH_TYPE_EDJ,
+                                 edj_pathes);
         enventor_object_modified_set(md->enventor, EINA_TRUE);
         enventor_object_save(md->enventor, config_edc_path_get());
         eina_list_free(edj_pathes);
