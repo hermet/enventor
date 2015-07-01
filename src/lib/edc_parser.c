@@ -353,20 +353,6 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
 
    //FIXME: construct from the configuration file.
 
-   Eina_Array *comps = eina_array_new(4);
-   eina_array_push(comps, eina_stringshare_add("RAW"));
-   eina_array_push(comps, eina_stringshare_add("USER"));
-   eina_array_push(comps, eina_stringshare_add("COMP"));
-   eina_array_push(comps, eina_stringshare_add("LOSSY"));
-
-   memset(&attr, 0x00, sizeof(parser_attr));
-   attr.keyword = eina_stringshare_add("image");
-   attr.value.strs = comps;
-   attr.value.type = ATTR_VALUE_CONSTANT;
-   attr.value.prepend_str = ATTR_PREPEND_COLON;
-   attr.value.append_str = ATTR_APPEND_SEMICOLON;
-   eina_inarray_push(td->attrs, &attr);
-
    Eina_Array *trans = eina_array_new(11);
    eina_array_push(trans, eina_stringshare_add("LINEAR"));
    eina_array_push(trans, eina_stringshare_add("ACCELERATE"));
