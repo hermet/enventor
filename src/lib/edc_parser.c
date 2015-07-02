@@ -8,6 +8,7 @@
 const char ATTR_PREPEND_COLON[] = ":";
 const char ATTR_PREPEND_NONE[] = "";
 const char ATTR_APPEND_SEMICOLON[] = ";";
+const char ATTR_APPEND_TRANSITION_TIME[] = " 1.0;";
 
 typedef struct parser_attr_s
 {
@@ -370,7 +371,7 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    attr.value.strs = trans;
    attr.value.type = ATTR_VALUE_CONSTANT;
    attr.value.prepend_str = ATTR_PREPEND_COLON;
-   attr.value.append_str = ATTR_APPEND_SEMICOLON;
+   attr.value.append_str = ATTR_APPEND_TRANSITION_TIME;
    eina_inarray_push(td->attrs, &attr);
 
    Eina_Array *aspect_mode = eina_array_new(5);
