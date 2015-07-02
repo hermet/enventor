@@ -33,7 +33,7 @@ ctxpopup_it_cb(void *data, Evas_Object *obj, void *event_info)
    Elm_Object_Item *it = event_info;
    const char *text = elm_object_item_text_get(it);
 
-   snprintf(ctxdata->candidate, sizeof(ctxdata->candidate), "%s%s%s",
+   snprintf(ctxdata->candidate, sizeof(ctxdata->candidate), "%s %s%s",
             ctxdata->attr->prepend_str, text, ctxdata->attr->append_str);
 
    ctxdata->changed_cb(ctxdata->data, obj, ctxdata->candidate);
@@ -84,24 +84,23 @@ slider_changed_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
                                              "elm.swallow.slider");
         if (ctxdata->attr->type & ATTR_VALUE_INTEGER)
           {
-             snprintf(buf, sizeof(buf), "%d",
+             snprintf(buf, sizeof(buf), " %d",
                       (int) roundf(elm_slider_value_get(slider)));
           }
         else
           {
              //if the last digit number is 0 then round up.
              double val = elm_slider_value_get(slider);
-             snprintf(buf, sizeof(buf), "%0.2f", val);
+             snprintf(buf, sizeof(buf), " %0.2f", val);
              double round_down = atof(buf);
-             snprintf(buf, sizeof(buf), "%0.1f", val);
+             snprintf(buf, sizeof(buf), " %0.1f", val);
              double round_down2 = atof(buf);
              if (fabs(round_down - round_down2) < 0.0005)
-               snprintf(buf, sizeof(buf), "%0.1f", val);
+               snprintf(buf, sizeof(buf), " %0.1f", val);
              else
-               snprintf(buf, sizeof(buf), "%0.2f", val);
+               snprintf(buf, sizeof(buf), " %0.2f", val);
           }
         strcat(ctxdata->candidate, buf);
-        strcat(ctxdata->candidate, " ");
      }
    strcat(ctxdata->candidate, ctxdata->attr->append_str);
    ctxdata->animator = ecore_animator_add(changed_animator_cb, ctxdata);
@@ -207,16 +206,15 @@ toggle_changed_cb(void *data, Evas_Object *obj, void *event_info)
 
    if (eina_list_count(box_children) == 0) return;
 
-   snprintf(ctxdata->candidate, sizeof(ctxdata->candidate), "%s",
+   snprintf(ctxdata->candidate, sizeof(ctxdata->candidate), " %s",
             ctxdata->attr->prepend_str);
 
    EINA_LIST_FOREACH(box_children, l, layout)
      {
         toggle = elm_object_part_content_get(layout,
                                              "elm.swallow.toggle");
-        snprintf(buf, sizeof(buf), "%d", (int) elm_check_state_get(toggle));
+        snprintf(buf, sizeof(buf), " %d", (int) elm_check_state_get(toggle));
         strcat(ctxdata->candidate, buf);
-        strcat(ctxdata->candidate, " ");
      }
    strcat(ctxdata->candidate, ctxdata->attr->append_str);
    ctxdata->changed_cb(ctxdata->data, ctxdata->ctxpopup, ctxdata->candidate);

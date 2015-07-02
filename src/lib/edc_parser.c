@@ -5,8 +5,8 @@
 #include <Enventor.h>
 #include "enventor_private.h"
 
-const char ATTR_PREPEND_COLON[] = ": ";
-const char ATTR_PREPEND_NONE[] = " ";
+const char ATTR_PREPEND_COLON[] = ":";
+const char ATTR_PREPEND_NONE[] = "";
 const char ATTR_APPEND_SEMICOLON[] = ";";
 const char ATTR_APPEND_STATE_VAL[] = " 0.0;";
 
