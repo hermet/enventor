@@ -114,6 +114,7 @@ group "syntax_color_group" struct {
             value "key" string: "mouse_events";
             value "key" string: "multiline";
             value "key" string: "name";
+            value "key" string: "nomouse";
             value "key" string: "normal";
             value "key" string: "offset";
             value "key" string: "on";
