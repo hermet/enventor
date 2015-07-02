@@ -8,7 +8,6 @@
 const char ATTR_PREPEND_COLON[] = ":";
 const char ATTR_PREPEND_NONE[] = "";
 const char ATTR_APPEND_SEMICOLON[] = ";";
-const char ATTR_APPEND_STATE_VAL[] = " 0.0;";
 
 typedef struct parser_attr_s
 {
@@ -837,7 +836,7 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    attr.keyword = eina_stringshare_add("STATE_SET");
    attr.value.type = ATTR_VALUE_STATE;
    attr.value.prepend_str = ATTR_PREPEND_NONE;
-   attr.value.append_str = ATTR_APPEND_STATE_VAL;
+   attr.value.append_str = ATTR_APPEND_SEMICOLON;
    attr.value.program = EINA_TRUE;
    eina_inarray_push(td->attrs, &attr);
 
@@ -845,7 +844,7 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    attr.keyword = eina_stringshare_add("inherit");
    attr.value.type = ATTR_VALUE_STATE;
    attr.value.prepend_str = ATTR_PREPEND_COLON;
-   attr.value.append_str = ATTR_APPEND_STATE_VAL;
+   attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
 
    //Type: Image
