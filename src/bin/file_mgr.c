@@ -8,7 +8,7 @@
 typedef struct file_mgr_s {
      Evas_Object *enventor;
      Evas_Object *warning_layout;
-     int edc_modified;   //1: edc is opened, 2: edc is changed
+     Eina_Bool edc_modified : 1;
 } file_mgr_data;
 
 static file_mgr_data *g_fmd = NULL;
@@ -100,7 +100,7 @@ warning_open(file_mgr_data *fmd)
 
    fmd->warning_layout = layout;
 
-   fmd->edc_modified = 0;
+   fmd->edc_modified = EINA_FALSE;
 }
 
 static void
@@ -115,14 +115,11 @@ enventor_edc_modified_cb(void *data, Evas_Object *obj EINA_UNUSED,
 
    if (modified->self_changed)
      {
-        fmd->edc_modified = 0;
+        fmd->edc_modified = EINA_FALSE;
         return;
      }
 
-   //file is opened first time, we don't regard edc is modified, so skip here.
-   fmd->edc_modified++;
-
-   if (fmd->edc_modified == 1) return;
+   fmd->edc_modified = EINA_TRUE;
 
    /* FIXME: Here ignore edc changes, if any menu is closed, 
       then we need to open warning box. */
@@ -135,14 +132,14 @@ void
 file_mgr_reset(void)
 {
    file_mgr_data *fmd = g_fmd;
-   fmd->edc_modified = 0;
+   fmd->edc_modified = EINA_FALSE;
 }
 
 int
 file_mgr_edc_modified_get(void)
 {
    file_mgr_data *fmd = g_fmd;
-   return ((fmd->edc_modified == 2) ? EINA_TRUE : EINA_FALSE);
+   return fmd->edc_modified;
 }
 
 void

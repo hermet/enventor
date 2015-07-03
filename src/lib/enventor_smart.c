@@ -66,28 +66,37 @@ file_modified_timer(void *data)
 static Eina_Bool
 file_modified_cb(void *data, int type EINA_UNUSED, void *event)
 {
+   static double timestamp = 0;
+   const int TIME_THRES = 2;
+
    Eio_Monitor_Event *ev = event;
    Enventor_Object_Data *pd = data;
    Enventor_EDC_Modified modified;
-
    if (ev->monitor != pd->edc_monitor) return ECORE_CALLBACK_PASS_ON;
+
    if (!edit_saved_get(pd->ed))
      {
+        /* FIXEME: We know this event will be called twice,
+           Skip the one event if the it's triggered in 3 seconds */
+        if (ecore_loop_time_get() - timestamp < TIME_THRES)
+          return ECORE_CALLBACK_DONE;
+
         /* Don't notify info right soon,
            if the source changing can be happened continously. */
         if (pd->file_modified_timer) ecore_timer_del(pd->file_modified_timer);
-        pd->file_modified_timer = ecore_timer_add(3, file_modified_timer, pd);
+        pd->file_modified_timer = ecore_timer_add(TIME_THRES,
+                                                  file_modified_timer, pd);
         return ECORE_CALLBACK_DONE;
      }
-   if (!edit_changed_get(pd->ed)) return ECORE_CALLBACK_DONE;
    if (strcmp(ev->filename, build_edc_path_get())) return ECORE_CALLBACK_DONE;
 
    build_edc();
-   edit_changed_set(pd->ed, EINA_FALSE);
 
    edit_saved_set(pd->ed, EINA_FALSE);
+
    modified.self_changed = EINA_TRUE;
    evas_object_smart_callback_call(pd->obj, SIG_EDC_MODIFIED, &modified);
+   timestamp = ecore_loop_time_get();
 
    return ECORE_CALLBACK_DONE;
 }

@@ -888,6 +888,7 @@ edit_save(edit_data *ed, const char *file)
 
    edit_view_sync(ed);
 
+   edit_changed_set(ed, EINA_FALSE);
    edit_saved_set(ed, EINA_TRUE);
 
    return EINA_TRUE;
