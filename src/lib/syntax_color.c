@@ -860,6 +860,20 @@ color_apply(color_data *cd, const char *src, int length, char *from, char *to)
                }
           }
 
+        //escape string: " ~ "
+        ret = string_apply(strbuf, &cur, &prev, cd->col_string, inside_string);
+        if (ret == 1)
+          {
+             inside_string = !inside_string;
+             continue;
+          }
+
+        if (inside_string || inside_comment)
+          {
+             cur++;
+             continue;
+          }
+
         //handle comment: /* ~ */
         ret = comment_apply(strbuf, &src, length, &cur, &prev, cd->col_comment,
                             &inside_comment);
@@ -873,20 +887,6 @@ color_apply(color_data *cd, const char *src, int length, char *from, char *to)
                                   cd->col_comment, &inside_comment);
              if (ret == 1) continue;
              else if (ret == -1) goto finished;
-          }
-
-        //escape string: " ~ "
-        ret = string_apply(strbuf, &cur, &prev, cd->col_string, inside_string);
-        if (ret == 1)
-          {
-             inside_string = !inside_string;
-             continue;
-          }
-
-        if (inside_string || inside_comment)
-          {
-             cur++;
-             continue;
           }
 
         //handle comment: preprocessors, #
