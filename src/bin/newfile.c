@@ -64,15 +64,15 @@ newfile_set(Evas_Object *enventor, Eina_Bool template_new)
 void
 newfile_default_set(Eina_Bool default_edc)
 {
+   if (!default_edc) return;
+
    Eina_Bool success = EINA_TRUE;
    char buf[PATH_MAX];
+
    snprintf(buf, sizeof(buf), "%s/templates/basic.edc",
             elm_app_data_dir_get());
-   if (default_edc)
-     {
-        success = eina_file_copy(buf,config_edc_path_get(),
-                                 EINA_FILE_COPY_DATA, NULL, NULL);
-     }
+   success = eina_file_copy(buf,config_edc_path_get(),
+                            EINA_FILE_COPY_DATA, NULL, NULL);
    if (!success)
      {
         EINA_LOG_ERR("Cannot find file! \"%s\"", buf);
