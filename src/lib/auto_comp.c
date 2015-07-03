@@ -17,7 +17,8 @@ typedef struct lexem_s
    int txt_count;
    int cursor_offset;
    int line_back;
-   char *name;
+   char **name;
+   int name_count;
    int dot;
 } lexem;
 
@@ -67,12 +68,11 @@ eddc_init(void)
    lex_desc = eet_data_descriptor_file_new(&eddc);
 
    EET_DATA_DESCRIPTOR_ADD_LIST(lex_desc, lexem, "nodes", nodes, lex_desc);
-
    EET_DATA_DESCRIPTOR_ADD_VAR_ARRAY_STRING(lex_desc, lexem, "txt", txt);
    EET_DATA_DESCRIPTOR_ADD_BASIC(lex_desc, lexem, "cursor_offset", cursor_offset, EET_T_INT);
    EET_DATA_DESCRIPTOR_ADD_BASIC(lex_desc, lexem, "line_back", line_back, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(lex_desc, lexem, "name", name, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(lex_desc, lexem, "dot", dot, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_VAR_ARRAY_STRING(lex_desc, lexem, "name", name);
 }
 
 static void
@@ -120,6 +120,7 @@ lexem_tree_free(lexem **root)
    EINA_LIST_FREE((*root)->nodes, data)
      {
         free(data->txt);
+        free(data->name);
         free(data);
      }
 }
@@ -241,17 +242,22 @@ context_lexem_thread_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
         return;
      }
 
+   int k = 0;
    for (i = 0; i < depth; i++)
      {
         find_flag = EINA_FALSE;
         EINA_LIST_FOREACH(nodes, l, td->result)
           {
-             if (!strncmp(stack[i], td->result->name, strlen(td->result->name)))
+             for (k = 0; k < td->result->name_count; k++)
                {
-                  nodes = td->result->nodes;
-                  find_flag = EINA_TRUE;
-                  break;
+                 if (!strncmp(stack[i], td->result->name[k], strlen(td->result->name[k])))
+                   {
+                      nodes = td->result->nodes;
+                      find_flag = EINA_TRUE;
+                   }
+                 if (find_flag) break;
                }
+             if (find_flag) break;
           }
         if (!find_flag)
           {
@@ -418,7 +424,9 @@ insert_completed_text(autocomp_data *ad)
    int cursor_pos = elm_entry_cursor_pos_get(entry);
 
    //Insert the first line.
-   elm_entry_entry_insert(entry,  txt[0] + (ad->queue_pos));
+   const char *first_line = eina_stringshare_printf(txt[0], elm_object_item_part_text_get(it, NULL));
+   elm_entry_entry_insert(entry,  first_line + (ad->queue_pos));
+   eina_stringshare_del(first_line);
 
    //Insert last lines
    if (candidate->txt_count > 1)
@@ -457,6 +465,24 @@ list_del_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
    ad->list = NULL;
 }
 
+
+static int
+list_item_compare(const void *data1, const void *data2)
+{
+   Elm_Object_Item *it1 = (Elm_Object_Item *) data1;
+   Elm_Object_Item *it2 = (Elm_Object_Item *) data2;
+   const char *name1 = NULL, *name2 = NULL;
+   if (!it1) return -1;
+   if (!it2) return 1;
+
+   name1 = elm_object_item_part_text_get(it1, NULL);
+   if (!name1) return -1;
+   name2 = elm_object_item_part_text_get(it2, NULL);
+   if (!name2) return 1;
+
+   return strcmp(name1, name2);
+}
+
 static Evas_Object *
 entry_tooltip_content_cb(void *data, Evas_Object *obj EINA_UNUSED,
                          Evas_Object *tt EINA_UNUSED)
@@ -484,12 +510,15 @@ entry_tooltip_content_cb(void *data, Evas_Object *obj EINA_UNUSED,
    //add keywords
    Eina_List *l;
    lexem *lexem_data;
+   int k = 0;
    EINA_LIST_FOREACH(ad->lexem_ptr->nodes, l, lexem_data)
      {
-        if (!strncmp(lexem_data->name, ad->queue, ad->queue_pos))
+       for (k = 0; k < lexem_data->name_count; k++)
+         if (!strncmp(lexem_data->name[k], ad->queue, ad->queue_pos))
           {
-             elm_list_item_append(ad->list, lexem_data->name,
-                                       NULL, NULL, NULL, lexem_data);
+             elm_list_item_sorted_insert(ad->list, lexem_data->name[k],
+                                         NULL, NULL, NULL, lexem_data,
+                                         list_item_compare);
              found = EINA_TRUE;
           }
      }
@@ -520,14 +549,16 @@ anchor_list_update(autocomp_data *ad)
 
    elm_list_clear(ad->list);
    //Append new candidates
+   int k = 0;
    EINA_LIST_FOREACH(ad->lexem_ptr->nodes, l, data)
    {
-      if (!strncmp(data->name, ad->queue, ad->queue_pos))
-        {
-           elm_list_item_append(ad->list, data->name,
-                                NULL, NULL, NULL, data);
-           found = EINA_TRUE;
-        }
+       for (k = 0; k < data->name_count; k++)
+         if (!strncmp(data->name[k], ad->queue, ad->queue_pos))
+           {
+              elm_list_item_sorted_insert(ad->list, data->name[k],
+                                   NULL, NULL, NULL, data, list_item_compare);
+              found = EINA_TRUE;
+          }
    }
    if (!found)
      {

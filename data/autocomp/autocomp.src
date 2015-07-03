@@ -1,6 +1,7 @@
 group "lexem" struct {
    group "nodes" list {
-     group "lexem" struct {
+
+      group "lexem" struct {
          group "nodes" list {
             group "lexem" struct {
                group "nodes" list {
@@ -10,67 +11,59 @@ group "lexem" struct {
                            group "nodes" list {
                            }
                            group "txt" var_array {
-                               count 1
-                               value "string" string: "color: ;";
+                               count 1;
+                               value "string" string: "%s: ;";
                            }
                            value "cursor_offset" int: 1;
                            value "line_back" int: 0;
-                           value "name" string: "color";
+                           group "name" var_array {
+                              count 3;
+                              value "string" string: "color";
+                              value "string" string: "color2";
+                              value "string" string: "color3";
+                           }
                         }
                         group "lexem" struct {
                            group "nodes" list {
                            }
                            group "txt" var_array {
-                               count 1
-                               value "string" string: "color2: ;";
-                           }
-                           value "cursor_offset" int: 1;
-                           value "line_back" int: 0;
-                           value "name" string: "color2";
-                        }
-                        group "lexem" struct {
-                           group "nodes" list {
-                           }
-                           group "txt" var_array {
-                               count 1
-                               value "string" string: "color3: ;";
-                           }
-                           value "cursor_offset" int: 1;
-                           value "line_back" int: 0;
-                           value "name" string: "color3";
-                        }
-                        group "lexem" struct {
-                           group "nodes" list {
-                           }
-                           group "txt" var_array {
-                               count 1
-                               value "string" string: "name: \"\";";
+                               count 1;
+                               value "string" string: "%s: \"\";";
                            }
                            value "cursor_offset" int: 2;
                            value "line_back" int: 0;
-                           value "name" string: "name";
+                           group "name" var_array {
+                              count 1;
+                              value "string" string: "name";
+                           }
                         }
                      }
                      group "txt" var_array {
                          count 3;
-                         value "string" string: "color_class {<br/>";
+                         value "string" string: "%s {<br/>";
                          value "string" string: "   <br/>";
                          value "string" string: "}";
                      }
                      value "cursor_offset" int: 2;
                      value "line_back" int: 1;
-                     value "name" string: "color_class";
+                     group "name" var_array {
+                        count 1;
+                        value "string" string: "color_class";
+                     }
                  }
                }
                group "txt" var_array {
                    count 3;
-                   value "string" string: "color_classes {<br/>";
+                   value "string" string: "%s {<br/>";
                    value "string" string: "   <br/>";
                    value "string" string: "}";
                }
                value "cursor_offset" int: 2;
                value "line_back" int: 1;
-               value "name" string: "color_classes";
+               group "name" var_array {
+                  count 1;
+                  value "string" string: "color_classes";
+               }
             }
             group "lexem" struct {
                group "nodes" list {
@@ -79,11 +72,14 @@ group "lexem" struct {
                      }
                      group "txt" var_array {
                          count 1;
-                         value "string" string: "image: \"\" COMP;";
+                         value "string" string: "%s: \"\" COMP;";
                      }
                      value "cursor_offset" int: 7
                      value "line_back" int: 0;
-                     value "name" string: "image";
+                     group "name" var_array {
+                        count 1;
+                        value "string" string: "image";
+                     }
                   }
                   group "lexem" struct {
                      group "nodes" list {
@@ -92,11 +88,14 @@ group "lexem" struct {
                            }
                            group "txt" var_array {
                                count 1;
-                               value "string" string: "name: \"\";";
+                               value "string" string: "%s: \"\";";
                            }
                            value "cursor_offset" int: 2;
                            value "line_back" int: 0;
-                           value "name" string: "name";
+                           group "name" var_array {
+                              count 1;
+                              value "string" string: "name";
+                           }
                          }
                         group "lexem" struct {
                            group "nodes" list {
@@ -105,57 +104,73 @@ group "lexem" struct {
                                  }
                                  group "txt" var_array {
                                      count 1;
-                                     value "string" string: "image: \"\" COMP;";
+                                     value "string" string: "%s: \"\" COMP;";
                                  }
                                  value "cursor_offset" int: 7;
                                  value "line_back" int: 0;
-                                 value "name" string: "image";
+                                 group "name" var_array {
+                                    count 1;
+                                    value "string" string: "image";
+                                 }
                               }
                               group "lexem" struct {
                                  group "nodes" list {
                                  }
                                  group "txt" var_array {
                                      count 1;
-                                     value "string" string: "size: ;";
+                                     value "string" string: "%s: ;";
                                  }
                                  value "cursor_offset" int: 1;
                                  value "line_back" int: 0;
-                                 value "name" string: "size";
+                                 group "name" var_array {
+                                    count 1;
+                                    value "string" string: "size";
+                                 }
                               }
                            }
                            group "txt" var_array {
                                count 3;
-                               value "string" string: "image {<br/>";
+                               value "string" string: "%s {<br/>";
                                value "string" string: "   <br/>";
                                value "string" string: "}";
                            }
                            value "cursor_offset" int: 2
                            value "line_back" int: 1;
-                           value "name" string: "image";
-                       }
+                           group "name" var_array {
+                              count 1;
+                              value "string" string: "image";
+                           }
+                        }
                      }
                      group "txt" var_array {
                          count 3;
-                         value "string" string: "set {<br/>";
+                         value "string" string: "%s {<br/>";
                          value "string" string: "   <br/>";
                          value "string" string: "}";
                      }
                      value "cursor_offset" int: 2
                      value "line_back" int: 1
-                     value "name" string: "set";
+                     group "name" var_array {
+                        count 1;
+                        value "string" string: "set";
+                     }
                   }
                }
                group "txt" var_array {
                    count 3;
-                   value "string" string: "images {<br/>";
+                   value "string" string: "%s {<br/>";
                    value "string" string: "   <br/>";
                    value "string" string: "}";
                }
                value "cursor_offset" int: 2;
                value "line_back" int: 1;
-               value "name" string: "images";
                value "dot" int: 1;
+               group "name" var_array {
+                  count 1;
+                  value "string" string: "images";
+               }
             }
+
             group "lexem" struct {
                group "nodes" list {
                   group "lexem" struct {
@@ -165,125 +180,118 @@ group "lexem" struct {
                             }
                            group "txt" var_array {
                                count 1;
-                               value "string" string: "name: \"\" RAW;";
+                               value "string" string: "%s: \"\" RAW;";
                            }
                            value "cursor_offset" int: 6;
                            value "line_back" int: 0;
-                           value "name" string: "name";
+                           group "name" var_array {
+                              count 1;
+                              value "string" string: "name";
+                           }
                         }
                         group "lexem" struct {
                            group "nodes" list {
                            }
                            group "txt" var_array {
                                count 1;
-                               value "string" string: "source: \"\";";
+                               value "string" string: "%s: \"\";";
                            }
                            value "cursor_offset" int: 2;
                            value "line_back" int: 0;
-                           value "name" string: "source";
+                           group "name" var_array {
+                              count 1;
+                              value "string" string: "source";
+                           }
                        }
                      }
                      group "txt" var_array {
                          count 3;
-                         value "string" string: "sample {<br/>";
+                         value "string" string: "%s {<br/>";
                          value "string" string: "   <br/>";
                          value "string" string: "}";
                      }
                      value "cursor_offset" int: 2;
                      value "line_back" int: 1;
-                     value "name" string: "sample";
+                     group "name" var_array {
+                        count 1;
+                        value "string" string: "sample";
+                     }
                   }
                   group "lexem" struct {
                      group "nodes" list {
                      }
                      group "txt" var_array {
                          count 1;
-                         value "string" string: "tone: \"\";";
+                         value "string" string: "%s: \"\";";
                      }
                      value "cursor_offset" int: 2;
                      value "line_back" int: 0;
-                     value "name" string: "tone";
-                 }
+                     group "name" var_array {
+                        count 1;
+                        value "string" string: "tone";
+                     }
+                  }
                }
                group "txt" var_array {
                    count 3;
-                   value "string" string: "sounds {<br/>";
+                   value "string" string: "%s {<br/>";
                    value "string" string: "   <br/>";
                    value "string" string: "}";
                }
                value "cursor_offset" int: 2;
                value "line_back" int: 1;
-               value "name" string: "sounds";
+               group "name" var_array {
+                  count 1;
+                  value "string" string: "sounds";
+               }
             }
             group "lexem" struct {
                group "nodes" list {
                   group "lexem" struct {
                      group "nodes" list {
-                     }
-                     group "txt" var_array {
-                         count 1;
-                         value "string" string: "alias: \"\";";
-                     }
-                     value "cursor_offset" int: 2;
-                     value "line_back" int: 0;
-                     value "name" string: "alias";
-                  }
-                  group "lexem" struct {
-                     group "nodes" list {
-                     }
-                     group "txt" var_array {
-                         count 1;
-                         value "string" string: "broadcast_signal: ;";
-                     }
-                     value "cursor_offset" int: 1;
-                     value "line_back" int: 0;
-                     value "name" string: "broadcast_signal";
-                  }
-                  group "lexem" struct {
-                     group "nodes" list {
-                       group "lexem" struct {
-                          group "nodes" list {
-                          }
-                          group "txt" var_array {
-                              count 1;
-                              value "string" string: "file: \"\" \"\";";
-                          }
-                          value "cursor_offset" int: 5
-                          value "line_back" int: 0;
-                          value "name" string: "file";
-                        }
                         group "lexem" struct {
                           group "nodes" list {
                           }
                           group "txt" var_array {
                               count 1;
-                              value "string" string: "item: \"\" \"\";";
+                              value "string" string: "%s: \"\" \"\";";
                           }
                           value "cursor_offset" int: 5
                           value "line_back" int: 0;
-                          value "name" string: "item";
+                          group "name" var_array {
+                              count 2;
+                              value "string" string: "file";
+                              value "string" string: "item";
+                          }
                        }
                      }
                      group "txt" var_array {
                          count 3;
-                         value "string" string: "data {<br/>";
+                         value "string" string: "%s {<br/>";
                          value "string" string: "   <br/>";
                          value "string" string: "}";
                      }
                      value "cursor_offset" int: 2;
                      value "line_back" int: 1;
-                     value "name" string: "data";
+                     group "name" var_array {
+                         count 1;
+                         value "string" string: "data";
+                     }
                   }
                   group "lexem" struct {
                      group "nodes" list {
                      }
                      group "txt" var_array {
                          count 1;
-                         value "string" string: "inherit: \"\";";
+                         value "string" string: "%s: \"\";";
                      }
                      value "cursor_offset" int: 2;
                      value "line_back" int: 0;
-                     value "name" string: "inherit";
+                     group "name" var_array {
+                         count 2;
+                         value "string" string: "alias";
+                         value "string" string: "inherit";
+                     }
                   }
                   group "lexem" struct {
                      group "nodes" list {
@@ -292,95 +300,67 @@ group "lexem" struct {
                            }
                            group "txt" var_array {
                                count 1;
-                               value "string" string: "horizontal: \"\";";
+                               value "string" string: "%s: \"\";";
                            }
                            value "cursor_offset" int: 2;
                            value "line_back" int: 0;
-                           value "name" string: "horizontal";
-                        }
-                        group "lexem" struct {
-                           group "nodes" list {
+                           group "name" var_array {
+                               count 2;
+                               value "string" string: "horizontal";
+                               value "string" string: "vertical";
                            }
-                           group "txt" var_array {
-                               count 1;
-                               value "string" string: "vertical: \"\";";
-                           }
-                           value "cursor_offset" int: 2;
-                           value "line_back" int: 0;
-                           value "name" string: "vertical";
                         }
                      }
                      group "txt" var_array {
                          count 3;
-                         value "string" string: "limits {<br/>";
+                         value "string" string: "%s {<br/>";
                          value "string" string: "   <br/>";
                          value "string" string: "}";
                      }
                      value "cursor_offset" int: 2;
                      value "line_back" int: 1;
-                     value "name" string: "limits";
-                  }
-                  group "lexem" struct {
-                     group "nodes" list {
-                     }
-                     group "txt" var_array {
+                     group "name" var_array {
                          count 1;
-                         value "string" string: "max: ;";
+                         value "string" string: "limits";
                      }
-                     value "cursor_offset" int: 1;
-                     value "line_back" int: 0;
-                     value "name" string: "max";
-                  }
-                  group "lexem" struct {
-                     group "nodes" list {
-                     }
-                     group "txt" var_array {
-                         count 1;
-                         value "string" string: "min: ;";
-                     }
-                     value "cursor_offset" int: 1;
-                     value "line_back" int: 0;
-                     value "name" string: "min";
                   }
                   group "lexem" struct {
                      group "nodes" list {
                      }
                      group "txt" var_array {
                          count 3;
-                         value "string" string: "script {<br/>";
+                         value "string" string: "%s {<br/>";
                          value "string" string: "   <br/>";
                          value "string" string: "}";
                      }
                      value "cursor_offset" int: 2;
                      value "line_back" int: 1;
-                     value "name" string: "script";
+                     group "name" var_array {
+                         count 1;
+                         value "string" string: "script";
+                     }
                   }
                   group "lexem" struct {
                      group "nodes" list {
                      }
                      group "txt" var_array {
                          count 1;
-                         value "string" string: "scripy_only: ;";
+                         value "string" string: "%s: ;";
                      }
                      value "cursor_offset" int: 1;
                      value "line_back" int: 0;
-                     value "name" string: "script_only";
+                     group "name" var_array {
+                         count 4;
+                         value "string" string: "broadcast_signal";
+                         value "string" string: "max";
+                         value "string" string: "min";
+                         value "string" string: "script_only";
+                     }
                   }
-                 group "lexem" struct {
+                  group "lexem" struct {
                      group "nodes" list {
                         group "lexem" struct {
                            group "nodes" list {
-                              group "lexem" struct {
-                                 group "nodes" list {
-                                 }
-                                 group "txt" var_array {
-                                     count 1;
-                                     value "string" string: "access: ;";
-                                 }
-                                 value "cursor_offset" int: 1;
-                                 value "line_back" int: 0;
-                                 value "name" string: "access";
-                              }
                               group "lexem" struct {
                                  group "nodes" list {
                                     group "lexem" struct {
@@ -392,199 +372,148 @@ group "lexem" struct {
                                                    }
                                                    group "txt" var_array {
                                                        count 1;
-                                                       value "string" string: "align: ;";
-                                                   }
-                                                   value "cursor_offset" int: 1;
-                                                   value "line_back" int: 0;
-                                                   value "name" string: "align";
-                                                }
-                                                group "lexem" struct {
-                                                   group "nodes" list {
-                                                   }
-                                                   group "txt" var_array {
-                                                       count 1;
-                                                       value "string" string: "aspect: ;";
-                                                   }
-                                                   value "cursor_offset" int: 1;
-                                                   value "line_back" int: 0;
-                                                   value "name" string: "aspect";
-                                                }
-                                                group "lexem" struct {
-                                                   group "nodes" list {
-                                                   }
-                                                   group "txt" var_array {
-                                                       count 1;
-                                                       value "string" string: "aspect_ratio: ;";
-                                                   }
-                                                   value "cursor_offset" int: 1;
-                                                   value "line_back" int: 0;
-                                                   value "name" string: "aspect_ratio";
-                                                }
-                                                group "lexem" struct {
-                                                   group "nodes" list {
-                                                   }
-                                                   group "txt" var_array {
-                                                       count 1;
-                                                       value "string" string: "max: ;";
-                                                   }
-                                                   value "cursor_offset" int: 1;
-                                                   value "line_back" int: 0;
-                                                   value "name" string: "max";
-                                                }
-                                                group "lexem" struct {
-                                                   group "nodes" list {
-                                                   }
-                                                   group "txt" var_array {
-                                                       count 1;
-                                                       value "string" string: "min: ;";
-                                                   }
-                                                   value "cursor_offset" int: 1;
-                                                   value "line_back" int: 0;
-                                                   value "name" string: "min";
-                                                }
-                                                group "lexem" struct {
-                                                   group "nodes" list {
-                                                   }
-                                                   group "txt" var_array {
-                                                       count 1;
-                                                       value "string" string: "name: \"\";";
+                                                       value "string" string: "%s: \"\";";
                                                    }
                                                    value "cursor_offset" int: 2;
                                                    value "line_back" int: 0;
-                                                   value "name" string: "name";
+                                                   group "name" var_array {
+                                                      count 2;
+                                                      value "string" string: "name";
+                                                      value "string" string: "source";
+                                                   }
                                                 }
                                                 group "lexem" struct {
                                                    group "nodes" list {
                                                    }
                                                    group "txt" var_array {
                                                        count 1;
-                                                       value "string" string: "options: ;";
+                                                       value "string" string: "%s: ;";
                                                    }
                                                    value "cursor_offset" int: 1;
                                                    value "line_back" int: 0;
-                                                   value "name" string: "options";
+                                                   group "name" var_array {
+                                                      count 11;
+                                                      value "string" string: "align";
+                                                      value "string" string: "aspect";
+                                                      value "string" string: "aspect_mode";
+                                                      value "string" string: "max";
+                                                      value "string" string: "min";
+                                                      value "string" string: "options";
+                                                      value "string" string: "padding";
+                                                      value "string" string: "prefer";
+                                                      value "string" string: "span";
+                                                      value "string" string: "spread";
+                                                      value "string" string: "weight";
+                                                  }
                                                 }
                                                 group "lexem" struct {
                                                    group "nodes" list {
                                                    }
                                                    group "txt" var_array {
                                                        count 1;
-                                                       value "string" string: "padding: ;";
-                                                   }
-                                                   value "cursor_offset" int: 1;
-                                                   value "line_back" int: 0;
-                                                   value "name" string: "padding";
-                                                }
-                                                group "lexem" struct {
-                                                   group "nodes" list {
-                                                   }
-                                                   group "txt" var_array {
-                                                       count 1;
-                                                       value "string" string: "prefer: ;";
-                                                   }
-                                                   value "cursor_offset" int: 1;
-                                                   value "line_back" int: 0;
-                                                   value "name" string: "prefer";
-                                                }
-                                                group "lexem" struct {
-                                                   group "nodes" list {
-                                                   }
-                                                   group "txt" var_array {
-                                                       count 1;
-                                                       value "string" string: "source: \"\";";
-                                                   }
-                                                   value "cursor_offset" int: 2;
-                                                   value "line_back" int: 0;
-                                                   value "name" string: "source";
-                                                }
-                                                group "lexem" struct {
-                                                   group "nodes" list {
-                                                   }
-                                                   group "txt" var_array {
-                                                       count 1;
-                                                       value "string" string: "span: ;";
-                                                   }
-                                                   value "cursor_offset" int: 1;
-                                                   value "line_back" int: 0;
-                                                   value "name" string: "span";
-                                                }
-                                                group "lexem" struct {
-                                                   group "nodes" list {
-                                                   }
-                                                   group "txt" var_array {
-                                                       count 1;
-                                                       value "string" string: "spread: ;";
-                                                   }
-                                                   value "cursor_offset" int: 1;
-                                                   value "line_back" int: 0;
-                                                   value "name" string: "spread";
-                                                }
-                                                group "lexem" struct {
-                                                   group "nodes" list {
-                                                   }
-                                                   group "txt" var_array {
-                                                       count 1;
-                                                       value "string" string: "type: GROUP;";
+                                                       value "string" string: "%s: GROUP;";
                                                    }
                                                    value "cursor_offset" int: 0;
                                                    value "line_back" int: 0;
-                                                   value "name" string: "type";
+                                                   group "name" var_array {
+                                                      count 1;
+                                                      value "string" string: "type";
+                                                   }
                                                 }
-                                              }
+                                             }
                                              group "txt" var_array {
                                                  count 3;
-                                                 value "string" string: "item {<br/>";
+                                                 value "string" string: "%s {<br/>";
                                                  value "string" string: "   <br/>";
                                                  value "string" string: "}";
                                              }
                                              value "cursor_offset" int: 2;
                                              value "line_back" int: 1;
-                                             value "name" string: "item";
+                                             group "name" var_array {
+                                                count 1;
+                                                value "string" string: "item";
+                                             }
                                           }
                                         }
                                        group "txt" var_array {
                                            count 3;
-                                           value "string" string: "items {<br/>";
+                                           value "string" string: "%s {<br/>";
                                            value "string" string: "   <br/>";
                                            value "string" string: "}";
                                        }
                                        value "cursor_offset" int: 2;
                                        value "line_back" int: 1;
-                                       value "name" string: "items";
+                                       group "name" var_array {
+                                          count 1;
+                                          value "string" string: "items";
+                                       }
                                     }
                                  }
                                  group "txt" var_array {
                                      count 3;
-                                     value "string" string: "box {<br/>";
+                                     value "string" string: "%s {<br/>";
                                      value "string" string: "   <br/>";
                                      value "string" string: "}";
                                  }
                                  value "cursor_offset" int: 2;
                                  value "line_back" int: 1;
-                                 value "name" string: "box";
+                                 group "name" var_array {
+                                    count 1;
+                                    value "string" string: "box";
+                                 }
                               }
                               group "lexem" struct {
                                  group "nodes" list {
                                  }
                                  group "txt" var_array {
                                      count 1;
-                                     value "string" string: "clip_to: \"\";";
-                                 }
-                                 value "cursor_offset" int: 2;
-                                 value "line_back" int: 0;
-                                 value "name" string: "clip_to";
-                              }
-                              group "lexem" struct {
-                                 group "nodes" list {
-                                 }
-                                 group "txt" var_array {
-                                     count 1;
-                                     value "string" string: "cursor_mode: DEFAULT;";
+                                     value "string" string: "%s: DEFAULT;";
                                  }
                                  value "cursor_offset" int: 1;
                                  value "line_back" int: 0;
-                                 value "name" string: "cursor_mode";
+                                 group "name" var_array {
+                                    count 1;
+                                    value "string" string: "cursor_mode";
+                                 }
                               }
+                              group "lexem" struct {
+                                 group "nodes" list {
+                                 }
+                                 group "txt" var_array {
+                                     count 1;
+                                     value "string" string: "%s: ;";
+                                 }
+                                 value "cursor_offset" int: 1;
+                                 value "line_back" int: 0;
+                                 group "name" var_array {
+                                    count 7;
+                                    value "string" string: "access";
+                                    value "string" string: "ignore_flags";
+                                    value "string" string: "mouse_events";
+                                    value "string" string: "multiline";
+                                    value "string" string: "pointer_mode";
+                                    value "string" string: "repeat_events";
+                                    value "string" string: "scale";
+                                 }
+                              }
+                              group "lexem" struct {
+                                 group "nodes" list {
+                                 }
+                                 group "txt" var_array {
+                                     count 1;
+                                     value "string" string: "%s: \"\";";
+                                 }
+                                 value "cursor_offset" int: 2;
+                                 value "line_back" int: 0;
+                                 group "name" var_array {
+                                    count 4;
+                                    value "string" string: "clip_to";
+                                    value "string" string: "insert_after";
+                                    value "string" string: "insert_before";
+                                    value "string" string: "source";
+                                 }
+                              }
+
                               group "lexem" struct {
                                  group "nodes" list {
                                     group "lexem" struct {
@@ -592,250 +521,162 @@ group "lexem" struct {
                                        }
                                        group "txt" var_array {
                                            count 1;
-                                           value "string" string: "align: ;";
+                                           value "string" string: "%s: \"\";";
                                        }
-                                       value "cursor_offset" int: 1;
+                                       value "cursor_offset" int: 2;
                                        value "line_back" int: 0;
-                                       value "name" string: "align";
+                                       group "name" var_array {
+                                           count 2;
+                                           value "string" string: "color_class";
+                                           value "string" string: "source";
+                                       }
                                     }
                                     group "lexem" struct {
                                        group "nodes" list {
                                        }
                                        group "txt" var_array {
                                            count 1;
-                                           value "string" string: "aspect: ;";
+                                           value "string" string: "%s: ;";
                                        }
                                        value "cursor_offset" int: 1;
                                        value "line_back" int: 0;
-                                       value "name" string: "aspect";
-                                    }
-                                    group "lexem" struct {
-                                       group "nodes" list {
+                                       group "name" var_array {
+                                           count 12;
+                                           value "string" string: "align";
+                                           value "string" string: "aspect";
+                                           value "string" string: "aspect_preference";
+                                           value "string" string: "color";
+                                           value "string" string: "color2";
+                                           value "string" string: "color3";
+                                           value "string" string: "fixed";
+                                           value "string" string: "max";
+                                           value "string" string: "min";
+                                           value "string" string: "minmul";
+                                           value "string" string: "step";
+                                           value "string" string: "visible";
                                        }
-                                       group "txt" var_array {
-                                           count 1;
-                                           value "string" string: "aspect_preference: ;";
-                                       }
-                                       value "cursor_offset" int: 1;
-                                       value "line_back" int: 0;
-                                       value "name" string: "aspect_preference";
                                     }
-                                    group "lexem" struct {
+                                   group "lexem" struct {
                                        group "nodes" list {
                                           group "lexem" struct {
                                              group "nodes" list {
                                              }
                                              group "txt" var_array {
                                                  count 1;
-                                                 value "string" string: "align: ;";
+                                                 value "string" string: "%s: \"\";";
                                              }
                                              value "cursor_offset" int: 2;
                                              value "line_back" int: 0;
-                                             value "name" string: "align";
+                                             group "name" var_array {
+                                                 count 1;
+                                                 value "string" string: "layout";
+                                             }
                                           }
                                           group "lexem" struct {
                                              group "nodes" list {
                                              }
                                              group "txt" var_array {
                                                  count 1;
-                                                 value "string" string: "layout: \"\";";
-                                             }
-                                             value "cursor_offset" int: 2;
-                                             value "line_back" int: 0;
-                                             value "name" string: "layout";
-                                          }
-                                          group "lexem" struct {
-                                             group "nodes" list {
-                                             }
-                                             group "txt" var_array {
-                                                 count 1;
-                                                 value "string" string: "min: ;";
+                                                 value "string" string: "%s: ;";
                                              }
                                              value "cursor_offset" int: 1;
                                              value "line_back" int: 0;
-                                             value "name" string: "min";
-                                          }
-                                          group "lexem" struct {
-                                             group "nodes" list {
+                                             group "name" var_array {
+                                                 count 3;
+                                                 value "string" string: "align";
+                                                 value "string" string: "min";
+                                                 value "string" string: "padding";
                                              }
-                                             group "txt" var_array {
-                                                 count 1;
-                                                 value "string" string: "padding: ;";
-                                             }
-                                             value "cursor_offset" int: 1;
-                                             value "line_back" int: 0;
-                                             value "name" string: "padding";
                                           }
                                        }
                                        group "txt" var_array {
                                            count 3;
-                                           value "string" string: "box {<br/>";
+                                           value "string" string: "%s {<br/>";
                                            value "string" string: "   <br/>";
                                            value "string" string: "}";
                                        }
                                        value "cursor_offset" int: 2;
                                        value "line_back" int: 1;
-                                       value "name" string: "box";
-                                    }
-                                    group "lexem" struct {
-                                       group "nodes" list {
-                                       }
-                                       group "txt" var_array {
+                                       group "name" var_array {
                                            count 1;
-                                           value "string" string: "color: ;";
+                                           value "string" string: "box";
                                        }
-                                       value "cursor_offset" int: 1;
-                                       value "line_back" int: 0;
-                                       value "name" string: "color";
                                     }
                                     group "lexem" struct {
                                        group "nodes" list {
-                                       }
-                                       group "txt" var_array {
-                                           count 1;
-                                           value "string" string: "color2: ;";
-                                       }
-                                       value "cursor_offset" int: 1;
-                                       value "line_back" int: 0;
-                                       value "name" string: "color2";
-                                    }
-                                    group "lexem" struct {
-                                       group "nodes" list {
-                                       }
-                                       group "txt" var_array {
-                                           count 1;
-                                           value "string" string: "color3: ;";
-                                       }
-                                       value "cursor_offset" int: 1;
-                                       value "line_back" int: 0;
-                                       value "name" string: "color3";
-                                    }
-                                    group "lexem" struct {
-                                       group "nodes" list {
-                                       }
-                                       group "txt" var_array {
-                                           count 1;
-                                           value "string" string: "color_class: \"\";";
-                                       }
-                                       value "cursor_offset" int: 2;
-                                       value "line_back" int: 0;
-                                       value "name" string: "color_class";
-                                    }
-                                    group "lexem" struct {
-                                       group "nodes" list {
-                                           group "lexem" struct {
+                                          group "lexem" struct {
                                              group "nodes" list {
                                                 group "lexem" struct {
                                                    group "nodes" list {
                                                    }
                                                    group "txt" var_array {
                                                        count 1;
-                                                       value "string" string: "offset: ;";
+                                                       value "string" string: "%s: ;";
                                                    }
                                                    value "cursor_offset" int: 1;
                                                    value "line_back" int: 0;
-                                                   value "name" string: "offset"
-                                                }
-                                                group "lexem" struct {
-                                                   group "nodes" list {
+                                                   group "name" var_array {
+                                                       count 2;
+                                                       value "string" string: "offset";
+                                                       value "string" string: "relative";
                                                    }
-                                                   group "txt" var_array {
-                                                       count 1;
-                                                       value "string" string: "relative: ;";
-                                                   }
-                                                   value "cursor_offset" int: 1;
-                                                   value "line_back" int: 0;
-                                                   value "name" string: "relative"
                                                 }
                                              }
                                              group "txt" var_array {
                                                  count 3;
-                                                 value "string" string: "origin {<br/>";
+                                                 value "string" string: "%s {<br/>";
                                                  value "string" string: "   <br/>";
                                                  value "string" string: "}";
                                              }
                                              value "cursor_offset" int: 2;
                                              value "line_back" int: 1;
-                                             value "name" string: "origin"
-                                          }
-                                          group "lexem" struct {
-                                             group "nodes" list {
-                                                group "lexem" struct {
-                                                   group "nodes" list {
-                                                   }
-                                                   group "txt" var_array {
-                                                       count 1;
-                                                       value "string" string: "offset: ;";
-                                                   }
-                                                   value "cursor_offset" int: 1;
-                                                   value "line_back" int: 0;
-                                                   value "name" string: "offset"
-                                                }
-                                                group "lexem" struct {
-                                                   group "nodes" list {
-                                                   }
-                                                   group "txt" var_array {
-                                                       count 1;
-                                                       value "string" string: "relative: ;";
-                                                   }
-                                                   value "cursor_offset" int: 1;
-                                                   value "line_back" int: 0;
-                                                   value "name" string: "relative"
-                                                }
+                                             group "name" var_array {
+                                                 count 2;
+                                                 value "string" string: "origin";
+                                                 value "string" string: "size";
                                              }
-                                             group "txt" var_array {
-                                                 count 3;
-                                                 value "string" string: "size {<br/>";
-                                                 value "string" string: "   <br/>";
-                                                 value "string" string: "}";
-                                             }
-                                             value "cursor_offset" int: 2;
-                                             value "line_back" int: 1;
-                                             value "name" string: "size"
                                           }
                                           group "lexem" struct {
                                              group "nodes" list {
                                              }
                                              group "txt" var_array {
                                                  count 1;
-                                                 value "string" string: "smooth: ;";
+                                                 value "string" string: "%s: ;";
                                              }
                                              value "cursor_offset" int: 1;
                                              value "line_back" int: 0;
-                                             value "name" string: "smooth"
+                                             group "name" var_array {
+                                                 count 1;
+                                                 value "string" string: "smooth";
+                                             }
                                           }
                                           group "lexem" struct {
                                              group "nodes" list {
                                              }
                                              group "txt" var_array {
                                                  count 1;
-                                                 value "string" string: "type: SCALE;";
+                                                 value "string" string: "%s: SCALE;";
                                              }
                                              value "cursor_offset" int: 1;
                                              value "line_back" int: 0;
-                                             value "name" string: "type"
+                                             group "name" var_array {
+                                                 count 1;
+                                                 value "string" string: "type";
+                                             }
                                           }
                                        }
                                        group "txt" var_array {
                                            count 3;
-                                           value "string" string: "fill {<br/>";
+                                           value "string" string: "%s {<br/>";
                                            value "string" string: "   <br/>";
                                            value "string" string: "}";
                                        }
                                        value "cursor_offset" int: 2;
                                        value "line_back" int: 1;
-                                       value "name" string: "fill";
-                                    }
-                                    group "lexem" struct {
-                                       group "nodes" list {
-                                       }
-                                       group "txt" var_array {
+                                       group "name" var_array {
                                            count 1;
-                                           value "string" string: "fixed: ;";
+                                           value "string" string: "fill";
                                        }
-                                       value "cursor_offset" int: 1;
-                                       value "line_back" int: 0;
-                                       value "name" string: "fixed";
                                     }
                                     group "lexem" struct {
                                        group "nodes" list {
@@ -844,100 +685,62 @@ group "lexem" struct {
                                              }
                                              group "txt" var_array {
                                                  count 1;
-                                                 value "string" string: "border: ;";
+                                                 value "string" string: "%s: ;";
                                              }
                                              value "cursor_offset" int: 1;
                                              value "line_back" int: 0;
-                                             value "name" string: "border"
+                                             group "name" var_array {
+                                                 count 5;
+                                                 value "string" string: "border";
+                                                 value "string" string: "border_scale";
+                                                 value "string" string: "border_scale_by";
+                                                 value "string" string: "middle";
+                                                 value "string" string: "scale_hint";
+                                             }
                                           }
                                           group "lexem" struct {
                                              group "nodes" list {
                                              }
                                              group "txt" var_array {
                                                  count 1;
-                                                 value "string" string: "border_scale: ;";
-                                             }
-                                             value "cursor_offset" int: 1;
-                                             value "line_back" int: 0;
-                                             value "name" string: "border_scale"
-                                          }
-                                          group "lexem" struct {
-                                             group "nodes" list {
-                                             }
-                                             group "txt" var_array {
-                                                 count 1;
-                                                 value "string" string: "border_scale_by: ;";
-                                             }
-                                             value "cursor_offset" int: 1;
-                                             value "line_back" int: 0;
-                                             value "name" string: "border_scale_by"
-                                          }
-                                          group "lexem" struct {
-                                             group "nodes" list {
-                                             }
-                                             group "txt" var_array {
-                                                 count 1;
-                                                 value "string" string: "middle: ;";
-                                             }
-                                             value "cursor_offset" int: 1;
-                                             value "line_back" int: 0;
-                                             value "name" string: "middle"
-                                          }
-                                         group "lexem" struct {
-                                             group "nodes" list {
-                                             }
-                                             group "txt" var_array {
-                                                 count 1;
-                                                 value "string" string: "normal: \"\";";
+                                                 value "string" string: "%s: \"\";";
                                              }
                                              value "cursor_offset" int: 2;
                                              value "line_back" int: 0;
-                                             value "name" string: "normal"
-                                          }
-                                          group "lexem" struct {
-                                             group "nodes" list {
+                                             group "name" var_array {
+                                                 count 2;
+                                                 value "string" string: "normal";
+                                                 value "string" string: "tween";
                                              }
-                                             group "txt" var_array {
-                                                 count 1;
-                                                 value "string" string: "scale_hint: ;";
-                                             }
-                                             value "cursor_offset" int: 1;
-                                             value "line_back" int: 0;
-                                             value "name" string: "scale_hint"
-                                          }
-                                          group "lexem" struct {
-                                             group "nodes" list {
-                                             }
-                                             group "txt" var_array {
-                                                 count 1;
-                                                 value "string" string: "tween: \"\";";
-                                             }
-                                             value "cursor_offset" int: 2;
-                                             value "line_back" int: 0;
-                                             value "name" string: "tween"
                                           }
                                        }
                                        group "txt" var_array {
                                            count 3;
-                                           value "string" string: "image {<br/>";
+                                           value "string" string: "%s {<br/>";
                                            value "string" string: "   <br/>";
                                            value "string" string: "}";
                                        }
                                        value "cursor_offset" int: 2;
                                        value "line_back" int: 1;
-                                       value "name" string: "image";
                                        value "dot" int: 1;
+                                       group "name" var_array {
+                                           count 1;
+                                           value "string" string: "image";
+                                       }
                                     }
                                     group "lexem" struct {
                                        group "nodes" list {
                                        }
                                        group "txt" var_array {
                                            count 1;
-                                           value "string" string: "inherit: \"\";";
+                                           value "string" string: "%s: \"\" 0.0;";
                                        }
-                                       value "cursor_offset" int: 2;
+                                       value "cursor_offset" int: 6;
                                        value "line_back" int: 0;
-                                       value "name" string: "inherit";
+                                       group "name" var_array {
+                                           count 1;
+                                           value "string" string: "inherit";
+                                       }
                                     }
                                     group "lexem" struct {
                                        group "nodes" list {
@@ -946,77 +749,33 @@ group "lexem" struct {
                                              }
                                              group "txt" var_array {
                                                  count 1;
-                                                 value "string" string: "alpha: ;";
-                                             }
-                                             value "cursor_offset" int: 1;
-                                             value "line_back" int: 0;
-                                             value "name" string: "alpha";
-                                          }
-                                          group "lexem" struct {
-                                             group "nodes" list {
-                                             }
-                                             group "txt" var_array {
-                                                 count 1;
-                                                 value "string" string: "backface_cull: ;";
-                                             }
-                                             value "cursor_offset" int: 1;
-                                             value "line_back" int: 0;
-                                             value "name" string: "backface_cull";
-                                          }
-                                          group "lexem" struct {
-                                             group "nodes" list {
-                                             }
-                                             group "txt" var_array {
-                                                 count 1;
-                                                 value "string" string: "light: \"\";";
+                                                 value "string" string: "%s: \"\";";
                                              }
                                              value "cursor_offset" int: 2;
                                              value "line_back" int: 0;
-                                             value "name" string: "light";
+                                             group "name" var_array {
+                                                 count 2;
+                                                 value "string" string: "light";
+                                                 value "string" string: "perspective";
+                                             }
                                           }
                                           group "lexem" struct {
                                              group "nodes" list {
                                              }
                                              group "txt" var_array {
                                                  count 1;
-                                                 value "string" string: "on: ;";
+                                                 value "string" string: "%s: ;";
                                              }
                                              value "cursor_offset" int: 1;
                                              value "line_back" int: 0;
-                                             value "name" string: "on";
-                                          }
-                                          group "lexem" struct {
-                                             group "nodes" list {
+                                             group "name" var_array {
+                                                 count 5;
+                                                 value "string" string: "alpha";
+                                                 value "string" string: "backface_cull";
+                                                 value "string" string: "on";
+                                                 value "string" string: "smooth";
+                                                 value "string" string: "perspective_on";
                                              }
-                                             group "txt" var_array {
-                                                 count 1;
-                                                 value "string" string: "smooth: ;";
-                                             }
-                                             value "cursor_offset" int: 2;
-                                             value "line_back" int: 0;
-                                             value "name" string: "smooth";
-                                          }
-                                          group "lexem" struct {
-                                             group "nodes" list {
-                                             }
-                                             group "txt" var_array {
-                                                 count 1;
-                                                 value "string" string: "perspective: \"\";";
-                                             }
-                                             value "cursor_offset" int: 2;
-                                             value "line_back" int: 0;
-                                             value "name" string: "perspective";
-                                          }
-                                          group "lexem" struct {
-                                             group "nodes" list {
-                                             }
-                                             group "txt" var_array {
-                                                 count 1;
-                                                 value "string" string: "perspective_on: ;";
-                                             }
-                                             value "cursor_offset" int: 1;
-                                             value "line_back" int: 0;
-                                             value "name" string: "perspective_on"
                                           }
                                           group "lexem" struct {
                                              group "nodes" list {
@@ -1025,99 +784,58 @@ group "lexem" struct {
                                                    }
                                                    group "txt" var_array {
                                                        count 1;
-                                                       value "string" string: "center: \"\";";
+                                                       value "string" string: "%s: \"\";";
                                                    }
                                                    value "cursor_offset" int: 2;
                                                    value "line_back" int: 0;
-                                                   value "name" string: "center";
+                                                   group "name" var_array {
+                                                       count 1;
+                                                       value "string" string: "center";
+                                                   }
                                                 }
                                                 group "lexem" struct {
                                                    group "nodes" list {
                                                    }
                                                    group "txt" var_array {
                                                        count 1;
-                                                       value "string" string: "x: ;";
+                                                       value "string" string: "%s: ;";
                                                    }
                                                    value "cursor_offset" int: 1;
                                                    value "line_back" int: 0;
-                                                   value "name" string: "x";
-                                                }
-                                                group "lexem" struct {
-                                                   group "nodes" list {
+                                                   group "name" var_array {
+                                                       count 3;
+                                                       value "string" string: "x";
+                                                       value "string" string: "y";
+                                                       value "string" string: "z";
                                                    }
-                                                   group "txt" var_array {
-                                                       count 1;
-                                                       value "string" string: "y: ;";
-                                                   }
-                                                   value "cursor_offset" int: 1;
-                                                   value "line_back" int: 0;
-                                                   value "name" string: "y";
-                                                }
-                                                group "lexem" struct {
-                                                   group "nodes" list {
-                                                   }
-                                                   group "txt" var_array {
-                                                       count 1;
-                                                       value "string" string: "z: ;";
-                                                   }
-                                                   value "cursor_offset" int: 1;
-                                                   value "line_back" int: 0;
-                                                   value "name" string: "z";
                                                 }
                                              }
                                              group "txt" var_array {
                                                  count 3;
-                                                 value "string" string: "rotation {<br/>";
+                                                 value "string" string: "%s {<br/>";
                                                  value "string" string: "   <br/>";
                                                  value "string" string: "}";
                                              }
                                              value "cursor_offset" int: 2;
                                              value "line_back" int: 1
-                                             value "name" string: "rotation";
+                                             group "name" var_array {
+                                                 count 1;
+                                                 value "string" string: "rotation";
+                                             }
                                           }
                                        }
                                        group "txt" var_array {
                                            count 3;
-                                           value "string" string: "map {<br/>";
+                                           value "string" string: "%s {<br/>";
                                            value "string" string: "   <br/>";
                                            value "string" string: "}";
                                        }
                                        value "cursor_offset" int: 2;
                                        value "line_back" int: 1;
-                                       value "name" string: "map";
-                                    }
-                                    group "lexem" struct {
-                                       group "nodes" list {
-                                       }
-                                       group "txt" var_array {
+                                       group "name" var_array {
                                            count 1;
-                                           value "string" string: "max: ;";
+                                           value "string" string: "map";
                                        }
-                                       value "cursor_offset" int: 1;
-                                       value "line_back" int: 0;
-                                       value "name" string: "max";
-                                    }
-                                    group "lexem" struct {
-                                       group "nodes" list {
-                                       }
-                                       group "txt" var_array {
-                                           count 1;
-                                           value "string" string: "min: ;";
-                                       }
-                                       value "cursor_offset" int: 1;
-                                       value "line_back" int: 0;
-                                       value "name" string: "min";
-                                    }
-                                    group "lexem" struct {
-                                       group "nodes" list {
-                                       }
-                                       group "txt" var_array {
-                                           count 1;
-                                           value "string" string: "minmul: ;";
-                                       }
-                                       value "cursor_offset" int: 1;
-                                       value "line_back" int: 0;
-                                       value "name" string: "minmul";
                                     }
                                     group "lexem" struct {
                                        group "nodes" list {
@@ -1126,193 +844,78 @@ group "lexem" struct {
                                              }
                                              group "txt" var_array {
                                                  count 1;
-                                                 value "string" string: "focal: ;";
+                                                 value "string" string: "%s: ;";
                                              }
                                              value "cursor_offset" int: 1;
                                              value "line_back" int: 0;
-                                             value "name" string: "focal";
-                                          }
-                                          group "lexem" struct {
-                                             group "nodes" list {
+                                             group "name" var_array {
+                                                 count 2;
+                                                 value "string" string: "focal";
+                                                 value "string" string: "zplane";
                                              }
-                                             group "txt" var_array {
-                                                 count 1;
-                                                 value "string" string: "zplane: ;";
-                                             }
-                                             value "cursor_offset" int: 1;
-                                             value "line_back" int: 0;
-                                             value "name" string: "zplane";
                                           }
                                        }
                                        group "txt" var_array {
                                            count 3;
-                                           value "string" string: "perspective {<br/>";
+                                           value "string" string: "%s {<br/>";
                                            value "string" string: "   <br/>";
                                            value "string" string: "}";
                                        }
                                        value "cursor_offset" int: 2;
                                        value "line_back" int: 1;
-                                       value "name" string: "perspective";
-                                    }
-                                    group "lexem" struct {
-                                       group "nodes" list {
-                                          group "lexem" struct {
-                                             group "nodes" list {
-                                             }
-                                             group "txt" var_array {
-                                                 count 1;
-                                                 value "string" string: "offset: ;";
-                                             }
-                                             value "cursor_offset" int: 1;
-                                             value "line_back" int: 0;
-                                             value "name" string: "offset"
-                                          }
-                                          group "lexem" struct {
-                                             group "nodes" list {
-                                             }
-                                             group "txt" var_array {
-                                                 count 1;
-                                                 value "string" string: "relative: ;";
-                                             }
-                                             value "cursor_offset" int: 1;
-                                             value "line_back" int: 0;
-                                             value "name" string: "relative"
-                                          }
-                                          group "lexem" struct {
-                                             group "nodes" list {
-                                             }
-                                             group "txt" var_array {
-                                                 count 1;
-                                                 value "string" string: "to: \"\";";
-                                             }
-                                             value "cursor_offset" int: 2;
-                                             value "line_back" int: 0;
-                                             value "name" string: "to"
-                                          }
-                                          group "lexem" struct {
-                                             group "nodes" list {
-                                             }
-                                             group "txt" var_array {
-                                                 count 1;
-                                                 value "string" string: "to_x: \"\";";
-                                             }
-                                             value "cursor_offset" int: 2;
-                                             value "line_back" int: 0;
-                                             value "name" string: "to_x"
-                                          }
-                                          group "lexem" struct {
-                                             group "nodes" list {
-                                             }
-                                             group "txt" var_array {
-                                                 count 1;
-                                                 value "string" string: "to_y: \"\";";
-                                             }
-                                             value "cursor_offset" int: 2;
-                                             value "line_back" int: 0;
-                                             value "name" string: "to_y"
-                                          }
+                                       group "name" var_array {
+                                           count 1;
+                                           value "string" string: "perspective";
                                        }
-                                       group "txt" var_array {
-                                           count 3;
-                                           value "string" string: "rel1 {<br/>";
-                                           value "string" string: "   <br/>";
-                                           value "string" string: "}";
-                                       }
-                                       value "cursor_offset" int: 2;
-                                       value "line_back" int: 1;
-                                       value "name" string: "rel1";
-                                       value "dot" int: 1;
                                    }
-                                    group "lexem" struct {
+                                   group "lexem" struct {
                                        group "nodes" list {
                                           group "lexem" struct {
                                              group "nodes" list {
                                              }
                                              group "txt" var_array {
                                                  count 1;
-                                                 value "string" string: "offset: ;";
+                                                 value "string" string: "%s: ;";
                                              }
                                              value "cursor_offset" int: 1;
                                              value "line_back" int: 0;
-                                             value "name" string: "offset"
+                                             group "name" var_array {
+                                                 count 2;
+                                                 value "string" string: "relative";
+                                                 value "string" string: "offset";
+                                             }
                                           }
                                           group "lexem" struct {
                                              group "nodes" list {
                                              }
                                              group "txt" var_array {
                                                  count 1;
-                                                 value "string" string: "relative: ;";
-                                             }
-                                             value "cursor_offset" int: 1;
-                                             value "line_back" int: 0;
-                                             value "name" string: "relative"
-                                          }
-                                          group "lexem" struct {
-                                             group "nodes" list {
-                                             }
-                                             group "txt" var_array {
-                                                 count 1;
-                                                 value "string" string: "to: \"\";";
+                                                 value "string" string: "%s: \"\";";
                                              }
                                              value "cursor_offset" int: 2;
                                              value "line_back" int: 0;
-                                             value "name" string: "to"
-                                          }
-                                          group "lexem" struct {
-                                             group "nodes" list {
+                                             group "name" var_array {
+                                                 count 3;
+                                                 value "string" string: "to";
+                                                 value "string" string: "to_x";
+                                                 value "string" string: "to_y";
                                              }
-                                             group "txt" var_array {
-                                                 count 1;
-                                                 value "string" string: "to_x: \"\";";
-                                             }
-                                             value "cursor_offset" int: 2;
-                                             value "line_back" int: 0;
-                                             value "name" string: "to_x"
-                                          }
-                                          group "lexem" struct {
-                                             group "nodes" list {
-                                             }
-                                             group "txt" var_array {
-                                                 count 1;
-                                                 value "string" string: "to_y: \"\";";
-                                             }
-                                             value "cursor_offset" int: 2;
-                                             value "line_back" int: 0;
-                                             value "name" string: "to_y"
                                           }
                                        }
                                        group "txt" var_array {
                                            count 3;
-                                           value "string" string: "rel2 {<br/>";
+                                           value "string" string: "%s {<br/>";
                                            value "string" string: "   <br/>";
                                            value "string" string: "}";
                                        }
                                        value "cursor_offset" int: 2;
                                        value "line_back" int: 1;
-                                       value "name" string: "rel2";
                                        value "dot" int: 1;
-                                    }
-                                    group "lexem" struct {
-                                       group "nodes" list {
+                                       group "name" var_array {
+                                           count 2;
+                                           value "string" string: "rel1";
+                                           value "string" string: "rel2";
                                        }
-                                       group "txt" var_array {
-                                           count 1;
-                                           value "string" string: "source: \"\";";
-                                       }
-                                       value "cursor_offset" int: 2;
-                                       value "line_back" int: 0;
-                                       value "name" string: "source";
-                                    }
-                                    group "lexem" struct {
-                                       group "nodes" list {
-                                       }
-                                       group "txt" var_array {
-                                           count 1;
-                                           value "string" string: "step: ;";
-                                       }
-                                       value "cursor_offset" int: 1;
-                                       value "line_back" int: 0;
-                                       value "name" string: "step";
                                     }
                                     group "lexem" struct {
                                        group "nodes" list {
@@ -1321,55 +924,44 @@ group "lexem" struct {
                                              }
                                              group "txt" var_array {
                                                  count 1;
-                                                 value "string" string: "align: ;";
+                                                 value "string" string: "%s: NONE;";
                                              }
                                              value "cursor_offset" int: 2;
                                              value "line_back" int: 0;
-                                             value "name" string: "align";
+                                             group "name" var_array {
+                                                count 1;
+                                                value "string" string: "homogeneous";
+                                             }
                                           }
                                           group "lexem" struct {
                                              group "nodes" list {
                                              }
                                              group "txt" var_array {
                                                  count 1;
-                                                 value "string" string: "homogeneous: NONE;";
-                                             }
-                                             value "cursor_offset" int: 2;
-                                             value "line_back" int: 0;
-                                             value "name" string: "homogeneous";
-                                          }
-                                          group "lexem" struct {
-                                             group "nodes" list {
-                                             }
-                                             group "txt" var_array {
-                                                 count 1;
-                                                 value "string" string: "min: ;";
+                                                 value "string" string: "%s: ;";
                                              }
                                              value "cursor_offset" int: 1;
                                              value "line_back" int: 0;
-                                             value "name" string: "min";
-                                          }
-                                          group "lexem" struct {
-                                             group "nodes" list {
+                                             group "name" var_array {
+                                                count 3
+                                                value "string" string: "align";
+                                                value "string" string: "min";
+                                                value "string" string: "padding";
                                              }
-                                             group "txt" var_array {
-                                                 count 1;
-                                                 value "string" string: "padding: ;";
-                                             }
-                                             value "cursor_offset" int: 1;
-                                             value "line_back" int: 0;
-                                             value "name" string: "padding";
                                           }
                                        }
                                        group "txt" var_array {
                                            count 3;
-                                           value "string" string: "table {<br/>";
+                                           value "string" string: "%s {<br/>";
                                            value "string" string: "   <br/>";
                                            value "string" string: "}";
                                        }
                                        value "cursor_offset" int: 2;
                                        value "line_back" int: 1;
-                                       value "name" string: "table";
+                                       group "name" var_array {
+                                          count 1;
+                                          value "string" string: "table";
+                                       }
                                     }
                                     group "lexem" struct {
                                        group "nodes" list {
@@ -1378,187 +970,68 @@ group "lexem" struct {
                                              }
                                              group "txt" var_array {
                                                  count 1;
-                                                 value "string" string: "align: ;";
+                                                 value "string" string: "%s: ;";
                                              }
                                              value "cursor_offset" int: 1;
                                              value "line_back" int: 0;
-                                             value "name" string: "align"
+                                             group "name" var_array {
+                                                 count 7;
+                                                 value "string" string: "align";
+                                                 value "string" string: "ellipsis";
+                                                 value "string" string: "fit";
+                                                 value "string" string: "max";
+                                                 value "string" string: "min";
+                                                 value "string" string: "size";
+                                                 value "string" string: "size_range";
+                                             }
                                           }
                                           group "lexem" struct {
                                              group "nodes" list {
                                              }
                                              group "txt" var_array {
                                                  count 1;
-                                                 value "string" string: "ellipsis: ;";
-                                             }
-                                             value "cursor_offset" int: 1;
-                                             value "line_back" int: 0;
-                                             value "name" string: "ellipsis"
-                                          }
-                                          group "lexem" struct {
-                                             group "nodes" list {
-                                             }
-                                             group "txt" var_array {
-                                                 count 1;
-                                                 value "string" string: "fit: ;";
-                                             }
-                                             value "cursor_offset" int: 1;
-                                             value "line_back" int: 0;
-                                             value "name" string: "fit"
-                                          }
-                                          group "lexem" struct {
-                                             group "nodes" list {
-                                             }
-                                             group "txt" var_array {
-                                                 count 1;
-                                                 value "string" string: "font: \"\";";
+                                                 value "string" string: "%s: \"\";";
                                              }
                                              value "cursor_offset" int: 2;
                                              value "line_back" int: 0;
-                                             value "name" string: "font"
-                                          }
-                                          group "lexem" struct {
-                                             group "nodes" list {
+                                             group "name" var_array {
+                                                 count 7;
+                                                 value "string" string: "font";
+                                                 value "string" string: "repch";
+                                                 value "string" string: "source";
+                                                 value "string" string: "style";
+                                                 value "string" string: "text";
+                                                 value "string" string: "text_class";
+                                                 value "string" string: "text_source";
                                              }
-                                             group "txt" var_array {
-                                                 count 1;
-                                                 value "string" string: "max: ;";
-                                             }
-                                             value "cursor_offset" int: 1;
-                                             value "line_back" int: 0;
-                                             value "name" string: "max"
-                                          }
-                                          group "lexem" struct {
-                                             group "nodes" list {
-                                             }
-                                             group "txt" var_array {
-                                                 count 1;
-                                                 value "string" string: "min: ;";
-                                             }
-                                             value "cursor_offset" int: 1;
-                                             value "line_back" int: 0;
-                                             value "name" string: "min"
-                                          }
-                                          group "lexem" struct {
-                                             group "nodes" list {
-                                             }
-                                             group "txt" var_array {
-                                                 count 1;
-                                                 value "string" string: "repch: \"\";";
-                                             }
-                                             value "cursor_offset" int: 2;
-                                             value "line_back" int: 0;
-                                             value "name" string: "repch"
-                                          }
-                                          group "lexem" struct {
-                                             group "nodes" list {
-                                             }
-                                             group "txt" var_array {
-                                                 count 1;
-                                                 value "string" string: "size: ;";
-                                             }
-                                             value "cursor_offset" int: 1;
-                                             value "line_back" int: 0;
-                                             value "name" string: "size"
-                                          }
-                                          group "lexem" struct {
-                                             group "nodes" list {
-                                             }
-                                             group "txt" var_array {
-                                                 count 1;
-                                                 value "string" string: "size_range: ;";
-                                             }
-                                             value "cursor_offset" int: 1;
-                                             value "line_back" int: 0;
-                                             value "name" string: "size_range"
-                                          }
-                                          group "lexem" struct {
-                                             group "nodes" list {
-                                             }
-                                             group "txt" var_array {
-                                                 count 1;
-                                                 value "string" string: "source: \"\";";
-                                             }
-                                             value "cursor_offset" int: 2;
-                                             value "line_back" int: 0;
-                                             value "name" string: "source"
-                                          }
-                                          group "lexem" struct {
-                                             group "nodes" list {
-                                             }
-                                             group "txt" var_array {
-                                                 count 1;
-                                                 value "string" string: "style: \"\";";
-                                             }
-                                             value "cursor_offset" int: 2;
-                                             value "line_back" int: 0;
-                                             value "name" string: "style"
-                                          }
-                                          group "lexem" struct {
-                                             group "nodes" list {
-                                             }
-                                             group "txt" var_array {
-                                                 count 1;
-                                                 value "string" string: "text: \"\";";
-                                             }
-                                             value "cursor_offset" int: 2;
-                                             value "line_back" int: 0;
-                                             value "name" string: "text"
-                                          }
-                                          group "lexem" struct {
-                                             group "nodes" list {
-                                             }
-                                             group "txt" var_array {
-                                                 count 1;
-                                                 value "string" string: "text_class: \"\";";
-                                             }
-                                             value "cursor_offset" int: 2;
-                                             value "line_back" int: 0;
-                                             value "name" string: "text_class"
-                                          }
-                                          group "lexem" struct {
-                                             group "nodes" list {
-                                             }
-                                             group "txt" var_array {
-                                                 count 1;
-                                                 value "string" string: "text_source: \"\";";
-                                             }
-                                             value "cursor_offset" int: 2;
-                                             value "line_back" int: 0;
-                                             value "name" string: "text_source"
                                           }
                                        }
                                        group "txt" var_array {
                                            count 3;
-                                           value "string" string: "text {<br/>";
+                                           value "string" string: "%s {<br/>";
                                            value "string" string: "   <br/>";
                                            value "string" string: "}";
                                        }
                                        value "cursor_offset" int: 2;
                                        value "line_back" int: 1;
-                                       value "name" string: "text";
                                        value "dot" int: 1;
-                                    }
-                                    group "lexem" struct {
-                                       group "nodes" list {
-                                       }
-                                       group "txt" var_array {
+                                       group "name" var_array {
                                            count 1;
-                                           value "string" string: "visible: ;";
+                                           value "string" string: "text";
                                        }
-                                       value "cursor_offset" int: 1;
-                                       value "line_back" int: 0;
-                                       value "name" string: "visible";
-                                   }
+                                    }
                                  }
-                                  group "txt" var_array {
+                                 group "txt" var_array {
                                      count 2;
-                                     value "string" string: "desc { \"\";<br/>";
+                                     value "string" string: "%s { \"\";<br/>";
                                      value "string" string: "}";
                                  }
                                  value "cursor_offset" int: 4;
                                  value "line_back" int: 1;
-                                 value "name" string: "desc";
+                                 group "name" var_array {
+                                     count 1;
+                                     value "string" string: "desc";
+                                 }
                                }
                                group "lexem" struct {
                                  group "nodes" list {
@@ -1567,187 +1040,73 @@ group "lexem" struct {
                                        }
                                        group "txt" var_array {
                                            count 1;
-                                           value "string" string: "confine: \"\";";
+                                           value "string" string: "%s: \"\";";
                                        }
                                        value "cursor_offset" int: 2;
                                        value "line_back" int: 0;
-                                       value "name" string: "confine";
+                                       group "name" var_array {
+                                           count 3;
+                                           value "string" string: "threshold";
+                                           value "string" string: "events";
+                                           value "string" string: "confine";
+                                       }
                                     }
                                     group "lexem" struct {
                                        group "nodes" list {
                                        }
                                        group "txt" var_array {
                                            count 1;
-                                           value "string" string: "events: \"\";";
-                                       }
-                                       value "cursor_offset" int: 2;
-                                       value "line_back" int: 0;
-                                       value "name" string: "events";
-                                    }
-                                    group "lexem" struct {
-                                       group "nodes" list {
-                                       }
-                                       group "txt" var_array {
-                                           count 1;
-                                           value "string" string: "threshold: \"\";";
-                                       }
-                                       value "cursor_offset" int: 2;
-                                       value "line_back" int: 0;
-                                       value "name" string: "threshold";
-                                    }
-                                    group "lexem" struct {
-                                       group "nodes" list {
-                                       }
-                                       group "txt" var_array {
-                                           count 1;
-                                           value "string" string: "x: ;";
+                                           value "string" string: "%s: ;";
                                        }
                                        value "cursor_offset" int: 1;
                                        value "line_back" int: 0;
-                                       value "name" string: "x";
-                                    }
-                                    group "lexem" struct {
-                                       group "nodes" list {
+                                       group "name" var_array {
+                                           count 2;
+                                           value "string" string: "y";
+                                           value "string" string: "x";
                                        }
-                                       group "txt" var_array {
-                                           count 1;
-                                           value "string" string: "y: ;";
-                                       }
-                                       value "cursor_offset" int: 1;
-                                       value "line_back" int: 0;
-                                       value "name" string: "y";
                                      }
                                   }
                                  group "txt" var_array {
                                      count 3;
-                                     value "string" string: "dragable {<br/>";
+                                     value "string" string: "%s {<br/>";
                                      value "string" string: "   <br/>";
                                      value "string" string: "}";
                                  }
                                  value "cursor_offset" int: 2;
                                  value "line_back" int: 1;
-                                 value "name" string: "dragable";
+                                 group "name" var_array {
+                                    count 1;
+                                    value "string" string: "dragable";
+                                 }
                               }
                               group "lexem" struct {
                                  group "nodes" list {
                                  }
                                  group "txt" var_array {
                                      count 1;
-                                     value "string" string: "entry_mode: NONE;";
+                                     value "string" string: "%s: NONE;";
                                  }
                                  value "cursor_offset" int: 1;
                                  value "line_back" int: 0;
-                                 value "name" string: "entry_mode";
+                                 group "name" var_array {
+                                    count 1;
+                                    value "string" string: "entry_mode";
+                                 }
                               }
                               group "lexem" struct {
                                  group "nodes" list {
                                  }
                                  group "txt" var_array {
                                      count 1;
-                                     value "string" string: "ignore_flags: ;";
+                                     value "string" string: "%s: DEFAULT;";
                                  }
                                  value "cursor_offset" int: 1;
                                  value "line_back" int: 0;
-                                 value "name" string: "ignore_flags";
-                              }
-                              group "lexem" struct {
-                                 group "nodes" list {
+                                 group "name" var_array {
+                                    count 1;
+                                    value "string" string: "select_mode";
                                  }
-                                 group "txt" var_array {
-                                     count 1;
-                                     value "string" string: "insert_after: \"\";";
-                                 }
-                                 value "cursor_offset" int: 2;
-                                 value "line_back" int: 0;
-                                 value "name" string: "insert_after";
-                              }
-                              group "lexem" struct {
-                                 group "nodes" list {
-                                 }
-                                 group "txt" var_array {
-                                     count 1;
-                                     value "string" string: "insert_before: \"\";";
-                                 }
-                                 value "cursor_offset" int: 2;
-                                 value "line_back" int: 0;
-                                 value "name" string: "insert_before";
-                              }
-                              group "lexem" struct {
-                                 group "nodes" list {
-                                 }
-                                 group "txt" var_array {
-                                     count 1;
-                                     value "string" string: "mouse_events: ;";
-                                 }
-                                 value "cursor_offset" int: 1;
-                                 value "line_back" int: 0;
-                                 value "name" string: "mouse_events";
-                              }
-                              group "lexem" struct {
-                                 group "nodes" list {
-                                 }
-                                 group "txt" var_array {
-                                     count 1;
-                                     value "string" string: "multiline: ;";
-                                 }
-                                 value "cursor_offset" int: 1;
-                                 value "line_back" int: 0;
-                                 value "name" string: "multiline";
-                              }
-                              group "lexem" struct {
-                                 group "nodes" list {
-                                 }
-                                 group "txt" var_array {
-                                     count 1;
-                                     value "string" string: "pointer_mode: ;";
-                                 }
-                                 value "cursor_offset" int: 1;
-                                 value "line_back" int: 0;
-                                 value "name" string: "pointer_mode";
-                              }
-                              group "lexem" struct {
-                                 group "nodes" list {
-                                 }
-                                 group "txt" var_array {
-                                     count 1;
-                                     value "string" string: "repeat_events: ;";
-                                 }
-                                 value "cursor_offset" int: 1;
-                                 value "line_back" int: 0;
-                                 value "name" string: "repeat_events";
-                              }
-                              group "lexem" struct {
-                                 group "nodes" list {
-                                 }
-                                 group "txt" var_array {
-                                     count 1;
-                                     value "string" string: "scale: ;";
-                                 }
-                                 value "cursor_offset" int: 1;
-                                 value "line_back" int: 0;
-                                 value "name" string: "scale";
-                              }
-                              group "lexem" struct {
-                                 group "nodes" list {
-                                 }
-                                 group "txt" var_array {
-                                     count 1;
-                                     value "string" string: "select_mode: DEFAULT;";
-                                 }
-                                 value "cursor_offset" int: 1;
-                                 value "line_back" int: 0;
-                                 value "name" string: "select_mode";
-                              }
-                              group "lexem" struct {
-                                 group "nodes" list {
-                                 }
-                                 group "txt" var_array {
-                                     count 1;
-                                     value "string" string: "source: \"\";";
-                                 }
-                                 value "cursor_offset" int: 2;
-                                 value "line_back" int: 0;
-                                 value "name" string: "source";
                               }
                               group "lexem" struct {
                                  group "nodes" list {
@@ -1760,230 +1119,132 @@ group "lexem" struct {
                                                    }
                                                    group "txt" var_array {
                                                        count 1;
-                                                       value "string" string: "align: ;";
-                                                   }
-                                                   value "cursor_offset" int: 1;
-                                                   value "line_back" int: 0;
-                                                   value "name" string: "align";
-                                                }
-                                                group "lexem" struct {
-                                                   group "nodes" list {
-                                                   }
-                                                   group "txt" var_array {
-                                                       count 1;
-                                                       value "string" string: "aspect: ;";
-                                                   }
-                                                   value "cursor_offset" int: 1;
-                                                   value "line_back" int: 0;
-                                                   value "name" string: "aspect";
-                                                }
-                                                group "lexem" struct {
-                                                   group "nodes" list {
-                                                   }
-                                                   group "txt" var_array {
-                                                       count 1;
-                                                       value "string" string: "aspect_mode: ;";
-                                                   }
-                                                   value "cursor_offset" int: 1;
-                                                   value "line_back" int: 0;
-                                                   value "name" string: "aspect_mode";
-                                                }
-                                               group "lexem" struct {
-                                                   group "nodes" list {
-                                                   }
-                                                   group "txt" var_array {
-                                                       count 1;
-                                                       value "string" string: "max: ;";
-                                                   }
-                                                   value "cursor_offset" int: 1;
-                                                   value "line_back" int: 0;
-                                                   value "name" string: "max";
-                                                }
-                                                group "lexem" struct {
-                                                   group "nodes" list {
-                                                   }
-                                                   group "txt" var_array {
-                                                       count 1;
-                                                       value "string" string: "min: ;";
-                                                   }
-                                                   value "cursor_offset" int: 1;
-                                                   value "line_back" int: 0;
-                                                   value "name" string: "min";
-                                                }
-                                                group "lexem" struct {
-                                                   group "nodes" list {
-                                                   }
-                                                   group "txt" var_array {
-                                                       count 1;
-                                                       value "string" string: "name: \"\";";
+                                                       value "string" string: "%s: \"\";";
                                                    }
                                                    value "cursor_offset" int: 2;
                                                    value "line_back" int: 0;
-                                                   value "name" string: "name";
+                                                   group "name" var_array {
+                                                      count 2;
+                                                      value "string" string: "name";
+                                                      value "string" string: "source";
+                                                   }
                                                 }
                                                 group "lexem" struct {
                                                    group "nodes" list {
                                                    }
                                                    group "txt" var_array {
                                                        count 1;
-                                                       value "string" string: "options: ;";
-                                                   }
-                                                   value "cursor_offset" int: 1;
-                                                   value "line_back" int: 0;
-                                                   value "name" string: "options";
-                                                }
-                                                group "lexem" struct {
-                                                   group "nodes" list {
-                                                   }
-                                                   group "txt" var_array {
-                                                       count 1;
-                                                       value "string" string: "padding: ;";
-                                                   }
-                                                   value "cursor_offset" int: 1;
-                                                   value "line_back" int: 0;
-                                                   value "name" string: "padding";
-                                                }
-                                                group "lexem" struct {
-                                                   group "nodes" list {
-                                                   }
-                                                   group "txt" var_array {
-                                                       count 1;
-                                                       value "string" string: "position: ;";
-                                                   }
-                                                   value "cursor_offset" int: 1;
-                                                   value "line_back" int: 0;
-                                                   value "name" string: "position";
-                                                }
-                                                group "lexem" struct {
-                                                   group "nodes" list {
-                                                   }
-                                                   group "txt" var_array {
-                                                       count 1;
-                                                       value "string" string: "prefer: ;";
-                                                   }
-                                                   value "cursor_offset" int: 1;
-                                                   value "line_back" int: 0;
-                                                   value "name" string: "prefer";
-                                                }
-                                                group "lexem" struct {
-                                                   group "nodes" list {
-                                                   }
-                                                   group "txt" var_array {
-                                                       count 1;
-                                                       value "string" string: "source: \"\";";
-                                                   }
-                                                   value "cursor_offset" int: 2;
-                                                   value "line_back" int: 0;
-                                                   value "name" string: "source";
-                                                }
-                                                group "lexem" struct {
-                                                   group "nodes" list {
-                                                   }
-                                                   group "txt" var_array {
-                                                       count 1;
-                                                       value "string" string: "span: ;";
-                                                   }
-                                                   value "cursor_offset" int: 1;
-                                                   value "line_back" int: 0;
-                                                   value "name" string: "span";
-                                                }
-                                                group "lexem" struct {
-                                                   group "nodes" list {
-                                                   }
-                                                   group "txt" var_array {
-                                                       count 1;
-                                                       value "string" string: "spread: ;";
-                                                   }
-                                                   value "cursor_offset" int: 1;
-                                                   value "line_back" int: 0;
-                                                   value "name" string: "spread";
-                                                }
-                                                group "lexem" struct {
-                                                   group "nodes" list {
-                                                   }
-                                                   group "txt" var_array {
-                                                       count 1;
-                                                       value "string" string: "type: GROUP;";
+                                                       value "string" string: "%s: GROUP;";
                                                    }
                                                    value "cursor_offset" int: 0;
                                                    value "line_back" int: 0;
-                                                   value "name" string: "type";
+                                                   group "name" var_array {
+                                                      count 1;
+                                                      value "string" string: "type";
+                                                   }
                                                 }
                                                 group "lexem" struct {
                                                    group "nodes" list {
                                                    }
                                                    group "txt" var_array {
                                                        count 1;
-                                                       value "string" string: "weight: ;";
+                                                       value "string" string: "%s: ;";
                                                    }
                                                    value "cursor_offset" int: 1;
                                                    value "line_back" int: 0;
-                                                   value "name" string: "weight";
-                                                }
+                                                   group "name" var_array {
+                                                      count 12;
+                                                      value "string" string: "align";
+                                                      value "string" string: "aspect";
+                                                      value "string" string: "aspect_mode";
+                                                      value "string" string: "max";
+                                                      value "string" string: "min";
+                                                      value "string" string: "options";
+                                                      value "string" string: "padding";
+                                                      value "string" string: "prefer";
+                                                      value "string" string: "position";
+                                                      value "string" string: "spread";
+                                                      value "string" string: "span";
+                                                      value "string" string: "weight";
+                                                   }
+                                                 }
                                               }
                                              group "txt" var_array {
                                                  count 3;
-                                                 value "string" string: "item {<br/>";
+                                                 value "string" string: "%s {<br/>";
                                                  value "string" string: "   <br/>";
                                                  value "string" string: "}";
                                              }
                                              value "cursor_offset" int: 2;
                                              value "line_back" int: 1;
-                                             value "name" string: "item";
+                                             group "name" var_array {
+                                                count 1;
+                                                value "string" string: "item";
+                                             }
                                           }
                                         }
                                        group "txt" var_array {
                                            count 3;
-                                           value "string" string: "items {<br/>";
+                                           value "string" string: "%s {<br/>";
                                            value "string" string: "   <br/>";
                                            value "string" string: "}";
                                        }
                                        value "cursor_offset" int: 2;
                                        value "line_back" int: 1;
-                                       value "name" string: "items";
+                                       group "name" var_array {
+                                          count 1;
+                                          value "string" string: "items";
+                                       }
                                     }
                                  }
                                  group "txt" var_array {
                                      count 3;
-                                     value "string" string: "table {<br/>";
+                                     value "string" string: "%s {<br/>";
                                      value "string" string: "   <br/>";
                                      value "string" string: "}";
                                  }
                                  value "cursor_offset" int: 2;
                                  value "line_back" int: 1;
-                                 value "name" string: "table";
-                              }
-                              group "lexem" struct {
-                                 group "nodes" list {
+                                 group "name" var_array {
+                                    count 1;
+                                    value "string" string: "table";
                                  }
-                                 group "txt" var_array {
-                                     count 1;
-                                     value "string" string: "type: IMAGE;";
-                                 }
-                                 value "cursor_offset" int: 0;
-                                 value "line_back" int: 0;
-                                 value "name" string: "type";
                               }
                             }
                             group "txt" var_array {
                                 count 2;
-                                value "string" string: "part { \"\";<br/>";
+                                value "string" string: "%s { \"\";<br/>";
                                 value "string" string: "}";
                             }
                             value "cursor_offset" int: 4;
                             value "line_back" int: 1;
-                            value "name" string: "part";
+                            group "name" var_array {
+                               count 10;
+                               value "string" string: "image";
+                               value "string" string: "group";
+                               value "string" string: "swallow";
+                               value "string" string: "rect";
+                               value "string" string: "spacer";
+                               value "string" string: "proxy";
+                               value "string" string: "box";
+                               value "string" string: "table";
+                               value "string" string: "text";
+                               value "string" string: "textblock";
+                            }
                          }
                      }
                      group "txt" var_array {
                          count 3;
-                         value "string" string: "parts {<br/>";
+                         value "string" string: "%s {<br/>";
                          value "string" string: "   <br/>";
                          value "string" string: "}";
                      }
                      value "cursor_offset" int: 2;
                      value "line_back" int: 1;
-                     value "name" string: "parts";
+                     group "name" var_array {
+                        count 1;
+                        value "string" string: "parts";
+                     }
                   }
                   group "lexem" struct {
                      group "nodes" list {
@@ -1994,22 +1255,14 @@ group "lexem" struct {
                                }
                                group "txt" var_array {
                                    count 1;
-                                   value "string" string: "action: STATE_SET \"\";";
+                                   value "string" string: "%s: STATE_SET \"\" 0.0;";
                                }
-                               value "cursor_offset" int: 2;
+                               value "cursor_offset" int: 6;
                                value "line_back" int: 0;
-                               value "name" string: "action";
-                             }
-                             group "lexem" struct {
-                               group "nodes" list {
+                               group "name" var_array {
+                                  count 1;
+                                  value "string" string: "action";
                                }
-                               group "txt" var_array {
-                                   count 1;
-                                   value "string" string: "after: \"\";";
-                               }
-                               value "cursor_offset" int: 2;
-                               value "line_back" int: 0;
-                               value "name" string: "after";
                              }
                              group "lexem" struct {
                                group "nodes" list {
@@ -2017,119 +1270,115 @@ group "lexem" struct {
                                value "use_cntr" int: 0;
                                group "txt" var_array {
                                    count 1;
-                                   value "string" string: "filter: \"\" \"\";";
+                                   value "string" string: "%s: \"\" \"\";";
                                }
                                value "cursor_offset" int: 5;
                                value "line_back" int: 0;
-                               value "name" string: "filter";
+                               group "name" var_array {
+                                  count 1;
+                                  value "string" string: "filter";
+                               }
                              }
                              group "lexem" struct {
                                group "nodes" list {
                                }
                                group "txt" var_array {
                                    count 1;
-                                   value "string" string: "in: ;";
+                                   value "string" string: "%s: ;";
                                }
                                value "cursor_offset" int: 1;
                                value "line_back" int: 0;
-                               value "name" string: "in";
+                               group "name" var_array {
+                                  count 1;
+                                  value "string" string: "in";
+                               }
                              }
                              group "lexem" struct {
                                group "nodes" list {
                                }
                                group "txt" var_array {
                                    count 1;
-                                   value "string" string: "name: \"\";";
+                                   value "string" string: "%s: \"\";";
                                }
                                value "cursor_offset" int: 2;
                                value "line_back" int: 0;
-                               value "name" string: "name";
+                               group "name" var_array {
+                                  count 5;
+                                  value "string" string: "after";
+                                  value "string" string: "name";
+                                  value "string" string: "source";
+                                  value "string" string: "signal";
+                                  value "string" string: "target";
+                               }
                              }
                              group "lexem" struct {
                                group "nodes" list {
                                }
                                group "txt" var_array {
                                    count 1;
-                                   value "string" string: "signal: \"\";";
-                               }
-                               value "cursor_offset" int: 2;
-                               value "line_back" int: 0;
-                               value "name" string: "signal";
-                             }
-                             group "lexem" struct {
-                               group "nodes" list {
-                               }
-                               group "txt" var_array {
-                                   count 1;
-                                   value "string" string: "source: \"\";";
-                               }
-                               value "cursor_offset" int: 2;
-                               value "line_back" int: 0;
-                               value "name" string: "source";
-                             }
-                             group "lexem" struct {
-                               group "nodes" list {
-                               }
-                               group "txt" var_array {
-                                   count 1;
-                                   value "string" string: "target: \"\";";
-                               }
-                               value "cursor_offset" int: 2;
-                               value "line_back" int: 0;
-                               value "name" string: "target";
-                             }
-                             group "lexem" struct {
-                               group "nodes" list {
-                               }
-                               group "txt" var_array {
-                                   count 1;
-                                   value "string" string: "transition: LINEAR ;";
+                                   value "string" string: "%s: LINEAR ;";
                                }
                                value "cursor_offset" int: 1;
                                value "line_back" int: 0;
-                               value "name" string: "transition";
+                               group "name" var_array {
+                                  count 1;
+                                  value "string" string: "transition";
+                               }
                              }
                           }
                           group "txt" var_array {
-                              count 2;
-                              value "string" string: "program { \"\";<br/>";
+                              count 3;
+                              value "string" string: "%s {<br/>";
+                              value "string" string: "   <br/>";
                               value "string" string: "}";
                           }
-                          value "cursor_offset" int: 4;
+                          value "cursor_offset" int: 2;
                           value "line_back" int: 1;
-                          value "name" string: "program";
+                          group "name" var_array {
+                             count 1;
+                             value "string" string: "program";
+                          }
                         }
                      }
                      group "txt" var_array {
                          count 3;
-                         value "string" string: "programs {<br/>";
+                         value "string" string: "%s {<br/>";
                          value "string" string: "   <br/>";
                          value "string" string: "}";
                      }
                      value "cursor_offset" int: 2;
                      value "line_back" int: 1;
-                     value "name" string: "programs";
-                 }
+                     group "name" var_array {
+                        count 1;
+                        value "string" string: "programs";
+                     }
+                  }
                }
                group "txt" var_array {
                    count 2;
-                   value "string" string: "group { \"\";<br/>";
+                   value "string" string: "%s { name: \"\";<br/>";
                    value "string" string: "}";
                }
                value "cursor_offset" int: 4;
                value "line_back" int: 1;
-               value "name" string: "group";
+               group "name" var_array {
+                  count 1;
+                  value "string" string: "group";
+               }
             }
          }
          group "txt" var_array {
              count 3;
-             value "string" string: "collections {<br/>";
+             value "string" string: "%s {<br/>";
              value "string" string: "   <br/>";
              value "string" string: "}";
          }
          value "cursor_offset" int: 2;
          value "line_back" int: 1;
-         value "name" string: "collections";
+         group "name" var_array {
+            count 1;
+            value "string" string: "collections";
+         }
       }
       group "lexem" struct {
          group "nodes" list {
@@ -2140,103 +1389,89 @@ group "lexem" struct {
                      }
                      group "txt" var_array {
                          count 1
-                         value "string" string: "color: ;";
+                         value "string" string: "%s: ;";
                      }
                      value "cursor_offset" int: 1;
                      value "line_back" int: 0;
-                     value "name" string: "color";
+                     group "name" var_array {
+                        count 3;
+                        value "string" string: "color";
+                        value "string" string: "color2";
+                        value "string" string: "color3";
+                     }
                   }
                   group "lexem" struct {
                      group "nodes" list {
                      }
                      group "txt" var_array {
-                         count 1
-                         value "string" string: "color2: ;";
-                     }
-                     value "cursor_offset" int: 1;
-                     value "line_back" int: 0;
-                     value "name" string: "color2";
-                  }
-                  group "lexem" struct {
-                     group "nodes" list {
-                     }
-                     group "txt" var_array {
-                         count 1
-                         value "string" string: "color3: ;";
-                     }
-                     value "cursor_offset" int: 1;
-                     value "line_back" int: 0;
-                     value "name" string: "color3";
-                  }
-                  group "lexem" struct {
-                     group "nodes" list {
-                     }
-                     group "txt" var_array {
-                         count 1
-                         value "string" string: "name: \"\";";
+                         count 1;
+                         value "string" string: "%s: \"\";";
                      }
                      value "cursor_offset" int: 2;
                      value "line_back" int: 0;
-                     value "name" string: "name";
+                     group "name" var_array {
+                        count 1;
+                        value "string" string: "name";
+                     }
                   }
                }
                group "txt" var_array {
                    count 3;
-                   value "string" string: "color_class {<br/>";
+                   value "string" string: "%s {<br/>";
                    value "string" string: "   <br/>";
                    value "string" string: "}";
                }
                value "cursor_offset" int: 2;
                value "line_back" int: 1;
-               value "name" string: "color_class";
+               group "name" var_array {
+                  count 1;
+                  value "string" string: "color_class";
+               }
            }
          }
          group "txt" var_array {
              count 3;
-             value "string" string: "color_classes {<br/>";
+             value "string" string: "%s {<br/>";
              value "string" string: "   <br/>";
              value "string" string: "}";
          }
          value "cursor_offset" int: 2;
          value "line_back" int: 1;
-         value "name" string: "color_classes";
-      }
+         group "name" var_array {
+            count 1;
+            value "string" string: "color_classes";
+         }
+     }
       group "lexem" struct {
          group "nodes" list {
             group "lexem" struct {
               group "nodes" list {
               }
               group "txt" var_array {
-                  count 1
-                  value "string" string: "item: \"\" \"\";";
+                  count 1;
+                  value "string" string: "%s: \"\" \"\";";
               }
               value "cursor_offset" int: 5
               value "line_back" int: 0;
-              value "name" string: "item";
-            }
-         }
-         group "nodes" list {
-            group "lexem" struct {
-              group "nodes" list {
+              group "name" var_array {
+                 count 2;
+                 value "string" string: "file";
+                 value "string" string: "item";
               }
-              group "txt" var_array {
-                  count 1
-                  value "string" string: "file: \"\" \"\";";
-              }
-              value "cursor_offset" int: 5
-              value "line_back" int: 0;
-              value "name" string: "file";
            }
          }
          group "txt" var_array {
              count 3;
-             value "string" string: "data {<br/>";
+             value "string" string: "%s {<br/>";
              value "string" string: "   <br/>";
              value "string" string: "}";
          }
          value "cursor_offset" int: 2;
          value "line_back" int: 1;
-         value "name" string: "data";
+         group "name" var_array {
+            count 1;
+            value "string" string: "data";
+         }
       }
       group "lexem" struct {
          group "nodes" list {
@@ -2245,22 +1480,28 @@ group "lexem" struct {
                }
                group "txt" var_array {
                   count 1;
-                  value "string" string: "external: \"\";";
+                  value "string" string: "%s: \"\";";
                }
                value "cursor_offset" int: 2;
                value "line_back" int: 0;
-               value "name" string: "external";
+               group "name" var_array {
+                 count 1;
+                 value "string" string: "external";
+               }
             }
          }
          group "txt" var_array {
              count 3;
-             value "string" string: "externals {<br/>";
+             value "string" string: "%s {<br/>";
              value "string" string: "   <br/>";
              value "string" string: "}";
          }
          value "cursor_offset" int: 2;
          value "line_back" int: 1;
-         value "name" string: "externals";
+         group "name" var_array {
+            count 1;
+            value "string" string: "externals";
+         }
       }
       group "lexem" struct {
          group "nodes" list {
@@ -2268,23 +1509,29 @@ group "lexem" struct {
               group "nodes" list {
               }
               group "txt" var_array {
-                  count 1
-                  value "string" string: "font: \"\" \"\";";
+                  count 1;
+                  value "string" string: "%s: \"\" \"\";";
               }
               value "cursor_offset" int: 5
               value "line_back" int: 0;
-              value "name" string: "font";
+              group "name" var_array {
+                 count 1;
+                 value "string" string: "font";
+              }
            }
          }
          group "txt" var_array {
              count 3;
-             value "string" string: "fonts {<br/>";
+             value "string" string: "%s {<br/>";
              value "string" string: "   <br/>";
              value "string" string: "}";
          }
          value "cursor_offset" int: 2;
          value "line_back" int: 1;
-         value "name" string: "fonts";
+         group "name" var_array {
+            count 1;
+            value "string" string: "fonts";
+         }
       }
       group "lexem" struct {
          group "nodes" list {
@@ -2293,11 +1540,14 @@ group "lexem" struct {
                }
                group "txt" var_array {
                    count 1;
-                   value "string" string: "image: \"\" COMP;";
+                   value "string" string: "%s: \"\" COMP;";
                }
                value "cursor_offset" int: 7
                value "line_back" int: 0;
-               value "name" string: "image";
+               group "name" var_array {
+                  count 1;
+                  value "string" string: "image";
+               }
             }
             group "lexem" struct {
                group "nodes" list {
@@ -2306,11 +1556,14 @@ group "lexem" struct {
                      }
                      group "txt" var_array {
                          count 1;
-                         value "string" string: "name: \"\";";
+                         value "string" string: "%s: \"\";";
                      }
                      value "cursor_offset" int: 2;
                      value "line_back" int: 0;
-                     value "name" string: "name";
+                     group "name" var_array {
+                        count 1;
+                        value "string" string: "name";
+                     }
                    }
                   group "lexem" struct {
                      group "nodes" list {
@@ -2319,56 +1572,71 @@ group "lexem" struct {
                            }
                            group "txt" var_array {
                                count 1;
-                               value "string" string: "image: \"\" COMP;";
+                               value "string" string: "%s: \"\" COMP;";
                            }
                            value "cursor_offset" int: 7;
                            value "line_back" int: 0;
-                           value "name" string: "image";
+                           group "name" var_array {
+                              count 1;
+                              value "string" string: "image";
+                           }
                         }
                         group "lexem" struct {
                            group "nodes" list {
                            }
                            group "txt" var_array {
                                count 1;
-                               value "string" string: "size: ;";
+                               value "string" string: "%s: ;";
                            }
                            value "cursor_offset" int: 1;
                            value "line_back" int: 0;
-                           value "name" string: "size";
+                           group "name" var_array {
+                              count 1;
+                              value "string" string: "size";
+                           }
                         }
                      }
                      group "txt" var_array {
                          count 3;
-                         value "string" string: "image {<br/>";
+                         value "string" string: "%s {<br/>";
                          value "string" string: "   <br/>";
                          value "string" string: "}";
                      }
                      value "cursor_offset" int: 2
                      value "line_back" int: 1;
-                     value "name" string: "image";
-                 }
+                     group "name" var_array {
+                        count 1;
+                        value "string" string: "image";
+                     }
+                  }
                }
                group "txt" var_array {
                    count 3;
-                   value "string" string: "set {<br/>";
+                   value "string" string: "%s {<br/>";
                    value "string" string: "   <br/>";
                    value "string" string: "}";
                }
                value "cursor_offset" int: 2
                value "line_back" int: 1
-               value "name" string: "set";
+               group "name" var_array {
+                  count 1;
+                  value "string" string: "set";
+               }
             }
          }
          group "txt" var_array {
              count 3;
-             value "string" string: "images {<br/>";
+             value "string" string: "%s {<br/>";
              value "string" string: "   <br/>";
              value "string" string: "}";
          }
          value "cursor_offset" int: 2;
          value "line_back" int: 1;
-         value "name" string: "images";
          value "dot" int: 1;
+         group "name" var_array {
+            count 1;
+            value "string" string: "images";
+         }
       }
       group "lexem" struct {
          group "nodes" list {
@@ -2378,64 +1646,68 @@ group "lexem" struct {
                      group "nodes" list {
                      }
                      group "txt" var_array {
-                         count 1
-                         value "string" string: "base: \"\";";
+                         count 1;
+                         value "string" string: "%s: \"\";";
                      }
                      value "cursor_offset" int: 2;
                      value "line_back" int: 0;
-                     value "name" string: "base";
+                     group "name" var_array {
+                        count 2;
+                        value "string" string: "base";
+                        value "string" string: "name";
+                     }
                   }
                   group "lexem" struct {
                      group "nodes" list {
                      }
                      group "txt" var_array {
-                         count 1
-                         value "string" string: "name: \"\";";
-                     }
-                     value "cursor_offset" int: 2;
-                     value "line_back" int: 0;
-                     value "name" string: "name";
-                  }
-                  group "lexem" struct {
-                     group "nodes" list {
-                     }
-                     group "txt" var_array {
-                         count 1
-                         value "string" string: "tag: \"\" \"\";";
+                         count 1;
+                         value "string" string: "%s: \"\" \"\";";
                      }
                      value "cursor_offset" int: 5;
                      value "line_back" int: 0;
-                     value "name" string: "tag";
-                 }
+                     group "name" var_array {
+                        count 1;
+                        value "string" string: "tag";
+                     }
+                  }
                }
                group "txt" var_array {
                    count 3;
-                   value "string" string: "style {<br/>";
+                   value "string" string: "%s {<br/>";
                    value "string" string: "   <br/>";
                    value "string" string: "}";
                }
                value "cursor_offset" int: 2;
                value "line_back" int: 1;
-               value "name" string: "style";
+               group "name" var_array {
+                  count 1;
+                  value "string" string: "style";
+               }
            }
          }
          group "txt" var_array {
              count 3;
-             value "string" string: "styles {<br/>";
+             value "string" string: "%s {<br/>";
              value "string" string: "   <br/>";
              value "string" string: "}";
          }
          value "cursor_offset" int: 2;
          value "line_back" int: 1;
-         value "name" string: "styles";
-     }
-   }
+         group "name" var_array {
+            count 1;
+            value "string" string: "styles";
+         }
+      }
+    }
    group "txt" var_array {
        count 1;
-       value "string" string: "";
+       value "string" string: "%s";
    }
-   value "cursor_offset" int: 0;
+   value "cursor_offset" int: 0
    value "line_back" int: 0;
-   value "name" string: "root";
-   value "pos" int: 0;
+   group "name" var_array {
+      count 1;
+      value "string" string: "root";
+   }
 }
