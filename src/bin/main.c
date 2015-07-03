@@ -9,7 +9,6 @@
 typedef struct app_s
 {
    Evas_Object *enventor;
-   Eina_Bool template_new : 1;
    Eina_Bool on_saving : 1;
    Eina_Bool lazy_save : 1;
 } app_data;
@@ -222,11 +221,11 @@ tools_set(Evas_Object *enventor)
    return tools;
 }
 
-static Eina_Bool
+static void
 args_dispatch(int argc, char **argv, char *edc_path, char *edj_path,
               Eina_List **img_path, Eina_List **snd_path,
               Eina_List **fnt_path, Eina_List **dat_path,
-              Eina_Bool *template_new)
+              Eina_Bool *default_edc, Eina_Bool *template)
 {
 
    Eina_List *id = NULL;
@@ -236,7 +235,6 @@ args_dispatch(int argc, char **argv, char *edc_path, char *edj_path,
 
    Eina_Bool quit = EINA_FALSE;
    Eina_Bool help = EINA_FALSE;
-   Eina_Bool default_edc = EINA_TRUE;
 
    //No arguments. set defaults
    if (argc == 1) goto defaults;
@@ -268,7 +266,7 @@ args_dispatch(int argc, char **argv, char *edc_path, char *edj_path,
    };
 
    Ecore_Getopt_Value values[] = {
-      ECORE_GETOPT_VALUE_BOOL(*template_new),
+      ECORE_GETOPT_VALUE_BOOL(*template),
       ECORE_GETOPT_VALUE_LIST(id),
       ECORE_GETOPT_VALUE_LIST(sd),
       ECORE_GETOPT_VALUE_LIST(fd),
@@ -287,7 +285,7 @@ args_dispatch(int argc, char **argv, char *edc_path, char *edj_path,
         if (strstr(argv[i], ".edc"))
           {
              sprintf(edc_path, "%s", argv[i]);
-             default_edc = EINA_FALSE;
+             *default_edc = EINA_FALSE;
           }
         else if (strstr(argv[i], ".edj"))
           {
@@ -304,7 +302,7 @@ args_dispatch(int argc, char **argv, char *edc_path, char *edj_path,
      }
 
 defaults:
-   if (default_edc)
+   if (*default_edc)
      {
         Eina_Tmpstr *tmp_path;
         eina_file_mkstemp(DEFAULT_EDC_FORMAT, &tmp_path);
@@ -341,12 +339,11 @@ defaults:
    ecore_getopt_list_free(fd);
    ecore_getopt_list_free(sd);
    ecore_getopt_list_free(dd);
-
-   return default_edc;
 }
 
-static Eina_Bool
-config_data_set(app_data *ad, int argc, char **argv)
+static void
+config_data_set(app_data *ad, int argc, char **argv, Eina_Bool *default_edc,
+                Eina_Bool *template)
 {
    char edc_path[PATH_MAX] = { 0, };
    char edj_path[PATH_MAX] = { 0, };
@@ -354,16 +351,11 @@ config_data_set(app_data *ad, int argc, char **argv)
    Eina_List *snd_path = NULL;
    Eina_List *fnt_path = NULL;
    Eina_List *dat_path = NULL;
-   Eina_Bool template_new = EINA_FALSE;
 
-   Eina_Bool default_edc = args_dispatch(argc, argv, edc_path, edj_path,
-                                         &img_path, &snd_path, &fnt_path,
-                                         &dat_path, &template_new);
+   args_dispatch(argc, argv, edc_path, edj_path, &img_path, &snd_path,
+                 &fnt_path, &dat_path, default_edc, template);
    config_init(edc_path, edj_path, img_path, snd_path, fnt_path, dat_path);
    config_update_cb_set(config_update_cb, ad);
-   ad->template_new = template_new;
-
-   return default_edc;
 }
 
 static void
@@ -836,13 +828,6 @@ statusbar_set()
 }
 
 static void
-template_show(app_data *ad)
-{
-   if (ad->template_new)
-     menu_edc_new(EINA_TRUE);
-}
-
-static void
 live_edit_set(Evas_Object *enventor, Evas_Object *tools)
 {
    Evas_Object *trigger = tools_live_edit_get(tools);
@@ -859,7 +844,9 @@ init(app_data *ad, int argc, char **argv)
 
    enventor_init(argc, argv);
 
-   Eina_Bool default_edc = config_data_set(ad, argc, argv);
+   Eina_Bool template = EINA_FALSE;
+   Eina_Bool default_edc = EINA_TRUE;
+   config_data_set(ad, argc, argv, &default_edc, &template);
    newfile_default_set(default_edc);
    base_gui_init();
    statusbar_set();
@@ -875,7 +862,7 @@ init(app_data *ad, int argc, char **argv)
 
    menu_init(ad->enventor);
 
-   template_show(ad);
+   if (template) menu_edc_new(EINA_TRUE);
 
    //Initialize syntax color.
    syntax_color_init(ad->enventor);
