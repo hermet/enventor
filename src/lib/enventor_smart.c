@@ -25,6 +25,7 @@ typedef struct _Enventor_Object_Data
    edit_data *ed;
    Eio_Monitor *edc_monitor;
    Eina_Stringshare *group_name;
+   Ecore_Timer *file_modified_timer;
 
    Eina_Bool dummy_swallow : 1;
 
@@ -50,6 +51,18 @@ static const Evas_Smart_Cb_Description _smart_callbacks[] = {
 /*****************************************************************************/
 /* Internal method implementation                                            */
 /*****************************************************************************/
+
+static Eina_Bool
+file_modified_timer(void *data)
+{
+   Enventor_EDC_Modified modified;
+   Enventor_Object_Data *pd = data;
+   modified.self_changed = EINA_FALSE;
+   evas_object_smart_callback_call(pd->obj, SIG_EDC_MODIFIED, &modified);
+   pd->file_modified_timer = NULL;
+   return ECORE_CALLBACK_CANCEL;
+}
+
 static Eina_Bool
 file_modified_cb(void *data, int type EINA_UNUSED, void *event)
 {
@@ -60,8 +73,10 @@ file_modified_cb(void *data, int type EINA_UNUSED, void *event)
    if (ev->monitor != pd->edc_monitor) return ECORE_CALLBACK_PASS_ON;
    if (!edit_saved_get(pd->ed))
      {
-        modified.self_changed = EINA_FALSE;
-        evas_object_smart_callback_call(pd->obj, SIG_EDC_MODIFIED, &modified);
+        /* Don't notify info right soon,
+           if the source changing can be happened continously. */
+        if (pd->file_modified_timer) ecore_timer_del(pd->file_modified_timer);
+        pd->file_modified_timer = ecore_timer_add(3, file_modified_timer, pd);
         return ECORE_CALLBACK_DONE;
      }
    if (!edit_changed_get(pd->ed)) return ECORE_CALLBACK_DONE;
@@ -167,6 +182,7 @@ _enventor_object_evas_object_smart_del(Evas_Object *obj EINA_UNUSED,
 {
    EINA_REFCOUNT_UNREF(pd)
      {
+        ecore_timer_del(pd->file_modified_timer);
         eio_monitor_del(pd->edc_monitor);
         eina_stringshare_del(pd->group_name);
         edit_term(pd->ed);
