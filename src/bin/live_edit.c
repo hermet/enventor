@@ -195,7 +195,7 @@ live_edit_insert(live_data *ld)
                                         ld->part_info.rel2_x,
                                         ld->part_info.rel2_y,
                                         NULL, 0);
-   enventor_object_save(ld->enventor, config_edc_path_get());
+   enventor_object_save(ld->enventor, config_input_path_get());
 }
 
 static Eina_Bool

@@ -321,7 +321,7 @@ exit_save_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
                  void *event_info EINA_UNUSED)
 {
    menu_data *md = data;
-   enventor_object_save(md->enventor, config_edc_path_get());
+   enventor_object_save(md->enventor, config_input_path_get());
    elm_exit();
 }
 
@@ -369,7 +369,7 @@ new_save_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
                 void *event_info EINA_UNUSED)
 {
    menu_data *md = data;
-   enventor_object_save(md->enventor, config_edc_path_get());
+   enventor_object_save(md->enventor, config_input_path_get());
    newfile_open(md);
    warning_close(md);
    menu_close(md);
@@ -426,8 +426,8 @@ fileselector_save_done_cb(void *data, Evas_Object *obj, void *event_info)
 
    if (is_edc)
      {
-        config_edc_path_set(selected);
-        Eina_List *list = eina_list_append(NULL, config_edj_path_get());
+        config_input_path_set(selected);
+        Eina_List *list = eina_list_append(NULL, config_output_path_get());
         enventor_object_path_set(md->enventor, ENVENTOR_PATH_TYPE_EDJ, list);
         eina_list_free(list);
         if (!enventor_object_save(md->enventor, selected))
@@ -451,7 +451,7 @@ fileselector_save_done_cb(void *data, Evas_Object *obj, void *event_info)
         enventor_object_path_set(md->enventor, ENVENTOR_PATH_TYPE_EDJ,
                                  edj_pathes);
         enventor_object_modified_set(md->enventor, EINA_TRUE);
-        enventor_object_save(md->enventor, config_edc_path_get());
+        enventor_object_save(md->enventor, config_input_path_get());
         eina_list_free(edj_pathes);
 
      }
@@ -516,7 +516,7 @@ fileselector_load_done_cb(void *data, Evas_Object *obj, void *event_info)
                                "elm,action,msg,show", "");
         return;
      }
-   config_edc_path_set(selected);
+   config_input_path_set(selected);
    enventor_object_file_set(md->enventor, selected);
    base_title_set(selected);
    fileselector_close(md);
@@ -612,7 +612,7 @@ load_save_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
                  void *event_info EINA_UNUSED)
 {
    menu_data *md = data;
-   enventor_object_save(md->enventor, config_edc_path_get());
+   enventor_object_save(md->enventor, config_input_path_get());
    edc_file_load(md);
    warning_close(md);
 }

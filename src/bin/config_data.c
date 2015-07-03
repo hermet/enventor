@@ -2,19 +2,19 @@
 
 typedef struct config_s
 {
-   const char *edc_path;
-   const char *edj_path;
+   const char *input_path;
+   const char *output_path;
    const char *font_name;
    const char *font_style;
 
-   Eina_List *edc_img_path_list;
-   Eina_List *edc_snd_path_list;
-   Eina_List *edc_fnt_path_list;
-   Eina_List *edc_dat_path_list;
-   Eina_Strbuf *edc_img_path_buf; //pre-stored image paths for edc compile.
-   Eina_Strbuf *edc_snd_path_buf; //pre-stored sound paths for edc compile.
-   Eina_Strbuf *edc_fnt_path_buf; //pre-stored font paths for edc compile.
-   Eina_Strbuf *edc_dat_path_buf; //pre-stored data paths for edc compile.
+   Eina_List *img_path_list;
+   Eina_List *snd_path_list;
+   Eina_List *fnt_path_list;
+   Eina_List *dat_path_list;
+   Eina_Strbuf *img_path_buf; //pre-stored image paths for compile.
+   Eina_Strbuf *snd_path_buf; //pre-stored sound paths for compile.
+   Eina_Strbuf *fnt_path_buf; //pre-stored font paths for compile.
+   Eina_Strbuf *dat_path_buf; //pre-stored data paths for compile.
 
    Eina_List *syntax_color_list;
 
@@ -50,8 +50,8 @@ config_edj_path_update(config_data *cd)
    char buf[PATH_MAX];
    Eina_Tmpstr *tmp_path;
 
-   char *ext = strstr(cd->edc_path, ".edc");
-   const char *file = ecore_file_file_get(cd->edc_path);
+   char *ext = strstr(cd->input_path, ".edc");
+   const char *file = ecore_file_file_get(cd->input_path);
    if (ext && file)
      {
         char filename[PATH_MAX];
@@ -67,7 +67,7 @@ config_edj_path_update(config_data *cd)
         return;
      }
 
-   eina_stringshare_replace(&cd->edj_path, tmp_path);
+   eina_stringshare_replace(&cd->output_path, tmp_path);
    eina_tmpstr_del(tmp_path);
 }
 
@@ -148,10 +148,10 @@ config_load(void)
    // loaded config is not compatile with current version of Enventor
    if (cd->version < ENVENTOR_CONFIG_VERSION)
      {
-        cd->edc_img_path_list = NULL;
-        cd->edc_snd_path_list = NULL;
-        cd->edc_fnt_path_list = NULL;
-        cd->edc_dat_path_list = NULL;
+        cd->img_path_list = NULL;
+        cd->snd_path_list = NULL;
+        cd->fnt_path_list = NULL;
+        cd->dat_path_list = NULL;
         cd->font_scale = 1;
         cd->view_scale = 1;
         cd->editor_size = DEFAULT_EDITOR_SIZE;
@@ -170,37 +170,37 @@ config_load(void)
 
    g_cd = cd;
 
-   if (!cd->edc_img_path_list)
+   if (!cd->img_path_list)
      {
         sprintf(buf, "%s/images", elm_app_data_dir_get());
-        config_edc_img_path_set(buf);
+        config_img_path_set(buf);
      }
-   else cd->edc_img_path_buf =
-     config_paths_buf_set(cd->edc_img_path_list, " -id ");
+   else cd->img_path_buf =
+     config_paths_buf_set(cd->img_path_list, " -id ");
 
-   if (!cd->edc_snd_path_list)
+   if (!cd->snd_path_list)
      {
         sprintf(buf, "%s/sounds", elm_app_data_dir_get());
-        config_edc_snd_path_set(buf);
+        config_snd_path_set(buf);
      }
-   else cd->edc_snd_path_buf =
-     config_paths_buf_set(cd->edc_snd_path_list, " -sd ");
+   else cd->snd_path_buf =
+     config_paths_buf_set(cd->snd_path_list, " -sd ");
 
-   if (!cd->edc_fnt_path_list)
+   if (!cd->fnt_path_list)
      {
         sprintf(buf, "%s/fonts", elm_app_data_dir_get());
-        config_edc_fnt_path_set(buf);
+        config_fnt_path_set(buf);
      }
-   else cd->edc_fnt_path_buf =
-     config_paths_buf_set(cd->edc_fnt_path_list, " -fd ");
+   else cd->fnt_path_buf =
+     config_paths_buf_set(cd->fnt_path_list, " -fd ");
 
-   if (!cd->edc_dat_path_list)
+   if (!cd->dat_path_list)
      {
         sprintf(buf, "%s/data", elm_app_data_dir_get());
-        config_edc_dat_path_set(buf);
+        config_dat_path_set(buf);
      }
-   else cd->edc_dat_path_buf =
-     config_paths_buf_set(cd->edc_dat_path_list, " -dd ");
+   else cd->dat_path_buf =
+     config_paths_buf_set(cd->dat_path_list, " -dd ");
 
    if (!cd->syntax_color_list)
      {
@@ -221,13 +221,13 @@ eddc_init(void)
    edd_base = eet_data_descriptor_stream_new(&eddc);
 
    EET_DATA_DESCRIPTOR_ADD_LIST_STRING(edd_base, config_data,
-                                       "edc_img_path_list", edc_img_path_list);
+                                       "img_path_list", img_path_list);
    EET_DATA_DESCRIPTOR_ADD_LIST_STRING(edd_base, config_data,
-                                       "edc_snd_path_list", edc_snd_path_list);
+                                       "snd_path_list", snd_path_list);
    EET_DATA_DESCRIPTOR_ADD_LIST_STRING(edd_base, config_data,
-                                       "edc_fnt_path_list", edc_fnt_path_list);
+                                       "fnt_path_list", fnt_path_list);
    EET_DATA_DESCRIPTOR_ADD_LIST_STRING(edd_base, config_data,
-                                       "edc_dat_path_list", edc_dat_path_list);
+                                       "dat_path_list", dat_path_list);
    EET_DATA_DESCRIPTOR_ADD_LIST_STRING(edd_base, config_data,
                                        "syntax_color_list", syntax_color_list);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "version", version, EET_T_UINT);
@@ -273,38 +273,40 @@ eddc_init(void)
 }
 
 void
-config_edc_path_set(const char *edc_path)
+config_input_path_set(const char *input_path)
 {
    config_data *cd = g_cd;
-   eina_stringshare_replace(&cd->edc_path, edc_path);
+   eina_stringshare_replace(&cd->input_path, input_path);
    config_edj_path_update(cd);
 }
 
 void
-config_init(const char *edc_path, const char *edj_path,
-            Eina_List *edc_img_path, Eina_List *edc_snd_path,
-            Eina_List *edc_fnt_path, Eina_List *edc_dat_path)
+config_init(const char *input_path, const char *output_path,
+            Eina_List *img_path, Eina_List *snd_path,
+            Eina_List *fnt_path, Eina_List *dat_path)
 {
    eddc_init();
 
    config_data *cd = config_load();
    g_cd = cd;
 
-   if (edc_path[0]) config_edc_path_set(edc_path);
-   if (edj_path[0])
-      eina_stringshare_replace(&cd->edj_path, edj_path);
+   if (input_path[0]) config_input_path_set(input_path);
+   if (output_path[0]) eina_stringshare_replace(&cd->output_path, output_path);
 
-   if (edc_img_path)
-     g_cd->edc_img_path_list = edc_img_path;
+   if (input_path[0]) config_input_path_set(input_path);
+   if (output_path[0]) eina_stringshare_replace(&cd->output_path, output_path);
 
-   if (edc_snd_path)
-     g_cd->edc_snd_path_list = edc_snd_path;
+   if (img_path)
+     g_cd->img_path_list = img_path;
 
-   if (edc_fnt_path)
-     g_cd->edc_fnt_path_list = edc_fnt_path;
+   if (snd_path)
+     g_cd->snd_path_list = snd_path;
 
-   if (edc_dat_path)
-     g_cd->edc_dat_path_list = edc_dat_path;
+   if (fnt_path)
+     g_cd->fnt_path_list = fnt_path;
+
+   if (dat_path)
+     g_cd->dat_path_list = dat_path;
 }
 
 void
@@ -314,191 +316,191 @@ config_term(void)
 
    config_save(cd);
 
-   eina_stringshare_del(cd->edc_path);
-   eina_stringshare_del(cd->edj_path);
+   eina_stringshare_del(cd->input_path);
+   eina_stringshare_del(cd->output_path);
 
    Eina_Stringshare *str;
-   EINA_LIST_FREE(cd->edc_img_path_list, str) eina_stringshare_del(str);
-   EINA_LIST_FREE(cd->edc_snd_path_list, str) eina_stringshare_del(str);
-   EINA_LIST_FREE(cd->edc_fnt_path_list, str) eina_stringshare_del(str);
-   EINA_LIST_FREE(cd->edc_dat_path_list, str) eina_stringshare_del(str);
+   EINA_LIST_FREE(cd->img_path_list, str) eina_stringshare_del(str);
+   EINA_LIST_FREE(cd->snd_path_list, str) eina_stringshare_del(str);
+   EINA_LIST_FREE(cd->fnt_path_list, str) eina_stringshare_del(str);
+   EINA_LIST_FREE(cd->dat_path_list, str) eina_stringshare_del(str);
 
    EINA_LIST_FREE(cd->syntax_color_list, str) eina_stringshare_del(str);
 
-   if (cd->edc_img_path_buf) eina_strbuf_free(cd->edc_img_path_buf);
-   if (cd->edc_snd_path_buf) eina_strbuf_free(cd->edc_snd_path_buf);
-   if (cd->edc_fnt_path_buf) eina_strbuf_free(cd->edc_fnt_path_buf);
-   if (cd->edc_dat_path_buf) eina_strbuf_free(cd->edc_dat_path_buf);
+   if (cd->img_path_buf) eina_strbuf_free(cd->img_path_buf);
+   if (cd->snd_path_buf) eina_strbuf_free(cd->snd_path_buf);
+   if (cd->fnt_path_buf) eina_strbuf_free(cd->fnt_path_buf);
+   if (cd->dat_path_buf) eina_strbuf_free(cd->dat_path_buf);
 
    eet_data_descriptor_free(edd_base);
    free(cd);
 }
 
 void
-config_edc_snd_path_set(const char *edc_snd_path)
+config_snd_path_set(const char *snd_path)
 {
    config_data *cd = g_cd;
 
    //Free the existing paths
    const char *s;
-   EINA_LIST_FREE(cd->edc_snd_path_list, s) eina_stringshare_del(s);
+   EINA_LIST_FREE(cd->snd_path_list, s) eina_stringshare_del(s);
 
-   if (cd->edc_snd_path_buf) eina_strbuf_free(cd->edc_snd_path_buf);
-   cd->edc_snd_path_buf = eina_strbuf_new();
+   if (cd->snd_path_buf) eina_strbuf_free(cd->snd_path_buf);
+   cd->snd_path_buf = eina_strbuf_new();
 
    //parse paths by ';'
    const char *lex;
    Eina_Stringshare *append;
 
-   while(edc_snd_path && (strlen(edc_snd_path) > 0))
+   while(snd_path && (strlen(snd_path) > 0))
      {
-        lex = strstr(edc_snd_path, ";");
+        lex = strstr(snd_path, ";");
         if (lex)
           {
-             append = eina_stringshare_add_length(edc_snd_path,
-                                                  (lex - edc_snd_path));
-             cd->edc_snd_path_list = eina_list_append(cd->edc_snd_path_list,
+             append = eina_stringshare_add_length(snd_path,
+                                                  (lex - snd_path));
+             cd->snd_path_list = eina_list_append(cd->snd_path_list,
                                                       append);
-             eina_strbuf_append(cd->edc_snd_path_buf, " -sd ");
-             eina_strbuf_append(cd->edc_snd_path_buf, append);
+             eina_strbuf_append(cd->snd_path_buf, " -sd ");
+             eina_strbuf_append(cd->snd_path_buf, append);
              lex++;
           }
         else
           {
-             append = eina_stringshare_add(edc_snd_path);
-             cd->edc_snd_path_list = eina_list_append(cd->edc_snd_path_list,
+             append = eina_stringshare_add(snd_path);
+             cd->snd_path_list = eina_list_append(cd->snd_path_list,
                                                       append);
-             eina_strbuf_append(cd->edc_snd_path_buf, " -sd ");
-             eina_strbuf_append(cd->edc_snd_path_buf, append);
+             eina_strbuf_append(cd->snd_path_buf, " -sd ");
+             eina_strbuf_append(cd->snd_path_buf, append);
           }
 
-        edc_snd_path = lex;
+        snd_path = lex;
      }
 }
 
 void
-config_edc_dat_path_set(const char *edc_dat_path)
+config_dat_path_set(const char *dat_path)
 {
    config_data *cd = g_cd;
 
    //Free the existing paths
    const char *s;
-   EINA_LIST_FREE(cd->edc_dat_path_list, s) eina_stringshare_del(s);
+   EINA_LIST_FREE(cd->dat_path_list, s) eina_stringshare_del(s);
 
-   if (cd->edc_dat_path_buf) eina_strbuf_free(cd->edc_dat_path_buf);
-   cd->edc_dat_path_buf = eina_strbuf_new();
+   if (cd->dat_path_buf) eina_strbuf_free(cd->dat_path_buf);
+   cd->dat_path_buf = eina_strbuf_new();
 
    //parse paths by ';'
    const char *lex;
    Eina_Stringshare *append;
 
-   while(edc_dat_path && (strlen(edc_dat_path) > 0))
+   while(dat_path && (strlen(dat_path) > 0))
      {
-        lex = strstr(edc_dat_path, ";");
+        lex = strstr(dat_path, ";");
         if (lex)
           {
-             append = eina_stringshare_add_length(edc_dat_path,
-                                                  (lex - edc_dat_path));
-             cd->edc_dat_path_list = eina_list_append(cd->edc_dat_path_list,
+             append = eina_stringshare_add_length(dat_path,
+                                                  (lex - dat_path));
+             cd->dat_path_list = eina_list_append(cd->dat_path_list,
                                                       append);
-             eina_strbuf_append(cd->edc_dat_path_buf, " -dd ");
-             eina_strbuf_append(cd->edc_dat_path_buf, append);
+             eina_strbuf_append(cd->dat_path_buf, " -dd ");
+             eina_strbuf_append(cd->dat_path_buf, append);
              lex++;
           }
         else
           {
-             append = eina_stringshare_add(edc_dat_path);
-             cd->edc_dat_path_list = eina_list_append(cd->edc_dat_path_list,
+             append = eina_stringshare_add(dat_path);
+             cd->dat_path_list = eina_list_append(cd->dat_path_list,
                                                       append);
-             eina_strbuf_append(cd->edc_dat_path_buf, " -dd ");
-             eina_strbuf_append(cd->edc_dat_path_buf, append);
+             eina_strbuf_append(cd->dat_path_buf, " -dd ");
+             eina_strbuf_append(cd->dat_path_buf, append);
           }
 
-        edc_dat_path = lex;
+        dat_path = lex;
      }
 }
 
 void
-config_edc_fnt_path_set(const char *edc_fnt_path)
+config_fnt_path_set(const char *fnt_path)
 {
    config_data *cd = g_cd;
 
    //Free the existing paths
    const char *s;
-   EINA_LIST_FREE(cd->edc_fnt_path_list, s) eina_stringshare_del(s);
+   EINA_LIST_FREE(cd->fnt_path_list, s) eina_stringshare_del(s);
 
-   if (cd->edc_fnt_path_buf) eina_strbuf_free(cd->edc_fnt_path_buf);
-   cd->edc_fnt_path_buf = eina_strbuf_new();
+   if (cd->fnt_path_buf) eina_strbuf_free(cd->fnt_path_buf);
+   cd->fnt_path_buf = eina_strbuf_new();
 
    //parse paths by ';'
    const char *lex;
    Eina_Stringshare *append;
 
-   while(edc_fnt_path && (strlen(edc_fnt_path) > 0))
+   while(fnt_path && (strlen(fnt_path) > 0))
      {
-        lex = strstr(edc_fnt_path, ";");
+        lex = strstr(fnt_path, ";");
         if (lex)
           {
-             append = eina_stringshare_add_length(edc_fnt_path,
-                                                  (lex - edc_fnt_path));
-             cd->edc_fnt_path_list = eina_list_append(cd->edc_fnt_path_list,
+             append = eina_stringshare_add_length(fnt_path,
+                                                  (lex - fnt_path));
+             cd->fnt_path_list = eina_list_append(cd->fnt_path_list,
                                                       append);
-             eina_strbuf_append(cd->edc_fnt_path_buf, " -fd ");
-             eina_strbuf_append(cd->edc_fnt_path_buf, append);
+             eina_strbuf_append(cd->fnt_path_buf, " -fd ");
+             eina_strbuf_append(cd->fnt_path_buf, append);
              lex++;
           }
         else
           {
-             append = eina_stringshare_add(edc_fnt_path);
-             cd->edc_fnt_path_list = eina_list_append(cd->edc_fnt_path_list,
+             append = eina_stringshare_add(fnt_path);
+             cd->fnt_path_list = eina_list_append(cd->fnt_path_list,
                                                       append);
-             eina_strbuf_append(cd->edc_fnt_path_buf, " -fd ");
-             eina_strbuf_append(cd->edc_fnt_path_buf, append);
+             eina_strbuf_append(cd->fnt_path_buf, " -fd ");
+             eina_strbuf_append(cd->fnt_path_buf, append);
           }
 
-        edc_fnt_path = lex;
+        fnt_path = lex;
      }
 }
 
 void
-config_edc_img_path_set(const char *edc_img_path)
+config_img_path_set(const char *img_path)
 {
    config_data *cd = g_cd;
 
    //Free the existing paths
    const char *s;
-   EINA_LIST_FREE(cd->edc_img_path_list, s) eina_stringshare_del(s);
+   EINA_LIST_FREE(cd->img_path_list, s) eina_stringshare_del(s);
 
-   if (cd->edc_img_path_buf) eina_strbuf_free(cd->edc_img_path_buf);
-   cd->edc_img_path_buf = eina_strbuf_new();
+   if (cd->img_path_buf) eina_strbuf_free(cd->img_path_buf);
+   cd->img_path_buf = eina_strbuf_new();
 
    //parse paths by ';'
    const char *lex;
    Eina_Stringshare *append;
 
-   while(edc_img_path && (strlen(edc_img_path) > 0))
+   while(img_path && (strlen(img_path) > 0))
      {
-        lex = strstr(edc_img_path, ";");
+        lex = strstr(img_path, ";");
         if (lex)
           {
-             append = eina_stringshare_add_length(edc_img_path,
-                                                  (lex - edc_img_path));
-             cd->edc_img_path_list = eina_list_append(cd->edc_img_path_list,
+             append = eina_stringshare_add_length(img_path,
+                                                  (lex - img_path));
+             cd->img_path_list = eina_list_append(cd->img_path_list,
                                                       append);
-             eina_strbuf_append(cd->edc_img_path_buf, " -id ");
-             eina_strbuf_append(cd->edc_img_path_buf, append);
+             eina_strbuf_append(cd->img_path_buf, " -id ");
+             eina_strbuf_append(cd->img_path_buf, append);
              lex++;
           }
         else
           {
-             append = eina_stringshare_add(edc_img_path);
-             cd->edc_img_path_list = eina_list_append(cd->edc_img_path_list,
+             append = eina_stringshare_add(img_path);
+             cd->img_path_list = eina_list_append(cd->img_path_list,
                                                       append);
-             eina_strbuf_append(cd->edc_img_path_buf, " -id ");
-             eina_strbuf_append(cd->edc_img_path_buf, append);
+             eina_strbuf_append(cd->img_path_buf, " -id ");
+             eina_strbuf_append(cd->img_path_buf, append);
           }
 
-        edc_img_path = lex;
+        img_path = lex;
      }
 }
 
@@ -510,77 +512,77 @@ config_apply(void)
 }
 
 Eina_List *
-config_edc_img_path_list_get(void)
+config_img_path_list_get(void)
 {
    config_data *cd = g_cd;
-   return cd->edc_img_path_list;
+   return cd->img_path_list;
 }
 
 Eina_List *
-config_edc_snd_path_list_get(void)
+config_snd_path_list_get(void)
 {
    config_data *cd = g_cd;
-   return cd->edc_snd_path_list;
+   return cd->snd_path_list;
 }
 
 Eina_List *
-config_edc_dat_path_list_get(void)
+config_dat_path_list_get(void)
 {
    config_data *cd = g_cd;
-   return cd->edc_dat_path_list;
+   return cd->dat_path_list;
 }
 
 Eina_List *
-config_edc_fnt_path_list_get(void)
+config_fnt_path_list_get(void)
 {
    config_data *cd = g_cd;
-   return cd->edc_fnt_path_list;
+   return cd->fnt_path_list;
 }
 
 const char *
-config_edc_img_path_get(void)
+config_img_path_get(void)
 {
    config_data *cd = g_cd;
-   if (!cd->edc_img_path_buf) return NULL;
-   return eina_strbuf_string_get(cd->edc_img_path_buf);
+   if (!cd->img_path_buf) return NULL;
+   return eina_strbuf_string_get(cd->img_path_buf);
 }
 
 const char *
-config_edc_snd_path_get(void)
+config_snd_path_get(void)
 {
    config_data *cd = g_cd;
-   if (!cd->edc_snd_path_buf) return NULL;
-   return eina_strbuf_string_get(cd->edc_snd_path_buf);
+   if (!cd->snd_path_buf) return NULL;
+   return eina_strbuf_string_get(cd->snd_path_buf);
 }
 
 const char *
-config_edc_dat_path_get(void)
+config_dat_path_get(void)
 {
    config_data *cd = g_cd;
-   if (!cd->edc_dat_path_buf) return NULL;
-   return eina_strbuf_string_get(cd->edc_dat_path_buf);
+   if (!cd->dat_path_buf) return NULL;
+   return eina_strbuf_string_get(cd->dat_path_buf);
 }
 
 const char *
-config_edc_fnt_path_get(void)
+config_fnt_path_get(void)
 {
    config_data *cd = g_cd;
-   if (!cd->edc_fnt_path_buf) return NULL;
-   return eina_strbuf_string_get(cd->edc_fnt_path_buf);
+   if (!cd->fnt_path_buf) return NULL;
+   return eina_strbuf_string_get(cd->fnt_path_buf);
 }
 
 const char *
-config_edc_path_get(void)
+config_input_path_get(void)
 {
    config_data *cd = g_cd;
-   return cd->edc_path;
+   return cd->input_path;
 }
 
 const char *
-config_edj_path_get(void)
+config_output_path_get(void)
 {
    config_data *cd = g_cd;
-   return cd->edj_path;
+   return cd->output_path;
 }
 
 void

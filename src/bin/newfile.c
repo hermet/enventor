@@ -35,17 +35,17 @@ newfile_set(Evas_Object *enventor, Eina_Bool template_new)
 
    snprintf(buf, sizeof(buf), "%s/templates/%s.edc",
             elm_app_data_dir_get(), elm_object_item_text_get(it));
-   if (template_new && config_edc_path_get())
-     sprintf(path, "%s", config_edc_path_get());
+   if (template_new && config_input_path_get())
+     sprintf(path, "%s", config_input_path_get());
    else
      {
         Eina_Tmpstr *tmp_path;
         eina_file_mkstemp(DEFAULT_EDC_FORMAT, &tmp_path);
         sprintf(path, "%s", (const char *)tmp_path);
         eina_tmpstr_del(tmp_path);
-        config_edc_path_set(path);
+        config_input_path_set(path);
 
-        Eina_List *list = eina_list_append(NULL, config_edj_path_get());
+        Eina_List *list = eina_list_append(NULL, config_output_path_get());
         enventor_object_path_set(enventor, ENVENTOR_PATH_TYPE_EDJ, list);
         eina_list_free(list);
      }
@@ -71,7 +71,7 @@ newfile_default_set(Eina_Bool default_edc)
 
    snprintf(buf, sizeof(buf), "%s/templates/basic.edc",
             elm_app_data_dir_get());
-   success = eina_file_copy(buf,config_edc_path_get(),
+   success = eina_file_copy(buf,config_input_path_get(),
                             EINA_FILE_COPY_DATA, NULL, NULL);
    if (!success)
      {

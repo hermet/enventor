@@ -3,22 +3,22 @@
 #define MAX_VIEW_SCALE 10.0
 #define MIN_VIEW_SCALE 0.1
 
-void config_init(const char *edc_path, const char *edj_path, Eina_List *edc_img_path, Eina_List *edc_snd_path, Eina_List *edc_fnt_path, Eina_List *edc_dat_path);
+void config_init(const char *input_path, const char *output_path, Eina_List *img_path, Eina_List *snd_path, Eina_List *fnt_path, Eina_List *dat_path);
 void config_term(void);
-const char *config_edc_path_get(void);
-const char *config_edj_path_get(void);
-const char *config_edc_img_path_get(void);
-const char *config_edc_snd_path_get(void);
-const char *config_edc_fnt_path_get(void);
-const char *config_edc_dat_path_get(void);
-void config_edc_img_path_set(const char *edc_img_path);
-void config_edc_snd_path_set(const char *edc_snd_path);
-void config_edc_fnt_path_set(const char *edc_fnt_path);
-void config_edc_dat_path_set(const char *edc_fnt_path);
-Eina_List *config_edc_img_path_list_get(void);
-Eina_List *config_edc_snd_path_list_get(void);
-Eina_List *config_edc_fnt_path_list_get(void);
-Eina_List *config_edc_dat_path_list_get(void);
+const char *config_input_path_get(void);
+const char *config_output_path_get(void);
+const char *config_img_path_get(void);
+const char *config_snd_path_get(void);
+const char *config_fnt_path_get(void);
+const char *config_dat_path_get(void);
+void config_img_path_set(const char *img_path);
+void config_snd_path_set(const char *snd_path);
+void config_fnt_path_set(const char *fnt_path);
+void config_dat_path_set(const char *fnt_path);
+Eina_List *config_img_path_list_get(void);
+Eina_List *config_snd_path_list_get(void);
+Eina_List *config_fnt_path_list_get(void);
+Eina_List *config_dat_path_list_get(void);
 void config_syntax_color_set(Enventor_Syntax_Color_Type color_type, const char *val);
 const char *config_syntax_color_get(Enventor_Syntax_Color_Type color_type);
 void config_update_cb_set(void (*cb)(void *data), void *data);
@@ -27,7 +27,7 @@ void config_linenumber_set(Eina_Bool enabled);
 Eina_Bool config_stats_bar_get(void);
 Eina_Bool config_linenumber_get(void);
 void config_apply(void);
-void config_edc_path_set(const char *edc_path);
+void config_input_path_set(const char *input_path);
 void config_view_size_get(Evas_Coord *w, Evas_Coord *h);
 void config_view_size_set(Evas_Coord w, Evas_Coord h);
 Eina_Bool config_view_size_configurable_get(void);

@@ -54,7 +54,7 @@ warning_replace_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
                        void *event_info EINA_UNUSED)
 {
    file_mgr_data *fmd = data;
-   enventor_object_file_set(fmd->enventor, config_edc_path_get());
+   enventor_object_file_set(fmd->enventor, config_input_path_get());
    warning_close(fmd);
 }
 
@@ -148,14 +148,14 @@ file_mgr_edc_save(void)
    char buf[PATH_MAX];
    file_mgr_data *fmd = g_fmd;
 
-   Eina_Bool save_success = enventor_object_save(fmd->enventor, config_edc_path_get());
+   Eina_Bool save_success = enventor_object_save(fmd->enventor, config_input_path_get());
 
    if (!config_stats_bar_get()) return;
 
    if (save_success)
-     snprintf(buf, sizeof(buf), "File saved. \"%s\"", config_edc_path_get());
+     snprintf(buf, sizeof(buf), "File saved. \"%s\"", config_input_path_get());
    else
-     snprintf(buf, sizeof(buf), "Already saved. \"%s\"",  config_edc_path_get());
+     snprintf(buf, sizeof(buf), "Already saved. \"%s\"",  config_input_path_get());
 
    stats_info_msg_update(buf);
 }

@@ -56,18 +56,18 @@ enventor_common_setup(Evas_Object *enventor)
    enventor_object_auto_indent_set(enventor, config_auto_indent_get());
    enventor_object_auto_complete_set(enventor, config_auto_complete_get());
 
-   Eina_List *list = eina_list_append(NULL, config_edj_path_get());
+   Eina_List *list = eina_list_append(NULL, config_output_path_get());
    enventor_object_path_set(enventor, ENVENTOR_PATH_TYPE_EDJ, list);
    eina_list_free(list);
 
    enventor_object_path_set(enventor, ENVENTOR_PATH_TYPE_IMAGE,
-                            config_edc_img_path_list_get());
+                            config_img_path_list_get());
    enventor_object_path_set(enventor, ENVENTOR_PATH_TYPE_SOUND,
-                            config_edc_snd_path_list_get());
+                            config_snd_path_list_get());
    enventor_object_path_set(enventor, ENVENTOR_PATH_TYPE_FONT,
-                            config_edc_fnt_path_list_get());
+                            config_fnt_path_list_get());
    enventor_object_path_set(enventor, ENVENTOR_PATH_TYPE_DATA,
-                            config_edc_dat_path_list_get());
+                            config_dat_path_list_get());
 }
 
 static void
@@ -470,7 +470,7 @@ enventor_ctxpopup_changed_cb(void *data, Evas_Object *obj,
         return;
      }
    ad->on_saving = EINA_TRUE;
-   enventor_object_save(obj, config_edc_path_get());
+   enventor_object_save(obj, config_input_path_get());
 }
 
 static void
@@ -481,7 +481,7 @@ enventor_live_view_updated_cb(void *data, Evas_Object *obj,
 
    if (ad->lazy_save && enventor_object_modified_get(obj))
      {
-        enventor_object_save(obj, config_edc_path_get());
+        enventor_object_save(obj, config_input_path_get());
         ad->lazy_save = EINA_FALSE;
      }
    else
@@ -539,10 +539,10 @@ enventor_setup(app_data *ad)
 
    enventor_common_setup(enventor);
 
-   enventor_object_file_set(enventor, config_edc_path_get());
+   enventor_object_file_set(enventor, config_input_path_get());
 
    base_enventor_set(enventor);
-   base_title_set(config_edc_path_get());
+   base_title_set(config_input_path_get());
    base_live_view_set(enventor_object_live_view_get(enventor));
 
    ad->enventor = enventor;
@@ -564,7 +564,7 @@ default_template_insert(app_data *ad)
         char msg[64];
         snprintf(msg, sizeof(msg), "Template code inserted, (%s)", syntax);
         stats_info_msg_update(msg);
-        enventor_object_save(ad->enventor, config_edc_path_get());
+        enventor_object_save(ad->enventor, config_input_path_get());
      }
    else
      {
