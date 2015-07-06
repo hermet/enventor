@@ -733,9 +733,9 @@ group "lexem" struct {
                                        }
                                        group "txt" var_array {
                                            count 1;
-                                           value "string" string: "%s: \"\" 0.0;";
+                                           value "string" string: "%s: \"\";";
                                        }
-                                       value "cursor_offset" int: 6;
+                                       value "cursor_offset" int: 2;
                                        value "line_back" int: 0;
                                        group "name" var_array {
                                            count 1;
@@ -1255,9 +1255,9 @@ group "lexem" struct {
                                }
                                group "txt" var_array {
                                    count 1;
-                                   value "string" string: "%s: STATE_SET \"\" 0.0;";
+                                   value "string" string: "%s: STATE_SET \"\";";
                                }
-                               value "cursor_offset" int: 6;
+                               value "cursor_offset" int: 2;
                                value "line_back" int: 0;
                                group "name" var_array {
                                   count 1;
