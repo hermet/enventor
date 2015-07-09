@@ -160,6 +160,7 @@ group "syntax_color_group" struct {
          group "keys" list {
             value "key" string: "ACCELERATE_FACTOR";
             value "key" string: "ACCELERATE";
+            value "key" string: "ACCEL_FAC";
             value "key" string: "ACTION_STOP";
             value "key" string: "BEFORE";
             value "key" string: "BOTH";
@@ -170,8 +171,10 @@ group "syntax_color_group" struct {
             value "key" string: "CURRENT";
             value "key" string: "DECELERATE_FACTOR";
             value "key" string: "DECELERATE";
+            value "key" string: "DECEL_FAC";
             value "key" string: "DEFAULT";
             value "key" string: "DIVISOR_INTERP";
+            value "key" string: "DIVIS";
             value "key" string: "EDITABLE";
             value "key" string: "EXPLICIT";
             value "key" string: "FAR_SHADOW";
@@ -180,6 +183,7 @@ group "syntax_color_group" struct {
             value "key" string: "GLOW";
             value "key" string: "HORIZONTAL";
             value "key" string: "LINEAR";
+            value "key" string: "LIN";
             value "key" string: "LOSSY";
             value "key" string: "MSG_FLOAT_SET";
             value "key" string: "MSG_FLOAT";
@@ -207,6 +211,8 @@ group "syntax_color_group" struct {
             value "key" string: "SIGNAL_EMIT";
             value "key" string: "SINUSOIDAL_FACTOR";
             value "key" string: "SINUSOIDAL";
+            value "key" string: "SIN_FAC";
+            value "key" string: "SIN";
             value "key" string: "SOFT_OUTLINE";
             value "key" string: "SOFT_SHADOW";
             value "key" string: "SOLID";
