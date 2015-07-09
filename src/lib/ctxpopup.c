@@ -103,6 +103,7 @@ slider_changed_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
         strcat(ctxdata->candidate, buf);
      }
    strcat(ctxdata->candidate, ctxdata->attr->append_str);
+   ecore_animator_del(ctxdata->animator);
    ctxdata->animator = ecore_animator_add(changed_animator_cb, ctxdata);
 }
 
