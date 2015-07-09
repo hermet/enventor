@@ -1657,23 +1657,23 @@ group { name: "elm/entry/base/enventor";
    
    styles {
       style { name: "entry_style";
-         base: "font="FN" font_size=10 color=#ffffff style=shadow,bottom shadow_color=#00000080 wrap=word text_class=enventor_entry color_class=enventor_entry left_margin=2 right_margin=2";
+         base: "font="FN" font_size=10 color=#ffffff style=shadow,bottom shadow_color=#00000080 wrap=word text_class=enventor_entry color_class=enventor_entry left_margin=2 right_margin=2 tabstops=10";
          ENABLED_TEXTBLOCK_TAGS
       }
       style { name: "entry_nowrap_style";
-         base: "font="FN" font_size=10 color=#ffffff style=shadow,bottom shadow_color=#00000080 text_class=enventor_entry color_class=enventor_entry left_margin=2 right_margin=2";
+         base: "font="FN" font_size=10 color=#ffffff style=shadow,bottom shadow_color=#00000080 text_class=enventor_entry color_class=enventor_entry left_margin=2 right_margin=2 tabstops=10";
          ENABLED_TEXTBLOCK_TAGS
       }
       style { name: "entry_disabled_style";
-         base: "font="FN" font_size=10 color=#151515 style=shadow,bottom shadow_color=#ffffff19 wrap=word text_class=enventor_entry color_class=enventor_entry_disabled left_margin=2 right_margin=2";
+         base: "font="FN" font_size=10 color=#151515 style=shadow,bottom shadow_color=#ffffff19 wrap=word text_class=enventor_entry color_class=enventor_entry_disabled left_margin=2 right_margin=2 tabstops=10";
          DISABLED_TEXTBLOCK_TAGS
       }
       style { name: "entry_nowrap_disabled_style";
-         base: "font="FN" font_size=10 color=#151515 style=shadow,bottom shadow_color=#ffffff19 text_class=enventor_entry color_class=enventor_entry_disabled left_margin=2 right_margin=2";
+         base: "font="FN" font_size=10 color=#151515 style=shadow,bottom shadow_color=#ffffff19 text_class=enventor_entry color_class=enventor_entry_disabled left_margin=2 right_margin=2 tabstops=10";
          DISABLED_TEXTBLOCK_TAGS
       }
       style { name: "entry_guide_style";
-         base: "font="FN" font_size=10 color=#000000 style=shadow,bottom shadow_color=#ffffff19 wrap=word text_class=enventor_entry color_class=enventor_entry_guide left_margin=2 right_margin=2 ellipsis=0.0";
+         base: "font="FN" font_size=10 color=#000000 style=shadow,bottom shadow_color=#ffffff19 wrap=word text_class=enventor_entry color_class=enventor_entry_guide left_margin=2 right_margin=2 ellipsis=0.0 tabstops=10";
          DISABLED_TEXTBLOCK_TAGS
       }
    }
