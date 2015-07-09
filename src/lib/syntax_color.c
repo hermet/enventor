@@ -893,6 +893,21 @@ color_apply(color_data *cd, const char *src, int length, char *from, char *to)
              continue;
           }
 
+        //handle comment: /* ~ */
+        ret = comment_apply(strbuf, &src, length, &cur, &prev, cd->col_comment,
+                            &inside_comment);
+        if (ret == 1) continue;
+        else if (ret == -1) goto finished;
+
+        //handle comment: //
+        if (!from || (cur >= from))
+          {
+             ret = comment2_apply(strbuf, &src, length, &cur, &prev,
+                                  cd->col_comment, &inside_comment);
+             if (ret == 1) continue;
+             else if (ret == -1) goto finished;
+          }
+
         if (*cur == '<')
           {
              //escape EOL: <br/>
@@ -908,21 +923,6 @@ color_apply(color_data *cd, const char *src, int length, char *from, char *to)
                   cur += TAB_LEN;
                   continue;
                }
-          }
-
-        //handle comment: /* ~ */
-        ret = comment_apply(strbuf, &src, length, &cur, &prev, cd->col_comment,
-                            &inside_comment);
-        if (ret == 1) continue;
-        else if (ret == -1) goto finished;
-
-        //handle comment: //
-        if (!from || (cur >= from))
-          {
-             ret = comment2_apply(strbuf, &src, length, &cur, &prev,
-                                  cd->col_comment, &inside_comment);
-             if (ret == 1) continue;
-             else if (ret == -1) goto finished;
           }
 
         //handle comment: preprocessors, #
