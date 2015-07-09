@@ -510,25 +510,31 @@ color_cancel(color_data *cd, const char *src, int length, int from_pos,
 
    while (cur && (cur <= (src + length)))
      {
+        //Capture start line
         if (find_from && (line == from_pos))
           {
              from_pos = eina_strbuf_length_get(strbuf);
              find_from = EINA_FALSE;
           }
-        if (find_to && (line == to_pos))
-          {
-             to_pos = eina_strbuf_length_get(strbuf);
-             find_to = EINA_FALSE;
-          }
+
         if (*cur == '<')
           {
              //escape EOL: <br/>
              if (!strncmp(cur, EOL, EOL_LEN))
                {
-                  eina_strbuf_append_length(strbuf, prev, (cur - prev + EOL_LEN));
+                  //Capture end line
+                  if (find_to && (line == to_pos))
+                    {
+                       to_pos = eina_strbuf_length_get(strbuf);
+                       find_to = EINA_FALSE;
+                    }
+
+                  eina_strbuf_append_length(strbuf, prev,
+                                            (cur - prev + EOL_LEN));
                   cur += EOL_LEN;
                   prev = cur;
                   line++;
+
                   continue;
                }
              //escape TAB: <tab/>
@@ -537,11 +543,18 @@ color_cancel(color_data *cd, const char *src, int length, int from_pos,
                   cur += TAB_LEN;
                   continue;
                }
-            //escape markups: <..> ~ </..>
-            if (markup_skip(strbuf, &src, length, &cur, &prev) == 1)
-              continue;
+             //escape markups: <..> ~ </..>
+             if (markup_skip(strbuf, &src, length, &cur, &prev) == 1)
+               continue;
           }
         cur++;
+     }
+
+   //Capture end line
+   if (find_to && (line == to_pos))
+     {
+        to_pos = eina_strbuf_length_get(strbuf);
+        find_to = EINA_FALSE;
      }
 
    //Same with origin source.
@@ -601,7 +614,7 @@ static int
 color_markup_insert(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
                     char **prev, color_data *cd)
 {
-   const char *SYMBOLS = " {}[];:.()!<>=&|";
+   const char *SYMBOLS = " {}[];:.()!<>=&|/";
    Eina_Bool symbol = EINA_FALSE;
 
    if (strchr(SYMBOLS, (*cur)[0])) symbol = EINA_TRUE;
@@ -872,6 +885,23 @@ color_apply(color_data *cd, const char *src, int length, char *from, char *to)
           {
              cur++;
              continue;
+          }
+
+        if (*cur == '<')
+          {
+             //escape EOL: <br/>
+             if (!strncmp(cur, EOL, EOL_LEN))
+               {
+                  cur += EOL_LEN;
+                  continue;
+               }
+
+             //escape TAB: <tab/>
+             if (!strncmp(cur, TAB, TAB_LEN))
+               {
+                  cur += TAB_LEN;
+                  continue;
+               }
           }
 
         //handle comment: /* ~ */
