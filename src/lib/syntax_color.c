@@ -5,7 +5,7 @@
 #include <Enventor.h>
 #include "enventor_private.h"
 
-#define COL_NUM 6
+#define MAX_COL_NUM 6
 
 typedef struct color_tuple
 {
@@ -24,7 +24,8 @@ typedef struct syntax_color_group
    char *string;
    char *comment;
    char *macro;
-   color colors[COL_NUM];
+   char *count;
+   color colors[MAX_COL_NUM];
 } syntax_color_group;
 
 struct syntax_color_s
@@ -35,7 +36,8 @@ struct syntax_color_s
    Eina_Stringshare *col_string;
    Eina_Stringshare *col_comment;
    Eina_Stringshare *col_macro;
-   Eina_Stringshare *cols[COL_NUM];
+   Eina_Stringshare *cols[MAX_COL_NUM];
+   int color_cnt;
    Eina_List *macros;
    Ecore_Thread *thread;
 
@@ -85,6 +87,8 @@ eddc_init(void)
                                  comment, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_scg, syntax_color_group, "macro",
                                  macro, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd_scg, syntax_color_group, "count",
+                                 count, EET_T_STRING);
 
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_color, color, "val", val, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_LIST_STRING(edd_color, color, "keys", keys);
@@ -134,10 +138,12 @@ color_table_init(color_data *cd)
    //free(scg->comment);
    cd->col_macro = eina_stringshare_add(scg->macro);
    //free(scg->macro);
+   cd->color_cnt = atoi(scg->count);
+   //free(scg->count);
 
    cd->color_hash = eina_hash_string_small_new(hash_free_cb);
 
-   for (i = 0; i < COL_NUM; i++)
+   for (i = 0; i < cd->color_cnt; i++)
      {
         cd->cols[i] = eina_stringshare_add(scg->colors[i].val);
         //free(scg->colors[i].val);
@@ -669,7 +675,7 @@ color_markup_insert(Eina_Strbuf *strbuf, const char **src, int length, char **cu
 color_data *
 color_init(Eina_Strbuf *strbuf)
 {
-   color_data *cd = malloc(sizeof(color_data));
+   color_data *cd = calloc(1, sizeof(color_data));
    if (!cd)
      {
         EINA_LOG_ERR("Failed to allocate Memory!");
@@ -699,7 +705,7 @@ color_term(color_data *cd)
    EINA_LIST_FREE(cd->macros, macro) eina_stringshare_del(macro);
 
    int i;
-   for(i = 0; i < COL_NUM; i++)
+   for(i = 0; i < cd->color_cnt; i++)
      eina_stringshare_del(cd->cols[i]);
 
    free(cd);
