@@ -524,10 +524,10 @@ syntax_template_format_create(void)
      }
 
    char *utf8 = eina_file_map_all(file, EINA_FILE_POPULATE);
-   if (!utf8) goto syntax_template_format_create_err;
+   if (!utf8) goto err;
 
    char *syntax_template_format = calloc(1, sizeof(char) * (strlen(utf8) + 1));
-   if (!syntax_template_format) goto syntax_template_format_create_err;
+   if (!syntax_template_format) goto err;
    strcpy(syntax_template_format, utf8);
 
    tsd->syntax_template_format = syntax_template_format;
@@ -536,7 +536,7 @@ syntax_template_format_create(void)
 
    return tsd->syntax_template_format;
 
-syntax_template_format_create_err:
+err:
    EINA_LOG_ERR("Failed to allocate Memory!");
    if (utf8) free(utf8);
 
