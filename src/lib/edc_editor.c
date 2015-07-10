@@ -254,7 +254,7 @@ edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
                 parser_line_cnt_get(ed->pd, info->change.insert.content);
           }
 
-        if (ed->auto_indent)
+        if (edit_auto_indent_get(ed))
           {
              increase =
                 indent_insert_apply(syntax_indent_data_get(ed->sh), ed->en_edit,
@@ -267,7 +267,7 @@ edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
      {
         int decrease = parser_line_cnt_get(ed->pd, info->change.del.content);
 
-        if (ed->auto_indent)
+        if (edit_auto_indent_get(ed))
           {
              if (indent_delete_apply(syntax_indent_data_get(ed->sh),
                                      ed->en_edit, info->change.del.content,
