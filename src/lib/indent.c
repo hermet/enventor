@@ -103,7 +103,11 @@ indent_insert_bracket_case(indent_data *id, Evas_Object *entry, int cur_line)
      }
 
    int space = indent_space_get(id, entry);
-   if (space == len) return;
+   if (space == len)
+     {
+        free(utf8);
+        return;
+     }
 
    int i = 0;
    if (len > space)
