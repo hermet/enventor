@@ -108,7 +108,7 @@ static void
 color_load()
 {
    char buf[PATH_MAX];
-   snprintf(buf, sizeof(buf), "%s/color/color.eet", elm_app_data_dir_get());
+   snprintf(buf, sizeof(buf), "%s/color/edc.eet", elm_app_data_dir_get());
 
    Eet_File *ef = eet_open(buf, EET_FILE_MODE_READ);
    if (ef)
