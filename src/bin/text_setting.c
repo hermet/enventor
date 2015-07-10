@@ -551,23 +551,23 @@ syntax_template_create(double font_scale)
    text_setting_data *tsd = g_tsd;
    char *syntax_template_str = NULL;
    char *syntax_template_format = syntax_template_format_create();
-   if (!syntax_template_format) goto syntax_template_create_err;
+   if (!syntax_template_format) goto err;
 
    syntax_template_str = calloc(1, sizeof(char) * SYNTAX_TEMPLATE_MAX_LEN);
-   if (!syntax_template_str) goto syntax_template_create_err;
+   if (!syntax_template_str) goto err;
 
    syntax_template_set(syntax_template_str, syntax_template_format, font_scale);
 
    color_keyword *color_keyword_list;
    color_keyword_list = color_keyword_list_create(syntax_template_str);
-   if (!color_keyword_list) goto syntax_template_create_err;
+   if (!color_keyword_list) goto err;
 
    tsd->syntax_template_str = syntax_template_str;
    tsd->color_keyword_list = color_keyword_list;
 
    return tsd->syntax_template_str;
 
-syntax_template_create_err:
+err:
    EINA_LOG_ERR("Failed to allocate Memory!");
    if (syntax_template_format)
      {
