@@ -74,25 +74,9 @@ efreet >= ${efl_version}"
 
 AC_SUBST(requirement_enventor)
 
-PKG_CHECK_MODULES([ENVENTOR],
-  [
-     ${requirement_enventor}
-  ]
-)
+PKG_CHECK_MODULES([ENVENTOR], [${requirement_enventor}])
 
 ### Checks for linker characteristics
-lt_enable_auto_import=""
-case "${host_os}" in
-   mingw*)
-      lt_enable_auto_import="-Wl,--enable-auto-import"
-   ;;
-esac
-case "$host_vendor" in
-  ps3*)
-      # Escape had already been checked to exist
-    ;;
-esac
-AC_SUBST([lt_enable_auto_import])
 
 # Needs to be moved into a macro, and also, needs a way to automatically fetch from all the dependencies using the Requires.
 DEPS_EOLIAN_FLAGS=`${PKG_CONFIG} --variable=eolian_flags eo evas edje ecore elementary efl`
