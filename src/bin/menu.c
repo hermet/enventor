@@ -547,7 +547,7 @@ edc_file_save(menu_data *md)
    Evas_Object *fs = elm_fileselector_add(layout);
    elm_object_part_text_set(fs, "ok", "Save");
    elm_object_part_text_set(fs, "cancel", "Close");
-   elm_fileselector_path_set(fs, md->last_accessed_path ? md->last_accessed_path : getenv("HOME"));
+   elm_fileselector_path_set(fs, md->last_accessed_path ? md->last_accessed_path : eina_environment_home_get());
    elm_fileselector_expandable_set(fs, EINA_FALSE);
    elm_fileselector_is_save_set(fs, EINA_TRUE);
    evas_object_smart_callback_add(fs, "done", fileselector_save_done_cb, md);
@@ -579,7 +579,7 @@ edc_file_load(menu_data *md)
    base_win_resize_object_add(layout);
 
    Evas_Object *fs = elm_fileselector_add(layout);
-   elm_fileselector_path_set(fs, md->last_accessed_path ? md->last_accessed_path : getenv("HOME"));
+   elm_fileselector_path_set(fs, md->last_accessed_path ? md->last_accessed_path : eina_environment_home_get());
    elm_object_part_text_set(fs, "ok", "Load");
    elm_object_part_text_set(fs, "cancel", "Close");
    elm_fileselector_expandable_set(fs, EINA_FALSE);
