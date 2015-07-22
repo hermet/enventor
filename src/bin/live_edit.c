@@ -661,7 +661,7 @@ ctrl_pt_init(live_data *ld)
         evas_object_event_callback_add(layout,
                                        EVAS_CALLBACK_MOUSE_UP,
                                        cp_mouse_up_cb, ld);
-        evas_object_data_set(layout, "index", (void *) i);
+        evas_object_data_set(layout, "index", (void *)(uintptr_t)i);
 
         ld->ctrl_pt[i] = layout;
      }
@@ -910,7 +910,7 @@ ctxpopup_it_selected_cb(void *data, Evas_Object *obj,
                         void *event_info EINA_UNUSED)
 {
    live_data *ld = g_ld;
-   ld->part_info.type = (unsigned int) data;
+   ld->part_info.type = (unsigned int)(uintptr_t)data;
    live_edit_layer_set(ld);
 
    elm_ctxpopup_dismiss(obj);
@@ -945,7 +945,7 @@ ctxpopup_create(live_data *ld)
         Evas_Object *icon = elm_image_add(ctxpopup);
         elm_image_file_set(icon, EDJE_PATH, CTXPOPUP_ITEMS[i].name);
         elm_ctxpopup_item_append(ctxpopup, CTXPOPUP_ITEMS[i].name, icon,
-                                 ctxpopup_it_selected_cb, (void *)i);
+                                 ctxpopup_it_selected_cb, (void *)(uintptr_t)i);
      }
 
    evas_object_smart_callback_add(ctxpopup, "dismissed", ctxpopup_dismissed_cb,
