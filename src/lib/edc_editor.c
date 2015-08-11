@@ -36,6 +36,7 @@ struct editor_s
 
    int cur_line;
    int line_max;
+   int error_line;
    int syntax_color_lock;
    Evas_Coord scroller_h;
 
@@ -49,6 +50,7 @@ struct editor_s
    double font_scale;
    const char *font_name;
    const char *font_style;
+   const char *error_target;
 
    Eina_Bool edit_changed : 1;
    Eina_Bool linenumber : 1;
@@ -137,6 +139,39 @@ edit_font_apply(edit_data *ed, const char *font_name, const char *font_style)
 }
 
 static void
+error_highlight(edit_data *ed, Evas_Object *tb)
+{
+   Evas_Textblock_Cursor *cur1 = evas_object_textblock_cursor_new(tb);
+   if (ed->error_line)
+     {
+        evas_textblock_cursor_line_set(cur1, ed->error_line);
+        evas_textblock_cursor_line_char_first(cur1);
+        while(evas_textblock_cursor_content_get(cur1)[0] == ' ')
+           evas_textblock_cursor_char_next(cur1);
+        evas_object_textblock_text_markup_prepend(cur1, "<error>");
+        evas_textblock_cursor_line_char_last(cur1);
+        evas_object_textblock_text_markup_prepend(cur1, "</error>");
+     }
+   else if (ed->error_target)
+     {
+        const char *ptr = NULL;
+        const char *par = NULL;
+        while (evas_textblock_cursor_paragraph_next(cur1))
+          {
+             par = evas_textblock_cursor_paragraph_text_get(cur1);
+             if (par && (ptr = strstr(par, ed->error_target)))
+                break;
+          }
+        evas_textblock_cursor_paragraph_char_first(cur1);
+        while(evas_textblock_cursor_content_get(cur1)[0] == ' ')
+           evas_textblock_cursor_char_next(cur1);
+        evas_object_textblock_text_markup_prepend(cur1, "<error>");
+        evas_textblock_cursor_paragraph_char_last(cur1);
+        evas_object_textblock_text_markup_prepend(cur1, "</error>");
+     }
+   evas_textblock_cursor_free(cur1);
+}
+static void
 syntax_color_apply(edit_data *ed, Eina_Bool partial)
 {
    Evas_Object *tb = elm_entry_textblock_get(ed->en_edit);
@@ -162,7 +197,7 @@ syntax_color_apply(edit_data *ed, Eina_Bool partial)
       But it can avoid entry_object_text_escaped_set() in Edje.
       Logically that's unnecessary in this case. */
    evas_object_textblock_text_markup_set(tb, translated);
-
+   error_highlight(ed, tb);
    entry_recover(ed, pos);
 }
 
@@ -213,7 +248,7 @@ syntax_color_thread_end_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
       But it can avoid entry_object_text_escaped_set() in Edje.
       Logically that's unnecessary in this case. */
    evas_object_textblock_text_markup_set(tb, td->translated);
-
+   error_highlight(td->ed, tb);
    entry_recover(td->ed, pos);
 
    td->ed->syntax_color_thread = NULL;
@@ -224,6 +259,8 @@ static void
 syntax_color_thread_cancel_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
    syntax_color_td *td = data;
+   Evas_Object *tb = elm_entry_textblock_get(td->ed->en_edit);
+   error_highlight(td->ed, tb);
    td->ed->syntax_color_thread = NULL;
    free(td);
 }
@@ -236,6 +273,9 @@ edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
    edit_changed_set(ed, EINA_TRUE);
 
    Eina_Bool syntax_color = EINA_TRUE;
+   ed->error_line = 0;
+   eina_stringshare_del(ed->error_target);
+   ed->error_target = NULL;
 
    if (info->insert)
      {
@@ -1358,6 +1398,13 @@ Eina_Bool
 edit_auto_indent_get(edit_data *ed)
 {
    return ed->auto_indent;
+}
+
+void
+edit_error_set(edit_data *ed, int line, const char *target)
+{
+   ed->error_line = line;
+   ed->error_target = target;
 }
 
 Eina_Bool

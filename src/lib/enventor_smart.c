@@ -134,7 +134,7 @@ edit_view_sync_cb(void *data, Eina_Stringshare *state_name, double state_value,
         prev_part_name = NULL;
         return;
      }
-      
+
    if ((part_name) && (part_name != prev_part_name))
      {
        view_part_state_set(VIEW_DATA, prev_part_name, "default", 0.0);
@@ -149,8 +149,41 @@ edit_view_sync_cb(void *data, Eina_Stringshare *state_name, double state_value,
 static void
 build_err_noti_cb(void *data, const char *msg)
 {
-   Evas_Object *enventor = data;
-   evas_object_smart_callback_call(enventor, SIG_COMPILE_ERROR, (char *)msg);
+   Enventor_Object_Data *pd = data;
+
+   int line_num = 1;
+   Eina_Stringshare *target = NULL;
+   char *ptr = NULL;
+   char *utf8 = evas_textblock_text_markup_to_utf8(NULL, msg);
+
+   if (!utf8) goto call_error;
+
+   if ((ptr = strstr(utf8, ".edc")))
+     {
+        ptr += strlen(".edc");
+        if (!ptr || (ptr[0] != ':')) goto call_error;
+        if (!(ptr++)) goto call_error;
+        line_num = atoi(ptr);
+     }
+   else if ((ptr = strstr(utf8, "image")) ||
+            (ptr = strstr(utf8, "group")) ||
+            (ptr = strstr(utf8, "part")))
+      {
+        ptr = strchr(ptr, '\"');
+        if (!ptr || !(ptr++)) goto call_error;
+        char *ptr2 = strchr(ptr, '\"');
+        if (!ptr2) goto call_error;
+        int length = ptr2 - ptr;
+        target = eina_stringshare_add_length(ptr, length);
+     }
+
+call_error:
+   free(utf8);
+   edit_error_set(pd->ed, line_num - 1, target);
+   if (line_num || target)
+     edit_syntax_color_full_apply(pd->ed, EINA_TRUE);
+   evas_object_smart_callback_call(pd->obj, SIG_COMPILE_ERROR, (char *)msg);
+
 }
 
 /*****************************************************************************/
@@ -176,7 +209,7 @@ _enventor_object_evas_object_smart_add(Eo *obj, Enventor_Object_Data *pd)
    edj_mgr_init(obj);
    pd->ed = edit_init(obj);
    edit_view_sync_cb_set(pd->ed, edit_view_sync_cb, pd);
-   build_err_noti_cb_set(build_err_noti_cb, obj);
+   build_err_noti_cb_set(build_err_noti_cb, pd);
 
    evas_object_smart_member_add(edit_obj_get(pd->ed), obj);
    elm_widget_can_focus_set(obj, EINA_FALSE);

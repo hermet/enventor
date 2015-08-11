@@ -14,6 +14,7 @@
 #define ENABLED_TEXTBLOCK_TAGS                                             \
    tag: "em" "+ font_style=Oblique";                                       \
    tag: "hilight" "+ font_weight=Bold style=glow glow_color=#3399ff80";    \
+   tag: "error" "+ underline=single underline_color=#ff0000 underline2_color=#ff0000";  \
    tag: "link" "+ color=#3399ff underline=on underline_color=#3399ff";     \
    tag: "preedit" "+ underline=on underline_color=#3399ff";                \
    tag: "preedit_sel" "+ backing=on backing_color=#000000 color=#ffffff";  \
@@ -47,6 +48,7 @@
 #define DISABLED_TEXTBLOCK_TAGS                                            \
    tag: "em" "+ font_style=Oblique";                                       \
    tag: "hilight" "+ font_weight=Bold style=glow glow_color=#3399ff20";    \
+   tag: "error" "+ underline=double underline_color=#ff0000 underline2_color=#ff0000";  \
    tag: "link" "+ color=#101820 shadow_color=#66aaff28 underline=on underline_color=#101820"; \
    tag: "preedit" "+ underline=on underline_color=#3399ff88";              \
    tag: "preedit_sel" "+ backing=on backing_color=#000000 color=#888888";  \
