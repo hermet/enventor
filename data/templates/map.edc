@@ -1,7 +1,8 @@
 collections {
    base_scale: 1.0;
+   /* TODO: Please replace embedded image files to your application image files. */
    images {
-      image: "logo.png" COMP;
+      image: "ENVENTOR_EMBEDDED_LOGO.png" COMP;
    }
    group { "main";
       parts {
@@ -9,7 +10,8 @@ collections {
             desc { "default";
                rel1.relative: 0.0 0.0;
                rel2.relative: 0.5 0.5;
-               image.normal: "logo.png";
+               /* TODO: Please replace embedded image files to your application image files. */
+               image.normal: "ENVENTOR_EMBEDDED_LOGO.png";
                aspect: 1 1;
                aspect_preference: BOTH;
                map.on: 1;

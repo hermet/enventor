@@ -1,35 +1,37 @@
 collections {
    base_scale: 1.0;
+   /* TODO: Please replace embedded image files to your application image files. */
    images {
-      image: "TRIAB-01.png" COMP;
-      image: "TRIAB-02.png" COMP;
-      image: "TRIAB-03.png" COMP;
-      image: "TRIAB-04.png" COMP;
-      image: "TRIAB-05.png" COMP;
-      image: "TRIAB-06.png" COMP;
-      image: "TRIAB-07.png" COMP;
-      image: "TRIAB-08.png" COMP;
-      image: "TRIAB-09.png" COMP;
-      image: "TRIAB-10.png" COMP;
-      image: "TRIAB-11.png" COMP;
-      image: "TRIAB-12.png" COMP;
+      image: "ENVENTOR_EMBEDDED_TRIAB-01.png" COMP;
+      image: "ENVENTOR_EMBEDDED_TRIAB-02.png" COMP;
+      image: "ENVENTOR_EMBEDDED_TRIAB-03.png" COMP;
+      image: "ENVENTOR_EMBEDDED_TRIAB-04.png" COMP;
+      image: "ENVENTOR_EMBEDDED_TRIAB-05.png" COMP;
+      image: "ENVENTOR_EMBEDDED_TRIAB-06.png" COMP;
+      image: "ENVENTOR_EMBEDDED_TRIAB-07.png" COMP;
+      image: "ENVENTOR_EMBEDDED_TRIAB-08.png" COMP;
+      image: "ENVENTOR_EMBEDDED_TRIAB-09.png" COMP;
+      image: "ENVENTOR_EMBEDDED_TRIAB-10.png" COMP;
+      image: "ENVENTOR_EMBEDDED_TRIAB-11.png" COMP;
+      image: "ENVENTOR_EMBEDDED_TRIAB-12.png" COMP;
    }
    group { "main";
       parts {
          image { "image";
             desc { "default";
-               image.normal: "TRIAB-01.png";
-               image.tween: "TRIAB-02.png";
-               image.tween: "TRIAB-03.png";
-               image.tween: "TRIAB-04.png";
-               image.tween: "TRIAB-05.png";
-               image.tween: "TRIAB-06.png";
-               image.tween: "TRIAB-07.png";
-               image.tween: "TRIAB-08.png";
-               image.tween: "TRIAB-09.png";
-               image.tween: "TRIAB-10.png";
-               image.tween: "TRIAB-11.png";
-               image.tween: "TRIAB-12.png";
+               /* TODO: Please replace embedded image files to your application image files. */
+               image.normal: "ENVENTOR_EMBEDDED_TRIAB-01.png";
+               image.tween: "ENVENTOR_EMBEDDED_TRIAB-02.png";
+               image.tween: "ENVENTOR_EMBEDDED_TRIAB-03.png";
+               image.tween: "ENVENTOR_EMBEDDED_TRIAB-04.png";
+               image.tween: "ENVENTOR_EMBEDDED_TRIAB-05.png";
+               image.tween: "ENVENTOR_EMBEDDED_TRIAB-06.png";
+               image.tween: "ENVENTOR_EMBEDDED_TRIAB-07.png";
+               image.tween: "ENVENTOR_EMBEDDED_TRIAB-08.png";
+               image.tween: "ENVENTOR_EMBEDDED_TRIAB-09.png";
+               image.tween: "ENVENTOR_EMBEDDED_TRIAB-10.png";
+               image.tween: "ENVENTOR_EMBEDDED_TRIAB-11.png";
+               image.tween: "ENVENTOR_EMBEDDED_TRIAB-12.png";
                aspect: 1 1;
                aspect_preference: BOTH;
             }

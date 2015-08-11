@@ -1,4 +1,4 @@
-#define TEMPLATE_GROUP_LINE_CNT 26
+#define TEMPLATE_GROUP_LINE_CNT 27
 
 const char *TEMPLATE_GROUP[TEMPLATE_GROUP_LINE_CNT] =
 {
@@ -13,7 +13,8 @@ const char *TEMPLATE_GROUP[TEMPLATE_GROUP_LINE_CNT] =
    "            fixed: 0 0;<br/>",
    "            min: 0 0;<br/>",
    "            visible: 1;<br/>",
-   "            image.normal: \"logo.png\";<br/>",
+   "            /* TODO: Please replace embedded image files to your application image files. */<br/>",
+   "            image.normal: \"ENVENTOR_EMBEDDED_LOGO.png\";<br/>",
    "            //aspect: 1 1;<br/>",
    "         }<br/>",
    "      }<br/>",
@@ -38,7 +39,7 @@ const char *TEMPLATE_PART_TALE[TEMPLATE_PART_TALE_LINE_CNT] =
    "}"
 };
 
-#define TEMPLATE_PART_IMAGE_LINE_CNT 8
+#define TEMPLATE_PART_IMAGE_LINE_CNT 9
 
 const char *TEMPLATE_PART_IMAGE[TEMPLATE_PART_IMAGE_LINE_CNT] =
 {
@@ -48,7 +49,8 @@ const char *TEMPLATE_PART_IMAGE[TEMPLATE_PART_IMAGE_LINE_CNT] =
    "      fixed: 0 0;<br/>",
    "      min: 0 0;<br/>",
    "      visible: 1;<br/>",
-   "      image.normal: \"logo.png\";<br/>",
+   "      /* TODO: Please replace embedded image files to your application image files. */<br/>",
+   "      image.normal: \"ENVENTOR_EMBEDDED_LOGO.png\";<br/>",
    "      //aspect: 1 1;<br/>"
 };
 
@@ -153,17 +155,19 @@ const char *TEMPLATE_PROG[TEMPLATE_PROG_LINE_CNT] =
    "}"
 };
 
-#define TEMPLATE_IMG_LINE_CNT 1
+#define TEMPLATE_IMG_LINE_CNT 2
 
 const char *TEMPLATE_IMG[TEMPLATE_IMG_LINE_CNT] =
 {
-   "image: \"logo.png\" COMP;<br/>"
+   "/* TODO: Please replace embedded image files to your application image files. */<br/>",
+   "image: \"ENVENTOR_EMBEDDED_LOGO.png\" COMP;<br/>"
 };
 
-#define TEMPLATE_IMG_BLOCK_LINE_CNT 3
+#define TEMPLATE_IMG_BLOCK_LINE_CNT 4
 
-const char *TEMPLATE_IMG_BLOCK = "   images {<br/>"
-                                 "      image: \"logo.png\" COMP;<br/>"
+const char *TEMPLATE_IMG_BLOCK = "/* TODO: Please replace embedded image files to your application image files. */<br/>"
+                                 "   images {<br/>"
+                                 "      image: \"ENVENTOR_EMBEDDED_LOGO.png\" COMP;<br/>"
                                  "   }<br/>";
 
 #define TEMPLATE_TEXTBLOCK_STYLE_LINE_CNT 3

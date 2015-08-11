@@ -954,7 +954,7 @@ parser_collections_block_pos_get(const Evas_Object *entry,
    if (pos)
      {
         /* TODO: Remove this check and process lines of the form
-           "images.image: "logo.png" COMP;" */
+           "images.image: "ENVENTOR_EMBEDDED_LOGO.png" COMP;" */
         if (*(pos + BLOCK_NAME_LEN + 1) == '.')
           return EINA_FALSE;
 
