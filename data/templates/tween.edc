@@ -1,4 +1,5 @@
 collections {
+   base_scale: 1.0;
    images {
       image: "TRIAB-01.png" COMP;
       image: "TRIAB-02.png" COMP;
