@@ -2,7 +2,7 @@ collections {
    base_scale: 1.0;
    sounds {
       sample { name: "sound" LOSSY 64;
-         source: "kbd-tap.wav";
+         source: "ENVENTOR_EMBEDDED_TAP.wav";
       }
    }
    group { "main";
