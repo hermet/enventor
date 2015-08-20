@@ -589,11 +589,16 @@ edit_cursor_double_clicked_cb(void *data, Evas_Object *obj,
 
    Evas_Object *textblock = elm_entry_textblock_get(obj);
    Evas_Textblock_Cursor *cursor = evas_object_textblock_cursor_get(textblock);
-   const char *str = evas_textblock_cursor_paragraph_text_get(cursor);
+   const char *str = elm_entry_entry_get(obj);
    char *text = elm_entry_markup_to_utf8(str);
-   char *cur = strstr(text, selected);
+   int cur_pos = elm_entry_cursor_pos_get(obj);
+   char *cur = text + (cur_pos - strlen(selected));
 
-   if (!strcmp(selected, "program"))
+  /* TODO: improve parser_name_get, for recognize cases when name is absent.
+   * Because right now any text inside quotes that placed after selection is
+   * recognized as name.
+   */
+  if (!strcmp(selected, "program"))
      {
         program_run(ed, cur);
      }
