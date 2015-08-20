@@ -134,6 +134,10 @@ cur_state_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
         "box", "table", "external" };
    const char *DESC[2] = { "desc", "description" };
    const int DESC_LEN[2] = { 4, 11 };
+   const char *STATE = "state";
+   const char *DEF_STATE_NAME = "default";
+   const int DEF_STATE_LEN = 7;
+
 
    cur_name_td *td = data;
    char *utf8 = td->utf8;
@@ -244,8 +248,8 @@ cur_state_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
           {
              //description? or desc?
              int desc_idx = -1;
-             if (!strncmp(p, DESC[0], DESC_LEN[0])) desc_idx = 0;
-             else if (!strncmp(p, DESC[1], DESC_LEN[1])) desc_idx = 1;
+             if (!strncmp(p, DESC[1], DESC_LEN[1])) desc_idx = 1;
+             else if (!strncmp(p, DESC[0], DESC_LEN[0])) desc_idx = 0;
 
              //we got a description!
              if (desc_idx != -1)
@@ -253,6 +257,14 @@ cur_state_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
                   p += DESC_LEN[desc_idx];
                   char *name_begin = strstr(p, QUOT_UTF8);
                   if (!name_begin) goto end;
+                  char *state = strstr(p, STATE);
+                  if ((desc_idx == 1) && (!state || state > name_begin))
+                    {
+                       desc_name = DEF_STATE_NAME;
+                       desc_name_len = DEF_STATE_LEN;
+                       value_convert = 0;
+                       continue;
+                    }
                   name_begin += QUOT_UTF8_LEN;
                   p = name_begin;
                   char *name_end = strstr(p, QUOT_UTF8);
