@@ -157,8 +157,19 @@ context_lexem_thread_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
 
    while (cur && cur <= end)
      {
-        if ((cur!=end) && (!strncmp(cur, quot, quot_len)))
-          quot_cnt++;
+        if ((cur != end) && (!strncmp(cur, quot, quot_len)))
+          {
+             /*TODO: add exception for case '\"'*/
+            quot_cnt++;
+            cur++;
+            continue;
+          }
+        if (quot_cnt % 2)
+          {
+             cur++;
+             continue;
+          }
+
 
         //Check inside comment
         if (*cur == '/')
