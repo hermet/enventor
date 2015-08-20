@@ -358,6 +358,111 @@ group "lexem" struct {
                      }
                   }
                   group "lexem" struct {
+                    group "nodes" list {
+                       group "lexem" struct {
+                          group "nodes" list {
+                          }
+                          group "txt" var_array {
+                              count 1;
+                              value "string" string: "%s: \"\" COMP;";
+                          }
+                          value "cursor_offset" int: 7
+                          value "line_back" int: 0;
+                          group "name" var_array {
+                             count 1;
+                             value "string" string: "image";
+                          }
+                       }
+                       group "lexem" struct {
+                          group "nodes" list {
+                             group "lexem" struct {
+                                group "nodes" list {
+                                }
+                                group "txt" var_array {
+                                    count 1;
+                                    value "string" string: "%s: \"\";";
+                                }
+                                value "cursor_offset" int: 2;
+                                value "line_back" int: 0;
+                                group "name" var_array {
+                                   count 1;
+                                   value "string" string: "name";
+                                }
+                              }
+                             group "lexem" struct {
+                                group "nodes" list {
+                                   group "lexem" struct {
+                                      group "nodes" list {
+                                      }
+                                      group "txt" var_array {
+                                          count 1;
+                                          value "string" string: "%s: \"\" COMP;";
+                                      }
+                                      value "cursor_offset" int: 7;
+                                      value "line_back" int: 0;
+                                      group "name" var_array {
+                                         count 1;
+                                         value "string" string: "image";
+                                      }
+                                   }
+                                   group "lexem" struct {
+                                      group "nodes" list {
+                                      }
+                                      group "txt" var_array {
+                                          count 1;
+                                          value "string" string: "%s: ;";
+                                      }
+                                      value "cursor_offset" int: 1;
+                                      value "line_back" int: 0;
+                                      group "name" var_array {
+                                         count 1;
+                                         value "string" string: "size";
+                                      }
+                                   }
+                                }
+                                group "txt" var_array {
+                                    count 3;
+                                    value "string" string: "%s {<br/>";
+                                    value "string" string: "   <br/>";
+                                    value "string" string: "}";
+                                }
+                                value "cursor_offset" int: 2
+                                value "line_back" int: 1;
+                                group "name" var_array {
+                                   count 1;
+                                   value "string" string: "image";
+                                }
+                             }
+                          }
+                          group "txt" var_array {
+                              count 3;
+                              value "string" string: "%s {<br/>";
+                              value "string" string: "   <br/>";
+                              value "string" string: "}";
+                          }
+                          value "cursor_offset" int: 2
+                          value "line_back" int: 1
+                          group "name" var_array {
+                             count 1;
+                             value "string" string: "set";
+                          }
+                       }
+                    }
+                    group "txt" var_array {
+                        count 3;
+                        value "string" string: "%s {<br/>";
+                        value "string" string: "   <br/>";
+                        value "string" string: "}";
+                    }
+                    value "cursor_offset" int: 2;
+                    value "line_back" int: 1;
+                    value "dot" int: 1;
+                    group "name" var_array {
+                       count 1;
+                       value "string" string: "images";
+                    }
+                  }
+                  group "lexem" struct {
                      group "nodes" list {
                         group "lexem" struct {
                            group "nodes" list {
@@ -1219,7 +1324,7 @@ group "lexem" struct {
                             value "cursor_offset" int: 4;
                             value "line_back" int: 1;
                             group "name" var_array {
-                               count 10;
+                               count 11;
                                value "string" string: "image";
                                value "string" string: "group";
                                value "string" string: "swallow";
@@ -1230,6 +1335,7 @@ group "lexem" struct {
                                value "string" string: "table";
                                value "string" string: "text";
                                value "string" string: "textblock";
+                               value "string" string: "part";
                             }
                          }
                      }
