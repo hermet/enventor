@@ -48,7 +48,7 @@ libenventor_la_SOURCES = \
 libenventor_la_CFLAGS = @ENVENTOR_CFLAGS@
 libenventor_la_LIBADD = @ENVENTOR_LIBS@
 
-libenventor_la_LDFLAGS = $(LTLIBINTL) -version-info @version_info@
+libenventor_la_LDFLAGS = $(LTLIBINTL) -version-info @version_info@ -no-undefined
 
 BUILT_SOURCES = \
    enventor_object.eo.c \
