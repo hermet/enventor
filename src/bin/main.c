@@ -370,10 +370,10 @@ elm_setup()
    if (scale) elm_config_scale_set(atof(scale));
 
    /* Recover the current engine since it will be reset by
-      elm_config_profiel_set() */
-   char *engine = getenv("ELM_ENGINE");
-   if (engine && !strncmp(engine, "gl", strlen("gl")))
-     elm_config_accel_preference_set("3d");
+      elm_config_profile_set() */
+   char *engine = getenv("ELM_ACCEL");
+   if (engine && !strncmp(engine, "hw", strlen("hw")))
+     elm_config_accel_preference_set("hw");
 
    elm_config_focus_highlight_clip_disabled_set(EINA_FALSE);
    elm_config_scroll_bounce_enabled_set(EINA_FALSE);
