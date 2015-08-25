@@ -75,9 +75,21 @@ static void
 config_save(config_data *cd)
 {
    char buf[PATH_MAX];
+
+   //Create config home directory if it doesn't exist.
+   if (!ecore_file_exists(efreet_config_home_get()))
+     {
+        Eina_Bool success = ecore_file_mkdir(efreet_config_home_get());
+        if (!success)
+          {
+             EINA_LOG_ERR("Cannot create a config folder \"%s\"", efreet_config_home_get());
+             return;
+          }
+     }
+
    snprintf(buf, sizeof(buf), "%s/enventor", efreet_config_home_get());
 
-   //Create config folder if it doesn't exist.
+   //Create enventor config folder if it doesn't exist.
    if (!ecore_file_exists(buf))
      {
         Eina_Bool success = ecore_file_mkdir(buf);
