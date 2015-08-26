@@ -23,13 +23,10 @@ typedef struct _Enventor_Object_Data
    Evas_Object *obj;
 
    edit_data *ed;
-   Eio_Monitor *edc_monitor;
    Eina_Stringshare *group_name;
-   Ecore_Timer *file_modified_timer;
 
    Ecore_Event_Handler *key_down_handler;
    Ecore_Event_Handler *key_up_handler;
-   Ecore_Event_Handler *file_modified_handler;
 
    Eina_Bool dummy_swallow : 1;
    Eina_Bool key_down : 1;
@@ -78,55 +75,6 @@ key_down_cb(void *data, int type EINA_UNUSED, void *ev)
 
    if (autocomp_event_dispatch(event->key)) return ECORE_CALLBACK_DONE;
    return ECORE_CALLBACK_PASS_ON;
-}
-
-static Eina_Bool
-file_modified_timer(void *data)
-{
-   Enventor_EDC_Modified modified;
-   Enventor_Object_Data *pd = data;
-   modified.self_changed = EINA_FALSE;
-   evas_object_smart_callback_call(pd->obj, SIG_EDC_MODIFIED, &modified);
-   pd->file_modified_timer = NULL;
-   return ECORE_CALLBACK_CANCEL;
-}
-
-static Eina_Bool
-file_modified_cb(void *data, int type EINA_UNUSED, void *event)
-{
-   static double timestamp = 0;
-   const int TIME_THRES = 2;
-
-   Eio_Monitor_Event *ev = event;
-   Enventor_Object_Data *pd = data;
-   Enventor_EDC_Modified modified;
-   if (ev->monitor != pd->edc_monitor) return ECORE_CALLBACK_PASS_ON;
-
-   if (!edit_saved_get(pd->ed))
-     {
-        /* FIXEME: We know this event will be called twice,
-           Skip the one event if the it's triggered in 3 seconds */
-        if (ecore_loop_time_get() - timestamp < TIME_THRES)
-          return ECORE_CALLBACK_DONE;
-
-        /* Don't notify info right soon,
-           if the source changing can be happened continously. */
-        if (pd->file_modified_timer) ecore_timer_del(pd->file_modified_timer);
-        pd->file_modified_timer = ecore_timer_add(TIME_THRES,
-                                                  file_modified_timer, pd);
-        return ECORE_CALLBACK_DONE;
-     }
-   if (strcmp(ev->filename, build_edc_path_get())) return ECORE_CALLBACK_DONE;
-
-   build_edc();
-
-   edit_saved_set(pd->ed, EINA_FALSE);
-
-   modified.self_changed = EINA_TRUE;
-   evas_object_smart_callback_call(pd->obj, SIG_EDC_MODIFIED, &modified);
-   timestamp = ecore_loop_time_get();
-
-   return ECORE_CALLBACK_DONE;
 }
 
 static void
@@ -242,9 +190,6 @@ _enventor_object_evas_object_smart_add(Eo *obj, Enventor_Object_Data *pd)
    evas_object_smart_member_add(edit_obj_get(pd->ed), obj);
    elm_widget_can_focus_set(obj, EINA_FALSE);
 
-   //FIXME: Called twice ?? Why?
-   pd->file_modified_handler =
-      ecore_event_handler_add(EIO_MONITOR_FILE_MODIFIED, file_modified_cb, pd);
    pd->key_down_handler =
       ecore_event_handler_add(ECORE_EVENT_KEY_DOWN, key_down_cb, pd);
    pd->key_up_handler =
@@ -257,11 +202,8 @@ _enventor_object_evas_object_smart_del(Evas_Object *obj EINA_UNUSED,
 {
    EINA_REFCOUNT_UNREF(pd)
      {
-        ecore_timer_del(pd->file_modified_timer);
-        eio_monitor_del(pd->edc_monitor);
         eina_stringshare_del(pd->group_name);
         edit_term(pd->ed);
-        ecore_event_handler_del(pd->file_modified_handler);
         ecore_event_handler_del(pd->key_down_handler);
         ecore_event_handler_del(pd->key_up_handler);
         edj_mgr_term();
@@ -337,11 +279,9 @@ _enventor_object_efl_file_file_set(Eo *obj EINA_UNUSED,
                                    const char *file,
                                    const char *group EINA_UNUSED)
 {
-   eio_monitor_del(pd->edc_monitor);
    build_edc_path_set(file);
    autocomp_target_set(pd->ed);
    if (!edit_load(pd->ed, file)) goto err;
-   pd->edc_monitor = eio_monitor_add(file);
    build_edc();
    edit_changed_set(pd->ed, EINA_FALSE);
 
@@ -349,7 +289,6 @@ _enventor_object_efl_file_file_set(Eo *obj EINA_UNUSED,
 
 err:
    build_edc_path_set(NULL);
-   pd->edc_monitor = NULL;
    return EINA_FALSE;
 }
 
@@ -673,11 +612,26 @@ EOLIAN static Eina_Bool
 _enventor_object_save(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd,
                       const char *file)
 {
+   Eina_Bool edc_modified = EINA_FALSE;
+
    //Update edc file and try to save if the edc path is different.
    if (build_edc_path_get() != file) edit_changed_set(pd->ed, EINA_TRUE);
+
+   //Build edc file and call modified smart callback if edc file is modified.
+   if (edit_changed_get(pd->ed)) edc_modified = EINA_TRUE;
+
    Eina_Bool saved = edit_save(pd->ed, file);
    //EDC file is newly generated, we need to reload as the input.
-   if (saved && !pd->edc_monitor) enventor_object_file_set(obj, file);
+   if (saved && edc_modified)
+     {
+        Enventor_EDC_Modified modified;
+
+        build_edc();
+        edit_saved_set(pd->ed, EINA_FALSE);
+
+        modified.self_changed = EINA_TRUE;
+        evas_object_smart_callback_call(pd->obj, SIG_EDC_MODIFIED, &modified);
+     }
    return saved;
 }
 
