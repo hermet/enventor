@@ -27,7 +27,12 @@ typedef struct _Enventor_Object_Data
    Eina_Stringshare *group_name;
    Ecore_Timer *file_modified_timer;
 
+   Ecore_Event_Handler *key_down_handler;
+   Ecore_Event_Handler *key_up_handler;
+   Ecore_Event_Handler *file_modified_handler;
+
    Eina_Bool dummy_swallow : 1;
+   Eina_Bool key_down : 1;
 
 } Enventor_Object_Data;
 
@@ -51,6 +56,29 @@ static const Evas_Smart_Cb_Description _smart_callbacks[] = {
 /*****************************************************************************/
 /* Internal method implementation                                            */
 /*****************************************************************************/
+static Eina_Bool
+key_up_cb(void *data, int type EINA_UNUSED, void *ev)
+{
+   Enventor_Object_Data *pd = data;
+   pd->key_down = EINA_FALSE;
+}
+
+static Eina_Bool
+key_down_cb(void *data, int type EINA_UNUSED, void *ev)
+{
+   Enventor_Object_Data *pd = data;
+   Ecore_Event_Key *event = ev;
+   Eina_Bool ret;
+
+   eo_do_ret(pd->obj, ret, enventor_obj_focus_get());
+   if (!ret) return ECORE_CALLBACK_PASS_ON;
+
+   if (pd->key_down) return;
+   pd->key_down = EINA_TRUE;
+
+   if (autocomp_event_dispatch(event->key)) return ECORE_CALLBACK_DONE;
+   return ECORE_CALLBACK_PASS_ON;
+}
 
 static Eina_Bool
 file_modified_timer(void *data)
@@ -215,7 +243,12 @@ _enventor_object_evas_object_smart_add(Eo *obj, Enventor_Object_Data *pd)
    elm_widget_can_focus_set(obj, EINA_FALSE);
 
    //FIXME: Called twice ?? Why?
-   ecore_event_handler_add(EIO_MONITOR_FILE_MODIFIED, file_modified_cb, pd);
+   pd->file_modified_handler =
+      ecore_event_handler_add(EIO_MONITOR_FILE_MODIFIED, file_modified_cb, pd);
+   pd->key_down_handler =
+      ecore_event_handler_add(ECORE_EVENT_KEY_DOWN, key_down_cb, pd);
+   pd->key_up_handler =
+      ecore_event_handler_add(ECORE_EVENT_KEY_DOWN, key_up_cb, pd);
 }
 
 EOLIAN static void
@@ -228,6 +261,9 @@ _enventor_object_evas_object_smart_del(Evas_Object *obj EINA_UNUSED,
         eio_monitor_del(pd->edc_monitor);
         eina_stringshare_del(pd->group_name);
         edit_term(pd->ed);
+        ecore_event_handler_del(pd->file_modified_handler);
+        ecore_event_handler_del(pd->key_down_handler);
+        ecore_event_handler_del(pd->key_up_handler);
         edj_mgr_term();
         autocomp_term();
         build_term();

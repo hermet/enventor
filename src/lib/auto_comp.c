@@ -38,6 +38,7 @@ typedef struct autocomp_s
    Eina_Bool enabled : 1;
    Ecore_Thread *cntx_lexem_thread;
    Eina_Bool dot_candidate : 1;
+   Eina_Bool on_keygrab : 1;
 } autocomp_data;
 
 typedef struct ctx_lexem_thread_data_s
@@ -58,6 +59,8 @@ static Eet_Data_Descriptor *lex_desc = NULL;
 static void candidate_list_show(autocomp_data *ad);
 static void queue_reset(autocomp_data *ad);
 static void entry_anchor_off(autocomp_data *ad);
+static void anchor_key_down_cb(void *data, Evas *evas, Evas_Object *obj, void *event_info);
+
 
 static void
 eddc_init(void)
@@ -363,6 +366,41 @@ init_thread_cancel_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
 }
 
 static void
+anchor_keygrab_set(autocomp_data *ad, Eina_Bool grab)
+{
+   Evas_Object *anchor = ad->anchor;
+
+   if (grab)
+     {
+        if (ad->on_keygrab) return;
+        if (!evas_object_key_grab(anchor, "BackSpace", 0, 0, EINA_TRUE))
+          EINA_LOG_ERR("Failed to grab key - BackSpace");
+        if (!evas_object_key_grab(anchor, "Escape", 0, 0, EINA_TRUE))
+          EINA_LOG_ERR("Failed to grab key - Escape");
+        if (!evas_object_key_grab(anchor, "Return", 0, 0, EINA_TRUE))
+          EINA_LOG_ERR("Failed to grab key - Return");
+        if (!evas_object_key_grab(anchor, "Tab", 0, 0, EINA_TRUE))
+          EINA_LOG_ERR("Failed to grab key - Tab");
+        if (!evas_object_key_grab(anchor, "Up", 0, 0, EINA_TRUE))
+          EINA_LOG_ERR("Failed to grab key - Up");
+        if (!evas_object_key_grab(anchor, "Down", 0, 0, EINA_TRUE))
+          EINA_LOG_ERR("Failed to grab key - Down");
+        ad->on_keygrab = EINA_TRUE;
+     }
+   else
+     {
+        if (!ad->on_keygrab) return;
+        evas_object_key_ungrab(anchor, "BackSpace", 0, 0);
+        evas_object_key_ungrab(anchor, "Escape", 0, 0);
+        evas_object_key_ungrab(anchor, "Return", 0, 0);
+        evas_object_key_ungrab(anchor, "Tab", 0, 0);
+        evas_object_key_ungrab(anchor, "Up", 0, 0);
+        evas_object_key_ungrab(anchor, "Down", 0, 0);
+        ad->on_keygrab = EINA_FALSE;
+     }
+}
+
+static void
 entry_anchor_off(autocomp_data *ad)
 {
    if (ad->anchor_visible)
@@ -373,8 +411,10 @@ entry_anchor_off(autocomp_data *ad)
            since tooltip regards the content callback is same with before. */
         elm_object_tooltip_content_cb_set(ad->anchor, NULL, NULL, NULL);
      }
+   anchor_keygrab_set(ad, EINA_FALSE);
    ad->anchor_visible = EINA_FALSE;
 }
+
 
 static void
 anchor_unfocused_cb(void *data, Evas_Object *obj EINA_UNUSED,
@@ -613,6 +653,7 @@ candidate_list_show(autocomp_data *ad)
                                           entry_tooltip_content_cb, ad, NULL);
         elm_object_tooltip_orient_set(ad->anchor, tooltip_orient);
         elm_object_tooltip_show(ad->anchor);
+        anchor_keygrab_set(ad, EINA_TRUE);
         ad->anchor_visible = EINA_TRUE;
      }
    //Already tooltip is visible, just update the list item
@@ -717,6 +758,44 @@ list_item_move(autocomp_data *ad, Eina_Bool up)
                                   ad);
 }
 
+static void
+anchor_key_down_cb(void *data, Evas *evas EINA_UNUSED,
+                   Evas_Object *obj EINA_UNUSED, void *event_info)
+{
+   autocomp_data *ad = data;
+   if (!ad->anchor_visible) return;
+
+   Evas_Event_Key_Down *ev = event_info;
+
+   //Cancel the auto complete.
+   if (!strcmp(ev->keyname, "BackSpace") || !strcmp(ev->keyname, "Escape"))
+     {
+        queue_reset(ad);
+        ev->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
+        return;
+     }
+   if (!strcmp(ev->keyname, "Return") || !strcmp(ev->keyname, "Tab"))
+     {
+        insert_completed_text(ad);
+        queue_reset(ad);
+        edit_syntax_color_partial_apply(ad->ed, -1);
+        ev->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
+        return;
+     }
+   if (!strcmp(ev->keyname, "Up"))
+     {
+        list_item_move(ad, EINA_TRUE);
+        ev->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
+        return;
+     }
+   if (!strcmp(ev->keyname, "Down"))
+     {
+        list_item_move(ad, EINA_FALSE);
+        ev->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
+        return;
+     }
+}
+
 /*****************************************************************************/
 /* Externally accessible calls                                               */
 /*****************************************************************************/
@@ -779,6 +858,8 @@ autocomp_target_set(edit_data *ed)
    evas_object_event_callback_add(entry, EVAS_CALLBACK_MOVE, entry_move_cb, ad);
 
    ad->anchor = elm_button_add(edit_obj_get(ed));
+   evas_object_event_callback_add(ad->anchor, EVAS_CALLBACK_KEY_DOWN,
+                                  anchor_key_down_cb, ad);
    ad->ed = ed;
 }
 
@@ -787,39 +868,12 @@ autocomp_event_dispatch(const char *key)
 {
    autocomp_data *ad = g_ad;
    if (!ad) return EINA_FALSE;
+   if (ad->anchor_visible) return EINA_FALSE;
 
    //Reset queue.
-   if (!ad->anchor_visible)
-     {
-        if (!strcmp(key, "Up") || !strcmp(key, "Down") ||
-            !strcmp(key, "Left") || !strcmp(key, "Right"))
-          queue_reset(ad);
-        return EINA_FALSE;
-     }
-
-   //Cancel the auto complete.
-   if (!strcmp(key, "BackSpace") || !strcmp(key, "Escape"))
-     {
-        queue_reset(ad);
-        return EINA_TRUE;
-     }
-   if (!strcmp(key, "Return") || !strcmp(key, "Tab"))
-     {
-        insert_completed_text(ad);
-        queue_reset(ad);
-        edit_syntax_color_partial_apply(ad->ed, -1);
-        return EINA_TRUE;
-     }
-   if (!strcmp(key, "Up"))
-     {
-        list_item_move(ad, EINA_TRUE);
-        return EINA_TRUE;
-     }
-   if (!strcmp(key, "Down"))
-     {
-        list_item_move(ad, EINA_FALSE);
-        return EINA_TRUE;
-     }
+   if (!strcmp(key, "Up") || !strcmp(key, "Down") ||
+       !strcmp(key, "Left") || !strcmp(key, "Right"))
+     queue_reset(ad);
 
    return EINA_FALSE;
 }

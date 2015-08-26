@@ -24,15 +24,6 @@ const char SIG_FOCUSED[] = "focused";
 
 static int _enventor_init_count = 0;
 static int _enventor_log_dom = -1;
-static Ecore_Event_Handler *_key_down_handler = NULL;
-
-static Eina_Bool
-key_down_cb(void *data EINA_UNUSED, int type EINA_UNUSED, void *ev)
-{
-   Ecore_Event_Key *event = ev;
-   if (autocomp_event_dispatch(event->key)) return ECORE_CALLBACK_DONE;
-   return ECORE_CALLBACK_PASS_ON;
-}
 
 EAPI int
 enventor_init(int argc, char **argv)
@@ -104,8 +95,6 @@ enventor_init(int argc, char **argv)
             eina_prefix_data_get(PREFIX));
    srand(time(NULL));
 
-   _key_down_handler = ecore_event_handler_add(ECORE_EVENT_KEY_DOWN,
-                                               key_down_cb, NULL);
    return _enventor_init_count;
 }
 
@@ -119,9 +108,6 @@ enventor_shutdown(void)
      }
 
    if ((--_enventor_init_count) > 0) return _enventor_init_count;
-
-   ecore_event_handler_del(_key_down_handler);
-   _key_down_handler = NULL;
 
    if ((_enventor_log_dom != -1) &&
        (_enventor_log_dom != EINA_LOG_DOMAIN_GLOBAL))
