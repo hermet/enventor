@@ -375,8 +375,6 @@ anchor_keygrab_set(autocomp_data *ad, Eina_Bool grab)
         if (ad->on_keygrab) return;
         if (!evas_object_key_grab(anchor, "BackSpace", 0, 0, EINA_TRUE))
           EINA_LOG_ERR("Failed to grab key - BackSpace");
-        if (!evas_object_key_grab(anchor, "Escape", 0, 0, EINA_TRUE))
-          EINA_LOG_ERR("Failed to grab key - Escape");
         if (!evas_object_key_grab(anchor, "Return", 0, 0, EINA_TRUE))
           EINA_LOG_ERR("Failed to grab key - Return");
         if (!evas_object_key_grab(anchor, "Tab", 0, 0, EINA_TRUE))
@@ -391,7 +389,6 @@ anchor_keygrab_set(autocomp_data *ad, Eina_Bool grab)
      {
         if (!ad->on_keygrab) return;
         evas_object_key_ungrab(anchor, "BackSpace", 0, 0);
-        evas_object_key_ungrab(anchor, "Escape", 0, 0);
         evas_object_key_ungrab(anchor, "Return", 0, 0);
         evas_object_key_ungrab(anchor, "Tab", 0, 0);
         evas_object_key_ungrab(anchor, "Up", 0, 0);
@@ -768,13 +765,13 @@ anchor_key_down_cb(void *data, Evas *evas EINA_UNUSED,
    Evas_Event_Key_Down *ev = event_info;
 
    //Cancel the auto complete.
-   if (!strcmp(ev->keyname, "BackSpace") || !strcmp(ev->keyname, "Escape"))
+   if (!strcmp(ev->key, "BackSpace"))
      {
         queue_reset(ad);
         ev->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
         return;
      }
-   if (!strcmp(ev->keyname, "Return") || !strcmp(ev->keyname, "Tab"))
+   if (!strcmp(ev->key, "Return") || !strcmp(ev->key, "Tab"))
      {
         insert_completed_text(ad);
         queue_reset(ad);
@@ -782,13 +779,13 @@ anchor_key_down_cb(void *data, Evas *evas EINA_UNUSED,
         ev->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
         return;
      }
-   if (!strcmp(ev->keyname, "Up"))
+   if (!strcmp(ev->key, "Up"))
      {
         list_item_move(ad, EINA_TRUE);
         ev->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
         return;
      }
-   if (!strcmp(ev->keyname, "Down"))
+   if (!strcmp(ev->key, "Down"))
      {
         list_item_move(ad, EINA_FALSE);
         ev->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;

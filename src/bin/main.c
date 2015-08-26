@@ -9,6 +9,7 @@
 typedef struct app_s
 {
    Evas_Object *enventor;
+   Evas_Object *keygrabber;
    Eina_Bool on_saving : 1;
    Eina_Bool lazy_save : 1;
 } app_data;
@@ -575,10 +576,11 @@ default_template_insert(app_data *ad)
 }
 
 static Eina_Bool
-alt_func(Ecore_Event_Key *event)
+alt_func(app_data *ad, Evas_Event_Key_Down *event)
 {
-   if (!EVENT_KEY_MODIFIER_CHECK(ALT, event->modifiers))
-       return EINA_FALSE;
+   if (evas_key_modifier_is_set(event->modifiers, "Shift") ||
+       evas_key_modifier_is_set(event->modifiers, "Ctrl"))
+     return EINA_FALSE;
 
    //Full Edit View
    if (!strcmp(event->key, "Left"))
@@ -609,10 +611,12 @@ alt_func(Ecore_Event_Key *event)
 }
 
 static Eina_Bool
-ctrl_func(app_data *ad, Ecore_Event_Key *event)
+ctrl_func(app_data *ad, Evas_Event_Key_Down *event)
 {
-   if (!EVENT_KEY_MODIFIER_CHECK(CTRL, event->modifiers))
-         return EINA_FALSE;
+   if (evas_key_modifier_is_set(event->modifiers, "Shift") ||
+       evas_key_modifier_is_set(event->modifiers, "Alt"))
+     return EINA_FALSE;
+
    //Save
    if (!strcmp(event->key, "s") || !strcmp(event->key, "S"))
      {
@@ -685,138 +689,125 @@ ctrl_func(app_data *ad, Ecore_Event_Key *event)
    return EINA_FALSE;
 }
 
-static Eina_Bool
-main_key_down_cb(void *data, int type EINA_UNUSED, void *ev)
+static void
+keygrabber_key_down_cb(void *data, Evas *e EINA_UNUSED,
+                       Evas_Object *obj EINA_UNUSED, void *event_info)
 {
-   Ecore_Event_Key *event = ev;
    app_data *ad = data;
+   Evas_Event_Key_Down *ev = event_info;
 
    //Main Menu
-   if (!strcmp(event->key, "Escape"))
+   if (!strcmp(ev->key, "Escape"))
      {
         if (goto_is_opened())
           {
              goto_close();
              enventor_object_focus_set(ad->enventor, EINA_TRUE);
-             return ECORE_CALLBACK_DONE;
+             return;
           }
         if (search_is_opened())
           {
              search_close();
              enventor_object_focus_set(ad->enventor, EINA_TRUE);
-             return ECORE_CALLBACK_DONE;
+             return;
           }
         if (live_edit_get())
           {
              live_edit_cancel();
              enventor_object_focus_set(ad->enventor, EINA_TRUE);
-             return ECORE_CALLBACK_DONE;
+             return;
           }
         if (file_mgr_warning_is_opened())
           {
              file_mgr_warning_close();
-             return ECORE_CALLBACK_DONE;
+             return;
           }
         if (enventor_object_ctxpopup_visible_get(ad->enventor))
           {
              enventor_object_ctxpopup_dismiss(ad->enventor);
-             return ECORE_CALLBACK_DONE;
+             return;
           }
 
         menu_toggle();
-        return ECORE_CALLBACK_DONE;
+        return;
      }
 
-   if (menu_activated_get() > 0) return ECORE_CALLBACK_PASS_ON;
-   if (file_mgr_warning_is_opened()) return ECORE_CALLBACK_PASS_ON;
+   if (menu_activated_get() > 0) return;
+   if (file_mgr_warning_is_opened()) return;
 
-   if (ctrl_func(ad, event)) return ECORE_CALLBACK_DONE;
-   if (alt_func(event)) return ECORE_CALLBACK_DONE;
+   enventor_object_ctxpopup_dismiss(ad->enventor);
 
-   //Control Key
-   if (!strcmp("Control_L", event->key))
-     {
-        enventor_object_ctxpopup_dismiss(ad->enventor);
-        return ECORE_CALLBACK_PASS_ON;
-     }
-
-   //Alt Key
-   if (!strcmp("Alt_L", event->key))
-     {
-        enventor_object_ctxpopup_dismiss(ad->enventor);
-        return ECORE_CALLBACK_PASS_ON;
-     }
+   if (ctrl_func(ad, ev)) return;
+   if (alt_func(ad, ev)) return;
 
    //README
-   if (!strcmp(event->key, "F1"))
+   if (!strcmp(ev->key, "F1"))
      {
         enventor_object_ctxpopup_dismiss(ad->enventor);
         live_edit_cancel();
         menu_about();
-        return ECORE_CALLBACK_DONE;
+        return;
      }
    //New
-   if (!strcmp(event->key, "F2"))
+   if (!strcmp(ev->key, "F2"))
      {
         enventor_object_ctxpopup_dismiss(ad->enventor);
         live_edit_cancel();
         menu_edc_new(EINA_FALSE);
-        return ECORE_CALLBACK_DONE;
+        return;
      }
    //Save
-   if (!strcmp(event->key, "F3"))
+   if (!strcmp(ev->key, "F3"))
      {
         enventor_object_ctxpopup_dismiss(ad->enventor);
         live_edit_cancel();
         menu_edc_save();
-        return ECORE_CALLBACK_DONE;
+        return;
      }
    //Load
-   if (!strcmp(event->key, "F4"))
+   if (!strcmp(ev->key, "F4"))
      {
         enventor_object_ctxpopup_dismiss(ad->enventor);
         live_edit_cancel();
         menu_edc_load();
-        return ECORE_CALLBACK_DONE;
+        return;
      }
    //Line Number
-   if (!strcmp(event->key, "F5"))
+   if (!strcmp(ev->key, "F5"))
      {
         enventor_object_ctxpopup_dismiss(ad->enventor);
         tools_lines_update(ad->enventor, EINA_TRUE);
-        return ECORE_CALLBACK_DONE;
+        return;
      }
    //Tools
-   if (!strcmp(event->key, "F9"))
+   if (!strcmp(ev->key, "F9"))
      {
         enventor_object_ctxpopup_dismiss(ad->enventor);
         base_tools_toggle(EINA_TRUE);
-        return ECORE_CALLBACK_DONE;
+        return;
      }
    //Console
-   if (!strcmp(event->key, "F10"))
+   if (!strcmp(ev->key, "F10"))
      {
         enventor_object_ctxpopup_dismiss(ad->enventor);
         base_console_toggle();
-        return ECORE_CALLBACK_DONE;
+        return;
      }
    //Statusbar
-   if (!strcmp(event->key, "F11"))
+   if (!strcmp(ev->key, "F11"))
      {
         enventor_object_ctxpopup_dismiss(ad->enventor);
         tools_status_update(NULL, EINA_TRUE);
-        return ECORE_CALLBACK_DONE;
+        return;
      }
    //Setting
-   if (!strcmp(event->key, "F12"))
+   if (!strcmp(ev->key, "F12"))
      {
         live_edit_cancel();
         enventor_object_ctxpopup_dismiss(ad->enventor);
         menu_setting();
-        return ECORE_CALLBACK_DONE;
+        return;
      }
-
-   return ECORE_CALLBACK_PASS_ON;
 }
 
 static void
@@ -834,12 +825,68 @@ live_edit_set(Evas_Object *enventor, Evas_Object *tools)
    live_edit_init(enventor, trigger);
 }
 
+static void
+keygrabber_init(app_data *ad)
+{
+   Evas *e = evas_object_evas_get(ad->enventor);
+   ad->keygrabber = evas_object_rectangle_add(e);
+   evas_object_event_callback_add(ad->keygrabber, EVAS_CALLBACK_KEY_DOWN,
+                                  keygrabber_key_down_cb, ad);
+#define GRAB_ADD(key, modifier) \
+   if (!evas_object_key_grab(ad->keygrabber, (key), (modifier), 0, EINA_TRUE)) \
+     EINA_LOG_ERR("Failed to grab key - %s", (key))
+
+   GRAB_ADD("Escape", 0);
+   GRAB_ADD("F1", 0);
+   GRAB_ADD("F2", 0);
+   GRAB_ADD("F3", 0);
+   GRAB_ADD("F4", 0);
+   GRAB_ADD("F5", 0);
+   GRAB_ADD("F6", 0);
+   GRAB_ADD("F7", 0);
+   GRAB_ADD("F8", 0);
+   GRAB_ADD("F9", 0);
+   GRAB_ADD("F10", 0);
+   GRAB_ADD("F11", 0);
+   GRAB_ADD("F12", 0);
+
+   Evas_Modifier_Mask modifier;
+
+   //Ctrl Modifier Mask
+   modifier = evas_key_modifier_mask_get(e, "Control");
+   GRAB_ADD("s", modifier);
+   GRAB_ADD("S", modifier);
+   GRAB_ADD("d", modifier);
+   GRAB_ADD("D", modifier);
+   GRAB_ADD("f", modifier);
+   GRAB_ADD("F", modifier);
+   GRAB_ADD("l", modifier);
+   GRAB_ADD("L", modifier);
+   GRAB_ADD("h", modifier);
+   GRAB_ADD("H", modifier);
+   GRAB_ADD("w", modifier);
+   GRAB_ADD("W", modifier);
+   GRAB_ADD("t", modifier);
+   GRAB_ADD("T", modifier);
+   GRAB_ADD("i", modifier);
+   GRAB_ADD("I", modifier);
+   GRAB_ADD("o", modifier);
+   GRAB_ADD("O", modifier);
+   GRAB_ADD("e", modifier);
+   GRAB_ADD("E", modifier);
+   GRAB_ADD("space", modifier);
+
+   //Alt
+   modifier = evas_key_modifier_mask_get(e, "Alt");
+   GRAB_ADD("Left", modifier);
+   GRAB_ADD("Right", modifier);
+   GRAB_ADD("Up", modifier);
+   GRAB_ADD("Down", modifier);
+}
+
 static Eina_Bool
 init(app_data *ad, int argc, char **argv)
 {
-   ecore_event_handler_add(ECORE_EVENT_KEY_DOWN, main_key_down_cb, ad);
-   ecore_event_handler_add(ECORE_EVENT_MOUSE_WHEEL, main_mouse_wheel_cb, ad);
-
    elm_setup();
 
    enventor_init(argc, argv);
@@ -867,6 +914,10 @@ init(app_data *ad, int argc, char **argv)
    //Initialize syntax color.
    syntax_color_init(ad->enventor);
    syntax_color_update(ad->enventor);
+
+   keygrabber_init(ad);
+
+   ecore_event_handler_add(ECORE_EVENT_MOUSE_WHEEL, main_mouse_wheel_cb, ad);
 
    return EINA_TRUE;
 }
