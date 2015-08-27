@@ -84,6 +84,14 @@ btn_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
    goto_line(gd);
 }
 
+static void
+keygrabber_key_down_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
+                       Evas_Object *obj  EINA_UNUSED,
+                       void *event_info EINA_UNUSED)
+{
+   goto_close();
+}
+
 void
 goto_open(Evas_Object *enventor)
 {
@@ -161,6 +169,14 @@ goto_open(Evas_Object *enventor)
    elm_object_part_content_set(layout, "elm.swallow.btn",
                                btn);
    evas_object_show(win);
+
+   //Keygrabber
+   Evas_Object *keygrabber =
+      evas_object_rectangle_add(evas_object_evas_get(win));
+   evas_object_event_callback_add(keygrabber, EVAS_CALLBACK_KEY_DOWN,
+                                  keygrabber_key_down_cb, gd);
+   if (!evas_object_key_grab(keygrabber, "Escape", 0, 0, EINA_TRUE))
+     EINA_LOG_ERR("Failed to grab key - Escape");
 
    tools_goto_update(enventor, EINA_FALSE);
 

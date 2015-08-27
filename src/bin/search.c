@@ -305,6 +305,14 @@ win_unfocused_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
    sd->syntax_color--;
 }
 
+static void
+keygrabber_key_down_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
+                       Evas_Object *obj  EINA_UNUSED,
+                       void *event_info EINA_UNUSED)
+{
+   search_close();
+}
+
 void
 search_open(Evas_Object *enventor)
 {
@@ -406,6 +414,14 @@ search_open(Evas_Object *enventor)
    evas_object_show(win);
 
    tools_search_update(enventor, EINA_FALSE);
+
+   //Keygrabber
+   Evas_Object *keygrabber =
+      evas_object_rectangle_add(evas_object_evas_get(win));
+   evas_object_event_callback_add(keygrabber, EVAS_CALLBACK_KEY_DOWN,
+                                  keygrabber_key_down_cb, sd);
+   if (!evas_object_key_grab(keygrabber, "Escape", 0, 0, EINA_TRUE))
+     EINA_LOG_ERR("Failed to grab key - Escape");
 
    sd->win = win;
    sd->enventor = enventor;

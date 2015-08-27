@@ -699,18 +699,6 @@ keygrabber_key_down_cb(void *data, Evas *e EINA_UNUSED,
    //Main Menu
    if (!strcmp(ev->key, "Escape"))
      {
-        if (goto_is_opened())
-          {
-             goto_close();
-             enventor_object_focus_set(ad->enventor, EINA_TRUE);
-             return;
-          }
-        if (search_is_opened())
-          {
-             search_close();
-             enventor_object_focus_set(ad->enventor, EINA_TRUE);
-             return;
-          }
         if (live_edit_get())
           {
              live_edit_cancel();
