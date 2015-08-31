@@ -286,7 +286,7 @@ context_lexem_thread_end_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
    ctx_lexem_td *td = (ctx_lexem_td *)data;
 
-   td->ad->lexem_ptr = td->result ? td->result : (lexem *)td->ad->lexem_root;
+   td->ad->lexem_ptr = td->result;
    td->ad->cntx_lexem_thread = NULL;
 
    if (td->list_show  || (td->result && td->result->dot && td->ad->dot_candidate))
@@ -301,7 +301,7 @@ context_lexem_thread_cancel_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
    ctx_lexem_td *td = (ctx_lexem_td *)data;
 
-   td->ad->lexem_ptr = td->result ? td->result : (lexem *)td->ad->lexem_root;
+   td->ad->lexem_ptr = td->result;
    if (td->list_show || (td->result && td->result->dot && td->ad->dot_candidate))
      candidate_list_show(td->ad);
    td->ad->cntx_lexem_thread = NULL;
