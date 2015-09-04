@@ -524,7 +524,7 @@ EOLIAN static void
 _enventor_object_text_insert(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd,
                              const char *text)
 {
-   elm_entry_entry_insert(edit_entry_get(pd->ed), text);
+   edit_text_insert(pd->ed, text);
 }
 
 EOLIAN static void

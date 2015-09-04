@@ -670,6 +670,47 @@ edit_selection_start_cb(void *data, Evas_Object *obj EINA_UNUSED,
    ed->select_pos = elm_entry_cursor_pos_get(ed->en_edit);
 }
 
+void
+edit_text_insert(edit_data *ed, const char *text)
+{
+   const char *selection = elm_entry_selection_get(ed->en_edit);
+   selection = elm_entry_markup_to_utf8(selection);
+   if (!selection)
+     {
+        elm_entry_entry_set(ed->en_edit, text);
+        return;
+     }
+   int lenght = strlen(selection);
+   int pos_from = elm_entry_cursor_pos_get(ed->en_edit) - lenght;
+
+   Evas_Object *tb = elm_entry_textblock_get(ed->en_edit);
+   Evas_Textblock_Cursor *cur = evas_object_textblock_cursor_get(tb);
+   int old_pos = evas_textblock_cursor_pos_get(cur);
+   evas_textblock_cursor_pos_set(cur, pos_from + lenght);
+
+   /* append replacement text, and add relative diff into redoundo module */
+   evas_textblock_cursor_pos_set(cur, pos_from + lenght);
+   evas_textblock_cursor_text_append(cur, text);
+   redoundo_text_relative_push(ed->rd, text);
+
+   Evas_Textblock_Cursor *c_1 = evas_object_textblock_cursor_new(tb);
+   evas_textblock_cursor_pos_set(c_1, pos_from);
+
+   Evas_Textblock_Cursor *c_2 = evas_object_textblock_cursor_new(tb);
+   evas_textblock_cursor_pos_set(c_2, pos_from + lenght);
+   /* delete replaced text, and make diff into redoundo module */
+   redoundo_text_push(ed->rd, selection, pos_from, lenght, EINA_FALSE);
+   evas_textblock_cursor_range_delete(c_1, c_2);
+
+   evas_textblock_cursor_free(c_1);
+   evas_textblock_cursor_free(c_2);
+   evas_textblock_cursor_pos_set(cur, old_pos);
+
+   elm_entry_calc_force(ed->en_edit);
+   free(selection);
+}
+
+
 static void
 edit_cursor_changed_manual_cb(void *data, Evas_Object *obj EINA_UNUSED,
                               void *event_info EINA_UNUSED)
