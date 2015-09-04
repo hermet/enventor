@@ -470,6 +470,9 @@ image_candidate_set(Evas_Object *ctxpopup, ctxpopup_data *ctxdata)
 static Eina_Bool
 program_candidate_set(Evas_Object *ctxpopup, ctxpopup_data *ctxdata)
 {
+   const char *PROGRAM_GEN = "program_0x";
+   int PROGRAM_GEN_LEN = 10;
+   int candidate_cntr = 0;
    view_data *vd = edj_mgr_view_get(NULL);
    if (!vd) return EINA_FALSE;
    Eina_List *parts = view_programs_list_get(vd);
@@ -477,13 +480,16 @@ program_candidate_set(Evas_Object *ctxpopup, ctxpopup_data *ctxdata)
    char *part;
    EINA_LIST_FOREACH(parts, l, part)
      {
+        if (!strncmp(part, PROGRAM_GEN, PROGRAM_GEN_LEN))
+           continue;
         snprintf(ctxdata->candidate, sizeof(ctxdata->candidate), "\"%s\"",
                  part);
         elm_ctxpopup_item_append(ctxpopup, ctxdata->candidate, NULL,
                                  ctxpopup_it_cb, ctxdata);
+        candidate_cntr++;
      }
    view_string_list_free(parts);
-   return EINA_TRUE;
+   return candidate_cntr ? EINA_TRUE : EINA_FALSE;
 }
 
 static Eina_Bool
