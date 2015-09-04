@@ -3,510 +3,237 @@ class Enventor.Object (Elm.Widget, Efl.File) {
    methods {
       @property part_highlight {
          set {
-            /*@
-            @brief
-            @warning
-            @see
-            @ingroup Enventor */
          }
          get {
-            /*@
-            @brief
-            @return
-            @warning
-            @see
-            @ingroup Enventor */
          }
          values {
-            part_highlight: bool; /*@ ... */
+            part_highlight: bool;
          }
       }
       @property live_view_scale {
          set {
-            /*@
-            @brief
-            @warning
-            @see
-            @ingroup Enventor */
          }
          get {
-            /*@
-            @brief
-            @return
-            @warning
-            @see
-            @ingroup Enventor */
          }
          values {
-            scale: double; /*@ ... */
+            scale: double;
          }
       }
       @property dummy_swallow {
          set {
-            /*@
-            @brief
-            @warning
-            @see
-            @ingroup Enventor */
          }
          get {
-            /*@
-            @brief
-            @return
-            @warning
-            @see
-            @ingroup Enventor */
          }
          values {
-            dummy_swallow: bool; /*@ ... */
+            dummy_swallow: bool;
          }
       }
       @property auto_complete {
          set {
-            /*@
-            @brief
-            @warning
-            @see
-            @ingroup Enventor */
          }
          get {
-            /*@
-            @brief
-            @return
-            @warning
-            @see
-            @ingroup Enventor */
          }
          values {
-            auto_complete: bool; /*@ ... */
+            auto_complete: bool;
          }
       }
       @property auto_indent {
          set {
-            /*@
-            @brief
-            @warning
-            @see
-            @ingroup Enventor */
          }
          get {
-            /*@
-            @brief
-            @return
-            @warning
-            @see
-            @ingroup Enventor */
          }
          values {
-            auto_indent: bool; /*@ ... */
+            auto_indent: bool;
          }
       }
       @property ctxpopup {
          set {
-            /*@
-            @brief
-            @warning
-            @see
-            @ingroup Enventor */
          }
          get {
-            /*@
-            @brief
-            @return
-            @warning
-            @see
-            @ingroup Enventor */
          }
          values {
-            ctxpopup: bool; /*@ ... */
+            ctxpopup: bool;
          }
       }
       @property focus {
          set {
-            /*@
-            @brief
-            @warning
-            @see
-            @ingroup Enventor */
          }
          get {
-            /*@
-            @brief
-            @return
-            @warning
-            @see
-            @ingroup Enventor */
          }
          values {
-            focus: bool; /*@ ... */
+            focus: bool;
          }
       }
       @property modified {
          set {
-            /*@
-            @brief
-            @warning
-            @see
-            @ingroup Enventor */
          }
          get {
-            /*@
-            @brief
-            @return
-            @warning
-            @see
-            @ingroup Enventor */
          }
          values {
-            modified: bool; /*@ ... */
+            modified: bool;
          }
       }
       @property font_scale {
          set {
-            /*@
-            @brief
-            @warning
-            @see
-            @ingroup Enventor */
          }
          get {
-            /*@
-            @brief
-            @return
-            @warning
-            @see
-            @ingroup Enventor */
          }
          values {
-            font_scale: double; /*@ ... */
+            font_scale: double;
          }
       }
       @property linenumber {
          set {
-            /*@
-            @brief
-            @warning
-            @see
-            @ingroup Enventor */
          }
          get {
-            /*@
-            @brief
-            @return
-            @warning
-            @see
-            @ingroup Enventor */
          }
          values {
-            linenumber: bool; /*@ ... */
+            linenumber: bool;
          }
       }
       path_set {
-         /*@
-         @brief
-         @return
-         @warning
-         @see
-         @ingroup Enventor */
          return: Eina_Bool;
          params {
-            @in type: Enventor_Path_Type; /*@ ... */
-            @in pathes: const(Eina_List) *; /*@ ... */
+            @in type: Enventor_Path_Type;
+            @in pathes: const(Eina_List) *;
          }
       }
       path_get {
-         /*@
-         @brief
-         @return
-         @warning
-         @see
-         @ingroup Enventor */
          return: const(Eina_List) *;
          params {
-            @in type: Enventor_Path_Type; /*@ ... */
+            @in type: Enventor_Path_Type;
          }
       }
       max_line_get {
-         /*@
-         @brief
-         @return
-         @warning
-         @see
-         @ingroup Enventor */
          return: int;
       }
       text_get {
-         /*@
-         @brief
-         @return
-         @warning
-         @see
-         @ingroup Enventor */
          return: const(char) *;
       }
       text_insert {
-         /*@
-         @brief
-         @warning
-         @see
-         @ingroup Enventor */
          params {
-            @in text: const(char) *; /*@ ... */
+            @in text: const(char) *;
          }
       }
       selection_get {
-         /*@
-         @brief
-         @return
-         @warning
-         @see
-         @ingroup Enventor */
          return: const(char) *;
       }
       cursor_pos_get {
-         /*@
-         @brief
-         @return
-         @warning
-         @see
-         @ingroup Enventor */
          return: int;
       }
       cursor_pos_set {
-         /*@
-         @brief
-         @return
-         @warning
-         @see
-         @ingroup Enventor */
          params {
-            @in position: int; /*@ ... */
+            @in position: int;
          }
       }
       select_none {
-         /*@
-         @brief
-         @warning
-         @see
-         @ingroup Enventor */
       }
       select_region_set {
-         /*@
-         @brief
-         @warning
-         @see
-         @ingroup Enventor */
          params {
-            @in start: int; /*@ ... */
-            @in end: int; /*@ ... */
+            @in start: int;
+            @in end: int;
          }
       }
       line_delete {
-         /*@
-         @brief
-         @warning
-         @see
-         @ingroup Enventor */
       }
       save {
-         /*@
-         @brief
-         @return
-         @warning
-         @see
-         @ingroup Enventor */
          return: bool;
          params {
-            @in file: const(char) *; /*@ ... */
+            @in file: const(char) *;
          }
       }
       live_view_get {
-         /*@
-         @brief
-         @warning
-         @see
-         @ingroup Enventor */
          return: Eo *;
       }
       line_goto {
-         /*@
-         @brief
-         @warning
-         @see
-         @ingroup Enventor */
          params {
-            @in line: int; /*@ ... */
+            @in line: int;
          }
       }
       syntax_color_set {
-         /*@
-         @brief
-         @warning
-         @see
-         @ingroup Enventor */
          params {
-            @in color_type: Enventor_Syntax_Color_Type; /*@ ... */
-            @in val: const(char) *; /*@ ... */
+            @in color_type: Enventor_Syntax_Color_Type;
+            @in val: const(char) *;
          }
       }
       syntax_color_get {
-         /*@
-         @brief
-         @return
-         @warning
-         @see
-         @ingroup Enventor */
          return: const(char) *;
          params {
-            @in color_type: Enventor_Syntax_Color_Type; /*@ ... */
+            @in color_type: Enventor_Syntax_Color_Type;
          }
       }
       syntax_color_full_apply {
-         /*@
-         @brief
-         @warning
-         @see
-         @ingroup Enventor */
          params {
-            @in force: bool; /*@ ... */
+            @in force: bool;
          }
       }
       syntax_color_partial_apply {
-         /*@
-         @brief
-         @warning
-         @see
-         @ingroup Enventor */
          params {
-            @in interval: double; /*@ ... */
+            @in interval: double;
          }
       }
       template_insert {
-         /*@
-         @brief
-         @return
-         @warning
-         @see
-         @ingroup Enventor */
          return: Eina_Bool;
          params {
-            @in insert_type: Enventor_Template_Insert_Type; /*@ ... */
-            @in syntax: char *; /*@ ... */
+            @in insert_type: Enventor_Template_Insert_Type;
+            @in syntax: char *;
             @in n: size_t;
          }
       }
       template_part_insert {
-         /*@
-         @brief
-         @return
-         @warning
-         @see
-         @ingroup Enventor */
          return: Eina_Bool;
          params {
-            @in type: Edje_Part_Type; /*@ ... */
-            @in insert_type: Enventor_Template_Insert_Type; /*@ ... */
-            @in rel1_x: float; /*@ ... */
-            @in rel1_y: float; /*@ ... */
-            @in rel2_x: float; /*@ ... */
-            @in rel2_y: float; /*@ ... */
-            @in syntax: char *; /*@ ... */
+            @in type: Edje_Part_Type;
+            @in insert_type: Enventor_Template_Insert_Type;
+            @in rel1_x: float;
+            @in rel1_y: float;
+            @in rel2_x: float;
+            @in rel2_y: float;
+            @in syntax: char *;
             @in n: size_t;
          }
       }
       ctxpopup_visible_get {
-         /*@
-         @brief
-         @warning
-         @see
-         @ingroup Enventor */
          return: bool;
       }
       ctxpopup_dismiss {
-         /*@
-         @brief
-         @warning
-         @see
-         @ingroup Enventor */
       }
       disabled_set {
-         /*@
-         @brief
-         @warning
-         @see
-         @ingroup Enventor */
          params {
-            @in disabled: bool; /*@ ... */
+            @in disabled: bool;
          }
       }
       live_view_size_set {
-         /*@
-         @brief
-         @warning
-         @see
-         @ingroup Enventor */
          params {
-            @in w: Evas_Coord; /*@ ... */
-            @in h: Evas_Coord; /*@ ... */
+            @in w: Evas_Coord;
+            @in h: Evas_Coord;
          }
       }
       live_view_size_get {
-         /*@
-         @brief
-         @warning
-         @see
-         @ingroup Enventor */
          params {
-            @in w: Evas_Coord *; /*@ ... */
-            @in h: Evas_Coord *; /*@ ... */
+            @in w: Evas_Coord *;
+            @in h: Evas_Coord *;
          }
       }
       redo {
-         /*@
-         @brief
-         @return
-         @warning
-         @see
-         @ingroup Enventor */
          return: bool;
       }
       undo {
-         /*@
-         @brief
-         @return
-         @warning
-         @see
-         @ingroup Enventor */
          return: bool;
       }
       font_set {
-         /*@
-         @brief
-         @warning
-         @see
-         @ingroup Enventor */
          params {
-            @in font_name: const(char) *; /*@ ... */
-            @in font_style: const(char) *; /*@ ... */
+            @in font_name: const(char) *;
+            @in font_style: const(char) *;
          }
       }
       font_get {
-         /*@
-         @brief
-         @warning
-         @see
-         @ingroup Enventor */
          params {
-            @in font_name: const(char) **; /*@ ... */
-            @in font_style: const(char) **; /*@ ... */
+            @in font_name: const(char) **;
+            @in font_style: const(char) **;
          }
       }
       auto_complete_list_show {
-         /*@
-         @brief
-         @warning
-         @see
-         @ingroup Enventor */
       }
    }
    implements {
