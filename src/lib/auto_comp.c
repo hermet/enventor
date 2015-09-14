@@ -749,7 +749,11 @@ list_item_move(autocomp_data *ad, Eina_Bool up)
    Elm_Object_Item *it = elm_list_selected_item_get(ad->list);
    if (up) it = elm_list_item_prev(it);
    else it = elm_list_item_next(it);
-   if (it) elm_list_item_selected_set(it, EINA_TRUE);
+   if (it)
+     {
+        elm_list_item_selected_set(it, EINA_TRUE);
+        elm_list_item_bring_in(it);
+     }
 
    evas_object_smart_callback_add(entry, "unfocused", anchor_unfocused_cb,
                                   ad);
