@@ -250,7 +250,7 @@ indent_text_auto_format(indent_data *id EINA_UNUSED,
    redoundo_data *rd = evas_object_data_get(entry, "redoundo");
 
    char *utf8_ptr = utf8;
-   char *utf8_lexem = utf8_ptr;
+   char *utf8_lexem = NULL;
    char *utf8_end = utf8 + utf8_size;
    Eina_List *code_lines = NULL;
    Eina_Strbuf *buf = eina_strbuf_new();

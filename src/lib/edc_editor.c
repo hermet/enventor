@@ -578,8 +578,6 @@ edit_cursor_double_clicked_cb(void *data, Evas_Object *obj,
         return;
      }
 
-   Evas_Object *textblock = elm_entry_textblock_get(obj);
-   Evas_Textblock_Cursor *cursor = evas_object_textblock_cursor_get(textblock);
    const char *str = elm_entry_entry_get(obj);
    char *text = elm_entry_markup_to_utf8(str);
    int cur_pos = elm_entry_cursor_pos_get(obj);
