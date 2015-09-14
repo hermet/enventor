@@ -335,7 +335,8 @@ ctxpopup_candidate_dismiss_cb(void *data, Evas_Object *obj,
 }
 
 static void
-ctxpopup_candidate_changed_cb(void *data, Evas_Object *obj, void *event_info)
+ctxpopup_candidate_changed_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                              void *event_info)
 {
    edit_data *ed = data;
    const char *text = event_info;
@@ -358,14 +359,13 @@ ctxpopup_candidate_changed_cb(void *data, Evas_Object *obj, void *event_info)
         }
    }
 
-   elm_entry_cursor_pos_set(ed->en_edit, cur_pos);
-   elm_entry_cursor_selection_begin(ed->en_edit);
-   elm_entry_cursor_pos_set(ed->en_edit, end_pos);
-   elm_entry_cursor_selection_end(ed->en_edit);
+   elm_entry_select_region_set(ed->en_edit, cur_pos, end_pos);
 
    redoundo_text_relative_push(ed->rd, text);
    elm_entry_entry_insert(ed->en_edit, text);
    elm_entry_calc_force(ed->en_edit);
+
+   elm_entry_cursor_pos_set(ed->en_edit, cur_pos);
 
    edit_changed_set(ed, EINA_TRUE);
    evas_object_smart_callback_call(ed->enventor, SIG_CTXPOPUP_CHANGED,
