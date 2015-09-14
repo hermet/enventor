@@ -710,21 +710,13 @@ edit_text_insert(edit_data *ed, const char *text)
    free(selection);
 }
 
-
-static void
-edit_cursor_changed_manual_cb(void *data, Evas_Object *obj EINA_UNUSED,
-                              void *event_info EINA_UNUSED)
-{
-   edit_data *ed = data;
-   edit_view_sync(ed);
-}
-
 static void
 edit_cursor_changed_cb(void *data, Evas_Object *obj EINA_UNUSED,
                        void *event_info EINA_UNUSED)
 {
    edit_data *ed = data;
    cur_line_pos_set(ed, EINA_FALSE);
+   edit_view_sync(ed);
 }
 
 static void
@@ -1160,8 +1152,6 @@ edit_init(Evas_Object *enventor)
    elm_entry_line_wrap_set(en_edit, ELM_WRAP_NONE);
    evas_object_smart_callback_add(en_edit, "focused", edit_focused_cb, ed);
    evas_object_smart_callback_add(en_edit, "changed,user", edit_changed_cb, ed);
-   evas_object_smart_callback_add(en_edit, "cursor,changed,manual",
-                                  edit_cursor_changed_manual_cb, ed);
    evas_object_smart_callback_add(en_edit, "cursor,changed",
                                   edit_cursor_changed_cb, ed);
    evas_object_smart_callback_add(en_edit, "clicked,double",
