@@ -367,8 +367,6 @@ ctxpopup_candidate_changed_cb(void *data, Evas_Object *obj, void *event_info)
    elm_entry_entry_insert(ed->en_edit, text);
    elm_entry_calc_force(ed->en_edit);
 
-   elm_entry_cursor_pos_set(ed->en_edit, cur_pos);
-
    edit_changed_set(ed, EINA_TRUE);
    evas_object_smart_callback_call(ed->enventor, SIG_CTXPOPUP_CHANGED,
                                    (void *)text);
