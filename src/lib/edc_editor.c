@@ -335,13 +335,6 @@ ctxpopup_candidate_dismiss_cb(void *data, Evas_Object *obj,
 }
 
 static void
-ctxpopup_candidate_selected_cb(void *data, Evas_Object *obj, void *event_info)
-{
-   edit_data *ed = data;
-   elm_ctxpopup_dismiss(obj);
-}
-
-static void
 ctxpopup_candidate_changed_cb(void *data, Evas_Object *obj, void *event_info)
 {
    edit_data *ed = data;

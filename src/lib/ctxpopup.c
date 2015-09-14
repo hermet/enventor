@@ -37,6 +37,7 @@ ctxpopup_it_cb(void *data, Evas_Object *obj, void *event_info)
             ctxdata->attr->prepend_str, text, ctxdata->attr->append_str);
 
    ctxdata->changed_cb(ctxdata->data, obj, ctxdata->candidate);
+   elm_ctxpopup_dismiss(obj);
 }
 
 static void
