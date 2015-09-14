@@ -675,6 +675,21 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
 
+   xy = eina_array_new(2);
+   eina_array_push(xy, eina_stringshare_add("X:"));
+   eina_array_push(xy, eina_stringshare_add("Y:"));
+
+   memset(&attr, 0x00, sizeof(parser_attr));
+   attr.keyword = eina_stringshare_add("offset");
+   attr.value.strs = xy;
+   attr.value.cnt = 2;
+   attr.value.min = -100;
+   attr.value.max = 100;
+   attr.value.type = ATTR_VALUE_INTEGER;
+   attr.value.prepend_str = ATTR_PREPEND_COLON;
+   attr.value.append_str = ATTR_APPEND_SEMICOLON;
+   eina_inarray_push(td->attrs, &attr);
+
    //Type: Float
    xy = eina_array_new(2);
    eina_array_push(xy, eina_stringshare_add("X:"));
