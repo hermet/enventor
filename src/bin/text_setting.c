@@ -402,12 +402,12 @@ static void
 color_slider_layout_set(Evas_Object *ctxpopup)
 {
    Eina_Array *type_array;
-   Eina_Stringshare *type;
+   Eina_Stringshare *type = NULL;
    Eina_Array_Iterator itr;
    unsigned int i;
    const char *color;
    char color_rgb_str[3][3] = {{0}};
-   int color_rgb_val[3];
+   int color_rgb_val[3] = {0};
    color_keyword *selected_color_keyword;
    selected_color_keyword = evas_object_data_get(ctxpopup, "color_keyword");
 
