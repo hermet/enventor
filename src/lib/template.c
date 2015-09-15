@@ -186,6 +186,7 @@ template_part_insert(edit_data *ed, Edje_Part_Type part_type,
         case EDJE_PART_TYPE_MESH_NODE:
         case EDJE_PART_TYPE_LIGHT:
         case EDJE_PART_TYPE_CAMERA:
+        case EDJE_PART_TYPE_SNAPSHOT:
            break;
      }
 

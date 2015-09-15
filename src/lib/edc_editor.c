@@ -663,13 +663,13 @@ void
 edit_text_insert(edit_data *ed, const char *text)
 {
    const char *selection = elm_entry_selection_get(ed->en_edit);
-   selection = elm_entry_markup_to_utf8(selection);
-   if (!selection)
+   char *selection_utf8 = elm_entry_markup_to_utf8(selection);
+   if (!selection_utf8)
      {
         elm_entry_entry_set(ed->en_edit, text);
         return;
      }
-   int lenght = strlen(selection);
+   int lenght = strlen(selection_utf8);
    int pos_from = elm_entry_cursor_pos_get(ed->en_edit) - lenght;
 
    Evas_Object *tb = elm_entry_textblock_get(ed->en_edit);
@@ -688,7 +688,7 @@ edit_text_insert(edit_data *ed, const char *text)
    Evas_Textblock_Cursor *c_2 = evas_object_textblock_cursor_new(tb);
    evas_textblock_cursor_pos_set(c_2, pos_from + lenght);
    /* delete replaced text, and make diff into redoundo module */
-   redoundo_text_push(ed->rd, selection, pos_from, lenght, EINA_FALSE);
+   redoundo_text_push(ed->rd, selection_utf8, pos_from, lenght, EINA_FALSE);
    evas_textblock_cursor_range_delete(c_1, c_2);
 
    evas_textblock_cursor_free(c_1);
@@ -696,7 +696,7 @@ edit_text_insert(edit_data *ed, const char *text)
    evas_textblock_cursor_pos_set(cur, old_pos);
 
    elm_entry_calc_force(ed->en_edit);
-   free(selection);
+   free(selection_utf8);
 }
 
 static void

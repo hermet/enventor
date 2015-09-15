@@ -91,7 +91,7 @@ slider_changed_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
         else
           {
              //if the last digit number is 0 then round up.
-             double val = elm_slider_value_get(slider);
+             val = elm_slider_value_get(slider);
              snprintf(buf, sizeof(buf), " %0.2f", val);
              double round_down = atof(buf);
              snprintf(buf, sizeof(buf), " %0.1f", val);
@@ -196,7 +196,8 @@ entry_changed_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
 }
 
 static void
-toggle_changed_cb(void *data, Evas_Object *obj, void *event_info)
+toggle_changed_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                  void *event_info EINA_UNUSED)
 {
    ctxpopup_data *ctxdata = data;
    Evas_Object *box = elm_object_content_get(ctxdata->ctxpopup);

@@ -54,10 +54,11 @@ static const Evas_Smart_Cb_Description _smart_callbacks[] = {
 /* Internal method implementation                                            */
 /*****************************************************************************/
 static Eina_Bool
-key_up_cb(void *data, int type EINA_UNUSED, void *ev)
+key_up_cb(void *data, int type EINA_UNUSED, void *ev EINA_UNUSED)
 {
    Enventor_Object_Data *pd = data;
    pd->key_down = EINA_FALSE;
+   return ECORE_CALLBACK_DONE;
 }
 
 static Eina_Bool
@@ -67,10 +68,10 @@ key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    Ecore_Event_Key *event = ev;
    Eina_Bool ret;
 
-   eo_do_ret(pd->obj, ret, enventor_obj_focus_get());
+   ret = enventor_object_focus_get(pd->obj);
    if (!ret) return ECORE_CALLBACK_PASS_ON;
 
-   if (pd->key_down) return;
+   if (pd->key_down) return ECORE_CALLBACK_PASS_ON;
    pd->key_down = EINA_TRUE;
 
    if (autocomp_event_dispatch(event->key)) return ECORE_CALLBACK_DONE;

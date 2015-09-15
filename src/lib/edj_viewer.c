@@ -106,8 +106,6 @@ view_images_monitor_set(view_data *vd)
    Eina_List *imgs = edje_edit_images_list_get(vd->layout);
    Eina_List *paths = build_path_get(ENVENTOR_PATH_TYPE_IMAGE);
 
-   Eina_List *imgs_pathes = NULL;
-
    //List up new image pathes and add monitors
    EINA_LIST_FOREACH(imgs, l, img)
      {
