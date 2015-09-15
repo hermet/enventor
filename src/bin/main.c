@@ -576,7 +576,7 @@ default_template_insert(app_data *ad)
 }
 
 static Eina_Bool
-alt_func(app_data *ad, Evas_Event_Key_Down *event)
+alt_func(app_data *ad EINA_UNUSED, Evas_Event_Key_Down *event)
 {
    if (evas_key_modifier_is_set(event->modifiers, "Shift") ||
        evas_key_modifier_is_set(event->modifiers, "Ctrl"))
