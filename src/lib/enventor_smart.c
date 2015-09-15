@@ -102,6 +102,8 @@ edit_view_sync_cb(void *data, Eina_Stringshare *state_name, double state_value,
      }
    if (edit_part_highlight_get(pd->ed))
      view_part_highlight_set(VIEW_DATA, part_name);
+   else
+     view_part_highlight_set(VIEW_DATA, NULL);
 
    if (!state_name)
      {
