@@ -328,6 +328,24 @@ ctxpopup_candidate_dismiss_cb(void *data, Evas_Object *obj,
                               void *event_info EINA_UNUSED)
 {
    edit_data *ed = data;
+
+   int cur_pos = elm_entry_cursor_pos_get(ed->en_edit);
+   elm_entry_cursor_line_end_set(ed->en_edit);
+   int end_pos = elm_entry_cursor_pos_get(ed->en_edit);
+   int i = 0;
+   char *ch;
+
+   for (i = cur_pos; i <= end_pos; i++)
+     {
+        elm_entry_cursor_pos_set(ed->en_edit, i);
+        ch = elm_entry_cursor_content_get(ed->en_edit);
+        if (*ch == ';')
+          {
+             elm_entry_cursor_pos_set(ed->en_edit, i + 1);
+             break;
+          }
+     }
+
    evas_object_del(obj);
    elm_object_tree_focus_allow_set(ed->layout, EINA_TRUE);
    elm_object_focus_set(ed->en_edit, EINA_TRUE);
