@@ -254,17 +254,47 @@ cur_state_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
              //we got a description!
              if (desc_idx != -1)
                {
-                  p += DESC_LEN[desc_idx];
-                  char *name_begin = strstr(p, QUOT_UTF8);
-                  if (!name_begin) goto end;
-                  char *state = strstr(p, STATE);
-                  if ((desc_idx == 1) && (!state || state > name_begin))
+                  desc_name = DEF_STATE_NAME;           /* By default state will be */
+                  desc_name_len = DEF_STATE_LEN;        /* recognized as "default" 0.0*/
+                  value_convert = 0;
+
+                  p += DESC_LEN[desc_idx];              /* skip keyword */
+                  p = strstr(p, "{");
+                  if (!p) goto end;
+                  char *end_brace = strstr(p, "}");     /*Limit size of text for processing*/
+                  if (!end_brace)
+                     goto end;
+
+                  /* proccessing for "description" keyword with "state" attribute */
+                  if (desc_idx == 1)
                     {
-                       desc_name = DEF_STATE_NAME;
-                       desc_name_len = DEF_STATE_LEN;
-                       value_convert = 0;
-                       continue;
+                       char *state = strstr(p, STATE);
+                       if (!state || state > end_brace) /* if name of state didn't find, */
+                          continue;                     /* description will recognized as default 0.0*/
+                       else
+                          p += 5;                       /*5 is strlen("state");*/
                     }
+
+                  char *name_begin = strstr(p, QUOT_UTF8);
+                  if (!name_begin)
+                     continue;
+                  char *end_range = strstr(p, ";");
+                  if (!end_range) goto end;
+
+                  if ((name_begin > end_brace) ||     /* if string placed outside desc block*/
+                      (name_begin > end_range) ||
+                      (end_range > end_brace))
+                        continue;
+
+                  /* Exception cases like: desc {image.normal: "img";} */
+                  int alpha_present = 0;
+                  for (char *string_itr = name_begin; (string_itr > p) && (!alpha_present); string_itr--)
+                    alpha_present = isalpha((int)*string_itr);
+
+                  if (alpha_present && desc_idx == 0)
+                    continue;
+
+                  /*Extract state name and value */
                   name_begin += QUOT_UTF8_LEN;
                   p = name_begin;
                   char *name_end = strstr(p, QUOT_UTF8);
