@@ -4,6 +4,8 @@
 
 #include "common.h"
 
+#define UNFOCUS_DELAY 0.2
+
 typedef struct goto_s
 {
    Evas_Object *win;
@@ -11,6 +13,7 @@ typedef struct goto_s
    Evas_Object *entry;
    Evas_Object *btn;
    Evas_Object *enventor;
+   Ecore_Timer *timer;
 } goto_data;
 
 static goto_data *g_gd = NULL;
@@ -24,6 +27,23 @@ win_delete_request_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
                       void *event_info EINA_UNUSED)
 {
    goto_close();
+}
+
+static Eina_Bool
+timer_cb(void *data EINA_UNUSED)
+{
+   goto_close();
+   return ECORE_CALLBACK_CANCEL;
+}
+
+static void
+win_unfocused_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+                 void *event_info EINA_UNUSED)
+{
+   goto_data *gd = (goto_data*) data;
+   if (gd->timer) return;
+   evas_object_hide(gd->win);
+   gd->timer = ecore_timer_add(UNFOCUS_DELAY, timer_cb, gd);
 }
 
 static void
@@ -123,6 +143,7 @@ goto_open(Evas_Object *enventor)
    win_w = (Evas_Coord) ((double) win_w * elm_config_scale_get());
    win_h = (Evas_Coord) ((double) win_h * elm_config_scale_get());
    evas_object_resize(win, win_w, win_h);
+   evas_object_smart_callback_add(win, "unfocused", win_unfocused_cb, gd);
    evas_object_smart_callback_add(win, "delete,request", win_delete_request_cb,
                                   gd);
    evas_object_smart_callback_add(win, "moved", win_moved_cb, gd);
@@ -206,6 +227,8 @@ goto_close(void)
    evas_object_geometry_get(gd->win, NULL, NULL, &win_w, &win_h);
    elm_win_screen_position_get(gd->win, &win_x, &win_y);
    evas_object_del(gd->win);
+   if (gd->timer)
+     ecore_timer_del(gd->timer);
    free(gd);
    g_gd = NULL;
 
