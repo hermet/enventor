@@ -288,7 +288,8 @@ cur_state_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
 
                   /* Exception cases like: desc {image.normal: "img";} */
                   int alpha_present = 0;
-                  for (char *string_itr = name_begin; (string_itr > p) && (!alpha_present); string_itr--)
+                  char *string_itr;
+                  for (string_itr = name_begin; (string_itr > p) && (!alpha_present); string_itr--)
                     alpha_present = isalpha((int)*string_itr);
 
                   if (alpha_present && desc_idx == 0)
