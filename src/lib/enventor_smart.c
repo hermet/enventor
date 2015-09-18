@@ -631,6 +631,7 @@ _enventor_object_save(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd,
 
         build_edc();
         edit_saved_set(pd->ed, EINA_FALSE);
+        edit_changed_set(pd->ed, EINA_TRUE);
 
         modified.self_changed = EINA_TRUE;
         evas_object_smart_callback_call(pd->obj, SIG_EDC_MODIFIED, &modified);
