@@ -31,6 +31,8 @@ group "syntax_color_group" struct {
          group "keys" list {
             value "key" string: "box";
             value "key" string: "collections";
+            value "key" string: "color_class ";
+            value "key" string: "color_classes";
             value "key" string: "data";
             value "key" string: "description";
             value "key" string: "desc";
@@ -92,7 +94,7 @@ group "syntax_color_group" struct {
             value "key" string: "clip_to";
             value "key" string: "color2";
             value "key" string: "color3";
-            value "key" string: "color_class";
+            value "key" string: "color_class:";
             value "key" string: "color";
             value "key" string: "confine";
             value "key" string: "cursor_mode";
