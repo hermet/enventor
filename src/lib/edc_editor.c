@@ -379,6 +379,8 @@ ctxpopup_candidate_changed_cb(void *data, Evas_Object *obj EINA_UNUSED,
 
    elm_entry_select_region_set(ed->en_edit, cur_pos, end_pos);
 
+   if (!ed->ctxpopup) return;
+
    redoundo_text_relative_push(ed->rd, text);
    elm_entry_entry_insert(ed->en_edit, text);
    elm_entry_calc_force(ed->en_edit);
