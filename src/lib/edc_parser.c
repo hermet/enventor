@@ -890,6 +890,20 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
 
+   memset(&attr, 0x00, sizeof(parser_attr));
+   attr.keyword = eina_stringshare_add("to_x");
+   attr.value.type = ATTR_VALUE_PART;
+   attr.value.prepend_str = ATTR_PREPEND_COLON;
+   attr.value.append_str = ATTR_APPEND_SEMICOLON;
+   eina_inarray_push(td->attrs, &attr);
+
+   memset(&attr, 0x00, sizeof(parser_attr));
+   attr.keyword = eina_stringshare_add("to_y");
+   attr.value.type = ATTR_VALUE_PART;
+   attr.value.prepend_str = ATTR_PREPEND_COLON;
+   attr.value.append_str = ATTR_APPEND_SEMICOLON;
+   eina_inarray_push(td->attrs, &attr);
+
    //Type: State
    memset(&attr, 0x00, sizeof(parser_attr));
    attr.keyword = eina_stringshare_add("STATE_SET");
