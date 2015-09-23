@@ -305,9 +305,6 @@ config_init(const char *input_path, const char *output_path,
    if (input_path[0]) config_input_path_set(input_path);
    if (output_path[0]) eina_stringshare_replace(&cd->output_path, output_path);
 
-   if (input_path[0]) config_input_path_set(input_path);
-   if (output_path[0]) eina_stringshare_replace(&cd->output_path, output_path);
-
    if (img_path)
      g_cd->img_path_list = img_path;
 
