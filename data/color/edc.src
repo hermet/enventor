@@ -118,6 +118,8 @@ group "syntax_color_group" struct {
             value "key" string: "multiline";
             value "key" string: "name";
             value "key" string: "nomouse";
+            value "key" string: "no_render";
+            value "key" string: "norender";
             value "key" string: "normal";
             value "key" string: "offset";
             value "key" string: "on";
@@ -127,6 +129,7 @@ group "syntax_color_group" struct {
             value "key" string: "position";
             value "key" string: "prefer";
             value "key" string: "relative";
+            value "key" string: "render";
             value "key" string: "repch";
             value "key" string: "repeat_events";
             value "key" string: "scale";
