@@ -191,6 +191,8 @@ group "syntax_color_group" struct {
             value "key" string: "LINEAR";
             value "key" string: "LIN";
             value "key" string: "LOSSY";
+            value "key" string: "LOSSY_ETC1";
+            value "key" string: "LOSSY_ETC2";
             value "key" string: "MSG_FLOAT_SET";
             value "key" string: "MSG_FLOAT";
             value "key" string: "MSG_INT_FLOAT_SET";
@@ -223,6 +225,7 @@ group "syntax_color_group" struct {
             value "key" string: "SOFT_SHADOW";
             value "key" string: "SOLID";
             value "key" string: "SPRING";
+            value "key" string: "SOURCE";
             value "key" string: "STATE_SET";
             value "key" string: "USER";
             value "key" string: "VERTICAL";
