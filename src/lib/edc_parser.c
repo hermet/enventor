@@ -437,6 +437,7 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    eina_array_push(aspect_prefer, eina_stringshare_add("VERTICAL"));
    eina_array_push(aspect_prefer, eina_stringshare_add("HORIZONTAL"));
    eina_array_push(aspect_prefer, eina_stringshare_add("BOTH"));
+   eina_array_push(aspect_prefer, eina_stringshare_add("SOURCE"));
 
    memset(&attr, 0x00, sizeof(parser_attr));
    attr.keyword = eina_stringshare_add("aspect_preference");
