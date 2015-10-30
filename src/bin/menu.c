@@ -653,7 +653,7 @@ menu_open(menu_data *md)
    elm_object_part_content_set(layout, "elm.swallow.load_btn", btn);
 
    //Button(Setting)
-   btn = btn_create(layout, "Setting", setting_btn_cb, md);
+   btn = btn_create(layout, "Settings", setting_btn_cb, md);
    elm_object_part_content_set(layout, "elm.swallow.setting_btn", btn);
 
    //Button(About)
