@@ -67,9 +67,9 @@ warning_open(file_mgr_data *fmd)
    Evas_Object *layout = elm_layout_add(base_win_get());
    elm_layout_file_set(layout, EDJE_PATH, "warning_layout");
    elm_object_part_text_set(layout, "elm.text.desc",
-                            "EDC has been changed on the file system.");
+                            _("EDC has been changed on the file system."));
    elm_object_part_text_set(layout, "elm.text.question",
-                            "Do you want to replace the contents?");
+                            _("Do you want to replace the contents?"));
    elm_object_signal_callback_add(layout, "elm,state,dismiss,done", "",
                                   warning_dismiss_done, fmd);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -80,7 +80,7 @@ warning_open(file_mgr_data *fmd)
 
    //Save As Button
    btn = elm_button_add(layout);
-   elm_object_text_set(btn, "Save As");
+   elm_object_text_set(btn, _("Save As"));
    evas_object_smart_callback_add(btn, "clicked", warning_save_as_btn_cb, fmd);
    elm_object_part_content_set(layout, "elm.swallow.btn1", btn);
    evas_object_show(btn);
@@ -88,13 +88,13 @@ warning_open(file_mgr_data *fmd)
 
    //Replace Button
    btn = elm_button_add(layout);
-   elm_object_text_set(btn, "Replace");
+   elm_object_text_set(btn, _("Replace"));
    evas_object_smart_callback_add(btn, "clicked", warning_replace_btn_cb, fmd);
    elm_object_part_content_set(layout, "elm.swallow.btn2", btn);
 
    //Igrore Button
    btn = elm_button_add(layout);
-   elm_object_text_set(btn, "Ignore");
+   elm_object_text_set(btn, _("Ignore"));
    evas_object_smart_callback_add(btn, "clicked", warning_ignore_btn_cb, fmd);
    elm_object_part_content_set(layout, "elm.swallow.btn3", btn);
 
@@ -154,9 +154,9 @@ file_mgr_edc_save(void)
    if (!config_stats_bar_get()) return;
 
    if (save_success)
-     snprintf(buf, sizeof(buf), "File saved. \"%s\"", config_input_path_get());
+     snprintf(buf, sizeof(buf), _("File saved. \"%s\""), config_input_path_get());
    else
-     snprintf(buf, sizeof(buf), "Already saved. \"%s\"",  config_input_path_get());
+     snprintf(buf, sizeof(buf), _("Already saved. \"%s\""),  config_input_path_get());
 
    stats_info_msg_update(buf);
 }
@@ -190,7 +190,7 @@ file_mgr_init(Evas_Object *enventor)
    file_mgr_data *fmd = calloc(1, sizeof(file_mgr_data));
    if (!fmd)
      {
-        EINA_LOG_ERR("Failed to allocate Memory!");
+        EINA_LOG_ERR(_("Failed to allocate Memory!"));
         return;
      }
    g_fmd = fmd;

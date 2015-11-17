@@ -146,7 +146,7 @@ newfile_open(menu_data *md)
 
    Evas_Object *layout = elm_layout_add(base_win_get());
    elm_layout_file_set(layout, EDJE_PATH, "newfile_layout");
-   elm_object_part_text_set(layout, "elm.text.title", "New File: Choose a template");
+   elm_object_part_text_set(layout, "elm.text.title", _("New File: Choose a template"));
    elm_object_signal_callback_add(layout, "elm,state,dismiss,done", "",
                                   newfile_dismiss_done, md);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -159,13 +159,13 @@ newfile_open(menu_data *md)
 
    //Ok Button
    btn = elm_button_add(layout);
-   elm_object_text_set(btn, "Ok");
+   elm_object_text_set(btn, _("Ok"));
    evas_object_smart_callback_add(btn, "clicked", newfile_ok_btn_cb, md);
    elm_object_part_content_set(layout, "elm.swallow.ok_btn", btn);
 
    //Cancel Button
    btn = elm_button_add(layout);
-   elm_object_text_set(btn, "Cancel");
+   elm_object_text_set(btn, _("Cancel"));
    evas_object_smart_callback_add(btn, "clicked", newfile_cancel_btn_cb, md);
    elm_object_part_content_set(layout, "elm.swallow.cancel_btn", btn);
 
@@ -182,9 +182,9 @@ warning_open(menu_data *md, Evas_Smart_Cb yes_cb, Evas_Smart_Cb save_cb)
    Evas_Object *layout = elm_layout_add(base_win_get());
    elm_layout_file_set(layout, EDJE_PATH, "warning_layout");
    elm_object_part_text_set(layout, "elm.text.desc",
-                            "Without save, you will lose last changes!");
+                            _("Without save, you will lose last changes!"));
    elm_object_part_text_set(layout, "elm.text.question",
-                            "Will you save changes?");
+                            _("Will you save changes?"));
    elm_object_signal_callback_add(layout, "elm,state,dismiss,done", "",
                                   warning_dismiss_done, md);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -195,7 +195,7 @@ warning_open(menu_data *md, Evas_Smart_Cb yes_cb, Evas_Smart_Cb save_cb)
 
    //Save Button
    btn = elm_button_add(layout);
-   elm_object_text_set(btn, "Save");
+   elm_object_text_set(btn, _("Save"));
    evas_object_smart_callback_add(btn, "clicked", save_cb, md);
    evas_object_show(btn);
    elm_object_focus_set(btn, EINA_TRUE);
@@ -203,13 +203,13 @@ warning_open(menu_data *md, Evas_Smart_Cb yes_cb, Evas_Smart_Cb save_cb)
 
    //Discard Button
    btn = elm_button_add(layout);
-   elm_object_text_set(btn, "Discard");
+   elm_object_text_set(btn, _("Discard"));
    evas_object_smart_callback_add(btn, "clicked", yes_cb, md);
    elm_object_part_content_set(layout, "elm.swallow.btn2", btn);
 
    //Cancel Button
    btn = elm_button_add(layout);
-   elm_object_text_set(btn, "Cancel");
+   elm_object_text_set(btn, _("Cancel"));
    evas_object_smart_callback_add(btn, "clicked", warning_no_btn_cb, md);
    elm_object_part_content_set(layout, "elm.swallow.btn3", btn);
 
@@ -409,7 +409,7 @@ fileselector_save_done_cb(void *data, Evas_Object *obj, void *event_info)
    else if (ecore_file_is_dir(selected))
      {
         elm_object_part_text_set(md->fileselector_layout,
-                                 "elm.text.msg", "Choose a file to save");
+                                 "elm.text.msg", _("Choose a file to save"));
         elm_object_signal_emit(md->fileselector_layout,
                                "elm,action,msg,show", "");
         return;
@@ -433,7 +433,7 @@ fileselector_save_done_cb(void *data, Evas_Object *obj, void *event_info)
         if (!enventor_object_save(md->enventor, selected))
           {
              char buf[PATH_MAX];
-             snprintf(buf, sizeof(buf), "Failed to save: %s.", selected);
+             snprintf(buf, sizeof(buf), _("Failed to save: %s."), selected);
              elm_object_part_text_set(md->fileselector_layout,
                                       "elm.text.msg", buf);
              elm_object_signal_emit(md->fileselector_layout,
@@ -488,7 +488,7 @@ fileselector_load_done_cb(void *data, Evas_Object *obj, void *event_info)
      {
         elm_object_part_text_set(md->fileselector_layout,
                                  "elm.text.msg",
-                                 "Support only .edc file.");
+                                 _("Support only .edc file."));
         elm_object_signal_emit(md->fileselector_layout,
                                "elm,action,msg,show", "");
         return;
@@ -498,7 +498,7 @@ fileselector_load_done_cb(void *data, Evas_Object *obj, void *event_info)
    if (ecore_file_is_dir(selected))
      {
         elm_object_part_text_set(md->fileselector_layout,
-                                 "elm.text.msg", "Choose a file to load.");
+                                 "elm.text.msg", _("Choose a file to load."));
         elm_object_signal_emit(md->fileselector_layout,
                                "elm,action,msg,show", "");
         return;
@@ -509,7 +509,7 @@ fileselector_load_done_cb(void *data, Evas_Object *obj, void *event_info)
      {
         char buf[PATH_MAX];
         const char *filename = ecore_file_file_get(selected);
-        snprintf(buf, sizeof(buf), "Failed to load: %s.", filename);
+        snprintf(buf, sizeof(buf), _("Failed to load: %s."), filename);
         elm_object_part_text_set(md->fileselector_layout,
                                  "elm.text.msg", buf);
         elm_object_signal_emit(md->fileselector_layout,
@@ -537,7 +537,7 @@ edc_file_save(menu_data *md)
    Evas_Object *layout = elm_layout_add(base_win_get());
    elm_layout_file_set(layout, EDJE_PATH, "fileselector_layout");
    elm_object_part_text_set(layout, "elm.text.title",
-                            "Save File: Choose a EDC");
+                            _("Save File: Choose a EDC"));
    elm_object_signal_callback_add(layout, "elm,state,dismiss,done", "",
                                   fileselector_dismiss_done, md);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -545,8 +545,8 @@ edc_file_save(menu_data *md)
    base_win_resize_object_add(layout);
 
    Evas_Object *fs = elm_fileselector_add(layout);
-   elm_object_part_text_set(fs, "ok", "Save");
-   elm_object_part_text_set(fs, "cancel", "Close");
+   elm_object_part_text_set(fs, "ok", _("Save"));
+   elm_object_part_text_set(fs, "cancel", _("Close"));
    elm_fileselector_path_set(fs, md->last_accessed_path ? md->last_accessed_path : eina_environment_home_get());
    elm_fileselector_expandable_set(fs, EINA_FALSE);
    elm_fileselector_is_save_set(fs, EINA_TRUE);
@@ -571,7 +571,7 @@ edc_file_load(menu_data *md)
    Evas_Object *layout = elm_layout_add(base_win_get());
    elm_layout_file_set(layout, EDJE_PATH, "fileselector_layout");
    elm_object_part_text_set(layout, "elm.text.title",
-                            "Load File: Choose a EDC");
+                            _("Load File: Choose a EDC"));
    elm_object_signal_callback_add(layout, "elm,state,dismiss,done", "",
                                   fileselector_dismiss_done, md);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -580,8 +580,8 @@ edc_file_load(menu_data *md)
 
    Evas_Object *fs = elm_fileselector_add(layout);
    elm_fileselector_path_set(fs, md->last_accessed_path ? md->last_accessed_path : eina_environment_home_get());
-   elm_object_part_text_set(fs, "ok", "Load");
-   elm_object_part_text_set(fs, "cancel", "Close");
+   elm_object_part_text_set(fs, "ok", _("Load"));
+   elm_object_part_text_set(fs, "cancel", _("Close"));
    elm_fileselector_expandable_set(fs, EINA_FALSE);
    elm_fileselector_is_save_set(fs, EINA_TRUE);
    evas_object_smart_callback_add(fs, "done", fileselector_load_done_cb, md);
@@ -640,36 +640,36 @@ menu_open(menu_data *md)
    Evas_Object *btn;
 
    //Button(New)
-   btn = btn_create(layout, "New", new_btn_cb, md);
+   btn = btn_create(layout, _("New"), new_btn_cb, md);
    elm_object_focus_set(btn, EINA_TRUE);
    elm_object_part_content_set(layout, "elm.swallow.new_btn", btn);
 
    //Button(Save)
-   btn = btn_create(layout, "Save", save_btn_cb, md);
+   btn = btn_create(layout, _("Save"), save_btn_cb, md);
    elm_object_part_content_set(layout, "elm.swallow.save_btn", btn);
 
    //Button(Load)
-   btn = btn_create(layout, "Load", load_btn_cb, md);
+   btn = btn_create(layout, _("Load"), load_btn_cb, md);
    elm_object_part_content_set(layout, "elm.swallow.load_btn", btn);
 
    //Button(Setting)
-   btn = btn_create(layout, "Settings", setting_btn_cb, md);
+   btn = btn_create(layout, _("Settings"), setting_btn_cb, md);
    elm_object_part_content_set(layout, "elm.swallow.setting_btn", btn);
 
    //Button(About)
-   btn = btn_create(layout, "About", about_btn_cb, md);
+   btn = btn_create(layout, _("About"), about_btn_cb, md);
    elm_object_part_content_set(layout, "elm.swallow.about_btn", btn);
 
    //Button(Exit)
-   btn = btn_create(layout, "Exit", exit_btn_cb, md);
+   btn = btn_create(layout, _("Exit"), exit_btn_cb, md);
    elm_object_part_content_set(layout, "elm.swallow.exit_btn", btn);
 
    //Button(Prev)
    btn = elm_button_add(layout);
    elm_object_style_set(btn, "anchor");
    evas_object_smart_callback_add(btn, "clicked", prev_btn_cb, md);
-   elm_object_tooltip_text_set(btn, "Close Enventor Menu (Esc)");
-   elm_object_text_set(btn, "Back");
+   elm_object_tooltip_text_set(btn, _("Close Enventor Menu (Esc)"));
+   elm_object_text_set(btn, _("Back"));
    elm_object_part_content_set(layout, "elm.swallow.prev_btn", btn);
 
    tools_menu_update(EINA_TRUE);
@@ -684,7 +684,7 @@ menu_init(Evas_Object *enventor)
    menu_data *md = calloc(1, sizeof(menu_data));
    if (!md)
      {
-        EINA_LOG_ERR("Failed to allocate Memory!");
+        EINA_LOG_ERR(_("Failed to allocate Memory!"));
         return;
      }
    g_md = md;

@@ -63,7 +63,7 @@ config_edj_path_update(config_data *cd)
 
    if (!eina_file_mkstemp(buf, &tmp_path))
      {
-        EINA_LOG_ERR("Failed to generate tmp folder!");
+        EINA_LOG_ERR(_("Failed to generate tmp folder!"));
         return;
      }
 
@@ -82,7 +82,7 @@ config_save(config_data *cd)
         Eina_Bool success = ecore_file_mkdir(efreet_config_home_get());
         if (!success)
           {
-             EINA_LOG_ERR("Cannot create a config folder \"%s\"", efreet_config_home_get());
+             EINA_LOG_ERR(_("Cannot create a config folder \"%s\""), efreet_config_home_get());
              return;
           }
      }
@@ -95,7 +95,7 @@ config_save(config_data *cd)
         Eina_Bool success = ecore_file_mkdir(buf);
         if (!success)
           {
-             EINA_LOG_ERR("Cannot create a config folder \"%s\"", buf);
+             EINA_LOG_ERR(_("Cannot create a config folder \"%s\""), buf);
              return;
           }
      }
@@ -106,7 +106,7 @@ config_save(config_data *cd)
    Eet_File *ef = eet_open(buf, EET_FILE_MODE_WRITE);
    if (!ef)
      {
-        EINA_LOG_ERR("Cannot save a config file \"%s\"", buf);
+        EINA_LOG_ERR(_("Cannot save a config file \"%s\""), buf);
         return;
      }
 
@@ -145,7 +145,7 @@ config_load(void)
         cd = eet_data_read(ef, edd_base, "config");
         eet_close(ef);
      }
-   else EINA_LOG_WARN("Cannot load a config file \"%s\"", buf);
+   else EINA_LOG_WARN(_("Cannot load a config file \"%s\""), buf);
 
    //failed to load config file, create default structure.
    if (!cd)
@@ -153,7 +153,7 @@ config_load(void)
         cd = calloc(1, sizeof(config_data));
         if (!cd)
           {
-             EINA_LOG_ERR("Failed to allocate Memory!");
+             EINA_LOG_ERR(_("Failed to allocate Memory!"));
              return NULL;
           }
      }

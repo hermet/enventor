@@ -78,7 +78,7 @@ replace_all_proc(search_data *sd)
         s++;
      }
 
-   snprintf(buf, sizeof(buf), "%d matches replaced", replace_cnt);
+   snprintf(buf, sizeof(buf), _("%d matches replaced"), replace_cnt);
    stats_info_msg_update(buf);
 
    free(utf8);
@@ -127,7 +127,7 @@ find_forward_proc(search_data *sd)
         //There are no searched words in the text
         else
           {
-             snprintf(buf, sizeof(buf), "No \"%s\" in the text", find);
+             snprintf(buf, sizeof(buf), _("No \"%s\" in the text"), find);
              stats_info_msg_update(buf);
              sd->pos = -1;
           }
@@ -187,7 +187,7 @@ find_backward_proc(search_data *sd)
           }
         else
           {
-             snprintf(buf, sizeof(buf), "No \"%s\" in the text", find);
+             snprintf(buf, sizeof(buf), _("No \"%s\" in the text"), find);
              stats_info_msg_update(buf);
              sd->pos = -1;
           }
@@ -225,7 +225,7 @@ backward_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
    search_data *sd = data;
    find_backward_proc(sd);
    sd->forward = EINA_FALSE;
-   elm_object_part_text_set(sd->layout, "elm.text.dir", "Backward");
+   elm_object_part_text_set(sd->layout, "elm.text.dir", _("Backward"));
 }
 
 static void
@@ -257,7 +257,7 @@ forward_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
    search_data *sd = data;
    find_forward_proc(sd);
    sd->forward = EINA_TRUE;
-   elm_object_part_text_set(sd->layout, "elm.text.dir", "Forward");
+   elm_object_part_text_set(sd->layout, "elm.text.dir", _("Forward"));
 }
 
 static void
@@ -329,16 +329,16 @@ search_open(Evas_Object *enventor)
    sd = calloc(1, sizeof(search_data));
    if (!sd)
      {
-        EINA_LOG_ERR("Failed to allocate Memory!");
+        EINA_LOG_ERR(_("Failed to allocate Memory!"));
         return;
      }
    g_sd = sd;
 
    //Win
-   Evas_Object *win = elm_win_add(base_win_get(), "Enventor Search",
+   Evas_Object *win = elm_win_add(base_win_get(), _("Enventor Search"),
                                   ELM_WIN_DIALOG_BASIC);
    elm_win_focus_highlight_enabled_set(win, EINA_TRUE);
-   elm_win_title_set(win, "Find/Replace");
+   elm_win_title_set(win, _("Find/Replace"));
    win_w = (Evas_Coord) ((double) win_w * elm_config_scale_get());
    win_h = (Evas_Coord) ((double) win_h * elm_config_scale_get());
    evas_object_resize(win, win_w, win_h);
@@ -384,14 +384,14 @@ search_open(Evas_Object *enventor)
                                entry_replace);
    //Button (forward)
    Evas_Object *btn_forward = elm_button_add(layout);
-   elm_object_text_set(btn_forward, "Forward");
+   elm_object_text_set(btn_forward, _("Forward"));
    evas_object_smart_callback_add(btn_forward, "clicked", forward_clicked_cb,
                                   sd);
    elm_object_part_content_set(layout, "elm.swallow.forward", btn_forward);
 
    //Button (backward)
    Evas_Object *btn_backward = elm_button_add(layout);
-   elm_object_text_set(btn_backward, "Backward");
+   elm_object_text_set(btn_backward, _("Backward"));
    evas_object_smart_callback_add(btn_backward, "clicked",
                                   backward_clicked_cb, sd);
    elm_object_part_content_set(layout, "elm.swallow.backward",
@@ -399,14 +399,14 @@ search_open(Evas_Object *enventor)
 
    //Button (replace)
    Evas_Object *btn_replace = elm_button_add(layout);
-   elm_object_text_set(btn_replace, "Replace");
+   elm_object_text_set(btn_replace, _("Replace"));
    evas_object_smart_callback_add(btn_replace, "clicked",
                                   replace_clicked_cb, sd);
    elm_object_part_content_set(layout, "elm.swallow.replace", btn_replace);
 
    //Button (replace all)
    Evas_Object *btn_replace_all = elm_button_add(layout);
-   elm_object_text_set(btn_replace_all, "Replace All");
+   elm_object_text_set(btn_replace_all, _("Replace All"));
    evas_object_smart_callback_add(btn_replace_all, "clicked",
                                   replace_all_clicked_cb, sd);
    elm_object_part_content_set(layout, "elm.swallow.replace_all",
@@ -421,7 +421,7 @@ search_open(Evas_Object *enventor)
    evas_object_event_callback_add(keygrabber, EVAS_CALLBACK_KEY_DOWN,
                                   keygrabber_key_down_cb, sd);
    if (!evas_object_key_grab(keygrabber, "Escape", 0, 0, EINA_TRUE))
-     EINA_LOG_ERR("Failed to grab key - Escape");
+     EINA_LOG_ERR(_("Failed to grab key - Escape"));
 
    sd->win = win;
    sd->enventor = enventor;

@@ -21,8 +21,8 @@ auto_comp_toggle(app_data *ad)
 {
    Eina_Bool toggle = !config_auto_complete_get();
    enventor_object_auto_complete_set(ad->enventor, toggle);
-   if (toggle) stats_info_msg_update("Auto Completion Enabled.");
-   else stats_info_msg_update("Auto Completion Disabled.");
+   if (toggle) stats_info_msg_update(_("Auto Completion Enabled."));
+   else stats_info_msg_update(_("Auto Completion Disabled."));
    config_auto_complete_set(toggle);
 }
 
@@ -31,8 +31,8 @@ auto_indent_toggle(app_data *ad)
 {
    Eina_Bool toggle = !config_auto_indent_get();
    enventor_object_auto_indent_set(ad->enventor, toggle);
-   if (toggle) stats_info_msg_update("Auto Indentation Enabled.");
-   else stats_info_msg_update("Auto Indentation Disabled.");
+   if (toggle) stats_info_msg_update(_("Auto Indentation Enabled."));
+   else stats_info_msg_update(_("Auto Indentation Disabled."));
    config_auto_indent_set(toggle);
 }
 
@@ -176,7 +176,7 @@ main_mouse_wheel_cb(void *data, int type EINA_UNUSED, void *ev)
         live_edit_update();
 
         char buf[256];
-        snprintf(buf, sizeof(buf), "Live View Scale: %2.2fx", scale);
+        snprintf(buf, sizeof(buf), _("Live View Scale: %2.2fx"), scale);
         stats_info_msg_update(buf);
 
         return ECORE_CALLBACK_PASS_ON;
@@ -202,7 +202,7 @@ main_mouse_wheel_cb(void *data, int type EINA_UNUSED, void *ev)
           }
 
         char buf[128];
-        snprintf(buf, sizeof(buf), "Font Size: %1.1fx",
+        snprintf(buf, sizeof(buf), _("Font Size: %1.1fx"),
                  config_font_scale_get());
         stats_info_msg_update(buf);
 
@@ -455,7 +455,7 @@ enventor_program_run_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
    if (!config_stats_bar_get()) return;
    const char *program = event_info;
    char buf[256];
-   snprintf(buf, sizeof(buf), "Program Run: \"%s\"", program);
+   snprintf(buf, sizeof(buf),_("Program Run: \"%s\""), program);
    stats_info_msg_update(buf);
 }
 
@@ -554,8 +554,7 @@ default_template_insert(app_data *ad)
 {
    if (live_edit_get())
      {
-        stats_info_msg_update("Insertion of template code is disabled "
-                              "while in Live Edit mode");
+        stats_info_msg_update(_("Insertion of template code is disabled while in Live Edit mode"));
         return;
      }
 
@@ -563,15 +562,15 @@ default_template_insert(app_data *ad)
    if (enventor_object_template_insert(ad->enventor, ENVENTOR_TEMPLATE_INSERT_DEFAULT, syntax, sizeof(syntax)))
      {
         char msg[64];
-        snprintf(msg, sizeof(msg), "Template code inserted, (%s)", syntax);
+        snprintf(msg, sizeof(msg), _("Template code inserted, (%s)"), syntax);
         stats_info_msg_update(msg);
         enventor_object_save(ad->enventor, config_input_path_get());
      }
    else
      {
-        stats_info_msg_update("Can't insert template code here. Move the "
+        stats_info_msg_update(_("Can't insert template code here. Move the "
                               "cursor inside the \"Collections,Images,Parts,"
-                              "Part,Programs\" scope.");
+                              "Part,Programs\" scope."));
      }
 }
 
@@ -822,7 +821,7 @@ keygrabber_init(app_data *ad)
                                   keygrabber_key_down_cb, ad);
 #define GRAB_ADD(key, modifier) \
    if (!evas_object_key_grab(ad->keygrabber, (key), (modifier), 0, EINA_TRUE)) \
-     EINA_LOG_ERR("Failed to grab key - %s", (key))
+     EINA_LOG_ERR(_("Failed to grab key - %s"), (key))
 
    GRAB_ADD("Escape", 0);
    GRAB_ADD("F1", 0);

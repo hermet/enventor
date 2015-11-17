@@ -86,7 +86,7 @@ entry_changed_cb(void *data, Evas_Object *obj, void* event_info EINA_UNUSED)
    if ((line < 1) || (line > enventor_object_max_line_get(gd->enventor)))
      {
         elm_object_part_text_set(gd->layout, "elm.text.msg",
-                                 "Invalid line number");
+                                 _("Invalid line number"));
         elm_object_disabled_set(gd->btn, EINA_TRUE);
      }
    else
@@ -129,17 +129,17 @@ goto_open(Evas_Object *enventor)
    gd = calloc(1, sizeof(goto_data));
    if (!gd)
      {
-        EINA_LOG_ERR("Failed to allocate Memory!");
+        EINA_LOG_ERR(_("Failed to allocate Memory!"));
         return;
      }
    g_gd = gd;
 
    //Win
-   Evas_Object *win = elm_win_add(base_win_get(), "Enventor Goto Line",
+   Evas_Object *win = elm_win_add(base_win_get(), _("Enventor Goto Line"),
                                   ELM_WIN_DIALOG_BASIC);
    elm_win_focus_highlight_enabled_set(win, EINA_TRUE);
 
-   elm_win_title_set(win, "Go to Line");
+   elm_win_title_set(win, _("Go to Line"));
    win_w = (Evas_Coord) ((double) win_w * elm_config_scale_get());
    win_h = (Evas_Coord) ((double) win_h * elm_config_scale_get());
    evas_object_resize(win, win_w, win_h);
@@ -161,7 +161,7 @@ goto_open(Evas_Object *enventor)
    elm_win_resize_object_add(win, layout);
 
    char  buf[256];
-   snprintf(buf, sizeof(buf), "Enter line number [1..%d]:",
+   snprintf(buf, sizeof(buf), _("Enter line number [1..%d]:"),
             enventor_object_max_line_get(enventor));
    elm_object_part_text_set(layout, "elm.text.goto", buf);
 
@@ -185,7 +185,7 @@ goto_open(Evas_Object *enventor)
 
    //Button (ok)
    Evas_Object *btn = elm_button_add(layout);
-   elm_object_text_set(btn, "Ok");
+   elm_object_text_set(btn, _("Ok"));
    evas_object_smart_callback_add(btn, "clicked", btn_clicked_cb, gd);
    elm_object_part_content_set(layout, "elm.swallow.btn",
                                btn);
@@ -197,7 +197,7 @@ goto_open(Evas_Object *enventor)
    evas_object_event_callback_add(keygrabber, EVAS_CALLBACK_KEY_DOWN,
                                   keygrabber_key_down_cb, gd);
    if (!evas_object_key_grab(keygrabber, "Escape", 0, 0, EINA_TRUE))
-     EINA_LOG_ERR("Failed to grab key - Escape");
+     EINA_LOG_ERR(_("Failed to grab key - Escape"));
 
    tools_goto_update(enventor, EINA_FALSE);
 

@@ -58,7 +58,7 @@ base_title_set(const char *path)
    base_data *bd = g_bd;
    assert(bd);
    char buf[PATH_MAX];
-   snprintf(buf, sizeof(buf), "%s - Enventor", path);
+   snprintf(buf, sizeof(buf), _("%s - Enventor"), path);
    elm_win_title_set(bd->win, buf);
 }
 

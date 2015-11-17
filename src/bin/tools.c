@@ -114,9 +114,9 @@ redo_cb(void *data, Evas_Object *obj EINA_UNUSED,
 {
    Evas_Object *enventor = data;
    if (enventor_object_redo(enventor))
-     stats_info_msg_update("Redo text.");
+     stats_info_msg_update(_("Redo text."));
    else
-     stats_info_msg_update("No text to be redo.");
+     stats_info_msg_update(_("No text to be redo."));
 }
 
 static void
@@ -125,9 +125,9 @@ undo_cb(void *data, Evas_Object *obj EINA_UNUSED,
 {
    Evas_Object *enventor = data;
    if (enventor_object_undo(enventor))
-     stats_info_msg_update("Undo text.");
+     stats_info_msg_update(_("Undo text."));
    else
-     stats_info_msg_update("No text to be undo.");
+     stats_info_msg_update(_("No text to be undo."));
 }
 
 static Evas_Object *
@@ -167,7 +167,7 @@ tools_init(Evas_Object *parent, Evas_Object *enventor)
    td = calloc(1, sizeof(tools_data));
    if (!td)
      {
-        EINA_LOG_ERR("Failed to allocate Memory!");
+        EINA_LOG_ERR(_("Failed to allocate Memory!"));
         return NULL;
      }
    g_td = td;
@@ -180,7 +180,7 @@ tools_init(Evas_Object *parent, Evas_Object *enventor)
    evas_object_size_hint_align_set(box, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
    Evas_Object *btn;
-   btn = tools_btn_create(box, "menu", "Enventor Menu (Esc)",
+   btn = tools_btn_create(box, "menu", _("Enventor Menu (Esc)"),
                           menu_cb, enventor);
    elm_object_tooltip_orient_set(btn, ELM_TOOLTIP_ORIENT_BOTTOM_RIGHT);
    evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
@@ -193,39 +193,39 @@ tools_init(Evas_Object *parent, Evas_Object *enventor)
    evas_object_show(sp);
    elm_box_pack_end(box, sp);
 
-   btn = tools_btn_create(box, "save","Save File (Ctrl + S)",
+   btn = tools_btn_create(box, "save",_("Save File (Ctrl + S)"),
                           save_cb, enventor);
    evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
    elm_box_pack_end(box, btn);
 
-   btn = tools_btn_create(box, "undo", "Undo Text (Ctrl + Z)",
+   btn = tools_btn_create(box, "undo", _("Undo Text (Ctrl + Z)"),
                           undo_cb, enventor);
    evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
    elm_box_pack_end(box, btn);
 
-   btn = tools_btn_create(box, "redo", "Redo Text (Ctrl + R)",
+   btn = tools_btn_create(box, "redo", _("Redo Text (Ctrl + R)"),
                           redo_cb, enventor);
    evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
    elm_box_pack_end(box, btn);
 
-   btn = tools_btn_create(box, "find", "Find/Replace (Ctrl + F)",
+   btn = tools_btn_create(box, "find", _("Find/Replace (Ctrl + F)"),
                           find_cb, enventor);
    evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
    elm_box_pack_end(box, btn);
    td->find_btn = btn;
 
-   btn = tools_btn_create(box, "goto", "Goto Lines (Ctrl + L)",
+   btn = tools_btn_create(box, "goto", _("Goto Lines (Ctrl + L)"),
                           goto_cb, enventor);
    evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
    elm_box_pack_end(box, btn);
    td->goto_btn = btn;
 
-   btn = tools_btn_create(box, "lines", "Line Numbers (F5)",
+   btn = tools_btn_create(box, "lines", _("Line Numbers (F5)"),
                           lines_cb, enventor);
    evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
@@ -236,21 +236,21 @@ tools_init(Evas_Object *parent, Evas_Object *enventor)
    evas_object_show(sp);
    elm_box_pack_end(box, sp);
 
-   btn = tools_btn_create(box, "highlight", "Part Highlighting (Ctrl + H)",
+   btn = tools_btn_create(box, "highlight", _("Part Highlighting (Ctrl + H)"),
                           highlight_cb, enventor);
    evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
    elm_box_pack_end(box, btn);
    td->highlight_btn = btn;
 
-   btn = tools_btn_create(box, "swallow_s", "Dummy Swallow (Ctrl + W)",
+   btn = tools_btn_create(box, "swallow_s", _("Dummy Swallow (Ctrl + W)"),
                           swallow_cb, enventor);
    evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
    elm_box_pack_end(box, btn);
    td->swallow_btn = btn;
 
-   btn = tools_btn_create(box, "live_edit", "Live View Edit (Ctrl + E)",
+   btn = tools_btn_create(box, "live_edit", _("Live View Edit (Ctrl + E)"),
                           live_edit_cb, enventor);
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
@@ -262,7 +262,7 @@ tools_init(Evas_Object *parent, Evas_Object *enventor)
    evas_object_show(sp);
    elm_box_pack_end(box, sp);
 
-   btn = tools_btn_create(box, "console", "Console Box (Alt + Down)",
+   btn = tools_btn_create(box, "console", _("Console Box (Alt + Down)"),
                           console_cb, NULL);
    elm_object_tooltip_orient_set(btn, ELM_TOOLTIP_ORIENT_BOTTOM_LEFT);
    evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
@@ -270,7 +270,7 @@ tools_init(Evas_Object *parent, Evas_Object *enventor)
    elm_box_pack_end(box, btn);
    td->console_btn = btn;
 
-   btn = tools_btn_create(box, "status", "Status (F11)", status_cb, NULL);
+   btn = tools_btn_create(box, "status", _("Status (F11)"), status_cb, NULL);
    elm_object_tooltip_orient_set(btn, ELM_TOOLTIP_ORIENT_BOTTOM_LEFT);
    evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 1.0, EVAS_HINT_FILL);
@@ -306,9 +306,9 @@ tools_highlight_update(Evas_Object *enventor, Eina_Bool toggle)
    if (toggle)
      {
         if (config_part_highlight_get())
-          stats_info_msg_update("Part Highlighting Enabled.");
+          stats_info_msg_update(_("Part Highlighting Enabled."));
         else
-          stats_info_msg_update("Part Highlighting Disabled.");
+          stats_info_msg_update(_("Part Highlighting Disabled."));
      }
 
    //Toggle on/off
@@ -346,9 +346,9 @@ tools_swallow_update(Evas_Object *enventor, Eina_Bool toggle)
    if (toggle)
      {
         if (config_dummy_swallow_get())
-          stats_info_msg_update("Dummy Swallow Enabled.");
+          stats_info_msg_update(_("Dummy Swallow Enabled."));
         else
-          stats_info_msg_update("Dummy Swallow Disabled.");
+          stats_info_msg_update(_("Dummy Swallow Disabled."));
      }
    //Toggle on/off
    if (config_dummy_swallow_get())

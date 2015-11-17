@@ -285,7 +285,7 @@ general_layout_create(setting_data *sd, Evas_Object *parent)
    elm_slider_unit_format_set(slider_view, "%1.2fx");
    elm_slider_min_max_set(slider_view, MIN_VIEW_SCALE, MAX_VIEW_SCALE);
    elm_slider_value_set(slider_view, (double) config_view_scale_get());
-   elm_object_text_set(slider_view, "Live View Scale");
+   elm_object_text_set(slider_view, _("Live View Scale"));
    evas_object_show(slider_view);
 
    elm_box_pack_end(box, slider_view);
@@ -312,7 +312,7 @@ general_layout_create(setting_data *sd, Evas_Object *parent)
 
    elm_box_pack_end(box2, layout_padding3);
 
-   Evas_Object *label_view_size = label_create(layout_padding3, "Fixed Live View Size");
+   Evas_Object *label_view_size = label_create(layout_padding3, _("Fixed Live View Size"));
    elm_object_part_content_set(layout_padding3, "elm.swallow.content",
                                label_view_size);
 
@@ -373,27 +373,27 @@ general_layout_create(setting_data *sd, Evas_Object *parent)
    elm_box_pack_end(box2, toggle_view_size);
 
    //Toggle (Part Highlighting)
-   Evas_Object *toggle_highlight = toggle_create(box, "Part Highlighting",
+   Evas_Object *toggle_highlight = toggle_create(box, _("Part Highlighting"),
                                                  config_part_highlight_get());
    elm_box_pack_end(box, toggle_highlight);
 
    //Toggle (Dummy Swallow)
-   Evas_Object *toggle_swallow = toggle_create(box, "Dummy Swallow",
+   Evas_Object *toggle_swallow = toggle_create(box, _("Dummy Swallow"),
                                                config_dummy_swallow_get());
    elm_box_pack_end(box, toggle_swallow);
 
    //Toggle (Status)
-   Evas_Object *toggle_stats = toggle_create(box, "Status",
+   Evas_Object *toggle_stats = toggle_create(box, _("Status"),
                                              config_stats_bar_get());
    elm_box_pack_end(box, toggle_stats);
 
    //Toggle (Tools)
-   Evas_Object *toggle_tools = toggle_create(box, "Tools",
+   Evas_Object *toggle_tools = toggle_create(box, _("Tools"),
                                              config_tools_get());
    elm_box_pack_end(box, toggle_tools);
 
    //Toggle (Console)
-   Evas_Object *toggle_console = toggle_create(box, "Auto Hiding Console",
+   Evas_Object *toggle_console = toggle_create(box, _("Auto Hiding Console"),
                                                config_console_get());
    elm_box_pack_end(box, toggle_console);
 
@@ -464,7 +464,7 @@ setting_open(void)
    sd = calloc(1, sizeof(setting_data));
    if (!sd)
      {
-        EINA_LOG_ERR("Failed to allocate Memory!");
+        EINA_LOG_ERR(_("Failed to allocate Memory!"));
         return;
      }
    g_sd = sd;
@@ -489,8 +489,8 @@ setting_open(void)
    elm_toolbar_select_mode_set(tabbar, ELM_OBJECT_SELECT_MODE_ALWAYS);
    evas_object_size_hint_weight_set(tabbar, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 
-   elm_toolbar_item_append(tabbar, NULL, "General", general_tab_cb, sd);
-   elm_toolbar_item_append(tabbar, NULL, "Text Editor", text_setting_tab_cb, sd);
+   elm_toolbar_item_append(tabbar, NULL, _("General"), general_tab_cb, sd);
+   elm_toolbar_item_append(tabbar, NULL, _("Text Editor"), text_setting_tab_cb, sd);
 
    elm_object_part_content_set(layout, "elm.swallow.tabbar", tabbar);
 
@@ -505,21 +505,21 @@ setting_open(void)
 
    //Apply Button
    Evas_Object *apply_btn = elm_button_add(layout);
-   elm_object_text_set(apply_btn, "Apply");
+   elm_object_text_set(apply_btn, _("Apply"));
    evas_object_smart_callback_add(apply_btn, "clicked", setting_apply_btn_cb,
                                   sd);
    elm_object_part_content_set(layout, "elm.swallow.apply_btn", apply_btn);
 
    //Reset Button
    Evas_Object *reset_btn = elm_button_add(layout);
-   elm_object_text_set(reset_btn, "Reset");
+   elm_object_text_set(reset_btn, _("Reset"));
    evas_object_smart_callback_add(reset_btn, "clicked", setting_reset_btn_cb,
                                   sd);
    elm_object_part_content_set(layout, "elm.swallow.reset_btn", reset_btn);
 
    //Cancel Button
    Evas_Object *cancel_btn = elm_button_add(layout);
-   elm_object_text_set(cancel_btn, "Cancel");
+   elm_object_text_set(cancel_btn, _("Cancel"));
    evas_object_smart_callback_add(cancel_btn, "clicked", setting_cancel_btn_cb,
                                   sd);
    elm_object_part_content_set(layout, "elm.swallow.cancel_btn", cancel_btn);

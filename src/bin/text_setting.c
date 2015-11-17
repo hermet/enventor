@@ -484,7 +484,7 @@ color_keyword_list_create(char *syntax_template_str)
                                               sizeof(color_keyword));
    if (!color_keyword_list)
      {
-        EINA_LOG_ERR("Failed to allocate Memory!");
+        EINA_LOG_ERR(_("Failed to allocate Memory!"));
         return NULL;
      }
 
@@ -519,7 +519,7 @@ syntax_template_format_create(void)
    file = eina_file_open(file_path, EINA_FALSE);
    if (!file)
      {
-        EINA_LOG_ERR("Failed to open file \"%s\"", file_path);
+        EINA_LOG_ERR(_("Failed to open file \"%s\""), file_path);
         return NULL;
      }
 
@@ -537,7 +537,7 @@ syntax_template_format_create(void)
    return tsd->syntax_template_format;
 
 err:
-   EINA_LOG_ERR("Failed to allocate Memory!");
+   EINA_LOG_ERR(_("Failed to allocate Memory!"));
    if (utf8) free(utf8);
 
    eina_file_close(file);
@@ -568,7 +568,7 @@ syntax_template_create(double font_scale)
    return tsd->syntax_template_str;
 
 err:
-   EINA_LOG_ERR("Failed to allocate Memory!");
+   EINA_LOG_ERR(_("Failed to allocate Memory!"));
    if (syntax_template_format)
      {
         free(syntax_template_format);
@@ -841,7 +841,7 @@ text_setting_layout_create(Evas_Object *parent)
    elm_slider_unit_format_set(slider_font, "%1.1fx");
    elm_slider_min_max_set(slider_font, MIN_FONT_SCALE, MAX_FONT_SCALE);
    elm_slider_value_set(slider_font, tsd->font_scale);
-   elm_object_text_set(slider_font, "Font Size ");
+   elm_object_text_set(slider_font, _("Font Size "));
    evas_object_smart_callback_add(slider_font, "changed",
                                   font_scale_slider_changed_cb, tsd);
    evas_object_show(slider_font);
@@ -850,17 +850,17 @@ text_setting_layout_create(Evas_Object *parent)
    elm_box_pack_end(box2, slider_font);
 
    //Toggle (Line Number)
-   Evas_Object *toggle_linenum = toggle_create(box, "Line Number",
+   Evas_Object *toggle_linenum = toggle_create(box, _("Line Number"),
                                                config_linenumber_get());
    elm_box_pack_end(box, toggle_linenum);
 
    //Toggle (Auto Indentation)
-   Evas_Object *toggle_indent = toggle_create(box, "Auto Indentation",
+   Evas_Object *toggle_indent = toggle_create(box, _("Auto Indentation"),
                                               config_auto_indent_get());
    elm_box_pack_end(box, toggle_indent);
 
    //Toggle (Auto Completion)
-   Evas_Object *toggle_autocomp = toggle_create(box, "Auto Completion",
+   Evas_Object *toggle_autocomp = toggle_create(box, _("Auto Completion"),
                                                 config_auto_complete_get());
    elm_box_pack_end(box, toggle_autocomp);
 
@@ -888,7 +888,7 @@ text_setting_layout_create(Evas_Object *parent)
 
    elm_box_pack_end(box2, layout_padding3);
 
-   Evas_Object *label_font_name = label_create(layout_padding3, "Font Name");
+   Evas_Object *label_font_name = label_create(layout_padding3, _("Font Name"));
    elm_object_part_content_set(layout_padding3, "elm.swallow.content",
                                label_font_name);
 
@@ -914,7 +914,7 @@ text_setting_layout_create(Evas_Object *parent)
 
    elm_box_pack_end(box2, layout_padding3);
 
-   Evas_Object *label_font_style = label_create(layout_padding3, "Font Style");
+   Evas_Object *label_font_style = label_create(layout_padding3, _("Font Style"));
    elm_object_part_content_set(layout_padding3, "elm.swallow.content",
                                label_font_style);
 
@@ -1067,7 +1067,7 @@ text_setting_init(void)
    tsd = calloc(1, sizeof(text_setting_data));
    if (!tsd)
      {
-        EINA_LOG_ERR("Failed to allocate Memory!");
+        EINA_LOG_ERR(_("Failed to allocate Memory!"));
         return;
      }
    g_tsd = tsd;

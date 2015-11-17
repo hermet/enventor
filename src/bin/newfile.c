@@ -53,7 +53,7 @@ newfile_set(Evas_Object *enventor, Eina_Bool template_new)
                             EINA_FILE_COPY_DATA, NULL, NULL);
    if (!success)
      {
-        EINA_LOG_ERR("Cannot find file! \"%s\"", buf);
+        EINA_LOG_ERR(_("Cannot find file! \"%s\""), buf);
         return;
      }
    enventor_object_file_set(enventor, path);
@@ -75,7 +75,7 @@ newfile_default_set(Eina_Bool default_edc)
                             EINA_FILE_COPY_DATA, NULL, NULL);
    if (!success)
      {
-        EINA_LOG_ERR("Cannot find file! \"%s\"", buf);
+        EINA_LOG_ERR(_("Cannot find file! \"%s\""), buf);
         return;
      }
 }
@@ -121,7 +121,7 @@ templates_get(new_data *nd)
 
    if (!ecore_file_path_dir_exists(buf))
      {
-        EINA_LOG_ERR("Cannot find templates folder! \"%s\"", buf);
+        EINA_LOG_ERR(_("Cannot find templates folder! \"%s\""), buf);
         return;
      }
 
@@ -137,7 +137,7 @@ newfile_create(Evas_Object *parent, Evas_Smart_Cb selected_cb, void *data)
         nd = calloc(1, sizeof(new_data));
         if (!nd)
           {
-             EINA_LOG_ERR("Failed to allocate Memory!");
+             EINA_LOG_ERR(_("Failed to allocate Memory!"));
              return NULL;
           }
         g_nd = nd;

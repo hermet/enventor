@@ -915,7 +915,7 @@ ctxpopup_it_selected_cb(void *data, Evas_Object *obj,
 
    elm_ctxpopup_dismiss(obj);
 
-   stats_info_msg_update("Double click the part to confirm.");
+   stats_info_msg_update(_("Double click the part to confirm."));
 }
 
 static void
@@ -985,7 +985,7 @@ live_edit_toggle(void)
         enventor_object_disabled_set(ld->enventor, EINA_TRUE);
         ld->live_view = enventor_object_live_view_get(ld->enventor);
         ld->ctxpopup = ctxpopup_create(ld);
-        stats_info_msg_update("Select a part to add in Live View.");
+        stats_info_msg_update(_("Select a part to add in Live View."));
         tools_live_update(EINA_TRUE);
      }
    else
@@ -1060,7 +1060,7 @@ live_edit_init(Evas_Object *enventor, Evas_Object *trigger)
    live_data *ld = calloc(1, sizeof(live_data));
    if (!ld)
      {
-        EINA_LOG_ERR("Faild to allocate Memory!");
+        EINA_LOG_ERR(_("Faild to allocate Memory!"));
         return;
      }
    g_ld = ld;

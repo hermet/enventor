@@ -39,7 +39,7 @@ stats_init(Evas_Object *parent)
    stats_data *sd = calloc(1, sizeof(stats_data));
    if (!sd)
      {
-        EINA_LOG_ERR("Failed to allocate Memory!");
+        EINA_LOG_ERR(_("Failed to allocate Memory!"));
         return NULL;
      }
    g_sd = sd;
