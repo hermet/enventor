@@ -47,7 +47,6 @@ po/Rules-quot
 po/en@boldquot.header
 po/en@quot.header
 po/stamp-po
-po/enventor.pot
 intl/
 config.rpath
 missing
