@@ -80,4 +80,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n"
 #include "console.h"
 #include "file_mgr.h"
 
+
+/* localization */
+#ifdef HAVE_GETTEXT
+   #include <libintl.h>
+   #define _(string) gettext(string)
+   #define N_(string) string
+   #define NGETTEXT(single, plur, n) ngettext(single, plur, n)
+#else
+   #define _(string) string
+   #define N_(string) string
+   #define NGETTEXT(single, plur, n) (((n)==1)? (single):(plur))
+#endif /* localization */
+
+
 #endif

@@ -13,15 +13,15 @@ missing
 filesdir = $(datadir)/$(PACKAGE)/docs
 files_DATA = README
 
+ACLOCAL_AMFLAGS = -I m4
+
 EXTRA_DIST = \
 README \
 AUTHORS \
 COPYING \
 autogen.sh
 
-SUBDIRS = src data
-
-ACLOCAL_AMFLAGS = -I m4
+SUBDIRS = src data . po
 
 pkgconfigdir = $(libdir)/pkgconfig
 

@@ -21,6 +21,7 @@ AC_INIT(enventor, [v_ver], hermet@hermet.pe.kr)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR(configure.ac)
 AC_CONFIG_MACRO_DIR([m4])
+AC_PROG_CC
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
@@ -28,11 +29,17 @@ AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE(1.6 dist-bzip2 dist-xz)
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 AC_CONFIG_HEADERS(config.h)
-
 AC_GNU_SOURCE
 AC_PROG_LIBTOOL
 AM_PROG_CC_C_O
 ELM_QUICKLAUNCH
+
+AM_PROG_AS
+
+##-- localization with using gettext
+AM_GNU_GETTEXT_VERSION(0.18.1)
+AM_GNU_GETTEXT([external])
+
 
 ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
 ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
@@ -95,6 +102,7 @@ AM_CONDITIONAL([HAVE_EOLIAN_GEN], [true])
 AM_CONDITIONAL([HAVE_EOLIAN_CXX], [true])
 
 AC_CONFIG_FILES([
+po/Makefile.in
 Makefile
 src/Makefile
 src/include/Makefile

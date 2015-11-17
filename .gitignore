@@ -7,11 +7,14 @@
 *~
 .*
 *.eo.*
+*.sed
+*.sin
 
 Enventor.h
 
 enventor
 enventorql
+Makefile.in.in
 Makefile.in
 Makefile
 
@@ -32,12 +35,21 @@ install-sh
 libtool
 ltmain.sh
 enventor.pc
-m4/libtool.m4
-m4/ltoptions.m4
-m4/ltsugar.m4
-m4/ltversion.m4
-m4/lt~obsolete.m4
-m4/efl.m4
+!m4/efl_attribute.m4
+!m4/efl_binary.m4
+!m4/elm_quicklaunch.m4
+!m4/efl_beta.m4
+!m4/efl_eo.m4
+m4/*
+po/Makevars.template
+po/POTFILES
+po/Rules-quot
+po/en@boldquot.header
+po/en@quot.header
+po/stamp-po
+po/enventor.pot
+intl/
+config.rpath
 missing
 src/bin/.deps/
 src/bin/.libs/
