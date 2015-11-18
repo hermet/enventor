@@ -26,3 +26,6 @@ SUBDIRS = src data . po
 pkgconfigdir = $(libdir)/pkgconfig
 
 pkgconfig_DATA = pc/enventor.pc
+
+update-po:
+	$(MAKE) $(AM_MAKEFLAGS) -C po update-po
