@@ -1,5 +1,7 @@
 MAINTAINERCLEANFILES = Makefile.in
 
+LOCALE_DIR = @LOCALE_DIR@
+
 bin_PROGRAMS = enventor
 
 AM_CPPFLAGS = -DPACKAGE_DATA_DIR=\"$(pkgdatadir)\" \
@@ -35,6 +37,7 @@ enventor_LDFLAGS = $(LTLIBINTL)
 
 enventor_CFLAGS = \
    -I$(top_builddir)/src/lib \
-	@ENVENTOR_CFLAGS@
+	@ENVENTOR_CFLAGS@ \
+	-DLOCALE_DIR=\"@LOCALE_DIR@\"
 
 EXTRA_DIST =

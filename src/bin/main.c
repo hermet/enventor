@@ -875,6 +875,12 @@ keygrabber_init(app_data *ad)
 static Eina_Bool
 init(app_data *ad, int argc, char **argv)
 {
+#ifdef ENABLE_NLS
+      setlocale(LC_ALL, "");
+      bindtextdomain(PACKAGE, LOCALE_DIR);
+      textdomain(PACKAGE);
+#endif /* set locale */
+
    elm_setup();
 
    enventor_init(argc, argv);
