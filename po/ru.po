@@ -1,0 +1,452 @@
+# Russian translation for Enventor project
+# Copyright (C) 2015 Enventor development team
+# This file is distributed under the same license as the enventor package.
+# NikaWhite belyavskijnb@gmail.com
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: enventor 0.6.0\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2015-12-10 17:11+0900\n"
+"PO-Revision-Date: 2015-12-10 12:07+0000\n"
+"Last-Translator: NikaWhite belyavskijnb@gmail.com \n"
+"Language-Team: \n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/bin/base_gui.c:61
+#, c-format
+msgid "%s - Enventor"
+msgstr "%s - Enventor"
+
+#: src/bin/config_data.c:67
+msgid "Failed to generate tmp folder!"
+msgstr "Невозможно создать временную директорию!"
+
+#: src/bin/config_data.c:86 src/bin/config_data.c:99
+#, c-format
+msgid "Cannot create a config folder \"%s\""
+msgstr "Невозможно создать директорию с конфигурационными файлами. \"%s\""
+
+#: src/bin/config_data.c:110
+#, c-format
+msgid "Cannot save a config file \"%s\""
+msgstr "Неудалось сохранить файл настроек \"%s\""
+
+#: src/bin/config_data.c:149
+#, c-format
+msgid "Cannot load a config file \"%s\""
+msgstr "Неудалось загрузить настройки из файла \"%s\""
+
+#: src/bin/config_data.c:157 src/bin/file_mgr.c:193 src/bin/goto.c:132
+#: src/bin/menu.c:687 src/bin/newfile.c:140 src/bin/panes.c:281
+#: src/bin/search.c:332 src/bin/setting.c:467 src/bin/statusbar.c:42
+#: src/bin/text_setting.c:487 src/bin/text_setting.c:540
+#: src/bin/text_setting.c:571 src/bin/text_setting.c:1084 src/bin/tools.c:170
+msgid "Failed to allocate Memory!"
+msgstr "Ошибка выделения памяти!"
+
+#: src/bin/file_mgr.c:70
+msgid "EDC has been changed on the file system."
+msgstr "EDC-файл был изменен друшим приложением."
+
+#: src/bin/file_mgr.c:72
+msgid "Do you want to replace the contents?"
+msgstr "Вы уверенны, что хотите заменить файл?"
+
+#: src/bin/file_mgr.c:83
+msgid "Save As"
+msgstr "Сохранить как"
+
+#: src/bin/file_mgr.c:91 src/bin/search.c:402
+msgid "Replace"
+msgstr "Замена"
+
+#: src/bin/file_mgr.c:97
+msgid "Ignore"
+msgstr "Пропустить"
+
+#: src/bin/file_mgr.c:157
+#, c-format
+msgid "File saved. \"%s\""
+msgstr "Файл сохранен. \"%s\""
+
+#: src/bin/file_mgr.c:159
+#, c-format
+msgid "Already saved. \"%s\""
+msgstr "Сохранен. \"%s\""
+
+#: src/bin/goto.c:89
+msgid "Invalid line number"
+msgstr "Неверный номер строки."
+
+#: src/bin/goto.c:138
+msgid "Enventor Goto Line"
+msgstr "Enventor Перейти к строке"
+
+#: src/bin/goto.c:142
+msgid "Go to Line"
+msgstr "Перейти к строке"
+
+#: src/bin/goto.c:164
+#, c-format
+msgid "Enter line number [1..%d]:"
+msgstr "Введите номер строки [1..%d]:"
+
+#: src/bin/goto.c:188 src/bin/menu.c:162
+msgid "Ok"
+msgstr "Перейти"
+
+#: src/bin/goto.c:200 src/bin/search.c:424
+msgid "Failed to grab key - Escape"
+msgstr "Ошибка перехвата нажатия - Escape"
+
+#: src/bin/live_edit.c:918
+msgid "Double click the part to confirm."
+msgstr "Сделайте двойной клик мыши по примитиву для вставки."
+
+#: src/bin/live_edit.c:988
+msgid "Select a part to add in Live View."
+msgstr "Выбирете тип примитива, который будет добавлен."
+
+#: src/bin/live_edit.c:1063
+msgid "Faild to allocate Memory!"
+msgstr "Ошибка выделения памяти!"
+
+#: src/bin/main.c:24
+msgid "Auto Completion Enabled."
+msgstr "Автодополнение Включено."
+
+#: src/bin/main.c:25
+msgid "Auto Completion Disabled."
+msgstr "Автодополнение Выключенно"
+
+#: src/bin/main.c:34
+msgid "Auto Indentation Enabled."
+msgstr "Автовыравнивание Включено"
+
+#: src/bin/main.c:35
+msgid "Auto Indentation Disabled."
+msgstr "Автовыравнивание Выключено"
+
+#: src/bin/main.c:180
+#, c-format
+msgid "Live View Scale: %2.2fx"
+msgstr "Масштаб предпросмотра: %2.2fx"
+
+#: src/bin/main.c:206
+#, c-format
+msgid "Font Size: %1.1fx"
+msgstr "Размер шрифта: %1.1fx"
+
+#: src/bin/main.c:459
+#, c-format
+msgid "Program Run: \"%s\""
+msgstr "Запущена программа: \"%s\""
+
+#: src/bin/main.c:558
+msgid "Insertion of template code is disabled while in Live Edit mode"
+msgstr "Невозможно вставить шаблон, пока активен режим Live Edit"
+
+#: src/bin/main.c:566
+#, c-format
+msgid "Template code inserted, (%s)"
+msgstr "Шаблон вставлен, (%s)"
+
+#: src/bin/main.c:572
+msgid ""
+"Can't insert template code here. Move the cursor inside the \"Collections,"
+"Images,Parts,Part,Programs\" scope."
+msgstr ""
+"Невозможно втавить шаблон в это место. Переместите курсор внутрь одного из "
+"блоков: \"Collections, Images,Parts,Part,Programs\""
+
+#: src/bin/main.c:825
+#, c-format
+msgid "Failed to grab key - %s"
+msgstr "Ошибка перехвата клавиши - %s"
+
+#: src/bin/menu.c:149
+msgid "New File: Choose a template"
+msgstr "Новый файл: Выберите шаблон"
+
+#: src/bin/menu.c:168 src/bin/menu.c:212 src/bin/setting.c:522
+msgid "Cancel"
+msgstr "Отмена"
+
+#: src/bin/menu.c:185
+msgid "Without save, you will lose last changes!"
+msgstr "Без сохранения все изменения будут утеряны!"
+
+#: src/bin/menu.c:187
+msgid "Will you save changes?"
+msgstr "Сохранить изменения?"
+
+#: src/bin/menu.c:198 src/bin/menu.c:548 src/bin/menu.c:648
+msgid "Save"
+msgstr "Сохранить"
+
+#: src/bin/menu.c:206
+msgid "Discard"
+msgstr "Не сохранять"
+
+#: src/bin/menu.c:412
+msgid "Choose a file to save"
+msgstr "Выбирете файл для сохранения"
+
+#: src/bin/menu.c:436
+#, c-format
+msgid "Failed to save: %s."
+msgstr "Неудалось сохранить: %s."
+
+#: src/bin/menu.c:491
+msgid "Support only .edc file."
+msgstr "Поддерживаются файлы с расширением .edc."
+
+#: src/bin/menu.c:501
+msgid "Choose a file to load."
+msgstr "Выбирете файл для загрузки."
+
+#: src/bin/menu.c:512
+#, c-format
+msgid "Failed to load: %s."
+msgstr "Невозможно загрузить: %s."
+
+#: src/bin/menu.c:540
+msgid "Save File: Choose a EDC"
+msgstr "Сохранение: Выберите .edc файл"
+
+#: src/bin/menu.c:549 src/bin/menu.c:584
+msgid "Close"
+msgstr "Закрыть"
+
+#: src/bin/menu.c:574
+msgid "Load File: Choose a EDC"
+msgstr "Загрузка: Выберите .edc файл"
+
+#: src/bin/menu.c:583 src/bin/menu.c:652
+msgid "Load"
+msgstr "Загрузить"
+
+#: src/bin/menu.c:643
+msgid "New"
+msgstr "Новый"
+
+#: src/bin/menu.c:656
+msgid "Settings"
+msgstr "Настройки"
+
+#: src/bin/menu.c:660
+msgid "About"
+msgstr "Помощь"
+
+#: src/bin/menu.c:664
+msgid "Exit"
+msgstr "Выход"
+
+#: src/bin/menu.c:671
+msgid "Close Enventor Menu (Esc)"
+msgstr "Закрыть меню (Esc)"
+
+#: src/bin/menu.c:672
+msgid "Back"
+msgstr "Назад"
+
+#: src/bin/newfile.c:56 src/bin/newfile.c:78
+#, c-format
+msgid "Cannot find file! \"%s\""
+msgstr "Неудалось найти файл! \"%s\""
+
+#: src/bin/newfile.c:124
+#, c-format
+msgid "Cannot find templates folder! \"%s\""
+msgstr "Неудалось найди директорию с шаблонами! \"%s\""
+
+#: src/bin/search.c:81
+#, c-format
+msgid "%d matches replaced"
+msgstr "%d совпадений заменено."
+
+#: src/bin/search.c:130 src/bin/search.c:190
+#, c-format
+msgid "No \"%s\" in the text"
+msgstr "Строка \"%s\" не найдена"
+
+#: src/bin/search.c:228 src/bin/search.c:394
+msgid "Backward"
+msgstr "Назад"
+
+#: src/bin/search.c:260 src/bin/search.c:387
+msgid "Forward"
+msgstr "Вперед"
+
+#: src/bin/search.c:338
+msgid "Enventor Search"
+msgstr "Поиск"
+
+#: src/bin/search.c:341
+msgid "Find/Replace"
+msgstr "Поиск/Замена"
+
+#: src/bin/search.c:409
+msgid "Replace All"
+msgstr "Заменить все совпадения"
+
+#: src/bin/setting.c:288
+msgid "Live View Scale"
+msgstr "Масштаб Live View"
+
+#: src/bin/setting.c:315
+msgid "Fixed Live View Size"
+msgstr "Фиксированный размер Live View"
+
+#: src/bin/setting.c:376
+msgid "Part Highlighting"
+msgstr "Подсветка примитивов"
+
+#: src/bin/setting.c:381
+msgid "Dummy Swallow"
+msgstr "Изображение для контейнеров"
+
+#: src/bin/setting.c:386
+msgid "Status"
+msgstr "Строка статуса"
+
+#: src/bin/setting.c:391
+msgid "Tools"
+msgstr "Меню инструментов"
+
+#: src/bin/setting.c:396
+msgid "Auto Hiding Console"
+msgstr "Авто скрытие консоли"
+
+#: src/bin/setting.c:492
+msgid "General"
+msgstr "Общие"
+
+#: src/bin/setting.c:493
+msgid "Text Editor"
+msgstr "Текст"
+
+#: src/bin/setting.c:508
+msgid "Apply"
+msgstr "Применить"
+
+#: src/bin/setting.c:515
+msgid "Reset"
+msgstr "Сбросить"
+
+#: src/bin/text_setting.c:522
+#, c-format
+msgid "Failed to open file \"%s\""
+msgstr "Неудалось открыть файл \"%s\""
+
+#: src/bin/text_setting.c:844 src/bin/text_setting.c:845
+msgid "Font Size "
+msgstr "Размер шрифта "
+
+#: src/bin/text_setting.c:854
+msgid "Line Number"
+msgstr "Номера строк"
+
+#: src/bin/text_setting.c:859
+msgid "Auto Indentation"
+msgstr "Автовыравнивание"
+
+#: src/bin/text_setting.c:864
+msgid "Auto Completion"
+msgstr "Автодополнений"
+
+#: src/bin/text_setting.c:869
+msgid "Smart Undo/Redo"
+msgstr ""
+
+#: src/bin/text_setting.c:897
+msgid "Font Name"
+msgstr "Имя шрифта"
+
+#: src/bin/text_setting.c:923
+msgid "Font Style"
+msgstr "Стиль шрифта"
+
+#: src/bin/tools.c:117
+msgid "Redo text."
+msgstr "Восстановить изменения"
+
+#: src/bin/tools.c:119
+msgid "No text to be redo."
+msgstr "Нет действий для восстановления"
+
+#: src/bin/tools.c:128
+msgid "Undo text."
+msgstr "Отменить изменения"
+
+#: src/bin/tools.c:130
+msgid "No text to be undo."
+msgstr "Нет изменений для отмены"
+
+#: src/bin/tools.c:183
+msgid "Enventor Menu (Esc)"
+msgstr "Меню (Esc)"
+
+#: src/bin/tools.c:196
+msgid "Save File (Ctrl + S)"
+msgstr "Сохранить (Ctrl + S)"
+
+#: src/bin/tools.c:202
+msgid "Undo Text (Ctrl + Z)"
+msgstr "Отменить (Ctrl + Z)"
+
+#: src/bin/tools.c:208
+msgid "Redo Text (Ctrl + R)"
+msgstr "Повторить (Ctrl + R)"
+
+#: src/bin/tools.c:214
+msgid "Find/Replace (Ctrl + F)"
+msgstr "Поиск/Замена (Ctrl + F)"
+
+#: src/bin/tools.c:221
+msgid "Goto Lines (Ctrl + L)"
+msgstr "Перейти к строке (Ctrl + L)"
+
+#: src/bin/tools.c:228
+msgid "Line Numbers (F5)"
+msgstr "Номера строк (F5)"
+
+#: src/bin/tools.c:239
+msgid "Part Highlighting (Ctrl + H)"
+msgstr "Подсветка примитивов (Ctrl + H)"
+
+#: src/bin/tools.c:246
+msgid "Dummy Swallow (Ctrl + W)"
+msgstr "Изображение для контейнеров (Ctrl + W)"
+
+#: src/bin/tools.c:253
+msgid "Live View Edit (Ctrl + E)"
+msgstr "Режим Live View (Ctrl + E)"
+
+#: src/bin/tools.c:265
+msgid "Console Box (Alt + Down)"
+msgstr "Показать/Скрыть консоль (Alt + Down)"
+
+#: src/bin/tools.c:273
+msgid "Status (F11)"
+msgstr "Строка статуса (F11)"
+
+#: src/bin/tools.c:309
+msgid "Part Highlighting Enabled."
+msgstr "Подсветка примитивов Включена"
+
+#: src/bin/tools.c:311
+msgid "Part Highlighting Disabled."
+msgstr "Подсветка примитивов Выключена"
+
+#: src/bin/tools.c:349
+msgid "Dummy Swallow Enabled."
+msgstr "Изображение для контейнеров Включено"
+
+#: src/bin/tools.c:351
+msgid "Dummy Swallow Disabled."
+msgstr "Изображения для контейнеров Выключено"
