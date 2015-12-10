@@ -60,6 +60,7 @@ struct editor_s
    Eina_Bool part_highlight : 1;
    Eina_Bool ctxpopup_enabled : 1;
    Eina_Bool on_save : 1;
+   Eina_Bool smart_undo_redo : 1;
 };
 
 /*****************************************************************************/
@@ -1184,6 +1185,7 @@ edit_init(Evas_Object *enventor)
    ed->auto_indent = EINA_TRUE;
    ed->part_highlight = EINA_TRUE;
    ed->ctxpopup_enabled = EINA_TRUE;
+   ed->smart_undo_redo = EINA_FALSE;
    ed->cur_line = -1;
    ed->select_pos = -1;
    ed->font_scale = 1;
@@ -1430,6 +1432,20 @@ edit_disabled_set(edit_data *ed, Eina_Bool disabled)
    //Turn off the part highlight in case of disable.
    if (disabled) view_part_highlight_set(VIEW_DATA, NULL);
    else if (ed->part_highlight) edit_view_sync(ed);
+}
+
+void
+edit_smart_undo_redo_set(edit_data *ed, Eina_Bool smart_undo_redo)
+{
+   smart_undo_redo = !!smart_undo_redo;
+   ed->smart_undo_redo = smart_undo_redo;
+   redoundo_smart_set(ed->rd, smart_undo_redo);
+}
+
+Eina_Bool
+edit_smart_undo_redo_get(edit_data *ed)
+{
+   return ed->smart_undo_redo;
 }
 
 void

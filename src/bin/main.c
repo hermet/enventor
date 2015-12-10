@@ -56,6 +56,7 @@ enventor_common_setup(Evas_Object *enventor)
    enventor_object_live_view_scale_set(enventor, config_view_scale_get());
    enventor_object_auto_indent_set(enventor, config_auto_indent_get());
    enventor_object_auto_complete_set(enventor, config_auto_complete_get());
+   enventor_object_smart_undo_redo_set(enventor, config_smart_undo_redo_get());
 
    Eina_List *list = eina_list_append(NULL, config_output_path_get());
    enventor_object_path_set(enventor, ENVENTOR_PATH_TYPE_EDJ, list);

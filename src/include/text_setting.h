@@ -15,6 +15,7 @@ struct text_setting_s
    Evas_Object *toggle_linenum;
    Evas_Object *toggle_indent;
    Evas_Object *toggle_autocomp;
+   Evas_Object *toggle_smart_undo_redo;
 
    color_keyword *color_keyword_list;
    char *syntax_template_format;
@@ -37,5 +38,6 @@ void text_setting_font_scale_set(double font_scale);
 void text_setting_linenumber_set(Eina_Bool enabled);
 void text_setting_auto_indent_set(Eina_Bool enabled);
 void text_setting_auto_complete_set(Eina_Bool enabled);
+void text_setting_smart_undo_redo_set(Eina_Bool enabled);
 void text_setting_term(void);
 void text_setting_init(void);

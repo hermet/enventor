@@ -310,6 +310,19 @@ _enventor_object_linenumber_get(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
 }
 
 EOLIAN static void
+_enventor_object_smart_undo_redo_set(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd,
+                                     Eina_Bool smart_undo_redo)
+{
+   edit_smart_undo_redo_set(pd->ed, smart_undo_redo);
+}
+
+EOLIAN static Eina_Bool
+_enventor_object_smart_undo_redo_get(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
+{
+   return edit_smart_undo_redo_get(pd->ed);
+}
+
+EOLIAN static void
 _enventor_object_auto_indent_set(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd,
                                  Eina_Bool auto_indent)
 {

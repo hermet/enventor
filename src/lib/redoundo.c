@@ -6,6 +6,7 @@
 #include "enventor_private.h"
 
 #define DEFAULT_QUEUE_SIZE 200
+#define INPUT_SPEED 0.8 //how much time need to input one symbol with speed 75sym/min
 
 typedef struct diff_s
 {
@@ -26,11 +27,72 @@ struct redoundo_s
    diff_data *last_diff;
    unsigned int queue_max;        //Maximum queuing data count 0: unlimited
    Eina_Bool internal_change : 1; //Entry change by redoundo
+   struct {
+      Eina_Bool enable;
+      Ecore_Timer *timer;
+      Eina_Bool continues_input;
+      double input_delay;
+   } smart;
 };
 
 /*****************************************************************************/
 /* Internal method implementation                                            */
 /*****************************************************************************/
+Eina_Bool
+_input_timer_cb(void *data)
+{
+   redoundo_data *rd = (redoundo_data *)data;
+   if (!rd->smart.continues_input) return ECORE_CALLBACK_CANCEL;
+   rd->smart.continues_input = EINA_FALSE;
+   ecore_timer_del(rd->smart.timer);
+   rd->smart.timer = NULL;
+   return ECORE_CALLBACK_CANCEL;
+}
+
+static diff_data *
+smart_analyser(redoundo_data *rd, diff_data *diff)
+{
+   if (!rd->smart.enable) return diff;
+
+   if (rd->smart.timer)
+     {
+        ecore_timer_del(rd->smart.timer);
+        rd->smart.timer = NULL;
+     }
+
+   if ((!diff) || (diff->length > 1) || (!rd->last_diff)) return diff;
+
+   /*  Autoindent. Here need  edit_data pointer,
+   *  for check status of autoindent feature.
+   *
+   *  if (edit_auto_indent_get(edit_obj_get))
+   *   {
+   *     if (strstr(diff->text, "<br/>")) diff->relative = EINA_TRUE;
+   *       else diff->relative = EINA_FALSE;
+   *    }
+   */
+
+   // Analyse speed of text input and words separates
+   if ((rd->smart.continues_input) && (!diff->relative) &&
+       (isalpha(diff->text[0])) && (isalpha(rd->last_diff->text[0])))
+     {
+        diff_data *tmp = diff;
+        const char *text;
+        diff = rd->last_diff;
+        diff->length += tmp->length;
+        text = eina_stringshare_printf("%s%s", diff->text, tmp->text);
+        eina_stringshare_replace(&diff->text, text);
+        eina_stringshare_del(text);
+        rd->last_diff = eina_list_data_get(eina_list_prev(rd->current_node));
+        rd->queue = eina_list_remove_list(rd->queue, rd->current_node);
+        eina_stringshare_del(tmp->text);
+        free(tmp);
+     }
+
+   rd->smart.continues_input = EINA_TRUE;
+   rd->smart.timer = ecore_timer_add(rd->smart.input_delay, _input_timer_cb, rd);
+   return diff;
+}
 
 static void
 untracked_diff_free(redoundo_data *rd)
@@ -104,7 +166,7 @@ entry_changed_user_cb(void *data, Evas_Object *obj EINA_UNUSED,
         diff->length = abs(length);
         diff->action = EINA_FALSE;
      }
-   diff->relative = EINA_FALSE;
+   diff = smart_analyser(rd, diff);
 
    untracked_diff_free(rd);
    rd->queue = eina_list_append(rd->queue, diff);
@@ -319,6 +381,8 @@ redoundo_init(Evas_Object *entry)
    rd->textblock = elm_entry_textblock_get(entry);
    rd->cursor = evas_object_textblock_cursor_new(rd->textblock);
    rd->queue_max = DEFAULT_QUEUE_SIZE;
+   rd->smart.enable = EINA_FALSE;
+   rd->smart.input_delay = INPUT_SPEED;
 
    //FIXME: Why signal callback? not smart callback?
    elm_object_signal_callback_add(entry, "entry,changed,user", "*",
@@ -337,6 +401,7 @@ redoundo_clear(redoundo_data *rd)
         free(data);
      }
    rd->internal_change = EINA_FALSE;
+   ecore_timer_del(rd->smart.timer);
 }
 
 void
@@ -394,4 +459,11 @@ redoundo_n_diff_cancel(redoundo_data *rd, unsigned int n)
      rd->current_node = eina_list_prev(rd->current_node);
    rd->last_diff = (diff_data *)eina_list_data_get(rd->current_node);
    untracked_diff_free(rd);
+}
+
+void
+redoundo_smart_set(redoundo_data *rd, Eina_Bool status)
+{
+   if (!rd) return;
+   rd->smart.enable = status;
 }

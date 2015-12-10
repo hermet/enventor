@@ -864,6 +864,11 @@ text_setting_layout_create(Evas_Object *parent)
                                                 config_auto_complete_get());
    elm_box_pack_end(box, toggle_autocomp);
 
+   //Toggle (Smart Undo/Redo)
+   Evas_Object *toggle_smart_undo_redo = toggle_create(box, _("Smart Undo/Redo"),
+                                                config_smart_undo_redo_get());
+   elm_box_pack_end(box, toggle_smart_undo_redo);
+
    //Font Name and Style (Box)
    box = elm_box_add(layout);
    elm_box_horizontal_set(box, EINA_TRUE);
@@ -953,7 +958,7 @@ text_setting_layout_create(Evas_Object *parent)
    tsd->toggle_linenum = toggle_linenum;
    tsd->toggle_indent = toggle_indent;
    tsd->toggle_autocomp = toggle_autocomp;
-
+   tsd->toggle_smart_undo_redo = toggle_smart_undo_redo;
    return layout;
 }
 
@@ -999,6 +1004,7 @@ text_setting_config_set(void)
    config_linenumber_set(elm_check_state_get(tsd->toggle_linenum));
    config_auto_indent_set(elm_check_state_get(tsd->toggle_indent));
    config_auto_complete_set(elm_check_state_get(tsd->toggle_autocomp));
+   config_smart_undo_redo_set(elm_check_state_get(tsd->toggle_smart_undo_redo));
 }
 
 static void
@@ -1056,6 +1062,13 @@ text_setting_auto_complete_set(Eina_Bool enabled)
 {
    text_setting_data *tsd = g_tsd;
    elm_check_state_set(tsd->toggle_autocomp, enabled);
+}
+
+void
+text_setting_smart_undo_redo_set(Eina_Bool enabled)
+{
+   text_setting_data *tsd = g_tsd;
+   elm_check_state_set(tsd->toggle_smart_undo_redo, enabled);
 }
 
 void

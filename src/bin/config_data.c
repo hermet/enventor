@@ -38,6 +38,7 @@ typedef struct config_s
    Eina_Bool console;
    Eina_Bool auto_complete;
    Eina_Bool view_size_configurable;
+   Eina_Bool smart_undo_redo;
 } config_data;
 
 static config_data *g_cd = NULL;
@@ -178,6 +179,7 @@ config_load(void)
         cd->auto_complete = EINA_TRUE;
         cd->view_size_configurable = EINA_FALSE;
         cd->version = ENVENTOR_CONFIG_VERSION;
+        cd->smart_undo_redo = EINA_FALSE;
      }
 
    g_cd = cd;
@@ -282,6 +284,8 @@ eddc_init(void)
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data,
                                  "view_size_configurable",
                                  view_size_configurable, EET_T_UCHAR);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "smart_undo_redo",
+                                    smart_undo_redo, EET_T_UCHAR);
 }
 
 void
@@ -730,6 +734,20 @@ config_font_scale_get(void)
 {
    config_data *cd = g_cd;
    return cd->font_scale;
+}
+
+Eina_Bool
+config_smart_undo_redo_get(void)
+{
+   config_data *cd = g_cd;
+   return cd->smart_undo_redo;
+}
+
+void
+config_smart_undo_redo_set(Eina_Bool smart_undo_redo)
+{
+   config_data *cd = g_cd;
+   cd->smart_undo_redo = smart_undo_redo;
 }
 
 void

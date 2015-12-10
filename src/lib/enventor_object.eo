@@ -91,6 +91,15 @@ class Enventor.Object (Elm.Widget, Efl.File) {
             linenumber: bool;
          }
       }
+      @property smart_undo_redo {
+         set {
+         }
+         get {
+         }
+         values {
+            smart_undo_redo: bool;
+         }
+      }
       path_set {
          return: Eina_Bool;
          params {
