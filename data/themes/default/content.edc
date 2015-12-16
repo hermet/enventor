@@ -1,6 +1,7 @@
 images {
    image: "part_highlight.png" COMP;
    image: "swallow.png" COMP;
+   image: "spacer_new.png" COMP;
 }
 
 group { name: "swallow";
@@ -72,6 +73,23 @@ group { name: "swallow";
       }
    }
 }
+
+group { name: "spacer";
+   inherit: "swallow";
+   parts {
+      part { name: "img";
+         type: IMAGE;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            image.normal: "spacer_new.png";
+            align: 0.5 0.5;
+            aspect: 1 1;
+            aspect_preference: BOTH;
+         }
+      }
+   }
+}
+
 
 group { name: "part_highlight";
    parts {
