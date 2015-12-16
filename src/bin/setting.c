@@ -246,6 +246,7 @@ general_layout_create(setting_data *sd, Evas_Object *parent)
    elm_object_focus_set(img_path_entry, EINA_TRUE);
    elm_object_part_content_set(layout, "elm.swallow.img_path_entry",
                                img_path_entry);
+   elm_layout_text_set(layout, "img_path_guide", _("Image Paths:"));
 
    //Sound Path Entry
    Evas_Object *snd_path_entry = entry_create(layout);
@@ -253,12 +254,15 @@ general_layout_create(setting_data *sd, Evas_Object *parent)
                          (Eina_List *)config_snd_path_list_get());
    elm_object_part_content_set(layout, "elm.swallow.snd_path_entry",
                                snd_path_entry);
+   elm_layout_text_set(layout, "snd_path_guide", _("Sound Paths:"));
+
    //Font Path Entry
    Evas_Object *fnt_path_entry = entry_create(layout);
    fnt_path_entry_update(fnt_path_entry,
                          (Eina_List *)config_fnt_path_list_get());
    elm_object_part_content_set(layout, "elm.swallow.fnt_path_entry",
                                fnt_path_entry);
+   elm_layout_text_set(layout, "fnt_path_guide", _("Font Paths:"));
 
    //Data Path Entry
    Evas_Object *dat_path_entry = entry_create(layout);
@@ -266,10 +270,12 @@ general_layout_create(setting_data *sd, Evas_Object *parent)
                          (Eina_List *)config_dat_path_list_get());
    elm_object_part_content_set(layout, "elm.swallow.dat_path_entry",
                                dat_path_entry);
+   elm_layout_text_set(layout, "dat_path_guide", _("Data Paths:"));
 
    //Preference
    Evas_Object *scroller = elm_scroller_add(layout);
    elm_object_part_content_set(layout, "elm.swallow.preference", scroller);
+   elm_layout_text_set(layout, "preference_guide", _("Preferences:"));
 
    //Box
    Evas_Object *box = elm_box_add(scroller);
@@ -483,6 +489,7 @@ setting_open(void)
    elm_object_signal_callback_add(layout, "elm,state,dismiss,done", "",
                                   setting_dismiss_done_cb, sd);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   elm_layout_text_set(layout, "title_name", _("Settings"));
    evas_object_show(layout);
    base_win_resize_object_add(layout);
 

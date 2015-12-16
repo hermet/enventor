@@ -799,6 +799,7 @@ text_setting_layout_create(Evas_Object *parent)
    elm_entry_editable_set(entry, EINA_FALSE);
    evas_object_size_hint_weight_set(entry, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(entry, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_layout_text_set(layout, "text_setting_guide", _("Double click a keyword to change its color :"));
 
    //Font information
    const char *font_name;
