@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enventor 0.6.0\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2015-12-10 17:11+0900\n"
+"POT-Creation-Date: 2015-12-16 10:22+0900\n"
 "PO-Revision-Date: 2015-12-10 12:07+0000\n"
 "Last-Translator: NikaWhite belyavskijnb@gmail.com \n"
 "Language-Team: \n"
@@ -42,9 +42,9 @@ msgstr "Неудалось загрузить настройки из файла
 
 #: src/bin/config_data.c:157 src/bin/file_mgr.c:193 src/bin/goto.c:132
 #: src/bin/menu.c:687 src/bin/newfile.c:140 src/bin/panes.c:281
-#: src/bin/search.c:332 src/bin/setting.c:467 src/bin/statusbar.c:42
-#: src/bin/text_setting.c:487 src/bin/text_setting.c:540
-#: src/bin/text_setting.c:571 src/bin/text_setting.c:1084 src/bin/tools.c:170
+#: src/bin/search.c:332 src/bin/setting.c:476 src/bin/statusbar.c:42
+#: src/bin/text_setting.c:490 src/bin/text_setting.c:543
+#: src/bin/text_setting.c:574 src/bin/text_setting.c:1087 src/bin/tools.c:170
 msgid "Failed to allocate Memory!"
 msgstr "Ошибка выделения памяти!"
 
@@ -172,7 +172,7 @@ msgstr "Ошибка перехвата клавиши - %s"
 msgid "New File: Choose a template"
 msgstr "Новый файл: Выберите шаблон"
 
-#: src/bin/menu.c:168 src/bin/menu.c:212 src/bin/setting.c:522
+#: src/bin/menu.c:168 src/bin/menu.c:212 src/bin/setting.c:532
 msgid "Cancel"
 msgstr "Отмена"
 
@@ -234,7 +234,7 @@ msgstr "Загрузить"
 msgid "New"
 msgstr "Новый"
 
-#: src/bin/menu.c:656
+#: src/bin/menu.c:656 src/bin/setting.c:492
 msgid "Settings"
 msgstr "Настройки"
 
@@ -294,80 +294,104 @@ msgstr "Поиск/Замена"
 msgid "Replace All"
 msgstr "Заменить все совпадения"
 
-#: src/bin/setting.c:288
+#: src/bin/setting.c:249
+msgid "Image Paths:"
+msgstr "Изображения:"
+
+#: src/bin/setting.c:257
+msgid "Sound Paths:"
+msgstr "Звуки:      "
+
+#: src/bin/setting.c:265
+msgid "Font Paths:"
+msgstr "Шрифты:     "
+
+#: src/bin/setting.c:273
+msgid "Data Paths:"
+msgstr "Данные:     "
+
+#: src/bin/setting.c:278
+msgid "Preferences:"
+msgstr "Дополнительные настройки:"
+
+#: src/bin/setting.c:297
 msgid "Live View Scale"
 msgstr "Масштаб Live View"
 
-#: src/bin/setting.c:315
+#: src/bin/setting.c:324
 msgid "Fixed Live View Size"
 msgstr "Фиксированный размер Live View"
 
-#: src/bin/setting.c:376
+#: src/bin/setting.c:385
 msgid "Part Highlighting"
 msgstr "Подсветка примитивов"
 
-#: src/bin/setting.c:381
+#: src/bin/setting.c:390
 msgid "Dummy Swallow"
 msgstr "Изображение для контейнеров"
 
-#: src/bin/setting.c:386
+#: src/bin/setting.c:395
 msgid "Status"
 msgstr "Строка статуса"
 
-#: src/bin/setting.c:391
+#: src/bin/setting.c:400
 msgid "Tools"
 msgstr "Меню инструментов"
 
-#: src/bin/setting.c:396
+#: src/bin/setting.c:405
 msgid "Auto Hiding Console"
 msgstr "Авто скрытие консоли"
 
-#: src/bin/setting.c:492
+#: src/bin/setting.c:502
 msgid "General"
 msgstr "Общие"
 
-#: src/bin/setting.c:493
+#: src/bin/setting.c:503
 msgid "Text Editor"
 msgstr "Текст"
 
-#: src/bin/setting.c:508
+#: src/bin/setting.c:518
 msgid "Apply"
 msgstr "Применить"
 
-#: src/bin/setting.c:515
+#: src/bin/setting.c:525
 msgid "Reset"
 msgstr "Сбросить"
 
-#: src/bin/text_setting.c:522
+#: src/bin/text_setting.c:525
 #, c-format
 msgid "Failed to open file \"%s\""
 msgstr "Неудалось открыть файл \"%s\""
 
-#: src/bin/text_setting.c:844 src/bin/text_setting.c:845
+#: src/bin/text_setting.c:802
+msgid "Double click a keyword to change its color :"
+msgstr "Двойной клик по слову позволит задать цвет:"
+
+#: src/bin/text_setting.c:848
 msgid "Font Size "
 msgstr "Размер шрифта "
 
-#: src/bin/text_setting.c:854
+#: src/bin/text_setting.c:857
 msgid "Line Number"
 msgstr "Номера строк"
 
-#: src/bin/text_setting.c:859
+#: src/bin/text_setting.c:862
 msgid "Auto Indentation"
 msgstr "Автовыравнивание"
 
-#: src/bin/text_setting.c:864
+#: src/bin/text_setting.c:867
 msgid "Auto Completion"
 msgstr "Автодополнений"
 
-#: src/bin/text_setting.c:869
+#: src/bin/text_setting.c:872
 msgid "Smart Undo/Redo"
 msgstr ""
 
-#: src/bin/text_setting.c:897
+#: src/bin/text_setting.c:900
 msgid "Font Name"
 msgstr "Имя шрифта"
 
-#: src/bin/text_setting.c:923
+#: src/bin/text_setting.c:926
 msgid "Font Style"
 msgstr "Стиль шрифта"
 
