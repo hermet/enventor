@@ -166,6 +166,15 @@ call_error:
 
 }
 
+static void
+_enventor_part_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED, void *ei)
+{
+   Enventor_Object_Data *pd = (Enventor_Object_Data *)data;
+   const char *part_name = (const char *)ei;
+   edit_part_cursor_set(pd->ed, view_group_name_get(VIEW_DATA), part_name);
+}
+
+
 /*****************************************************************************/
 /* Internal Eo object required routines                                      */
 /*****************************************************************************/
@@ -198,6 +207,8 @@ _enventor_object_evas_object_smart_add(Eo *obj, Enventor_Object_Data *pd)
       ecore_event_handler_add(ECORE_EVENT_KEY_DOWN, key_down_cb, pd);
    pd->key_up_handler =
       ecore_event_handler_add(ECORE_EVENT_KEY_DOWN, key_up_cb, pd);
+
+   evas_object_smart_callback_add(pd->obj, "part,clicked", _enventor_part_clicked_cb, pd);
 }
 
 EOLIAN static void

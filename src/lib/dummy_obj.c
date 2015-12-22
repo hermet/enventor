@@ -23,10 +23,19 @@ typedef struct dummy_obj_s
 } dummy_obj;
 
 const char *DUMMYOBJ = "dummy_obj";
+const char *EDIT_LAYOUT_KEY = "edit_layout";
 
 /*****************************************************************************/
 /* Internal method implementation                                            */
 /*****************************************************************************/
+static void
+edje_part_clicked(void *data, Evas *e EINA_UNUSED,
+                  Evas_Object *obj, void *ei EINA_UNUSED)
+{
+   part_obj *po = (part_obj *)data;
+   Evas_Object *layout = evas_object_data_get(obj, EDIT_LAYOUT_KEY);
+   evas_object_smart_callback_call(layout, "dummy,clicked", (char *)(po->name));
+}
 
 static void
 dummy_objs_update(dummy_obj *dummy)
@@ -76,7 +85,7 @@ dummy_objs_update(dummy_obj *dummy)
 
         if (type == EDJE_PART_TYPE_SWALLOW)
           {
-             //Check this part is exist 
+             //Check this part is exist
              if (edje_object_part_swallow_get(dummy->layout, part_name))
                continue;
 
@@ -93,8 +102,11 @@ dummy_objs_update(dummy_obj *dummy)
              edje_object_part_swallow(dummy->layout, part_name, obj);
 
              po->obj = obj;
+             evas_object_data_set(po->obj, EDIT_LAYOUT_KEY, dummy->layout);
              po->name = eina_stringshare_add(part_name);
              dummy->swallows = eina_list_append(dummy->swallows, po);
+             evas_object_event_callback_add(obj, EVAS_CALLBACK_MOUSE_DOWN,
+                                            edje_part_clicked, po);
           }
         else if (type == EDJE_PART_TYPE_SPACER)
           {
@@ -126,6 +138,10 @@ dummy_objs_update(dummy_obj *dummy)
                   dummy->spacers = eina_list_append(dummy->spacers, po);
                   evas_object_show(obj);
                   evas_object_clip_set(obj, clipper);
+                  evas_object_data_set(obj, EDIT_LAYOUT_KEY, dummy->layout);
+
+                  evas_object_event_callback_add(obj, EVAS_CALLBACK_MOUSE_DOWN,
+                                                 edje_part_clicked, po);
                }
              evas_object_geometry_get(dummy->layout, &lx, &ly, NULL, NULL);
              edje_object_part_geometry_get(dummy->layout, part_name, &x, &y, &w, &h);

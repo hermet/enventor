@@ -28,6 +28,7 @@ struct viewer_s
    Ecore_Timer *timer;
    Eio_Monitor *edj_monitor;
    Eina_List *img_monitors;
+   Eina_List *part_names;
    Eio_Monitor *img_monitor;
    Ecore_Event_Handler *edj_monitor_event;
    Ecore_Event_Handler *img_monitor_event;
@@ -40,6 +41,8 @@ struct viewer_s
 
    Eina_Bool edj_reload_need : 1;
 };
+
+const char *PART_NAME = "part_name";
 
 /*****************************************************************************/
 /* Internal method implementation                                            */
@@ -270,6 +273,53 @@ view_scroller_create(Evas_Object *parent)
    return scroller;
 }
 
+static void
+edje_part_clicked(void *data, Evas *e EINA_UNUSED,
+                  Evas_Object *obj  EINA_UNUSED,
+                  void *ei EINA_UNUSED)
+{
+   view_data *vd = (view_data *)data;
+   char *part_name = evas_object_data_get(obj, PART_NAME);
+   evas_object_smart_callback_call(vd->enventor, "part,clicked", part_name);
+}
+
+inline static void
+view_obj_parts_names_free(view_data *vd)
+{
+   Eina_Stringshare *part_name = NULL;
+
+   EINA_LIST_FREE(vd->part_names, part_name)
+      eina_stringshare_del(part_name);
+
+   vd->part_names = NULL;
+}
+
+static void
+view_obj_parts_callbacks_set(view_data *vd)
+{
+   if (vd->part_names)
+      view_obj_parts_names_free(vd);
+
+   Eina_List *l = NULL;
+   Eina_Stringshare *part_name = NULL;
+   Eina_List *parts = edje_edit_parts_list_get(vd->layout);
+
+   EINA_LIST_FOREACH(parts, l, part_name)
+     {
+        Evas_Object *edje_part =
+               (Evas_Object *)edje_object_part_object_get(vd->layout, part_name);
+        if (edje_part)
+          {
+             Eina_Stringshare *name = eina_stringshare_add(part_name);
+             vd->part_names = eina_list_append(vd->part_names, name);
+             evas_object_data_set(edje_part, PART_NAME, name);
+             evas_object_event_callback_add(edje_part, EVAS_CALLBACK_MOUSE_DOWN,
+                                            edje_part_clicked, vd);
+          }
+     }
+   edje_edit_string_list_free(parts);
+}
+
 static Eina_Bool
 exe_del_event_cb(void *data, int type EINA_UNUSED, void *event EINA_UNUSED)
 {
@@ -290,6 +340,7 @@ exe_del_event_cb(void *data, int type EINA_UNUSED, void *event EINA_UNUSED)
    view_part_highlight_set(vd, vd->part_name);
    dummy_obj_update(vd->layout);
 
+   view_obj_parts_callbacks_set(vd);
    vd->edj_reload_need = EINA_FALSE;
 
    evas_object_smart_callback_call(vd->enventor, SIG_LIVE_VIEW_UPDATED,
@@ -305,6 +356,7 @@ edj_changed_cb(void *data, int type EINA_UNUSED, void *event)
    Eio_Monitor_Event *ev = event;
 
    if (vd->edj_monitor != ev->monitor) return ECORE_CALLBACK_PASS_ON;
+   view_obj_parts_names_free(vd);
 
    //FIXME: why it need to add monitor again??
    eio_monitor_del(vd->edj_monitor);
@@ -358,6 +410,14 @@ base_create(Evas_Object *parent)
 }
 
 static void
+dummy_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED, void *ei)
+{
+   char *part_name = (char *)ei;
+   view_data *vd = (view_data *)data;
+   evas_object_smart_callback_call(vd->enventor, "part,clicked", part_name);
+}
+
+static void
 view_obj_create(view_data *vd)
 {
    Evas *e = evas_object_evas_get(vd->base);
@@ -371,6 +431,11 @@ view_obj_create(view_data *vd)
                                     EVAS_HINT_EXPAND);
    evas_object_event_callback_add(vd->layout, EVAS_CALLBACK_RESIZE,
                                   layout_resize_cb, vd);
+   evas_object_smart_callback_add(vd->layout, "dummy,clicked",
+                                  dummy_clicked_cb, vd);
+
+   view_obj_parts_callbacks_set(vd);
+
 }
 
 static void

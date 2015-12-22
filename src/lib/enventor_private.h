@@ -281,5 +281,6 @@ Eina_Bool edit_redoundo(edit_data *ed, Eina_Bool undo);
 void edit_disabled_set(edit_data *ed, Eina_Bool disabled);
 void edit_error_set(edit_data *ed, int line, const char *target);
 void edit_text_insert(edit_data *ed, const char *text);
+void edit_part_cursor_set(edit_data *ed, const char *group_name, const char *part_name);
 
 #endif

@@ -936,6 +936,67 @@ edit_focused_cb(void *data, Evas_Object *obj EINA_UNUSED,
 /*****************************************************************************/
 
 void
+edit_part_cursor_set(edit_data *ed,
+                     const char *group_name,
+                     const char *part_name)
+{
+   if (!group_name || !part_name) return;
+   const char *text = elm_entry_entry_get(ed->en_edit);
+   char *utf8 = elm_entry_markup_to_utf8(text);
+
+   int part_name_size = strlen(part_name) + 2; // 2 - is quotes.
+   char *part_name_search = calloc(part_name_size, sizeof(char));
+   snprintf(part_name_search, part_name_size, "\"%s\"", part_name);
+
+   int group_name_size = strlen(group_name) + 2; // 2 - is quotes.
+   char *group_name_search = calloc(group_name_size, sizeof(char));
+   snprintf(group_name_search, group_name_size, "\"%s\"", group_name);
+
+   const char *group_pos = strstr(utf8, group_name_search);
+
+   char *itr = strstr(group_pos, part_name_search);
+   const char *part_pos = itr;
+   Eina_Bool word_present = EINA_FALSE;
+   Eina_Bool found_part = EINA_FALSE;
+   /* Search entry of '{ "part_name" ' or  '{ name: "part_name"' patternsd*/
+   for (; (itr != NULL) && (itr > utf8); itr--)
+     {
+        if (isalnum(*itr))
+          word_present = EINA_TRUE;
+        else if (*itr == '{')
+          {
+             if (word_present)
+               {
+                  char *name_keyword = strstr(itr, "name");
+                  if (name_keyword && name_keyword < part_pos)
+                    {
+                       found_part = EINA_TRUE;
+                       break;
+                    }
+               }
+             else
+               {
+                  found_part = EINA_TRUE;
+                  break;
+               }
+             itr = strstr(part_pos + 1, part_name_search);
+             part_pos = itr;
+          }
+     }
+
+   if (found_part)
+     {
+        int cur_pos = part_pos - utf8 + strlen(part_name);
+        elm_entry_select_none(ed->en_edit);
+        elm_entry_cursor_pos_set(ed->en_edit, cur_pos);
+     }
+
+   free(utf8);
+   free(part_name_search);
+   free(group_name_search);
+}
+
+void
 edit_view_sync_cb_set(edit_data *ed,
                       void (*cb)(void *data, Eina_Stringshare *state_name, double state_value,
                       Eina_Stringshare *part_name, Eina_Stringshare *group_name), void *data)
