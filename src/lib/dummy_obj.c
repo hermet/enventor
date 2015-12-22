@@ -56,12 +56,11 @@ dummy_objs_update(dummy_obj *dummy)
         EINA_LIST_FOREACH(parts, l2, part_name)
           {
              if (po->name[0] != part_name[0]) continue;
-             if (strlen(po->name) != strlen(part_name)) continue;
+             if ((strlen(po->name) != strlen(part_name))) continue;
              if (!strcmp(po->name, part_name))
                {
                   type = edje_edit_part_type_get(dummy->layout, part_name);
-                  if ((type == EDJE_PART_TYPE_SWALLOW) ||
-                       (type == EDJE_PART_TYPE_SPACER))
+                  if ((type == EDJE_PART_TYPE_SWALLOW))
                     removed = EINA_FALSE;
                   break;
                }
@@ -70,10 +69,33 @@ dummy_objs_update(dummy_obj *dummy)
           {
              evas_object_del(po->obj);
              eina_stringshare_del(po->name);
-             if (type == EDJE_PART_TYPE_SWALLOW)
-               dummy->swallows = eina_list_remove_list(dummy->swallows, l);
-             else if (type == EDJE_PART_TYPE_SPACER)
-               dummy->spacers = eina_list_remove_list(dummy->spacers, l);
+             dummy->swallows = eina_list_remove_list(dummy->swallows, l);
+             free(po);
+          }
+     }
+
+   //Remove the fake swallow objects that parts are removed.
+   EINA_LIST_FOREACH_SAFE(dummy->spacers, l, l_next, po)
+     {
+        removed = EINA_TRUE;
+
+        EINA_LIST_FOREACH(parts, l2, part_name)
+          {
+             if (po->name[0] != part_name[0]) continue;
+             if ((strlen(po->name) != strlen(part_name))) continue;
+             if (!strcmp(po->name, part_name))
+               {
+                  type = edje_edit_part_type_get(dummy->layout, part_name);
+                  if ((type == EDJE_PART_TYPE_SPACER))
+                    removed = EINA_FALSE;
+                  break;
+               }
+          }
+        if (removed)
+          {
+             evas_object_del(po->obj);
+             eina_stringshare_del(po->name);
+             dummy->spacers = eina_list_remove_list(dummy->spacers, l);
              free(po);
           }
      }
