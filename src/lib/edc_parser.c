@@ -145,6 +145,8 @@ cur_state_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    char *p = utf8;
    char *end = utf8 + cur_pos;
    int i;
+   Eina_Bool inside_parts = EINA_FALSE;
+
 
    int bracket = 0;
    const char *group_name = NULL;
@@ -201,47 +203,56 @@ cur_state_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
              p++;
 
              if (bracket == 1) group_name = NULL;
+             else if (bracket == 2 && inside_parts == EINA_TRUE) inside_parts = EINA_FALSE;
              else if (bracket == 3) part_name = NULL;
              else if (bracket == 4) desc_name = NULL;
 
              continue;
           }
-        //Check Part in
-        if (bracket == 3)
+        //check block "Parts" in
+        if (bracket == 2)
           {
-             if (strncmp(p, PARTS, strlen(PARTS)))
+             if (!strncmp(p, PARTS, strlen(PARTS)))
                {
-                  int part_idx = -1;
-                  int part_len;
-
-                  //part ? image ? swallow ? text ? rect ?
-                  for (i = 0; i < PART_SYNTAX_CNT; i++)
-                    {
-                       part_len = strlen(PART[i]);
-                       if (!strncmp(p, PART[i], part_len))
-                         {
-                            part_idx = i;
-                            break;
-                         }
-                    }
-
-                  //we got a part!
-                  if (part_idx != -1)
-                    {
-                       p += part_len;
-                       char *name_begin = strstr(p, QUOT_UTF8);
-                       if (!name_begin) goto end;
-                       name_begin += QUOT_UTF8_LEN;
-                       p = name_begin;
-                       char *name_end = strstr(p, QUOT_UTF8);
-                       if (!name_end) goto end;
-                       part_name = name_begin;
-                       part_name_len = name_end - name_begin;
-                       p = name_end + QUOT_UTF8_LEN;
-                       bracket++;
-                       continue;
-                    }
+                 inside_parts = EINA_TRUE;
+                 p = strstr(p, "{");
+                 if (!p) goto end;
+                 continue;
                }
+         }
+        //Check Part in
+        if (bracket == 3 && inside_parts == EINA_TRUE)
+          {
+             int part_idx = -1;
+             int part_len;
+
+              //part ? image ? swallow ? text ? rect ?
+             for (i = 0; i < PART_SYNTAX_CNT; i++)
+                {
+                   part_len = strlen(PART[i]);
+                   if (!strncmp(p, PART[i], part_len))
+                     {
+                        part_idx = i;
+                        break;
+                     }
+                }
+
+              //we got a part!
+              if (part_idx != -1)
+                {
+                   p += part_len;
+                   char *name_begin = strstr(p, QUOT_UTF8);
+                   if (!name_begin) goto end;
+                   name_begin += QUOT_UTF8_LEN;
+                   p = name_begin;
+                   char *name_end = strstr(p, QUOT_UTF8);
+                   if (!name_end) goto end;
+                   part_name = name_begin;
+                   part_name_len = name_end - name_begin;
+                   p = name_end + QUOT_UTF8_LEN;
+                   bracket++;
+                   continue;
+                }
           }
         //Check Description in
         if (bracket == 4)
