@@ -1,7 +1,7 @@
 images {
    image: "part_highlight.png" COMP;
    image: "swallow.png" COMP;
-   image: "spacer_new.png" COMP;
+   image: "live_spacer.png" COMP;
 }
 
 group { name: "swallow";
@@ -81,10 +81,11 @@ group { name: "spacer";
          type: IMAGE;
          repeat_events: 1;
          description { state: "default" 0.0;
-            image.normal: "spacer_new.png";
-            align: 0.5 0.5;
-            aspect: 1 1;
-            aspect_preference: BOTH;
+            image.normal: "live_spacer.png";
+            fill.type: TILE;
+            color: 255 255 255 50;
+            aspect: 0 0;
+            aspect_preference: NONE;
          }
       }
    }
