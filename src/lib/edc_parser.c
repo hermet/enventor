@@ -1013,6 +1013,8 @@ static Eina_Bool
 parser_collections_block_pos_get(const Evas_Object *entry,
                                  const char *block_name, int *ret)
 {
+   if (!ret) return EINA_FALSE;
+
    const char* GROUP_SYNTAX_NAME = "group";
    const int BLOCK_NAME_LEN = strlen(block_name);
    *ret = -1;
@@ -1023,26 +1025,64 @@ parser_collections_block_pos_get(const Evas_Object *entry,
    char *utf8 = elm_entry_markup_to_utf8(text);
    if (!utf8) return EINA_FALSE;
 
-   const char *pos = strstr(utf8, block_name);
-   if (pos)
-     {
-        /* TODO: Remove this check and process lines of the form
-           "images.image: "ENVENTOR_EMBEDDED_LOGO.png" COMP;" */
-        if (*(pos + BLOCK_NAME_LEN + 1) == '.')
-          return EINA_FALSE;
+   int cur_cursor = elm_entry_cursor_pos_get(entry);
+   const char *pos = utf8 + cur_cursor;
 
-        pos = strstr(pos, "{\n");
-        if (!pos) return EINA_FALSE;
+   int len = strlen(utf8);
 
-        *ret = pos - utf8 + 2;
-        return EINA_TRUE;
-     }
-   pos = strstr(utf8, GROUP_SYNTAX_NAME);
-   if (pos)
+   /*
+    * The next loop processing the text of block "group"
+    * from actual cursor postion up to the block name or
+    * the "group" position.
+    * Returned value for the cases when the position
+    * found correctly will be the first symbol of the next line.
+    *
+    * TODO and FIXME: possible wrong behaviour when before the
+    * "group" keyword will be found part with name like "blah.group".
+    */
+
+   while (pos && (pos > utf8))
      {
-        *ret = pos - utf8;
-        return EINA_FALSE;
-     }
+        int block_pos = strncmp(block_name, pos, BLOCK_NAME_LEN);
+        if (block_pos == 0)
+          {
+             const char *block = pos + BLOCK_NAME_LEN;
+             while (block && (block < utf8 + len))
+               {
+                  if (*block == '.')
+                    {
+                       block = strchr(block, '\n');
+                       *ret = block - utf8 + 1;
+                       return EINA_FALSE;
+                    }
+                  else if (*block == '{')
+                    {
+                       block = strchr(block, '\n');
+                       *ret = block - utf8 + 1;
+                       return EINA_TRUE;
+                    }
+                  block++;
+               }
+             return EINA_FALSE;
+          }
+        int group_pos = strncmp(GROUP_SYNTAX_NAME, pos, 5);
+        if (group_pos == 0)
+          {
+             const char *group_block = pos + 5;
+             while (group_block && (group_block < utf8 + len))
+               {
+                  if (*group_block == '{')
+                    {
+                       group_block = strchr(group_block, '\n');
+                       *ret = group_block - utf8 + 1;
+                       return EINA_FALSE;
+                    }
+                  group_block++;
+               }
+             return EINA_FALSE;
+          }
+        pos--;
+      }
    return EINA_FALSE;
 }
 
