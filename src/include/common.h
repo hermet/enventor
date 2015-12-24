@@ -25,7 +25,7 @@ https://phab.enlightenment.org/w/projects/enventor/ \n \
 http://www.openhub.net/p/enventor\n"
 
 #define ENVENTOR_COPYRIGHT \
-"Copyright (C) 2013-2015 ChunEon Park and various contributors (see AUTHORS)\n \
+"Copyright (C) 2013-2015 Hermet Park and various contributors (see AUTHORS)\n \
 \nAll rights reserved.\n \
 \nRedistribution and use in source and binary forms, with or without\n \
 modification, are permitted provided that the following conditions are met:\n \
