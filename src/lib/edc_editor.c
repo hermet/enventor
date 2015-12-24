@@ -71,6 +71,8 @@ static Eina_Bool
 image_preview_show(edit_data *ed, char *cur, Evas_Coord x, Evas_Coord y);
 static void
 edit_font_apply(edit_data *ed, const char *font_name, const char *font_style);
+static void
+error_line_num_highlight(edit_data *ed);
 
 static void
 line_init(edit_data *ed)
@@ -143,6 +145,7 @@ static void
 error_highlight(edit_data *ed, Evas_Object *tb)
 {
    Evas_Textblock_Cursor *cur1 = evas_object_textblock_cursor_new(tb);
+   error_line_num_highlight(ed);
    if (ed->error_line)
      {
         evas_textblock_cursor_line_set(cur1, ed->error_line);
@@ -1415,6 +1418,51 @@ Evas_Object *
 edit_entry_get(edit_data *ed)
 {
    return ed->en_edit;
+}
+
+/*TODO: this function should be more flexible.
+ * Will be better to change prototype like:
+ * line_num_highlight(edit_data *, int line_num, char *color);
+ * And make this function public.
+ */
+static void
+error_line_num_highlight(edit_data *ed)
+{
+#define LINE_NUM_SIZE 5
+   Evas_Object *tb = elm_entry_textblock_get(ed->en_line);
+   char *text = (char *) evas_object_textblock_text_markup_get(tb);
+
+   int from_line = 1;
+   int to_line = -1;
+
+   char *from EINA_UNUSED = NULL;
+   char *to EINA_UNUSED = NULL;
+
+   char *utf8 = (char *)color_cancel(syntax_color_data_get(ed->sh), text,
+                                     strlen(text), from_line, to_line, &from,
+                                     &to);
+   if (ed->error_line == 0)
+     {
+        evas_object_textblock_text_markup_set(tb, utf8);
+        return;
+     }
+
+   char line_str[LINE_NUM_SIZE];
+   snprintf(line_str, LINE_NUM_SIZE, "%d", ed->error_line + 1);
+   char *ptr = strstr(utf8, line_str);
+   if (!ptr) return;
+
+   Eina_Strbuf *strbuf = eina_strbuf_new();
+   eina_strbuf_append_length(strbuf, utf8, ptr - utf8);
+   eina_strbuf_append(strbuf, "<backing=on><backing_color=#ff0000>");
+   eina_strbuf_append_length(strbuf, utf8 + (ptr - utf8), strlen(line_str));
+   eina_strbuf_append(strbuf, "</backing_color><backing=off>");
+   eina_strbuf_append(strbuf, utf8 +((ptr - utf8) + strlen(line_str)));
+   evas_object_textblock_text_markup_set(tb, eina_strbuf_string_get(strbuf));
+
+   eina_strbuf_free(strbuf);
+   elm_entry_calc_force(ed->en_line);
+#undef LINE_NUM_SIZE
 }
 
 void
