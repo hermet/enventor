@@ -401,10 +401,8 @@ ctxpopup_preview_dismiss_cb(void *data, Evas_Object *obj,
                             void *event_info EINA_UNUSED)
 {
    edit_data *ed = data;
-   int skip_focus = (int)(uintptr_t) evas_object_data_get(obj, "continue");
 
    //Since the ctxpopup will be shown again, Don't revert the focus.
-   if (skip_focus) return;
    elm_object_tree_focus_allow_set(ed->layout, EINA_TRUE);
    elm_object_focus_set(ed->en_edit, EINA_TRUE);
    evas_object_smart_callback_call(ed->enventor, SIG_CTXPOPUP_DISMISSED, NULL);
@@ -448,12 +446,6 @@ preview_img_relay_show(edit_data *ed, Evas_Object *ctxpopup, Eina_Bool next)
 
    if (image_preview_show(ed, text, x, y))
      {
-        /* Since the ctxpopup will be shown again,
-           Don't revert the focus in the dismiss cb. */
-        evas_object_data_set(ctxpopup, "continue", (void *) 1);
-        evas_object_event_callback_del(ctxpopup, EVAS_CALLBACK_DEL,
-                                       ctxpopup_del_cb);
-
         //Set the entry selection region to next image.
         const char *colon = parser_colon_pos_get(NULL, text);
         if (!colon) goto end;
@@ -471,6 +463,7 @@ preview_img_relay_show(edit_data *ed, Evas_Object *ctxpopup, Eina_Bool next)
         int cursor_pos = elm_entry_cursor_pos_get(ed->en_edit);
         elm_entry_select_region_set(ed->en_edit, (cursor_pos - select_len),
                                     cursor_pos);
+        return;
      }
 end:
    elm_ctxpopup_dismiss(ctxpopup);
@@ -519,21 +512,27 @@ image_preview_show(edit_data *ed, char *cur, Evas_Coord x, Evas_Coord y)
    //Create Ctxpopup with the image pathes.
    if (found)
      {
-        Evas_Object *ctxpopup =
-           ctxpopup_img_preview_create(ed, fullpath,
-                                       ctxpopup_preview_dismiss_cb,
-                                       ctxpopup_preview_relay_cb);
-        if (!ctxpopup)
+        /*In case if ctxpopup already created, then just reload image. */
+        if (ed->ctxpopup)
+          ctxpopup_img_preview_reload(ed->ctxpopup, fullpath);
+        else
+          {
+            ed->ctxpopup =
+                ctxpopup_img_preview_create(ed, fullpath,
+                                            ctxpopup_preview_dismiss_cb,
+                                            ctxpopup_preview_relay_cb);
+             evas_object_event_callback_add(ed->ctxpopup, EVAS_CALLBACK_DEL,
+                                            ctxpopup_del_cb, ed);
+          }
+
+        if (!ed->ctxpopup)
           {
              free(filename);
              return EINA_FALSE;
           }
 
-        evas_object_move(ctxpopup, x, y);
-        evas_object_show(ctxpopup);
-        evas_object_event_callback_add(ctxpopup, EVAS_CALLBACK_DEL,
-                                       ctxpopup_del_cb, ed);
-        ed->ctxpopup = ctxpopup;
+        evas_object_move(ed->ctxpopup, x, y);
+        evas_object_show(ed->ctxpopup);
         elm_object_tree_focus_allow_set(ed->layout, EINA_FALSE);
         succeed = EINA_TRUE;
      }

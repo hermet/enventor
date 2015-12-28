@@ -229,7 +229,7 @@ Eina_Bool template_insert(edit_data *ed, Enventor_Template_Insert_Type insert_ty
 /* ctxpopup */
 Evas_Object *ctxpopup_candidate_list_create(edit_data *ed, attr_value *attr, Evas_Smart_Cb ctxpopup_dismiss_cb, Evas_Smart_Cb ctxpopup_changed_cb);
 Evas_Object *ctxpopup_img_preview_create(edit_data*ed, const char *imgpath, Evas_Smart_Cb ctxpopup_dismiss_cb, Evas_Smart_Cb ctxpopup_relay_cb);
-
+void ctxpopup_img_preview_reload(Evas_Object *ctxpopup, const char *imgpath);
 
 /* edc_editor */
 edit_data *edit_init(Evas_Object *enventor);

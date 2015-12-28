@@ -581,6 +581,16 @@ ctxpopup_key_down_cb(void *data, Evas *e EINA_UNUSED,
 /* Externally accessible calls                                               */
 /*****************************************************************************/
 
+void
+ctxpopup_img_preview_reload(Evas_Object *ctxpopup, const char *imgpath)
+{
+   if (!ctxpopup) return;
+
+   Evas_Object *layout = elm_object_content_get(ctxpopup);
+   Evas_Object *img = elm_object_part_content_get(layout, "elm.swallow.img");
+   evas_object_image_file_set(img, imgpath, NULL);
+}
+
 Evas_Object *
 ctxpopup_img_preview_create(edit_data *ed,
                             const char *imgpath,
