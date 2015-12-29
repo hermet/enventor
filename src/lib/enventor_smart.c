@@ -162,7 +162,8 @@ call_error:
    edit_ctxpopup_dismiss(pd->ed);
    if (line_num || target)
      edit_syntax_color_full_apply(pd->ed, EINA_TRUE);
-   evas_object_smart_callback_call(pd->obj, SIG_COMPILE_ERROR, (char *)msg);
+   if (msg)
+     evas_object_smart_callback_call(pd->obj, SIG_COMPILE_ERROR, (char *)msg);
 
 }
 

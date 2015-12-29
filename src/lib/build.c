@@ -125,6 +125,7 @@ void
 build_edc(void)
 {
    build_data *bd = g_bd;
+   bd->noti_cb(bd->noti_data, NULL);
 
    build_cmd_set(bd);
 
