@@ -58,6 +58,7 @@ newfile_set(Evas_Object *enventor, Eina_Bool template_new)
      }
    enventor_object_file_set(enventor, path);
    base_title_set(path);
+   base_console_reset();
    file_mgr_reset();
 }
 

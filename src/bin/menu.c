@@ -519,6 +519,7 @@ fileselector_load_done_cb(void *data, Evas_Object *obj, void *event_info)
    config_input_path_set(selected);
    enventor_object_file_set(md->enventor, selected);
    base_title_set(selected);
+   base_console_reset();
    fileselector_close(md);
    menu_close(md);
    file_mgr_reset();
