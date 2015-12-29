@@ -159,11 +159,16 @@ build_err_noti_cb(void *data, const char *msg)
 call_error:
    free(utf8);
    edit_error_set(pd->ed, line_num - 1, target);
-   edit_ctxpopup_dismiss(pd->ed);
    if (line_num || target)
      edit_syntax_color_full_apply(pd->ed, EINA_TRUE);
+
+   // When msg == NULL it mean, that needed to reset error state
    if (msg)
-     evas_object_smart_callback_call(pd->obj, SIG_COMPILE_ERROR, (char *)msg);
+     {
+       // Ctxpopup should be dismissed only in cases when error happens
+       edit_ctxpopup_dismiss(pd->ed);
+       evas_object_smart_callback_call(pd->obj, SIG_COMPILE_ERROR, (char *)msg);
+     }
 
 }
 
