@@ -10,6 +10,20 @@ const char ATTR_PREPEND_NONE[] = "";
 const char ATTR_APPEND_SEMICOLON[] = ";";
 const char ATTR_APPEND_TRANSITION_TIME[] = " 1.0;";
 
+typedef enum {
+   PREPROC_DIRECTIVE_NONE,
+   PREPROC_DIRECTIVE_DEFINE,
+   PREPROC_DIRECTIVE_UNDEF
+} Preproc_Directive;
+
+typedef struct defined_macro_s
+{
+   char *name;
+   char *definition;
+   int begin_line;
+   int end_line;     //0 means that this macro is valid until the end of file.
+} defined_macro;
+
 typedef struct parser_attr_s
 {
    Eina_Stringshare *keyword;
@@ -43,6 +57,7 @@ struct parser_s
    Eina_Inarray *attrs;
    cur_name_td *cntd;
    type_init_td *titd;
+   Eina_List *macro_list;
 };
 
 
@@ -50,12 +65,230 @@ struct parser_s
 /* Internal method implementation                                            */
 /*****************************************************************************/
 
+/* Remove double quotation marks indicating a string to extract a pure string.
+ * Return translated macro.
+ */
+static char *
+double_quotation_marks_remove(const char *str)
+{
+   char *new_str = NULL;
+   int i;
+   int j;
+   int len;
+   int new_len;
+   int cnt;
+
+   if (!str) return NULL;
+
+   len = strlen(str);
+   cnt = 0;
+   for (i = 0; i < len; i++)
+     {
+        if (str[i] == '"')
+          {
+             cnt++;
+
+             if ((i > 0) && (str[i - 1] == '\\')) cnt--;
+          }
+     }
+
+   new_len = len - cnt;
+   new_str = (char *) calloc(new_len * sizeof(char), 1);
+   j = 0;
+   for (i = 0; i < len; i++)
+     {
+        if (str[i] != '"')
+          {
+             new_str[j] = str[i];
+             j++;
+          }
+        else
+          {
+             if ((i > 0) && (str[i - 1] == '\\'))
+               {
+                  new_str[j] = str[i];
+                  j++;
+               }
+          }
+     }
+
+   return new_str;
+}
+
+/* Convert input into output based on macro definitions of macro list.
+ * Return translated macro.
+ */
+static char *
+macro_translate(Eina_List *macro_list, const char *macro, int macro_line)
+{
+   defined_macro *macro_node = NULL;
+   Eina_List *l = NULL;
+   char *cur_trans_macro = NULL;
+   char *trans_macro = NULL;
+
+   if (!macro) return NULL;
+
+   trans_macro = strdup(macro);
+
+   EINA_LIST_REVERSE_FOREACH(macro_list, l, macro_node)
+     {
+        int cur_len;
+        int new_len;
+        int macro_name_len;
+        int macro_def_len;
+        long replace_begin_index;
+        char *sub_macro = NULL;
+
+        sub_macro = strstr(trans_macro, macro_node->name);
+        if (!sub_macro) continue;
+
+        if (macro_line < macro_node->begin_line) continue;
+
+        if ((macro_node->end_line != 0) &&
+            (macro_line > macro_node->end_line)) continue;
+
+        replace_begin_index = sub_macro - trans_macro;
+
+        cur_len = strlen(trans_macro);
+        macro_name_len = strlen(macro_node->name);
+        if (macro_node->definition)
+          macro_def_len = strlen(macro_node->definition);
+        else
+          macro_def_len = 0;
+        new_len = cur_len + (macro_def_len - macro_name_len);
+
+        cur_trans_macro = strdup(trans_macro);
+        free(trans_macro);
+
+        trans_macro = (char *) calloc(new_len * sizeof(char), 1);
+        strncpy(trans_macro, cur_trans_macro, replace_begin_index);
+        strncpy(&trans_macro[replace_begin_index], macro_node->definition,
+                macro_def_len);
+        strncpy(&trans_macro[replace_begin_index + macro_def_len],
+                &cur_trans_macro[replace_begin_index + macro_name_len],
+                new_len - (replace_begin_index + macro_def_len));
+
+        free(cur_trans_macro);
+     }
+
+   cur_trans_macro = strdup(trans_macro);
+   free(trans_macro);
+
+   trans_macro = double_quotation_marks_remove(cur_trans_macro);
+   free(cur_trans_macro);
+
+   return trans_macro;
+}
+
+/* Parse macro into name and definition.
+ * Return EINA_TRUE if parsing is successful.
+ * Return EINA_FALSE if parsing is failed.
+ */
+static Eina_Bool
+define_parse(const char *macro, char **name, char **definition)
+{
+   int i;
+   int macro_len;
+   int name_len;
+   int def_len;
+   int name_end_index;
+   int def_begin_index;
+   char *macro_name;
+   char *macro_def;
+
+   if (!macro) return EINA_FALSE;
+
+   macro_len = strlen(macro);
+   name_end_index = -1;
+   def_begin_index = -1;
+
+   for (i = 0; i < macro_len; i++)
+     {
+        if (isspace(macro[i]))
+          {
+             if (name_end_index == -1)
+               name_end_index = i - 1;
+          }
+        else
+          {
+             if (name_end_index != -1)
+               {
+                  def_begin_index = i;
+                  break;
+               }
+          }
+     }
+
+   if (i == macro_len)
+     {
+        name_end_index = i - 1;
+        def_begin_index = macro_len;
+     }
+
+   if (name)
+     {
+        name_len = name_end_index + 1;
+
+        if (name_len == 0)
+          *name = NULL;
+        else
+          {
+             macro_name = strndup(macro, name_len);
+             *name = macro_name;
+          }
+     }
+
+   if (definition)
+     {
+        def_len = macro_len - def_begin_index;
+        if (def_len == 0)
+          *definition = NULL;
+        else
+          {
+             macro_def = strndup(&macro[def_begin_index], def_len);
+             *definition = macro_def;
+          }
+     }
+
+   return EINA_TRUE;
+}
+
+static void
+macro_node_free(defined_macro *macro)
+{
+   if (!macro) return;
+
+   if (macro->name)
+     {
+        free(macro->name);
+        macro->name = NULL;
+     }
+   if (macro->definition)
+     {
+        free(macro->definition);
+        macro->definition = NULL;
+     }
+}
+
+static void
+macro_list_free(Eina_List *macro_list)
+{
+   defined_macro *macro = NULL;
+
+   EINA_LIST_FREE(macro_list, macro)
+     {
+        macro_node_free(macro);
+     }
+}
+
 static void
 group_name_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
    const char *quot = QUOT_UTF8;
+   const char *semicol = SEMICOL_UTF8;
    const char *group = "group";
    const int quot_len = QUOT_UTF8_LEN;
+   const int semicol_len = SEMICOL_UTF8_LEN;
    const int group_len = 5;  //strlen("group");
 
    cur_name_td *td = data;
@@ -68,8 +301,13 @@ group_name_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    const char *group_name = NULL;
    int group_name_len = 0;
 
+   int cur_line = 1;
+   Eina_List *macro_list = parser_macro_list_get(td->pd);
+
    while (p <= end)
      {
+        if (*p == '\n') cur_line++;
+
         //Skip "" range
         if (!strncmp(p, quot, quot_len))
           {
@@ -77,6 +315,7 @@ group_name_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
              p = strstr(p, quot);
              if (!p) goto end;
              p += quot_len;
+             continue;
           }
 
         if (*p == '{')
@@ -99,22 +338,53 @@ group_name_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
         if (!strncmp(p, group, group_len))
           {
              p += group_len;
-             char *name_begin = strstr(p, quot);
-             if (!name_begin) goto end;
-             name_begin += quot_len;
-             p = name_begin;
-             char *name_end = strstr(p, quot);
+
+             char *name_end = strstr(p, semicol);
              if (!name_end) goto end;
+
+             char *space_pos = NULL;
+             char *temp_pos = strchr(p, ' ');
+             while (temp_pos && (temp_pos < name_end))
+               {
+                  space_pos = temp_pos;
+                  temp_pos++;
+                  temp_pos = strchr(temp_pos, ' ');
+               }
+
+             char *tab_pos = NULL;
+             temp_pos = strchr(p, '\t');
+             while (temp_pos && (temp_pos < name_end))
+               {
+                  tab_pos = temp_pos;
+                  temp_pos++;
+                  temp_pos = strchr(p, '\t');
+               }
+
+             char *name_begin = space_pos > tab_pos ? space_pos : tab_pos;
+             if (!name_begin) goto end;
+             name_begin++;
+
              group_name = name_begin;
              group_name_len = name_end - name_begin;
-             p = name_end + quot_len;
+             p = name_end + semicol_len;
              bracket++;
              continue;
           }
         p++;
      }
    if (group_name)
-     group_name = eina_stringshare_add_length(group_name, group_name_len);
+     {
+        group_name = eina_stringshare_add_length(group_name, group_name_len);
+
+        char *trans_group_name = NULL;
+        trans_group_name = macro_translate(macro_list, group_name, cur_line);
+        if (trans_group_name)
+          {
+             eina_stringshare_del(group_name);
+             group_name = eina_stringshare_add(trans_group_name);
+             free(trans_group_name);
+          }
+     }
 
 end:
    free(utf8);
@@ -160,12 +430,17 @@ cur_state_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    int value_len = 0;
    double value_convert = 0.0;
 
+   int cur_line = 1;
+   Eina_List *macro_list = parser_macro_list_get(td->pd);
+
    td->part_name = NULL;
    td->group_name = NULL;
    td->state_name = NULL;
 
    while (p && p <= end)
      {
+        if (*p == '\n') cur_line++;
+
         //Skip "" range
         if (!strncmp(p, QUOT_UTF8, QUOT_UTF8_LEN))
           {
@@ -173,6 +448,7 @@ cur_state_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
              p = strstr(p, QUOT_UTF8);
              if (!p) goto end;
              p += QUOT_UTF8_LEN;
+             continue;
           }
 
         //Enter one depth into Bracket.
@@ -344,15 +620,35 @@ cur_state_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
              if (!strncmp(p, GROUP, strlen(GROUP)))
                {
                   p += strlen(GROUP);
-                  char *name_begin = strstr(p, QUOT_UTF8);
-                  if (!name_begin) goto end;
-                  name_begin += QUOT_UTF8_LEN;
-                  p = name_begin;
-                  char *name_end = strstr(p, QUOT_UTF8);
+
+                  char *name_end = strstr(p, SEMICOL_UTF8);
                   if (!name_end) goto end;
+
+                  char *space_pos = NULL;
+                  char *temp_pos = strchr(p, ' ');
+                  while (temp_pos && (temp_pos < name_end))
+                    {
+                       space_pos = temp_pos;
+                       temp_pos++;
+                       temp_pos = strchr(temp_pos, ' ');
+                    }
+
+                  char *tab_pos = NULL;
+                  temp_pos = strchr(p, '\t');
+                  while (temp_pos && (temp_pos < name_end))
+                    {
+                       tab_pos = temp_pos;
+                       temp_pos++;
+                       temp_pos = strchr(p, '\t');
+                    }
+
+                  char *name_begin = space_pos > tab_pos ? space_pos : tab_pos;
+                  if (!name_begin) goto end;
+                  name_begin++;
+
                   group_name = name_begin;
                   group_name_len = name_end - name_begin;
-                  p = name_end + QUOT_UTF8_LEN;
+                  p = name_end + SEMICOL_UTF8_LEN;
                   bracket++;
                   continue;
                }
@@ -362,10 +658,21 @@ cur_state_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
 
    if (part_name)
      part_name = eina_stringshare_add_length(part_name, part_name_len);
-   if (group_name)
-     group_name = eina_stringshare_add_length(group_name, group_name_len);
    if (desc_name)
      desc_name = eina_stringshare_add_length(desc_name, desc_name_len);
+   if (group_name)
+     {
+        group_name = eina_stringshare_add_length(group_name, group_name_len);
+
+        char *trans_group_name = NULL;
+        trans_group_name = macro_translate(macro_list, group_name, cur_line);
+        if (trans_group_name)
+          {
+             eina_stringshare_del(group_name);
+             group_name = eina_stringshare_add(trans_group_name);
+             free(trans_group_name);
+          }
+     }
 
    td->part_name = part_name;
    td->group_name = group_name;
@@ -1322,6 +1629,7 @@ parser_cur_name_fast_get(Evas_Object *entry, const char *scope)
              p = strstr(p, quot);
              if (!p) goto end;
              p += quot_len;
+             continue;
           }
 
         if (*p == '{')
@@ -1449,20 +1757,141 @@ parser_line_cnt_get(parser_data *pd EINA_UNUSED, const char *src)
    return cnt;
 }
 
-Eina_Stringshare *
-parser_first_group_name_get(parser_data *pd EINA_UNUSED, Evas_Object *entry)
+void
+parser_macro_list_set(parser_data *pd, const char *text)
 {
-   Evas_Object *tb = elm_entry_textblock_get(entry);
-   char *text = (char *) evas_object_textblock_text_markup_get(tb);
-   char *p = text;
+   const char str_define[] = "#define";
+   const char str_undef[] = "#undef";
+   int len;
+   int i;
+   int cur_line;
+   Eina_List *macro_list = NULL;
+   Preproc_Directive found_directive = PREPROC_DIRECTIVE_NONE;
 
-   const char *quot = QUOT;
-   int quot_len = QUOT_LEN;
-   const char *group = "group";
-   int group_len = 5; //strlen("group");
+   if (!text) return;
 
-   while (p < (text + strlen(text)))
+   len = strlen(text);
+   cur_line = 1;
+   for (i = 0; i < len; i++)
      {
+        if (isspace(text[i]))
+          {
+             if (text[i] == '\n') cur_line++;
+
+             continue;
+          }
+
+        if (found_directive == PREPROC_DIRECTIVE_DEFINE)
+          {
+             defined_macro *macro_node;
+             char *macro = NULL;
+             char *macro_name = NULL;
+             char *macro_def = NULL;
+             char *trans_macro = NULL;
+             const char *new_line_pos = strchr(&text[i], '\n');
+             long macro_len = new_line_pos - &text[i];
+
+             if (macro_len > 0)
+               {
+                  macro = strndup(&text[i], (int) macro_len);
+
+                  define_parse(macro, &macro_name, &macro_def);
+
+                  trans_macro = macro_translate(macro_list, macro_def,
+                                                cur_line);
+
+                  macro_node = calloc(sizeof(defined_macro), 1);
+                  macro_node->name = strdup(macro_name);
+                  macro_node->definition = trans_macro;
+                  macro_node->begin_line = cur_line;
+                  macro_node->end_line = 0;
+
+                  macro_list = eina_list_append(macro_list, macro_node);
+
+                  i += strlen(macro) - 1;
+                  free(macro);
+               }
+             found_directive = PREPROC_DIRECTIVE_NONE;
+          }
+        else if (found_directive == PREPROC_DIRECTIVE_UNDEF)
+          {
+             Eina_List *l = NULL;
+             defined_macro *macro_node;
+             char *macro_name = NULL;
+             const char *new_line_pos = strchr(&text[i], '\n');
+             long macro_name_len = new_line_pos - &text[i];
+
+             if (macro_name_len > 0)
+               {
+                  macro_name = strndup(&text[i], (int) macro_name_len);
+
+                  EINA_LIST_FOREACH(macro_list, l, macro_node)
+                    {
+                       if (!strcmp(macro_name, macro_node->name) &&
+                           (macro_node->end_line == -1))
+                         {
+                            macro_node->end_line = cur_line;
+                            break;
+                         }
+                    }
+                  i += strlen(macro_name) - 1;
+                  free(macro_name);
+               }
+             found_directive = PREPROC_DIRECTIVE_NONE;
+          }
+        else
+          {
+             if (text[i] == '#')
+               {
+                  if (!strncmp(&text[i], str_define, strlen(str_define)))
+                    {
+                       found_directive = PREPROC_DIRECTIVE_DEFINE;
+                       i += strlen(str_define) - 1;
+                    }
+                  else if (!strncmp(&text[i], str_undef, strlen(str_undef)))
+                    {
+                       found_directive = PREPROC_DIRECTIVE_UNDEF;
+                       i += strlen(str_undef) - 1;
+                    }
+               }
+          }
+     }
+
+   if (pd->macro_list) macro_list_free(pd->macro_list);
+
+   pd->macro_list = macro_list;
+}
+
+Eina_List *
+parser_macro_list_get(parser_data *pd)
+{
+   return pd->macro_list;
+}
+
+Eina_Stringshare *
+parser_first_group_name_get(parser_data *pd, Evas_Object *entry)
+{
+   const char *markup = elm_entry_entry_get(entry);
+   char *utf8 = elm_entry_markup_to_utf8(markup);
+   char *p = utf8;
+
+   const char *quot = QUOT_UTF8;
+   const char *semicol = SEMICOL_UTF8;
+   const char *group = "group";
+   const int quot_len = QUOT_UTF8_LEN;
+   const int semicol_len = SEMICOL_UTF8_LEN;
+   const int group_len = 5; //strlen("group");
+
+   const char *group_name = NULL;
+
+   int cur_line = 1;
+   parser_macro_list_set(pd, (const char *) utf8);
+   Eina_List *macro_list = parser_macro_list_get(pd);
+
+   while (p < (utf8 + strlen(utf8)))
+     {
+        if (*p == '\n') cur_line++;
+
         //Skip "" range
         if (!strncmp(p, quot, quot_len))
           {
@@ -1470,24 +1899,57 @@ parser_first_group_name_get(parser_data *pd EINA_UNUSED, Evas_Object *entry)
              p = strstr(p, quot);
              if (!p) return NULL;
              p += quot_len;
+             continue;
           }
 
        if (!strncmp(p, group, group_len))
           {
              p += group_len;
-             char *name_begin = strstr(p, quot);
-             if (!name_begin) return NULL;
-             name_begin += quot_len;
-             p = name_begin;
-             char *name_end = strstr(p, quot);
+
+             char *name_end = strstr(p, semicol);
              if (!name_end) return NULL;
-             return eina_stringshare_add_length(name_begin,
-                                                name_end - name_begin);
+
+             char *space_pos = NULL;
+             char *temp_pos = strchr(p, ' ');
+             while (temp_pos && (temp_pos < name_end))
+               {
+                  space_pos = temp_pos;
+                  temp_pos++;
+                  temp_pos = strchr(temp_pos, ' ');
+               }
+
+             char *tab_pos = NULL;
+             temp_pos = strchr(p, '\t');
+             while (temp_pos && (temp_pos < name_end))
+               {
+                  tab_pos = temp_pos;
+                  temp_pos++;
+                  temp_pos = strchr(p, '\t');
+               }
+
+             char *name_begin = space_pos > tab_pos ? space_pos : tab_pos;
+             if (!name_begin) return NULL;
+             name_begin++;
+
+             group_name = eina_stringshare_add_length(name_begin,
+                                                      name_end - name_begin);
              break;
           }
         p++;
      }
-   return NULL;
+
+   if (group_name)
+     {
+        char *trans_group_name = NULL;
+        trans_group_name = macro_translate(macro_list, group_name, cur_line);
+        if (trans_group_name)
+          {
+             eina_stringshare_del(group_name);
+             group_name = eina_stringshare_add(trans_group_name);
+             free(trans_group_name);
+          }
+     }
+   return group_name;
 }
 
 Eina_List *
@@ -1565,6 +2027,9 @@ parser_term(parser_data *pd)
      }
 
    eina_inarray_free(pd->attrs);
+
+   macro_list_free(pd->macro_list);
+   pd->macro_list = NULL;
 
    free(pd);
 }
