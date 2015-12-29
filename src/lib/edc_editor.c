@@ -1536,7 +1536,10 @@ edit_disabled_set(edit_data *ed, Eina_Bool disabled)
         elm_entry_select_none(ed->en_edit);
      }
    else
-     elm_object_signal_emit(ed->layout, "elm,state,enabled", "");
+     {
+        elm_object_signal_emit(ed->layout, "elm,state,enabled", "");
+        elm_object_focus_set(ed->en_edit, EINA_TRUE);
+     }
 
    //Turn off the part highlight in case of disable.
    if (disabled) view_part_highlight_set(VIEW_DATA, NULL);
