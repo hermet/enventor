@@ -146,7 +146,7 @@ error_highlight(edit_data *ed, Evas_Object *tb)
 {
    Evas_Textblock_Cursor *cur1 = evas_object_textblock_cursor_new(tb);
    error_line_num_highlight(ed);
-   if (ed->error_line)
+   if (ed->error_line != -1)
      {
         evas_textblock_cursor_line_set(cur1, ed->error_line);
         evas_textblock_cursor_line_char_first(cur1);
@@ -277,7 +277,7 @@ edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
    edit_changed_set(ed, EINA_TRUE);
 
    Eina_Bool syntax_color = EINA_TRUE;
-   ed->error_line = 0;
+   ed->error_line = -1;
    eina_stringshare_del(ed->error_target);
    ed->error_target = NULL;
 
@@ -1174,6 +1174,7 @@ edit_init(Evas_Object *enventor)
      }
    ed->pd = pd;
    ed->sh = sh;
+   ed->error_line = -1;
 
    ecore_event_handler_add(ECORE_EVENT_KEY_DOWN, key_down_cb, ed);
    ecore_event_handler_add(ECORE_EVENT_KEY_UP, key_up_cb, ed);
@@ -1440,7 +1441,7 @@ error_line_num_highlight(edit_data *ed)
    char *utf8 = (char *)color_cancel(syntax_color_data_get(ed->sh), text,
                                      strlen(text), from_line, to_line, &from,
                                      &to);
-   if (ed->error_line == 0)
+   if (ed->error_line == -1)
      {
         evas_object_textblock_text_markup_set(tb, utf8);
         return;

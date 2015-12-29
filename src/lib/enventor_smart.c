@@ -130,7 +130,7 @@ build_err_noti_cb(void *data, const char *msg)
 {
    Enventor_Object_Data *pd = data;
 
-   int line_num = 1;
+   int line_num = 0;
    Eina_Stringshare *target = NULL;
    char *ptr = NULL;
    char *utf8 = evas_textblock_text_markup_to_utf8(NULL, msg);
