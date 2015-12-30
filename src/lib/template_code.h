@@ -165,10 +165,13 @@ const char *TEMPLATE_IMG[TEMPLATE_IMG_LINE_CNT] =
 
 #define TEMPLATE_IMG_BLOCK_LINE_CNT 4
 
-const char *TEMPLATE_IMG_BLOCK = "/* TODO: Please replace embedded image files to your application image files. */<br/>"
-                                 "   images {<br/>"
-                                 "      image: \"ENVENTOR_EMBEDDED_LOGO.png\" COMP;<br/>"
-                                 "   }<br/>";
+const char *TEMPLATE_IMG_BLOCK[TEMPLATE_IMG_BLOCK_LINE_CNT] =
+{
+   "/* TODO: Please replace embedded image files to your application image files. */<br/>",
+   "images {<br/>",
+   "   image: \"ENVENTOR_EMBEDDED_LOGO.png\" COMP;<br/>",
+   "}<br/>"
+};
 
 #define TEMPLATE_TEXTBLOCK_STYLE_LINE_CNT 3
 

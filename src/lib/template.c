@@ -44,7 +44,22 @@ image_description_add(edit_data *ed)
      }
    else
      {
-        elm_entry_entry_insert(edit_entry, TEMPLATE_IMG_BLOCK);
+        int space = edit_cur_indent_depth_get(ed);
+
+        //Alloc Empty spaces
+        char *p = alloca(space + 1);
+        memset(p, ' ', space);
+        p[space] = '\0';
+
+        int i;
+        for (i = 0; i < (TEMPLATE_IMG_BLOCK_LINE_CNT - 1); i++)
+          {
+             elm_entry_entry_insert(edit_entry, p);
+             elm_entry_entry_insert(edit_entry, TEMPLATE_IMG_BLOCK[i]);
+          }
+        elm_entry_entry_insert(edit_entry, p);
+        elm_entry_entry_insert(edit_entry, TEMPLATE_IMG_BLOCK[i]);
+
         edit_line_increase(ed, TEMPLATE_IMG_BLOCK_LINE_CNT);
         cursor_pos2 = elm_entry_cursor_pos_get(edit_entry);
         edit_redoundo_region_push(ed, cursor_pos1, cursor_pos2);
