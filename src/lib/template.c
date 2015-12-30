@@ -81,17 +81,37 @@ textblock_style_add(edit_data *ed, const char *style_name)
    elm_entry_cursor_line_begin_set(edit_entry);
    int cursor_pos1 = elm_entry_cursor_pos_get(edit_entry);
 
+   int space = edit_cur_indent_depth_get(ed);
+   if (styles_block)
+      space -= TAB_SPACE;
+
+   //Alloc Empty spaces
+   char *p = alloca(space + 1);
+   memset(p, ' ', space);
+   p[space] = '\0';
+
    if (!styles_block)
-     elm_entry_entry_insert(edit_entry, TEMPLATE_TEXTBLOCK_STYLE_BLOCK[0]);
+     {
+        elm_entry_entry_insert(edit_entry, p);
+        elm_entry_entry_insert(edit_entry, TEMPLATE_TEXTBLOCK_STYLE_BLOCK[0]);
+     }
 
    int buf_len = strlen(TEMPLATE_TEXTBLOCK_STYLE_BLOCK[1]) + strlen(style_name);
    char *buf = malloc(buf_len);
    snprintf(buf, buf_len, TEMPLATE_TEXTBLOCK_STYLE_BLOCK[1], style_name);
+   elm_entry_entry_insert(edit_entry, p);
    elm_entry_entry_insert(edit_entry, buf);
+   elm_entry_entry_insert(edit_entry, p);
+   elm_entry_entry_insert(edit_entry, TEMPLATE_TEXTBLOCK_STYLE_BLOCK[2]);
+   elm_entry_entry_insert(edit_entry, p);
+   elm_entry_entry_insert(edit_entry, TEMPLATE_TEXTBLOCK_STYLE_BLOCK[3]);
    free(buf);
 
    if (!styles_block)
-     elm_entry_entry_insert(edit_entry, TEMPLATE_TEXTBLOCK_STYLE_BLOCK[2]);
+     {
+       elm_entry_entry_insert(edit_entry, p);
+       elm_entry_entry_insert(edit_entry, TEMPLATE_TEXTBLOCK_STYLE_BLOCK[4]);
+     }
 
    int line_inc = TEMPLATE_TEXTBLOCK_STYLE_LINE_CNT;
    if (!styles_block) line_inc += 2;

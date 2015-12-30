@@ -173,14 +173,14 @@ const char *TEMPLATE_IMG_BLOCK[TEMPLATE_IMG_BLOCK_LINE_CNT] =
    "}<br/>"
 };
 
-#define TEMPLATE_TEXTBLOCK_STYLE_LINE_CNT 3
+#define TEMPLATE_TEXTBLOCK_STYLE_LINE_CNT 5
 
 const char *TEMPLATE_TEXTBLOCK_STYLE_BLOCK[TEMPLATE_TEXTBLOCK_STYLE_LINE_CNT] =
 {
-   "   styles {<br/>",
-   "      style { \"%s\";<br/>"
-   "         base: \"font=\"Sans\" font_size=30 text_class=entry color=#0088AA style=shadow,bottom shadow_color=#00000080 valign=0.5 ellipsis=1.0 wrap=none align=center\";<br/>"
-   "      }<br/>",
-   "   }<br/>"
+   "styles {<br/>",
+   "   style { \"%s\";<br/>",
+   "      base: \"font=\"Sans\" font_size=30 text_class=entry color=#0088AA style=shadow,bottom shadow_color=#00000080 valign=0.5 ellipsis=1.0 wrap=none align=center\";<br/>",
+   "   }<br/>",
+   "}<br/>"
 };
 
