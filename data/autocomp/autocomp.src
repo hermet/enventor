@@ -1,6 +1,5 @@
 group "lexem" struct {
    group "nodes" list {
-
       group "lexem" struct {
          group "nodes" list {
             group "lexem" struct {
@@ -586,13 +585,28 @@ group "lexem" struct {
                                  }
                                  group "txt" var_array {
                                      count 1;
+                                     value "string" string: "%s: SOFT_SHADOW;";
+                                 }
+                                 value "cursor_offset" int: 1;
+                                 value "line_back" int: 0;
+                                 group "name" var_array {
+                                    count 1;
+                                    value "string" string: "effect";
+                                 }
+                              }
+                              group "lexem" struct {
+                                 group "nodes" list {
+                                 }
+                                 group "txt" var_array {
+                                     count 1;
                                      value "string" string: "%s: ;";
                                  }
                                  value "cursor_offset" int: 1;
                                  value "line_back" int: 0;
                                  group "name" var_array {
-                                    count 7;
+                                    count 8;
                                     value "string" string: "access";
+                                    value "string" string: "anti_alias";
                                     value "string" string: "ignore_flags";
                                     value "string" string: "mouse_events";
                                     value "string" string: "multiline";
@@ -631,7 +645,8 @@ group "lexem" struct {
                                        value "cursor_offset" int: 2;
                                        value "line_back" int: 0;
                                        group "name" var_array {
-                                           count 2;
+                                           count 3;
+                                           value "string" string: "clip_to";
                                            value "string" string: "color_class";
                                            value "string" string: "source";
                                        }
@@ -1100,7 +1115,8 @@ group "lexem" struct {
                                              value "cursor_offset" int: 2;
                                              value "line_back" int: 0;
                                              group "name" var_array {
-                                                 count 7;
+                                                 count 8;
+                                                 value "string" string: "domain";
                                                  value "string" string: "font";
                                                  value "string" string: "repch";
                                                  value "string" string: "source";
@@ -1123,6 +1139,20 @@ group "lexem" struct {
                                        group "name" var_array {
                                            count 1;
                                            value "string" string: "text";
+                                       }
+                                    }
+                                    group "lexem" struct {
+                                       group "nodes" list {
+                                       }
+                                       group "txt" var_array {
+                                           count 1;
+                                           value "string" string: "%s: NONE;";
+                                       }
+                                       value "cursor_offset" int: 2;
+                                       value "line_back" int: 0;
+                                       group "name" var_array {
+                                           count 1;
+                                           value "string" string: "limit";
                                        }
                                     }
                                  }
@@ -1195,8 +1225,9 @@ group "lexem" struct {
                                  value "cursor_offset" int: 1;
                                  value "line_back" int: 0;
                                  group "name" var_array {
-                                    count 1;
+                                    count 2;
                                     value "string" string: "entry_mode";
+                                    value "string" string: "mask_flags";
                                  }
                               }
                               group "lexem" struct {
