@@ -133,10 +133,14 @@ info_text_update(live_data *ld)
    evas_object_text_text_set(ld->info_text[Info_Text_Rel2], buf);
 
    //Size
-   Evas_Coord layout_x, layout_y, layout_w, layout_h;
-   evas_object_geometry_get(ld->layout, &layout_x, &layout_y, &layout_w,
-                            &layout_h);
-   snprintf(buf, sizeof(buf), "[%d x %d]", layout_w, layout_h);
+   Evas_Coord vw, vh;
+   config_view_size_get(&vw, &vh);
+
+   vw = (Evas_Coord) (((double) vw) *
+                            (ld->part_info.rel2_x - ld->part_info.rel1_x));
+   vh = (Evas_Coord) (((double) vh) *
+                            (ld->part_info.rel2_y - ld->part_info.rel1_y));
+   snprintf(buf, sizeof(buf), "[%d x %d]", vw, vh);
    evas_object_text_text_set(ld->info_text[Info_Text_Size], buf);
 
    //Update Position
@@ -162,6 +166,9 @@ info_text_update(live_data *ld)
    evas_object_move(ld->info_text[Info_Text_Rel2], x, y);
 
    //Size
+   Evas_Coord layout_x, layout_y, layout_w, layout_h;
+   evas_object_geometry_get(ld->layout, &layout_x, &layout_y, &layout_w,
+                            &layout_h);
    evas_object_geometry_get(ld->info_text[Info_Text_Size], NULL, NULL, &w, &h);
    x = (layout_x + (layout_w/2)) - (w/2);
    y = (layout_y + (layout_h/2)) - (h/2);
