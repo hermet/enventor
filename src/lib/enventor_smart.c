@@ -30,6 +30,7 @@ typedef struct _Enventor_Object_Data
 
    Eina_Bool dummy_swallow : 1;
    Eina_Bool key_down : 1;
+   Eina_Bool part_cursor_jump : 1;
 
 } Enventor_Object_Data;
 
@@ -176,6 +177,7 @@ static void
 _enventor_part_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED, void *ei)
 {
    Enventor_Object_Data *pd = (Enventor_Object_Data *)data;
+   if (!pd->part_cursor_jump) return;
    const char *part_name = (const char *)ei;
    edit_part_cursor_set(pd->ed, view_group_name_get(VIEW_DATA), part_name);
 }
@@ -214,7 +216,10 @@ _enventor_object_evas_object_smart_add(Eo *obj, Enventor_Object_Data *pd)
    pd->key_up_handler =
       ecore_event_handler_add(ECORE_EVENT_KEY_DOWN, key_up_cb, pd);
 
-   evas_object_smart_callback_add(pd->obj, "part,clicked", _enventor_part_clicked_cb, pd);
+   evas_object_smart_callback_add(pd->obj, "part,clicked",
+                                  _enventor_part_clicked_cb, pd);
+
+   pd->part_cursor_jump = EINA_TRUE;
 }
 
 EOLIAN static void
@@ -712,6 +717,9 @@ _enventor_object_disabled_set(Eo *obj EINA_UNUSED,
                               Eina_Bool disabled)
 {
    edit_disabled_set(pd->ed, disabled);
+
+   if (disabled) pd->part_cursor_jump = EINA_FALSE;
+   else pd->part_cursor_jump = EINA_TRUE;
 }
 
 EOLIAN static Eina_Bool
