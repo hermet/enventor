@@ -44,6 +44,10 @@ struct viewer_s
 
 const char *PART_NAME = "part_name";
 
+
+static Eina_Bool
+exe_del_event_cb(void *data, int type, void *even);
+
 /*****************************************************************************/
 /* Internal method implementation                                            */
 /*****************************************************************************/
@@ -133,6 +137,9 @@ view_images_monitor_set(view_data *vd)
 static void
 view_obj_create_post_job(view_data *vd)
 {
+   vd->exe_del_event =
+      ecore_event_handler_add(ECORE_EXE_EVENT_DEL, exe_del_event_cb, vd);
+
    eio_monitor_del(vd->edj_monitor);
    vd->edj_monitor = eio_monitor_add(build_edj_path_get());
    if (!vd->edj_monitor) EINA_LOG_ERR("Failed to add Eio_Monitor");
@@ -435,7 +442,6 @@ view_obj_create(view_data *vd)
                                   dummy_clicked_cb, vd);
 
    view_obj_parts_callbacks_set(vd);
-
 }
 
 static void
@@ -522,13 +528,6 @@ view_init(Evas_Object *enventor, const char *group,
       ecore_event_handler_add(EIO_MONITOR_FILE_MODIFIED, edj_changed_cb, vd);
    vd->img_monitor_event =
       ecore_event_handler_add(EIO_MONITOR_FILE_MODIFIED, img_changed_cb, vd);
-
-   /* Is this required?? Suddenly, something is changed and
-      it won't successful with EIO_MONITOR_FILE_MODIFIED to reload the edj file
-      since the file couldn't be accessed at the moment. To fix this problem,
-      we check the ECORE_EXE_EVENT_DEL additionally. */
-   vd->exe_del_event =
-      ecore_event_handler_add(ECORE_EXE_EVENT_DEL, exe_del_event_cb, vd);
 
    vd->view_config_size.w = 0;
    vd->view_config_size.h = 0;
