@@ -160,9 +160,9 @@ cur_state_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    int value_len = 0;
    double value_convert = 0.0;
 
-   td->part_name =   NULL;
-   td->group_name =  NULL;
-   td->state_name =  NULL;
+   td->part_name = NULL;
+   td->group_name = NULL;
+   td->state_name = NULL;
 
    while (p && p <= end)
      {
@@ -381,8 +381,11 @@ static void
 cur_name_thread_end(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
    cur_name_td *td = data;
-   td->cb(td->cb_data,td->state_name, td->state_value,  td->part_name, td->group_name);
+   td->cb(td->cb_data, td->state_name, td->state_value,  td->part_name, td->group_name);
    td->pd->cntd = NULL;
+   eina_stringshare_del(td->state_name);
+   eina_stringshare_del(td->part_name);
+   eina_stringshare_del(td->group_name);
    free(td);
 }
 
@@ -391,6 +394,9 @@ cur_name_thread_cancel(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
    cur_name_td *td = data;
    if (td->pd) td->pd->cntd = NULL;
+   eina_stringshare_del(td->state_name);
+   eina_stringshare_del(td->part_name);
+   eina_stringshare_del(td->group_name);
    free(td->utf8);
    free(td);
 }

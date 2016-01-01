@@ -39,6 +39,13 @@ struct viewer_s
    /* view size configured by application */
    Evas_Coord_Size view_config_size;
 
+   //Keep the part info which state has been changed
+   struct {
+     Eina_Stringshare *part;
+     Eina_Stringshare *desc;
+     double state;
+   } changed_part;
+
    Eina_Bool edj_reload_need : 1;
 };
 
@@ -189,7 +196,8 @@ part_obj_geom_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
      }
 
    Evas_Coord x, y, w , h;
-   if (edje_edit_part_type_get(vd->layout, vd->part_name) == EDJE_PART_TYPE_SPACER)
+   if (edje_edit_part_type_get(vd->layout, vd->part_name) ==
+       EDJE_PART_TYPE_SPACER)
      {
         Evas_Object *scroller_edje = elm_layout_edje_get(vd->scroller);
         // Clipper need, to clip the highlight object for the  part SPACER,
@@ -346,6 +354,10 @@ exe_del_event_cb(void *data, int type EINA_UNUSED, void *event EINA_UNUSED)
    view_obj_min_update(vd);
    view_part_highlight_set(vd, vd->part_name);
    dummy_obj_update(vd->layout);
+   if (vd->changed_part.part)
+   edje_edit_part_selected_state_set(vd->layout, vd->changed_part.part,
+                                     vd->changed_part.desc,
+                                     vd->changed_part.state);
 
    view_obj_parts_callbacks_set(vd);
    vd->edj_reload_need = EINA_FALSE;
@@ -542,6 +554,8 @@ view_term(view_data *vd)
 
    eina_stringshare_del(vd->group_name);
    eina_stringshare_del(vd->part_name);
+   eina_stringshare_del(vd->changed_part.part);
+   eina_stringshare_del(vd->changed_part.desc);
 
    if (vd->part_obj)
      evas_object_event_callback_del(vd->part_obj, EVAS_CALLBACK_DEL,
@@ -753,8 +767,23 @@ view_string_list_free(Eina_List *list)
 }
 
 void
-view_part_state_set(view_data *vd, const char *part, const char *description, const double state)
+view_part_state_set(view_data *vd, Eina_Stringshare *part,
+                    Eina_Stringshare *desc, double state)
 {
    if (!vd) return;
-   edje_edit_part_selected_state_set(vd->layout, part, description, state);
+   if (!part && !vd->changed_part.part) return;
+
+   //reset previous part?
+   if (part != vd->changed_part.part)
+     {
+        view_part_state_set(vd, vd->changed_part.part, "default", 0.0);
+        eina_stringshare_del(vd->changed_part.part);
+        eina_stringshare_del(vd->changed_part.desc);
+     }
+
+   edje_edit_part_selected_state_set(vd->layout, part, desc, state);
+   vd->changed_part.part = eina_stringshare_add(part);
+   vd->changed_part.desc = eina_stringshare_add(desc);
+   vd->changed_part.state = state;
 }
+

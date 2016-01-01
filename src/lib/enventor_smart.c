@@ -84,7 +84,6 @@ edit_view_sync_cb(void *data, Eina_Stringshare *state_name, double state_value,
                   Eina_Stringshare *part_name, Eina_Stringshare *group_name)
 {
    Enventor_Object_Data *pd = data;
-   static Eina_Stringshare *prev_part_name = NULL;
 
    edj_mgr_all_views_reload();
 
@@ -107,23 +106,14 @@ edit_view_sync_cb(void *data, Eina_Stringshare *state_name, double state_value,
    else
      view_part_highlight_set(VIEW_DATA, NULL);
 
+   //reset previous part's state
    if (!state_name)
      {
-        view_part_state_set(VIEW_DATA, prev_part_name, "default", 0.0);
-        eina_stringshare_del(prev_part_name);
-        prev_part_name = NULL;
+        view_part_state_set(VIEW_DATA, NULL, NULL, 0);
         return;
      }
 
-   if ((part_name) && (part_name != prev_part_name))
-     {
-       view_part_state_set(VIEW_DATA, prev_part_name, "default", 0.0);
-       eina_stringshare_del(prev_part_name);
-       prev_part_name = NULL;
-     }
-
    view_part_state_set(VIEW_DATA, part_name, state_name, state_value);
-   prev_part_name = part_name;
 }
 
 static void
