@@ -1,30 +1,13 @@
-[Enventor v0.6.0]
+[Enventor v0.7.0]
  
 This is an EDC editor with some convenient functions. It was started near the begining of June 2013, so expecting it to do everything a mature script editor does is a bit premature.  However, considering its young age, it does a lot.
  
- 
-[Requirements]
-  
-  efl (>= 1.13.0)
-  elementary (>= 1.13.0)
-  
-Please note that some features may not quite function correctly or completely prior to EFL 1.13. Newer would be better.
-  
 Please see the following sites for more information.
  
 http://www.enlightenment.org
 https://phab.enlightenment.org/w/projects/enventor/
 http://www.openhub.net/p/enventor 
   
- 
-[Compiling]
- 
-Once you have met the requirements, compiling and installing is simple:
- 
-  $ ./autogen.sh
-  $ make
-  $ sudo make install
-  $ sudo ldconfig (it may need on Linux System) 
  
 [Short Cut Keys]
  
@@ -92,7 +75,7 @@ $ enventor sample.edc output.edj -i ./images -s ./sounds
   
 Many developers have contributed to the Enventor project. The following names are the dedicated Enventor developers but there are many more people who've gladly contributed to improving Enventor. For a complete list of contributors, See the AUTHORS file.
  
-Copyright (C) 2013 - 2015 by:
+Copyright (C) 2013 - 2016 by:
  
 Hermet Park
 Jaehyun Cho
