@@ -788,6 +788,14 @@ menu_activated_get(void)
    return md->active_request;
 }
 
+static void
+enventor_ctxpopup_dismissed_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                               void *event_info EINA_UNUSED)
+{
+   menu_data *md = data;
+   warning_open(md, exit_yes_btn_cb, exit_save_btn_cb);
+}
+
 void
 menu_exit(void)
 {
@@ -795,7 +803,18 @@ menu_exit(void)
    if (enventor_object_modified_get(md->enventor))
      {
         search_close();
-        warning_open(md, exit_yes_btn_cb, exit_save_btn_cb);
+        if (enventor_object_ctxpopup_visible_get(md->enventor))
+          {
+             /* bacause the main.c handles the ctxpopup dismissed callback,
+                here we needs to override the function */
+             evas_object_smart_callback_priority_add(md->enventor,
+                                                 "ctxpopup,dismissed", 100,
+                                                 enventor_ctxpopup_dismissed_cb,
+                                                 md);
+             enventor_object_ctxpopup_dismiss(md->enventor);
+          }
+        else
+          warning_open(md, exit_yes_btn_cb, exit_save_btn_cb);
      }
    else
      elm_exit();

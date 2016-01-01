@@ -228,7 +228,8 @@ base_gui_init(void)
    if ((w > 0) && (w > 0))
      evas_object_resize(win, w, h);
 
-   evas_object_event_callback_add(win, EVAS_CALLBACK_RESIZE, win_resize_cb, NULL);
+   evas_object_event_callback_add(win, EVAS_CALLBACK_RESIZE, win_resize_cb,
+                                  NULL);
    evas_object_smart_callback_add(win, "delete,request", win_delete_request_cb,
                                   NULL);
 /*   evas_object_smart_callback_add(win, "focused", win_focused_cb, NULL);*/
