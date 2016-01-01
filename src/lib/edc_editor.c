@@ -922,6 +922,8 @@ err:
    if (ed->view_sync_cb)
      ed->view_sync_cb(ed->view_sync_cb_data, NULL, 0.0, NULL, group_name);
 
+   eina_stringshare_del(group_name);
+
    return ret;
 }
 
