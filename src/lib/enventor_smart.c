@@ -219,11 +219,11 @@ _enventor_object_evas_object_smart_del(Evas_Object *obj EINA_UNUSED,
    EINA_REFCOUNT_UNREF(pd)
      {
         eina_stringshare_del(pd->group_name);
+        autocomp_term();
         edit_term(pd->ed);
         ecore_event_handler_del(pd->key_down_handler);
         ecore_event_handler_del(pd->key_up_handler);
         edj_mgr_term();
-        autocomp_term();
         build_term();
      }
 }

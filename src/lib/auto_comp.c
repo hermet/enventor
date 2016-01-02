@@ -900,6 +900,8 @@ void
 autocomp_term(void)
 {
    autocomp_data *ad = g_ad;
+   autocomp_target_set(NULL);
+
    evas_object_del(ad->anchor);
    ecore_thread_cancel(ad->init_thread);
 
