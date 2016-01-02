@@ -195,7 +195,8 @@ context_lexem_thread_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
                   !isalnum(*help_end_ptr);
                   help_end_ptr--);
              for (help_ptr = help_end_ptr;
-                  (((isalnum(*help_ptr )) || (*help_ptr == '_')));
+                  ((help_ptr >= utf8) &&
+                   ((isalnum(*help_ptr )) || (*help_ptr == '_')));
                   help_ptr--);
              if (help_ptr != utf8)
                help_ptr++;
