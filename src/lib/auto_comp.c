@@ -441,8 +441,7 @@ push_char(autocomp_data *ad, char c)
         ad->queue_pos = 0;
      }
    ad->queue[ad->queue_pos] = c;
-
-  ad->queue_pos++;
+   ad->queue_pos++;
 }
 
 static void
@@ -772,7 +771,7 @@ anchor_key_down_cb(void *data, Evas *evas EINA_UNUSED,
    //Cancel the auto complete.
    if (!strcmp(ev->key, "BackSpace"))
      {
-        queue_reset(ad);
+        entry_anchor_off(ad);
         ev->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
         return;
      }
