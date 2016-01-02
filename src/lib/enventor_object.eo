@@ -19,13 +19,13 @@ class Enventor.Object (Elm.Widget, Efl.File) {
             scale: double;
          }
       }
-      @property dummy_swallow {
+      @property dummy_parts {
          set {
          }
          get {
          }
          values {
-            dummy_swallow: bool;
+            dummy_parts: bool;
          }
       }
       @property auto_complete {

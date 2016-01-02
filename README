@@ -43,7 +43,7 @@ F12 - Settings
 Ctrl+S - Quick Save + Update Live View
 Ctrl+I - On/Off Auto Indentation
 Ctrl+O - On/Off Auto Completion
-Ctrl+W - Show/Hide Dummy Swallow
+Ctrl+W - Show/Hide Dummy Parts
 Ctrl+H - On/Off Part Highlighting
 Ctrl+T - Insert Defaut Template Code
 Ctrl+Mouse Wheel Up - View Zoom In (Only if view size is set) / Font Size Up

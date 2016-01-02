@@ -41,7 +41,7 @@ enventor_tools_update(Evas_Object *enventor)
 {
    tools_lines_update(enventor, EINA_FALSE);
    tools_highlight_update(enventor, EINA_FALSE);
-   tools_swallow_update(enventor, EINA_FALSE);
+   tools_dummy_update(enventor, EINA_FALSE);
    tools_status_update(enventor, EINA_FALSE);
 }
 
@@ -652,7 +652,7 @@ ctrl_func(app_data *ad, Evas_Event_Key_Down *event)
    //Swallow Dummy Object
    if (!strcmp(event->key, "w") || !strcmp(event->key, "W"))
      {
-        tools_swallow_update(ad->enventor, EINA_TRUE);
+        tools_dummy_update(ad->enventor, EINA_TRUE);
         return EINA_TRUE;
      }
    //Template Code

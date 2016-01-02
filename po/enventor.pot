@@ -1,14 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR Enventor development team
-# This file is distributed under the same license as the enventor package.
+# This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: enventor 0.6.0\n"
+"Project-Id-Version: enventor 0.7.0\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2015-12-16 10:22+0900\n"
+"POT-Creation-Date: 2016-01-02 11:26+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -42,7 +42,7 @@ msgid "Cannot load a config file \"%s\""
 msgstr ""
 
 #: src/bin/config_data.c:157 src/bin/file_mgr.c:193 src/bin/goto.c:132
-#: src/bin/menu.c:687 src/bin/newfile.c:140 src/bin/panes.c:281
+#: src/bin/menu.c:688 src/bin/newfile.c:141 src/bin/panes.c:281
 #: src/bin/search.c:332 src/bin/setting.c:476 src/bin/statusbar.c:42
 #: src/bin/text_setting.c:490 src/bin/text_setting.c:543
 #: src/bin/text_setting.c:574 src/bin/text_setting.c:1087 src/bin/tools.c:170
@@ -104,15 +104,15 @@ msgstr ""
 msgid "Failed to grab key - Escape"
 msgstr ""
 
-#: src/bin/live_edit.c:918
+#: src/bin/live_edit.c:925
 msgid "Double click the part to confirm."
 msgstr ""
 
-#: src/bin/live_edit.c:988
+#: src/bin/live_edit.c:995
 msgid "Select a part to add in Live View."
 msgstr ""
 
-#: src/bin/live_edit.c:1063
+#: src/bin/live_edit.c:1070
 msgid "Faild to allocate Memory!"
 msgstr ""
 
@@ -183,7 +183,7 @@ msgstr ""
 msgid "Will you save changes?"
 msgstr ""
 
-#: src/bin/menu.c:198 src/bin/menu.c:548 src/bin/menu.c:648
+#: src/bin/menu.c:198 src/bin/menu.c:549 src/bin/menu.c:649
 msgid "Save"
 msgstr ""
 
@@ -213,52 +213,52 @@ msgstr ""
 msgid "Failed to load: %s."
 msgstr ""
 
-#: src/bin/menu.c:540
+#: src/bin/menu.c:541
 msgid "Save File: Choose a EDC"
 msgstr ""
 
-#: src/bin/menu.c:549 src/bin/menu.c:584
+#: src/bin/menu.c:550 src/bin/menu.c:585
 msgid "Close"
 msgstr ""
 
-#: src/bin/menu.c:574
+#: src/bin/menu.c:575
 msgid "Load File: Choose a EDC"
 msgstr ""
 
-#: src/bin/menu.c:583 src/bin/menu.c:652
+#: src/bin/menu.c:584 src/bin/menu.c:653
 msgid "Load"
 msgstr ""
 
-#: src/bin/menu.c:643
+#: src/bin/menu.c:644
 msgid "New"
 msgstr ""
 
-#: src/bin/menu.c:656 src/bin/setting.c:492
+#: src/bin/menu.c:657 src/bin/setting.c:492
 msgid "Settings"
 msgstr ""
 
-#: src/bin/menu.c:660
+#: src/bin/menu.c:661
 msgid "About"
 msgstr ""
 
-#: src/bin/menu.c:664
+#: src/bin/menu.c:665
 msgid "Exit"
 msgstr ""
 
-#: src/bin/menu.c:671
+#: src/bin/menu.c:672
 msgid "Close Enventor Menu (Esc)"
 msgstr ""
 
-#: src/bin/menu.c:672
+#: src/bin/menu.c:673
 msgid "Back"
 msgstr ""
 
-#: src/bin/newfile.c:56 src/bin/newfile.c:78
+#: src/bin/newfile.c:56 src/bin/newfile.c:79
 #, c-format
 msgid "Cannot find file! \"%s\""
 msgstr ""
 
-#: src/bin/newfile.c:124
+#: src/bin/newfile.c:125
 #, c-format
 msgid "Cannot find templates folder! \"%s\""
 msgstr ""

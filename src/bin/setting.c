@@ -124,7 +124,7 @@ setting_apply_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
    config_console_set(elm_check_state_get(sd->toggle_console));
    config_stats_bar_set(elm_check_state_get(sd->toggle_stats));
    config_part_highlight_set(elm_check_state_get(sd->toggle_highlight));
-   config_dummy_swallow_set(elm_check_state_get(sd->toggle_swallow));
+   config_dummy_parts_set(elm_check_state_get(sd->toggle_swallow));
    config_view_size_configurable_set(elm_check_state_get(sd->toggle_view_size));
    text_setting_config_set();
 
@@ -167,7 +167,7 @@ setting_reset_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
    elm_check_state_set(sd->toggle_tools, config_tools_get());
    elm_check_state_set(sd->toggle_stats, config_stats_bar_get());
    elm_check_state_set(sd->toggle_highlight, config_part_highlight_get());
-   elm_check_state_set(sd->toggle_swallow, config_dummy_swallow_get());
+   elm_check_state_set(sd->toggle_swallow, config_dummy_parts_get());
 
    const char *font_name;
    const char *font_style;
@@ -387,8 +387,8 @@ general_layout_create(setting_data *sd, Evas_Object *parent)
    elm_box_pack_end(box, toggle_highlight);
 
    //Toggle (Dummy Swallow)
-   Evas_Object *toggle_swallow = toggle_create(box, _("Dummy Swallow"),
-                                               config_dummy_swallow_get());
+   Evas_Object *toggle_swallow = toggle_create(box, _("Dummy Parts"),
+                                               config_dummy_parts_get());
    elm_box_pack_end(box, toggle_swallow);
 
    //Toggle (Status)

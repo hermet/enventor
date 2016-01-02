@@ -41,11 +41,11 @@ highlight_cb(void *data, Evas_Object *obj EINA_UNUSED,
 }
 
 static void
-swallow_cb(void *data, Evas_Object *obj EINA_UNUSED,
+dummy_cb(void *data, Evas_Object *obj EINA_UNUSED,
            void *event_info EINA_UNUSED)
 {
    Evas_Object *enventor = data;
-   tools_swallow_update(enventor, EINA_TRUE);
+   tools_dummy_update(enventor, EINA_TRUE);
 }
 
 static void
@@ -243,8 +243,8 @@ tools_init(Evas_Object *parent, Evas_Object *enventor)
    elm_box_pack_end(box, btn);
    td->highlight_btn = btn;
 
-   btn = tools_btn_create(box, "swallow_s", _("Dummy Swallow (Ctrl + W)"),
-                          swallow_cb, enventor);
+   btn = tools_btn_create(box, "dummy", _("Dummy Parts (Ctrl + W)"),
+                          dummy_cb, enventor);
    evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
    elm_box_pack_end(box, btn);
@@ -335,23 +335,23 @@ tools_lines_update(Evas_Object *enventor, Eina_Bool toggle)
 }
 
 void
-tools_swallow_update(Evas_Object *enventor, Eina_Bool toggle)
+tools_dummy_update(Evas_Object *enventor, Eina_Bool toggle)
 {
    tools_data *td = g_td;
    if (!td) return;
 
-   if (toggle) config_dummy_swallow_set(!config_dummy_swallow_get());
-   enventor_object_dummy_swallow_set(enventor, config_dummy_swallow_get());
+   if (toggle) config_dummy_parts_set(!config_dummy_parts_get());
+   enventor_object_dummy_parts_set(enventor, config_dummy_parts_get());
 
    if (toggle)
      {
-        if (config_dummy_swallow_get())
-          stats_info_msg_update(_("Dummy Swallow Enabled."));
+        if (config_dummy_parts_get())
+          stats_info_msg_update(_("Dummy Parts Enabled."));
         else
-          stats_info_msg_update(_("Dummy Swallow Disabled."));
+          stats_info_msg_update(_("Dummy Parts Disabled."));
      }
    //Toggle on/off
-   if (config_dummy_swallow_get())
+   if (config_dummy_parts_get())
      elm_object_signal_emit(td->swallow_btn, "icon,highlight,enabled", "");
    else
      elm_object_signal_emit(td->swallow_btn, "icon,highlight,disabled", "");

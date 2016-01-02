@@ -495,7 +495,7 @@ view_obj_idler_cb(void *data)
    elm_object_content_set(vd->scroller, vd->base);
 
    Eina_Bool ret;
-   if (eo_do_ret(vd->enventor, ret, enventor_obj_dummy_swallow_get()))
+   if (eo_do_ret(vd->enventor, ret, enventor_obj_dummy_parts_get()))
      dummy_obj_new(vd->layout);
 
    vd->idler = NULL;
@@ -509,11 +509,11 @@ view_obj_idler_cb(void *data)
 /*****************************************************************************/
 
 void
-view_dummy_set(view_data *vd, Eina_Bool dummy_swallow)
+view_dummy_set(view_data *vd, Eina_Bool dummy_parts)
 {
    if (!vd) return;
    //Does view have dummy object?
-   if (dummy_swallow) dummy_obj_new(vd->layout);
+   if (dummy_parts) dummy_obj_new(vd->layout);
    else dummy_obj_del(vd->layout);
 }
 

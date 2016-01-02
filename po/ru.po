@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enventor 0.6.0\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2015-12-16 10:22+0900\n"
+"POT-Creation-Date: 2016-01-02 11:26+0900\n"
 "PO-Revision-Date: 2015-12-10 12:07+0000\n"
 "Last-Translator: NikaWhite belyavskijnb@gmail.com \n"
 "Language-Team: \n"
@@ -41,7 +41,7 @@ msgid "Cannot load a config file \"%s\""
 msgstr "Неудалось загрузить настройки из файла \"%s\""
 
 #: src/bin/config_data.c:157 src/bin/file_mgr.c:193 src/bin/goto.c:132
-#: src/bin/menu.c:687 src/bin/newfile.c:140 src/bin/panes.c:281
+#: src/bin/menu.c:688 src/bin/newfile.c:141 src/bin/panes.c:281
 #: src/bin/search.c:332 src/bin/setting.c:476 src/bin/statusbar.c:42
 #: src/bin/text_setting.c:490 src/bin/text_setting.c:543
 #: src/bin/text_setting.c:574 src/bin/text_setting.c:1087 src/bin/tools.c:170
@@ -103,15 +103,15 @@ msgstr "Перейти"
 msgid "Failed to grab key - Escape"
 msgstr "Ошибка перехвата нажатия - Escape"
 
-#: src/bin/live_edit.c:918
+#: src/bin/live_edit.c:925
 msgid "Double click the part to confirm."
 msgstr "Сделайте двойной клик мыши по примитиву для вставки."
 
-#: src/bin/live_edit.c:988
+#: src/bin/live_edit.c:995
 msgid "Select a part to add in Live View."
 msgstr "Выбирете тип примитива, который будет добавлен."
 
-#: src/bin/live_edit.c:1063
+#: src/bin/live_edit.c:1070
 msgid "Faild to allocate Memory!"
 msgstr "Ошибка выделения памяти!"
 
@@ -184,7 +184,7 @@ msgstr "Без сохранения все изменения будут уте�
 msgid "Will you save changes?"
 msgstr "Сохранить изменения?"
 
-#: src/bin/menu.c:198 src/bin/menu.c:548 src/bin/menu.c:648
+#: src/bin/menu.c:198 src/bin/menu.c:549 src/bin/menu.c:649
 msgid "Save"
 msgstr "Сохранить"
 
@@ -214,52 +214,52 @@ msgstr "Выбирете файл для загрузки."
 msgid "Failed to load: %s."
 msgstr "Невозможно загрузить: %s."
 
-#: src/bin/menu.c:540
+#: src/bin/menu.c:541
 msgid "Save File: Choose a EDC"
 msgstr "Сохранение: Выберите .edc файл"
 
-#: src/bin/menu.c:549 src/bin/menu.c:584
+#: src/bin/menu.c:550 src/bin/menu.c:585
 msgid "Close"
 msgstr "Закрыть"
 
-#: src/bin/menu.c:574
+#: src/bin/menu.c:575
 msgid "Load File: Choose a EDC"
 msgstr "Загрузка: Выберите .edc файл"
 
-#: src/bin/menu.c:583 src/bin/menu.c:652
+#: src/bin/menu.c:584 src/bin/menu.c:653
 msgid "Load"
 msgstr "Загрузить"
 
-#: src/bin/menu.c:643
+#: src/bin/menu.c:644
 msgid "New"
 msgstr "Новый"
 
-#: src/bin/menu.c:656 src/bin/setting.c:492
+#: src/bin/menu.c:657 src/bin/setting.c:492
 msgid "Settings"
 msgstr "Настройки"
 
-#: src/bin/menu.c:660
+#: src/bin/menu.c:661
 msgid "About"
 msgstr "Помощь"
 
-#: src/bin/menu.c:664
+#: src/bin/menu.c:665
 msgid "Exit"
 msgstr "Выход"
 
-#: src/bin/menu.c:671
+#: src/bin/menu.c:672
 msgid "Close Enventor Menu (Esc)"
 msgstr "Закрыть меню (Esc)"
 
-#: src/bin/menu.c:672
+#: src/bin/menu.c:673
 msgid "Back"
 msgstr "Назад"
 
-#: src/bin/newfile.c:56 src/bin/newfile.c:78
+#: src/bin/newfile.c:56 src/bin/newfile.c:79
 #, c-format
 msgid "Cannot find file! \"%s\""
 msgstr "Неудалось найти файл! \"%s\""
 
-#: src/bin/newfile.c:124
+#: src/bin/newfile.c:125
 #, c-format
 msgid "Cannot find templates folder! \"%s\""
 msgstr "Неудалось найди директорию с шаблонами! \"%s\""
@@ -327,7 +327,7 @@ msgid "Part Highlighting"
 msgstr "Подсветка примитивов"
 
 #: src/bin/setting.c:390
-msgid "Dummy Swallow"
+msgid "Dummy Parts"
 msgstr "Изображение для контейнеров"
 
 #: src/bin/setting.c:395
@@ -444,7 +444,7 @@ msgid "Part Highlighting (Ctrl + H)"
 msgstr "Подсветка примитивов (Ctrl + H)"
 
 #: src/bin/tools.c:246
-msgid "Dummy Swallow (Ctrl + W)"
+msgid "Dummy Parts (Ctrl + W)"
 msgstr "Изображение для контейнеров (Ctrl + W)"
 
 #: src/bin/tools.c:253
@@ -468,9 +468,9 @@ msgid "Part Highlighting Disabled."
 msgstr "Подсветка примитивов Выключена"
 
 #: src/bin/tools.c:349
-msgid "Dummy Swallow Enabled."
+msgid "Dummy Parts Enabled."
 msgstr "Изображение для контейнеров Включено"
 
 #: src/bin/tools.c:351
-msgid "Dummy Swallow Disabled."
+msgid "Dummy Parts Disabled."
 msgstr "Изображения для контейнеров Выключено"

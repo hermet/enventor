@@ -28,7 +28,7 @@ typedef struct _Enventor_Object_Data
    Ecore_Event_Handler *key_down_handler;
    Ecore_Event_Handler *key_up_handler;
 
-   Eina_Bool dummy_swallow : 1;
+   Eina_Bool dummy_parts : 1;
    Eina_Bool key_down : 1;
    Eina_Bool part_cursor_jump : 1;
 
@@ -442,15 +442,15 @@ _enventor_object_live_view_scale_get(Eo *obj EINA_UNUSED,
 }
 
 EOLIAN static void
-_enventor_object_dummy_swallow_set(Eo *obj EINA_UNUSED,
-                                   Enventor_Object_Data *pd,
-                                   Eina_Bool dummy_swallow)
+_enventor_object_dummy_parts_set(Eo *obj EINA_UNUSED,
+                                 Enventor_Object_Data *pd,
+                                 Eina_Bool dummy_parts)
 {
-   dummy_swallow = !!dummy_swallow;
-   if (pd->dummy_swallow == dummy_swallow) return;
+   dummy_parts = !!dummy_parts;
+   if (pd->dummy_parts == dummy_parts) return;
 
-   view_dummy_set(VIEW_DATA, dummy_swallow);
-   pd->dummy_swallow = dummy_swallow;
+   view_dummy_set(VIEW_DATA, dummy_parts);
+   pd->dummy_parts = dummy_parts;
 }
 
 EOLIAN static Eina_Bool
@@ -482,10 +482,10 @@ _enventor_object_ctxpopup_dismiss(Eo *obj EINA_UNUSED,
 }
 
 EOLIAN static Eina_Bool
-_enventor_object_dummy_swallow_get(Eo *obj EINA_UNUSED,
+_enventor_object_dummy_parts_get(Eo *obj EINA_UNUSED,
                                    Enventor_Object_Data *pd)
 {
-   return pd->dummy_swallow;
+   return pd->dummy_parts;
 }
 
 EOLIAN static void

@@ -7,7 +7,7 @@ images {
    image: "lines.png" COMP;
    image: "console.png" COMP;
    image: "status.png" COMP;
-   image: "swallow_s.png" COMP;
+   image: "dummy.png" COMP;
    image: "goto.png" COMP;
    image: "save.png" COMP;
    image: "redo.png" COMP;
@@ -38,7 +38,7 @@ ICON_GROUP("highlight", "highlight.png")
 ICON_GROUP("lines", "lines.png")
 ICON_GROUP("console", "console.png")
 ICON_GROUP("status", "status.png")
-ICON_GROUP("swallow_s", "swallow_s.png")
+ICON_GROUP("dummy", "dummy.png")
 ICON_GROUP("up", "slider_up.png")
 ICON_GROUP("down", "slider_down.png")
 ICON_GROUP("live_edit", "live_edit.png")
