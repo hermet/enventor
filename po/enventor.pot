@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enventor 0.7.0\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2016-01-02 11:26+0900\n"
+"POT-Creation-Date: 2016-01-02 22:29+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -326,7 +326,7 @@ msgid "Part Highlighting"
 msgstr ""
 
 #: src/bin/setting.c:390
-msgid "Dummy Swallow"
+msgid "Dummy Parts"
 msgstr ""
 
 #: src/bin/setting.c:395
@@ -443,7 +443,7 @@ msgid "Part Highlighting (Ctrl + H)"
 msgstr ""
 
 #: src/bin/tools.c:246
-msgid "Dummy Swallow (Ctrl + W)"
+msgid "Dummy Parts (Ctrl + W)"
 msgstr ""
 
 #: src/bin/tools.c:253
@@ -467,9 +467,9 @@ msgid "Part Highlighting Disabled."
 msgstr ""
 
 #: src/bin/tools.c:349
-msgid "Dummy Swallow Enabled."
+msgid "Dummy Parts Enabled."
 msgstr ""
 
 #: src/bin/tools.c:351
-msgid "Dummy Swallow Disabled."
+msgid "Dummy Parts Disabled."
 msgstr ""
