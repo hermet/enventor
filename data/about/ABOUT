@@ -1,4 +1,4 @@
-[Enventor v0.7.0]
+<font_size=11><b>[Enventor v0.7.0]</b></font_size>
  
 This is an EDC editor with some convenient functions. It was started near the begining of June 2013, so expecting it to do everything a mature script editor does is a bit premature.  However, considering its young age, it does a lot.
  
@@ -9,7 +9,7 @@ https://phab.enlightenment.org/w/projects/enventor/
 http://www.openhub.net/p/enventor 
   
  
-[Short Cut Keys]
+<font_size=11><b>[Short Cut Keys]</b></font_size>
  
 Esc - Open/Close Menu
 F1 - About
@@ -51,7 +51,7 @@ Ctrl+End - Go to the Bottom line
 Ctrl+Space - Search candidate keywords in the context
  
  
-[Command Line Usage]
+<font_size=11><b>[Command Line Usage]</b></font_size>
  
 enventor --help
 enventor [input file] [output file] [-t] [-i image path] [-s sound path] [-f font path] [-d data path]
@@ -71,7 +71,7 @@ $ enventor newfile.edc -t
 $ enventor sample.edc output.edj -i ./images -s ./sounds
  
  
-[Developers]
+<font_size=11><b>[Developers]</b></font_size>
   
 Many developers have contributed to Enventor project. The following names are dedicated Enventor developers' names but there are more people who've gladly contributed for Enventor. For a complete list of contributors, See AUTHORS file.
  
