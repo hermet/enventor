@@ -1,6 +1,58 @@
 ==============
-Enventor 0.6.0
+Enventor 0.7.0
 ==============
+
+Changes since Enventor 0.6.0:
+-----------------------------
+
+Additions:
+   * Tracking image resources for realtime live view updation.
+   * Marking lines which contains errors in edc editor.
+   * Support localization (English, Russian)
+   * Smart redo/undo function which applies coding convention for undo texts.
+   * Support dummy spacer.
+   * Jumping on to the code related with the current clicked part in live view.
+
+Removes:
+   * Get rid of ELM_ENGINE environment.
+
+Improvements:
+   * Focus shouldn't move on to ctxpopup when its moving.
+   * File Saving contains .edc extension automatically.
+   * Migrate on to lazy edc fully (syntax color, template code, etc..)
+   * Support realtime live view updation for the slider in ctxpoup.
+   * Renamed syntax color data file from color.src to edc.src.
+   * More compatible with ms windows platform.
+   * Add "base_scale" into template code.
+   * Improve auto completion for more correct and useful candidate keywords.
+   * Support ELM_ACCEL environment.
+   * Move the editor cursor at the end of the attributes after dismissing candidate list.
+   * Rename a temporary output file name to be different with input file name so that multiple enventors could modify same input file at the same time.
+   * Support more auto complete keywords.
+    - effect, anti_alias, mask_flags, limit, clip_to, domain
+   * Improve live edit icons quality.
+
+Fixes:
+   * Fix key modifiers to work short cut keys correctly.
+   * Correct incorrect syntax color.
+   * Enventor_Path_Type interface is updated.
+   * Fix missing edc updation if it is modified by other processes.
+   * Fix some memory leaks.
+   * Recognize part descriptions properly in the editor even though they don't have names.
+   * Create a config home folder properly if it's not existed.
+   * Fix eo build break on the latest efl(1.16)
+   * Fix a broken redo/undo function after replacing the text with search/replace feature.
+   * Fix to be avaiable to choose the last item on the candidate list.
+   * Fix to work part highlighting out for all groups in one edc.
+   * Fix to close goto window while it's toggled with a toolbar button.
+   * Fix a wierd behavior which changes edc source when ctxpopup is going to be closed.
+   * Fix to move scroller bar to correct position for find function.
+   * Fix the issue that ctxpopup preview images are remained when mouse wheel works quickly.
+   * Reset console box error messages when new or open file is performed.
+   * Let the editor have focus after live edit is done.
+   * Dismiss ctxpopup when edc build error.
+   * Dismiss ctxpopup when warning box is shown up at window exit.
+   * Fix incorrect size displaying of the live object.
 
 Changes since Enventor 0.5.0:
 -----------------------------
