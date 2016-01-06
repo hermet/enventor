@@ -78,7 +78,8 @@ group { name: "SPACER_bg";
       part { name: "bg";
          description { state: "default" 0.0;
             image.normal: "live_spacer.png";
-            fill.type: TILE;
+            image.border: 5 5 5 5;
+            fill.smooth: 0;
          }
       }
    }
