@@ -58,6 +58,8 @@ struct parser_s
    cur_name_td *cntd;
    type_init_td *titd;
    Eina_List *macro_list;
+
+   Eina_Bool parser_changed : 1;
 };
 
 
@@ -302,7 +304,14 @@ group_name_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    int group_name_len = 0;
 
    int cur_line = 1;
-   Eina_List *macro_list = parser_macro_list_get(td->pd);
+   Eina_List *macro_list = NULL;
+
+   if (parser_changed_get(td->pd))
+     {
+        parser_macro_list_set(td->pd, (const char *) utf8);
+        parser_changed_set(td->pd, EINA_FALSE);
+     }
+   macro_list = parser_macro_list_get(td->pd);
 
    while (p <= end)
      {
@@ -431,7 +440,14 @@ cur_state_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    double value_convert = 0.0;
 
    int cur_line = 1;
-   Eina_List *macro_list = parser_macro_list_get(td->pd);
+   Eina_List *macro_list = NULL;
+
+   if (parser_changed_get(td->pd))
+     {
+        parser_macro_list_set(td->pd, (const char *) utf8);
+        parser_changed_set(td->pd, EINA_FALSE);
+     }
+   macro_list = parser_macro_list_get(td->pd);
 
    td->part_name = NULL;
    td->group_name = NULL;
@@ -2079,3 +2095,14 @@ parser_styles_pos_get(const Evas_Object *entry, int *ret)
    return parser_collections_block_pos_get(entry, "styles", ret);
 }
 
+Eina_Bool
+parser_changed_get(parser_data *pd)
+{
+   return pd->parser_changed;
+}
+
+void
+parser_changed_set(parser_data *pd, Eina_Bool changed)
+{
+   pd->parser_changed = changed;
+}

@@ -275,11 +275,7 @@ edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
    Elm_Entry_Change_Info *info = event_info;
    edit_data *ed = data;
    edit_changed_set(ed, EINA_TRUE);
-
-   const char *text = elm_entry_entry_get(ed->en_edit);
-   char *utf8 = elm_entry_markup_to_utf8(text);
-   parser_macro_list_set(ed->pd, utf8);
-   free(utf8);
+   parser_changed_set(ed->pd, EINA_TRUE);
 
    Eina_Bool syntax_color = EINA_TRUE;
    ed->error_line = -1;
