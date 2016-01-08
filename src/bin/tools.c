@@ -252,11 +252,17 @@ tools_init(Evas_Object *parent, Evas_Object *enventor)
 
    btn = tools_btn_create(box, "live_edit", _("Live View Edit (Ctrl + E)"),
                           live_edit_cb, enventor);
-   evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_weight_set(btn, 0.0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
    elm_box_pack_end(box, btn);
    evas_object_data_set(box, "live_edit", btn);
    td->live_btn = btn;
+
+   //For a empty space
+   Evas_Object *rect = evas_object_rectangle_add(evas_object_evas_get(box));
+   evas_object_size_hint_weight_set(rect, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(rect, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_box_pack_end(box, rect);
 
    sp = elm_separator_add(box);
    evas_object_show(sp);
