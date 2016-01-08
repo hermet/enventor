@@ -138,8 +138,7 @@ const char *parser_colon_pos_get(parser_data *pd EINA_UNUSED, const char *cur);
 Eina_Bool parser_state_info_get(Evas_Object *entry, state_info *info);
 void parser_macro_list_set(parser_data *pd, const char *text);
 Eina_List *parser_macro_list_get(parser_data *pd);
-Eina_Bool parser_changed_get(parser_data *pd);
-void parser_changed_set(parser_data *pd, Eina_Bool changed);
+void parser_macro_update(parser_data *pd, Eina_Bool macro_update);
 
 
 /* syntax helper */

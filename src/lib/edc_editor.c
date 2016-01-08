@@ -275,7 +275,7 @@ edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
    Elm_Entry_Change_Info *info = event_info;
    edit_data *ed = data;
    edit_changed_set(ed, EINA_TRUE);
-   parser_changed_set(ed->pd, EINA_TRUE);
+   parser_macro_update(ed->pd, EINA_TRUE);
 
    Eina_Bool syntax_color = EINA_TRUE;
    ed->error_line = -1;
