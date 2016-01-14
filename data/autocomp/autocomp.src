@@ -258,8 +258,7 @@ group "lexem" struct {
                           value "cursor_offset" int: 5
                           value "line_back" int: 0;
                           group "name" var_array {
-                              count 2;
-                              value "string" string: "file";
+                              count 1;
                               value "string" string: "item";
                           }
                        }
@@ -505,7 +504,6 @@ group "lexem" struct {
                                                       value "string" string: "options";
                                                       value "string" string: "padding";
                                                       value "string" string: "prefer";
-                                                      value "string" string: "span";
                                                       value "string" string: "spread";
                                                       value "string" string: "weight";
                                                   }
