@@ -86,12 +86,7 @@ autocomp_load(autocomp_data *ad)
             eina_prefix_data_get(PREFIX));
 
    if (ad->source_file)
-     {
-        if (lex_desc)
-          eet_data_descriptor_free(lex_desc);
-        eet_close(ad->source_file);
-
-     }
+     eet_close(ad->source_file);
    ad->source_file = eet_open(buf, EET_FILE_MODE_READ);
 
    ad->lexem_root = (lexem *)eet_data_read(ad->source_file, lex_desc, "node");
