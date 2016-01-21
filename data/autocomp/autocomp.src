@@ -495,7 +495,7 @@ group "lexem" struct {
                                                    value "cursor_offset" int: 1;
                                                    value "line_back" int: 0;
                                                    group "name" var_array {
-                                                      count 11;
+                                                      count 10;
                                                       value "string" string: "align";
                                                       value "string" string: "aspect";
                                                       value "string" string: "aspect_mode";
