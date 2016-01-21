@@ -690,8 +690,7 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
 
-   Eina_Array *action = eina_array_new(23);
-   eina_array_push(action, eina_stringshare_add("NONE"));
+   Eina_Array *action = eina_array_new(22);
    eina_array_push(action, eina_stringshare_add("STATE_SET"));
    eina_array_push(action, eina_stringshare_add("ACTION_STOP"));
    eina_array_push(action, eina_stringshare_add("SIGNAL_EMIT"));
