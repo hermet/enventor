@@ -654,7 +654,7 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
 
-   Eina_Array *aspect_prefer = eina_array_new(4);
+   Eina_Array *aspect_prefer = eina_array_new(5);
    eina_array_push(aspect_prefer, eina_stringshare_add("NONE"));
    eina_array_push(aspect_prefer, eina_stringshare_add("VERTICAL"));
    eina_array_push(aspect_prefer, eina_stringshare_add("HORIZONTAL"));
