@@ -699,9 +699,8 @@ keygrabber_key_down_cb(void *data, Evas *e EINA_UNUSED,
      {
         if (stats_ctxpopup_dismiss()) return;
 
-        if (live_edit_get())
+        if (live_edit_cancel())
           {
-             live_edit_cancel();
              enventor_object_focus_set(ad->enventor, EINA_TRUE);
              return;
           }

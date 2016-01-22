@@ -24,7 +24,7 @@ static void
 menu_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
         void *event_info EINA_UNUSED)
 {
-   if (live_edit_get()) live_edit_cancel();
+   live_edit_cancel();
    if (search_is_opened()) search_close();
    if (goto_is_opened()) tools_goto_update();
 

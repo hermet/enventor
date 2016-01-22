@@ -1006,11 +1006,11 @@ live_edit_get(void)
    return ld->on;
 }
 
-void
+Eina_Bool
 live_edit_cancel(void)
 {
    live_data *ld = g_ld;
-   if (!ld->on) return;
+   if (!ld->on) return EINA_FALSE;
 
    if (ld->ctxpopup) elm_ctxpopup_dismiss(ld->ctxpopup);
 
@@ -1057,6 +1057,8 @@ live_edit_cancel(void)
    ld->on = EINA_FALSE;
 
    tools_live_update(EINA_FALSE);
+
+   return EINA_TRUE;
 }
 
 void
