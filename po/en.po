@@ -243,10 +243,6 @@ msgstr ""
 msgid "Close Enventor Menu (Esc)"
 msgstr ""
 
-#: src/bin/menu.c:673
-msgid "Back"
-msgstr ""
-
 #: src/bin/newfile.c:56 src/bin/newfile.c:79
 #, c-format
 msgid "Cannot find file! \"%s\""

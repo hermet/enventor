@@ -333,8 +333,8 @@ exit_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 }
 
 static void
-prev_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
-            void *event_info EINA_UNUSED)
+menu_clicked(void *data, Evas_Object *obj EINA_UNUSED,
+             const char *emission EINA_UNUSED, const char *source EINA_UNUSED)
 {
    menu_data *md = data;
    enventor_object_focus_set(base_enventor_get(), EINA_TRUE);
@@ -633,6 +633,8 @@ menu_open(menu_data *md)
    //Layout
    Evas_Object *layout = elm_layout_add(base_win_get());
    elm_layout_file_set(layout, EDJE_PATH, "menu_layout");
+   elm_object_signal_callback_add(layout, "elm,state,clicked", "",
+                                  menu_clicked, md);
    elm_object_signal_callback_add(layout, "elm,state,dismiss,done", "",
                                   menu_dismiss_done, md);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -666,14 +668,6 @@ menu_open(menu_data *md)
    //Button(Exit)
    btn = btn_create(layout, _("Exit"), exit_btn_cb, md);
    elm_object_part_content_set(layout, "elm.swallow.exit_btn", btn);
-
-   //Button(Prev)
-   btn = elm_button_add(layout);
-   elm_object_style_set(btn, "anchor");
-   evas_object_smart_callback_add(btn, "clicked", prev_btn_cb, md);
-   elm_object_tooltip_text_set(btn, _("Close Enventor Menu (Esc)"));
-   elm_object_text_set(btn, _("Back"));
-   elm_object_part_content_set(layout, "elm.swallow.prev_btn", btn);
 
    tools_menu_update(EINA_TRUE);
 
