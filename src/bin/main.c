@@ -142,7 +142,7 @@ config_update_cb(void *data)
         h = 0;
      }
    enventor_object_live_view_size_set(enventor, w, h);
-
+   stats_view_scale_update(config_view_scale_get());
    base_tools_toggle(EINA_FALSE);
    base_console_auto_hide();
 }
