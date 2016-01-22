@@ -2385,6 +2385,7 @@ group { name: "statusbar_layout";
          type: TEXT;
          scale: 1;
          effect: GLOW;
+         nomouse;
          description { state: "default" 0.0;
             align: 0 0.5;
             rel1.offset: 0 -1;
