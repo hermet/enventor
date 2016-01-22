@@ -21,14 +21,7 @@ win_delete_request_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 {
   menu_exit();
 }
-/*
-static void
-win_focused_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
-               void *event_info EINA_UNUSED)
-{
-   goto_close();
-}
-*/
+
 static void
 win_resize_cb(void *data EINA_UNUSED, Evas *o EINA_UNUSED, Evas_Object *obj,
               void *event_info EINA_UNUSED)
@@ -233,11 +226,11 @@ base_gui_init(void)
                                   NULL);
    evas_object_smart_callback_add(win, "delete,request", win_delete_request_cb,
                                   NULL);
-/*   evas_object_smart_callback_add(win, "focused", win_focused_cb, NULL);*/
 
    //Window icon
    Evas_Object *icon = evas_object_image_add(evas_object_evas_get(win));
-   snprintf(buf, sizeof(buf), "%s/images/ENVENTOR_EMBEDDED_LOGO.png", elm_app_data_dir_get());
+   snprintf(buf, sizeof(buf), "%s/images/ENVENTOR_EMBEDDED_LOGO.png",
+            elm_app_data_dir_get());
    evas_object_image_file_set(icon, buf, NULL);
    elm_win_icon_object_set(win, icon);
 
