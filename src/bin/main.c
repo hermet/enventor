@@ -631,14 +631,14 @@ ctrl_func(app_data *ad, Evas_Event_Key_Down *event)
    if (!strcmp(event->key, "f") || !strcmp(event->key, "F"))
      {
         live_edit_cancel();
-        search_open(ad->enventor);
+        search_open();
         return EINA_TRUE;
      }
    //Goto Line
    if (!strcmp(event->key, "l") || !strcmp(event->key, "L"))
      {
         live_edit_cancel();
-        goto_open(ad->enventor);
+        goto_open();
         return EINA_TRUE;
      }
    //Part Highlight

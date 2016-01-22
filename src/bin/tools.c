@@ -64,7 +64,7 @@ find_cb(void *data, Evas_Object *obj EINA_UNUSED,
 {
    live_edit_cancel();
    if (search_is_opened()) search_close();
-   else search_open(base_enventor_get());
+   else search_open();
 }
 
 static void
@@ -73,7 +73,7 @@ goto_cb(void *data, Evas_Object *obj EINA_UNUSED,
 {
    live_edit_cancel();
    if (goto_is_opened()) goto_close();
-   else goto_open(base_enventor_get());
+   else goto_open();
 }
 
 static void

@@ -12,7 +12,6 @@ typedef struct goto_s
    Evas_Object *layout;
    Evas_Object *entry;
    Evas_Object *btn;
-   Evas_Object *enventor;
    Ecore_Timer *timer;
 } goto_data;
 
@@ -61,7 +60,7 @@ goto_line(goto_data *gd)
 {
   const char *txt = elm_entry_entry_get(gd->entry);
   int line = atoi(txt);
-  enventor_object_line_goto(gd->enventor, line);
+  enventor_object_line_goto(base_enventor_get(), line);
   goto_close();
 }
 
@@ -83,7 +82,8 @@ entry_changed_cb(void *data, Evas_Object *obj, void* event_info EINA_UNUSED)
 
    int line = atoi(txt);
 
-   if ((line < 1) || (line > enventor_object_max_line_get(gd->enventor)))
+   if ((line < 1) ||
+       (line > enventor_object_max_line_get(base_enventor_get())))
      {
         elm_object_part_text_set(gd->layout, "elm.text.msg",
                                  _("Invalid line number"));
@@ -113,7 +113,7 @@ keygrabber_key_down_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
 }
 
 void
-goto_open(Evas_Object *enventor)
+goto_open(void)
 {
    static Elm_Entry_Filter_Accept_Set digits_filter_data;
    goto_data *gd = g_gd;
@@ -162,7 +162,7 @@ goto_open(Evas_Object *enventor)
 
    char  buf[256];
    snprintf(buf, sizeof(buf), _("Enter line number [1..%d]:"),
-            enventor_object_max_line_get(enventor));
+            enventor_object_max_line_get(base_enventor_get()));
    elm_object_part_text_set(layout, "elm.text.goto", buf);
 
    //Entry (line)
@@ -205,7 +205,6 @@ goto_open(Evas_Object *enventor)
    gd->layout = layout;
    gd->entry = entry;
    gd->btn = btn;
-   gd->enventor = enventor;
 }
 
 Eina_Bool
@@ -220,8 +219,6 @@ goto_close(void)
 {
    goto_data *gd = g_gd;
    if (!gd) return;
-
-   Evas_Object *enventor = gd->enventor;
 
    //Save last state
    evas_object_geometry_get(gd->win, NULL, NULL, &win_w, &win_h);
