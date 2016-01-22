@@ -443,11 +443,11 @@ search_is_opened(void)
    return (sd ? EINA_TRUE : EINA_FALSE);
 }
 
-void
+Eina_Bool
 search_close(void)
 {
    search_data *sd = g_sd;
-   if (!sd) return;
+   if (!sd) return EINA_FALSE;
 
    Evas_Object *enventor = base_enventor_get();
 
@@ -466,4 +466,6 @@ search_close(void)
    g_sd = NULL;
 
    tools_search_update();
+
+   return EINA_TRUE;
 }

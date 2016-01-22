@@ -25,8 +25,8 @@ menu_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
         void *event_info EINA_UNUSED)
 {
    live_edit_cancel();
-   if (search_is_opened()) search_close();
-   if (goto_is_opened()) tools_goto_update();
+   search_close();
+   tools_goto_update();
 
    menu_toggle();
 }
@@ -63,7 +63,7 @@ find_cb(void *data, Evas_Object *obj EINA_UNUSED,
         void *event_info EINA_UNUSED)
 {
    live_edit_cancel();
-   if (search_is_opened()) search_close();
+   if (search_close()) return;
    else search_open();
 }
 
@@ -72,7 +72,7 @@ goto_cb(void *data, Evas_Object *obj EINA_UNUSED,
         void *event_info EINA_UNUSED)
 {
    live_edit_cancel();
-   if (goto_is_opened()) goto_close();
+   if (goto_close()) return;
    else goto_open();
 }
 
@@ -90,8 +90,8 @@ static void
 live_edit_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
              void *event_info EINA_UNUSED)
 {
-   if (search_is_opened()) search_close();
-   if (goto_is_opened()) goto_close();
+   search_close();
+   goto_close();
    live_edit_toggle();
 }
 

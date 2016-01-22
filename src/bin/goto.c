@@ -214,11 +214,11 @@ goto_is_opened(void)
    return (gd ? EINA_TRUE : EINA_FALSE);
 }
 
-void
+Eina_Bool
 goto_close(void)
 {
    goto_data *gd = g_gd;
-   if (!gd) return;
+   if (!gd) return EINA_FALSE;
 
    //Save last state
    evas_object_geometry_get(gd->win, NULL, NULL, &win_w, &win_h);
@@ -230,4 +230,6 @@ goto_close(void)
    g_gd = NULL;
 
    tools_goto_update();
+
+   return EINA_TRUE;
 }
