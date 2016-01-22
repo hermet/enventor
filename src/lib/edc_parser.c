@@ -95,7 +95,8 @@ double_quotation_marks_remove(const char *str)
      }
 
    new_len = len - cnt;
-   new_str = (char *) calloc(new_len * sizeof(char), 1);
+   //Allocate one more char for last null character
+   new_str = (char *) calloc((new_len + 1) * sizeof(char), 1);
    j = 0;
    for (i = 0; i < len; i++)
      {
