@@ -37,12 +37,12 @@ auto_indent_toggle(app_data *ad)
 }
 
 static void
-enventor_tools_update(Evas_Object *enventor)
+tools_update(void)
 {
-   tools_lines_update(enventor, EINA_FALSE);
-   tools_highlight_update(enventor, EINA_FALSE);
-   tools_dummy_update(enventor, EINA_FALSE);
-   tools_status_update(enventor, EINA_FALSE);
+   tools_lines_update(EINA_FALSE);
+   tools_highlight_update(EINA_FALSE);
+   tools_dummy_update(EINA_FALSE);
+   tools_status_update(EINA_FALSE);
 }
 
 static void
@@ -128,7 +128,7 @@ config_update_cb(void *data)
    Evas_Object *enventor = ad->enventor;
 
    enventor_common_setup(enventor);
-   enventor_tools_update(enventor);
+   tools_update();
 
    syntax_color_update(enventor);
 
@@ -214,9 +214,9 @@ main_mouse_wheel_cb(void *data, int type EINA_UNUSED, void *ev)
 static Evas_Object *
 tools_set(Evas_Object *enventor)
 {
-   Evas_Object *tools = tools_init(base_layout_get(), enventor);
+   Evas_Object *tools = tools_init(base_layout_get());
    base_tools_set(tools);
-   enventor_tools_update(enventor);
+   tools_update();
 
    return tools;
 }
@@ -644,13 +644,13 @@ ctrl_func(app_data *ad, Evas_Event_Key_Down *event)
    //Part Highlight
    if (!strcmp(event->key, "h") || !strcmp(event->key, "H"))
      {
-        tools_highlight_update(ad->enventor, EINA_TRUE);
+        tools_highlight_update(EINA_TRUE);
         return EINA_TRUE;
      }
    //Swallow Dummy Object
    if (!strcmp(event->key, "w") || !strcmp(event->key, "W"))
      {
-        tools_dummy_update(ad->enventor, EINA_TRUE);
+        tools_dummy_update(EINA_TRUE);
         return EINA_TRUE;
      }
    //Template Code
@@ -765,7 +765,7 @@ keygrabber_key_down_cb(void *data, Evas *e EINA_UNUSED,
    if (!strcmp(ev->key, "F5"))
      {
         enventor_object_ctxpopup_dismiss(ad->enventor);
-        tools_lines_update(ad->enventor, EINA_TRUE);
+        tools_lines_update(EINA_TRUE);
         return;
      }
    //Tools
@@ -786,7 +786,7 @@ keygrabber_key_down_cb(void *data, Evas *e EINA_UNUSED,
    if (!strcmp(ev->key, "F11"))
      {
         enventor_object_ctxpopup_dismiss(ad->enventor);
-        tools_status_update(NULL, EINA_TRUE);
+        tools_status_update(EINA_TRUE);
         return;
      }
    //Setting
@@ -804,7 +804,7 @@ statusbar_set()
 {
    Evas_Object *obj = stats_init(base_layout_get());
    elm_object_part_content_set(base_layout_get(), "elm.swallow.statusbar", obj);
-   tools_status_update(NULL, EINA_FALSE);
+   tools_status_update(EINA_FALSE);
 
    stats_view_scale_update(config_view_scale_get());
 }

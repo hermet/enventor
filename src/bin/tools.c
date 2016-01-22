@@ -21,13 +21,12 @@ typedef struct tools_s
 static tools_data *g_td = NULL;
 
 static void
-menu_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
+menu_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+        void *event_info EINA_UNUSED)
 {
-   Evas_Object *enventor = data;
-
    if (live_edit_get()) live_edit_cancel();
    if (search_is_opened()) search_close();
-   if (goto_is_opened()) tools_goto_update(enventor, EINA_TRUE);
+   if (goto_is_opened()) tools_goto_update();
 
    menu_toggle();
 }
@@ -36,50 +35,45 @@ static void
 highlight_cb(void *data, Evas_Object *obj EINA_UNUSED,
              void *event_info EINA_UNUSED)
 {
-   Evas_Object *enventor = data;
-   tools_highlight_update(enventor, EINA_TRUE);
+   tools_highlight_update(EINA_TRUE);
 }
 
 static void
 dummy_cb(void *data, Evas_Object *obj EINA_UNUSED,
            void *event_info EINA_UNUSED)
 {
-   Evas_Object *enventor = data;
-   tools_dummy_update(enventor, EINA_TRUE);
+   tools_dummy_update(EINA_TRUE);
 }
 
 static void
 lines_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 {
-   Evas_Object *enventor = data;
-   tools_lines_update(enventor, EINA_TRUE);
+   tools_lines_update(EINA_TRUE);
 }
 
 static void
 status_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
           void *event_info EINA_UNUSED)
 {
-   tools_status_update(NULL, EINA_TRUE);
+   tools_status_update(EINA_TRUE);
 }
 
 static void
 find_cb(void *data, Evas_Object *obj EINA_UNUSED,
         void *event_info EINA_UNUSED)
 {
-   Evas_Object *enventor = data;
    live_edit_cancel();
    if (search_is_opened()) search_close();
-   else search_open(enventor);
+   else search_open(base_enventor_get());
 }
 
 static void
 goto_cb(void *data, Evas_Object *obj EINA_UNUSED,
         void *event_info EINA_UNUSED)
 {
-   Evas_Object *enventor = data;
    live_edit_cancel();
    if (goto_is_opened()) goto_close();
-   else goto_open(enventor);
+   else goto_open(base_enventor_get());
 }
 
 static void
@@ -109,11 +103,10 @@ save_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 }
 
 static void
-redo_cb(void *data, Evas_Object *obj EINA_UNUSED,
+redo_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
         void *event_info EINA_UNUSED)
 {
-   Evas_Object *enventor = data;
-   if (enventor_object_redo(enventor))
+   if (enventor_object_redo(base_enventor_get()))
      stats_info_msg_update(_("Redo text."));
    else
      stats_info_msg_update(_("No text to be redo."));
@@ -123,8 +116,7 @@ static void
 undo_cb(void *data, Evas_Object *obj EINA_UNUSED,
         void *event_info EINA_UNUSED)
 {
-   Evas_Object *enventor = data;
-   if (enventor_object_undo(enventor))
+   if (enventor_object_undo(base_enventor_get()))
      stats_info_msg_update(_("Undo text."));
    else
      stats_info_msg_update(_("No text to be undo."));
@@ -132,7 +124,7 @@ undo_cb(void *data, Evas_Object *obj EINA_UNUSED,
 
 static Evas_Object *
 tools_btn_create(Evas_Object *parent, const char *icon,
-                 const char *tooltip_msg, Evas_Smart_Cb func, void *data)
+                 const char *tooltip_msg, Evas_Smart_Cb func)
 {
    Evas_Object *btn = elm_button_add(parent);
    elm_object_style_set(btn, elm_app_name_get());
@@ -144,7 +136,7 @@ tools_btn_create(Evas_Object *parent, const char *icon,
    elm_image_file_set(img, EDJE_PATH, icon);
    elm_object_content_set(btn, img);
 
-   evas_object_smart_callback_add(btn, "clicked", func, data);
+   evas_object_smart_callback_add(btn, "clicked", func, NULL);
    evas_object_show(btn);
 
    return btn;
@@ -159,7 +151,7 @@ tools_term(void)
 }
 
 Evas_Object *
-tools_init(Evas_Object *parent, Evas_Object *enventor)
+tools_init(Evas_Object *parent)
 {
    tools_data *td = g_td;
    if (td) return (td->box);
@@ -181,7 +173,7 @@ tools_init(Evas_Object *parent, Evas_Object *enventor)
 
    Evas_Object *btn;
    btn = tools_btn_create(box, "menu", _("Enventor Menu (Esc)"),
-                          menu_cb, enventor);
+                          menu_cb);
    elm_object_tooltip_orient_set(btn, ELM_TOOLTIP_ORIENT_BOTTOM_RIGHT);
    evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
@@ -194,39 +186,39 @@ tools_init(Evas_Object *parent, Evas_Object *enventor)
    elm_box_pack_end(box, sp);
 
    btn = tools_btn_create(box, "save",_("Save File (Ctrl + S)"),
-                          save_cb, enventor);
+                          save_cb);
    evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
    elm_box_pack_end(box, btn);
 
    btn = tools_btn_create(box, "undo", _("Undo Text (Ctrl + Z)"),
-                          undo_cb, enventor);
+                          undo_cb);
    evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
    elm_box_pack_end(box, btn);
 
    btn = tools_btn_create(box, "redo", _("Redo Text (Ctrl + R)"),
-                          redo_cb, enventor);
+                          redo_cb);
    evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
    elm_box_pack_end(box, btn);
 
    btn = tools_btn_create(box, "find", _("Find/Replace (Ctrl + F)"),
-                          find_cb, enventor);
+                          find_cb);
    evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
    elm_box_pack_end(box, btn);
    td->find_btn = btn;
 
    btn = tools_btn_create(box, "goto", _("Goto Lines (Ctrl + L)"),
-                          goto_cb, enventor);
+                          goto_cb);
    evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
    elm_box_pack_end(box, btn);
    td->goto_btn = btn;
 
    btn = tools_btn_create(box, "lines", _("Line Numbers (F5)"),
-                          lines_cb, enventor);
+                          lines_cb);
    evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
    elm_box_pack_end(box, btn);
@@ -237,21 +229,21 @@ tools_init(Evas_Object *parent, Evas_Object *enventor)
    elm_box_pack_end(box, sp);
 
    btn = tools_btn_create(box, "highlight", _("Part Highlighting (Ctrl + H)"),
-                          highlight_cb, enventor);
+                          highlight_cb);
    evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
    elm_box_pack_end(box, btn);
    td->highlight_btn = btn;
 
    btn = tools_btn_create(box, "dummy", _("Dummy Parts (Ctrl + W)"),
-                          dummy_cb, enventor);
+                          dummy_cb);
    evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
    elm_box_pack_end(box, btn);
    td->swallow_btn = btn;
 
    btn = tools_btn_create(box, "live_edit", _("Live View Edit (Ctrl + E)"),
-                          live_edit_cb, enventor);
+                          live_edit_cb);
    evas_object_size_hint_weight_set(btn, 0.0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
    elm_box_pack_end(box, btn);
@@ -269,14 +261,14 @@ tools_init(Evas_Object *parent, Evas_Object *enventor)
    elm_box_pack_end(box, sp);
 
    btn = tools_btn_create(box, "console", _("Console Box (Alt + Down)"),
-                          console_cb, NULL);
+                          console_cb);
    elm_object_tooltip_orient_set(btn, ELM_TOOLTIP_ORIENT_BOTTOM_LEFT);
    evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 1.0, EVAS_HINT_FILL);
    elm_box_pack_end(box, btn);
    td->console_btn = btn;
 
-   btn = tools_btn_create(box, "status", _("Status (F11)"), status_cb, NULL);
+   btn = tools_btn_create(box, "status", _("Status (F11)"), status_cb);
    elm_object_tooltip_orient_set(btn, ELM_TOOLTIP_ORIENT_BOTTOM_LEFT);
    evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 1.0, EVAS_HINT_FILL);
@@ -301,13 +293,13 @@ tools_live_edit_get(Evas_Object *tools)
 }
 
 void
-tools_highlight_update(Evas_Object *enventor, Eina_Bool toggle)
+tools_highlight_update(Eina_Bool toggle)
 {
    tools_data *td = g_td;
    if (!td) return;
 
    if (toggle) config_part_highlight_set(!config_part_highlight_get());
-   enventor_object_part_highlight_set(enventor,
+   enventor_object_part_highlight_set(base_enventor_get(),
                                       config_part_highlight_get());
    if (toggle)
      {
@@ -325,13 +317,13 @@ tools_highlight_update(Evas_Object *enventor, Eina_Bool toggle)
 }
 
 void
-tools_lines_update(Evas_Object *enventor, Eina_Bool toggle)
+tools_lines_update(Eina_Bool toggle)
 {
    tools_data *td = g_td;
    if (!td) return;
 
    if (toggle) config_linenumber_set(!config_linenumber_get());
-   enventor_object_linenumber_set(enventor, config_linenumber_get());
+   enventor_object_linenumber_set(base_enventor_get(), config_linenumber_get());
 
    //Toggle on/off
    if (config_linenumber_get())
@@ -341,13 +333,14 @@ tools_lines_update(Evas_Object *enventor, Eina_Bool toggle)
 }
 
 void
-tools_dummy_update(Evas_Object *enventor, Eina_Bool toggle)
+tools_dummy_update(Eina_Bool toggle)
 {
    tools_data *td = g_td;
    if (!td) return;
 
    if (toggle) config_dummy_parts_set(!config_dummy_parts_get());
-   enventor_object_dummy_parts_set(enventor, config_dummy_parts_get());
+   enventor_object_dummy_parts_set(base_enventor_get(),
+                                   config_dummy_parts_get());
 
    if (toggle)
      {
@@ -364,7 +357,7 @@ tools_dummy_update(Evas_Object *enventor, Eina_Bool toggle)
 }
 
 void
-tools_status_update(Evas_Object *enventor EINA_UNUSED, Eina_Bool toggle)
+tools_status_update(Eina_Bool toggle)
 {
    tools_data *td = g_td;
    if (!td) return;
@@ -379,8 +372,7 @@ tools_status_update(Evas_Object *enventor EINA_UNUSED, Eina_Bool toggle)
 }
 
 void
-tools_goto_update(Evas_Object *enventor EINA_UNUSED,
-                  Eina_Bool toggle EINA_UNUSED)
+tools_goto_update(void)
 {
    tools_data *td = g_td;
    if (!td) return;
@@ -392,8 +384,7 @@ tools_goto_update(Evas_Object *enventor EINA_UNUSED,
 }
 
 void
-tools_search_update(Evas_Object *enventor EINA_UNUSED,
-                    Eina_Bool toggle EINA_UNUSED)
+tools_search_update(void)
 {
    tools_data *td = g_td;
    if (!td) return;

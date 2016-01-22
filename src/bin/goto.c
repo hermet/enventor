@@ -199,7 +199,7 @@ goto_open(Evas_Object *enventor)
    if (!evas_object_key_grab(keygrabber, "Escape", 0, 0, EINA_TRUE))
      EINA_LOG_ERR(_("Failed to grab key - Escape"));
 
-   tools_goto_update(enventor, EINA_FALSE);
+   tools_goto_update();
 
    gd->win = win;
    gd->layout = layout;
@@ -232,5 +232,5 @@ goto_close(void)
    free(gd);
    g_gd = NULL;
 
-   tools_goto_update(enventor, EINA_FALSE);
+   tools_goto_update();
 }

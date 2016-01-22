@@ -413,7 +413,7 @@ search_open(Evas_Object *enventor)
                                btn_replace_all);
    evas_object_show(win);
 
-   tools_search_update(enventor, EINA_FALSE);
+   tools_search_update();
 
    //Keygrabber
    Evas_Object *keygrabber =
@@ -461,5 +461,5 @@ search_close(void)
    free(sd);
    g_sd = NULL;
 
-   tools_search_update(enventor, EINA_FALSE);
+   tools_search_update();
 }
