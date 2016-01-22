@@ -21,7 +21,7 @@ list_del_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 }
 
 void
-newfile_set(Evas_Object *enventor, Eina_Bool template_new)
+newfile_set(Eina_Bool template_new)
 {
    new_data *nd = g_nd;
    if (!nd) return;
@@ -46,7 +46,8 @@ newfile_set(Evas_Object *enventor, Eina_Bool template_new)
         config_input_path_set(path);
 
         Eina_List *list = eina_list_append(NULL, config_output_path_get());
-        enventor_object_path_set(enventor, ENVENTOR_PATH_TYPE_EDJ, list);
+        enventor_object_path_set(base_enventor_get(), ENVENTOR_PATH_TYPE_EDJ,
+                                 list);
         eina_list_free(list);
      }
    success = eina_file_copy(buf, path,
@@ -56,7 +57,7 @@ newfile_set(Evas_Object *enventor, Eina_Bool template_new)
         EINA_LOG_ERR(_("Cannot find file! \"%s\""), buf);
         return;
      }
-   enventor_object_file_set(enventor, path);
+   enventor_object_file_set(base_enventor_get(), path);
    base_title_set(path);
    base_console_reset();
    file_mgr_reset();

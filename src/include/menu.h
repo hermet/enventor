@@ -1,4 +1,4 @@
-void menu_init(Evas_Object *enventor);
+void menu_init(void);
 void menu_term(void);
 void menu_toggle(void);
 void menu_edc_new(Eina_Bool template_new);

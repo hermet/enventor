@@ -813,7 +813,7 @@ static void
 live_edit_set(Evas_Object *enventor, Evas_Object *tools)
 {
    Evas_Object *trigger = tools_live_edit_get(tools);
-   live_edit_init(enventor, trigger);
+   live_edit_init(trigger);
 }
 
 static void
@@ -895,7 +895,7 @@ init(app_data *ad, int argc, char **argv)
    base_gui_init();
    statusbar_set();
    enventor_setup(ad);
-   file_mgr_init(ad->enventor);
+   file_mgr_init();
    Evas_Object *tools = tools_set(ad->enventor);
    live_edit_set(ad->enventor, tools);
 
@@ -904,7 +904,7 @@ init(app_data *ad, int argc, char **argv)
    //Guarantee Enventor editor has focus.
    enventor_object_focus_set(ad->enventor, EINA_TRUE);
 
-   menu_init(ad->enventor);
+   menu_init();
 
    if (template) menu_edc_new(EINA_TRUE);
 

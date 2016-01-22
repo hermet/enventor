@@ -49,7 +49,6 @@ typedef struct live_editor_s
    Evas_Object *ctxpopup;
    Evas_Object *layout;
    Evas_Object *live_view;
-   Evas_Object *enventor;
    Evas_Object *trigger;
    Evas_Object *ctrl_pt[Ctrl_Pt_Cnt];
    Evas_Object *align_line[Align_Line_Cnt];
@@ -193,7 +192,7 @@ static void
 live_edit_insert(live_data *ld)
 {
    int type = CTXPOPUP_ITEMS[ld->part_info.type].type;
-   enventor_object_template_part_insert(ld->enventor,
+   enventor_object_template_part_insert(base_enventor_get(),
                                         type,
                                         ENVENTOR_TEMPLATE_INSERT_LIVE_EDIT,
                                         ld->part_info.rel1_x,
@@ -201,7 +200,7 @@ live_edit_insert(live_data *ld)
                                         ld->part_info.rel2_x,
                                         ld->part_info.rel2_y,
                                         NULL, 0);
-   enventor_object_save(ld->enventor, config_input_path_get());
+   enventor_object_save(base_enventor_get(), config_input_path_get());
 }
 
 static Eina_Bool
@@ -988,8 +987,8 @@ live_edit_toggle(void)
 
    if (on)
      {
-        enventor_object_disabled_set(ld->enventor, EINA_TRUE);
-        ld->live_view = enventor_object_live_view_get(ld->enventor);
+        enventor_object_disabled_set(base_enventor_get(), EINA_TRUE);
+        ld->live_view = enventor_object_live_view_get(base_enventor_get());
         ld->ctxpopup = ctxpopup_create(ld);
         stats_info_msg_update(_("Select a part to add in Live View."));
         tools_live_update(EINA_TRUE);
@@ -1015,7 +1014,7 @@ live_edit_cancel(void)
 
    if (ld->ctxpopup) elm_ctxpopup_dismiss(ld->ctxpopup);
 
-   enventor_object_disabled_set(ld->enventor, EINA_FALSE);
+   enventor_object_disabled_set(base_enventor_get(), EINA_FALSE);
 
    ecore_event_handler_del(ld->key_down_handler);
    ld->key_down_handler = NULL;
@@ -1061,7 +1060,7 @@ live_edit_cancel(void)
 }
 
 void
-live_edit_init(Evas_Object *enventor, Evas_Object *trigger)
+live_edit_init(Evas_Object *trigger)
 {
    live_data *ld = calloc(1, sizeof(live_data));
    if (!ld)
@@ -1070,7 +1069,6 @@ live_edit_init(Evas_Object *enventor, Evas_Object *trigger)
         return;
      }
    g_ld = ld;
-   ld->enventor = enventor;
    ld->trigger = trigger;
 }
 

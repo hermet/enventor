@@ -6,7 +6,6 @@
 #include "common.h"
 
 typedef struct file_mgr_s {
-     Evas_Object *enventor;
      Evas_Object *warning_layout;
      Eina_Bool edc_modified : 1;
 } file_mgr_data;
@@ -20,7 +19,7 @@ warning_dismiss_done(void *data, Evas_Object *obj EINA_UNUSED,
 {
    file_mgr_data *fmd = data;
    evas_object_del(fmd->warning_layout);
-   enventor_object_focus_set(fmd->enventor, EINA_TRUE);
+   enventor_object_focus_set(base_enventor_get(), EINA_TRUE);
    fmd->warning_layout = NULL;
 }
 
@@ -35,7 +34,7 @@ warning_ignore_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
                       void *event_info EINA_UNUSED)
 {
    file_mgr_data *fmd = data;
-   enventor_object_modified_set(fmd->enventor, EINA_TRUE);
+   enventor_object_modified_set(base_enventor_get(), EINA_TRUE);
    warning_close(fmd);
 }
 
@@ -44,7 +43,7 @@ warning_save_as_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
                        void *event_info EINA_UNUSED)
 {
    file_mgr_data *fmd = data;
-   enventor_object_modified_set(fmd->enventor, EINA_TRUE);
+   enventor_object_modified_set(base_enventor_get(), EINA_TRUE);
    menu_edc_save();
    warning_close(fmd);
 }
@@ -54,7 +53,7 @@ warning_replace_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
                        void *event_info EINA_UNUSED)
 {
    file_mgr_data *fmd = data;
-   enventor_object_file_set(fmd->enventor, config_input_path_get());
+   enventor_object_file_set(base_enventor_get(), config_input_path_get());
    warning_close(fmd);
 }
 
@@ -148,8 +147,9 @@ file_mgr_edc_save(void)
    char buf[PATH_MAX];
    file_mgr_data *fmd = g_fmd;
 
-   Eina_Bool save_success = enventor_object_save(fmd->enventor, config_input_path_get());
-   enventor_object_modified_set(fmd->enventor, !save_success);
+   Eina_Bool save_success = enventor_object_save(base_enventor_get(),
+                                                 config_input_path_get());
+   enventor_object_modified_set(base_enventor_get(), !save_success);
 
    if (!config_stats_bar_get()) return;
 
@@ -185,7 +185,7 @@ file_mgr_warning_close(void)
 }
 
 void
-file_mgr_init(Evas_Object *enventor)
+file_mgr_init(void)
 {
    file_mgr_data *fmd = calloc(1, sizeof(file_mgr_data));
    if (!fmd)
@@ -195,9 +195,7 @@ file_mgr_init(Evas_Object *enventor)
      }
    g_fmd = fmd;
 
-   fmd->enventor = enventor;
-
-   evas_object_smart_callback_add(enventor, "edc,modified",
+   evas_object_smart_callback_add(base_enventor_get(), "edc,modified",
                                   enventor_edc_modified_cb, fmd);
 }
 
