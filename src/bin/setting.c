@@ -292,6 +292,8 @@ general_layout_create(setting_data *sd, Evas_Object *parent)
    elm_slider_span_size_set(slider_view, 190);
    elm_slider_indicator_show_set(slider_view, EINA_FALSE);
    elm_slider_unit_format_set(slider_view, "%1.2fx");
+   double step = 0.01 / (double) (MAX_VIEW_SCALE - MIN_VIEW_SCALE);
+   elm_slider_step_set(slider_view, step);
    elm_slider_min_max_set(slider_view, MIN_VIEW_SCALE, MAX_VIEW_SCALE);
    elm_slider_value_set(slider_view, (double) config_view_scale_get());
    elm_object_text_set(slider_view, _("Live View Scale"));
