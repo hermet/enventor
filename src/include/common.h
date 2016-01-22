@@ -55,6 +55,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n"
 #define REL2_X 0.75f
 #define REL2_Y 0.75f
 
+#define ROUNDING(x, dig) (floor((x) * pow(10, dig) + 0.5) / pow(10, dig))
+
 #define ENVENTOR_CONFIG_VERSION 3
 
 #define EVENT_KEY_MODIFIER_CHECK(NAME, MASK) \

@@ -131,11 +131,6 @@ msgstr "Автовыравнивание Включено"
 msgid "Auto Indentation Disabled."
 msgstr "Автовыравнивание Выключено"
 
-#: src/bin/main.c:180
-#, c-format
-msgid "Live View Scale: %2.2fx"
-msgstr "Масштаб предпросмотра: %2.2fx"
-
 #: src/bin/main.c:206
 #, c-format
 msgid "Font Size: %1.1fx"

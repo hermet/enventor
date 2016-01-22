@@ -176,9 +176,7 @@ main_mouse_wheel_cb(void *data, int type EINA_UNUSED, void *ev)
         //Just in live edit mode case.
         live_edit_update();
 
-        char buf[256];
-        snprintf(buf, sizeof(buf), _("Live View Scale: %2.2fx"), scale);
-        stats_info_msg_update(buf);
+        stats_view_scale_update(scale);
 
         return ECORE_CALLBACK_PASS_ON;
      }
@@ -699,6 +697,8 @@ keygrabber_key_down_cb(void *data, Evas *e EINA_UNUSED,
    //Main Menu
    if (!strcmp(ev->key, "Escape"))
      {
+        if (stats_ctxpopup_dismiss()) return;
+
         if (live_edit_get())
           {
              live_edit_cancel();
@@ -724,6 +724,7 @@ keygrabber_key_down_cb(void *data, Evas *e EINA_UNUSED,
    if (file_mgr_warning_is_opened()) return;
 
    enventor_object_ctxpopup_dismiss(ad->enventor);
+   stats_ctxpopup_dismiss();
 
    if (ctrl_func(ad, ev)) return;
    if (alt_func(ad, ev)) return;
@@ -804,6 +805,8 @@ statusbar_set()
    Evas_Object *obj = stats_init(base_layout_get());
    elm_object_part_content_set(base_layout_get(), "elm.swallow.statusbar", obj);
    tools_status_update(NULL, EINA_FALSE);
+
+   stats_view_scale_update(config_view_scale_get());
 }
 
 static void

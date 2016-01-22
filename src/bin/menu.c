@@ -178,6 +178,8 @@ warning_open(menu_data *md, Evas_Smart_Cb yes_cb, Evas_Smart_Cb save_cb)
 {
    if (md->warning_layout) return;
 
+   stats_ctxpopup_dismiss();
+
    //Layout
    Evas_Object *layout = elm_layout_add(base_win_get());
    elm_layout_file_set(layout, EDJE_PATH, "warning_layout");

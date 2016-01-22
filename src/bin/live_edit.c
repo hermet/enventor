@@ -7,7 +7,6 @@
 
 #define CTRL_PT_LAYER 3
 #define INFO_TEXT_LAYER (CTRL_PT_LAYER+1)
-#define ROUNDING(x, dig) (floor((x) * pow(10, dig) + 0.5) / pow(10, dig))
 
 typedef enum
 {

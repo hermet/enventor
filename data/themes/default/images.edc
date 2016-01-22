@@ -19,6 +19,7 @@ images {
    image: "live_text.png" COMP;
    image: "live_textblock.png" COMP;
    image: "live_edit.png" COMP;
+   image: "expand.png" COMP;
 }
 
 #define ICON_GROUP(_group_name, _image_path) \
@@ -45,6 +46,7 @@ ICON_GROUP("live_edit", "live_edit.png")
 ICON_GROUP("save", "save.png")
 ICON_GROUP("undo", "undo.png")
 ICON_GROUP("redo", "redo.png")
+ICON_GROUP("expand", "expand.png")
 ICON_GROUP("IMAGE", "live_image.png")
 ICON_GROUP("RECT", "live_rectangle.png")
 ICON_GROUP("SPACER", "live_spacer.png")

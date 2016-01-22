@@ -3,12 +3,101 @@
 typedef struct statusbar_s
 {
    Evas_Object *layout;
+   Evas_Object *ctxpopup;
    Eina_Stringshare *group_name;
    int cur_line;
    int max_line;
 } stats_data;
 
 stats_data *g_sd = NULL;
+
+static void
+slider_changed_cb(void *data, Evas_Object *obj,
+                  void *event_info EINA_UNUSED)
+{
+
+   stats_data *sd = data;
+
+   double scale = elm_slider_value_get(obj);
+   double rounded = ROUNDING(scale, 1);
+
+   if ((rounded - scale) > 0) rounded -= 0.05;
+
+   config_view_scale_set(rounded);
+   scale = config_view_scale_get();
+   enventor_object_live_view_scale_set(base_enventor_get(), scale);
+   stats_view_scale_update(scale);
+}
+
+static void
+ctxpopup_dismissed_cb(void *data, Evas_Object *obj,
+                      void *event_info EINA_UNUSED)
+{
+   stats_data *sd = data;
+   evas_object_del(obj);
+   sd->ctxpopup = NULL;
+}
+
+static void
+view_scale_btn_cb(void *data, Evas_Object *obj,
+                  void *event_info EINA_UNUSED)
+{
+   stats_data *sd = data;
+
+   //Ctxpopup
+   Evas_Object *ctxpopup = elm_ctxpopup_add(base_layout_get());
+   elm_object_style_set(ctxpopup, elm_app_name_get());
+
+   //Slider
+   Evas_Object *slider = elm_slider_add(ctxpopup);
+   elm_slider_span_size_set(slider, 150);
+   elm_slider_indicator_show_set(slider, EINA_FALSE);
+   double step = 0.05 / (double) (MAX_VIEW_SCALE - MIN_VIEW_SCALE);
+   elm_slider_step_set(slider, step);
+   elm_slider_horizontal_set(slider, EINA_FALSE);
+   elm_slider_inverted_set(slider, EINA_TRUE);
+   elm_slider_min_max_set(slider, MIN_VIEW_SCALE, MAX_VIEW_SCALE);
+   elm_slider_value_set(slider, (double) config_view_scale_get());
+   evas_object_smart_callback_add(slider, "changed", slider_changed_cb,
+                                  sd);
+
+   evas_object_smart_callback_add(ctxpopup, "dismissed", ctxpopup_dismissed_cb,
+                                  sd);
+   elm_object_content_set(ctxpopup, slider);
+
+   Evas_Coord x, y, w, h;
+   evas_object_geometry_get(obj, &x, &y, &w, &h);
+   evas_object_move(ctxpopup, x, y);
+   evas_object_show(ctxpopup);
+
+   sd->ctxpopup = ctxpopup;
+}
+
+static Evas_Object *
+create_statusbar_btn(Evas_Object *layout, const char *tooltip_msg,
+                     Evas_Smart_Cb func, void *data)
+{
+   Evas_Object *box = elm_box_add(layout);
+
+   Evas_Object *btn = elm_button_add(box);
+   evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_object_scale_set(btn, 0.5);
+   evas_object_smart_callback_add(btn, "clicked", func, data);
+   evas_object_show(btn);
+
+   Evas_Object *img = elm_image_add(btn);
+   elm_image_file_set(img, EDJE_PATH, "expand");
+   elm_object_content_set(btn, img);
+
+   elm_object_tooltip_text_set(box, tooltip_msg);
+   elm_object_tooltip_orient_set(box, ELM_TOOLTIP_ORIENT_TOP_RIGHT);
+
+   elm_box_pack_end(box, btn);
+   elm_object_part_content_set(layout, "scale_btn", box);
+
+   return btn;
+}
 
 void
 stats_line_num_update(int cur_line, int max_line)
@@ -47,6 +136,10 @@ stats_init(Evas_Object *parent)
    Evas_Object *layout = elm_layout_add(parent);
    elm_layout_file_set(layout, EDJE_PATH, "statusbar_layout");
 
+   Evas_Object *btn;
+   btn = create_statusbar_btn(layout,
+                              "View Scale (Ctrl + Mouse Wheel)",
+                              view_scale_btn_cb, sd);
    sd->layout = layout;
 
    stats_cursor_pos_update(0, 0, 0, 0);
@@ -80,6 +173,16 @@ stats_info_msg_update(const char *msg)
 }
 
 void
+stats_view_scale_update(double scale)
+{
+   stats_data *sd = g_sd;
+
+   char buf[10];
+   snprintf(buf, sizeof(buf), "%0.2fx", scale);
+   elm_object_part_text_set(sd->layout, "elm.text.scale", buf);
+}
+
+void
 stats_view_size_update(Evas_Coord w, Evas_Coord h)
 {
    stats_data *sd = g_sd;
@@ -106,4 +209,16 @@ stats_cursor_pos_update(Evas_Coord x, Evas_Coord y, float rel_x, float rel_y)
    elm_object_part_text_set(sd->layout, "elm.text.cursor_relx", buf);
    snprintf(buf, sizeof(buf), "%0.2f", rel_y);
    elm_object_part_text_set(sd->layout, "elm.text.cursor_rely", buf);
+}
+
+Eina_Bool
+stats_ctxpopup_dismiss(void)
+{
+   stats_data *sd = g_sd;
+   if (sd->ctxpopup)
+     {
+        elm_ctxpopup_dismiss(sd->ctxpopup);
+        return EINA_TRUE;
+     }
+   return EINA_FALSE;
 }
