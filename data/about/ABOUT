@@ -1,89 +1,89 @@
-<font_size=11><b>[Enventor v0.7.0]</b></font_size>
- 
-This is an EDC editor with some convenient functions. It was started near the begining of June 2013, so expecting it to do everything a mature script editor does is a bit premature.  However, considering its young age, it does a lot.
- 
-Please see the following sites for more information.
- 
-http://www.enlightenment.org
-https://phab.enlightenment.org/w/projects/enventor/
-http://www.openhub.net/p/enventor 
-  
- 
-<font_size=11><b>[Short Cut Keys]</b></font_size>
- 
-Esc - Open/Close Menu
-F1 - About
-F2 - New
-F3 - Save
-F4 - Load
-F5 - Show/Hide Line Number
-F9 - Show/Hide Tools
-F10 - Show/Hide Console
-F11 - Show/Hide Status
-F12 - Settings
- 
-Ctrl+S - Quick Save + Update Live View
-Ctrl+I - On/Off Auto Indentation
-Ctrl+O - On/Off Auto Completion
-Ctrl+W - Show/Hide Dummy Parts
-Ctrl+H - On/Off Part Highlighting
-Ctrl+T - Insert Defaut Template Code
-Ctrl+Mouse Wheel Up - View Zoom In (Only if view size is set) / Font Size Up
-Ctrl+Mouse Wheel Down - View Zoom Out (Only if view size is set) / Font Size Down
-
-Alt+Left - On/Off Full Edit View
-Alt+Right - On/Off Full Live View
-Alt+Up - On/Off Full Console View
-Alt+Down - On/Off Full Editors View
-
-Ctrl+A - Select Text All
-Ctrl+Double Click - Select a word
-Ctrl+Z - Undo Text
-Ctrl+R - Redo Text
-Ctrl+C - Copy Selected Text
-Ctrl+V - Paste Copied Text
-Ctrl+X - Cut Selected Text
-Ctrl+D - Delete a Current line
-Ctrl+F - Find/Replace
-Ctrl+L - Go to line
-Ctrl+Home - Go to the Top line
-Ctrl+End - Go to the Bottom line
-Ctrl+Space - Search candidate keywords in the context
- 
- 
-<font_size=11><b>[Command Line Usage]</b></font_size>
- 
-enventor --help
-enventor [input file] [output file] [-t] [-i image path] [-s sound path] [-f font path] [-d data path]
- 
-input file = EDC file to open. If input file is skipped, Enventor will open a default template code with a temporary file.
-output file = EDJ file to store compiled file. If output file is skipped, Enventor will store the binary file to the temporary directory.
--t = Open template menu when you launch Enventor
--i = path to image resources that the edc includes
--s = path to sound resources that the edc includes
--f = path to font resources that the edc includes
--d = path to data resources that the edc includes
- 
-Examples of Enventor command line usage:
-$ enventor
-$ enventor -t
-$ enventor newfile.edc -t
-$ enventor sample.edc output.edj -i ./images -s ./sounds
- 
- 
-<font_size=11><b>[Developers]</b></font_size>
-  
-Many developers have contributed to Enventor project. The following names are dedicated Enventor developers' names but there are more people who've gladly contributed for Enventor. For a complete list of contributors, See AUTHORS file.
- 
-Copyright (C) 2013 - 2016 by:
- 
-Hermet Park
-Jaehyun Cho
-Mykyta Biliavskyi
-Kateryna Fesyna
-Yunho Jeong
-Mincheol Seo
-Raoul Hecky
-  
-And various contributors (See AUTHORS)
- 
+<font_size=11><b>[Enventor v0.7.0]</b></font_size></br>
+</br>
+This is an EDC editor with some convenient functions. It was started near the begining of June 2013, so expecting it to do everything a mature script editor does is a bit premature.  However, considering its young age, it does a lot.</br>
+</br>
+Please see the following sites for more information.</br>
+</br>
+http://www.enlightenment.org</br>
+https://phab.enlightenment.org/w/projects/enventor/</br>
+http://www.openhub.net/p/enventor</br>
+</br>
+</br>
+<font_size=11><b>[Short Cut Keys]</b></font_size></br>
+</br>
+Esc - Open/Close Menu</br>
+F1 - About</br>
+F2 - New</br>
+F3 - Save</br>
+F4 - Load</br>
+F5 - Show/Hide Line Number</br>
+F9 - Show/Hide Tools</br>
+F10 - Show/Hide Console</br>
+F11 - Show/Hide Status</br>
+F12 - Settings</br>
+</br>
+Ctrl+S - Quick Save + Update Live View</br>
+Ctrl+I - On/Off Auto Indentation</br>
+Ctrl+O - On/Off Auto Completion</br>
+Ctrl+W - Show/Hide Dummy Parts</br>
+Ctrl+H - On/Off Part Highlighting</br>
+Ctrl+T - Insert Defaut Template Code</br>
+Ctrl+Mouse Wheel Up - View Zoom In (Only if view size is set) / Font Size Up</br>
+Ctrl+Mouse Wheel Down - View Zoom Out (Only if view size is set) / Font Size Down</br>
+</br>
+Alt+Left - On/Off Full Edit View</br>
+Alt+Right - On/Off Full Live View</br>
+Alt+Up - On/Off Full Console View</br>
+Alt+Down - On/Off Full Editors View</br>
+</br>
+Ctrl+A - Select Text All</br>
+Ctrl+Double Click - Select a word</br>
+Ctrl+Z - Undo Text</br>
+Ctrl+R - Redo Text</br>
+Ctrl+C - Copy Selected Text</br>
+Ctrl+V - Paste Copied Text</br>
+Ctrl+X - Cut Selected Text</br>
+Ctrl+D - Delete a Current line</br>
+Ctrl+F - Find/Replace</br>
+Ctrl+L - Go to line</br>
+Ctrl+Home - Go to the Top line</br>
+Ctrl+End - Go to the Bottom line</br>
+Ctrl+Space - Search candidate keywords in the context</br>
+</br>
+</br>
+<font_size=11><b>[Command Line Usage]</b></font_size></br>
+</br>
+enventor --help</br>
+enventor [input file] [output file] [-t] [-i image path] [-s sound path] [-f font path] [-d data path]</br>
+</br>
+input file = EDC file to open. If input file is skipped, Enventor will open a default template code with a temporary file.</br>
+output file = EDJ file to store compiled file. If output file is skipped, Enventor will store the binary file to the temporary directory.</br>
+-t = Open template menu when you launch Enventor</br>
+-i = path to image resources that the edc includes</br>
+-s = path to sound resources that the edc includes</br>
+-f = path to font resources that the edc includes</br>
+-d = path to data resources that the edc includes</br>
+</br>
+Examples of Enventor command line usage:</br>
+$ enventor</br>
+$ enventor -t</br>
+$ enventor newfile.edc -t</br>
+$ enventor sample.edc output.edj -i ./images -s ./sounds</br>
+</br>
+</br>
+<font_size=11><b>[Developers]</b></font_size></br>
+</br>
+Many developers have contributed to Enventor project. The following names are dedicated Enventor developers' names but there are more people who've gladly contributed for Enventor. For a complete list of contributors, See AUTHORS file.</br>
+</br>
+Copyright (C) 2013 - 2016 by:</br>
+</br>
+Hermet Park</br>
+Jaehyun Cho</br>
+Mykyta Biliavskyi</br>
+Kateryna Fesyna</br>
+Yunho Jeong</br>
+Mincheol Seo</br>
+Raoul Hecky</br>
+</br>
+And various contributors (See AUTHORS)</br>
+</br>

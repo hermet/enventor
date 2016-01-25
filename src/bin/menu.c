@@ -239,49 +239,15 @@ about_open(menu_data *md)
    evas_object_show(entry);
    elm_object_focus_set(entry, EINA_TRUE);
    elm_object_part_content_set(layout, "elm.swallow.entry", entry);
-   elm_entry_entry_append(entry, "<color=#ffffff>");
 
    //Read README
    char buf[PATH_MAX];
    snprintf(buf, sizeof(buf), "%s/about/ABOUT", elm_app_data_dir_get());
-
-   Eina_Strbuf *strbuf = NULL;
-   Eina_Iterator *itr = NULL;
-
-   Eina_File *file = eina_file_open(buf, EINA_FALSE);
-   if (!file) goto err;
-
-   itr = eina_file_map_lines(file);
-   if (!itr) goto err;
-
-   strbuf = eina_strbuf_new();
-   if (!strbuf) goto err;
-
-   Eina_File_Line *line;
-   int line_num = 0;
-
-   EINA_ITERATOR_FOREACH(itr, line)
-     {
-        //Append edc ccde
-        if (line_num > 0)
-          {
-             if (!eina_strbuf_append(strbuf, EOL)) goto err;
-          }
-
-        if (!eina_strbuf_append_length(strbuf, line->start, line->length))
-          goto err;
-        line_num++;
-     }
-   elm_entry_entry_append(entry, eina_strbuf_string_get(strbuf));
-   elm_entry_entry_append(entry, "</font_size></color>");
+   elm_entry_autosave_set(entry, EINA_FALSE);
+   elm_entry_file_set(entry, buf, ELM_TEXT_FORMAT_MARKUP_UTF8);
 
    md->about_layout = layout;
    menu_activate_request();
-
-err:
-   if (strbuf) eina_strbuf_free(strbuf);
-   if (itr) eina_iterator_free(itr);
-   if (file) eina_file_close(file);
 }
 
 static void
