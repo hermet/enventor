@@ -40,6 +40,13 @@ struct editor_s
    int syntax_color_lock;
    Evas_Coord scroller_h;
 
+   struct {
+      int prev_left;
+      int prev_right;
+      int left;
+      int right;
+   } bracket;
+
    Ecore_Timer *syntax_color_timer;
    Ecore_Thread *syntax_color_thread;
 
@@ -181,18 +188,15 @@ bracket_highlight(edit_data *ed, Evas_Object *tb)
 {
    Evas_Textblock_Cursor *cur1 = evas_object_textblock_cursor_new(tb);
 
-   int left_bracket = parser_left_bracket_pos_get(ed->pd);
-   int right_bracket = parser_right_bracket_pos_get(ed->pd);
+   evas_textblock_cursor_pos_set(cur1, ed->bracket.left);
+   evas_object_textblock_text_markup_prepend(cur1, "<hilight>");
+   evas_textblock_cursor_pos_set(cur1, ed->bracket.left + 1);
+   evas_object_textblock_text_markup_prepend(cur1, "</hilight>");
 
-   evas_textblock_cursor_pos_set(cur1, left_bracket);
-   evas_object_textblock_text_markup_prepend(cur1, "<hilight><color=#B1B1B1FF>");
-   evas_textblock_cursor_pos_set(cur1, left_bracket+1);
-   evas_object_textblock_text_markup_prepend(cur1, "</color></hilight>");
-
-   evas_textblock_cursor_pos_set(cur1, right_bracket);
-   evas_object_textblock_text_markup_prepend(cur1, "<hilight><color=#B1B1B1FF>");
-   evas_textblock_cursor_pos_set(cur1, right_bracket+1);
-   evas_object_textblock_text_markup_prepend(cur1, "</color></hilight>");
+   evas_textblock_cursor_pos_set(cur1, ed->bracket.right);
+   evas_object_textblock_text_markup_prepend(cur1, "<hilight>");
+   evas_textblock_cursor_pos_set(cur1, ed->bracket.right + 1);
+   evas_object_textblock_text_markup_prepend(cur1, "</hilight>");
 
    evas_textblock_cursor_free(cur1);
 }
@@ -293,10 +297,31 @@ syntax_color_thread_cancel_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
 }
 
 void
-bracket_changed_cb(void *data)
+bracket_changed_cb(void *data, int left, int right)
 {
    edit_data *ed = data;
-   syntax_color_partial_update(ed, SYNTAX_COLOR_SHORT_TIME);
+
+   ed->bracket.left = left;
+   ed->bracket.right = right;
+
+   if ((left != -1) && (right != -1))
+     {
+        if ((ed->bracket.prev_left != left) &&
+            (ed->bracket.prev_right != right))
+          {
+             syntax_color_partial_update(ed, SYNTAX_COLOR_SHORT_TIME);
+
+             ed->bracket.prev_left = left;
+             ed->bracket.prev_right = right;
+          }
+     }
+   else if((ed->bracket.prev_left != -1) && (ed->bracket.prev_right != -1))
+     {
+        syntax_color_partial_update(ed, SYNTAX_COLOR_SHORT_TIME);
+
+        ed->bracket.prev_left = -1;
+        ed->bracket.prev_right = -1;
+     }
 }
 
 static void
@@ -320,20 +345,19 @@ bracket_update(edit_data *ed)
 
    if (ch1 != '{' && ch1 != '}' && ch2 != '{' && ch2 != '}')
      {
-        int prev_left_bracket = parser_prev_left_bracket_pos_get(ed->pd);
-        int prev_right_bracket = parser_prev_right_bracket_pos_get(ed->pd);
-        if (prev_left_bracket != -1 && prev_right_bracket != -1)
+        if (ed->bracket.prev_left != -1 && ed->bracket.prev_right != -1)
           {
-             parser_left_bracket_pos_set(ed->pd, -1);
-             parser_right_bracket_pos_set(ed->pd, -1);
-             parser_prev_left_bracket_pos_set(ed->pd, -1);
-             parser_prev_right_bracket_pos_set(ed->pd, -1);
+             //initialize bracket
+             ed->bracket.left = -1;
+             ed->bracket.right = -1;
+             ed->bracket.prev_left = -1;
+             ed->bracket.prev_right = -1;
+
              syntax_color_partial_update(ed, SYNTAX_COLOR_SHORT_TIME);
           }
         return;
      }
-
-   parser_bracket_pair_find(ed->pd, ed->en_edit, bracket_changed_cb, ed);
+   parser_bracket_find(ed->pd, ed->en_edit, bracket_changed_cb, ed);
 }
 
 static void
@@ -395,7 +419,7 @@ edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
    if (!syntax_color) return;
    syntax_color_partial_update(ed, SYNTAX_COLOR_DEFAULT_TIME);
 
-   parser_bracket_pair_cancel(ed->pd);
+   parser_bracket_cancel(ed->pd);
 }
 
 static void
@@ -1250,6 +1274,10 @@ edit_init(Evas_Object *enventor)
    ed->pd = pd;
    ed->sh = sh;
    ed->error_line = -1;
+   ed->bracket.prev_left = -1;
+   ed->bracket.prev_right = -1;
+   ed->bracket.left = -1;
+   ed->bracket.right = -1;
 
    ecore_event_handler_add(ECORE_EVENT_KEY_DOWN, key_down_cb, ed);
    ecore_event_handler_add(ECORE_EVENT_KEY_UP, key_up_cb, ed);

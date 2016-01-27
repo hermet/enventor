@@ -12,7 +12,7 @@
 #define PANEWID 32
 
 #define ENABLED_TEXTBLOCK_TAGS                            \
-   tag: "hilight" "+ style=glow glow_color=#3399ff80";    \
+   tag: "hilight" "+ style=glow glow_color=#3388ddaa";    \
 
 #define DISABLED_TEXTBLOCK_TAGS                           \
    tag: "hilight" "+ style=glow glow_color=#3399ff20";    \
