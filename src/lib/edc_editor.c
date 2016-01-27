@@ -175,6 +175,28 @@ error_highlight(edit_data *ed, Evas_Object *tb)
      }
    evas_textblock_cursor_free(cur1);
 }
+
+static void
+bracket_highlight(edit_data *ed, Evas_Object *tb)
+{
+   Evas_Textblock_Cursor *cur1 = evas_object_textblock_cursor_new(tb);
+
+   int left_bracket = parser_left_bracket_pos_get(ed->pd);
+   int right_bracket = parser_right_bracket_pos_get(ed->pd);
+
+   evas_textblock_cursor_pos_set(cur1, left_bracket);
+   evas_object_textblock_text_markup_prepend(cur1, "<hilight><color=#B1B1B1FF>");
+   evas_textblock_cursor_pos_set(cur1, left_bracket+1);
+   evas_object_textblock_text_markup_prepend(cur1, "</color></hilight>");
+
+   evas_textblock_cursor_pos_set(cur1, right_bracket);
+   evas_object_textblock_text_markup_prepend(cur1, "<hilight><color=#B1B1B1FF>");
+   evas_textblock_cursor_pos_set(cur1, right_bracket+1);
+   evas_object_textblock_text_markup_prepend(cur1, "</color></hilight>");
+
+   evas_textblock_cursor_free(cur1);
+}
+
 static void
 syntax_color_apply(edit_data *ed, Eina_Bool partial)
 {
@@ -202,6 +224,7 @@ syntax_color_apply(edit_data *ed, Eina_Bool partial)
       Logically that's unnecessary in this case. */
    evas_object_textblock_text_markup_set(tb, translated);
    error_highlight(ed, tb);
+   bracket_highlight(ed, tb);
    entry_recover(ed, pos);
 }
 
@@ -269,6 +292,50 @@ syntax_color_thread_cancel_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
    free(td);
 }
 
+void
+bracket_changed_cb(void *data)
+{
+   edit_data *ed = data;
+   syntax_color_partial_update(ed, SYNTAX_COLOR_SHORT_TIME);
+}
+
+static void
+bracket_update(edit_data *ed)
+{
+   int pos = elm_entry_cursor_pos_get(ed->en_edit);
+   if (pos == 0) return;
+
+   Evas_Object *tb = elm_entry_textblock_get(ed->en_edit);
+   Evas_Textblock_Cursor *cur1 = evas_object_textblock_cursor_get(tb);
+
+   char ch1, ch2;
+   ch1 = -1;
+   ch2 = -1;
+
+   ch1 = evas_textblock_cursor_content_get(cur1)[0];
+   Eina_Bool is_exist = evas_textblock_cursor_char_prev(cur1);
+   if (is_exist)
+     ch2 = evas_textblock_cursor_content_get(cur1)[0];
+   evas_textblock_cursor_char_next(cur1);
+
+   if (ch1 != '{' && ch1 != '}' && ch2 != '{' && ch2 != '}')
+     {
+        int prev_left_bracket = parser_prev_left_bracket_pos_get(ed->pd);
+        int prev_right_bracket = parser_prev_right_bracket_pos_get(ed->pd);
+        if (prev_left_bracket != -1 && prev_right_bracket != -1)
+          {
+             parser_left_bracket_pos_set(ed->pd, -1);
+             parser_right_bracket_pos_set(ed->pd, -1);
+             parser_prev_left_bracket_pos_set(ed->pd, -1);
+             parser_prev_right_bracket_pos_set(ed->pd, -1);
+             syntax_color_partial_update(ed, SYNTAX_COLOR_SHORT_TIME);
+          }
+        return;
+     }
+
+   parser_bracket_pair_find(ed->pd, ed->en_edit, bracket_changed_cb, ed);
+}
+
 static void
 edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
@@ -324,8 +391,11 @@ edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
         if (info->change.del.content[0] == ' ') return;
      }
 
+
    if (!syntax_color) return;
    syntax_color_partial_update(ed, SYNTAX_COLOR_DEFAULT_TIME);
+
+   parser_bracket_pair_cancel(ed->pd);
 }
 
 static void
@@ -730,6 +800,8 @@ edit_cursor_changed_cb(void *data, Evas_Object *obj EINA_UNUSED,
    edit_data *ed = data;
    cur_line_pos_set(ed, EINA_FALSE);
    edit_view_sync(ed);
+
+   bracket_update(ed);
 }
 
 static void

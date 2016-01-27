@@ -139,7 +139,17 @@ Eina_Bool parser_state_info_get(Evas_Object *entry, state_info *info);
 void parser_macro_list_set(parser_data *pd, const char *text);
 Eina_List *parser_macro_list_get(parser_data *pd);
 void parser_macro_update(parser_data *pd, Eina_Bool macro_update);
-
+typedef void (*Bracket_Update_Cb)(void *data);
+void parser_bracket_pair_find(parser_data *pd, Evas_Object *entry, Bracket_Update_Cb func, void *data);
+void parser_bracket_pair_cancel(parser_data *pd);
+void parser_left_bracket_pos_set(parser_data *pd, int pos);
+void parser_right_bracket_pos_set(parser_data *pd, int pos);
+void parser_prev_left_bracket_pos_set(parser_data *pd, int pos);
+void parser_prev_right_bracket_pos_set(parser_data *pd, int pos);
+int parser_left_bracket_pos_get(parser_data *pd);
+int parser_right_bracket_pos_get(parser_data *pd);
+int parser_prev_left_bracket_pos_get(parser_data *pd);
+int parser_prev_right_bracket_pos_get(parser_data *pd);
 
 /* syntax helper */
 syntax_helper *syntax_init(void);

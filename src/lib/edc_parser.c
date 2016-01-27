@@ -52,6 +52,22 @@ typedef struct type_init_thread_data_s
    parser_data *pd;
 } type_init_td;
 
+typedef struct bracket_data_s
+{
+   int left;
+   int right;
+   int prev_left;
+   int prev_right;
+} bracket;
+
+typedef struct bracket_thread_data_s
+{
+   int pos;
+   const char *text;
+   Bracket_Update_Cb update_cb;
+   void *data;
+} bracket_data_td;
+
 struct parser_s
 {
    Eina_Inarray *attrs;
@@ -59,9 +75,14 @@ struct parser_s
    type_init_td *titd;
    Eina_List *macro_list;
 
+   bracket_data_td *bracket_td;
+   Ecore_Thread *bracket_thread;
+   bracket bracket_pos;
+
+   Eina_Bool is_bracket_thread_req: 1;
+
    Eina_Bool macro_update : 1;
 };
-
 
 /*****************************************************************************/
 /* Internal method implementation                                            */
@@ -1857,6 +1878,8 @@ parser_init(void)
 
    td->pd = pd;
    pd->titd = td;
+   pd->bracket_pos.left = -1;
+   pd->bracket_pos.right = -1;
    td->thread = ecore_thread_run(type_init_thread_blocking,
                                  type_init_thread_end,
                                  type_init_thread_cancel, td);
@@ -1948,4 +1971,261 @@ void
 parser_macro_update(parser_data *pd, Eina_Bool macro_update)
 {
    pd->macro_update = macro_update;
+}
+
+static Eina_Bool
+bracket_pair_parse(int pos, const char *text, int *left, int *right)
+{
+   int left_bracket = -1;
+   int right_bracket = -1;
+
+   int cur_pos = pos;
+   int depth = 0;
+
+   if (cur_pos == 0)
+     return EINA_FALSE;
+
+   const char *utf8 = text;
+   int length = strlen(utf8);
+
+   // left,  {
+   if (utf8[cur_pos] == '{')
+     {
+        left_bracket = cur_pos;
+        cur_pos++;
+        while (cur_pos < length)
+          {
+             if (utf8[cur_pos] == '{') depth++;
+             else if (utf8[cur_pos] == '}')
+               {
+                  if (depth) depth--;
+                  else
+                    {
+                       right_bracket = cur_pos;
+                       break;
+                    }
+               }
+             cur_pos++;
+          }
+     }
+   // left,  }
+   else if(utf8[cur_pos] == '}')
+     {
+        right_bracket = cur_pos;
+        cur_pos--;
+        while (cur_pos)
+          {
+             if (utf8[cur_pos] == '}') depth++;
+             else if(utf8[cur_pos] == '{')
+               {
+                  if(depth) depth--;
+                  else
+                    {
+                       left_bracket = cur_pos;
+                       break;
+                    }
+               }
+             cur_pos--;
+          }
+     }
+   // right, {
+   else if(utf8[cur_pos - 1] == '{')
+     {
+        left_bracket = cur_pos - 1;
+        while (cur_pos < length)
+          {
+             if (utf8[cur_pos] == '{') depth++;
+             else if (utf8[cur_pos] == '}')
+               {
+                  if (depth) depth--;
+                  else
+                    {
+                       right_bracket = cur_pos;
+                       break;
+                    }
+               }
+             cur_pos++;
+          }
+     }
+   // right, }
+   else if(utf8[cur_pos - 1] == '}')
+     {
+        right_bracket = cur_pos - 1;
+        cur_pos -= 2;
+        while (cur_pos)
+          {
+             if (utf8[cur_pos] == '}') depth++;
+             else if (utf8[cur_pos] == '{')
+               {
+                  if(depth) depth--;
+                  else
+                    {
+                       left_bracket = cur_pos;
+                       break;
+                    }
+               }
+             cur_pos--;
+          }
+     }
+
+   if (left_bracket == -1 || right_bracket == -1)
+     {
+        left_bracket = -1;
+	    right_bracket = -1;
+	 }
+
+   *left = left_bracket;
+   *right = right_bracket;
+
+  return EINA_TRUE;
+}
+
+static void bracket_thread_cb(void *data, Ecore_Thread *thread EINA_UNUSED);
+static void bracket_thread_end_cb(void *data, Ecore_Thread *thread EINA_UNUSED);
+static void bracket_thread_cancel_cb(void *data, Ecore_Thread *thread EINA_UNUSED);
+
+static void
+bracket_thread_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
+{
+   parser_data *pd = data;
+
+   if (bracket_pair_parse(pd->bracket_td->pos, pd->bracket_td->text,
+                          &(pd->bracket_pos.left),
+                          &(pd->bracket_pos.right)) == EINA_FALSE)
+     return;
+
+   if (pd->bracket_pos.left != -1 && pd->bracket_pos.right != -1)
+     {
+        if (pd->bracket_pos.prev_left != pd->bracket_pos.left
+            && pd->bracket_pos.prev_right != pd->bracket_pos.right)
+          {
+             pd->bracket_td->update_cb(pd->bracket_td->data);
+             pd->bracket_pos.prev_left = pd->bracket_pos.left;
+             pd->bracket_pos.prev_right = pd->bracket_pos.right;
+          }
+     }
+   else if(pd->bracket_pos.prev_left != -1 && pd->bracket_pos.prev_right != -1)
+     {
+        pd->bracket_td->update_cb(pd->bracket_td->data);
+        pd->bracket_pos.prev_left = -1;
+        pd->bracket_pos.prev_right = -1;
+     }
+}
+
+static void
+bracket_thread_end_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
+{
+   parser_data *pd = data;
+
+   if (pd->is_bracket_thread_req == EINA_TRUE)
+     {
+        pd->is_bracket_thread_req = EINA_FALSE;
+        pd->bracket_thread = ecore_thread_run(bracket_thread_cb,
+                                              bracket_thread_end_cb,
+                                              bracket_thread_cancel_cb,
+                                              pd);
+     }
+   else
+    {
+        free(pd->bracket_td);
+        pd->bracket_td = NULL;
+        pd->bracket_thread = NULL;
+    }
+}
+
+static void
+bracket_thread_cancel_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
+{
+   parser_data *pd = data;
+
+   if (pd->is_bracket_thread_req == EINA_TRUE)
+     {
+        pd->is_bracket_thread_req = EINA_FALSE;
+        pd->bracket_thread = ecore_thread_run(bracket_thread_cb,
+                                              bracket_thread_end_cb,
+                                              bracket_thread_cancel_cb,
+                                              pd);
+     }
+   else
+     {
+        free(pd->bracket_td);
+        pd->bracket_td = NULL;
+        pd->bracket_thread = NULL;
+     }
+}
+
+void
+parser_bracket_pair_find(parser_data *pd, Evas_Object *entry,
+                         Bracket_Update_Cb func, void *data)
+{
+
+   ecore_thread_cancel(pd->bracket_thread);
+
+   if (pd->bracket_td == NULL)
+     pd->bracket_td = calloc(1, sizeof(bracket_data_td));
+
+   const char *text = elm_entry_entry_get(entry);
+   char *utf8 = elm_entry_markup_to_utf8(text);
+   int pos = elm_entry_cursor_pos_get(entry);
+
+   pd->bracket_td->pos = pos;
+   pd->bracket_td->text = utf8;
+   pd->bracket_td->update_cb = func;
+   pd->bracket_td->data = data;
+
+   if (pd->bracket_thread == NULL)
+     {
+        pd->is_bracket_thread_req = EINA_FALSE;
+        pd->bracket_thread = ecore_thread_run(bracket_thread_cb,
+                                              bracket_thread_end_cb,
+                                              bracket_thread_cancel_cb,
+                                              pd);
+     }
+   else
+     pd->is_bracket_thread_req = EINA_TRUE;
+}
+
+void parser_bracket_pair_cancel(parser_data *pd)
+{
+   ecore_thread_cancel(pd->bracket_thread);
+}
+
+void parser_left_bracket_pos_set(parser_data *pd, int pos)
+{
+   pd->bracket_pos.left = pos;
+}
+
+void parser_right_bracket_pos_set(parser_data *pd, int pos)
+{
+   pd->bracket_pos.right = pos;
+}
+
+void parser_prev_left_bracket_pos_set(parser_data *pd, int pos)
+{
+   pd->bracket_pos.prev_left = pos;
+}
+
+void parser_prev_right_bracket_pos_set(parser_data *pd, int pos)
+{
+   pd->bracket_pos.prev_right = pos;
+}
+
+int parser_left_bracket_pos_get(parser_data *pd)
+{
+   return pd->bracket_pos.left;
+}
+
+int parser_right_bracket_pos_get(parser_data *pd)
+{
+   return pd->bracket_pos.right;
+}
+
+int parser_prev_left_bracket_pos_get(parser_data *pd)
+{
+   return pd->bracket_pos.prev_left;
+}
+
+int parser_prev_right_bracket_pos_get(parser_data *pd)
+{
+   return pd->bracket_pos.prev_right;
 }
