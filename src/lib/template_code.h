@@ -142,6 +142,20 @@ const char *TEMPLATE_DESC[TEMPLATE_DESC_LINE_CNT] =
    "}",
 };
 
+#define TEMPLATE_DESC_SPACER_LINE_CNT 8
+
+const char *TEMPLATE_DESC_SPACER[TEMPLATE_DESC_SPACER_LINE_CNT] =
+{
+   "desc { \"XXX\";<br/>",
+   "   //inherit: \"default\";<br/>",
+   "   rel1 { relative: 0.0 0.0; offset: 0 0; /*to: \"XXX\";*/ }<br/>",
+   "   rel2 { relative: 1.0 1.0; offset: -1 -1; /*to: \"XXX\";*/ }<br/>",
+   "   align: 0.5 0.5;<br/>",
+   "   fixed: 0 0;<br/>",
+   "   min: 0 0;<br/>",
+   "}",
+};
+
 #define TEMPLATE_PROG_LINE_CNT 7
 
 const char *TEMPLATE_PROG[TEMPLATE_PROG_LINE_CNT] =

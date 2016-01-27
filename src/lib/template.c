@@ -318,10 +318,18 @@ template_insert(edit_data *ed, Enventor_Template_Insert_Type insert_type,
    int line_cnt;
    char **t = NULL;
 
-   if (!strcmp(paragh, "part"))
+   if (!strcmp(paragh, "part") || !strcmp(paragh, "image") ||
+       !strcmp(paragh, "rect") || !strcmp(paragh, "swallow") ||
+       !strcmp(paragh, "text") || !strcmp(paragh, "textblock"))
      {
         line_cnt = TEMPLATE_DESC_LINE_CNT;
         t = (char **) &TEMPLATE_DESC;
+        strncpy(syntax, "Description", n);
+     }
+   else if (!strcmp(paragh, "spacer"))
+     {
+        line_cnt = TEMPLATE_DESC_SPACER_LINE_CNT;
+        t = (char **) &TEMPLATE_DESC_SPACER;
         strncpy(syntax, "Description", n);
      }
    else if (!strcmp(paragh, "programs"))

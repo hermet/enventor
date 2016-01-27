@@ -1544,7 +1544,7 @@ Eina_Stringshare *
 parser_paragh_name_get(parser_data *pd EINA_UNUSED, Evas_Object *entry)
 {
    //FIXME: list up groups
-#define GROUP_CNT 13
+#define GROUP_CNT 20
    typedef struct _group_info
    {
       char *str;
@@ -1554,9 +1554,11 @@ parser_paragh_name_get(parser_data *pd EINA_UNUSED, Evas_Object *entry)
    group_info group_list[GROUP_CNT] =
      {
         { "collections", 11 },
+        { "desc", 4 },
         { "description", 11 },
         { "fill", 4 },
         { "group", 5 },
+        { "image", 5 },
         { "images", 6 },
         { "map", 3 },
         { "origin", 6 },
@@ -1564,8 +1566,13 @@ parser_paragh_name_get(parser_data *pd EINA_UNUSED, Evas_Object *entry)
         { "part", 4 },
         { "programs", 8 },
         { "program", 7 },
+        { "rect", 4 },
         { "rel1", 4 },
-        { "rel2", 4 }
+        { "rel2", 4 },
+        { "spacer", 6 },
+        { "swallow", 7 },
+        { "text", 4 },
+        { "textblock", 9 }
      };
 
    const char *text = elm_entry_entry_get(entry);
