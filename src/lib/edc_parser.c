@@ -1554,12 +1554,12 @@ parser_paragh_name_get(parser_data *pd EINA_UNUSED, Evas_Object *entry)
    group_info group_list[GROUP_CNT] =
      {
         { "collections", 11 },
-        { "desc", 4 },
         { "description", 11 },
+        { "desc", 4 },
         { "fill", 4 },
         { "group", 5 },
-        { "image", 5 },
         { "images", 6 },
+        { "image", 5 },
         { "map", 3 },
         { "origin", 6 },
         { "parts", 5 },
@@ -1571,8 +1571,8 @@ parser_paragh_name_get(parser_data *pd EINA_UNUSED, Evas_Object *entry)
         { "rel2", 4 },
         { "spacer", 6 },
         { "swallow", 7 },
-        { "text", 4 },
         { "textblock", 9 }
+        { "text", 4 },
      };
 
    const char *text = elm_entry_entry_get(entry);
