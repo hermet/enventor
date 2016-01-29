@@ -1,8 +1,7 @@
-#define TEMPLATE_GROUP_LINE_CNT 27
+#define TEMPLATE_GROUP_LINE_CNT 26
 
 const char *TEMPLATE_GROUP[TEMPLATE_GROUP_LINE_CNT] =
 {
-   "group { \"XXX\";<br/>",
    "   parts {<br/>",
    "      image { \"XXX\";<br/>",
    "         scale: 1;<br/>",
@@ -126,11 +125,10 @@ const char *TEMPLATE_PART_TEXTBLOCK[TEMPLATE_PART_TEXTBLOCK_LINE_CNT] =
    "      text.text: \"TEXTBLOCK\";<br/>"
 };
 
-#define TEMPLATE_DESC_LINE_CNT 10
+#define TEMPLATE_DESC_LINE_CNT 9
 
 const char *TEMPLATE_DESC[TEMPLATE_DESC_LINE_CNT] =
 {
-   "desc { \"XXX\";<br/>",
    "   //inherit: \"default\";<br/>",
    "   rel1 { relative: 0.0 0.0; offset: 0 0; /*to: \"XXX\";*/ }<br/>",
    "   rel2 { relative: 1.0 1.0; offset: -1 -1; /*to: \"XXX\";*/ }<br/>",
@@ -139,32 +137,30 @@ const char *TEMPLATE_DESC[TEMPLATE_DESC_LINE_CNT] =
    "   min: 0 0;<br/>",
    "   visible: 1;<br/>",
    "   color: 255 255 255 255;<br/>",
-   "}",
+   "}"
 };
 
-#define TEMPLATE_DESC_SPACER_LINE_CNT 8
+#define TEMPLATE_DESC_SPACER_LINE_CNT 7
 
 const char *TEMPLATE_DESC_SPACER[TEMPLATE_DESC_SPACER_LINE_CNT] =
 {
-   "desc { \"XXX\";<br/>",
    "   //inherit: \"default\";<br/>",
    "   rel1 { relative: 0.0 0.0; offset: 0 0; /*to: \"XXX\";*/ }<br/>",
    "   rel2 { relative: 1.0 1.0; offset: -1 -1; /*to: \"XXX\";*/ }<br/>",
    "   align: 0.5 0.5;<br/>",
    "   fixed: 0 0;<br/>",
    "   min: 0 0;<br/>",
-   "}",
+   "}"
 };
 
-#define TEMPLATE_PROG_LINE_CNT 7
+#define TEMPLATE_PROG_LINE_CNT 6
 
 const char *TEMPLATE_PROG[TEMPLATE_PROG_LINE_CNT] =
 {
-   "program { \"XXX\";<br/>",
    "   //signal: \"XXX\";<br/>",
    "   //source: \"XXX\";<br/>",
-   "   action: STATE_SET \"default\";<br/>",
-   "   target: \"XXX\";<br/>",
+   "   //action: STATE_SET \"default\";<br/>",
+   "   //target: \"XXX\";<br/>",
    "   //transition: LINEAR 1.0;<br/>",
    "}"
 };

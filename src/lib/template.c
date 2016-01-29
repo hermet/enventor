@@ -303,6 +303,7 @@ template_insert(edit_data *ed, Enventor_Template_Insert_Type insert_type,
 {
    Evas_Object *entry = edit_entry_get(ed);
    Eina_Stringshare *paragh = edit_cur_paragh_get(ed);
+
    Eina_Bool ret = EINA_FALSE;
    if (!paragh) return EINA_FALSE;
 
@@ -317,6 +318,17 @@ template_insert(edit_data *ed, Enventor_Template_Insert_Type insert_type,
 
    int line_cnt;
    char **t = NULL;
+   char first_line[40];
+   char random_name[9];
+   int space = edit_cur_indent_depth_get(ed);
+
+   //Alloc Empty spaces
+   char *p = alloca(space + 1);
+   memset(p, ' ', space);
+   p[space] = '\0';
+
+   template_random_string_create(random_name, 9);
+   elm_entry_cursor_line_begin_set(entry);
 
    if (!strcmp(paragh, "part") || !strcmp(paragh, "image") ||
        !strcmp(paragh, "rect") || !strcmp(paragh, "swallow") ||
@@ -325,18 +337,21 @@ template_insert(edit_data *ed, Enventor_Template_Insert_Type insert_type,
         line_cnt = TEMPLATE_DESC_LINE_CNT;
         t = (char **) &TEMPLATE_DESC;
         strncpy(syntax, "Description", n);
+        snprintf(first_line, 40, "desc { \"%s\";<br/>", random_name);
      }
    else if (!strcmp(paragh, "spacer"))
      {
         line_cnt = TEMPLATE_DESC_SPACER_LINE_CNT;
         t = (char **) &TEMPLATE_DESC_SPACER;
         strncpy(syntax, "Description", n);
+        snprintf(first_line, 40, "desc { \"%s\";<br/>", random_name);
      }
    else if (!strcmp(paragh, "programs"))
      {
         line_cnt = TEMPLATE_PROG_LINE_CNT;
         t = (char **) &TEMPLATE_PROG;
         strncpy(syntax, "Program", n);
+        snprintf(first_line, 40, "program { \"%s\";<br/>", random_name);
      }
    else if (!strcmp(paragh, "images"))
      {
@@ -349,19 +364,19 @@ template_insert(edit_data *ed, Enventor_Template_Insert_Type insert_type,
         line_cnt = TEMPLATE_GROUP_LINE_CNT;
         t = (char **) &TEMPLATE_GROUP;
         strncpy(syntax, "Group", n);
+        snprintf(first_line, 40, "group { \"%s\";<br/>", random_name);
      }
 
    if (!t) goto end;
 
-   int cursor_pos = elm_entry_cursor_pos_get(entry);
-   elm_entry_cursor_line_begin_set(entry);
-   int cursor_pos1 = elm_entry_cursor_pos_get(entry);
-   int space = edit_cur_indent_depth_get(ed);
+   if (strcmp(paragh, "images"))
+     {
+        elm_entry_entry_insert(entry, p);
+        elm_entry_entry_insert(entry, first_line);
+     }
 
-   //Alloc Empty spaces
-   char *p = alloca(space + 1);
-   memset(p, ' ', space);
-   p[space] = '\0';
+   int cursor_pos = elm_entry_cursor_pos_get(entry);
+   int cursor_pos1 = elm_entry_cursor_pos_get(entry);
 
    int i;
    for (i = 0; i < (line_cnt - 1); i++)
