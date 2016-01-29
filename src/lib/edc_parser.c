@@ -1571,8 +1571,8 @@ parser_paragh_name_get(parser_data *pd EINA_UNUSED, Evas_Object *entry)
         { "rel2", 4 },
         { "spacer", 6 },
         { "swallow", 7 },
-        { "textblock", 9 }
-        { "text", 4 },
+        { "textblock", 9 },
+        { "text", 4 }
      };
 
    const char *text = elm_entry_entry_get(entry);
