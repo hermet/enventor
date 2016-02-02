@@ -38,6 +38,7 @@ struct editor_s
    int line_max;
    int error_line;
    int syntax_color_lock;
+   int cursor_pos;
    Evas_Coord scroller_h;
 
    struct {
@@ -328,8 +329,14 @@ static void
 bracket_update(edit_data *ed)
 {
    int pos = elm_entry_cursor_pos_get(ed->en_edit);
-   if (pos == 0) return;
+   if (pos == 0)
+     {
+        ed->cursor_pos = 0;
+        return;
+     }
+   if (pos == ed->cursor_pos) return;
 
+   ed->cursor_pos = pos;
    Evas_Object *tb = elm_entry_textblock_get(ed->en_edit);
    Evas_Textblock_Cursor *cur1 = evas_object_textblock_cursor_get(tb);
 
