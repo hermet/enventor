@@ -1105,6 +1105,20 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
 
+   Eina_Array *base_scale = eina_array_new(1);
+   eina_array_push(base_scale, eina_stringshare_add("Scale:"));
+
+   memset(&attr, 0x00, sizeof(parser_attr));
+   attr.keyword = eina_stringshare_add("base_scale");
+   attr.value.strs = base_scale;
+   attr.value.cnt = 1;
+   attr.value.min = 0.0;
+   attr.value.max = 10.0;
+   attr.value.type = ATTR_VALUE_FLOAT;
+   attr.value.prepend_str = ATTR_PREPEND_COLON;
+   attr.value.append_str = ATTR_APPEND_SEMICOLON;
+   eina_inarray_push(td->attrs, &attr);
+
    //Type: Part
    memset(&attr, 0x00, sizeof(parser_attr));
    attr.keyword = eina_stringshare_add("target");
