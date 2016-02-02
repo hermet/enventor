@@ -123,7 +123,7 @@ color_load()
 static void
 color_table_init(color_data *cd)
 {
-   color_tuple *tuple;
+   color_tuple tuple;
    int i;
    Eina_List *l;
    char *key;
@@ -160,16 +160,9 @@ color_table_init(color_data *cd)
                   eina_hash_add(cd->color_hash, tmp, inarray);
                }
 
-             tuple = malloc(sizeof(color_tuple));
-             if (!tuple)
-               {
-                  EINA_LOG_ERR("Failed to allocate Memory!");
-                  continue;
-               }
-             tuple->col = cd->cols[i];
-             tuple->key = eina_stringshare_add(key);
-             eina_inarray_push(inarray, tuple);
-             free(tuple);
+             tuple.col = cd->cols[i];
+             tuple.key = eina_stringshare_add(key);
+             eina_inarray_push(inarray, &tuple);
           }
         eina_list_free(scg->colors[i].keys);
      }
@@ -198,18 +191,12 @@ macro_key_push(color_data *cd, char *str)
         eina_hash_add(cd->color_hash, tmp, inarray);
      }
 
-   color_tuple *tuple = malloc(sizeof(color_tuple));
-   if (!tuple)
-     {
-        EINA_LOG_ERR("Failed to allocate Memory!");
-        if (cut) free(key);
-        return;
-     }
-   tuple->col = cd->col_macro;
-   tuple->key = eina_stringshare_add(key);
-   eina_inarray_push(inarray, tuple);
+   color_tuple tuple;
+   tuple.col = cd->col_macro;
+   tuple.key = eina_stringshare_add(key);
+   eina_inarray_push(inarray, &tuple);
 
-   cd->macros = eina_list_append(cd->macros, eina_stringshare_add(tuple->key));
+   cd->macros = eina_list_append(cd->macros, eina_stringshare_add(tuple.key));
 
    if (cut) free(key);
 }
