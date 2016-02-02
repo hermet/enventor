@@ -128,11 +128,9 @@ entry_recover(edit_data *ed, int cursor_pos)
    //recover selection region
    const char *selected = elm_entry_selection_get(ed->en_edit);
    if (!selected) return;
-   char *utf8 = evas_textblock_text_markup_to_utf8(NULL, selected);
    ed->on_select_recover = EINA_TRUE;
    elm_entry_select_region_set(ed->en_edit, ed->select_pos, cursor_pos);
    ed->on_select_recover = EINA_FALSE;
-   free(utf8);
 }
 
 static void
