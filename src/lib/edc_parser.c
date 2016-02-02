@@ -59,6 +59,8 @@ typedef struct bracket_thread_data_s
    Bracket_Update_Cb update_cb;
    void *data;
    Ecore_Thread *thread;
+   int left;
+   int right;
    parser_data *pd;
 
 } bracket_td;
@@ -1420,13 +1422,15 @@ bracket_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
         right_bracket = -1;
      }
 
-   btd->update_cb(btd->data, left_bracket, right_bracket);
+   btd->left = left_bracket;
+   btd->right = right_bracket;
 }
 
 static void
 bracket_thread_end(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
    bracket_td *btd = data;
+   btd->update_cb(btd->data, btd->left, btd->right);
    if (btd->pd->btd == btd) btd->pd->btd = NULL;
    free(btd);
 }
