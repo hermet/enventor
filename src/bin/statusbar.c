@@ -43,6 +43,7 @@ ctxpopup_dismissed_cb(void *data, Evas_Object *obj,
                       void *event_info EINA_UNUSED)
 {
    stats_data *sd = data;
+   enventor_object_focus_set(base_enventor_get(), EINA_TRUE);
    evas_object_del(obj);
    sd->ctxpopup = NULL;
 }
