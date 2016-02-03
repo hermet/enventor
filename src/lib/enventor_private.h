@@ -157,6 +157,7 @@ void indent_term(indent_data *id);
 int indent_space_get(indent_data *id, Evas_Object *entry);
 int indent_insert_apply(indent_data *id, Evas_Object *entry, const char *insert, int cur_line);
 Eina_Bool indent_delete_apply(indent_data *id, Evas_Object *entry, const char *del, int cur_line);
+int indent_full_apply(indent_data *id, Evas_Object *entry);
 
 
 /* build */

@@ -148,6 +148,63 @@ indent_insert_bracket_case(indent_data *id, Evas_Object *entry, int cur_line)
    free(utf8);
 }
 
+static Eina_Bool
+indent_error_check(indent_data *id EINA_UNUSED, Evas_Object *entry)
+{
+   const char *text = elm_entry_entry_get(entry);
+   char *utf8 = elm_entry_markup_to_utf8(text);
+   char *utf8_ptr = NULL;
+   char *utf8_end = NULL;
+   int utf8_size = strlen(utf8);
+   int depth = 0;
+   int space = 0;
+   Eina_Bool space_valid = EINA_TRUE;
+
+   utf8_ptr = utf8;
+   utf8_end = utf8 + utf8_size;
+   while (utf8_ptr < utf8_end)
+     {
+        if (*utf8_ptr == ' ')
+          {
+             if (space_valid) space++;
+          }
+        else if (*utf8_ptr == '\n')
+          {
+             space = 0;
+             space_valid = EINA_TRUE;
+          }
+        else
+          {
+             if (*utf8_ptr == '}')
+               {
+                  depth--;
+                  if (depth < 0) return EINA_TRUE;
+
+                  char *utf8_next_ptr = utf8_ptr + 1;
+                  if ((utf8_next_ptr < utf8_end) && (*utf8_next_ptr != '\n'))
+                    return EINA_TRUE;
+               }
+             else if (*utf8_ptr == ';')
+               {
+                  char *utf8_next_ptr = utf8_ptr + 1;
+                  if ((utf8_next_ptr < utf8_end) && (*utf8_next_ptr != '\n'))
+                    return EINA_TRUE;
+               }
+
+             if (space_valid)
+               {
+                  if (space != depth * TAB_SPACE) return EINA_TRUE;
+                  space_valid = EINA_FALSE;
+               }
+
+             if (*utf8_ptr == '{') depth++;
+          }
+        utf8_ptr++;
+     }
+
+   return EINA_FALSE;
+}
+
 /*****************************************************************************/
 /* Externally accessible calls                                               */
 /*****************************************************************************/
@@ -238,7 +295,8 @@ indent_delete_apply(indent_data *id EINA_UNUSED, Evas_Object *entry,
 
 static int
 indent_text_auto_format(indent_data *id EINA_UNUSED,
-                        Evas_Object *entry, const char *insert)
+                        Evas_Object *entry, const char *insert,
+                        Eina_Bool paste)
 {
    int line_cnt = 0;
    char *utf8 = evas_textblock_text_markup_to_utf8(NULL, insert);
@@ -285,9 +343,25 @@ indent_text_auto_format(indent_data *id EINA_UNUSED,
    if (!code_lines) return line_cnt;
    tb_cur_pos = evas_textblock_cursor_pos_get(cur_end);
    evas_textblock_cursor_pos_set(cur_start, tb_cur_pos - utf8_size);
-   evas_textblock_cursor_range_delete(cur_start, cur_end);
 
    char *frmt_buf = NULL;
+
+   /* Insert string by pasting string to entry.
+      Cancel added data about pasted string without indentation. */
+   if (paste) redoundo_n_diff_cancel(rd, 1);
+   /* Insert string by replacing string to textblock of entry.
+      Add data about replaced string into the redoundo queue. */
+   else
+     {
+        frmt_buf =
+           evas_textblock_cursor_range_text_get(cur_start, cur_end,
+                                                EVAS_TEXTBLOCK_TEXT_MARKUP);
+        redoundo_text_push(rd, frmt_buf, tb_cur_pos - utf8_size, 0, EINA_FALSE);
+        free(frmt_buf);
+     }
+   //Delete replaced string.
+   evas_textblock_cursor_range_delete(cur_start, cur_end);
+
    Eina_List *l = NULL;
    Eina_Stringshare *line;
    evas_textblock_cursor_line_char_first(cur_start);
@@ -336,11 +410,10 @@ indent_text_auto_format(indent_data *id EINA_UNUSED,
   tb_cur_pos = evas_textblock_cursor_pos_get(cur_start);
   evas_textblock_cursor_pos_set(cur_end, tb_cur_pos);
 
+  //Insert formatted string.
   evas_object_textblock_text_markup_prepend(cur_start, frmt_buf);
 
-  // Cancel last added diff, that was created when text pasted into entry.
-  redoundo_n_diff_cancel(rd, 1);
-  //Add data about formatted change into the redoundo queue.
+  //Add data about inserted string into the redoundo queue.
   redoundo_text_push(rd, frmt_buf, tb_cur_pos, 0, EINA_TRUE);
 
   eina_strbuf_free(buf);
@@ -368,6 +441,21 @@ indent_insert_apply(indent_data *id, Evas_Object *entry, const char *insert,
             return 1;
           }
         else
-          return indent_text_auto_format(id, entry, insert);
+          return indent_text_auto_format(id, entry, insert, EINA_TRUE);
      }
+}
+
+int
+indent_full_apply(indent_data *id, Evas_Object *entry)
+{
+   //Correct indentation case
+   if (!indent_error_check(id, entry)) return -1;
+
+   const char *text = elm_entry_entry_get(entry);
+   Evas_Object *tb = elm_entry_textblock_get(entry);
+   Evas_Textblock_Cursor *cur = evas_object_textblock_cursor_get(tb);
+
+   //Move cursor to the last position to replace whole edc text.
+   evas_textblock_cursor_paragraph_last(cur);
+   return indent_text_auto_format(id, entry, text, EINA_FALSE);
 }
