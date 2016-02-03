@@ -114,7 +114,7 @@ visible_text_region_get(edit_data *ed, int *from_line, int *to_line)
 }
 
 static void
-entry_recover(edit_data *ed, int cursor_pos)
+entry_recover(edit_data *ed, Edje_Object *en_edje, int cursor_pos, int sel_cur_begin, int sel_cur_end)
 {
    elm_entry_calc_force(ed->en_edit);
 
@@ -123,14 +123,21 @@ entry_recover(edit_data *ed, int cursor_pos)
    elm_entry_cursor_pos_set(ed->en_edit, cursor_pos);
 
    //not on selection mode
-   if (ed->select_pos == -1) return;
+   if (ed->select_pos != -1)
+     {
+        //recover selection region
+        const char *selected = elm_entry_selection_get(ed->en_edit);
+        if (!selected) return;
+        ed->on_select_recover = EINA_TRUE;
+        elm_entry_select_region_set(ed->en_edit, ed->select_pos, cursor_pos);
+        ed->on_select_recover = EINA_FALSE;
+     }
 
-   //recover selection region
-   const char *selected = elm_entry_selection_get(ed->en_edit);
-   if (!selected) return;
-   ed->on_select_recover = EINA_TRUE;
-   elm_entry_select_region_set(ed->en_edit, ed->select_pos, cursor_pos);
-   ed->on_select_recover = EINA_FALSE;
+   //recover selection cursor
+   edje_object_part_text_cursor_pos_set(en_edje, "elm.text",
+                            EDJE_CURSOR_SELECTION_BEGIN, sel_cur_begin);
+   edje_object_part_text_cursor_pos_set(en_edje, "elm.text",
+                            EDJE_CURSOR_SELECTION_END, sel_cur_end);
 }
 
 static void
@@ -144,7 +151,17 @@ edit_font_apply(edit_data *ed, const char *font_name, const char *font_style)
 
    elm_entry_calc_force(ed->en_line);
    int pos = elm_entry_cursor_pos_get(ed->en_edit);
-   entry_recover(ed, pos);
+
+   Edje_Object *edje = elm_layout_edje_get(ed->en_edit);
+   if (elm_entry_scrollable_get(ed->en_edit))
+     edje = edje_object_part_swallow_get(edje, "elm.swallow.content");
+
+   int sel_cur_begin = edje_object_part_text_cursor_pos_get
+                       (edje, "elm.text", EDJE_CURSOR_SELECTION_BEGIN);
+   int sel_cur_end = edje_object_part_text_cursor_pos_get
+                     (edje, "elm.text", EDJE_CURSOR_SELECTION_END);
+
+   entry_recover(ed, edje, pos, sel_cur_begin, sel_cur_end);
 }
 
 static void
@@ -207,6 +224,15 @@ syntax_color_apply(edit_data *ed, Eina_Bool partial)
    char *text = (char *) evas_object_textblock_text_markup_get(tb);
    int pos = elm_entry_cursor_pos_get(ed->en_edit);
 
+   Edje_Object *edje = elm_layout_edje_get(ed->en_edit);
+   if (elm_entry_scrollable_get(ed->en_edit))
+     edje = edje_object_part_swallow_get(edje, "elm.swallow.content");
+
+   int sel_cur_begin = edje_object_part_text_cursor_pos_get
+                          (edje, "elm.text", EDJE_CURSOR_SELECTION_BEGIN);
+   int sel_cur_end = edje_object_part_text_cursor_pos_get
+                        (edje, "elm.text", EDJE_CURSOR_SELECTION_END);
+
    int from_line = 1;
    int to_line = -1;
    if (partial) visible_text_region_get(ed, &from_line, &to_line);
@@ -228,7 +254,7 @@ syntax_color_apply(edit_data *ed, Eina_Bool partial)
    evas_object_textblock_text_markup_set(tb, translated);
    error_highlight(ed, tb);
    bracket_highlight(ed, tb);
-   entry_recover(ed, pos);
+   entry_recover(ed, edje, pos, sel_cur_begin, sel_cur_end);
 }
 
 static Eina_Bool
@@ -274,12 +300,21 @@ syntax_color_thread_end_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
    int pos = elm_entry_cursor_pos_get(td->ed->en_edit);
    Evas_Object *tb = elm_entry_textblock_get(td->ed->en_edit);
 
+   Edje_Object *edje = elm_layout_edje_get(td->ed->en_edit);
+   if (elm_entry_scrollable_get(td->ed->en_edit))
+     edje = edje_object_part_swallow_get(edje, "elm.swallow.content");
+
+   int sel_cur_begin = edje_object_part_text_cursor_pos_get
+                       (edje, "elm.text", EDJE_CURSOR_SELECTION_BEGIN);
+   int sel_cur_end = edje_object_part_text_cursor_pos_get
+                     (edje, "elm.text", EDJE_CURSOR_SELECTION_END);
+
    /* I'm not sure this will be problem.
       But it can avoid entry_object_text_escaped_set() in Edje.
       Logically that's unnecessary in this case. */
    evas_object_textblock_text_markup_set(tb, td->translated);
    error_highlight(td->ed, tb);
-   entry_recover(td->ed, pos);
+   entry_recover(td->ed, edje, pos, sel_cur_begin, sel_cur_end);
 
    td->ed->syntax_color_thread = NULL;
    free(td);
