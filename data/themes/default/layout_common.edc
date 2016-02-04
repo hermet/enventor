@@ -774,7 +774,7 @@ group { name: "menu_layout";
             rel2.relative: 0.5 0;
             rel1.to_y: "padding1";
             rel2.to_y: "padding1";
-            min: 350 200;
+            min: 350 250;
             fixed: 1 1;
             align: 0.5 0.8;
             image.normal: "full_logo.png";
