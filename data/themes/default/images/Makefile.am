@@ -60,7 +60,6 @@ EXTRA_DIST = \
    live_spacer.png \
    live_text.png \
    live_textblock.png \
-   live_edit.png \
    new.png \
    slider_up.png \
    slider_down.png \

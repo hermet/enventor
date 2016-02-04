@@ -18,7 +18,6 @@ images {
    image: "live_spacer.png" COMP;
    image: "live_text.png" COMP;
    image: "live_textblock.png" COMP;
-   image: "live_edit.png" COMP;
    image: "expand.png" COMP;
 }
 
@@ -42,7 +41,6 @@ ICON_GROUP("status", "status.png")
 ICON_GROUP("dummy", "dummy.png")
 ICON_GROUP("up", "slider_up.png")
 ICON_GROUP("down", "slider_down.png")
-ICON_GROUP("live_edit", "live_edit.png")
 ICON_GROUP("save", "save.png")
 ICON_GROUP("undo", "undo.png")
 ICON_GROUP("redo", "redo.png")
