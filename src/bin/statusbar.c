@@ -232,3 +232,10 @@ stats_ctxpopup_dismiss(void)
      }
    return EINA_FALSE;
 }
+
+void
+stats_disabled_set(Eina_Bool disabled)
+{
+   stats_data *sd = g_sd;
+   elm_object_disabled_set(sd->layout, disabled);
+}
