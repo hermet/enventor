@@ -9,6 +9,7 @@ images {
    image: "disabler.png" COMP;
    image: "bevel_out.png" COMP;
    image: "pm_fill.png" COMP;
+   image: "full_logo.png" COMP;
 }
 
 group { name: "about_layout";
@@ -765,30 +766,18 @@ group { name: "menu_layout";
             rel2.relative: 0.5 1;
          }
       }
-      part { name: "title";
-         type: TEXT;
+      image { "logo";
          scale: 1;
-         effect: GLOW;
          clip_to: "clipper";
-         description { state: "default" 0.0;
-            rel1.relative: 0 0;
-            rel2.relative: 1 0;
-            rel1.to_x: "base_frame";
-            rel2.to_x: "base_frame";
+         desc { "default";
+            rel1.relative: 0.5 0;
+            rel2.relative: 0.5 0;
             rel1.to_y: "padding1";
             rel2.to_y: "padding1";
-            min: 0 120;
-            fixed: 0 1;
-            align: 1 1;
-            text {
-               font: FN;
-               text: "Enventor Menu";
-               size: 28;
-               align: 0.5 1;
-               min: 1 0;
-               ellipsis: -1;
-            }
-            color: COL_HI;
+            min: 350 200;
+            fixed: 1 1;
+            align: 0.5 0.8;
+            image.normal: "full_logo.png";
          }
       }
       part { name: "padding1";

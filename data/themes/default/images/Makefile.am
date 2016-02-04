@@ -20,6 +20,7 @@ EXTRA_DIST = \
    holes_tiny_vert.png \
    inset_shadow.png \
    logo.png \
+   full_logo.png \
    frame_bg.png \
    part_highlight.png \
    preference.png \
