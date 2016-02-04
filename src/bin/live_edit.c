@@ -8,6 +8,12 @@
 #define CTRL_PT_LAYER 3
 #define INFO_TEXT_LAYER (CTRL_PT_LAYER+1)
 
+typedef struct livedit_item_s
+{
+   const char *name;
+   Edje_Part_Type type;
+} liveedit_item;
+
 typedef enum
 {
    Ctrl_Pt_Rel1 = 0,
@@ -38,15 +44,9 @@ typedef enum
    Align_Line_Cnt
 } Align_Line;
 
-typedef struct ctxpopup_it_data_s
-{
-   const char *name;
-   Edje_Part_Type type;
-} ctxpopup_it_data;
-
 typedef struct live_editor_s
 {
-   Evas_Object *ctxpopup;
+   Evas_Object *toolbox;
    Evas_Object *layout;
    Evas_Object *live_view;
    Evas_Object *trigger;
@@ -69,17 +69,19 @@ typedef struct live_editor_s
 
 static void live_edit_update_internal(live_data *ld);
 
-static const ctxpopup_it_data CTXPOPUP_ITEMS[] =
-{
-     {"RECT", EDJE_PART_TYPE_RECTANGLE},
-     {"TEXT", EDJE_PART_TYPE_TEXT},
-     {"IMAGE", EDJE_PART_TYPE_IMAGE},
-     {"SWALLOW", EDJE_PART_TYPE_SWALLOW},
-     {"TEXTBLOCK", EDJE_PART_TYPE_TEXTBLOCK},
-     {"SPACER", EDJE_PART_TYPE_SPACER}
-};
+#define LIVEEDIT_ITEMS_NUM 6
 
 static live_data *g_ld = NULL;
+
+static const liveedit_item LIVEEDIT_ITEMS[] =
+{
+     {"Rect", EDJE_PART_TYPE_RECTANGLE},
+     {"Text", EDJE_PART_TYPE_TEXT},
+     {"Image", EDJE_PART_TYPE_IMAGE},
+     {"Swallow", EDJE_PART_TYPE_SWALLOW},
+     {"Textblock", EDJE_PART_TYPE_TEXTBLOCK},
+     {"Spacer", EDJE_PART_TYPE_SPACER}
+};
 
 static Evas_Object *
 view_scroller_get(live_data *ld)
@@ -181,7 +183,7 @@ static void
 live_edit_symbol_set(live_data *ld)
 {
    char buf[PATH_MAX];
-   snprintf(buf, sizeof(buf), "%s_bg", CTXPOPUP_ITEMS[ld->part_info.type].name);
+   snprintf(buf, sizeof(buf), "%s_bg", LIVEEDIT_ITEMS[ld->part_info.type].name);
    Evas_Object *layout_symbol = elm_layout_add(ld->layout);
    elm_layout_file_set(layout_symbol, EDJE_PATH, buf);
    elm_object_scale_set(layout_symbol, config_view_scale_get());
@@ -191,7 +193,7 @@ live_edit_symbol_set(live_data *ld)
 static void
 live_edit_insert(live_data *ld)
 {
-   int type = CTXPOPUP_ITEMS[ld->part_info.type].type;
+   int type = LIVEEDIT_ITEMS[ld->part_info.type].type;
    enventor_object_template_part_insert(base_enventor_get(),
                                         type,
                                         ENVENTOR_TEMPLATE_INSERT_LIVE_EDIT,
@@ -708,7 +710,6 @@ layout_update(live_data *ld)
 static void
 live_edit_update_internal(live_data *ld)
 {
-   evas_norender(evas_object_evas_get(ld->layout));
    layout_update(ld);
    ctrl_pt_update(ld);
    align_line_update(ld);
@@ -910,59 +911,6 @@ live_edit_layer_set(live_data *ld)
    info_text_init(ld);
 }
 
-static void
-ctxpopup_it_selected_cb(void *data, Evas_Object *obj,
-                        void *event_info EINA_UNUSED)
-{
-   live_data *ld = g_ld;
-   ld->part_info.type = (unsigned int)(uintptr_t)data;
-   live_edit_layer_set(ld);
-
-   elm_ctxpopup_dismiss(obj);
-
-   stats_info_msg_update(_("Double click the part to confirm."));
-}
-
-static void
-ctxpopup_dismissed_cb(void *data, Evas_Object *obj,
-                      void *event_info EINA_UNUSED)
-{
-   live_data *ld = data;
-   if (!ld->layout) live_edit_cancel();
-   evas_object_focus_set(ld->live_view, EINA_TRUE);
-   evas_object_del(obj);
-   ld->ctxpopup = NULL;
-}
-
-static Evas_Object *
-ctxpopup_create(live_data *ld)
-{
-   const int CTXPOPUP_ITEMS_NUM = 6;
-   int i;
-   Evas_Object *ctxpopup = elm_ctxpopup_add(ld->live_view);
-   elm_ctxpopup_direction_priority_set(ctxpopup, ELM_CTXPOPUP_DIRECTION_DOWN,
-                                       ELM_CTXPOPUP_DIRECTION_RIGHT,
-                                       ELM_CTXPOPUP_DIRECTION_LEFT,
-                                       ELM_CTXPOPUP_DIRECTION_UP);
-
-   for (i = 0; i < CTXPOPUP_ITEMS_NUM; i++)
-     {
-        Evas_Object *icon = elm_image_add(ctxpopup);
-        elm_image_file_set(icon, EDJE_PATH, CTXPOPUP_ITEMS[i].name);
-        elm_ctxpopup_item_append(ctxpopup, CTXPOPUP_ITEMS[i].name, icon,
-                                 ctxpopup_it_selected_cb, (void *)(uintptr_t)i);
-     }
-
-   evas_object_smart_callback_add(ctxpopup, "dismissed", ctxpopup_dismissed_cb,
-                                  ld);
-   Evas_Coord x, y, w, h;
-   evas_object_geometry_get(ld->trigger, &x, &y, &w, &h);
-   evas_object_move(ctxpopup, (x + (w/2)), (y + h));
-   evas_object_show(ctxpopup);
-
-   return ctxpopup;
-}
-
 void
 live_edit_update(void)
 {
@@ -979,26 +927,6 @@ live_edit_update(void)
    live_edit_update_internal(ld);
 }
 
-void
-live_edit_toggle(void)
-{
-   live_data *ld = g_ld;
-   Eina_Bool on = !ld->on;
-
-   if (on)
-     {
-        enventor_object_disabled_set(base_enventor_get(), EINA_TRUE);
-        ld->live_view = enventor_object_live_view_get(base_enventor_get());
-        ld->ctxpopup = ctxpopup_create(ld);
-        stats_info_msg_update(_("Select a part to add in Live View."));
-        tools_live_update(EINA_TRUE);
-     }
-   else
-     live_edit_cancel();
-
-   ld->on = on;
-}
-
 Eina_Bool
 live_edit_get(void)
 {
@@ -1011,8 +939,6 @@ live_edit_cancel(void)
 {
    live_data *ld = g_ld;
    if (!ld->on) return EINA_FALSE;
-
-   if (ld->ctxpopup) elm_ctxpopup_dismiss(ld->ctxpopup);
 
    enventor_object_disabled_set(base_enventor_get(), EINA_FALSE);
 
@@ -1056,9 +982,68 @@ live_edit_cancel(void)
 
    ld->on = EINA_FALSE;
 
-   tools_live_update(EINA_FALSE);
-
    return EINA_TRUE;
+}
+
+static void
+live_btn_clicked_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
+{
+   live_edit_cancel();
+   goto_close();
+   search_close();
+
+   live_data *ld = g_ld;
+
+   ld->part_info.type = (unsigned int)(uintptr_t)data;
+   enventor_object_disabled_set(base_enventor_get(), EINA_TRUE);
+   ld->live_view = enventor_object_live_view_get(base_enventor_get());
+   ld->on = EINA_TRUE;
+
+   live_edit_layer_set(ld);
+
+   stats_info_msg_update(_("Double click the part to confirm. (Esc = cancel)"));
+}
+
+static Evas_Object *
+live_btn_create(Evas_Object *parent, const char *name, void * data)
+{
+   Evas_Object *btn = elm_button_add(parent);
+   elm_object_style_set(btn, elm_app_name_get());
+   evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_object_focus_allow_set(btn, EINA_FALSE);
+   elm_object_tooltip_text_set(btn, name);
+   elm_object_tooltip_orient_set(btn, ELM_TOOLTIP_ORIENT_BOTTOM);
+
+   Evas_Object *img = elm_image_add(btn);
+   elm_image_file_set(img, EDJE_PATH, name);
+   elm_object_content_set(btn, img);
+
+   evas_object_smart_callback_add(btn, "clicked", live_btn_clicked_cb, data);
+   evas_object_show(btn);
+
+   return btn;
+}
+
+Evas_Object *
+live_edit_tools_create(Evas_Object *parent)
+{
+   Evas_Object *box = elm_box_add(parent);
+   elm_box_horizontal_set(box, EINA_TRUE);
+   elm_box_padding_set(box, ELM_SCALE_SIZE(5), 0);
+
+   Evas_Object *btn;
+   int i;
+
+   for (i = 0; i < LIVEEDIT_ITEMS_NUM; i++)
+     {
+        btn = live_btn_create(box, LIVEEDIT_ITEMS[i].name,
+                              (void *)(uintptr_t) i);
+        elm_box_pack_end(box, btn);
+     }
+
+   evas_object_show(box);
+   return box;
 }
 
 void
@@ -1078,8 +1063,7 @@ void
 live_edit_term(void)
 {
    live_data *ld = g_ld;
-   evas_object_del(ld->ctxpopup);
-   ld->ctxpopup = NULL;
+   evas_object_del(ld->toolbox);
    live_edit_cancel();
    free(ld);
    g_ld = NULL;

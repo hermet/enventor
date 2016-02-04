@@ -1,5 +1,8 @@
 images {
    image: "live_spacer.png" COMP;
+   image: "swallow.png" COMP;
+   image: "logo.png" COMP;
+
 }
 
 styles {
@@ -8,32 +11,30 @@ styles {
    }
 }
 
-group { name: "IMAGE_bg";
+group { "Image_bg";
    parts {
-      part { name: "logo";
-         description { state: "default" 0.0;
+      image {
+         desc {
             image.normal: "logo.png";
          }
       }
    }
 }
-group { name: "RECT_bg";
+group { "Rect_bg";
    parts {
-      part { name: "rect";
-         type: RECT;
-         description { state: "default" 0.0;
+      rect {
+         desc {
             color: 0 136 170 255;
          }
       }
    }
 }
-group { name: "TEXT_bg";
+group { "Text_bg";
    parts {
-      part { name: "text";
-         type: TEXT;
+      text {
          scale: 1;
          effect: FAR_SOFT_SHADOW;
-         description { state: "default" 0.0;
+         desc {
             color: 0 136 170 255;
             color2: 0 136 170 50;
             color3: 0 136 170 25;
@@ -46,13 +47,11 @@ group { name: "TEXT_bg";
       }
    }
 }
-group { name: "TEXTBLOCK_bg";
+group { "Textblock_bg";
    parts {
-      part { name: "text";
-         type: TEXTBLOCK;
+      textblock {
          scale: 1;
-         description { state: "default" 0.0;
-            color: 255 255 255 255;
+         desc {
             text {
                style: "default_style";
                size: 10;
@@ -63,20 +62,20 @@ group { name: "TEXTBLOCK_bg";
       }
    }
 }
-group { name: "SWALLOW_bg";
+group { "Swallow_bg";
    parts {
-      part { name: "bg";
-         description { state: "default" 0.0;
+      image {
+         desc {
             image.normal: "swallow.png";
             color: 255 255 255 155;
          }
       }
    }
 }
-group { name: "SPACER_bg";
+group { "Spacer_bg";
    parts {
-      part { name: "bg";
-         description { state: "default" 0.0;
+      image {
+         desc {
             image.normal: "live_spacer.png";
             image.border: 5 5 5 5;
             fill.smooth: 0;

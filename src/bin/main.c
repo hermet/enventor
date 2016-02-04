@@ -677,12 +677,6 @@ ctrl_func(app_data *ad, Evas_Event_Key_Down *event)
         enventor_object_auto_complete_list_show(ad->enventor);
         return EINA_TRUE;
      }
-   //Live Edit
-   if (!strcmp(event->key, "e") || !strcmp(event->key, "E"))
-     {
-        live_edit_toggle();
-        return EINA_TRUE;
-     }
 
    return EINA_FALSE;
 }

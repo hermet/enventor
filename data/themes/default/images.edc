@@ -25,8 +25,8 @@ images {
 #define ICON_GROUP(_group_name, _image_path) \
    group { name: _group_name; \
       parts { \
-         part { name: "img"; \
-            description { state: "default" 0.0; \
+         part { \
+            desc { \
                image.normal: _image_path; \
             } \
          } \
@@ -47,11 +47,11 @@ ICON_GROUP("save", "save.png")
 ICON_GROUP("undo", "undo.png")
 ICON_GROUP("redo", "redo.png")
 ICON_GROUP("expand", "expand.png")
-ICON_GROUP("IMAGE", "live_image.png")
-ICON_GROUP("RECT", "live_rectangle.png")
-ICON_GROUP("SPACER", "live_spacer.png")
-ICON_GROUP("SWALLOW", "live_swallow.png")
-ICON_GROUP("TEXT", "live_text.png")
-ICON_GROUP("TEXTBLOCK", "live_textblock.png")
+ICON_GROUP("Image", "live_image.png")
+ICON_GROUP("Rect", "live_rectangle.png")
+ICON_GROUP("Spacer", "live_spacer.png")
+ICON_GROUP("Swallow", "live_swallow.png")
+ICON_GROUP("Text", "live_text.png")
+ICON_GROUP("Textblock", "live_textblock.png")
 
 #undef ICON_GROUP

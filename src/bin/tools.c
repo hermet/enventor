@@ -12,7 +12,6 @@ typedef struct tools_s
    Evas_Object *highlight_btn;
    Evas_Object *goto_btn;
    Evas_Object *find_btn;
-   Evas_Object *live_btn;
    Evas_Object *console_btn;
    Evas_Object *menu_btn;
    Evas_Object *box;
@@ -84,15 +83,6 @@ console_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
    if (!td) return;
 
    base_console_toggle();
-}
-
-static void
-live_edit_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
-             void *event_info EINA_UNUSED)
-{
-   search_close();
-   goto_close();
-   live_edit_toggle();
 }
 
 static void
@@ -242,13 +232,14 @@ tools_init(Evas_Object *parent)
    elm_box_pack_end(box, btn);
    td->swallow_btn = btn;
 
-   btn = tools_btn_create(box, "live_edit", _("Live View Edit (Ctrl + E)"),
-                          live_edit_cb);
-   evas_object_size_hint_weight_set(btn, 0.0, EVAS_HINT_EXPAND);
+   sp = elm_separator_add(box);
+   evas_object_show(sp);
+   elm_box_pack_end(box, sp);
+
+   btn = live_edit_tools_create(box);
+   evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
    elm_box_pack_end(box, btn);
-   evas_object_data_set(box, "live_edit", btn);
-   td->live_btn = btn;
 
    //For a empty space
    Evas_Object *rect = evas_object_rectangle_add(evas_object_evas_get(box));
@@ -393,18 +384,6 @@ tools_search_update(void)
      elm_object_signal_emit(td->find_btn, "icon,highlight,enabled", "");
    else
      elm_object_signal_emit(td->find_btn, "icon,highlight,disabled", "");
-}
-
-void
-tools_live_update(Eina_Bool on)
-{
-   tools_data *td = g_td;
-   if (!td) return;
-
-   if (on)
-     elm_object_signal_emit(td->live_btn, "icon,highlight,enabled", "");
-   else
-     elm_object_signal_emit(td->live_btn, "icon,highlight,disabled", "");
 }
 
 void
