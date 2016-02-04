@@ -162,18 +162,42 @@ tools_init(Evas_Object *parent)
    evas_object_size_hint_align_set(box, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
    Evas_Object *btn;
-   btn = tools_btn_create(box, "menu", _("Enventor Menu (Esc)"),
-                          menu_cb);
+   btn = tools_btn_create(box, "highlight", _("Part Highlighting (Ctrl + H)"),
+                          highlight_cb);
    elm_object_tooltip_orient_set(btn, ELM_TOOLTIP_ORIENT_BOTTOM_RIGHT);
    evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
    elm_box_pack_end(box, btn);
-   td->menu_btn = btn;
+   td->highlight_btn = btn;
+
+   btn = tools_btn_create(box, "dummy", _("Dummy Parts (Ctrl + W)"),
+                          dummy_cb);
+   elm_object_tooltip_orient_set(btn, ELM_TOOLTIP_ORIENT_BOTTOM_RIGHT);
+   evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
+   elm_box_pack_end(box, btn);
+   td->swallow_btn = btn;
 
    Evas_Object *sp;
    sp = elm_separator_add(box);
    evas_object_show(sp);
    elm_box_pack_end(box, sp);
+
+   //Live edit tool
+   btn = live_edit_tools_create(box);
+   evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
+   elm_box_pack_end(box, btn);
+
+   sp = elm_separator_add(box);
+   evas_object_show(sp);
+   elm_box_pack_end(box, sp);
+
+   //For a empty space
+   Evas_Object *rect = evas_object_rectangle_add(evas_object_evas_get(box));
+   evas_object_size_hint_weight_set(rect, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(rect, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_box_pack_end(box, rect);
 
    btn = tools_btn_create(box, "save",_("Save File (Ctrl + S)"),
                           save_cb);
@@ -214,38 +238,6 @@ tools_init(Evas_Object *parent)
    elm_box_pack_end(box, btn);
    td->lines_btn = btn;
 
-   sp = elm_separator_add(box);
-   evas_object_show(sp);
-   elm_box_pack_end(box, sp);
-
-   btn = tools_btn_create(box, "highlight", _("Part Highlighting (Ctrl + H)"),
-                          highlight_cb);
-   evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
-   elm_box_pack_end(box, btn);
-   td->highlight_btn = btn;
-
-   btn = tools_btn_create(box, "dummy", _("Dummy Parts (Ctrl + W)"),
-                          dummy_cb);
-   evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
-   elm_box_pack_end(box, btn);
-   td->swallow_btn = btn;
-
-   sp = elm_separator_add(box);
-   evas_object_show(sp);
-   elm_box_pack_end(box, sp);
-
-   btn = live_edit_tools_create(box);
-   evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
-   elm_box_pack_end(box, btn);
-
-   //For a empty space
-   Evas_Object *rect = evas_object_rectangle_add(evas_object_evas_get(box));
-   evas_object_size_hint_weight_set(rect, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(rect, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_box_pack_end(box, rect);
 
    sp = elm_separator_add(box);
    evas_object_show(sp);
@@ -253,18 +245,28 @@ tools_init(Evas_Object *parent)
 
    btn = tools_btn_create(box, "console", _("Console Box (Alt + Down)"),
                           console_cb);
-   elm_object_tooltip_orient_set(btn, ELM_TOOLTIP_ORIENT_BOTTOM_LEFT);
    evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 1.0, EVAS_HINT_FILL);
    elm_box_pack_end(box, btn);
    td->console_btn = btn;
 
    btn = tools_btn_create(box, "status", _("Status (F11)"), status_cb);
-   elm_object_tooltip_orient_set(btn, ELM_TOOLTIP_ORIENT_BOTTOM_LEFT);
    evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 1.0, EVAS_HINT_FILL);
    elm_box_pack_end(box, btn);
    td->status_btn = btn;
+
+   sp = elm_separator_add(box);
+   evas_object_show(sp);
+   elm_box_pack_end(box, sp);
+
+   btn = tools_btn_create(box, "menu", _("Enventor Menu (Esc)"),
+                          menu_cb);
+   elm_object_tooltip_orient_set(btn, ELM_TOOLTIP_ORIENT_BOTTOM_LEFT);
+   evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
+   elm_box_pack_end(box, btn);
+   td->menu_btn = btn;
 
    evas_object_show(box);
 
