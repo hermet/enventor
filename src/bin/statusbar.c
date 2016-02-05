@@ -116,6 +116,7 @@ create_statusbar_btn(Evas_Object *layout, const char *image,
    Evas_Object *box = elm_box_add(layout);
 
    Evas_Object *btn = elm_button_add(box);
+   elm_object_focus_allow_set(btn, EINA_FALSE);
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_scale_set(btn, 0.5);
@@ -262,11 +263,4 @@ stats_ctxpopup_dismiss(void)
         return EINA_TRUE;
      }
    return EINA_FALSE;
-}
-
-void
-stats_disabled_set(Eina_Bool disabled)
-{
-   stats_data *sd = g_sd;
-   elm_object_disabled_set(sd->layout, disabled);
 }

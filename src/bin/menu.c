@@ -61,7 +61,6 @@ menu_close(menu_data *md)
    if (!md->menu_layout) return;
    elm_object_signal_emit(md->menu_layout, "elm,state,dismiss", "");
 
-   stats_disabled_set(EINA_FALSE);
    tools_menu_update(EINA_FALSE);
 }
 
@@ -637,7 +636,6 @@ menu_open(menu_data *md)
    elm_object_part_content_set(layout, "elm.swallow.exit_btn", btn);
 
    tools_menu_update(EINA_TRUE);
-   stats_disabled_set(EINA_TRUE);
 
    md->menu_layout = layout;
    md->active_request++;
@@ -792,7 +790,6 @@ menu_deactivate_request(void)
    if (md->active_request == 0)
      {
         enventor_object_focus_set(base_enventor_get(), EINA_TRUE);
-        stats_disabled_set(EINA_FALSE);
      }
    if (!md->menu_layout) return;
    elm_object_disabled_set(md->menu_layout, EINA_FALSE);
@@ -804,6 +801,5 @@ menu_activate_request(void)
 {
    menu_data *md = g_md;
    if (md->menu_layout) elm_object_disabled_set(md->menu_layout, EINA_TRUE);
-   stats_disabled_set(EINA_TRUE);
    md->active_request++;
 }

@@ -9,4 +9,3 @@ Evas_Object *stats_obj_get(void);
 void stats_edc_group_update(const char *group_name);
 Eina_Stringshare *stats_group_name_get(void);
 Eina_Bool stats_ctxpopup_dismiss(void);
-void stats_disabled_set(Eina_Bool disabled);
