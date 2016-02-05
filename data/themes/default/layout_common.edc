@@ -1789,8 +1789,9 @@ group { name: "statusbar_layout";
          description { state: "default" 0.0;
             rel1.relative: 0.0 0.0;
             rel2.relative: 0.0 1.0;
+            rel1.offset: 3 -3;
             align: 0.0 0.5;
-            min: 18 18;
+            min: 15 15;
             fixed: 1 0;
          }
       }
@@ -1824,6 +1825,7 @@ group { name: "statusbar_layout";
             rel2.relative: 1 1;
             rel1.to: "scale_spacer";
             rel2.to: "scale_spacer";
+            rel1.offset: 5 0;
             min: 120 0;
             fixed: 1 0;
             align: 0 0.5;
@@ -1834,32 +1836,12 @@ group { name: "statusbar_layout";
          scale: 1;
          desc {
             rel1.to_x: "size_spacer";
-            rel1.relative: 0.0 0.0;
-            rel2.relative: 0.0 1.0;
-            align: 0 0.5;
-            fixed: 0 0;
-            min: 18 18;
-         }
-      }
-      text { "elm.text.size[";
-         clip_to: "base_clip";
-         scale: 1;
-         effect: SHADOW BOTTOM;
-         desc {
-            rel1.to_x: "invert_btn";
-            rel1.relative: 1.0 0.0;
-            rel2.to_x: "invert_btn";
-            rel2.relative: 0.0 1.0;
-            align: 0 0.5;
+            rel1.relative: 0.0 0;
+            rel2.relative: 0.0 1;
+            rel1.offset: 3 -3;
+            align: 0 0;
             fixed: 1 0;
-            color: COL_NM;
-            text {
-               text: "[";
-               size: 11;
-               align: 0 0.5;
-               min: 1 0;
-               ellipsis: -1;
-            }
+            min: 15 15;
          }
       }
       part { name: "elm.text.size_w";
@@ -1868,8 +1850,8 @@ group { name: "statusbar_layout";
          scale: 1;
          effect: GLOW;
          description { state: "default" 0.0;
-            rel1.to_x: "elm.text.size[";
-            rel2.to_x: "elm.text.size[";
+            rel1.to_x: "invert_btn";
+            rel2.to_x: "invert_btn";
             rel1.relative: 1.0 0.0;
             rel2.relative: 1.0 1.0;
             align: 0 0.5;
@@ -1919,28 +1901,6 @@ group { name: "statusbar_layout";
             fixed: 1 0;
             color: COL_HI;
             text {
-               size: 11;
-               align: 0 0.5;
-               min: 1 0;
-               ellipsis: -1;
-            }
-         }
-      }
-      part { name: "elm.text.size]";
-         type: TEXT;
-         clip_to: "base_clip";
-         scale: 1;
-         effect: SHADOW BOTTOM;
-         description { state: "default" 0.0;
-            rel1.to_x: "elm.text.size_h";
-            rel2.to_x: "elm.text.size_h";
-            rel1.relative: 1.0 0.0;
-            rel2.relative: 1.0 1.0;
-            align: 0 0.5;
-            fixed: 1 0;
-            color: COL_NM;
-            text {
-               text: "]";
                size: 11;
                align: 0 0.5;
                min: 1 0;

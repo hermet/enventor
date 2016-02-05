@@ -142,10 +142,11 @@ create_statusbar_btn(Evas_Object *layout, const char *image,
    Evas_Object *box = elm_box_add(layout);
 
    Evas_Object *btn = elm_button_add(box);
+   elm_object_style_set(btn, elm_app_name_get());
    elm_object_focus_allow_set(btn, EINA_FALSE);
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_object_scale_set(btn, 0.5);
+   elm_object_scale_set(btn, 0.8);
    evas_object_smart_callback_add(btn, "clicked", func, data);
    evas_object_show(btn);
 
