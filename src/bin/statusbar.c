@@ -9,6 +9,14 @@ typedef struct statusbar_s
    int max_line;
 } stats_data;
 
+typedef struct invert_transit_data_s
+{
+   Evas_Coord orig_w;
+   Evas_Coord orig_h;
+   Evas_Coord diff_w;
+   Evas_Coord diff_h;
+} invert_data;
+
 stats_data *g_sd = NULL;
 
 static void
@@ -55,23 +63,50 @@ ctxpopup_dismissed_cb(void *data, Evas_Object *obj,
 }
 
 static void
+transit_op_invert(void *data, Elm_Transit *transit EINA_UNUSED, double progress)
+{
+   invert_data *id = data;
+   Evas_Coord w, h;
+   w = id->orig_w + ((double)(id->diff_w)) * progress;
+   h = id->orig_h + ((double)(id->diff_h)) * progress;
+
+   enventor_object_live_view_size_set(base_enventor_get(), w, h);
+
+   //Just in live edit mode case.
+   live_edit_update();
+}
+
+static void
+transit_op_end(void *data, Elm_Transit *transit EINA_UNUSED)
+{
+   invert_data *id = data;
+   config_view_size_set((id->orig_w + id->diff_w), (id->orig_h + id->diff_h));
+   free(id);
+}
+
+static void
 view_invert_btn_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
 {
    stats_data *sd = data;
 
    //Toggle on the configurable view size forcely.
    if (!config_view_size_configurable_get())
-     {
-        config_view_size_configurable_set(EINA_TRUE);
-     }
+     config_view_size_configurable_set(EINA_TRUE);
+
+   invert_data *id = malloc(sizeof(invert_data));
 
    Evas_Coord w, h;
    config_view_size_get(&w, &h);
-   config_view_size_set(h, w);
-   enventor_object_live_view_size_set(base_enventor_get(), h, w);
+   id->orig_w = w;
+   id->orig_h = h;
+   id->diff_w = h - w;
+   id->diff_h = w - h;
 
-   //Just in live edit mode case.
-   live_edit_update();
+   Elm_Transit *transit = elm_transit_add();
+   elm_transit_effect_add(transit, transit_op_invert, id, transit_op_end);
+   elm_transit_tween_mode_set(transit, ELM_TRANSIT_TWEEN_MODE_DECELERATE);
+   elm_transit_duration_set(transit, TRANSIT_TIME);
+   elm_transit_go(transit);
 }
 
 static void

@@ -1,7 +1,5 @@
 #include "common.h"
 
-static const double TRANSIT_TIME = 0.25;
-
 typedef enum
 {
    PANES_LIVE_VIEW_EXPAND,
