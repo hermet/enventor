@@ -710,6 +710,7 @@ layout_update(live_data *ld)
 static void
 live_edit_update_internal(live_data *ld)
 {
+   evas_smart_objects_calculate(evas_object_evas_get(ld->layout));
    layout_update(ld);
    ctrl_pt_update(ld);
    align_line_update(ld);

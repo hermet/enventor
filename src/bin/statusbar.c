@@ -55,8 +55,27 @@ ctxpopup_dismissed_cb(void *data, Evas_Object *obj,
 }
 
 static void
-view_scale_btn_cb(void *data, Evas_Object *obj,
-                  void *event_info EINA_UNUSED)
+view_invert_btn_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
+{
+   stats_data *sd = data;
+
+   //Toggle on the configurable view size forcely.
+   if (!config_view_size_configurable_get())
+     {
+        config_view_size_configurable_set(EINA_TRUE);
+     }
+
+   Evas_Coord w, h;
+   config_view_size_get(&w, &h);
+   config_view_size_set(h, w);
+   enventor_object_live_view_size_set(base_enventor_get(), h, w);
+
+   //Just in live edit mode case.
+   live_edit_update();
+}
+
+static void
+view_scale_btn_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
 {
    stats_data *sd = data;
 
@@ -90,7 +109,8 @@ view_scale_btn_cb(void *data, Evas_Object *obj,
 }
 
 static Evas_Object *
-create_statusbar_btn(Evas_Object *layout, const char *tooltip_msg,
+create_statusbar_btn(Evas_Object *layout, const char *image,
+                     const char *part_name, const char *tooltip_msg,
                      Evas_Smart_Cb func, void *data)
 {
    Evas_Object *box = elm_box_add(layout);
@@ -103,14 +123,14 @@ create_statusbar_btn(Evas_Object *layout, const char *tooltip_msg,
    evas_object_show(btn);
 
    Evas_Object *img = elm_image_add(btn);
-   elm_image_file_set(img, EDJE_PATH, "expand");
+   elm_image_file_set(img, EDJE_PATH, image);
    elm_object_content_set(btn, img);
 
    elm_object_tooltip_text_set(box, tooltip_msg);
    elm_object_tooltip_orient_set(box, ELM_TOOLTIP_ORIENT_TOP_RIGHT);
 
    elm_box_pack_end(box, btn);
-   elm_object_part_content_set(layout, "scale_btn", box);
+   elm_object_part_content_set(layout, part_name, box);
 
    return btn;
 }
@@ -152,10 +172,15 @@ stats_init(Evas_Object *parent)
    Evas_Object *layout = elm_layout_add(parent);
    elm_layout_file_set(layout, EDJE_PATH, "statusbar_layout");
 
-   Evas_Object *btn;
-   btn = create_statusbar_btn(layout,
-                              "View Scale (Ctrl + Mouse Wheel)",
-                              view_scale_btn_cb, sd);
+   //View Scale button
+   create_statusbar_btn(layout, "expand", "scale_btn",
+                        "View Scale (Ctrl + Mouse Wheel)",
+                        view_scale_btn_cb, sd);
+
+   create_statusbar_btn(layout, "invert", "invert_btn",
+                        "Invert View Size",
+                        view_invert_btn_cb, sd);
+
    sd->layout = layout;
 
    stats_cursor_pos_update(0, 0, 0, 0);
