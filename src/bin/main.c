@@ -166,12 +166,21 @@ main_mouse_wheel_cb(void *data, int type EINA_UNUSED, void *ev)
      {
         double scale = config_view_scale_get();
 
-        if (event->z < 0) scale += 0.1;
-        else scale -= 0.1;
+        if (event->z < 0) scale += 0.05;
+        else scale -= 0.05;
 
         config_view_scale_set(scale);
         scale = config_view_scale_get();
         enventor_object_live_view_scale_set(ad->enventor, scale);
+
+        //Toggle on the configurable view size forcely.
+        if (!config_view_size_configurable_get())
+          {
+             config_view_size_configurable_set(EINA_TRUE);
+             Evas_Coord w, h;
+             config_view_size_get(&w, &h);
+             enventor_object_live_view_size_set(base_enventor_get(), w, h);
+          }
 
         //Just in live edit mode case.
         live_edit_update();
