@@ -20,7 +20,6 @@ struct setting_s
    Evas_Object *slider_view;
    Evas_Object *view_size_w_entry;
    Evas_Object *view_size_h_entry;
-   Evas_Object *toggle_view_size;
    Evas_Object *toggle_highlight;
    Evas_Object *toggle_swallow;
    Evas_Object *toggle_stats;
@@ -125,7 +124,6 @@ setting_apply_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
    config_stats_bar_set(elm_check_state_get(sd->toggle_stats));
    config_part_highlight_set(elm_check_state_get(sd->toggle_highlight));
    config_dummy_parts_set(elm_check_state_get(sd->toggle_swallow));
-   config_view_size_configurable_set(elm_check_state_get(sd->toggle_view_size));
    text_setting_config_set();
 
    Evas_Coord w = (Evas_Coord)atoi(elm_entry_entry_get(sd->view_size_w_entry));
@@ -214,17 +212,6 @@ toggle_create(Evas_Object *parent, const char *text, Eina_Bool state)
    evas_object_show(toggle);
 
    return toggle;
-}
-
-static void
-toggle_view_size_changed_cb(void *data, Evas_Object *obj,
-                            void *event_info EINA_UNUSED)
-{
-   setting_data *sd = data;
-   Eina_Bool toggle_on = elm_check_state_get(obj);
-
-   elm_object_disabled_set(sd->view_size_w_entry, !toggle_on);
-   elm_object_disabled_set(sd->view_size_h_entry, !toggle_on);
 }
 
 static Evas_Object *
@@ -328,6 +315,12 @@ general_layout_create(setting_data *sd, Evas_Object *parent)
    elm_object_part_content_set(layout_padding3, "elm.swallow.content",
                                label_view_size);
 
+   //Spacer
+   Evas_Object *rect = evas_object_rectangle_add(evas_object_evas_get(box2));
+   evas_object_size_hint_weight_set(rect, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(rect, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_box_pack_end(box2, rect);
+
    Evas_Coord w, h;
    char w_str[5], h_str[5];
    config_view_size_get(&w, &h);
@@ -337,7 +330,7 @@ general_layout_create(setting_data *sd, Evas_Object *parent)
    //Entry (View Width)
    Evas_Object *entry_view_size_w = entry_create(box2);
    evas_object_size_hint_weight_set(entry_view_size_w, 0.15, 0);
-   evas_object_size_hint_align_set(entry_view_size_w, EVAS_HINT_FILL, 0);
+   evas_object_size_hint_align_set(entry_view_size_w, 1.0, 0);
 
    digits_filter_data.accepted = "0123456789";
    digits_filter_data.rejected = NULL;
@@ -351,8 +344,6 @@ general_layout_create(setting_data *sd, Evas_Object *parent)
                                   &limit_filter_data);
 
    elm_object_text_set(entry_view_size_w, w_str);
-   elm_object_disabled_set(entry_view_size_w,
-                           !config_view_size_configurable_get());
    elm_box_pack_end(box2, entry_view_size_w);
 
    //Label (X)
@@ -362,7 +353,7 @@ general_layout_create(setting_data *sd, Evas_Object *parent)
    //Entry (View Height)
    Evas_Object *entry_view_size_h = entry_create(box2);
    evas_object_size_hint_weight_set(entry_view_size_h, 0.15, 0);
-   evas_object_size_hint_align_set(entry_view_size_h, EVAS_HINT_FILL, 0);
+   evas_object_size_hint_align_set(entry_view_size_h, 1.0, 0);
 
    elm_entry_markup_filter_append(entry_view_size_h,
                                   elm_entry_filter_accept_set,
@@ -372,17 +363,7 @@ general_layout_create(setting_data *sd, Evas_Object *parent)
                                   &limit_filter_data);
 
    elm_object_text_set(entry_view_size_h, h_str);
-   elm_object_disabled_set(entry_view_size_h,
-                           !config_view_size_configurable_get());
    elm_box_pack_end(box2, entry_view_size_h);
-
-   //Toggle (View Size)
-   Evas_Object *toggle_view_size;
-   toggle_view_size = toggle_create(box2, NULL,
-                                    config_view_size_configurable_get());
-   evas_object_smart_callback_add(toggle_view_size, "changed",
-                                  toggle_view_size_changed_cb, sd);
-   elm_box_pack_end(box2, toggle_view_size);
 
    //Toggle (Part Highlighting)
    Evas_Object *toggle_highlight = toggle_create(box, _("Part Highlighting"),
@@ -417,7 +398,6 @@ general_layout_create(setting_data *sd, Evas_Object *parent)
    sd->slider_view = slider_view;
    sd->view_size_w_entry = entry_view_size_w;
    sd->view_size_h_entry = entry_view_size_h;
-   sd->toggle_view_size = toggle_view_size;
    sd->toggle_highlight = toggle_highlight;
    sd->toggle_swallow = toggle_swallow;
    sd->toggle_stats = toggle_stats;

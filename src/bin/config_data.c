@@ -37,7 +37,6 @@ typedef struct config_s
    Eina_Bool tools;
    Eina_Bool console;
    Eina_Bool auto_complete;
-   Eina_Bool view_size_configurable;
    Eina_Bool smart_undo_redo;
 } config_data;
 
@@ -167,6 +166,8 @@ config_load(void)
         cd->dat_path_list = NULL;
         cd->font_scale = 1;
         cd->view_scale = 1;
+        cd->view_size_w = 300;
+        cd->view_size_h = 300;
         cd->editor_size = DEFAULT_EDITOR_SIZE;
         cd->console_size = DEFAULT_CONSOLE_SIZE;
         cd->stats_bar = EINA_TRUE;
@@ -177,7 +178,6 @@ config_load(void)
         cd->tools = EINA_TRUE;
         cd->console = EINA_TRUE;
         cd->auto_complete = EINA_TRUE;
-        cd->view_size_configurable = EINA_FALSE;
         cd->version = ENVENTOR_CONFIG_VERSION;
         cd->smart_undo_redo = EINA_FALSE;
      }
@@ -281,9 +281,6 @@ eddc_init(void)
                                  console, EET_T_UCHAR);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "auto_complete",
                                     auto_complete, EET_T_UCHAR);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data,
-                                 "view_size_configurable",
-                                 view_size_configurable, EET_T_UCHAR);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "smart_undo_redo",
                                     smart_undo_redo, EET_T_UCHAR);
 }
@@ -780,8 +777,7 @@ double
 config_view_scale_get(void)
 {
    config_data *cd = g_cd;
-   if (cd->view_size_configurable) return cd->view_scale;
-   else return 1;
+   return cd->view_scale;
 }
 
 void
@@ -800,20 +796,6 @@ config_view_size_get(Evas_Coord *w, Evas_Coord *h)
 
    if (w) *w = cd->view_size_w;
    if (h) *h = cd->view_size_h;
-}
-
-void
-config_view_size_configurable_set(Eina_Bool configurable)
-{
-   config_data *cd = g_cd;
-   cd->view_size_configurable = configurable;
-}
-
-Eina_Bool
-config_view_size_configurable_get(void)
-{
-   config_data *cd = g_cd;
-   return cd->view_size_configurable;
 }
 
 double

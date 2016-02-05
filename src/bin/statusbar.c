@@ -37,14 +37,9 @@ slider_changed_cb(void *data, Evas_Object *obj,
    scale = config_view_scale_get();
    enventor_object_live_view_scale_set(base_enventor_get(), scale);
 
-   //Toggle on the configurable view size forcely.
-   if (!config_view_size_configurable_get())
-     {
-        config_view_size_configurable_set(EINA_TRUE);
-        Evas_Coord w, h;
-        config_view_size_get(&w, &h);
-        enventor_object_live_view_size_set(base_enventor_get(), w, h);
-     }
+   Evas_Coord w, h;
+   config_view_size_get(&w, &h);
+   enventor_object_live_view_size_set(base_enventor_get(), w, h);
 
    //Just in live edit mode case.
    live_edit_update();
@@ -88,10 +83,6 @@ static void
 view_invert_btn_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
 {
    stats_data *sd = data;
-
-   //Toggle on the configurable view size forcely.
-   if (!config_view_size_configurable_get())
-     config_view_size_configurable_set(EINA_TRUE);
 
    invert_data *id = malloc(sizeof(invert_data));
 

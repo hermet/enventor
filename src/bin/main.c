@@ -134,13 +134,7 @@ config_update_cb(void *data)
 
    //Live View Size
    Evas_Coord w, h;
-   if (config_view_size_configurable_get())
-     config_view_size_get(&w, &h);
-   else
-     {
-        w = 0;
-        h = 0;
-     }
+   config_view_size_get(&w, &h);
    enventor_object_live_view_size_set(enventor, w, h);
    stats_view_scale_update(config_view_scale_get());
    base_tools_toggle(EINA_FALSE);
@@ -173,14 +167,9 @@ main_mouse_wheel_cb(void *data, int type EINA_UNUSED, void *ev)
         scale = config_view_scale_get();
         enventor_object_live_view_scale_set(ad->enventor, scale);
 
-        //Toggle on the configurable view size forcely.
-        if (!config_view_size_configurable_get())
-          {
-             config_view_size_configurable_set(EINA_TRUE);
-             Evas_Coord w, h;
-             config_view_size_get(&w, &h);
-             enventor_object_live_view_size_set(base_enventor_get(), w, h);
-          }
+        Evas_Coord w, h;
+        config_view_size_get(&w, &h);
+        enventor_object_live_view_size_set(base_enventor_get(), w, h);
 
         //Just in live edit mode case.
         live_edit_update();
@@ -430,17 +419,13 @@ enventor_live_view_resized_cb(void *data EINA_UNUSED,
    if (!config_stats_bar_get()) return;
    Enventor_Live_View_Size *size = event_info;
    stats_view_size_update(size->w, size->h);
-
-   if (!config_view_size_configurable_get())
-     config_view_size_set(size->w, size->h);
+   config_view_size_set(size->w, size->h);
 }
 
 static void
 enventor_live_view_loaded_cb(void *data EINA_UNUSED, Evas_Object *obj,
                              void *event_info EINA_UNUSED)
 {
-   if (!config_view_size_configurable_get()) return;
-
    Evas_Coord w, h;
    config_view_size_get(&w, &h);
    enventor_object_live_view_size_set(obj, w, h);
