@@ -114,13 +114,47 @@ visible_text_region_get(edit_data *ed, int *from_line, int *to_line)
 }
 
 static void
-entry_recover(edit_data *ed, int cursor_pos)
+entry_recover_param_get(edit_data *ed,
+                        int *cursor_pos,
+                        int *sel_cur_begin,
+                        int *sel_cur_end)
+{
+   if (cursor_pos)
+     *cursor_pos = elm_entry_cursor_pos_get(ed->en_edit);
+
+   Edje_Object *en_edje;
+   if (sel_cur_begin || sel_cur_end)
+     {
+        en_edje = elm_layout_edje_get(ed->en_edit);
+        if (elm_entry_scrollable_get(ed->en_edit))
+          en_edje = edje_object_part_swallow_get(en_edje, "elm.swallow.content");
+     }
+
+   if (sel_cur_begin)
+     *sel_cur_begin = edje_object_part_text_cursor_pos_get
+                      (en_edje, "elm.text", EDJE_CURSOR_SELECTION_BEGIN);
+   if (sel_cur_end)
+     *sel_cur_end = edje_object_part_text_cursor_pos_get
+                    (en_edje, "elm.text", EDJE_CURSOR_SELECTION_END);
+}
+
+static void
+entry_recover(edit_data *ed, int cursor_pos, int sel_cur_begin, int sel_cur_end)
 {
    elm_entry_calc_force(ed->en_edit);
-
    //recover cursor position??
    elm_entry_cursor_pos_set(ed->en_edit, 0);
    elm_entry_cursor_pos_set(ed->en_edit, cursor_pos);
+
+   Edje_Object *en_edje = elm_layout_edje_get(ed->en_edit);
+   if (elm_entry_scrollable_get(ed->en_edit))
+     en_edje = edje_object_part_swallow_get(en_edje, "elm.swallow.content");
+
+   //recover selection cursor
+   edje_object_part_text_cursor_pos_set(en_edje, "elm.text",
+                            EDJE_CURSOR_SELECTION_BEGIN, sel_cur_begin);
+   edje_object_part_text_cursor_pos_set(en_edje, "elm.text",
+                            EDJE_CURSOR_SELECTION_END, sel_cur_end);
 
    //not on selection mode
    if (ed->select_pos == -1) return;
@@ -129,7 +163,9 @@ entry_recover(edit_data *ed, int cursor_pos)
    const char *selected = elm_entry_selection_get(ed->en_edit);
    if (!selected) return;
    ed->on_select_recover = EINA_TRUE;
-   elm_entry_select_region_set(ed->en_edit, ed->select_pos, cursor_pos);
+   elm_entry_select_region_set(ed->en_edit,
+                               ed->select_pos,
+                               cursor_pos);
    ed->on_select_recover = EINA_FALSE;
 }
 
@@ -143,8 +179,10 @@ edit_font_apply(edit_data *ed, const char *font_name, const char *font_style)
    elm_font_fontconfig_name_free(font);
 
    elm_entry_calc_force(ed->en_line);
-   int pos = elm_entry_cursor_pos_get(ed->en_edit);
-   entry_recover(ed, pos);
+
+   int cursor_pos;
+   entry_recover_param_get(ed, &cursor_pos, NULL, NULL);
+   entry_recover(ed, cursor_pos, -1, -1);
 }
 
 static void
@@ -205,7 +243,6 @@ syntax_color_apply(edit_data *ed, Eina_Bool partial)
 {
    Evas_Object *tb = elm_entry_textblock_get(ed->en_edit);
    char *text = (char *) evas_object_textblock_text_markup_get(tb);
-   int pos = elm_entry_cursor_pos_get(ed->en_edit);
 
    int from_line = 1;
    int to_line = -1;
@@ -225,10 +262,12 @@ syntax_color_apply(edit_data *ed, Eina_Bool partial)
    /* I'm not sure this will be problem.
       But it can avoid entry_object_text_escaped_set() in Edje.
       Logically that's unnecessary in this case. */
+   int cursor_pos, sel_cur_begin, sel_cur_end;
+   entry_recover_param_get(ed, &cursor_pos, &sel_cur_begin, &sel_cur_end);
    evas_object_textblock_text_markup_set(tb, translated);
    error_highlight(ed, tb);
    bracket_highlight(ed, tb);
-   entry_recover(ed, pos);
+   entry_recover(ed, cursor_pos, sel_cur_begin, sel_cur_end);
 }
 
 static Eina_Bool
@@ -271,15 +310,16 @@ syntax_color_thread_end_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
    syntax_color_td *td = data;
    if (!td->translated) return;
 
-   int pos = elm_entry_cursor_pos_get(td->ed->en_edit);
    Evas_Object *tb = elm_entry_textblock_get(td->ed->en_edit);
 
    /* I'm not sure this will be problem.
       But it can avoid entry_object_text_escaped_set() in Edje.
       Logically that's unnecessary in this case. */
+   int cursor_pos, sel_cur_begin, sel_cur_end;
+   entry_recover_param_get(td->ed, &cursor_pos, &sel_cur_begin, &sel_cur_end);
    evas_object_textblock_text_markup_set(tb, td->translated);
    error_highlight(td->ed, tb);
-   entry_recover(td->ed, pos);
+   entry_recover(td->ed, cursor_pos, sel_cur_begin, sel_cur_end);
 
    td->ed->syntax_color_thread = NULL;
    free(td);
