@@ -272,6 +272,32 @@ general_layout_create(setting_data *sd, Evas_Object *parent)
 
    elm_object_content_set(scroller, box);
 
+   Evas_Object *box2;
+   Evas_Object *layout_padding3;
+
+   //Box for View Scale
+   box2  = elm_box_add(box);
+   elm_box_horizontal_set(box2, EINA_TRUE);
+   elm_box_padding_set(box2, 5 * elm_config_scale_get(), 0);
+   evas_object_size_hint_weight_set(box2, EVAS_HINT_EXPAND, 0);
+   evas_object_size_hint_align_set(box2, EVAS_HINT_FILL, 0);
+   evas_object_show(box2);
+
+   elm_box_pack_end(box, box2);
+
+   /* This layout is intended to put the label aligned to left side
+      far from 3 pixels. */
+   layout_padding3 = elm_layout_add(box2);
+   elm_layout_file_set(layout_padding3, EDJE_PATH, "padding3_layout");
+   evas_object_show(layout_padding3);
+
+   elm_box_pack_end(box2, layout_padding3);
+
+   Evas_Object *label_view_scale = label_create(layout_padding3,
+                                               _("Live View Scale"));
+   elm_object_part_content_set(layout_padding3, "elm.swallow.content",
+                               label_view_scale);
+
    //View Scale (Slider)
    Evas_Object *slider_view = elm_slider_add(box);
    evas_object_size_hint_weight_set(slider_view, EVAS_HINT_EXPAND, 0);
@@ -283,15 +309,14 @@ general_layout_create(setting_data *sd, Evas_Object *parent)
    elm_slider_step_set(slider_view, step);
    elm_slider_min_max_set(slider_view, MIN_VIEW_SCALE, MAX_VIEW_SCALE);
    elm_slider_value_set(slider_view, (double) config_view_scale_get());
-   elm_object_text_set(slider_view, _("Live View Scale"));
    evas_object_show(slider_view);
 
-   elm_box_pack_end(box, slider_view);
+   elm_box_pack_end(box2, slider_view);
 
    //View Size
 
    //Box for View Size
-   Evas_Object *box2 = elm_box_add(box);
+   box2 = elm_box_add(box);
    elm_box_horizontal_set(box2, EINA_TRUE);
    elm_box_padding_set(box2, 5 * elm_config_scale_get(), 0);
    evas_object_size_hint_weight_set(box2, EVAS_HINT_EXPAND, 0);
@@ -304,7 +329,7 @@ general_layout_create(setting_data *sd, Evas_Object *parent)
 
    /* This layout is intended to put the label aligned to left side
       far from 3 pixels. */
-   Evas_Object *layout_padding3 = elm_layout_add(box2);
+   layout_padding3 = elm_layout_add(box2);
    elm_layout_file_set(layout_padding3, EDJE_PATH, "padding3_layout");
    evas_object_show(layout_padding3);
 
