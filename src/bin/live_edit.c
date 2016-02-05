@@ -1012,7 +1012,9 @@ live_btn_create(Evas_Object *parent, const char *name, void * data)
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_focus_allow_set(btn, EINA_FALSE);
-   elm_object_tooltip_text_set(btn, name);
+   char buf[128];
+   snprintf(buf, sizeof(buf), "Add %s", name);
+   elm_object_tooltip_text_set(btn, buf);
    elm_object_tooltip_orient_set(btn, ELM_TOOLTIP_ORIENT_BOTTOM);
 
    Evas_Object *img = elm_image_add(btn);
