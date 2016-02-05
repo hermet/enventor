@@ -107,10 +107,6 @@ msgstr ""
 msgid "Double click the part to confirm."
 msgstr ""
 
-#: src/bin/live_edit.c:995
-msgid "Select a part to add in Live View."
-msgstr ""
-
 #: src/bin/live_edit.c:1070
 msgid "Faild to allocate Memory!"
 msgstr ""
@@ -308,7 +304,7 @@ msgid "Live View Scale"
 msgstr ""
 
 #: src/bin/setting.c:324
-msgid "Fixed Live View Size"
+msgid "Live View Size"
 msgstr ""
 
 #: src/bin/setting.c:385

@@ -107,10 +107,6 @@ msgstr "Ошибка перехвата нажатия - Escape"
 msgid "Double click the part to confirm."
 msgstr "Сделайте двойной клик мыши по примитиву для вставки."
 
-#: src/bin/live_edit.c:995
-msgid "Select a part to add in Live View."
-msgstr "Выбирете тип примитива, который будет добавлен."
-
 #: src/bin/live_edit.c:1070
 msgid "Faild to allocate Memory!"
 msgstr "Ошибка выделения памяти!"
@@ -310,8 +306,8 @@ msgid "Live View Scale"
 msgstr "Масштаб Live View"
 
 #: src/bin/setting.c:324
-msgid "Fixed Live View Size"
-msgstr "Фиксированный размер Live View"
+msgid "Live View Size"
+msgstr "размер Live View"
 
 #: src/bin/setting.c:385
 msgid "Part Highlighting"

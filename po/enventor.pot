@@ -318,7 +318,7 @@ msgid "Live View Scale"
 msgstr ""
 
 #: src/bin/setting.c:324
-msgid "Fixed Live View Size"
+msgid "Live View Size"
 msgstr ""
 
 #: src/bin/setting.c:385
