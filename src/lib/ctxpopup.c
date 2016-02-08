@@ -604,10 +604,10 @@ ctxpopup_img_preview_create(edit_data *ed,
    elm_config_focus_autoscroll_mode_set(ELM_FOCUS_AUTOSCROLL_MODE_NONE);
 
    elm_object_style_set(ctxpopup, "enventor");
-   elm_ctxpopup_direction_priority_set(ctxpopup, ELM_CTXPOPUP_DIRECTION_LEFT,
-                                       ELM_CTXPOPUP_DIRECTION_UP,
+   elm_ctxpopup_direction_priority_set(ctxpopup, ELM_CTXPOPUP_DIRECTION_UP,
                                        ELM_CTXPOPUP_DIRECTION_DOWN,
-                                       ELM_CTXPOPUP_DIRECTION_RIGHT);
+                                       ELM_CTXPOPUP_DIRECTION_RIGHT,
+                                       ELM_CTXPOPUP_DIRECTION_LEFT);
    //ctxpopup data
    ctxpopup_data *ctxdata = calloc(1, sizeof(ctxpopup_data));
    if (!ctxdata)
@@ -658,10 +658,10 @@ ctxpopup_candidate_list_create(edit_data *ed, attr_value *attr,
    elm_config_focus_autoscroll_mode_set(ELM_FOCUS_AUTOSCROLL_MODE_NONE);
 
    elm_object_style_set(ctxpopup, "enventor");
-   elm_ctxpopup_direction_priority_set(ctxpopup, ELM_CTXPOPUP_DIRECTION_RIGHT,
-                                       ELM_CTXPOPUP_DIRECTION_LEFT,
-                                       ELM_CTXPOPUP_DIRECTION_UP,
-                                       ELM_CTXPOPUP_DIRECTION_DOWN);
+   elm_ctxpopup_direction_priority_set(ctxpopup, ELM_CTXPOPUP_DIRECTION_UP,
+                                       ELM_CTXPOPUP_DIRECTION_DOWN,
+                                       ELM_CTXPOPUP_DIRECTION_RIGHT,
+                                       ELM_CTXPOPUP_DIRECTION_LEFT);
    //ctxpopup data
    ctxpopup_data *ctxdata = calloc(1, sizeof(ctxpopup_data));
    if (!ctxdata)
