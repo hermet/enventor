@@ -1486,20 +1486,17 @@ group { name: "viewer_layout";
    }
 }
 
-group { name: "preview_layout";
+group { "preview_layout";
    parts {
-      part { name: "bg";
-         type: RECT;
-         description { state: "default" 0.0;
-            min: 100 100;
-            color: 225 225 225 255;
+      rect { "bg";
+         desc {
+            min: 120 120;
             rel1.offset: 2 2;
             rel2.offset: -3 -3;
          }
       }
-      part { name: "elm.swallow.img";
-         type: SWALLOW;
-         description { state: "default" 0.0;
+      swallow { "elm.swallow.img";
+         desc {
             rel1.to: "bg";
             rel2.to: "bg";
          }
