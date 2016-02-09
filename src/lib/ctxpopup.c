@@ -298,8 +298,12 @@ slider_layout_create(Evas_Object *parent, ctxpopup_data *ctxdata,
 
    //Down Button
    btn = elm_button_add(layout);
+   elm_button_autorepeat_set(btn, EINA_TRUE);
+   elm_button_autorepeat_initial_timeout_set(btn, 0.5);
+   elm_button_autorepeat_gap_timeout_set(btn, 0.1);
    evas_object_data_set(btn, "layout", layout);
    evas_object_smart_callback_add(btn, "clicked", btn_down_cb, ctxdata);
+   evas_object_smart_callback_add(btn, "repeated", btn_down_cb, ctxdata);
    elm_object_part_content_set(layout, "elm.swallow.down", btn);
 
    //Down Image
@@ -309,8 +313,12 @@ slider_layout_create(Evas_Object *parent, ctxpopup_data *ctxdata,
 
    //Up Button
    btn = elm_button_add(layout);
+   elm_button_autorepeat_set(btn, EINA_TRUE);
+   elm_button_autorepeat_initial_timeout_set(btn, 0.5);
+   elm_button_autorepeat_gap_timeout_set(btn, 0.1);
    evas_object_data_set(btn, "layout", layout);
    evas_object_smart_callback_add(btn, "clicked", btn_up_cb, ctxdata);
+   evas_object_smart_callback_add(btn, "repeated", btn_up_cb, ctxdata);
    elm_object_part_content_set(layout, "elm.swallow.up", btn);
 
    //Up Image
