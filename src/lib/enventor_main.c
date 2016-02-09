@@ -19,6 +19,7 @@ const char SIG_COMPILE_ERROR[] = "compile,error";
 const char SIG_PROGRAM_RUN[] = "program,run";
 const char SIG_CTXPOPUP_CHANGED[] = "ctxpopup,changed";
 const char SIG_CTXPOPUP_DISMISSED[] = "ctxpopup,dismissed";
+const char SIG_CTXPOPUP_ACTIVATED[] = "ctxpopup,activated";
 const char SIG_EDC_MODIFIED[] = "edc,modified";
 const char SIG_FOCUSED[] = "focused";
 

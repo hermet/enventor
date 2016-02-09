@@ -46,6 +46,7 @@ static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_PROGRAM_RUN, ""},
    {SIG_CTXPOPUP_CHANGED, ""},
    {SIG_CTXPOPUP_DISMISSED, ""},
+   {SIG_CTXPOPUP_ACTIVATED, ""},
    {SIG_EDC_MODIFIED, ""},
    {SIG_FOCUSED, ""},
    {NULL, NULL}

@@ -673,6 +673,9 @@ image_preview_show(edit_data *ed, char *cur, Evas_Coord x, Evas_Coord y)
 
         evas_object_move(ed->ctxpopup, x, y);
         evas_object_show(ed->ctxpopup);
+        Enventor_Ctxpopup_Type type = ENVENTOR_CTXPOPUP_TYPE_IMAGE;
+        evas_object_smart_callback_call(ed->enventor, SIG_CTXPOPUP_ACTIVATED,
+                                        (void *) type);
         elm_object_tree_focus_allow_set(ed->layout, EINA_FALSE);
         succeed = EINA_TRUE;
      }
@@ -695,16 +698,21 @@ candidate_list_show(edit_data *ed, char *text, char *cur, char *selected)
    parser_attribute_value_set(attr, cur);
 
    //Show up the list of the types
+   Enventor_Ctxpopup_Type type;
    Evas_Object *ctxpopup =
       ctxpopup_candidate_list_create(ed, attr,
                                      ctxpopup_candidate_dismiss_cb,
-                                     ctxpopup_candidate_changed_cb);
+                                     ctxpopup_candidate_changed_cb,
+                                     &type);
    if (!ctxpopup) return;
 
    int x, y;
    evas_pointer_output_xy_get(evas_object_evas_get(ed->en_edit), &x, &y);
    evas_object_move(ctxpopup, x, y);
    evas_object_show(ctxpopup);
+   evas_object_smart_callback_call(ed->enventor, SIG_CTXPOPUP_ACTIVATED,
+                                   (void *) type);
+
    evas_object_event_callback_add(ctxpopup, EVAS_CALLBACK_DEL, ctxpopup_del_cb, ed);
    ed->ctxpopup = ctxpopup;
    elm_object_tree_focus_allow_set(ed->layout, EINA_FALSE);

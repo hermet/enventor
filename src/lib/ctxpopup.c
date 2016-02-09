@@ -532,7 +532,8 @@ ctxpopup_img_preview_create(edit_data *ed,
 Evas_Object *
 ctxpopup_candidate_list_create(edit_data *ed, attr_value *attr,
                                Evas_Smart_Cb ctxpopup_dismiss_cb,
-                               Evas_Smart_Cb ctxpopup_changed_cb)
+                               Evas_Smart_Cb ctxpopup_changed_cb,
+                               Enventor_Ctxpopup_Type *type)
 {
    //create ctxpopup
    Evas_Object *ctxpopup = elm_ctxpopup_add(edit_obj_get(ed));
@@ -562,43 +563,51 @@ ctxpopup_candidate_list_create(edit_data *ed, attr_value *attr,
         case ATTR_VALUE_BOOLEAN:
           {
              toggle_layout_set(ctxpopup, ctxdata);
+             *type = ENVENTOR_CTXPOPUP_TYPE_TOGGLE;
              break;
           }
         case ATTR_VALUE_INTEGER:
           {
              ctxdata->integer = EINA_TRUE;
              slider_layout_set(ctxpopup, ctxdata);
+             *type = ENVENTOR_CTXPOPUP_TYPE_SLIDER;
              break;
           }
         case ATTR_VALUE_FLOAT:
           {
              ctxdata->integer = EINA_FALSE;
              slider_layout_set(ctxpopup, ctxdata);
+             *type = ENVENTOR_CTXPOPUP_TYPE_SLIDER;
              break;
           }
         case ATTR_VALUE_CONSTANT:
           {
              constant_candidate_set(ctxpopup, ctxdata);
+             *type = ENVENTOR_CTXPOPUP_TYPE_LIST;
              break;
           }
         case ATTR_VALUE_PART:
           {
              if (!part_candidate_set(ctxpopup, ctxdata)) goto err;
+             *type = ENVENTOR_CTXPOPUP_TYPE_LIST;
              break;
           }
         case ATTR_VALUE_STATE:
           {
              if (!state_candidate_set(ctxpopup, ctxdata, ed)) goto err;
+             *type = ENVENTOR_CTXPOPUP_TYPE_LIST;
              break;
           }
         case ATTR_VALUE_IMAGE:
           {
              if (!image_candidate_set(ctxpopup, ctxdata)) goto err;
+             *type = ENVENTOR_CTXPOPUP_TYPE_IMAGE;
              break;
           }
         case ATTR_VALUE_PROGRAM:
           {
              if (!program_candidate_set(ctxpopup, ctxdata)) goto err;
+             *type = ENVENTOR_CTXPOPUP_TYPE_LIST;
              break;
           }
    }
@@ -606,6 +615,7 @@ ctxpopup_candidate_list_create(edit_data *ed, attr_value *attr,
                                   ctxdata);
    evas_object_smart_callback_add(ctxpopup, "dismissed", ctxpopup_dismiss_cb,
                                   ed);
+
    return ctxpopup;
 
 err:

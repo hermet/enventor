@@ -269,6 +269,7 @@ class Enventor.Object (Elm.Widget, Efl.File) {
       max_line,changed;
       compile,error;
       program,run;
+      ctxpopup,activated;
       ctxpopup,changed;
       ctxpopup,dismissed;
       edc,modified;

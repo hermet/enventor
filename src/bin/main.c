@@ -453,6 +453,14 @@ enventor_program_run_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 }
 
 static void
+enventor_ctxpopup_activated_cb(void *data, Evas_Object *obj, void *event_info)
+{
+   Enventor_Ctxpopup_Type type = (Enventor_Ctxpopup_Type) event_info;
+   if (type != ENVENTOR_CTXPOPUP_TYPE_SLIDER) return;
+   stats_info_msg_update("You could use a mouse wheel to change values elaborately.");
+}
+
+static void
 enventor_ctxpopup_changed_cb(void *data, Evas_Object *obj,
                              void *event_info EINA_UNUSED)
 {
@@ -520,6 +528,8 @@ enventor_setup(app_data *ad)
                                   enventor_live_view_updated_cb, ad);
    evas_object_smart_callback_add(enventor, "program,run",
                                   enventor_program_run_cb, ad);
+   evas_object_smart_callback_add(enventor, "ctxpopup,activated",
+                                  enventor_ctxpopup_activated_cb, ad);
    evas_object_smart_callback_add(enventor, "ctxpopup,changed",
                                   enventor_ctxpopup_changed_cb, ad);
    evas_object_smart_callback_add(enventor, "ctxpopup,dismissed",
