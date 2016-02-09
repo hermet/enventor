@@ -1595,7 +1595,7 @@ group { name: "slider_layout";
          type: RECT;
          scale: 1;
          description { state: "default" 0.0;
-            min: 240 1;
+            min: 215 1;
             color: 56 56 56 255;
          }
          description { state: "odd" 0.0;
@@ -1709,26 +1709,15 @@ group { name: "slider_layout";
             rel1.relative: 1.0 0.0;
             rel2.relative: 1.0 1.0;
             align: 0.0 0.5;
-            min: 5 0;
+            min: 0 0;
             fixed: 1 0;
-         }
-      }
-      part { name: "elm.swallow.entry";
-         type: SWALLOW;
-         scale: 1;
-         description { state: "default" 0.0;
-            rel1.to_x: "padding2";
-            rel2.to_x: "elm.swallow.down";
-            rel2.relative: 0 1;
-            align: 1 0.5;
-            max: 30 999999;
          }
       }
       part { name: "elm.swallow.down";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
-            min: 10 20;
+            min: 20 20;
             fixed: 1 1;
             align: 1.0 0.5;
             rel1.to: "elm.swallow.up";
@@ -1741,7 +1730,7 @@ group { name: "slider_layout";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
-            min: 10 20;
+            min: 20 20;
             fixed: 1 1;
             align: 1.0 0.5;
             rel1.relative: 1.0 0.5;
