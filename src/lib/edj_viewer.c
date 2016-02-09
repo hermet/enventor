@@ -97,12 +97,14 @@ static void
 view_obj_min_update(view_data *vd)
 {
    double scale = edj_mgr_view_scale_get();
-   evas_object_size_hint_min_set(vd->layout,
-                                 ((double)vd->view_config_size.w * scale),
-                                 ((double)vd->view_config_size.h * scale));
-   evas_object_size_hint_max_set(vd->layout,
-                                 ((double)vd->view_config_size.w * scale),
-                                 ((double)vd->view_config_size.h * scale));
+
+   double min_w = (double) vd->view_config_size.w * scale;
+   if (1 > min_w) min_w = 1;
+   double min_h = (double) vd->view_config_size.h * scale;
+   if (1 > min_h) min_h = 1;
+
+   evas_object_size_hint_min_set(vd->layout, min_w, min_h);
+   evas_object_size_hint_max_set(vd->layout, min_w, min_h);
 }
 
 static void
@@ -406,16 +408,6 @@ layout_del_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
    evas_object_del(rect);
 }
 
-static void
-layout_resize_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
-                 void *event_info EINA_UNUSED)
-{
-   static Enventor_Live_View_Size size;
-   view_data *vd = data;
-   view_size_get(vd, &size.w, &size.h);
-   evas_object_smart_callback_call(vd->enventor, SIG_LIVE_VIEW_RESIZED, &size);
-}
-
 static Evas_Object *
 base_create(Evas_Object *parent)
 {
@@ -448,8 +440,6 @@ view_obj_create(view_data *vd)
 
    evas_object_size_hint_weight_set(vd->layout, EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
-   evas_object_event_callback_add(vd->layout, EVAS_CALLBACK_RESIZE,
-                                  layout_resize_cb, vd);
    evas_object_smart_callback_add(vd->layout, "dummy,clicked",
                                   dummy_clicked_cb, vd);
 
@@ -709,11 +699,22 @@ view_scale_set(view_data *vd, double scale)
 void
 view_size_set(view_data *vd, Evas_Coord w, Evas_Coord h)
 {
+   static Enventor_Live_View_Size size;
+
    if (!vd) return;
+
+   double scale = edj_mgr_view_scale_get();
+   int prev_w = vd->view_config_size.w;
+   int prev_h = vd->view_config_size.h;
 
    vd->view_config_size.w = w;
    vd->view_config_size.h = h;
    view_obj_min_update(vd);
+
+   if ((prev_w == w) && (prev_h == h)) return;
+
+   view_size_get(vd, &size.w, &size.h);
+   evas_object_smart_callback_call(vd->enventor, SIG_LIVE_VIEW_RESIZED, &size);
 }
 
 void

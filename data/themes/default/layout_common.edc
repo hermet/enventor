@@ -1595,7 +1595,7 @@ group { name: "slider_layout";
          type: RECT;
          scale: 1;
          description { state: "default" 0.0;
-            min: 215 1;
+            min: 235 1;
             color: 56 56 56 255;
          }
          description { state: "odd" 0.0;
@@ -1696,7 +1696,7 @@ group { name: "slider_layout";
             rel2.to: "padding1";
             rel2.relative: 1.0 1.0;
             align: 0 0;
-            min: 125 0;
+            min: 185 0;
             fixed: 1 0;
          }
       }
@@ -1711,30 +1711,6 @@ group { name: "slider_layout";
             align: 0.0 0.5;
             min: 0 0;
             fixed: 1 0;
-         }
-      }
-      part { name: "elm.swallow.down";
-         type: SWALLOW;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: 20 20;
-            fixed: 1 1;
-            align: 1.0 0.5;
-            rel1.to: "elm.swallow.up";
-            rel1.relative: 0.0 0.5;
-            rel2.to: "elm.swallow.up";
-            rel2.relative: 0.0 0.5;
-         }
-      }
-      part { name: "elm.swallow.up";
-         type: SWALLOW;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: 20 20;
-            fixed: 1 1;
-            align: 1.0 0.5;
-            rel1.relative: 1.0 0.5;
-            rel2.relative: 1.0 0.5;
          }
       }
    }
@@ -1817,12 +1793,25 @@ group { name: "statusbar_layout";
             align: 0 0.5;
          }
       }
-      swallow { "invert_btn";
+      swallow { "resize_btn";
          clip_to: "base_clip";
          scale: 1;
          desc {
             rel1.to_x: "size_spacer";
             rel1.relative: 0.0 0;
+            rel2.relative: 0.0 1;
+            rel1.offset: 3 -3;
+            align: 0 0;
+            fixed: 1 0;
+            min: 15 15;
+         }
+      }
+      swallow { "invert_btn";
+         clip_to: "base_clip";
+         scale: 1;
+         desc {
+            rel1.to_x: "resize_btn";
+            rel1.relative: 1.0 0;
             rel2.relative: 0.0 1;
             rel1.offset: 3 -3;
             align: 0 0;

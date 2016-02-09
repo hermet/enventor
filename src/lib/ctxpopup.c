@@ -15,8 +15,6 @@ typedef struct ctxpopup_data_s {
    attr_value *attr;
    char candidate[256];
 
-   /* These 2 variables are used for lazy update for slider button. */
-   Evas_Object *slider;
    Ecore_Animator *animator;
 
    Eina_Bool integer : 1;
@@ -102,36 +100,6 @@ slider_changed_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
    strcat(ctxdata->candidate, ctxdata->attr->append_str);
    ecore_animator_del(ctxdata->animator);
    ctxdata->animator = ecore_animator_add(changed_animator_cb, ctxdata);
-}
-
-static void
-btn_up_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
-{
-   ctxpopup_data *ctxdata = data;
-   Evas_Object *layout = (Evas_Object *)evas_object_data_get(obj, "layout");
-   Evas_Object *slider = elm_object_part_content_get(layout,
-                                                     "elm.swallow.slider");
-   double value = elm_slider_value_get(slider);
-
-   if (ctxdata->attr->type & ATTR_VALUE_INTEGER) value += 1;
-   else value += 0.01;
-   elm_slider_value_set(slider, value);
-   slider_changed_cb(ctxdata, ctxdata->slider, NULL);
-}
-
-static void
-btn_down_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
-{
-   ctxpopup_data *ctxdata = data;
-   Evas_Object *layout = (Evas_Object *)evas_object_data_get(obj, "layout");
-   Evas_Object *slider = elm_object_part_content_get(layout,
-                                                     "elm.swallow.slider");
-   double value = elm_slider_value_get(slider);
-
-   if (ctxdata->attr->type & ATTR_VALUE_INTEGER) value -= 1;
-   else value -= 0.01;
-   elm_slider_value_set(slider, value);
-   slider_changed_cb(ctxdata, ctxdata->slider, NULL);
 }
 
 static void
@@ -279,52 +247,26 @@ slider_layout_create(Evas_Object *parent, ctxpopup_data *ctxdata,
                                   ctxdata);
    char slider_min[16];
    char slider_max[16];
+   double step_size;
+
    if (ctxdata->integer)
      {
         snprintf(slider_min, sizeof(slider_min), "%1.0f", attr->min);
         snprintf(slider_max, sizeof(slider_max), "%1.0f", attr->max);
+        step_size = 1 / (double) (attr->max - attr->min);
+        elm_slider_step_set(slider, step_size);
      }
    else
      {
         snprintf(slider_min, sizeof(slider_min), "%1.2f", attr->min);
         snprintf(slider_max, sizeof(slider_max), "%1.2f", attr->max);
+        step_size = 1 / (double) (attr->max * 100 - attr->min);
+        elm_slider_step_set(slider, step_size);
      }
+
    elm_object_part_text_set(layout, "elm.text.slider_min", slider_min);
    elm_object_part_text_set(layout, "elm.text.slider_max", slider_max);
    elm_object_part_content_set(layout, "elm.swallow.slider", slider);
-
-   Evas_Object *btn;
-   Evas_Object *img;
-
-   //Down Button
-   btn = elm_button_add(layout);
-   elm_button_autorepeat_set(btn, EINA_TRUE);
-   elm_button_autorepeat_initial_timeout_set(btn, 0.5);
-   elm_button_autorepeat_gap_timeout_set(btn, 0.1);
-   evas_object_data_set(btn, "layout", layout);
-   evas_object_smart_callback_add(btn, "clicked", btn_down_cb, ctxdata);
-   evas_object_smart_callback_add(btn, "repeated", btn_down_cb, ctxdata);
-   elm_object_part_content_set(layout, "elm.swallow.down", btn);
-
-   //Down Image
-   img = elm_image_add(btn);
-   elm_image_file_set(img, EDJE_PATH, "down");
-   elm_object_content_set(btn, img);
-
-   //Up Button
-   btn = elm_button_add(layout);
-   elm_button_autorepeat_set(btn, EINA_TRUE);
-   elm_button_autorepeat_initial_timeout_set(btn, 0.5);
-   elm_button_autorepeat_gap_timeout_set(btn, 0.1);
-   evas_object_data_set(btn, "layout", layout);
-   evas_object_smart_callback_add(btn, "clicked", btn_up_cb, ctxdata);
-   evas_object_smart_callback_add(btn, "repeated", btn_up_cb, ctxdata);
-   elm_object_part_content_set(layout, "elm.swallow.up", btn);
-
-   //Up Image
-   img = elm_image_add(btn);
-   elm_image_file_set(img, EDJE_PATH, "up");
-   elm_object_content_set(btn, img);
 
    return layout;
 }
@@ -342,10 +284,8 @@ slider_layout_set(Evas_Object *ctxpopup, ctxpopup_data *ctxdata)
 
    //Box
    Evas_Object *box = elm_box_add(ctxpopup);
-   evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND,
-                                    EVAS_HINT_EXPAND);
+   evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(box, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_show(box);
 
    //Layout
    Evas_Object *layout = NULL;
@@ -361,6 +301,7 @@ slider_layout_set(Evas_Object *ctxpopup, ctxpopup_data *ctxdata)
    Evas_Object *edje = elm_layout_edje_get(layout);
    edje_object_size_min_calc(edje, &layout_w, NULL);
 
+   //Check if the ctxpopup is useless due to it's space.
    if (edit_w <= layout_w + CTXPOPUP_BORDER_SIZE)
      evas_object_del(ctxpopup);
 }

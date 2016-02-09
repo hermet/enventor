@@ -1,5 +1,8 @@
 #include "common.h"
 
+#define VIEW_RESIZE_TYPE_W "W"
+#define VIEW_RESIZE_TYPE_H "H"
+
 typedef struct statusbar_s
 {
    Evas_Object *layout;
@@ -19,9 +22,13 @@ typedef struct invert_transit_data_s
 
 stats_data *g_sd = NULL;
 
+/*****************************************************************************/
+/* Internal method implementation                                            */
+/*****************************************************************************/
+
 static void
-slider_changed_cb(void *data, Evas_Object *obj,
-                  void *event_info EINA_UNUSED)
+view_scale_slider_changed_cb(void *data, Evas_Object *obj,
+                             void *event_info EINA_UNUSED)
 {
 
    stats_data *sd = data;
@@ -58,7 +65,8 @@ ctxpopup_dismissed_cb(void *data, Evas_Object *obj,
 }
 
 static void
-transit_op_invert(void *data, Elm_Transit *transit EINA_UNUSED, double progress)
+view_invert_transit_op(void *data, Elm_Transit *transit EINA_UNUSED,
+                       double progress)
 {
    invert_data *id = data;
    Evas_Coord w, h;
@@ -72,7 +80,7 @@ transit_op_invert(void *data, Elm_Transit *transit EINA_UNUSED, double progress)
 }
 
 static void
-transit_op_end(void *data, Elm_Transit *transit EINA_UNUSED)
+view_invert_transit_end(void *data, Elm_Transit *transit EINA_UNUSED)
 {
    invert_data *id = data;
    config_view_size_set((id->orig_w + id->diff_w), (id->orig_h + id->diff_h));
@@ -94,16 +102,119 @@ view_invert_btn_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
    id->diff_h = w - h;
 
    Elm_Transit *transit = elm_transit_add();
-   elm_transit_effect_add(transit, transit_op_invert, id, transit_op_end);
+   elm_transit_effect_add(transit, view_invert_transit_op, id,
+                          view_invert_transit_end);
    elm_transit_tween_mode_set(transit, ELM_TRANSIT_TWEEN_MODE_DECELERATE);
    elm_transit_duration_set(transit, TRANSIT_TIME);
    elm_transit_go(transit);
 }
 
 static void
+view_resize_slider_changed_cb(void *data, Evas_Object *obj,
+                              void *event_info EINA_UNUSED)
+{
+   Evas_Object *layout = data;
+   Eina_Bool horizontal;
+   const char *type = elm_object_part_text_get(layout, "elm.text.type");
+   if (type && !strcmp(type, VIEW_RESIZE_TYPE_W))
+     horizontal = EINA_TRUE;
+   else
+     horizontal = EINA_FALSE;
+
+   Evas_Object *slider = elm_object_part_content_get(layout,
+                                                     "elm.swallow.slider");
+   int val = elm_slider_value_get(slider);
+   int w, h;
+   config_view_size_get(&w, &h);
+   if (horizontal)
+     {
+        config_view_size_set(val, h);
+        enventor_object_live_view_size_set(base_enventor_get(), val, h);
+     }
+   else
+     {
+        config_view_size_set(w, val);
+        enventor_object_live_view_size_set(base_enventor_get(), w, val);
+     }
+}
+
+static Evas_Object *
+view_resize_slider_layout_create(Evas_Object *parent, const char *type,
+                                 int slider_val)
+{
+   //Layout
+   Evas_Object *layout = elm_layout_add(parent);
+   elm_layout_file_set(layout, EDJE_PATH, "slider_layout");
+   evas_object_show(layout);
+
+   //Type
+   elm_object_part_text_set(layout, "elm.text.type", type);
+
+   //Slider
+   Evas_Object *slider = elm_slider_add(layout);
+   elm_slider_span_size_set(slider, 120);
+   elm_slider_indicator_show_set(slider, EINA_FALSE);
+   double step = 1 / (double) (3840 - 1);
+   elm_slider_step_set(slider, step);
+   elm_slider_min_max_set(slider, 1, 3840);
+   elm_slider_value_set(slider, slider_val);
+   evas_object_smart_callback_add(slider, "changed",
+                                  view_resize_slider_changed_cb, layout);
+   elm_object_part_text_set(layout, "elm.text.slider_min", "1");
+   elm_object_part_text_set(layout, "elm.text.slider_max", "3840");
+   elm_object_part_content_set(layout, "elm.swallow.slider", slider);
+
+   return layout;
+}
+
+static void
+view_resize_btn_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
+{
+   stats_data *sd = data;
+   evas_object_del(sd->ctxpopup);
+
+   //Ctxpopup
+   Evas_Object *ctxpopup = elm_ctxpopup_add(base_layout_get());
+   if (!ctxpopup) return;
+
+   elm_object_style_set(ctxpopup, elm_app_name_get());
+   elm_ctxpopup_direction_priority_set(ctxpopup, ELM_CTXPOPUP_DIRECTION_UP,
+                                       ELM_CTXPOPUP_DIRECTION_RIGHT,
+                                       ELM_CTXPOPUP_DIRECTION_LEFT,
+                                       ELM_CTXPOPUP_DIRECTION_DOWN);
+   //Slider Layout
+   Evas_Object *box = elm_box_add(ctxpopup);
+   evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(box, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_object_content_set(ctxpopup, box);
+
+   Evas_Object *slider;
+   Evas_Coord w, h;
+   config_view_size_get(&w, &h);
+
+   //Slider 1
+   slider = view_resize_slider_layout_create(box, VIEW_RESIZE_TYPE_W, w);
+   elm_box_pack_end(box, slider);
+
+   //Slider 2
+   slider = view_resize_slider_layout_create(box, VIEW_RESIZE_TYPE_H, h);
+   elm_object_signal_emit(slider, "odd,item,set", "");
+   elm_box_pack_end(box, slider);
+
+   //Ctxpopup Position
+   Evas_Coord x, y;
+   evas_object_geometry_get(obj, &x, &y, &w, &h);
+   evas_object_move(ctxpopup, x + (w/2), y);
+   evas_object_show(ctxpopup);
+
+   sd->ctxpopup = ctxpopup;
+}
+
+static void
 view_scale_btn_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
 {
    stats_data *sd = data;
+   evas_object_del(sd->ctxpopup);
 
    //Ctxpopup
    Evas_Object *ctxpopup = elm_ctxpopup_add(base_layout_get());
@@ -119,13 +230,14 @@ view_scale_btn_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
    elm_slider_inverted_set(slider, EINA_TRUE);
    elm_slider_min_max_set(slider, MIN_VIEW_SCALE, MAX_VIEW_SCALE);
    elm_slider_value_set(slider, (double) config_view_scale_get());
-   evas_object_smart_callback_add(slider, "changed", slider_changed_cb,
-                                  sd);
+   evas_object_smart_callback_add(slider, "changed",
+                                  view_scale_slider_changed_cb, sd);
 
    evas_object_smart_callback_add(ctxpopup, "dismissed", ctxpopup_dismissed_cb,
                                   sd);
    elm_object_content_set(ctxpopup, slider);
 
+   //Ctxpopup Position
    Evas_Coord x, y, w, h;
    evas_object_geometry_get(obj, &x, &y, &w, &h);
    evas_object_move(ctxpopup, x, y);
@@ -162,6 +274,10 @@ create_statusbar_btn(Evas_Object *layout, const char *image,
 
    return btn;
 }
+
+/*****************************************************************************/
+/* Externally accessible calls                                               */
+/*****************************************************************************/
 
 void
 stats_line_num_update(int cur_line, int max_line)
@@ -204,7 +320,11 @@ stats_init(Evas_Object *parent)
    create_statusbar_btn(layout, "expand", "scale_btn",
                         "View Scale (Ctrl + Mouse Wheel)",
                         view_scale_btn_cb, sd);
-
+   //View Resize Button
+   create_statusbar_btn(layout, "expand", "resize_btn",
+                        "Resize View Size",
+                        view_resize_btn_cb, sd);
+   //View Invert Button
    create_statusbar_btn(layout, "invert", "invert_btn",
                         "Invert View Size",
                         view_invert_btn_cb, sd);
