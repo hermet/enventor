@@ -44,8 +44,8 @@ struct editor_s
    struct {
       int prev_left;
       int prev_right;
-      int left;
-      int right;
+      int left;   //-1: cancel bracket, -2: don't apply bracket.
+      int right;  //-1: cancel bracket, -2: don't apply bracket.
    } bracket;
 
    Ecore_Timer *syntax_color_timer;
@@ -223,6 +223,9 @@ error_highlight(edit_data *ed, Evas_Object *tb)
 static void
 bracket_highlight(edit_data *ed, Evas_Object *tb)
 {
+   if ((ed->bracket.left == -2) && (ed->bracket.right == -2))
+     return;
+
    Evas_Textblock_Cursor *cur1 = evas_object_textblock_cursor_new(tb);
 
    evas_textblock_cursor_pos_set(cur1, ed->bracket.left);
@@ -236,6 +239,9 @@ bracket_highlight(edit_data *ed, Evas_Object *tb)
    evas_object_textblock_text_markup_prepend(cur1, "</hilight>");
 
    evas_textblock_cursor_free(cur1);
+
+   if (ed->bracket.left == -1) ed->bracket.left = -2;
+   if (ed->bracket.right == -1) ed->bracket.right = -2;
 }
 
 static void
@@ -392,7 +398,7 @@ bracket_update(edit_data *ed)
 
    if (ch1 != '{' && ch1 != '}' && ch2 != '{' && ch2 != '}')
      {
-        if (ed->bracket.prev_left != -1 && ed->bracket.prev_right != -1)
+        if ((ed->bracket.prev_left > -1) && (ed->bracket.prev_right > -1))
           {
              //initialize bracket
              ed->bracket.left = -1;
@@ -1329,10 +1335,10 @@ edit_init(Evas_Object *enventor)
    ed->pd = pd;
    ed->sh = sh;
    ed->error_line = -1;
-   ed->bracket.prev_left = -1;
-   ed->bracket.prev_right = -1;
-   ed->bracket.left = -1;
-   ed->bracket.right = -1;
+   ed->bracket.prev_left = -2;
+   ed->bracket.prev_right = -2;
+   ed->bracket.left = -2;
+   ed->bracket.right = -2;
 
    ecore_event_handler_add(ECORE_EVENT_KEY_DOWN, key_down_cb, ed);
    ecore_event_handler_add(ECORE_EVENT_KEY_UP, key_up_cb, ed);
