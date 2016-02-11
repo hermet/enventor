@@ -319,6 +319,7 @@ syntax_color_thread_end_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
    entry_recover_param_get(td->ed, &cursor_pos, &sel_cur_begin, &sel_cur_end);
    evas_object_textblock_text_markup_set(tb, td->translated);
    error_highlight(td->ed, tb);
+   bracket_highlight(td->ed, tb);
    entry_recover(td->ed, cursor_pos, sel_cur_begin, sel_cur_end);
 
    td->ed->syntax_color_thread = NULL;
@@ -331,6 +332,7 @@ syntax_color_thread_cancel_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
    syntax_color_td *td = data;
    Evas_Object *tb = elm_entry_textblock_get(td->ed->en_edit);
    error_highlight(td->ed, tb);
+   bracket_highlight(td->ed, tb);
    td->ed->syntax_color_thread = NULL;
    free(td);
 }
