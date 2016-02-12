@@ -1086,23 +1086,6 @@ err:
 }
 
 static void
-edit_indent_full_apply(edit_data *ed)
-{
-   int old_max_line = edit_max_line_get(ed);
-   int new_max_line =
-      indent_full_apply(syntax_indent_data_get(ed->sh), ed->en_edit);
-
-   //Correct indentation case
-   if (new_max_line < 0) return;
-
-   elm_entry_calc_force(ed->en_edit);
-   syntax_color_partial_update(ed, SYNTAX_COLOR_DEFAULT_TIME);
-
-   line_init(ed);
-   edit_line_increase(ed, new_max_line);
-}
-
-static void
 edit_focused_cb(void *data, Evas_Object *obj EINA_UNUSED,
                 void *event_info EINA_UNUSED)
 {
@@ -1553,11 +1536,7 @@ edit_load(edit_data *ed, const char *edc_path)
    elm_entry_entry_set(ed->en_edit, "");
    elm_entry_entry_set(ed->en_line, "");
    Eina_Bool ret = edit_edc_load(ed, edc_path);
-   if (ret)
-     {
-        if (edit_auto_indent_get(ed)) edit_indent_full_apply(ed);
-        edit_changed_set(ed, EINA_TRUE);
-     }
+   if (ret) edit_changed_set(ed, EINA_TRUE);
    edj_mgr_reload_need_set(EINA_TRUE);
    redoundo_clear(ed->rd);
 
@@ -1750,12 +1729,6 @@ edit_auto_indent_set(edit_data *ed, Eina_Bool auto_indent)
 {
    auto_indent = !!auto_indent;
    ed->auto_indent = auto_indent;
-
-   if (ed->auto_indent)
-     {
-        edit_indent_full_apply(ed);
-        edit_changed_set(ed, EINA_TRUE);
-     }
 }
 
 Eina_Bool
