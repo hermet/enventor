@@ -310,19 +310,54 @@ indent_text_auto_format(indent_data *id EINA_UNUSED,
    char *utf8_ptr = utf8;
    char *utf8_lexem = NULL;
    char *utf8_end = utf8 + utf8_size;
+   char *utf8_append_ptr = NULL;
    Eina_List *code_lines = NULL;
    Eina_Strbuf *buf = eina_strbuf_new();
 
+   Eina_Bool found_single_comment = EINA_FALSE;
+   Eina_Bool found_multi_comment = EINA_FALSE;
+   Eina_Bool keep_lexem = EINA_FALSE;
+
    int tb_cur_pos = 0;
 
-   while (utf8_ptr <= utf8_end)
+   /* Create a list of code line strings from inserted string.
+      Each code line string is generated based on lexeme.
+      Here, lexeme starts with nonspace character and ends with the followings.
+      '{', '}', ';', "//", "*\/"
+    */
+   while (utf8_ptr < utf8_end)
      {
         if (*utf8_ptr != ' ' && *utf8_ptr != '\t' &&  *utf8_ptr != '\n' )
           {
-             utf8_lexem = utf8_ptr;
-             while (utf8_ptr <= utf8_end)
+             if (!keep_lexem)
+               utf8_lexem = utf8_ptr;
+
+             //Start of comment.
+             if (*utf8_ptr == '/' && utf8_ptr + 1 < utf8_end)
                {
-                  if (*utf8_ptr == '{' || *utf8_ptr == '}' || *utf8_ptr == ';')
+                  //Start of single line comment.
+                  if (*(utf8_ptr + 1) == '/')
+                    found_single_comment = EINA_TRUE;
+                  //Start of multi line comment.
+                  else if (*(utf8_ptr + 1) == '*')
+                    found_multi_comment = EINA_TRUE;
+               }
+
+             while (utf8_ptr < utf8_end)
+               {
+                  //End of single line comment.
+                  if (found_single_comment && *utf8_ptr == '\n')
+                    {
+                       code_lines = eina_list_append(code_lines,
+                                       eina_stringshare_add_length(utf8_lexem,
+                                       utf8_ptr - utf8_lexem));
+                       utf8_append_ptr = utf8_ptr;
+                       found_single_comment = EINA_FALSE;
+                       break;
+                    }
+                  //End of multi line comment.
+                  else if (*utf8_ptr == '/' && (utf8_ptr - 1) >= utf8 &&
+                           *(utf8_ptr - 1) == '*')
                     {
                        if (utf8_ptr + 1 == utf8_end)
                          code_lines = eina_list_append(code_lines,
@@ -331,13 +366,83 @@ indent_text_auto_format(indent_data *id EINA_UNUSED,
                          code_lines = eina_list_append(code_lines,
                                          eina_stringshare_add_length(utf8_lexem,
                                          utf8_ptr - utf8_lexem + 1));
+                       utf8_append_ptr = utf8_ptr;
+                       found_multi_comment = EINA_FALSE;
                        break;
                     }
-                 utf8_ptr++;
+                  //End line within multi line comment.
+                  else if (found_multi_comment && *utf8_ptr == '\n')
+                    {
+                       code_lines = eina_list_append(code_lines,
+                                       eina_stringshare_add_length(utf8_lexem,
+                                       utf8_ptr - utf8_lexem));
+                       utf8_append_ptr = utf8_ptr;
+                       break;
+                    }
+                  else if (*utf8_ptr == '{')
+                    {
+                       char *utf8_left_bracket_ptr = utf8_ptr + 1;
+                       while (utf8_left_bracket_ptr < utf8_end)
+                         {
+                            if (*utf8_left_bracket_ptr != ' ' &&
+                                *utf8_left_bracket_ptr != '\t')
+                              break;
+                            utf8_left_bracket_ptr++;
+                         }
+                       if (utf8_left_bracket_ptr != utf8_end)
+                         {
+                            if (*utf8_left_bracket_ptr == '\"')
+                              {
+                                 keep_lexem = EINA_TRUE;
+                                 break;
+                              }
+                         }
+
+                       if (utf8_ptr + 1 == utf8_end)
+                         code_lines = eina_list_append(code_lines,
+                                         eina_stringshare_add(utf8_lexem));
+                       else
+                         code_lines = eina_list_append(code_lines,
+                                         eina_stringshare_add_length(utf8_lexem,
+                                         utf8_ptr - utf8_lexem + 1));
+                       utf8_append_ptr = utf8_ptr;
+                       break;
+                    }
+                  else if (*utf8_ptr == '}')
+                    {
+                       if (utf8_ptr + 1 == utf8_end)
+                         code_lines = eina_list_append(code_lines,
+                                         eina_stringshare_add(utf8_lexem));
+                       else
+                         code_lines = eina_list_append(code_lines,
+                                         eina_stringshare_add_length(utf8_lexem,
+                                         utf8_ptr - utf8_lexem + 1));
+                       utf8_append_ptr = utf8_ptr;
+                       break;
+                    }
+                  else if (*utf8_ptr == ';')
+                    {
+                       if (utf8_ptr + 1 == utf8_end)
+                         code_lines = eina_list_append(code_lines,
+                                         eina_stringshare_add(utf8_lexem));
+                       else
+                         code_lines = eina_list_append(code_lines,
+                                         eina_stringshare_add_length(utf8_lexem,
+                                         utf8_ptr - utf8_lexem + 1));
+                       utf8_append_ptr = utf8_ptr;
+                       keep_lexem = EINA_FALSE;
+                       break;
+                    }
+                  utf8_ptr++;
                }
           }
         utf8_ptr++;
      }
+   //Append rest of the input string.
+   if (utf8_lexem > utf8_append_ptr)
+     code_lines = eina_list_append(code_lines,
+                                   eina_stringshare_add_length(utf8_lexem,
+                                   utf8_end - utf8_lexem));
    free(utf8);
 
    if (!code_lines) return line_cnt;
