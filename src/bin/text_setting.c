@@ -190,42 +190,6 @@ text_setting_syntax_color_update(Evas_Object *ctxpopup,
 }
 
 static void
-color_btn_up_cb(void *data, Evas_Object *obj EINA_UNUSED,
-                void *event_info EINA_UNUSED)
-{
-   Evas_Object *layout = data;
-   Evas_Object *slider = elm_object_part_content_get(layout,
-                                                     "elm.swallow.slider");
-   Evas_Object *entry = elm_object_part_content_get(layout,
-                                                    "elm.swallow.entry");
-   double value = elm_slider_value_get(slider);
-   char buf[128];
-
-   value += 1;
-
-   snprintf(buf, sizeof(buf), "%1.0f", value);
-   elm_object_text_set(entry, buf);
-}
-
-static void
-color_btn_down_cb(void *data, Evas_Object *obj EINA_UNUSED,
-                  void *event_info EINA_UNUSED)
-{
-   Evas_Object *layout = data;
-   Evas_Object *slider = elm_object_part_content_get(layout,
-                                                     "elm.swallow.slider");
-   Evas_Object *entry = elm_object_part_content_get(layout,
-                                                    "elm.swallow.entry");
-   double value = elm_slider_value_get(slider);
-   char buf[128];
-
-   value -= 1;
-
-   snprintf(buf, sizeof(buf), "%1.0f", value);
-   elm_object_text_set(entry, buf);
-}
-
-static void
 color_ctxpopup_dismiss_cb(void *data EINA_UNUSED, Evas_Object *obj,
                           void *event_info EINA_UNUSED)
 {
@@ -252,46 +216,15 @@ color_ctxpopup_del_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
 }
 
 static void
-color_slider_changed_cb(void *data, Evas_Object *obj,
+color_slider_changed_cb(void *data EINA_UNUSED, Evas_Object *obj,
                         void *event_info EINA_UNUSED)
 {
-   Evas_Object *entry = data;
-   double val = elm_slider_value_get(obj);
-   char buf[128];
-
-   snprintf(buf, sizeof(buf), "%1.0f", val);
-   elm_object_text_set(entry, buf);
-
    Evas_Object *ctxpopup = evas_object_data_get(obj, "ctxpopup");
    color_keyword *selected_color_keyword;
    selected_color_keyword = evas_object_data_get(ctxpopup, "color_keyword");
 
    text_setting_syntax_color_update(ctxpopup, selected_color_keyword);
    syntax_template_apply();
-}
-
-static void
-color_entry_changed_cb(void *data, Evas_Object *obj,
-                       void *event_info EINA_UNUSED)
-{
-   Evas_Object *slider = data;
-   double text_val, val, min_val, max_val;
-   char buf[128];
-
-   text_val = atof(elm_object_text_get(obj));
-   elm_slider_min_max_get(slider, &min_val, &max_val);
-
-   if (text_val < min_val) val = min_val;
-   else if (text_val > max_val) val = max_val;
-   else val = text_val;
-
-   if (val != text_val)
-     {
-        snprintf(buf, sizeof(buf), "%1.0f", val);
-        elm_object_text_set(obj, buf);
-     }
-   else
-     elm_slider_value_set(slider, val);
 }
 
 static Evas_Object *
@@ -322,55 +255,8 @@ color_slider_layout_create(Evas_Object *parent, Evas_Object *ctxpopup,
    elm_object_part_text_set(layout, "elm.text.slider_min", slider_min);
    elm_object_part_text_set(layout, "elm.text.slider_max", slider_max);
    elm_object_part_content_set(layout, "elm.swallow.slider", slider);
-
-   //Entry
-   char buf[128];
-   Evas_Object *entry = elm_entry_add(layout);
-   elm_entry_context_menu_disabled_set(entry, EINA_TRUE);
-   elm_entry_single_line_set(entry, EINA_TRUE);
-   evas_object_size_hint_weight_set(entry, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   snprintf(buf, sizeof(buf), "%1.0f", slider_val);
-   elm_object_text_set(entry, buf);
-   elm_object_part_content_set(layout, "elm.swallow.entry", entry);
-
-   Elm_Entry_Filter_Accept_Set digits_filter_data;
-   Elm_Entry_Filter_Limit_Size limit_filter_data;
-   digits_filter_data.accepted = "0123456789";
-   digits_filter_data.rejected = NULL;
-   limit_filter_data.max_char_count = 4;
-   elm_entry_markup_filter_append(entry, elm_entry_filter_accept_set,
-                                  &digits_filter_data);
-   elm_entry_markup_filter_append(entry, elm_entry_filter_limit_size,
-                                  &limit_filter_data);
-
    evas_object_smart_callback_add(slider, "changed", color_slider_changed_cb,
-                                  entry);
-   evas_object_smart_callback_add(entry, "changed", color_entry_changed_cb,
-                                  slider);
-
-   Evas_Object *btn;
-   Evas_Object *img;
-
-   //Up Button
-   btn = elm_button_add(layout);
-   evas_object_smart_callback_add(btn, "clicked", color_btn_up_cb, layout);
-   elm_object_part_content_set(layout, "elm.swallow.up", btn);
-
-   //Up Image
-   img = elm_image_add(btn);
-   elm_image_file_set(img, EDJE_PATH, "up");
-   elm_object_content_set(btn, img);
-
-   //Down Button
-   btn = elm_button_add(layout);
-   evas_object_smart_callback_add(btn, "clicked", color_btn_down_cb, layout);
-   elm_object_part_content_set(layout, "elm.swallow.down", btn);
-
-   //Down Image
-   img = elm_image_add(btn);
-   elm_image_file_set(img, EDJE_PATH, "down");
-   elm_object_content_set(btn, img);
-
+                                  NULL);
    return layout;
 }
 
