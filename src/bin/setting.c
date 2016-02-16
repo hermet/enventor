@@ -354,8 +354,8 @@ general_layout_create(setting_data *sd, Evas_Object *parent)
 
    //Entry (View Width)
    Evas_Object *entry_view_size_w = entry_create(box2);
-   evas_object_size_hint_weight_set(entry_view_size_w, 0.15, 0);
-   evas_object_size_hint_align_set(entry_view_size_w, 1.0, 0);
+   evas_object_size_hint_weight_set(entry_view_size_w, 0.15, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(entry_view_size_w, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
    digits_filter_data.accepted = "0123456789";
    digits_filter_data.rejected = NULL;
@@ -377,8 +377,8 @@ general_layout_create(setting_data *sd, Evas_Object *parent)
 
    //Entry (View Height)
    Evas_Object *entry_view_size_h = entry_create(box2);
-   evas_object_size_hint_weight_set(entry_view_size_h, 0.15, 0);
-   evas_object_size_hint_align_set(entry_view_size_h, 1.0, 0);
+   evas_object_size_hint_weight_set(entry_view_size_h, 0.15, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(entry_view_size_h, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
    elm_entry_markup_filter_append(entry_view_size_h,
                                   elm_entry_filter_accept_set,
