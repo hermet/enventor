@@ -28,6 +28,9 @@
 #define QUOT_UTF8_LEN 1
 #define SEMICOL_UTF8 ";"
 #define SEMICOL_UTF8_LEN 1
+#define LESS "&lt;"
+#define GREATER "&gt;"
+#define AMP "&amp;"
 #define EOL "<br/>"
 #define EOL_LEN 5
 #define TAB "<tab/>"

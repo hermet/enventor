@@ -477,10 +477,16 @@ indent_insert_apply(indent_data *id, Evas_Object *entry, const char *insert,
      {
         if (!strcmp(insert, EOL))
           {
-            indent_insert_br_case(id, entry);
-            return 1;
+             indent_insert_br_case(id, entry);
+             return 1;
           }
         else if (!strcmp(insert, QUOT))
+          return 0;
+        else if (!strcmp(insert, LESS))
+          return 0;
+        else if (!strcmp(insert, GREATER))
+          return 0;
+        else if (!strcmp(insert, AMP))
           return 0;
         else
           return indent_text_auto_format(id, entry, insert);
