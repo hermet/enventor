@@ -426,13 +426,28 @@ indent_text_auto_format(indent_data *id EINA_UNUSED,
    free(utf8);
 
    int saved_space = 0;
+   single_comment_found = EINA_FALSE;
+   multi_comment_found = EINA_FALSE;
    macro_found = EINA_FALSE;
    EINA_LIST_FOREACH(code_lines, l, line)
      {
-        if (!macro_found && line[0] == '#')
+        if (!single_comment_found && !multi_comment_found && !macro_found)
           {
-             macro_found = EINA_TRUE;
-             saved_space = space;
+             if (!strncmp(line, "//", 2))
+               {
+                  single_comment_found = EINA_TRUE;
+                  saved_space = space;
+               }
+             else if (!strncmp(line, "/*", 2))
+               {
+                  multi_comment_found = EINA_TRUE;
+                  saved_space = space;
+               }
+             else if (line[0] == '#')
+               {
+                  macro_found = EINA_TRUE;
+                  saved_space = space;
+               }
           }
         if ((line[0] == '}') && (space > 0))
           space -= TAB_SPACE;
@@ -465,7 +480,17 @@ indent_text_auto_format(indent_data *id EINA_UNUSED,
              bracket_ptr = strstr(bracket_ptr, "}");
           }
 
-        if (macro_found && line[strlen(line) - 1] != '\\')
+        if (single_comment_found)
+          {
+             single_comment_found = EINA_FALSE;
+             space = saved_space;
+          }
+        else if (multi_comment_found && strstr(line, "*/"))
+          {
+             multi_comment_found = EINA_FALSE;
+             space = saved_space;
+          }
+        else if (macro_found && line[strlen(line) - 1] != '\\')
           {
              macro_found = EINA_FALSE;
              space = saved_space;
