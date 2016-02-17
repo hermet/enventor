@@ -358,9 +358,21 @@ indent_text_auto_format(indent_data *id EINA_UNUSED,
                                       /* To preserve code line until block name,
                                          keep start position of lexeme and
                                          append code line until ';'. */
-                                      if (*bracket_right_ptr == '\"' ||
-                                          (bracket_right_ptr + 4 < utf8_end &&
-                                           !strncmp(bracket_right_ptr, "name:", 5)))
+                                      Eina_Bool block_name_found = EINA_FALSE;
+
+                                      if (*bracket_right_ptr == '\"')
+                                        block_name_found = EINA_TRUE;
+                                      else if (bracket_right_ptr + 4 < utf8_end)
+                                        {
+                                           if (!strncmp(bracket_right_ptr,
+                                                        "name:", 5))
+                                             block_name_found = EINA_TRUE;
+                                           else if (!strncmp(bracket_right_ptr,
+                                                             "state:", 5))
+                                             block_name_found = EINA_TRUE;
+                                        }
+
+                                      if (block_name_found)
                                         {
                                            keep_lexem_start_pos = EINA_TRUE;
                                            break;
