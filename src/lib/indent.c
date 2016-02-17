@@ -256,17 +256,48 @@ indent_text_auto_format(indent_data *id EINA_UNUSED,
    Eina_List *code_lines = NULL;
    Eina_Strbuf *buf = eina_strbuf_new();
 
+   Eina_Bool keep_lexem_start_pos = EINA_FALSE;
+
    int tb_cur_pos = 0;
 
    while (utf8_ptr < utf8_end)
      {
         if (*utf8_ptr != ' ' && *utf8_ptr != '\t' &&  *utf8_ptr != '\n' )
           {
-             utf8_lexem = utf8_ptr;
+             //Renew the start position of lexeme.
+             if (!keep_lexem_start_pos) utf8_lexem = utf8_ptr;
+
              while (utf8_ptr < utf8_end)
                {
                   if (*utf8_ptr == '{' || *utf8_ptr == '}' || *utf8_ptr == ';')
                     {
+                       if (*utf8_ptr == '{')
+                         {
+                            char *bracket_right_ptr = utf8_ptr + 1;
+                            while (bracket_right_ptr < utf8_end)
+                              {
+                                 if (*bracket_right_ptr != ' ' &&
+                                     *bracket_right_ptr != '\t')
+                                   break;
+                                 bracket_right_ptr++;
+                              }
+                            if (bracket_right_ptr < utf8_end)
+                              {
+                                 /* To preserve code line until block name,
+                                    keep start position of lexeme and append
+                                    code line until ';'. */
+                                 if (*bracket_right_ptr == '\"' ||
+                                     (bracket_right_ptr + 4 < utf8_end &&
+                                      !strncmp(bracket_right_ptr, "name:", 5)))
+                                   {
+                                      keep_lexem_start_pos = EINA_TRUE;
+                                      break;
+                                   }
+                              }
+                         }
+                       else if (*utf8_ptr == ';')
+                         keep_lexem_start_pos = EINA_FALSE;
+
                        if (utf8_ptr + 1 == utf8_end)
                          code_lines = eina_list_append(code_lines,
                                          eina_stringshare_add(utf8_lexem));
@@ -373,6 +404,8 @@ indent_insert_apply(indent_data *id, Evas_Object *entry, const char *insert,
             indent_insert_br_case(id, entry);
             return 1;
           }
+        else if (!strcmp(insert, QUOT))
+          return 0;
         else
           return indent_text_auto_format(id, entry, insert);
      }
