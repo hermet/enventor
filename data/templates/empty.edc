@@ -1,0 +1,7 @@
+collections {
+   base_scale: 1.0;
+   group { "main";
+      parts {
+      }
+   }
+}

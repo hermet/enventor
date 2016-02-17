@@ -16,8 +16,6 @@ files_DATA = basic.edc \
              image.edj \
              map.edc \
              map.edj \
-             minimum.edc \
-             minimum.edj \
              proxy.edc \
              proxy.edj \
              rect.edc \
@@ -86,9 +84,6 @@ spacer.edj: Makefile spacer.edc
 
 sound.edj: Makefile sound.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/sound.edc $(builddir)/sound.edj
-
-minimum.edj: Makefile minimum.edc
-	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/minimum.edc $(builddir)/minimum.edj
 
 clean-local:
 	rm -f *.edj
