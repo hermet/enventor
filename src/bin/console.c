@@ -1,10 +1,8 @@
 #include "common.h"
 
-void
-console_text_set(Evas_Object *console, const char *text)
-{
-   elm_entry_entry_set(console, text);
-}
+/*****************************************************************************/
+/* Internal method implementation                                            */
+/*****************************************************************************/
 
 static void
 token_value_get(char *src, char *key_str, char end_key, int offset, char *dst)
@@ -68,18 +66,29 @@ error_word_selection_anim_cb(void *data)
 }
 
 void
-error_word_selection_set(Evas_Object *console)
+error_word_select(Evas_Object *console)
 {
    ecore_animator_add(error_word_selection_anim_cb, console);
 }
 
 static void
-console_mouse_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
+console_mouse_down_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED, Evas_Object *obj,
                       void *evnent_info)
 {
    if (((Evas_Event_Mouse_Down*)evnent_info)->flags &
                  EVAS_BUTTON_DOUBLE_CLICK)
-     ecore_animator_add(error_word_selection_anim_cb, obj);
+     error_word_select(obj);
+}
+
+/*****************************************************************************/
+/* Externally accessible calls                                               */
+/*****************************************************************************/
+
+void
+console_text_set(Evas_Object *console, const char *text)
+{
+   elm_entry_entry_set(console, text);
+   error_word_select(console);
 }
 
 Evas_Object *
