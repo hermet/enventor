@@ -257,12 +257,12 @@ indent_text_auto_format(indent_data *id EINA_UNUSED,
 
    int tb_cur_pos = 0;
 
-   while (utf8_ptr <= utf8_end)
+   while (utf8_ptr < utf8_end)
      {
         if (*utf8_ptr != ' ' && *utf8_ptr != '\t' &&  *utf8_ptr != '\n' )
           {
              utf8_lexem = utf8_ptr;
-             while (utf8_ptr <= utf8_end)
+             while (utf8_ptr < utf8_end)
                {
                   if (*utf8_ptr == '{' || *utf8_ptr == '}' || *utf8_ptr == ';')
                     {
