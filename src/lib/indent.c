@@ -425,10 +425,18 @@ indent_text_auto_format(indent_data *id EINA_UNUSED,
      }
    free(utf8);
 
+   int saved_space = 0;
+   macro_found = EINA_FALSE;
    EINA_LIST_FOREACH(code_lines, l, line)
      {
+        if (!macro_found && line[0] == '#')
+          {
+             macro_found = EINA_TRUE;
+             saved_space = space;
+          }
         if ((line[0] == '}') && (space > 0))
           space -= TAB_SPACE;
+
         char *p = alloca(space + 1);
         memset(p, ' ', space);
         p[space] = '\0';
@@ -437,10 +445,32 @@ indent_text_auto_format(indent_data *id EINA_UNUSED,
         else
           eina_strbuf_append(buf, "\n");
         memset(p, 0x0, space);
+
         /* Based on the code line generation logic, "{" and "}" can exist
-           together in a code line within line comment.
-           In other case, "{" and "}" cannot exist together in a code line. */
-        if (strstr(line, "{") && !strstr(line, "}")) space += TAB_SPACE;
+           multiple times in a line within line comment and macro. */
+        char *bracket_ptr = strstr(line, "{");
+        while (bracket_ptr)
+          {
+             space += TAB_SPACE;
+             bracket_ptr++;
+             bracket_ptr = strstr(bracket_ptr, "{");
+          }
+        //Restore space.
+        if (line[0] == '}') space += TAB_SPACE;
+        bracket_ptr = strstr(line, "}");
+        while (bracket_ptr && space > 0)
+          {
+             space -= TAB_SPACE;
+             bracket_ptr++;
+             bracket_ptr = strstr(bracket_ptr, "}");
+          }
+
+        if (macro_found && line[strlen(line) - 1] != '\\')
+          {
+             macro_found = EINA_FALSE;
+             space = saved_space;
+          }
+
         eina_stringshare_del(line);
         line_cnt++;
      }
