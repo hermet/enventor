@@ -269,7 +269,16 @@ indent_text_auto_format(indent_data *id EINA_UNUSED,
 
              while (utf8_ptr < utf8_end)
                {
-                  if (*utf8_ptr == '{' || *utf8_ptr == '}' || *utf8_ptr == ';')
+                  if (*utf8_ptr == '\n')
+                    {
+                       code_lines = eina_list_append(code_lines,
+                                       eina_stringshare_add_length(utf8_lexem,
+                                       utf8_ptr - utf8_lexem));
+                       utf8_append_ptr = utf8_ptr;
+                       break;
+                    }
+                  else if (*utf8_ptr == '{' || *utf8_ptr == '}' ||
+                           *utf8_ptr == ';')
                     {
                        if (*utf8_ptr == '{')
                          {
