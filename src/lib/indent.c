@@ -252,6 +252,7 @@ indent_text_auto_format(indent_data *id EINA_UNUSED,
    char *utf8_ptr = utf8;
    char *utf8_lexem = NULL;
    char *utf8_end = utf8 + utf8_size;
+   char *utf8_append_ptr = NULL;
    Eina_List *code_lines = NULL;
    Eina_Strbuf *buf = eina_strbuf_new();
 
@@ -273,6 +274,7 @@ indent_text_auto_format(indent_data *id EINA_UNUSED,
                          code_lines = eina_list_append(code_lines,
                                          eina_stringshare_add_length(utf8_lexem,
                                          utf8_ptr - utf8_lexem + 1));
+                       utf8_append_ptr = utf8_ptr;
                        break;
                     }
                  utf8_ptr++;
@@ -280,6 +282,10 @@ indent_text_auto_format(indent_data *id EINA_UNUSED,
           }
         utf8_ptr++;
      }
+   //Append rest of the input string.
+   if (utf8_lexem > utf8_append_ptr)
+     code_lines = eina_list_append(code_lines,
+                                   eina_stringshare_add(utf8_lexem));
    free(utf8);
 
    if (!code_lines) return line_cnt;
