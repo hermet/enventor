@@ -1025,27 +1025,54 @@ edit_edc_load(edit_data *ed, const char *file_path)
    utf8_edit = eina_file_map_all(file, EINA_FILE_POPULATE);
    if (!utf8_edit) goto err;
 
-   //Append line numbers
+   //Check indentation.
+   indent_data *id = syntax_indent_data_get(ed->sh);
+   Eina_Bool indent_correct
+      = indent_text_check(id, (const char *)utf8_edit);
+
+   //Set edc text to entry.
+   if (edit_auto_indent_get(ed) && !indent_correct)
+     //Create indented markup text from utf8 text of EDC file.
+     markup_edit = indent_text_create(id, (const char *)utf8_edit,
+                                      &line_num);
+   else
+     markup_edit = elm_entry_utf8_to_markup(utf8_edit);
+   if (!markup_edit) goto err;
+   elm_entry_entry_set(ed->en_edit, markup_edit);
+   if (edit_auto_indent_get(ed) && !indent_correct)
+     edit_changed_set(ed, EINA_TRUE);
+   free(markup_edit);
+
+   //Append line numbers.
    if (!eina_strbuf_append_char(strbuf_line, '1')) goto err;
-   char *p = utf8_edit;
-   int len = strlen(p);
-   while ((p = strchr(p, '\n')) && p < (utf8_edit + len))
+   if (edit_auto_indent_get(ed) && !indent_correct)
      {
-        line_num++;
-        ++p;
-        sprintf(buf, "\n%d", line_num);
-        if (!eina_strbuf_append(strbuf_line, buf)) goto err;
+        int num = 2;
+        //Use line_num given by indent_text_create().
+        while (num <= line_num)
+          {
+             sprintf(buf, "\n%d", num);
+             if (!eina_strbuf_append(strbuf_line, buf)) goto err;
+             num++;
+          }
+     }
+   else
+     {
+        char *p = utf8_edit;
+        int len = strlen(p);
+        while ((p = strchr(p, '\n')) && p < (utf8_edit + len))
+          {
+             line_num++;
+             ++p;
+             sprintf(buf, "\n%d", line_num);
+             if (!eina_strbuf_append(strbuf_line, buf)) goto err;
+          }
      }
 
    markup_line = elm_entry_utf8_to_markup(eina_strbuf_string_get(strbuf_line));
    if (!markup_line) goto err;
    elm_entry_entry_append(ed->en_line, markup_line);
    free(markup_line);
-
-   markup_edit = elm_entry_utf8_to_markup(utf8_edit);
-   if (!markup_edit) goto err;
-   elm_entry_entry_set(ed->en_edit, markup_edit);
-   free(markup_edit);
 
    ed->line_max = line_num;
 
