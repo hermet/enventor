@@ -44,6 +44,7 @@ base_error_msg_set(const char *msg)
    console_text_set(bd->console, msg);
    panes_editors_full_view(EINA_FALSE);
    bd->console_msg = EINA_TRUE;
+   error_word_selection_set(bd->console);
 }
 
 void

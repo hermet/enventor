@@ -67,6 +67,12 @@ error_word_selection_anim_cb(void *data)
    return ECORE_CALLBACK_CANCEL;
 }
 
+void
+error_word_selection_set(Evas_Object *console)
+{
+   ecore_animator_add(error_word_selection_anim_cb, console);
+}
+
 static void
 console_mouse_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
                       void *evnent_info)
