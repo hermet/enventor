@@ -257,9 +257,15 @@ indent_text_auto_format(indent_data *id EINA_UNUSED,
    Eina_Strbuf *buf = eina_strbuf_new();
 
    Eina_Bool keep_lexem_start_pos = EINA_FALSE;
+   Eina_Bool single_comment_found = EINA_FALSE;
+   Eina_Bool multi_comment_found = EINA_FALSE;
 
    int tb_cur_pos = 0;
-
+   /* Create a list of code line strings from inserted string.
+      Each code line string is generated based on lexeme.
+      Here, lexeme starts with nonspace character and ends with the followings.
+      '{', '}', ';', "//", "*\/"
+    */
    while (utf8_ptr < utf8_end)
      {
         if (*utf8_ptr != ' ' && *utf8_ptr != '\t' &&  *utf8_ptr != '\n' )
@@ -267,57 +273,99 @@ indent_text_auto_format(indent_data *id EINA_UNUSED,
              //Renew the start position of lexeme.
              if (!keep_lexem_start_pos) utf8_lexem = utf8_ptr;
 
+             //Check line comment.
+             if (*utf8_ptr == '/' && utf8_ptr + 1 < utf8_end)
+               {
+                  //Start of single line comment.
+                  if (*(utf8_ptr + 1) == '/')
+                    single_comment_found = EINA_TRUE;
+                  //Start of multi line comment.
+                  else if (*(utf8_ptr + 1) == '*')
+                    multi_comment_found = EINA_TRUE;
+
+                  if (single_comment_found || multi_comment_found)
+                    utf8_ptr += 2;
+               }
+
              while (utf8_ptr < utf8_end)
                {
                   if (*utf8_ptr == '\n')
                     {
+                       //End of single line comment.
+                       if (single_comment_found)
+                         single_comment_found = EINA_FALSE;
+
                        code_lines = eina_list_append(code_lines,
                                        eina_stringshare_add_length(utf8_lexem,
                                        utf8_ptr - utf8_lexem));
                        utf8_append_ptr = utf8_ptr;
                        break;
                     }
-                  else if (*utf8_ptr == '{' || *utf8_ptr == '}' ||
-                           *utf8_ptr == ';')
+                  else if (multi_comment_found)
                     {
-                       if (*utf8_ptr == '{')
+                       //End of multi line comment.
+                       if (*utf8_ptr == '/' && utf8_ptr - 1 >= utf8 &&
+                           *(utf8_ptr - 1) == '*')
                          {
-                            char *bracket_right_ptr = utf8_ptr + 1;
-                            while (bracket_right_ptr < utf8_end)
+                            if (utf8_ptr + 1 == utf8_end)
+                              code_lines = eina_list_append(code_lines,
+                                              eina_stringshare_add(utf8_lexem));
+                            else
+                              code_lines =
+                                 eina_list_append(code_lines,
+                                    eina_stringshare_add_length(utf8_lexem,
+                                    utf8_ptr - utf8_lexem + 1));
+                            utf8_append_ptr = utf8_ptr;
+                            multi_comment_found = EINA_FALSE;
+                            break;
+                         }
+                    }
+                  //No line comment.
+                  else if (!single_comment_found)
+                    {
+                       if (*utf8_ptr == '{' || *utf8_ptr == '}' ||
+                           *utf8_ptr == ';')
+                         {
+                            if (*utf8_ptr == '{')
                               {
-                                 if (*bracket_right_ptr != ' ' &&
-                                     *bracket_right_ptr != '\t')
-                                   break;
-                                 bracket_right_ptr++;
-                              }
-                            if (bracket_right_ptr < utf8_end)
-                              {
-                                 /* To preserve code line until block name,
-                                    keep start position of lexeme and append
-                                    code line until ';'. */
-                                 if (*bracket_right_ptr == '\"' ||
-                                     (bracket_right_ptr + 4 < utf8_end &&
-                                      !strncmp(bracket_right_ptr, "name:", 5)))
+                                 char *bracket_right_ptr = utf8_ptr + 1;
+                                 while (bracket_right_ptr < utf8_end)
                                    {
-                                      keep_lexem_start_pos = EINA_TRUE;
-                                      break;
+                                      if (*bracket_right_ptr != ' ' &&
+                                          *bracket_right_ptr != '\t')
+                                        break;
+                                      bracket_right_ptr++;
+                                   }
+                                 if (bracket_right_ptr < utf8_end)
+                                   {
+                                      /* To preserve code line until block name,
+                                         keep start position of lexeme and
+                                         append code line until ';'. */
+                                      if (*bracket_right_ptr == '\"' ||
+                                          (bracket_right_ptr + 4 < utf8_end &&
+                                           !strncmp(bracket_right_ptr, "name:", 5)))
+                                        {
+                                           keep_lexem_start_pos = EINA_TRUE;
+                                           break;
+                                        }
                                    }
                               }
-                         }
-                       else if (*utf8_ptr == ';')
-                         keep_lexem_start_pos = EINA_FALSE;
+                            else if (*utf8_ptr == ';')
+                              keep_lexem_start_pos = EINA_FALSE;
 
-                       if (utf8_ptr + 1 == utf8_end)
-                         code_lines = eina_list_append(code_lines,
-                                         eina_stringshare_add(utf8_lexem));
-                       else
-                         code_lines = eina_list_append(code_lines,
-                                         eina_stringshare_add_length(utf8_lexem,
-                                         utf8_ptr - utf8_lexem + 1));
-                       utf8_append_ptr = utf8_ptr;
-                       break;
+                            if (utf8_ptr + 1 == utf8_end)
+                              code_lines = eina_list_append(code_lines,
+                                              eina_stringshare_add(utf8_lexem));
+                            else
+                              code_lines =
+                                 eina_list_append(code_lines,
+                                    eina_stringshare_add_length(utf8_lexem,
+                                    utf8_ptr - utf8_lexem + 1));
+                            utf8_append_ptr = utf8_ptr;
+                            break;
+                         }
                     }
-                 utf8_ptr++;
+                  utf8_ptr++;
                }
           }
         utf8_ptr++;
@@ -363,7 +411,7 @@ indent_text_auto_format(indent_data *id EINA_UNUSED,
 
    EINA_LIST_FOREACH(code_lines, l, line)
     {
-       if (strstr(line, "}") && (space > 0))
+       if ((line[0] == '}') && (space > 0))
          space -= TAB_SPACE;
        char *p = alloca(space + 1);
        memset(p, ' ', space);
@@ -373,7 +421,10 @@ indent_text_auto_format(indent_data *id EINA_UNUSED,
        else
          eina_strbuf_append_length(buf, "<br/>", 5);
        memset(p, 0x0, space);
-       if (strstr(line, "{")) space += TAB_SPACE;
+       /* Based on the code line generation logic, "{" and "}" can exist
+          together in a code line within line comment.
+          In other case, "{" and "}" cannot exist together in a code line. */
+       if (strstr(line, "{") && !strstr(line, "}")) space += TAB_SPACE;
        eina_stringshare_del(line);
        line_cnt++;
     }
