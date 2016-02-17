@@ -241,6 +241,7 @@ indent_text_auto_format(indent_data *id EINA_UNUSED,
                         Evas_Object *entry, const char *insert)
 {
    int line_cnt = 0;
+   //FIXME: To improve performance, change logic not to translate text.
    char *utf8 = evas_textblock_text_markup_to_utf8(NULL, insert);
    int utf8_size = strlen(utf8);
 
@@ -397,7 +398,6 @@ indent_text_auto_format(indent_data *id EINA_UNUSED,
    evas_textblock_cursor_pos_set(cur_start, tb_cur_pos - utf8_size);
    evas_textblock_cursor_range_delete(cur_start, cur_end);
 
-   char *frmt_buf = NULL;
    Eina_List *l = NULL;
    Eina_Stringshare *line;
    evas_textblock_cursor_line_char_first(cur_start);
@@ -416,7 +416,7 @@ indent_text_auto_format(indent_data *id EINA_UNUSED,
              if (!evas_textblock_cursor_paragraph_next(cur_start))
                {
                   code_lines = eina_list_prepend(code_lines,
-                                                 eina_stringshare_add("<br/>"));
+                                                 eina_stringshare_add("\n"));
                   evas_textblock_cursor_line_char_last(cur_start);
                }
              break;
@@ -432,10 +432,10 @@ indent_text_auto_format(indent_data *id EINA_UNUSED,
         char *p = alloca(space + 1);
         memset(p, ' ', space);
         p[space] = '\0';
-        if (strcmp(line, "<br/>"))
-          eina_strbuf_append_printf(buf, "%s%s<br/>", p, line);
+        if (strcmp(line, "\n"))
+          eina_strbuf_append_printf(buf, "%s%s\n", p, line);
         else
-          eina_strbuf_append_length(buf, "<br/>", 5);
+          eina_strbuf_append(buf, "\n");
         memset(p, 0x0, space);
         /* Based on the code line generation logic, "{" and "}" can exist
            together in a code line within line comment.
@@ -445,19 +445,23 @@ indent_text_auto_format(indent_data *id EINA_UNUSED,
         line_cnt++;
      }
 
-   frmt_buf = eina_strbuf_string_steal(buf);
+   char *utf8_buf = eina_strbuf_string_steal(buf);
+   //FIXME: To improve performance, change logic not to translate text.
+   char *markup_buf = evas_textblock_text_utf8_to_markup(NULL, utf8_buf);
+   eina_strbuf_free(buf);
+   free(utf8_buf);
+
    tb_cur_pos = evas_textblock_cursor_pos_get(cur_start);
    evas_textblock_cursor_pos_set(cur_end, tb_cur_pos);
 
-   evas_object_textblock_text_markup_prepend(cur_start, frmt_buf);
+   evas_object_textblock_text_markup_prepend(cur_start, markup_buf);
 
    // Cancel last added diff, that was created when text pasted into entry.
    redoundo_n_diff_cancel(rd, 1);
    //Add data about formatted change into the redoundo queue.
-   redoundo_text_push(rd, frmt_buf, tb_cur_pos, 0, EINA_TRUE);
+   redoundo_text_push(rd, markup_buf, tb_cur_pos, 0, EINA_TRUE);
 
-   eina_strbuf_free(buf);
-   free(frmt_buf);
+   free(markup_buf);
    evas_textblock_cursor_free(cur_start);
    return line_cnt;
 }
