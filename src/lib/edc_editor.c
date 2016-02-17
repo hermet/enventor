@@ -156,7 +156,6 @@ entry_recover(edit_data *ed, int cursor_pos, int sel_cur_begin, int sel_cur_end)
    edje_object_part_text_cursor_pos_set(en_edje, "elm.text",
                             EDJE_CURSOR_SELECTION_END, sel_cur_end);
 
-   //recover selection region
    ed->on_select_recover = EINA_FALSE;
 }
 
