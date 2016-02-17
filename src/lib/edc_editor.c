@@ -162,9 +162,12 @@ entry_recover(edit_data *ed, int cursor_pos, int sel_cur_begin, int sel_cur_end)
    //recover selection region
    const char *selected = elm_entry_selection_get(ed->en_edit);
    if (!selected) return;
+   char *select_utf8 = elm_entry_markup_to_utf8(selected);
    ed->on_select_recover = EINA_TRUE;
+   //there is a delay for getting ed->select_pos
+   //so here, calculate selection position using selection region
    elm_entry_select_region_set(ed->en_edit,
-                               ed->select_pos,
+                               cursor_pos - strlen(select_utf8),
                                cursor_pos);
    ed->on_select_recover = EINA_FALSE;
 }
