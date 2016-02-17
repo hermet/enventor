@@ -259,6 +259,7 @@ indent_text_auto_format(indent_data *id EINA_UNUSED,
    Eina_Bool keep_lexem_start_pos = EINA_FALSE;
    Eina_Bool single_comment_found = EINA_FALSE;
    Eina_Bool multi_comment_found = EINA_FALSE;
+   Eina_Bool macro_found = EINA_FALSE;
 
    int tb_cur_pos = 0;
    /* Create a list of code line strings from inserted string.
@@ -286,6 +287,12 @@ indent_text_auto_format(indent_data *id EINA_UNUSED,
                   if (single_comment_found || multi_comment_found)
                     utf8_ptr += 2;
                }
+             //Check macro.
+             if (*utf8_ptr == '#')
+               {
+                  macro_found = EINA_TRUE;
+                  utf8_ptr++;
+               }
 
              while (utf8_ptr < utf8_end)
                {
@@ -294,6 +301,15 @@ indent_text_auto_format(indent_data *id EINA_UNUSED,
                        //End of single line comment.
                        if (single_comment_found)
                          single_comment_found = EINA_FALSE;
+
+                       //End of macro.
+                       else if (macro_found)
+                         {
+                            //Macro ends with "\n" but continues with "\\\n".
+                            if (!(utf8_ptr - 1 >= utf8 &&
+                                  *(utf8_ptr - 1) == '\\'))
+                              macro_found = EINA_FALSE;
+                         }
 
                        code_lines = eina_list_append(code_lines,
                                        eina_stringshare_add_length(utf8_lexem,
@@ -320,8 +336,8 @@ indent_text_auto_format(indent_data *id EINA_UNUSED,
                             break;
                          }
                     }
-                  //No line comment.
-                  else if (!single_comment_found)
+                  //No line comment and No macro.
+                  else if (!single_comment_found && !macro_found)
                     {
                        if (*utf8_ptr == '{' || *utf8_ptr == '}' ||
                            *utf8_ptr == ';')
