@@ -138,15 +138,15 @@ newfile_cancel_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
 }
 
 static void
-about_close_cb(void *data, Evas_Object *obj EINA_UNUSED,
-                     void *envent_info EINA_UNUSED)
+about_back_btn_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
+               void *envent_info EINA_UNUSED)
 {
    menu_data *md = data;
    about_close(md);
 }
 
 static void
-menu_close_cb(void *data, Evas_Object *obj EINA_UNUSED,
+menu_back_btn_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
                      void *envent_info EINA_UNUSED)
 {
    menu_data *md = data;
@@ -247,13 +247,16 @@ about_open(menu_data *md)
 
    //Back Button
    Evas_Object *back_button = elm_button_add(layout);
+   elm_object_style_set(back_button, elm_app_name_get());
+   elm_object_scale_set(back_button, 1.15);
    elm_object_focus_allow_set(back_button, EINA_FALSE);
    evas_object_show(back_button);
-   evas_object_smart_callback_add(back_button, "clicked", about_close_cb, md);
+   evas_object_smart_callback_add(back_button, "clicked",
+                                  about_back_btn_clicked_cb, md);
 
-   //back button image can be changed to another one
+   //Back Button Icon
    Evas_Object *back_img = elm_image_add(back_button);
-   elm_image_file_set(back_img, EDJE_PATH, "undo");
+   elm_image_file_set(back_img, EDJE_PATH, "close");
    elm_object_content_set(back_button, back_img);
 
    elm_object_part_content_set(layout, "elm.swallow.back_button", back_button);
@@ -325,15 +328,6 @@ exit_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
             void *event_info EINA_UNUSED)
 {
    menu_exit();
-}
-
-static void
-menu_clicked(void *data, Evas_Object *obj EINA_UNUSED,
-             const char *emission EINA_UNUSED, const char *source EINA_UNUSED)
-{
-   menu_data *md = data;
-   enventor_object_focus_set(base_enventor_get(), EINA_TRUE);
-   menu_toggle();
 }
 
 static Evas_Object *
@@ -628,8 +622,6 @@ menu_open(menu_data *md)
    //Layout
    Evas_Object *layout = elm_layout_add(base_win_get());
    elm_layout_file_set(layout, EDJE_PATH, "menu_layout");
-   elm_object_signal_callback_add(layout, "elm,state,clicked", "",
-                                  menu_clicked, md);
    elm_object_signal_callback_add(layout, "elm,state,dismiss,done", "",
                                   menu_dismiss_done, md);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -638,13 +630,16 @@ menu_open(menu_data *md)
 
    //Back Button
    Evas_Object *back_button = elm_button_add(layout);
+   elm_object_style_set(back_button, elm_app_name_get());
+   elm_object_scale_set(back_button, 1.15);
    elm_object_focus_allow_set(back_button, EINA_FALSE);
    evas_object_show(back_button);
-   evas_object_smart_callback_add(back_button, "clicked", menu_close_cb, md);
+   evas_object_smart_callback_add(back_button, "clicked",
+                                  menu_back_btn_clicked_cb, md);
 
-   //back button image can be changed to another one
+   //Back Button Icon
    Evas_Object *back_img = elm_image_add(back_button);
-   elm_image_file_set(back_img, EDJE_PATH, "undo");
+   elm_image_file_set(back_img, EDJE_PATH, "close");
    elm_object_content_set(back_button, back_img);
 
    elm_object_part_content_set(layout, "elm.swallow.back_button", back_button);

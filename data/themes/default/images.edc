@@ -1,4 +1,5 @@
 images {
+   image: "icon_close.png" COMP;
    image: "slider_up.png" COMP;
    image: "slider_down.png" COMP;
    image: "menu.png" COMP;
@@ -53,5 +54,6 @@ ICON_GROUP("Spacer", "live_spacer.png")
 ICON_GROUP("Swallow", "live_swallow.png")
 ICON_GROUP("Text", "live_text.png")
 ICON_GROUP("Textblock", "live_textblock.png")
+ICON_GROUP("close", "icon_close.png")
 
 #undef ICON_GROUP

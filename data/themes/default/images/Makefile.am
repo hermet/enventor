@@ -69,4 +69,5 @@ EXTRA_DIST = \
    white_bar_vert_glow.png \
    horizontal_separated_bar_small_glow.png \
    expand.png \
-	invert.png
+	invert.png \
+	icon_close.png

@@ -60,16 +60,28 @@ group { name: "about_layout";
             rel2.relative: 0 0;
          }
       }
-      part { name: "elm.swallow.back_button";
-         type: SWALLOW;
+      swallow { "elm.swallow.back_button";
          scale: 1;
-         description { state: "default" 0.0;
+         clip_to: "clipper";
+         desc {
             fixed: 1 1;
             min: 26 26;
             max: 26 26;
-            rel1.offset: 0 10;
-            rel2.offset: -37 -1;
             align: 1 0.0;
+            rel1.relative: 0 0;
+            rel2.relative: 0 0;
+            rel1.to: "back_button_padding";
+            rel2.to: "back_button_padding";
+         }
+      }
+      spacer { "back_button_padding";
+         scale: 1;
+         desc {
+            fixed: 1 1;
+            min: 22 0;
+            align: 1 0.0;
+            rel1.relative: 1 0;
+            rel2.relative: 1 0;
          }
       }
       part { name: "event_blocker";
@@ -942,15 +954,13 @@ group { name: "menu_layout";
             align: 1 1;
          }
       }
-      part { name: "elm.swallow.back_button";
-         type: SWALLOW;
+      swallow { "elm.swallow.back_button";
          scale: 1;
-         description { state: "default" 0.0;
+         clip_to: "clipper";
+         desc {
             fixed: 1 1;
             min: 26 26;
             max: 26 26;
-            rel1.offset: 0 10;
-            rel2.offset: -37 -1;
             align: 1 0.0;
          }
       }
@@ -1006,11 +1016,6 @@ group { name: "menu_layout";
       }
       program { name: "dismiss_done";
          action: SIGNAL_EMIT "elm,state,dismiss,done" "";
-      }
-      program { "bg_clicked";
-         signal: "mouse,clicked,1";
-         source: "bg";
-         action: SIGNAL_EMIT "elm,state,clicked" "";
       }
    }
 }
