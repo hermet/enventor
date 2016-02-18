@@ -1092,6 +1092,7 @@ edit_part_cursor_set(edit_data *ed,
                      const char *group_name,
                      const char *part_name)
 {
+#define PART_SYNTAX_CNT 13
    if (!group_name || !part_name) return;
    const char *text = elm_entry_entry_get(ed->en_edit);
    char *utf8 = elm_entry_markup_to_utf8(text);
@@ -1108,33 +1109,86 @@ edit_part_cursor_set(edit_data *ed,
 
    char *itr = strstr(group_pos, part_name_search);
    const char *part_pos = itr;
-   Eina_Bool word_present = EINA_FALSE;
+
+   /* Possible keywords for a parts*/
+   const char *PART[PART_SYNTAX_CNT] = { "part", "image", "textblock",
+        "swallow", "rect", "group", "spacer", "proxy", "text", "gradient",
+        "box", "table", "external" };
+
+   Eina_Bool word_present = EINA_FALSE; /* Indicate is present any word between part name and open brace '{' */
    Eina_Bool found_part = EINA_FALSE;
-   /* Search entry of '{ "part_name" ' or  '{ name: "part_name"' patternsd*/
-   for (; (itr != NULL) && (itr > utf8); itr--)
+   Eina_Bool found_brace = EINA_FALSE;
+
+   /* TODO: limit the region of search by 'group { }' block. It is necessary for avoiding situations when part can be
+    * find inside another group. */
+
+   /* Search patterns:  'PART { "part_name" ' or  'PART { name: "part_name"'*/
+   for (; (itr != NULL) && (itr > group_pos); itr--)
      {
-        if (isalnum(*itr))
-          word_present = EINA_TRUE;
-        else if (*itr == '{')
+        if ((!found_brace) && (*itr == '{'))
           {
+             found_brace = EINA_TRUE;
              if (word_present)
                {
+                  /* Check word between the part name and  brace.
+                   * This word should be a "name". In case if found
+                   * other keyword, the search process should be
+                   * restarted from another position. */
                   char *name_keyword = strstr(itr, "name");
-                  if (name_keyword && name_keyword < part_pos)
+                  if (!name_keyword || name_keyword > part_pos)
                     {
-                       found_part = EINA_TRUE;
-                       break;
+                       itr = strstr(part_pos + 1, part_name_search);
+                       part_pos = itr;
+                       found_brace = EINA_FALSE;
+                       word_present = EINA_FALSE;
                     }
                }
-             else
+          }
+        else if (isalpha(*itr))
+          {
+             word_present = EINA_TRUE;
+          }
+
+
+        /* If found the opening brace '{', need to parse
+         * the keyword, that describe this block.
+         * And compare this keyword with possible part keywords. */
+        if (found_brace)
+          {
+             char *keyword_end = NULL;
+
+             for (; (itr != NULL) && (itr > group_pos); itr--)
                {
-                  found_part = EINA_TRUE;
-                  break;
+                  if (!keyword_end && isalpha(*itr))
+                    {
+                       keyword_end = itr;
+                    }
+                  else if (keyword_end && !isalpha(*itr))
+                    {
+                       /* Compare parsed keyword with possible part names. */
+                       for (int i = 0; i < PART_SYNTAX_CNT; i++)
+                         {
+                            if (!strncmp(itr + 1, PART[i], strlen(PART[i])))
+                              {
+                                 found_part = EINA_TRUE;
+                              }
+                         }
+                       if (found_part)
+                         goto finish;
+                       else
+                         {
+                           itr = strstr(part_pos + 1, part_name_search);
+                           part_pos = itr;
+                           found_brace = EINA_FALSE;
+                           word_present = EINA_FALSE;
+                           break;
+                         }
+                    }
                }
-             itr = strstr(part_pos + 1, part_name_search);
-             part_pos = itr;
           }
      }
+
+finish:
 
    if (found_part)
      {
