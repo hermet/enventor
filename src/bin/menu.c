@@ -137,6 +137,22 @@ newfile_cancel_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
    newfile_close(md);
 }
 
+static void
+about_close_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                     void *envent_info EINA_UNUSED)
+{
+   menu_data *md = data;
+   about_close(md);
+}
+
+static void
+menu_close_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                     void *envent_info EINA_UNUSED)
+{
+   menu_data *md = data;
+   menu_close(md);
+}
+
 void
 newfile_open(menu_data *md)
 {
@@ -228,6 +244,19 @@ about_open(menu_data *md)
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_show(layout);
    base_win_resize_object_add(layout);
+
+   //Back Button
+   Evas_Object *back_button = elm_button_add(layout);
+   elm_object_focus_allow_set(back_button, EINA_FALSE);
+   evas_object_show(back_button);
+   evas_object_smart_callback_add(back_button, "clicked", about_close_cb, md);
+
+   //back button image can be changed to another one
+   Evas_Object *back_img = elm_image_add(back_button);
+   elm_image_file_set(back_img, EDJE_PATH, "undo");
+   elm_object_content_set(back_button, back_img);
+
+   elm_object_part_content_set(layout, "elm.swallow.back_button", back_button);
 
    //Entry
    Evas_Object *entry = elm_entry_add(layout);
@@ -606,6 +635,19 @@ menu_open(menu_data *md)
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_show(layout);
    base_win_resize_object_add(layout);
+
+   //Back Button
+   Evas_Object *back_button = elm_button_add(layout);
+   elm_object_focus_allow_set(back_button, EINA_FALSE);
+   evas_object_show(back_button);
+   evas_object_smart_callback_add(back_button, "clicked", menu_close_cb, md);
+
+   //back button image can be changed to another one
+   Evas_Object *back_img = elm_image_add(back_button);
+   elm_image_file_set(back_img, EDJE_PATH, "undo");
+   elm_object_content_set(back_button, back_img);
+
+   elm_object_part_content_set(layout, "elm.swallow.back_button", back_button);
 
    //Button
    Evas_Object *btn;

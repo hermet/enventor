@@ -60,6 +60,18 @@ group { name: "about_layout";
             rel2.relative: 0 0;
          }
       }
+      part { name: "elm.swallow.back_button";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            min: 26 26;
+            max: 26 26;
+            rel1.offset: 0 10;
+            rel2.offset: -37 -1;
+            align: 1 0.0;
+         }
+      }
       part { name: "event_blocker";
          type: RECT;
          description { state: "default" 0.0;
@@ -928,6 +940,18 @@ group { name: "menu_layout";
             min: 20 20;
             fixed: 1 1;
             align: 1 1;
+         }
+      }
+      part { name: "elm.swallow.back_button";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            min: 26 26;
+            max: 26 26;
+            rel1.offset: 0 10;
+            rel2.offset: -37 -1;
+            align: 1 0.0;
          }
       }
       part { name: "event_blocker";
