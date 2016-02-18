@@ -1166,7 +1166,8 @@ edit_part_cursor_set(edit_data *ed,
                   else if (keyword_end && !isalpha(*itr))
                     {
                        /* Compare parsed keyword with possible part names. */
-                       for (int i = 0; i < PART_SYNTAX_CNT; i++)
+                       int i;
+                       for ( i = 0; i < PART_SYNTAX_CNT; i++)
                          {
                             if (!strncmp(itr + 1, PART[i], strlen(PART[i])))
                               {
