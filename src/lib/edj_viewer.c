@@ -546,6 +546,7 @@ view_term(view_data *vd)
    eina_stringshare_del(vd->part_name);
    eina_stringshare_del(vd->changed_part.part);
    eina_stringshare_del(vd->changed_part.desc);
+   view_obj_parts_names_free(vd);
 
    if (vd->part_obj)
      evas_object_event_callback_del(vd->part_obj, EVAS_CALLBACK_DEL,
