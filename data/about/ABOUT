@@ -16,25 +16,25 @@ F1 - About</br>
 F2 - New</br>
 F3 - Save</br>
 F4 - Load</br>
-F5 - Show/Hide Line Number</br>
-F9 - Show/Hide Tools</br>
-F10 - Show/Hide Console</br>
-F11 - Show/Hide Status</br>
+F5 - Toggle Line Number</br>
+F9 - Toggle Tools</br>
+F10 - Toggle Console</br>
+F11 - Toggle Status</br>
 F12 - Settings</br>
 </br>
 Ctrl+S - Quick Save + Update Live View</br>
-Ctrl+I - On/Off Auto Indentation</br>
-Ctrl+O - On/Off Auto Completion</br>
-Ctrl+W - Show/Hide Dummy Parts</br>
-Ctrl+H - On/Off Part Highlighting</br>
+Ctrl+I - Toggle Auto Indentation</br>
+Ctrl+O - Toggle Auto Completion</br>
+Ctrl+W - Toggle Dummy Parts</br>
+Ctrl+H - Toggle Part Highlighting</br>
 Ctrl+T - Insert Defaut Template Code</br>
 Ctrl+Mouse Wheel Up - View Zoom In (Only if view size is set) / Font Size Up</br>
 Ctrl+Mouse Wheel Down - View Zoom Out (Only if view size is set) / Font Size Down</br>
 </br>
-Alt+Left - On/Off Full Edit View</br>
-Alt+Right - On/Off Full Live View</br>
-Alt+Up - On/Off Full Console View</br>
-Alt+Down - On/Off Full Editors View</br>
+Alt+Left - Toggle Full Edit View</br>
+Alt+Right - Toggle Full Live View</br>
+Alt+Up - Toggle Full Console View</br>
+Alt+Down - Toggle Full Editors View</br>
 </br>
 Ctrl+A - Select Text All</br>
 Ctrl+Double Click - Select a word</br>
