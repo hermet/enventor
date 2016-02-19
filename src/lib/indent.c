@@ -236,33 +236,26 @@ indent_delete_apply(indent_data *id EINA_UNUSED, Evas_Object *entry,
    return EINA_FALSE;
 }
 
-static int
-indent_text_auto_format(indent_data *id EINA_UNUSED,
-                        Evas_Object *entry, const char *insert)
+static Eina_List *
+indent_code_lines_create(indent_data *id, const char *utf8)
 {
-   int line_cnt = 0;
-   //FIXME: To improve performance, change logic not to translate text.
-   char *utf8 = evas_textblock_text_markup_to_utf8(NULL, insert);
-   int utf8_size = strlen(utf8);
-
-   Evas_Object *tb = elm_entry_textblock_get(entry);
-   Evas_Textblock_Cursor *cur_start = evas_object_textblock_cursor_new(tb);
-   Evas_Textblock_Cursor *cur_end = evas_object_textblock_cursor_get(tb);
-   redoundo_data *rd = evas_object_data_get(entry, "redoundo");
-
-   char *utf8_ptr = utf8;
-   char *utf8_lexem = NULL;
-   char *utf8_end = utf8 + utf8_size;
-   char *utf8_append_ptr = NULL;
    Eina_List *code_lines = NULL;
-   Eina_Strbuf *buf = eina_strbuf_new();
+
+   char *utf8_ptr = NULL;
+   char *utf8_end = NULL;
+   char *utf8_lexem = NULL;
+   char *utf8_append_ptr = NULL;
 
    Eina_Bool keep_lexem_start_pos = EINA_FALSE;
    Eina_Bool single_comment_found = EINA_FALSE;
    Eina_Bool multi_comment_found = EINA_FALSE;
    Eina_Bool macro_found = EINA_FALSE;
 
-   int tb_cur_pos = 0;
+   if (!utf8) return NULL;
+
+   utf8_ptr = (char *)utf8;
+   utf8_end = utf8_ptr + strlen(utf8);
+
    /* Create a list of code line strings from inserted string.
       Each code line string is generated based on lexeme.
       Here, lexeme starts with nonspace character and ends with the followings.
@@ -403,9 +396,35 @@ indent_text_auto_format(indent_data *id EINA_UNUSED,
    if (utf8_lexem > utf8_append_ptr)
      code_lines = eina_list_append(code_lines,
                                    eina_stringshare_add(utf8_lexem));
-   free(utf8);
 
+   return code_lines;
+}
+
+static int
+indent_text_auto_format(indent_data *id,
+                        Evas_Object *entry, const char *insert)
+{
+   int line_cnt = 0;
+   //FIXME: To improve performance, change logic not to translate text.
+   char *utf8 = evas_textblock_text_markup_to_utf8(NULL, insert);
+   int utf8_size = strlen(utf8);
+
+   Evas_Object *tb = elm_entry_textblock_get(entry);
+   Evas_Textblock_Cursor *cur_start = evas_object_textblock_cursor_new(tb);
+   Evas_Textblock_Cursor *cur_end = evas_object_textblock_cursor_get(tb);
+   int tb_cur_pos = 0;
+
+   redoundo_data *rd = evas_object_data_get(entry, "redoundo");
+
+   char *utf8_ptr = utf8;
+   char *utf8_end = utf8 + utf8_size;
+   char *utf8_lexem = NULL;
+   char *utf8_append_ptr = NULL;
+
+   Eina_List *code_lines = indent_code_lines_create(id, utf8);
+   free(utf8);
    if (!code_lines) return line_cnt;
+
    tb_cur_pos = evas_textblock_cursor_pos_get(cur_end);
    evas_textblock_cursor_pos_set(cur_start, tb_cur_pos - utf8_size);
    evas_textblock_cursor_range_delete(cur_start, cur_end);
@@ -437,10 +456,11 @@ indent_text_auto_format(indent_data *id EINA_UNUSED,
      }
    free(utf8);
 
+   Eina_Strbuf *buf = eina_strbuf_new();
    int saved_space = 0;
-   single_comment_found = EINA_FALSE;
-   multi_comment_found = EINA_FALSE;
-   macro_found = EINA_FALSE;
+   Eina_Bool single_comment_found = EINA_FALSE;
+   Eina_Bool multi_comment_found = EINA_FALSE;
+   Eina_Bool macro_found = EINA_FALSE;
    EINA_LIST_FOREACH(code_lines, l, line)
      {
         if (!single_comment_found && !multi_comment_found && !macro_found)
