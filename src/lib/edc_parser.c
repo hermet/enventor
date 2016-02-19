@@ -55,7 +55,7 @@ typedef struct type_init_thread_data_s
 typedef struct bracket_thread_data_s
 {
    int pos;
-   const char *text;
+   char *text;
    Bracket_Update_Cb update_cb;
    void *data;
    Ecore_Thread *thread;
@@ -1446,6 +1446,7 @@ bracket_thread_end(void *data, Ecore_Thread *thread EINA_UNUSED)
    bracket_td *btd = data;
    btd->update_cb(btd->data, btd->left, btd->right);
    if (btd->pd->btd == btd) btd->pd->btd = NULL;
+   free(btd->text);
    free(btd);
 }
 
@@ -1454,6 +1455,7 @@ bracket_thread_cancel(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
    bracket_td *btd = data;
    if (btd->pd->btd == btd) btd->pd->btd = NULL;
+   free(btd->text);
    free(btd);
 }
 
@@ -1918,7 +1920,11 @@ parser_first_group_name_get(parser_data *pd, Evas_Object *entry)
           {
              p += quot_len;
              p = strstr(p, quot);
-             if (!p) return NULL;
+             if (!p)
+               {
+                  group_name = NULL;
+                  goto end;;
+               }
              p += quot_len;
              continue;
           }
@@ -1928,7 +1934,11 @@ parser_first_group_name_get(parser_data *pd, Evas_Object *entry)
              p += group_len;
 
              char *name_end = strstr(p, semicol);
-             if (!name_end) return NULL;
+             if (!name_end)
+               {
+                  group_name = NULL;
+                  goto end;;
+               }
 
              char *space_pos = NULL;
              char *temp_pos = strchr(p, ' ');
@@ -1949,7 +1959,11 @@ parser_first_group_name_get(parser_data *pd, Evas_Object *entry)
                }
 
              char *name_begin = space_pos > tab_pos ? space_pos : tab_pos;
-             if (!name_begin) return NULL;
+             if (!name_begin)
+               {
+                  group_name = NULL;
+                  goto end;;
+               }
              name_begin++;
 
              group_name = eina_stringshare_add_length(name_begin,
@@ -1970,6 +1984,9 @@ parser_first_group_name_get(parser_data *pd, Evas_Object *entry)
              free(trans_group_name);
           }
      }
+
+end:
+   free(utf8);
    return group_name;
 }
 
