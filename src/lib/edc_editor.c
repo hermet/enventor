@@ -1150,7 +1150,7 @@ edit_part_cursor_set(edit_data *ed,
     * find inside another group. */
 
    /* Search patterns:  'PART { "part_name" ' or  'PART { name: "part_name"'*/
-   for (; (itr != NULL) && (itr > group_pos); itr--)
+   for (; (itr != NULL) && (itr > group_pos) && (part_pos != NULL); itr--)
      {
         if ((!found_brace) && (*itr == '{'))
           {
@@ -1220,9 +1220,9 @@ finish:
 
    if (found_part)
      {
-        int cur_pos = part_pos - utf8 + strlen(part_name);
+        int cur_pos = part_pos - utf8 + 1;
         elm_entry_select_none(ed->en_edit);
-        elm_entry_cursor_pos_set(ed->en_edit, cur_pos);
+        elm_entry_select_region_set(ed->en_edit, cur_pos, cur_pos + strlen(part_name));
      }
 
    free(utf8);
