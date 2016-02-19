@@ -1457,6 +1457,7 @@ edit_init(Evas_Object *enventor)
 
    //EDC Editor Entry
    Evas_Object *en_edit = elm_entry_add(layout);
+   elm_entry_cnp_mode_set(en_edit, ELM_CNP_MODE_PLAINTEXT);
    elm_object_style_set(en_edit, "enventor");
    elm_entry_context_menu_disabled_set(en_edit, EINA_TRUE);
    elm_entry_line_wrap_set(en_edit, ELM_WRAP_NONE);
