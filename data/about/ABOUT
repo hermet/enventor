@@ -28,8 +28,8 @@ Ctrl+O - Toggle Auto Completion</br>
 Ctrl+W - Toggle Dummy Parts</br>
 Ctrl+H - Toggle Part Highlighting</br>
 Ctrl+T - Insert Defaut Template Code</br>
-Ctrl+Mouse Wheel Up - View Zoom In (Only if view size is set) / Font Size Up</br>
-Ctrl+Mouse Wheel Down - View Zoom Out (Only if view size is set) / Font Size Down</br>
+Ctrl+Mouse Wheel Up - View Zoom In / Font Size Up</br>
+Ctrl+Mouse Wheel Down - View Zoom Out / Font Size Down</br>
 </br>
 Alt+Left - Toggle Full Edit View</br>
 Alt+Right - Toggle Full Live View</br>
