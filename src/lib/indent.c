@@ -767,158 +767,11 @@ indent_text_create(indent_data *id,
 
    int utf8_size = strlen(utf8);
    char *utf8_ptr = (char *)utf8;
-   char *utf8_lexem = NULL;
    char *utf8_end = (char *)utf8 + utf8_size;
+   char *utf8_lexem = NULL;
    char *utf8_append_ptr = NULL;
-   Eina_List *code_lines = NULL;
-   Eina_Strbuf *buf = eina_strbuf_new();
 
-   Eina_Bool keep_lexem_start_pos = EINA_FALSE;
-   Eina_Bool single_comment_found = EINA_FALSE;
-   Eina_Bool multi_comment_found = EINA_FALSE;
-   Eina_Bool macro_found = EINA_FALSE;
-
-   /* Create a list of code line strings from inserted string.
-      Each code line string is generated based on lexeme.
-      Here, lexeme starts with nonspace character and ends with the followings.
-      '{', '}', ';', "//", "*\/"
-    */
-   while (utf8_ptr < utf8_end)
-     {
-        if (*utf8_ptr != ' ' && *utf8_ptr != '\t' &&  *utf8_ptr != '\n' )
-          {
-             //Renew the start position of lexeme.
-             if (!keep_lexem_start_pos) utf8_lexem = utf8_ptr;
-
-             //Check line comment.
-             if (*utf8_ptr == '/' && utf8_ptr + 1 < utf8_end)
-               {
-                  //Start of single line comment.
-                  if (*(utf8_ptr + 1) == '/')
-                    single_comment_found = EINA_TRUE;
-                  //Start of multi line comment.
-                  else if (*(utf8_ptr + 1) == '*')
-                    multi_comment_found = EINA_TRUE;
-
-                  if (single_comment_found || multi_comment_found)
-                    utf8_ptr += 2;
-               }
-             //Check macro.
-             if (*utf8_ptr == '#')
-               {
-                  macro_found = EINA_TRUE;
-                  utf8_ptr++;
-               }
-
-             while (utf8_ptr < utf8_end)
-               {
-                  if (*utf8_ptr == '\n')
-                    {
-                       //End of single line comment.
-                       if (single_comment_found)
-                         single_comment_found = EINA_FALSE;
-
-                       //End of macro.
-                       else if (macro_found)
-                         {
-                            //Macro ends with "\n" but continues with "\\\n".
-                            if (!(utf8_ptr - 1 >= utf8 &&
-                                  *(utf8_ptr - 1) == '\\'))
-                              macro_found = EINA_FALSE;
-                         }
-
-                       code_lines = eina_list_append(code_lines,
-                                       eina_stringshare_add_length(utf8_lexem,
-                                       utf8_ptr - utf8_lexem));
-                       utf8_append_ptr = utf8_ptr;
-                       break;
-                    }
-                  else if (multi_comment_found)
-                    {
-                       //End of multi line comment.
-                       if (*utf8_ptr == '/' && utf8_ptr - 1 >= utf8 &&
-                           *(utf8_ptr - 1) == '*')
-                         {
-                            if (utf8_ptr + 1 == utf8_end)
-                              code_lines = eina_list_append(code_lines,
-                                              eina_stringshare_add(utf8_lexem));
-                            else
-                              code_lines =
-                                 eina_list_append(code_lines,
-                                    eina_stringshare_add_length(utf8_lexem,
-                                    utf8_ptr - utf8_lexem + 1));
-                            utf8_append_ptr = utf8_ptr;
-                            multi_comment_found = EINA_FALSE;
-                            break;
-                         }
-                    }
-                  //No line comment and No macro.
-                  else if (!single_comment_found && !macro_found)
-                    {
-                       if (*utf8_ptr == '{' || *utf8_ptr == '}' ||
-                           *utf8_ptr == ';')
-                         {
-                            if (*utf8_ptr == '{')
-                              {
-                                 char *bracket_right_ptr = utf8_ptr + 1;
-                                 while (bracket_right_ptr < utf8_end)
-                                   {
-                                      if (*bracket_right_ptr != ' ' &&
-                                          *bracket_right_ptr != '\t')
-                                        break;
-                                      bracket_right_ptr++;
-                                   }
-                                 if (bracket_right_ptr < utf8_end)
-                                   {
-                                      /* To preserve code line until block name,
-                                         keep start position of lexeme and
-                                         append code line until ';'. */
-                                      Eina_Bool block_name_found = EINA_FALSE;
-
-                                      if (*bracket_right_ptr == '\"')
-                                        block_name_found = EINA_TRUE;
-                                      else if (bracket_right_ptr + 4 < utf8_end)
-                                        {
-                                           if (!strncmp(bracket_right_ptr,
-                                                        "name:", 5))
-                                             block_name_found = EINA_TRUE;
-                                           else if (!strncmp(bracket_right_ptr,
-                                                             "state:", 5))
-                                             block_name_found = EINA_TRUE;
-                                        }
-
-                                      if (block_name_found)
-                                        {
-                                           keep_lexem_start_pos = EINA_TRUE;
-                                           break;
-                                        }
-                                   }
-                              }
-                            else if (*utf8_ptr == ';')
-                              keep_lexem_start_pos = EINA_FALSE;
-
-                            if (utf8_ptr + 1 == utf8_end)
-                              code_lines = eina_list_append(code_lines,
-                                              eina_stringshare_add(utf8_lexem));
-                            else
-                              code_lines =
-                                 eina_list_append(code_lines,
-                                    eina_stringshare_add_length(utf8_lexem,
-                                    utf8_ptr - utf8_lexem + 1));
-                            utf8_append_ptr = utf8_ptr;
-                            break;
-                         }
-                    }
-                  utf8_ptr++;
-               }
-          }
-        utf8_ptr++;
-     }
-   //Append rest of the input string.
-   if (utf8_lexem > utf8_append_ptr)
-     code_lines = eina_list_append(code_lines,
-                                   eina_stringshare_add(utf8_lexem));
-
+   Eina_List *code_lines = indent_code_lines_create(id, utf8);
    if (!code_lines)
      {
         if (indented_line_cnt) *indented_line_cnt = 0;
@@ -928,13 +781,14 @@ indent_text_create(indent_data *id,
    Eina_List *l = NULL;
    Eina_List *l_last = eina_list_last(code_lines);
    Eina_Stringshare *line;
+   Eina_Strbuf *buf = eina_strbuf_new();
 
    int line_cnt = 1;
    int space = 0;
    int saved_space = 0;
-   single_comment_found = EINA_FALSE;
-   multi_comment_found = EINA_FALSE;
-   macro_found = EINA_FALSE;
+   Eina_Bool single_comment_found = EINA_FALSE;
+   Eina_Bool multi_comment_found = EINA_FALSE;
+   Eina_Bool macro_found = EINA_FALSE;
    EINA_LIST_FOREACH(code_lines, l, line)
      {
         if (!single_comment_found && !multi_comment_found && !macro_found)
