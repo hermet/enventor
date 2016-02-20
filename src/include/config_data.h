@@ -60,3 +60,5 @@ void config_smart_undo_redo_set(Eina_Bool smart_undo_redo);
 Eina_Bool config_smart_undo_redo_get(void);
 void config_edc_navigator_set(Eina_Bool enabled);
 Eina_Bool config_edc_navigator_get(void);
+void config_monospace_font_set(Eina_Bool monospace_font);
+Eina_Bool config_monospace_font_get(void);

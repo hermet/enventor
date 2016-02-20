@@ -57,7 +57,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n"
 
 #define ROUNDING(x, dig) (floor((x) * pow(10, dig) + 0.5) / pow(10, dig))
 
-#define ENVENTOR_CONFIG_VERSION 5
+#define ENVENTOR_CONFIG_VERSION 6
 
 #define EVENT_KEY_MODIFIER_CHECK(NAME, MASK) \
   ((MASK & ECORE_EVENT_MODIFIER_##NAME) && \
@@ -94,6 +94,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n"
    #define N_(string) string
    #define NGETTEXT(single, plur, n) (((n)==1)? (single):(plur))
 #endif /* localization */
+
+
+/* fontconfig */
+#ifdef HAVE_FONTCONFIG
+   #include <fontconfig/fontconfig.h>
+   #include <fontconfig/fcfreetype.h>
+#endif /* fontconfig */
 
 
 #endif

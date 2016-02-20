@@ -1,3 +1,6 @@
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 #include "common.h"
 
 typedef struct config_s
@@ -39,6 +42,7 @@ typedef struct config_s
    Eina_Bool auto_complete;
    Eina_Bool smart_undo_redo;
    Eina_Bool edc_navigator;
+   Eina_Bool monospace_font;
 } config_data;
 
 static config_data *g_cd = NULL;
@@ -182,6 +186,10 @@ config_load(void)
         cd->version = ENVENTOR_CONFIG_VERSION;
         cd->smart_undo_redo = EINA_FALSE;
         cd->edc_navigator = EINA_TRUE;
+#ifdef HAVE_FONTCONFIG
+        //Check Monospace Font is disabled if fontconfig is not installed.
+        cd->monospace_font = EINA_TRUE;
+#endif
      }
 
    g_cd = cd;
@@ -299,6 +307,8 @@ eddc_init(void)
                                     smart_undo_redo, EET_T_UCHAR);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "edc_navigator",
                                     edc_navigator, EET_T_UCHAR);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "monospace_font",
+                                    monospace_font, EET_T_UCHAR);
 }
 
 void
@@ -900,4 +910,18 @@ config_edc_navigator_get(void)
 {
    config_data *cd = g_cd;
    return cd->edc_navigator;
+}
+
+void
+config_monospace_font_set(Eina_Bool monospace_font)
+{
+   config_data *cd = g_cd;
+   cd->monospace_font = monospace_font;
+}
+
+Eina_Bool
+config_monospace_font_get(void)
+{
+   config_data *cd = g_cd;
+   return cd->monospace_font;
 }
