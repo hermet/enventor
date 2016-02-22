@@ -225,8 +225,15 @@ config_load(void)
           cd->syntax_color_list = eina_list_append(cd->syntax_color_list, NULL);
      }
 
+#ifdef _WIN32
+   const char monospace_font[] = "Courier New";
+#elif __APPLE__
+   const char monospace_font[] = "Menlo";
+#else
+   const char monospace_font[] = "Monospace";
+#endif
    if (!cd->font_name)
-     eina_stringshare_replace(&cd->font_name, "Monospace");
+     eina_stringshare_replace(&cd->font_name, monospace_font);
    if (!cd->font_style)
      eina_stringshare_replace(&cd->font_style, "Regular");
 
