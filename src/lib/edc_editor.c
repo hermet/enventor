@@ -1491,7 +1491,7 @@ edit_init(Evas_Object *enventor)
    ed->select_pos = -1;
    ed->font_scale = 1;
 
-   ed->rd = redoundo_init(en_edit);
+   ed->rd = redoundo_init(en_edit, ed);
    evas_object_data_set(ed->en_edit, "redoundo", ed->rd);
 
    return ed;

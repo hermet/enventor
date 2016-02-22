@@ -15,6 +15,7 @@ typedef struct diff_s
    unsigned int cursor_pos;
    Eina_Bool action : 1;   //EINA_TRUE: insert, EINA_FALSE, delete
    Eina_Bool relative : 1; //If this change relative to prevision or next step
+   Eina_Bool buildable : 1;           //Is this change buildable?
 } diff_data;
 
 struct redoundo_s
@@ -27,6 +28,7 @@ struct redoundo_s
    diff_data *last_diff;
    unsigned int queue_max;        //Maximum queuing data count 0: unlimited
    Eina_Bool internal_change : 1; //Entry change by redoundo
+   edit_data *edit_data;
    struct {
       Eina_Bool enable;
       Ecore_Timer *timer;
@@ -188,7 +190,12 @@ redoundo_undo(redoundo_data *rd, Eina_Bool *changed)
 {
    if (changed) *changed = EINA_FALSE;
 
-   if (!rd->last_diff) return 0;
+   if (!rd->last_diff)
+     {
+        edit_save(rd->edit_data, build_edc_path_get());
+        build_edc();
+        return 0;
+     }
 
    rd->internal_change = EINA_TRUE;
 
@@ -244,6 +251,12 @@ redoundo_undo(redoundo_data *rd, Eina_Bool *changed)
         elm_entry_calc_force(rd->entry);
         *changed = EINA_TRUE;
         elm_entry_select_none(rd->entry);
+     }
+
+   if (rd->last_diff && rd->last_diff->buildable)
+     {
+        edit_save(rd->edit_data, build_edc_path_get());
+        build_edc();
      }
 
    return lines;
@@ -325,6 +338,12 @@ redoundo_redo(redoundo_data *rd, Eina_Bool *changed)
         elm_entry_select_none(rd->entry);
      }
 
+   if (rd->last_diff && rd->last_diff->buildable)
+     {
+        edit_save(rd->edit_data, build_edc_path_get());
+        build_edc();
+     }
+
    return lines;
 }
 
@@ -366,7 +385,7 @@ redoundo_text_push(redoundo_data *rd, const char *text, int pos, int length,
 }
 
 redoundo_data *
-redoundo_init(Evas_Object *entry)
+redoundo_init(Evas_Object *entry, edit_data *ed)
 {
    if (!entry) return NULL;
 
@@ -383,6 +402,7 @@ redoundo_init(Evas_Object *entry)
    rd->queue_max = DEFAULT_QUEUE_SIZE;
    rd->smart.enable = EINA_FALSE;
    rd->smart.input_delay = INPUT_SPEED;
+   rd->edit_data = ed;
 
    //FIXME: Why signal callback? not smart callback?
    elm_object_signal_callback_add(entry, "entry,changed,user", "*",
@@ -467,3 +487,13 @@ redoundo_smart_set(redoundo_data *rd, Eina_Bool status)
    if (!rd) return;
    rd->smart.enable = status;
 }
+
+void
+redoundo_diff_buildable(redoundo_data *rd, Eina_Bool buildable)
+{
+   if (!rd || !rd->queue || !rd->last_diff)
+     return;
+
+   rd->last_diff->buildable = buildable;
+}
+

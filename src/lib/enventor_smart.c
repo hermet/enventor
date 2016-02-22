@@ -154,14 +154,20 @@ call_error:
    if (line_num || target)
      edit_syntax_color_full_apply(pd->ed, EINA_TRUE);
 
+   redoundo_data *rd = evas_object_data_get(edit_entry_get(pd->ed), "redoundo");
+
    // When msg == NULL it mean, that needed to reset error state
    if (msg)
      {
-       // Ctxpopup should be dismissed only in cases when error happens
-       edit_ctxpopup_dismiss(pd->ed);
-       evas_object_smart_callback_call(pd->obj, SIG_COMPILE_ERROR, (char *)msg);
+        // Ctxpopup should be dismissed only in cases when error happens
+        edit_ctxpopup_dismiss(pd->ed);
+        evas_object_smart_callback_call(pd->obj, SIG_COMPILE_ERROR, (char *)msg);
+        redoundo_diff_buildable(rd, EINA_FALSE);
      }
-
+   else
+     {
+        redoundo_diff_buildable(rd, EINA_TRUE);
+     }
 }
 
 static void

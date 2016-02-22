@@ -198,7 +198,7 @@ void edj_mgr_all_views_reload(void);
 
 
 /* redoundo */
-redoundo_data *redoundo_init(Evas_Object *entry);
+redoundo_data *redoundo_init(Evas_Object *entry, edit_data *ed);
 void redoundo_term(redoundo_data *rd);
 void redoundo_clear(redoundo_data *rd);
 void redoundo_text_push(redoundo_data *rd, const char *text, int pos, int length, Eina_Bool insert);
@@ -208,6 +208,7 @@ int redoundo_undo(redoundo_data *rd, Eina_Bool *changed);
 int redoundo_redo(redoundo_data *rd, Eina_Bool *changed);
 void redoundo_n_diff_cancel(redoundo_data *rd, unsigned int n);
 void redoundo_smart_set(redoundo_data *rd, Eina_Bool status);
+void redoundo_diff_buildable(redoundo_data *rd, Eina_Bool buildable);
 
 
 /* edj_viewer */
