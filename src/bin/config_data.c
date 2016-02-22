@@ -223,6 +223,11 @@ config_load(void)
           cd->syntax_color_list = eina_list_append(cd->syntax_color_list, NULL);
      }
 
+   if (!cd->font_name)
+     eina_stringshare_replace(&cd->font_name, "Monospace");
+   if (!cd->font_style)
+     eina_stringshare_replace(&cd->font_style, "Regular");
+
    return cd;
 }
 
