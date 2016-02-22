@@ -70,4 +70,5 @@ EXTRA_DIST = \
    horizontal_separated_bar_small_glow.png \
    expand.png \
 	invert.png \
-	icon_close.png
+	icon_close.png \
+   edc_navigator.png

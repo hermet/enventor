@@ -23,6 +23,7 @@ struct setting_s
    Evas_Object *toggle_highlight;
    Evas_Object *toggle_swallow;
    Evas_Object *toggle_stats;
+   Evas_Object *toggle_edc_navigator;
    Evas_Object *toggle_tools;
    Evas_Object *toggle_console;
 
@@ -414,6 +415,11 @@ general_layout_create(setting_data *sd, Evas_Object *parent)
                                              config_stats_bar_get());
    elm_box_pack_end(box, toggle_stats);
 
+   //Toggle (EDC Navigator)
+   Evas_Object *toggle_edc_navigator = toggle_create(box, _("EDC Navigator"),
+                                               config_edc_navigator_get());
+   elm_box_pack_end(box, toggle_edc_navigator);
+
    //Toggle (Tools)
    Evas_Object *toggle_tools = toggle_create(box, _("Tools"),
                                              config_tools_get());
@@ -435,6 +441,7 @@ general_layout_create(setting_data *sd, Evas_Object *parent)
    sd->toggle_highlight = toggle_highlight;
    sd->toggle_swallow = toggle_swallow;
    sd->toggle_stats = toggle_stats;
+   sd->toggle_edc_navigator = toggle_edc_navigator;
    sd->toggle_tools = toggle_tools;
    sd->toggle_console = toggle_console;
 

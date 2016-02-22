@@ -43,6 +43,7 @@ tools_update(void)
    tools_highlight_update(EINA_FALSE);
    tools_dummy_update(EINA_FALSE);
    tools_status_update(EINA_FALSE);
+   tools_edc_navigator_update(EINA_FALSE);
 }
 
 static void
@@ -772,11 +773,11 @@ keygrabber_key_down_cb(void *data, Evas *e EINA_UNUSED,
         base_tools_toggle(EINA_TRUE);
         return;
      }
-   //Console
+   //EDC Navigator
    if (!strcmp(ev->key, "F10"))
      {
         enventor_object_ctxpopup_dismiss(ad->enventor);
-        base_console_toggle();
+        tools_edc_navigator_update(EINA_TRUE);
         return;
      }
    //Statusbar

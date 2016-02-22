@@ -70,6 +70,19 @@ base_statusbar_toggle(Eina_Bool toggle)
      elm_object_signal_emit(bd->layout, "elm,state,statusbar,hide", "");
 }
 
+void base_edc_navigator_toggle(Eina_Bool toggle)
+{
+   base_data *bd = g_bd;
+   assert(bd);
+
+   if (toggle) config_edc_navigator_set(!config_edc_navigator_get());
+
+   if (config_edc_navigator_get())
+     elm_object_signal_emit(bd->layout, "elm,state,edc_navigator,show", "");
+   else
+     elm_object_signal_emit(bd->layout, "elm,state,edc_navigator,hide", "");
+}
+
 void
 base_tools_toggle(Eina_Bool config)
 {

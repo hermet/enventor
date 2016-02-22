@@ -8,6 +8,7 @@ typedef struct tools_s
 {
    Evas_Object *swallow_btn;
    Evas_Object *status_btn;
+   Evas_Object *edc_navigator_btn;
    Evas_Object *lines_btn;
    Evas_Object *highlight_btn;
    Evas_Object *goto_btn;
@@ -31,23 +32,31 @@ menu_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 }
 
 static void
-highlight_cb(void *data, Evas_Object *obj EINA_UNUSED,
+highlight_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
              void *event_info EINA_UNUSED)
 {
    tools_highlight_update(EINA_TRUE);
 }
 
 static void
-dummy_cb(void *data, Evas_Object *obj EINA_UNUSED,
-           void *event_info EINA_UNUSED)
+dummy_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+         void *event_info EINA_UNUSED)
 {
    tools_dummy_update(EINA_TRUE);
 }
 
 static void
-lines_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
+lines_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+         void *event_info EINA_UNUSED)
 {
    tools_lines_update(EINA_TRUE);
+}
+
+static void
+edc_navigator_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+                 void *event_info EINA_UNUSED)
+{
+   tools_edc_navigator_update(EINA_TRUE);
 }
 
 static void
@@ -238,7 +247,6 @@ tools_init(Evas_Object *parent)
    elm_box_pack_end(box, btn);
    td->lines_btn = btn;
 
-
    sp = elm_separator_add(box);
    evas_object_show(sp);
    elm_box_pack_end(box, sp);
@@ -249,6 +257,13 @@ tools_init(Evas_Object *parent)
    evas_object_size_hint_align_set(btn, 1.0, EVAS_HINT_FILL);
    elm_box_pack_end(box, btn);
    td->console_btn = btn;
+
+   btn = tools_btn_create(box, "edc_navigator", _("EDC Navigator (F10)"),
+                          edc_navigator_cb);
+   evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn, 1.0, EVAS_HINT_FILL);
+   elm_box_pack_end(box, btn);
+   td->edc_navigator_btn = btn;
 
    btn = tools_btn_create(box, "status", _("Status (F11)"), status_cb);
    evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
@@ -307,6 +322,29 @@ tools_highlight_update(Eina_Bool toggle)
      elm_object_signal_emit(td->highlight_btn, "icon,highlight,enabled", "");
    else
      elm_object_signal_emit(td->highlight_btn, "icon,highlight,disabled", "");
+}
+
+void
+tools_edc_navigator_update(Eina_Bool toggle)
+{
+   tools_data *td = g_td;
+   if (!td) return;
+
+   if (toggle) config_edc_navigator_set(!config_edc_navigator_get());
+
+   base_edc_navigator_toggle(EINA_FALSE);
+
+   //Toggle on/off
+   if (config_edc_navigator_get())
+     {
+        elm_object_signal_emit(td->edc_navigator_btn, "icon,highlight,enabled",
+                               "");
+     }
+   else
+     {
+        elm_object_signal_emit(td->edc_navigator_btn, "icon,highlight,disabled",
+                               "");
+     }
 }
 
 void

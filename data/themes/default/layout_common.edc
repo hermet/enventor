@@ -2387,7 +2387,7 @@ group { name: "main_layout";
          type: SPACER;
          scale: 1;
          description {
-            min: 640 440;
+            min: 900 440;
          }
       }
       part { name: "tools_base";
@@ -2427,12 +2427,12 @@ group { name: "main_layout";
             image.border_scale: 1;
          }
       }
-      part { name: "elm.swallow.panes";
-         type: SWALLOW;
+      swallow { "elm.swallow.panes";
          scale: 1;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.relative: 0 1;
-            rel2.relative: 1 0;
+            rel2.relative: 0 0;
+            rel2.to: "elm.swallow.edc_navigator";
             rel1.to_y: "elm.swallow.tools";
             rel2.to_y: "elm.swallow.statusbar";
          }
@@ -2465,8 +2465,36 @@ group { name: "main_layout";
             align: 0.5 1;
          }
       }
+      swallow { "elm.swallow.edc_navigator";
+         scale: 1;
+         desc { "default";
+            rel1.relative: 1 1;
+            rel2.relative: 1 0;
+            rel1.to_y: "elm.swallow.tools";
+            rel2.to_y: "elm.swallow.statusbar";
+            align: 1 0;
+            min: 0 0;
+            fixed: 1 0;
+         }
+         desc { "visible";
+            inherit: "default";
+            min: 150 0;
+         }
+      }
    }
    programs {
+      program { "edc_navigator_show";
+         signal: "elm,state,edc_navigator,show";
+         action: STATE_SET "visible" 0.0;
+         target: "elm.swallow.edc_navigator";
+         transition: DECELERATE 0.25;
+      }
+      program { "edc_navigator_hide";
+         signal: "elm,state,edc_navigator,hide";
+         action: STATE_SET "default" 0.0;
+         target: "elm.swallow.edc_navigator";
+         transition: DECELERATE 0.25;
+      }
       program { name: "statusbar_show";
          signal: "elm,state,statusbar,show";
          action: STATE_SET "visible" 0.0;

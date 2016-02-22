@@ -21,3 +21,4 @@ void base_gui_term(void);
 void base_console_reset(void);
 void base_error_msg_set(const char *msg);
 void base_console_full_view(void);
+void base_edc_navigator_toggle(Eina_Bool toggle);
