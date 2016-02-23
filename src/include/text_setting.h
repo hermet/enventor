@@ -16,6 +16,7 @@ struct text_setting_s
    Evas_Object *toggle_indent;
    Evas_Object *toggle_autocomp;
    Evas_Object *toggle_smart_undo_redo;
+   Evas_Object *list_font_name;
 
    color_keyword *color_keyword_list;
    char *syntax_template_format;

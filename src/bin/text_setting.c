@@ -588,6 +588,24 @@ font_scale_slider_changed_cb(void *data, Evas_Object *obj,
    syntax_template_apply();
 }
 
+static void
+text_setting_font_apply(void)
+{
+   text_setting_data *tsd = g_tsd;
+
+   char text_class_name[32];
+   snprintf(text_class_name, sizeof(text_class_name), "%s_setting_entry",
+            elm_app_name_get());
+
+   char *font = NULL;
+   if (tsd->font_name)
+     font = elm_font_fontconfig_name_get(tsd->font_name, tsd->font_style);
+   edje_text_class_set(text_class_name, font, -100);
+   elm_font_fontconfig_name_free(font);
+
+   elm_entry_calc_force(tsd->text_edit_entry);
+}
+
 static int
 font_cmp_cb(const void *data1,
             const void *data2)
@@ -601,22 +619,28 @@ static void
 font_style_selected_cb(void *data, Evas_Object *obj,
                        void *event_info EINA_UNUSED)
 {
-   Evas_Object *list_font_name = data;
-   Elm_Object_Item *font_name_it = elm_list_selected_item_get(list_font_name);
+   text_setting_data *tsd = g_tsd;
    Elm_Object_Item *font_style_it = elm_list_selected_item_get(obj);
-   const char *font_name = elm_object_item_text_get(font_name_it);
    const char *font_style = elm_object_item_text_get(font_style_it);
 
-   text_setting_font_set(font_name, font_style);
+   eina_stringshare_replace(&tsd->font_style, font_style);
+   text_setting_font_apply();
 }
 
 static void
 font_name_selected_cb(void *data, Evas_Object *obj,
                       void *event_info EINA_UNUSED)
 {
+   text_setting_data *tsd = g_tsd;
    Evas_Object *list_font_style = data;
-   Elm_Object_Item *it = elm_list_selected_item_get(obj);
-   const char *font_name = elm_object_item_text_get(it);
+   Elm_Object_Item *font_name_it = elm_list_selected_item_get(obj);
+   Elm_Object_Item *font_style_it = NULL;
+   const char *sel_font_name = elm_object_item_text_get(font_name_it);
+   const char *font_name = NULL;
+   const char *font_style = NULL;
+
+   config_font_get(&font_name, &font_style);
+
    elm_list_clear(list_font_style);
 
    //Append Items of Font Style List
@@ -632,20 +656,28 @@ font_name_selected_cb(void *data, Evas_Object *obj,
         efp = elm_font_properties_get(font);
         if (efp)
           {
-             if (!strcmp(font_name, efp->name))
+             if (!strcmp(sel_font_name, efp->name))
                {
                   EINA_LIST_FOREACH(efp->styles, ll, style)
                     {
-                       elm_list_item_append(list_font_style, style, NULL, NULL,
-                                            font_style_selected_cb, obj);
+                       Elm_Object_Item *it
+                          = elm_list_item_append(list_font_style, style, NULL,
+                                                 NULL, font_style_selected_cb,
+                                                 NULL);
+                       if (font_name && !strcmp(font_name, efp->name) &&
+                           font_style && !strcmp(font_style, style))
+                         font_style_it = it;
                     }
                }
              elm_font_properties_free(efp);
           }
      }
    elm_list_go(list_font_style);
+   if (font_style_it) elm_list_item_selected_set(font_style_it, EINA_TRUE);
 
-   text_setting_font_set(font_name, NULL);
+   eina_stringshare_replace(&tsd->font_name, sel_font_name);
+   eina_stringshare_replace(&tsd->font_style, NULL);
+   text_setting_font_apply();
 }
 
 static Eina_Bool
@@ -687,12 +719,7 @@ text_setting_layout_create(Evas_Object *parent)
    evas_object_size_hint_align_set(entry, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_layout_text_set(layout, "text_setting_guide", _("Double click a keyword to change its color :"));
 
-   //Font information
-   const char *font_name;
-   const char *font_style;
-   config_font_get(&font_name, &font_style);
-   text_setting_font_set(font_name, font_style);
-
+   //Font Scale Information
    tsd->font_scale = (double) config_font_scale_get();
    char *syntax_template_str = syntax_template_create(tsd->font_scale);
    elm_entry_entry_set(entry, syntax_template_str);
@@ -817,10 +844,18 @@ text_setting_layout_create(Evas_Object *parent)
    Evas_Object *list_font_style = list_create(box2);
    elm_box_pack_end(box2, list_font_style);
 
+   //Font Name and Style Information
+   const char *font_name;
+   const char *font_style;
+   config_font_get(&font_name, &font_style);
+   eina_stringshare_replace(&tsd->font_name, font_name);
+   eina_stringshare_replace(&tsd->font_style, font_style);
+
    //Append Items of Font Name List
    Elm_Font_Properties *efp;
    Eina_List *font_list;
    Eina_List *l;
+   Elm_Object_Item *font_name_it = NULL;
    char *font;
    char prev_font[128] = {0};
    font_list = evas_font_available_list(evas_object_evas_get(parent));
@@ -833,14 +868,19 @@ text_setting_layout_create(Evas_Object *parent)
           {
              if (strcmp(prev_font, efp->name) && is_supported_font(efp->name))
                {
-                  elm_list_item_append(list_font_name, efp->name, NULL, NULL,
-                                       font_name_selected_cb, list_font_style);
+                  Elm_Object_Item *it
+                     = elm_list_item_append(list_font_name, efp->name, NULL,
+                                            NULL, font_name_selected_cb,
+                                            list_font_style);
+                  if (font_name && !strcmp(font_name, efp->name))
+                    font_name_it = it;
                   snprintf(prev_font, sizeof(prev_font), "%s", efp->name);
                }
              elm_font_properties_free(efp);
           }
      }
    elm_list_go(list_font_name);
+   if (font_name_it) elm_list_item_selected_set(font_name_it, EINA_TRUE);
 
    tsd->text_setting_layout = layout;
    tsd->text_edit_entry = entry;
@@ -849,6 +889,7 @@ text_setting_layout_create(Evas_Object *parent)
    tsd->toggle_indent = toggle_indent;
    tsd->toggle_autocomp = toggle_autocomp;
    tsd->toggle_smart_undo_redo = toggle_smart_undo_redo;
+   tsd->list_font_name = list_font_name;
    return layout;
 }
 
@@ -897,24 +938,6 @@ text_setting_config_set(void)
    config_smart_undo_redo_set(elm_check_state_get(tsd->toggle_smart_undo_redo));
 }
 
-static void
-text_setting_font_apply(const char *font_name, const char *font_style)
-{
-   text_setting_data *tsd = g_tsd;
-
-   char text_class_name[32];
-   snprintf(text_class_name, sizeof(text_class_name), "%s_setting_entry",
-            elm_app_name_get());
-
-   char *font = NULL;
-   if (font_name)
-     font = elm_font_fontconfig_name_get(font_name, font_style);
-   edje_text_class_set(text_class_name, font, -100);
-   elm_font_fontconfig_name_free(font);
-
-   elm_entry_calc_force(tsd->text_edit_entry);
-}
-
 void
 text_setting_font_set(const char *font_name, const char *font_style)
 {
@@ -922,7 +945,22 @@ text_setting_font_set(const char *font_name, const char *font_style)
 
    eina_stringshare_replace(&tsd->font_name, font_name);
    eina_stringshare_replace(&tsd->font_style, font_style);
-   text_setting_font_apply(font_name, font_style);
+
+   if (!tsd->list_font_name) return;
+
+   const Eina_List *it_list = elm_list_items_get(tsd->list_font_name);
+   const Eina_List *l;
+   Elm_Object_Item *it;
+
+   EINA_LIST_FOREACH(it_list, l, it)
+     {
+        const char *name = elm_object_item_text_get(it);
+        if (font_name && !strcmp(font_name, name))
+          {
+             elm_list_item_selected_set(it, EINA_TRUE);
+             break;
+          }
+     }
 }
 
 void
