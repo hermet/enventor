@@ -432,7 +432,29 @@ indent_text_auto_format(indent_data *id,
    Eina_List *l = NULL;
    Eina_Stringshare *line;
    evas_textblock_cursor_line_char_first(cur_start);
-   evas_textblock_cursor_line_char_last(cur_end);
+
+   /* Checking the string from start till cursor position is empty.
+    * And in case if this range is empty - formatted text will be
+    * inserted above the current line */
+   char *check_range = evas_textblock_cursor_range_text_get(cur_start,
+                                       cur_end, EVAS_TEXTBLOCK_TEXT_PLAIN);
+   Eina_Bool above = EINA_TRUE;
+   if (check_range)
+     {
+        int check_len = strlen(check_range);
+        int space_cnt = 0;
+        for (; space_cnt < check_len; space_cnt++)
+          {
+             if (check_range[space_cnt] != ' ')
+               {
+                  above = EINA_FALSE;
+                  break;
+               }
+          }
+     }
+
+   if (!above)
+     evas_textblock_cursor_line_char_last(cur_end);
    int space = indent_space_get(id, entry);
 
    utf8 = evas_textblock_cursor_range_text_get(cur_start, cur_end,
@@ -444,7 +466,7 @@ indent_text_auto_format(indent_data *id,
           {
              if ((utf8_ptr[0] == '}') && (space > 0))
                space -= TAB_SPACE;
-             if (!evas_textblock_cursor_paragraph_next(cur_start))
+             if (!above && !evas_textblock_cursor_paragraph_next(cur_start))
                {
                   code_lines = eina_list_prepend(code_lines,
                                                  eina_stringshare_add("\n"));
