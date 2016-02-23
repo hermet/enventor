@@ -57,13 +57,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n"
 
 #define ROUNDING(x, dig) (floor((x) * pow(10, dig) + 0.5) / pow(10, dig))
 
-#define ENVENTOR_CONFIG_VERSION 5
+#define ENVENTOR_CONFIG_VERSION 6
 
 #define EVENT_KEY_MODIFIER_CHECK(NAME, MASK) \
   ((MASK & ECORE_EVENT_MODIFIER_##NAME) && \
    !((0xFF ^ ECORE_EVENT_MODIFIER_##NAME) & (MASK & 0x0F)))
 
-
+#define WIN_DEFAULT_W 900
+#define WIN_DEFAULT_H 440
 
 #define ENVENTOR_BETA_API_SUPPORT 1
 #include <Enventor.h>

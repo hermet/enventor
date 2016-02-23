@@ -169,6 +169,8 @@ config_load(void)
         cd->view_scale = 1;
         cd->view_size_w = 300;
         cd->view_size_h = 300;
+        cd->win_size_w = WIN_DEFAULT_W;
+        cd->win_size_h = WIN_DEFAULT_H;
         cd->editor_size = DEFAULT_EDITOR_SIZE;
         cd->console_size = DEFAULT_CONSOLE_SIZE;
         cd->stats_bar = EINA_TRUE;
