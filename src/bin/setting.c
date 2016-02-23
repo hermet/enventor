@@ -185,7 +185,7 @@ setting_reset_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
    text_setting_linenumber_set(config_linenumber_get());
    text_setting_auto_indent_set(config_auto_indent_get());
    text_setting_auto_complete_set(config_auto_complete_get());
-   text_setting_monospace_font_set(config_monospace_font_get());
+
    text_setting_syntax_color_reset();
 }
 

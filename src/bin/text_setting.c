@@ -11,10 +11,6 @@
 #define SYNTAX_TEMPLATE_FONT_SIZE 10
 #define SYNTAX_COLOR_LEN 7
 
-#ifdef HAVE_FONTCONFIG
-static FcConfig *fc_config = NULL;
-#endif
-
 static char unsupported_font_list[UNSUPPORTED_FONT_CNT][UNSUPPORTED_FONT_MAX_LEN] =
 {
    "Dingbats", "KacstArt", "KacstBook", "KacstDecorative", "KacstDigital",
@@ -624,69 +620,24 @@ font_name_selected_cb(void *data, Evas_Object *obj,
    elm_list_clear(list_font_style);
 
    //Append Items of Font Style List
-   Eina_List *font_list = NULL;
+   Elm_Font_Properties *efp;
+   Eina_List *font_list;
    Eina_List *l, *ll;
    char *font, *style;
-
-#ifdef HAVE_FONTCONFIG
-   if (!fc_config)
-     fc_config = FcInitLoadConfigAndFonts();
-
-   FcPattern *p = FcPatternCreate();
-   FcObjectSet *os = FcObjectSetBuild(FC_FAMILY, FC_STYLE, FC_SPACING, NULL);
-   FcFontSet *set = NULL;
-
-   if (p && os) set = FcFontList(fc_config, p, os);
-
-   if (p) FcPatternDestroy(p);
-   if (os) FcObjectSetDestroy(os);
-
-   if (set)
-     {
-        int i;
-        for (i = 0; i < set->nfont; i++)
-          {
-             char *font = (char *)FcNameUnparse(set->fonts[i]);
-             font_list = eina_list_append(font_list,
-                                          eina_stringshare_add(font));
-             free(font);
-          }
-        FcFontSetDestroy(set);
-     }
-#else
    font_list = evas_font_available_list(evas_object_evas_get(obj));
-#endif
-   if (!font_list) return;
-
    font_list = eina_list_sort(font_list, eina_list_count(font_list),
                               font_cmp_cb);
    EINA_LIST_FOREACH(font_list, l, font)
      {
-        Elm_Font_Properties *efp = elm_font_properties_get(font);
+        efp = elm_font_properties_get(font);
         if (efp)
           {
              if (!strcmp(font_name, efp->name))
                {
                   EINA_LIST_FOREACH(efp->styles, ll, style)
                     {
-#ifdef HAVE_FONTCONFIG
-                       char *spacing = strstr(style, ":spacing=");
-                       if (spacing)
-                         {
-                            const char *style_only = NULL;
-                            int style_len = spacing - style;
-                            style_only = eina_stringshare_add_length(style,
-                                                                     style_len);
-                            elm_list_item_append(list_font_style, style_only,
-                                                 NULL, NULL,
-                                                 font_style_selected_cb, obj);
-                            eina_stringshare_del(style_only);
-                         }
-                       else
-#endif
-                         elm_list_item_append(list_font_style, style, NULL,
-                                              NULL, font_style_selected_cb,
-                                              obj);
+                       elm_list_item_append(list_font_style, style, NULL, NULL,
+                                            font_style_selected_cb, obj);
                     }
                }
              elm_font_properties_free(efp);
@@ -711,77 +662,6 @@ is_supported_font(const char *font_name)
 
    return EINA_TRUE;
 }
-
-//Check Monospace Font is disabled if fontconfig is not installed.
-#ifdef HAVE_FONTCONFIG
-static void
-monospace_font_check_changed_cb(void *data, Evas_Object *obj,
-                                void *event_info EINA_UNUSED)
-{
-   text_setting_data *tsd = data;
-   Eina_List *font_list = NULL;
-   Eina_List *l;
-   char *font;
-   char prev_font[128] = {0};
-
-   //Reset Font Name List and Font Style List
-   elm_list_clear(tsd->list_font_name);
-   elm_list_clear(tsd->list_font_style);
-
-   if (!fc_config)
-     fc_config = FcInitLoadConfigAndFonts();
-
-   FcPattern *p = FcPatternCreate();
-   FcObjectSet *os = FcObjectSetBuild(FC_FAMILY, FC_STYLE, FC_SPACING, NULL);
-   FcFontSet *set = NULL;
-
-   if (p && os) set = FcFontList(fc_config, p, os);
-
-   if (p) FcPatternDestroy(p);
-   if (os) FcObjectSetDestroy(os);
-
-   if (set)
-     {
-        int i;
-        for (i = 0; i < set->nfont; i++)
-          {
-             char *font = (char *)FcNameUnparse(set->fonts[i]);
-             font_list = eina_list_append(font_list,
-                                          eina_stringshare_add(font));
-             free(font);
-          }
-        FcFontSetDestroy(set);
-     }
-
-   font_list = eina_list_sort(font_list, eina_list_count(font_list),
-                              font_cmp_cb);
-   EINA_LIST_FOREACH(font_list, l, font)
-     {
-        Elm_Font_Properties *efp = elm_font_properties_get(font);
-        if (efp)
-          {
-             if (elm_check_state_get(obj))
-               {
-                  char *style = eina_list_data_get(efp->styles);
-                  if (!strstr(style, ":spacing=100"))
-                    {
-                       elm_font_properties_free(efp);
-                       continue;
-                    }
-               }
-             if (strcmp(prev_font, efp->name) && is_supported_font(efp->name))
-               {
-                  elm_list_item_append(tsd->list_font_name, efp->name, NULL,
-                                       NULL, font_name_selected_cb,
-                                       tsd->list_font_style);
-                  snprintf(prev_font, sizeof(prev_font), "%s", efp->name);
-               }
-             elm_font_properties_free(efp);
-          }
-     }
-   elm_list_go(tsd->list_font_name);
-}
-#endif
 
 Evas_Object *
 text_setting_layout_create(Evas_Object *parent)
@@ -879,134 +759,78 @@ text_setting_layout_create(Evas_Object *parent)
                                                 config_smart_undo_redo_get());
    elm_box_pack_end(box, toggle_smart_undo_redo);
 
-   //Font Name and Style and Check Monospace Font (Box)
+   //Font Name and Style (Box)
    box = elm_box_add(layout);
+   elm_box_horizontal_set(box, EINA_TRUE);
    evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    elm_object_part_content_set(layout, "elm.swallow.font", box);
 
-   //Font Name and Style (Box2)
+   //Font Name (Box)
    box2 = elm_box_add(box);
-   elm_box_horizontal_set(box2, EINA_TRUE);
    evas_object_size_hint_weight_set(box2, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(box2, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_show(box2);
+
    elm_box_pack_end(box, box2);
 
-   //Font Name (Box3)
-   Evas_Object *box3 = elm_box_add(box2);
-   evas_object_size_hint_weight_set(box3, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(box3, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_show(box3);
-   elm_box_pack_end(box2, box3);
-
    //Font Name (Label)
+
    /* This layout is intended to put the label aligned to left side
       far from 3 pixels. */
-   Evas_Object *layout_padding3 = elm_layout_add(box3);
+   Evas_Object *layout_padding3 = elm_layout_add(box2);
    elm_layout_file_set(layout_padding3, EDJE_PATH, "padding3_layout");
    evas_object_show(layout_padding3);
-   elm_box_pack_end(box3, layout_padding3);
+
+   elm_box_pack_end(box2, layout_padding3);
 
    Evas_Object *label_font_name = label_create(layout_padding3, _("Font Name"));
    elm_object_part_content_set(layout_padding3, "elm.swallow.content",
                                label_font_name);
 
    //Font Name (List)
-   Evas_Object *list_font_name = list_create(box3);
-   elm_box_pack_end(box3, list_font_name);
+   Evas_Object *list_font_name = list_create(box2);
+   elm_box_pack_end(box2, list_font_name);
 
-   //Font Style (Box3)
-   box3 = elm_box_add(box2);
-   evas_object_size_hint_weight_set(box3, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(box3, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_show(box3);
-   elm_box_pack_end(box2, box3);
+   //Font Style (Box)
+   box2 = elm_box_add(box);
+   evas_object_size_hint_weight_set(box2, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(box2, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_show(box2);
+
+   elm_box_pack_end(box, box2);
 
    //Font Style (Label)
+
    /* This layout is intended to put the label aligned to left side
       far from 3 pixels. */
-   layout_padding3 = elm_layout_add(box3);
+   layout_padding3 = elm_layout_add(box2);
    elm_layout_file_set(layout_padding3, EDJE_PATH, "padding3_layout");
    evas_object_show(layout_padding3);
-   elm_box_pack_end(box3, layout_padding3);
+
+   elm_box_pack_end(box2, layout_padding3);
 
    Evas_Object *label_font_style = label_create(layout_padding3, _("Font Style"));
    elm_object_part_content_set(layout_padding3, "elm.swallow.content",
                                label_font_style);
 
    //Font Style (List)
-   Evas_Object *list_font_style = list_create(box3);
-   elm_box_pack_end(box3, list_font_style);
-
-   //Check (Monospace Font)
-   Evas_Object *check_monospace_font = elm_check_add(box);
-   evas_object_size_hint_weight_set(check_monospace_font, EVAS_HINT_EXPAND, 0);
-   evas_object_size_hint_align_set(check_monospace_font, EVAS_HINT_FILL, 0);
-   elm_object_text_set(check_monospace_font, _("Monospaced Fonts"));
-#ifdef HAVE_FONTCONFIG
-   elm_check_state_set(check_monospace_font, config_monospace_font_get());
-   evas_object_smart_callback_add(check_monospace_font, "changed",
-                                  monospace_font_check_changed_cb, tsd);
-#else
-   elm_check_state_set(check_monospace_font, EINA_FALSE);
-   elm_object_disabled_set(check_monospace_font, EINA_TRUE);
-#endif
-   evas_object_show(check_monospace_font);
-   elm_box_pack_end(box, check_monospace_font);
+   Evas_Object *list_font_style = list_create(box2);
+   elm_box_pack_end(box2, list_font_style);
 
    //Append Items of Font Name List
-   Eina_List *font_list = NULL;
+   Elm_Font_Properties *efp;
+   Eina_List *font_list;
    Eina_List *l;
    char *font;
    char prev_font[128] = {0};
-
-#ifdef HAVE_FONTCONFIG
-   if (!fc_config)
-     fc_config = FcInitLoadConfigAndFonts();
-
-   FcPattern *p = FcPatternCreate();
-   FcObjectSet *os = FcObjectSetBuild(FC_FAMILY, FC_STYLE, FC_SPACING, NULL);
-   FcFontSet *set = NULL;
-
-   if (p && os) set = FcFontList(fc_config, p, os);
-
-   if (p) FcPatternDestroy(p);
-   if (os) FcObjectSetDestroy(os);
-
-   if (set)
-     {
-        int i;
-        for (i = 0; i < set->nfont; i++)
-          {
-             char *font = (char *)FcNameUnparse(set->fonts[i]);
-             font_list = eina_list_append(font_list,
-                                          eina_stringshare_add(font));
-             free(font);
-          }
-        FcFontSetDestroy(set);
-     }
-#else
    font_list = evas_font_available_list(evas_object_evas_get(parent));
-#endif
-
    font_list = eina_list_sort(font_list, eina_list_count(font_list),
                               font_cmp_cb);
    EINA_LIST_FOREACH(font_list, l, font)
      {
-        Elm_Font_Properties *efp = elm_font_properties_get(font);
+        efp = elm_font_properties_get(font);
         if (efp)
           {
-#ifdef HAVE_FONTCONFIG
-             if (elm_check_state_get(check_monospace_font))
-               {
-                  char *style = eina_list_data_get(efp->styles);
-                  if (!strstr(style, ":spacing=100"))
-                    {
-                       elm_font_properties_free(efp);
-                       continue;
-                    }
-               }
-#endif
              if (strcmp(prev_font, efp->name) && is_supported_font(efp->name))
                {
                   elm_list_item_append(list_font_name, efp->name, NULL, NULL,
@@ -1025,9 +849,6 @@ text_setting_layout_create(Evas_Object *parent)
    tsd->toggle_indent = toggle_indent;
    tsd->toggle_autocomp = toggle_autocomp;
    tsd->toggle_smart_undo_redo = toggle_smart_undo_redo;
-   tsd->check_monospace_font = check_monospace_font;
-   tsd->list_font_name = list_font_name;
-   tsd->list_font_style = list_font_style;
    return layout;
 }
 
@@ -1074,7 +895,6 @@ text_setting_config_set(void)
    config_auto_indent_set(elm_check_state_get(tsd->toggle_indent));
    config_auto_complete_set(elm_check_state_get(tsd->toggle_autocomp));
    config_smart_undo_redo_set(elm_check_state_get(tsd->toggle_smart_undo_redo));
-   config_monospace_font_set(elm_check_state_get(tsd->check_monospace_font));
 }
 
 static void
@@ -1139,13 +959,6 @@ text_setting_smart_undo_redo_set(Eina_Bool enabled)
 {
    text_setting_data *tsd = g_tsd;
    elm_check_state_set(tsd->toggle_smart_undo_redo, enabled);
-}
-
-void
-text_setting_monospace_font_set(Eina_Bool enabled)
-{
-   text_setting_data *tsd = g_tsd;
-   elm_check_state_set(tsd->check_monospace_font, enabled);
 }
 
 void

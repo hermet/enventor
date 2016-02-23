@@ -87,13 +87,6 @@ edje >= ${efl_version} \
 eio >= ${efl_version} \
 efreet >= ${efl_version}"
 
-# Check fontconfig
-PKG_CHECK_EXISTS([fontconfig >= 2.5.0],
-                 [
-                 AC_DEFINE(HAVE_FONTCONFIG, 1, [have fontconfig searching capabilities])
-                 requirement_enventor="fontconfig >= 2.5.0 ${requirement_enventor}"
-                 ])
-
 AC_SUBST(requirement_enventor)
 
 PKG_CHECK_MODULES([ENVENTOR], [${requirement_enventor}])
