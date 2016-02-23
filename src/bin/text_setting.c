@@ -942,7 +942,7 @@ text_setting_layout_create(Evas_Object *parent)
    Evas_Object *check_monospace_font = elm_check_add(box);
    evas_object_size_hint_weight_set(check_monospace_font, EVAS_HINT_EXPAND, 0);
    evas_object_size_hint_align_set(check_monospace_font, EVAS_HINT_FILL, 0);
-   elm_object_text_set(check_monospace_font, _("Monospaced Fonts"));
+   elm_object_text_set(check_monospace_font, _("Fixed-width fonts"));
 #ifdef HAVE_FONTCONFIG
    elm_check_state_set(check_monospace_font, config_monospace_font_get());
    evas_object_smart_callback_add(check_monospace_font, "changed",
