@@ -55,6 +55,7 @@ dummy_objs_update(dummy_obj *dummy)
 
         EINA_LIST_FOREACH(parts, l2, part_name)
           {
+             if (!part_name || !po->name[0]) continue;
              if (po->name[0] != part_name[0]) continue;
              if ((strlen(po->name) != strlen(part_name))) continue;
              if (!strcmp(po->name, part_name))
