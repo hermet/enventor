@@ -238,7 +238,7 @@ config_load(void)
 #elif __APPLE__
    const char monospace_font[] = "Menlo";
 #else
-   const char monospace_font[] = "Monospace";
+   const char monospace_font[] = "Ubuntu Mono";
 #endif
    if (!cd->font_name)
      eina_stringshare_replace(&cd->font_name, monospace_font);
