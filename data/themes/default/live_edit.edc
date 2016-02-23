@@ -13,7 +13,7 @@ styles {
 
 group { "Image_bg";
    parts {
-      image {
+      image { name: "img";
          desc {
             image.normal: "logo.png";
          }
@@ -22,7 +22,7 @@ group { "Image_bg";
 }
 group { "Rect_bg";
    parts {
-      rect {
+      rect { name: "rect";
          desc {
             color: 0 136 170 255;
          }
@@ -31,7 +31,7 @@ group { "Rect_bg";
 }
 group { "Text_bg";
    parts {
-      text {
+      text { name: "text";
          scale: 1;
          effect: FAR_SOFT_SHADOW;
          desc {
@@ -49,7 +49,7 @@ group { "Text_bg";
 }
 group { "Textblock_bg";
    parts {
-      textblock {
+      textblock { name: "textblock";
          scale: 1;
          desc {
             text {
@@ -64,7 +64,7 @@ group { "Textblock_bg";
 }
 group { "Swallow_bg";
    parts {
-      image {
+      image { name: "img";
          desc {
             image.normal: "swallow.png";
             color: 255 255 255 155;
@@ -74,7 +74,7 @@ group { "Swallow_bg";
 }
 group { "Spacer_bg";
    parts {
-      image {
+      image { name: "img";
          desc {
             image.normal: "live_spacer.png";
             image.border: 3 3 2 4;

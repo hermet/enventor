@@ -20,7 +20,7 @@ group { name: "swallow";
 
 group { "spacer";
    parts {
-      image {
+      image { name: "img";
          repeat_events: 1;
          desc {
             image.normal: "live_spacer.png";
