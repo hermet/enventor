@@ -237,7 +237,7 @@ indent_delete_apply(indent_data *id EINA_UNUSED, Evas_Object *entry,
 }
 
 static Eina_List *
-indent_code_lines_create(indent_data *id, const char *utf8)
+indent_code_lines_create(indent_data *id EINA_UNUSED, const char *utf8)
 {
    Eina_List *code_lines = NULL;
 
@@ -417,9 +417,6 @@ indent_text_auto_format(indent_data *id,
    redoundo_data *rd = evas_object_data_get(entry, "redoundo");
 
    char *utf8_ptr = utf8;
-   char *utf8_end = utf8 + utf8_size;
-   char *utf8_lexem = NULL;
-   char *utf8_append_ptr = NULL;
 
    Eina_List *code_lines = indent_code_lines_create(id, utf8);
    free(utf8);
@@ -786,12 +783,6 @@ indent_text_create(indent_data *id,
         if (indented_line_cnt) *indented_line_cnt = 0;
         return NULL;
      }
-
-   int utf8_size = strlen(utf8);
-   char *utf8_ptr = (char *)utf8;
-   char *utf8_end = (char *)utf8 + utf8_size;
-   char *utf8_lexem = NULL;
-   char *utf8_append_ptr = NULL;
 
    Eina_List *code_lines = indent_code_lines_create(id, utf8);
    if (!code_lines)
