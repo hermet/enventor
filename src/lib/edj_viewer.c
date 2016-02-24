@@ -157,6 +157,8 @@ view_obj_create_post_job(view_data *vd)
    if (!vd->edj_monitor) EINA_LOG_ERR("Failed to add Eio_Monitor");
    view_obj_min_update(vd);
 
+   if (vd->part_name) view_part_highlight_set(vd, vd->part_name);
+
    Eina_Bool ret;
    if (eo_do_ret(vd->enventor, ret, enventor_obj_dummy_parts_get()))
      dummy_obj_new(vd->layout);
@@ -493,7 +495,6 @@ view_obj_idler_cb(void *data)
    elm_object_content_set(vd->scroller, vd->base);
 
    vd->idler = NULL;
-   if (vd->part_name) view_part_highlight_set(vd, vd->part_name);
 
    return ECORE_CALLBACK_CANCEL;
 }
