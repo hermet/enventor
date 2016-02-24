@@ -153,6 +153,11 @@ view_obj_create_post_job(view_data *vd)
    vd->edj_monitor = eio_monitor_add(build_edj_path_get());
    if (!vd->edj_monitor) EINA_LOG_ERR("Failed to add Eio_Monitor");
    view_obj_min_update(vd);
+
+   Eina_Bool ret;
+   if (eo_do_ret(vd->enventor, ret, enventor_obj_dummy_parts_get()))
+     dummy_obj_new(vd->layout);
+
    evas_object_smart_callback_call(vd->enventor, SIG_LIVE_VIEW_LOADED,
                                    (void*)edj_mgr_obj_get());
    view_images_monitor_set(vd);
@@ -483,10 +488,6 @@ view_obj_idler_cb(void *data)
    elm_object_part_content_set(vd->base, "elm.swallow.content",
                                vd->layout);
    elm_object_content_set(vd->scroller, vd->base);
-
-   Eina_Bool ret;
-   if (eo_do_ret(vd->enventor, ret, enventor_obj_dummy_parts_get()))
-     dummy_obj_new(vd->layout);
 
    vd->idler = NULL;
    if (vd->part_name) view_part_highlight_set(vd, vd->part_name);
