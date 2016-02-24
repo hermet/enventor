@@ -163,6 +163,11 @@ view_obj_create_post_job(view_data *vd)
    if (eo_do_ret(vd->enventor, ret, enventor_obj_dummy_parts_get()))
      dummy_obj_new(vd->layout);
 
+   if (vd->changed_part.part)
+     edje_edit_part_selected_state_set(vd->layout, vd->changed_part.part,
+                                       vd->changed_part.desc,
+                                       vd->changed_part.state);
+
    view_obj_parts_callbacks_set(vd);
 
    evas_object_smart_callback_call(vd->enventor, SIG_LIVE_VIEW_LOADED,
