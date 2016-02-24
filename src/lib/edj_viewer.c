@@ -52,6 +52,9 @@ struct viewer_s
 const char *PART_NAME = "part_name";
 
 
+static void
+view_obj_parts_callbacks_set(view_data *vd);
+
 static Eina_Bool
 exe_del_event_cb(void *data, int type, void *even);
 
@@ -157,6 +160,8 @@ view_obj_create_post_job(view_data *vd)
    Eina_Bool ret;
    if (eo_do_ret(vd->enventor, ret, enventor_obj_dummy_parts_get()))
      dummy_obj_new(vd->layout);
+
+   view_obj_parts_callbacks_set(vd);
 
    evas_object_smart_callback_call(vd->enventor, SIG_LIVE_VIEW_LOADED,
                                    (void*)edj_mgr_obj_get());
@@ -447,8 +452,6 @@ view_obj_create(view_data *vd)
                                     EVAS_HINT_EXPAND);
    evas_object_smart_callback_add(vd->layout, "dummy,clicked",
                                   dummy_clicked_cb, vd);
-
-   view_obj_parts_callbacks_set(vd);
 }
 
 static void
