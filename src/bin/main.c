@@ -457,8 +457,12 @@ static void
 enventor_ctxpopup_activated_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Enventor_Ctxpopup_Type type = (Enventor_Ctxpopup_Type) event_info;
-   if (type != ENVENTOR_CTXPOPUP_TYPE_SLIDER) return;
-   stats_info_msg_update("You could use a mouse wheel to change values elaborately.");
+
+   if (type == ENVENTOR_CTXPOPUP_TYPE_SLIDER)
+     stats_info_msg_update("Mouse wheel: Change values elaborately.  "
+                           "Backspace: Reset values.");
+   else if (type == ENVENTOR_CTXPOPUP_TYPE_TOGGLE)
+     stats_info_msg_update("Backspace: Reset values.");
 }
 
 static void

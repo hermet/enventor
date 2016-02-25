@@ -58,6 +58,9 @@ static preset_colors_data preset_colors =
 /* Internal method implementation                                            */
 /*****************************************************************************/
 
+static Eina_Bool
+is_colorselector_type(ctxpopup_data *ctxdata);
+
 static void
 update_preset_colors(Eina_Bool update)
 {
@@ -703,10 +706,54 @@ end:
 static void
 image_relay(ctxpopup_data *ctxdata, Eina_Bool up)
 {
+   if (!ctxdata->relay_cb) return;
+
    if (up)
      ctxdata->relay_cb(ctxdata->data, ctxdata->ctxpopup, (void *) 0);
    else
      ctxdata->relay_cb(ctxdata->data, ctxdata->ctxpopup, (void *) 1);
+}
+
+static void
+candidate_reset(ctxpopup_data *ctxdata)
+{
+   attr_value *attr = ctxdata->attr;
+   if (!attr) return;
+
+   //Colorselector Candidate
+   if (is_colorselector_type(ctxdata))
+     {
+        elm_colorselector_color_set(ctxdata->colorselector, attr->val[0],
+                                    attr->val[1], attr->val[2], attr->val[3]);
+        colorselector_changed_cb(ctxdata, ctxdata->colorselector, NULL);
+     }
+   //Toggle Candidate
+   else if ((attr->type == ATTR_VALUE_BOOLEAN))
+     {
+        Eina_List *l;
+        Evas_Object *toggle;
+        int i = 0;
+        EINA_LIST_FOREACH(ctxdata->toggles, l, toggle)
+          {
+             elm_check_state_set(toggle, (Eina_Bool) roundf(attr->val[i]));
+             toggle_changed_cb(ctxdata, toggle, NULL);
+             i++;
+          }
+     }
+   //Slider Candidate
+   else if ((attr->type == ATTR_VALUE_INTEGER) ||
+            (attr->type == ATTR_VALUE_FLOAT))
+     {
+        Eina_List *l;
+        Evas_Object *slider;
+        int i = 0;
+        EINA_LIST_FOREACH(ctxdata->sliders, l, slider)
+          {
+             elm_slider_value_set(slider, attr->val[i]);
+             slider_changed_cb(ctxdata, slider, NULL);
+             i++;
+          }
+     }
 }
 
 static void
@@ -729,6 +776,7 @@ ctxpopup_key_down_cb(void *data, Evas *e EINA_UNUSED,
 
    if (!strcmp(ev->key, "Down")) image_relay(ctxdata, EINA_FALSE);
    else if (!strcmp(ev->key, "Up")) image_relay(ctxdata, EINA_TRUE);
+   else if (!strcmp(ev->key, "BackSpace")) candidate_reset(ctxdata);
 }
 
 /*****************************************************************************/
@@ -900,6 +948,8 @@ ctxpopup_candidate_list_create(edit_data *ed, attr_value *attr,
              break;
           }
    }
+   evas_object_event_callback_add(ctxpopup, EVAS_CALLBACK_KEY_DOWN,
+                                  ctxpopup_key_down_cb, ctxdata);
    evas_object_event_callback_add(ctxpopup, EVAS_CALLBACK_DEL, ctxpopup_del_cb,
                                   ctxdata);
    evas_object_smart_callback_add(ctxpopup, "dismissed", ctxpopup_dismiss_cb,
