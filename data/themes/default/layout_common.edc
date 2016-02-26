@@ -233,6 +233,7 @@ group { name: "fileselector_layout";
       }
       part { name: "elm.text.msg";
          type: TEXT;
+         effect: SHADOW BOTTOM;
          scale: 1;
          clip_to: "clipper";
          description { state: "default" 0.0;
@@ -244,13 +245,12 @@ group { name: "fileselector_layout";
                font: FN;
                size: 11;
                align: 0.5 1;
-               text: "adfasdfadsf";
             }
-            color: 0 0 0 0;
+            color: COL_NM_TRANS;
          }
          description { state: "show" 0.0;
             inherit: "default" 0.0;
-            color: 255 0 0 255;
+            color: COL_NM;
          }
       }
       part { name: "event_blocker";
@@ -2569,7 +2569,7 @@ group { name: "statusbar_layout";
       part { name: "elm.text.info_msg";
          type: TEXT;
          scale: 1;
-         effect: GLOW;
+         effect: SHADOW BOTTOM;
          nomouse;
          description { state: "default" 0.0;
             align: 0 0.5;
@@ -2580,11 +2580,11 @@ group { name: "statusbar_layout";
                size: 11;
                align: 0 0.5;
             }
-            color: COL_HI_TRANS;
+            color: COL_NM_TRANS;
          }
          description { state: "show" 0.0;
             inherit: "default" 0.0;
-            color: COL_HI;
+            color: COL_NM;
          }
       }
       program { name: "info_msg_show";
