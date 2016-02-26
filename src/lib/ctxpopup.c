@@ -6,6 +6,7 @@
 #include "enventor_private.h"
 
 #define CTXPOPUP_BORDER_SIZE 10
+#define COLORSELECTOR_PRESET_CNT 9
 
 typedef struct ctxpopup_data_s {
    Evas_Smart_Cb changed_cb;
@@ -15,14 +16,74 @@ typedef struct ctxpopup_data_s {
    attr_value *attr;
    char candidate[256];
 
+   //colorselector properties
+   Evas_Object *colorselector;
+   Evas_Object *color_view;
+   Evas_Object *input_colors[4];
+   Eina_Bool color_changed : 1;
+
    Ecore_Animator *animator;
 
    Eina_Bool integer : 1;
 } ctxpopup_data;
 
+typedef struct rgba_value_s
+{
+   int r, g, b, a;
+} rgba_value;
+
+typedef struct preset_colors_data_s
+{
+  Eina_Bool is_created;
+  rgba_value rgba[9];
+} preset_colors_data;
+
+static rgba_value preset_cur_color;
+static preset_colors_data preset_colors =
+       { 0,
+         255, 0, 0, 255,
+         0, 255, 0, 255,
+         0, 0, 255, 255,
+         255, 255, 0, 255,
+         255, 0, 255, 255,
+         0, 255, 255, 255,
+         0, 0, 0, 255,
+         255, 255, 255, 255,
+         128, 128, 128, 255};
+
 /*****************************************************************************/
 /* Internal method implementation                                            */
 /*****************************************************************************/
+
+static void
+update_preset_colors(Eina_Bool update)
+{
+   if (update)
+     {
+        int i, index;
+        index = -1;
+
+        for (i=0; i < COLORSELECTOR_PRESET_CNT; ++i)
+          if (preset_colors.rgba[i].r == preset_cur_color.r &&
+              preset_colors.rgba[i].g == preset_cur_color.g &&
+              preset_colors.rgba[i].b == preset_cur_color.b &&
+              preset_colors.rgba[i].a == preset_cur_color.a)
+            index = i;
+
+        if (index == -1)
+          {
+             for (i = COLORSELECTOR_PRESET_CNT-1; i > 0; --i)
+                preset_colors.rgba[i] = preset_colors.rgba[i-1];
+             preset_colors.rgba[0] = preset_cur_color;
+          }
+        else
+          {
+             for (i = index; i > 0; --i)
+                preset_colors.rgba[i] = preset_colors.rgba[i-1];
+             preset_colors.rgba[0] = preset_cur_color;
+          }
+     }
+}
 
 static void
 ctxpopup_it_cb(void *data, Evas_Object *obj, void *event_info)
@@ -46,6 +107,14 @@ ctxpopup_del_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
    ctxpopup_data *ctxdata = data;
    ecore_animator_del(ctxdata->animator);
    free(ctxdata);
+}
+
+static void
+colorselector_ctxpopup_dismiss_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                                  void *event_info EINA_UNUSED)
+{
+   ctxpopup_data *ctxdata = data;
+   update_preset_colors(ctxdata->color_changed);
 }
 
 static Eina_Bool
@@ -307,6 +376,211 @@ slider_layout_set(Evas_Object *ctxpopup, ctxpopup_data *ctxdata)
 }
 
 static void
+colorselector_changed_cb(void *data, Evas_Object *obj,
+                         void *event_info EINA_UNUSED)
+{
+   ctxpopup_data *ctxdata = data;
+   int r,g,b,a;
+
+   elm_colorselector_color_get(ctxdata->colorselector, &r, &g, &b, &a);
+
+   elm_spinner_value_set(ctxdata->input_colors[0], r);
+   elm_spinner_value_set(ctxdata->input_colors[1], g);
+   elm_spinner_value_set(ctxdata->input_colors[2], b);
+   elm_spinner_value_set(ctxdata->input_colors[3], a);
+
+   evas_object_color_set(ctxdata->color_view, (r * a) / 255 , (g * a) / 255, (b * a) / 255, a);
+
+   ecore_animator_del(ctxdata->animator);
+   sprintf(ctxdata->candidate, ": %d %d %d %d;", r, g, b, a);
+   ctxdata->animator = ecore_animator_add(changed_animator_cb, ctxdata);
+
+   preset_cur_color.r = r;
+   preset_cur_color.g = g;
+   preset_cur_color.b = b;
+   preset_cur_color.a = a;
+
+   ctxdata->color_changed = EINA_TRUE;
+}
+
+static void
+colorselector_inputs_changed_cb(void *data, Evas_Object *obj,
+                  void *event_info EINA_UNUSED)
+{
+   ctxpopup_data *ctxdata = data;
+   int r,g,b,a;
+
+   r = elm_spinner_value_get(ctxdata->input_colors[0]);
+   g = elm_spinner_value_get(ctxdata->input_colors[1]);
+   b = elm_spinner_value_get(ctxdata->input_colors[2]);
+   a = elm_spinner_value_get(ctxdata->input_colors[3]);
+
+   evas_object_color_set(ctxdata->color_view, (r * a) /255 , (g * a)/255, (b * a)/255, a);
+   elm_colorselector_color_set(ctxdata->colorselector, r, g, b, a);
+
+   ecore_animator_del(ctxdata->animator);
+   sprintf(ctxdata->candidate, ": %d %d %d %d;", r, g, b, a);
+   ctxdata->animator = ecore_animator_add(changed_animator_cb, ctxdata);
+
+   preset_cur_color.r = r;
+   preset_cur_color.g = g;
+   preset_cur_color.b = b;
+   preset_cur_color.a = a;
+
+   ctxdata->color_changed = EINA_TRUE;
+}
+
+static void
+colorselector_preset_clicked_cb(void *data,  Evas *e EINA_UNUSED, Evas_Object *obj,
+                           void *event_info EINA_UNUSED)
+{
+   ctxpopup_data *ctxdata = data;
+
+   int r,g,b,a;
+
+   int index = (int)(uintptr_t)evas_object_data_get(obj, "index");
+   r = preset_colors.rgba[index].r;
+   g = preset_colors.rgba[index].g;
+   b = preset_colors.rgba[index].b;
+   a = preset_colors.rgba[index].a;
+
+   evas_object_color_set(ctxdata->color_view, (r * a)/255 , (g * a)/255, (b * a)/255, a);
+   elm_colorselector_color_set(ctxdata->colorselector, r, g, b, a);
+
+   elm_spinner_value_set(ctxdata->input_colors[0], r);
+   elm_spinner_value_set(ctxdata->input_colors[1], g);
+   elm_spinner_value_set(ctxdata->input_colors[2], b);
+   elm_spinner_value_set(ctxdata->input_colors[3], a);
+
+   ecore_animator_del(ctxdata->animator);
+   sprintf(ctxdata->candidate, ": %d %d %d %d;", r, g, b, a);
+   ctxdata->animator = ecore_animator_add(changed_animator_cb, ctxdata);
+
+   preset_cur_color.r = r;
+   preset_cur_color.g = g;
+   preset_cur_color.b = b;
+   preset_cur_color.a = a;
+
+   ctxdata->color_changed = EINA_TRUE;
+}
+
+static Evas_Object *
+colorselector_layout_create(Evas_Object *ctxpopup, ctxpopup_data *ctxdata)
+{
+   Eina_Stringshare *type;
+   Eina_Array_Iterator itr;
+   unsigned int i;
+
+   //Layout
+   Evas_Object *layout = elm_layout_add(ctxpopup);
+   elm_layout_file_set(layout, EDJE_PATH, "colorselector_layout");
+   evas_object_show(layout);
+
+   int r,g,b,a;
+   r = ctxdata->attr->val[0];
+   g = ctxdata->attr->val[1];
+   b = ctxdata->attr->val[2];
+   a = ctxdata->attr->val[3];
+
+   //Colorselector
+   ctxdata->colorselector = elm_colorselector_add(layout);
+   elm_colorselector_color_set(ctxdata->colorselector, r, g, b, a);
+   elm_colorselector_mode_set(ctxdata->colorselector, ELM_COLORSELECTOR_COMPONENTS);
+   evas_object_size_hint_weight_set(ctxdata->colorselector, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(ctxdata->colorselector, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_object_part_content_set(layout, "elm.swallow.colorselector", ctxdata->colorselector);
+   evas_object_smart_callback_add(ctxdata->colorselector, "changed", colorselector_changed_cb, ctxdata);
+
+   //Color View
+   ctxdata->color_view = evas_object_rectangle_add(evas_object_evas_get(layout));
+   evas_object_color_set(ctxdata->color_view, (r * a) / 255 , (g * a) / 255, (b * a) / 255, a);
+   evas_object_show(ctxdata->color_view);
+   elm_object_part_content_set(layout, "elm.swallow.color_view", ctxdata->color_view);
+
+   //Color Inputs Text
+   elm_object_part_text_set(layout, "elm.text.red", "R:");
+   elm_object_part_text_set(layout, "elm.text.green", "G:");
+   elm_object_part_text_set(layout, "elm.text.blue", "B:");
+   elm_object_part_text_set(layout, "elm.text.alpha", "A:");
+
+   //Color Inputs
+   Evas_Object *inputs_box = elm_box_add(layout);
+   evas_object_size_hint_weight_set(inputs_box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(inputs_box, EVAS_HINT_FILL, EVAS_HINT_FILL);
+
+   EINA_ARRAY_ITER_NEXT(ctxdata->attr->strs, i, type, itr)
+     {
+        ctxdata->input_colors[i] = elm_spinner_add(inputs_box);
+        elm_spinner_editable_set(ctxdata->input_colors[i], EINA_TRUE);
+        elm_spinner_step_set(ctxdata->input_colors[i], 1.0);
+        elm_spinner_min_max_set(ctxdata->input_colors[i], 0, 255);
+        elm_spinner_value_set(ctxdata->input_colors[i], ctxdata->attr->val[i]);
+        evas_object_size_hint_align_set(ctxdata->input_colors[i], EVAS_HINT_FILL, 0.5);
+        evas_object_size_hint_weight_set(ctxdata->input_colors[i], EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+        evas_object_show(ctxdata->input_colors[i]);
+        evas_object_smart_callback_add(ctxdata->input_colors[i], "changed", colorselector_inputs_changed_cb, ctxdata);
+     }
+
+   elm_object_part_content_set(layout, "elm.swallow.input_red", ctxdata->input_colors[0]);
+   elm_object_part_content_set(layout, "elm.swallow.input_green", ctxdata->input_colors[1]);
+   elm_object_part_content_set(layout, "elm.swallow.input_blue", ctxdata->input_colors[2]);
+   elm_object_part_content_set(layout, "elm.swallow.input_alpha", ctxdata->input_colors[3]);
+
+   //Preset Colors
+   Evas_Object *colors_box = elm_box_add(layout);
+   elm_box_horizontal_set(colors_box, EINA_TRUE);
+   elm_box_padding_set(colors_box, ELM_SCALE_SIZE(8), 0);
+   evas_object_size_hint_weight_set(colors_box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(colors_box, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_show(colors_box);
+
+   for (i = 0; i < COLORSELECTOR_PRESET_CNT; i++)
+     {
+        Evas_Object *rect = evas_object_rectangle_add(evas_object_evas_get(layout));
+        evas_object_color_set(rect,
+                              preset_colors.rgba[i].r * preset_colors.rgba[i].a / 255,
+                              preset_colors.rgba[i].g * preset_colors.rgba[i].a / 255,
+                              preset_colors.rgba[i].b * preset_colors.rgba[i].a / 255,
+                              preset_colors.rgba[i].a);
+        evas_object_data_set(rect, "index", (void*)i);
+        evas_object_size_hint_min_set(rect, ELM_SCALE_SIZE(20), ELM_SCALE_SIZE(20));
+        evas_object_show(rect);
+        elm_box_pack_end(colors_box, rect);
+        evas_object_event_callback_add(rect, EVAS_CALLBACK_MOUSE_DOWN , colorselector_preset_clicked_cb, ctxdata);
+     }
+   elm_object_part_content_set(layout, "elm.swallow.preset_colors", colors_box);
+
+   return layout;
+}
+
+static void
+colorselector_layout_set(Evas_Object *ctxpopup, ctxpopup_data *ctxdata)
+{
+   Evas_Coord layout_w = 0, edit_w = 0;
+   Evas_Object *edit = elm_object_parent_widget_get(ctxpopup);
+   evas_object_geometry_get(edit, NULL, NULL, &edit_w, NULL);
+   evas_object_smart_callback_add(ctxpopup, "dismissed", colorselector_ctxpopup_dismiss_cb,
+                                  ctxdata);
+   //Box
+   Evas_Object *box = elm_box_add(ctxpopup);
+   evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(box, EVAS_HINT_FILL, EVAS_HINT_FILL);
+
+   Evas_Object *layout = NULL;
+   layout = colorselector_layout_create(box, ctxdata);
+
+   elm_box_pack_end(box, layout);
+
+   elm_object_content_set(ctxpopup, box);
+   Evas_Object *edje = elm_layout_edje_get(layout);
+   edje_object_size_min_calc(edje, &layout_w, NULL);
+
+   //Check if the ctxpopup is useless due to it's space.
+   if (edit_w <= layout_w + CTXPOPUP_BORDER_SIZE)
+     evas_object_del(ctxpopup);
+}
+
+static void
 constant_candidate_set(Evas_Object *ctxpopup, ctxpopup_data *ctxdata)
 {
    Eina_Stringshare *candidate;
@@ -529,6 +803,21 @@ ctxpopup_img_preview_create(edit_data *ed,
    return ctxpopup;
 }
 
+static Eina_Bool
+is_colorselector_type(ctxpopup_data *ctxdata)
+{
+   ctxdata->integer = EINA_TRUE;
+   const char* integer_type = eina_array_data_get(ctxdata->attr->strs, 0);
+   if (!strcmp(integer_type, "R:"))
+     {
+       if (preset_colors.is_created == EINA_FALSE)
+         preset_colors.is_created = EINA_TRUE;
+
+        return EINA_TRUE;
+     }
+    return EINA_FALSE;
+}
+
 Evas_Object *
 ctxpopup_candidate_list_create(edit_data *ed, attr_value *attr,
                                Evas_Smart_Cb ctxpopup_dismiss_cb,
@@ -569,7 +858,10 @@ ctxpopup_candidate_list_create(edit_data *ed, attr_value *attr,
         case ATTR_VALUE_INTEGER:
           {
              ctxdata->integer = EINA_TRUE;
-             slider_layout_set(ctxpopup, ctxdata);
+             if (is_colorselector_type(ctxdata))
+               colorselector_layout_set(ctxpopup, ctxdata);
+             else
+               slider_layout_set(ctxpopup, ctxdata);
              *type = ENVENTOR_CTXPOPUP_TYPE_SLIDER;
              break;
           }
@@ -624,4 +916,3 @@ err:
 
    return NULL;
 }
-
