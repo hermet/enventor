@@ -28,7 +28,8 @@ enventor_SOURCES = \
 	globals.c \
 	live_edit.c \
 	console.c \
-	file_mgr.c
+	file_mgr.c \
+	edc_navigator.c
 
 enventor_LDADD = \
 	$(top_builddir)/src/lib/libenventor.la \

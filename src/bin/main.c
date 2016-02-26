@@ -402,6 +402,7 @@ enventor_cursor_group_changed_cb(void *data EINA_UNUSED,
 {
    const char *group_name = event_info;
    stats_edc_group_update(group_name);
+   base_edc_navigator_parts_reload();
 }
 
 static void
@@ -430,6 +431,7 @@ enventor_live_view_loaded_cb(void *data EINA_UNUSED, Evas_Object *obj,
    Evas_Coord w, h;
    config_view_size_get(&w, &h);
    enventor_object_live_view_size_set(obj, w, h);
+   base_edc_navigator_group_reload();
 }
 
 static void

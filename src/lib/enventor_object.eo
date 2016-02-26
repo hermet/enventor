@@ -113,6 +113,15 @@ class Enventor.Object (Elm.Widget, Efl.File) {
             @in type: Enventor_Path_Type;
          }
       }
+      part_states_list_get {
+         return: Eina_List *;
+         params {
+            @in type: const(char) *;
+         }
+      }
+      parts_list_get {
+         return: Eina_List *;
+      }
       max_line_get {
          return: int;
       }

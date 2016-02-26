@@ -315,6 +315,21 @@ err:
    return EINA_FALSE;
 }
 
+EOLIAN static Eina_List *
+_enventor_object_part_states_list_get(Eo *obj EINA_UNUSED,
+                                      Enventor_Object_Data *pd EINA_UNUSED,
+                                      const char *part)
+{
+   return view_part_states_list_get(VIEW_DATA, part);
+}
+
+EOLIAN static Eina_List *
+_enventor_object_parts_list_get(Eo *obj EINA_UNUSED,
+                                Enventor_Object_Data *pd EINA_UNUSED)
+{
+   return view_parts_list_get(VIEW_DATA);
+}
+
 EOLIAN static void
 _enventor_object_linenumber_set(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd,
                                 Eina_Bool linenumber)

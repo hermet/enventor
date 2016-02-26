@@ -2720,7 +2720,7 @@ group { name: "main_layout";
          }
          desc { "visible";
             inherit: "default";
-            min: 150 0;
+            min: 200 0;
          }
       }
    }

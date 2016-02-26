@@ -197,8 +197,22 @@ base_gui_term(void)
    base_data *bd = g_bd;
    assert(bd);
 
+   edc_navigator_term();
    panes_term();
+
    free(bd);
+}
+
+void
+base_edc_navigator_parts_reload(void)
+{
+   edc_navigator_parts_reload();
+}
+
+void
+base_edc_navigator_group_reload(void)
+{
+   edc_navigator_group_reload();
 }
 
 void
@@ -264,6 +278,11 @@ base_gui_init(void)
 
    if (config_console_get())
      panes_editors_full_view(EINA_TRUE);
+
+   //EDC Navigator
+   Evas_Object *edc_navigator = edc_navigator_init(layout);
+   elm_object_part_content_set(layout, "elm.swallow.edc_navigator",
+                               edc_navigator);
 
    bd->win = win;
    bd->layout = layout;
