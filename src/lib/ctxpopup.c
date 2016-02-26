@@ -17,6 +17,7 @@ typedef struct ctxpopup_data_s {
    char candidate[256];
 
    Eina_List *toggles;
+   Eina_List *sliders;
 
    //colorselector properties
    Evas_Object *colorselector;
@@ -108,6 +109,7 @@ ctxpopup_del_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
    elm_config_focus_autoscroll_mode_set(ELM_FOCUS_AUTOSCROLL_MODE_SHOW);
    ctxpopup_data *ctxdata = data;
    eina_list_free(ctxdata->toggles);
+   eina_list_free(ctxdata->sliders);
    ecore_animator_del(ctxdata->animator);
    free(ctxdata);
 }
@@ -136,19 +138,14 @@ slider_changed_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
    double val = elm_slider_value_get(obj);
    char buf[128];
 
-   Evas_Object *box = elm_object_content_get(ctxdata->ctxpopup);
-   Eina_List *box_children = elm_box_children_get(box);
    Eina_List *l;
-   Evas_Object *layout;
    Evas_Object *slider;
 
    snprintf(ctxdata->candidate, sizeof(ctxdata->candidate), "%s",
             ctxdata->attr->prepend_str);
 
-   EINA_LIST_FOREACH(box_children, l, layout)
+   EINA_LIST_FOREACH(ctxdata->sliders, l, slider)
      {
-        slider = elm_object_part_content_get(layout,
-                                             "elm.swallow.slider");
         if (ctxdata->attr->type & ATTR_VALUE_INTEGER)
           {
              snprintf(buf, sizeof(buf), " %d",
@@ -334,6 +331,8 @@ slider_layout_create(Evas_Object *parent, ctxpopup_data *ctxdata,
    elm_object_part_text_set(layout, "elm.text.slider_min", slider_min);
    elm_object_part_text_set(layout, "elm.text.slider_max", slider_max);
    elm_object_part_content_set(layout, "elm.swallow.slider", slider);
+
+   ctxdata->sliders = eina_list_append(ctxdata->sliders, slider);
 
    return layout;
 }
