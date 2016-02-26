@@ -542,7 +542,7 @@ colorselector_layout_create(Evas_Object *ctxpopup, ctxpopup_data *ctxdata)
                               preset_colors.rgba[i].g * preset_colors.rgba[i].a / 255,
                               preset_colors.rgba[i].b * preset_colors.rgba[i].a / 255,
                               preset_colors.rgba[i].a);
-        evas_object_data_set(rect, "index", (void*)i);
+        evas_object_data_set(rect, "index", (void*)(uintptr_t)i);
         evas_object_size_hint_min_set(rect, ELM_SCALE_SIZE(20), ELM_SCALE_SIZE(20));
         evas_object_show(rect);
         elm_box_pack_end(colors_box, rect);
