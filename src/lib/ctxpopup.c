@@ -16,6 +16,8 @@ typedef struct ctxpopup_data_s {
    attr_value *attr;
    char candidate[256];
 
+   Eina_List *toggles;
+
    //colorselector properties
    Evas_Object *colorselector;
    Evas_Object *color_view;
@@ -105,6 +107,7 @@ ctxpopup_del_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 {
    elm_config_focus_autoscroll_mode_set(ELM_FOCUS_AUTOSCROLL_MODE_SHOW);
    ctxpopup_data *ctxdata = data;
+   eina_list_free(ctxdata->toggles);
    ecore_animator_del(ctxdata->animator);
    free(ctxdata);
 }
@@ -206,22 +209,15 @@ toggle_changed_cb(void *data, Evas_Object *obj EINA_UNUSED,
                   void *event_info EINA_UNUSED)
 {
    ctxpopup_data *ctxdata = data;
-   Evas_Object *box = elm_object_content_get(ctxdata->ctxpopup);
-   Evas_Object *layout;
    Evas_Object *toggle;
-   Eina_List *box_children = elm_box_children_get(box);
    Eina_List *l;
    char buf[128];
-
-   if (eina_list_count(box_children) == 0) return;
 
    snprintf(ctxdata->candidate, sizeof(ctxdata->candidate), " %s",
             ctxdata->attr->prepend_str);
 
-   EINA_LIST_FOREACH(box_children, l, layout)
+   EINA_LIST_FOREACH(ctxdata->toggles, l, toggle)
      {
-        toggle = elm_object_part_content_get(layout,
-                                             "elm.swallow.toggle");
         snprintf(buf, sizeof(buf), " %d", (int) elm_check_state_get(toggle));
         strcat(ctxdata->candidate, buf);
      }
@@ -251,6 +247,8 @@ toggle_layout_create(Evas_Object *parent, ctxpopup_data *ctxdata,
    elm_check_state_set(toggle, toggle_val);
    evas_object_data_set(toggle, "ctxdata", ctxdata);
    elm_object_part_content_set(layout, "elm.swallow.toggle", toggle);
+
+   ctxdata->toggles = eina_list_append(ctxdata->toggles, toggle);
 
    return layout;
 }
