@@ -11,7 +11,6 @@ EXTRA_DIST = \
    bt_hilight.png \
    bt_shine.png \
    bub_over_bot.png \
-   fileselect.png \
    folder.png \
    glow_small.png \
    holes_tiny_glow_horiz.png \

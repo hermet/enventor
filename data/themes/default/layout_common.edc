@@ -1,7 +1,7 @@
 images {
    image: "frame_bg.png" COMP;
    image: "warning.png" COMP;
-   image: "fileselect.png" COMP;
+   image: "folder.png" COMP;
    image: "new.png" COMP;
    image: "shine.png" COMP;
    image: "bub_over_bot.png" COMP;
@@ -200,7 +200,7 @@ group { name: "fileselector_layout";
             fixed: 1 1;
             rel1.to: "title_frame";
             rel2.to: "title_frame";
-            image.normal: "fileselect.png";
+            image.normal: "folder.png";
          }
       }
       part { name: "elm.text.title";
