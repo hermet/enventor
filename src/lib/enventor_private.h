@@ -232,7 +232,7 @@ Eina_List *view_program_targets_get(view_data *vd, const char *prog);
 void view_string_list_free(Eina_List *list);
 void view_part_state_set(view_data *vd, const char *part, const char *description, const double state);
 void view_obj_need_reload_set(view_data *vd);
-
+Edje_Part_Type view_part_type_get(view_data *vd, const char *part);
 
 /* template */
 Eina_Bool template_part_insert(edit_data *ed, Edje_Part_Type part_type, Enventor_Template_Insert_Type insert_type, float rel1_x, float rel1_y, float rel2_x, float rel2_y, const Eina_Stringshare *group_name, char *syntax, size_t n);

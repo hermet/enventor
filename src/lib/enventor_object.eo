@@ -233,6 +233,12 @@ class Enventor.Object (Elm.Widget, Efl.File) {
             @in h: Evas_Coord *;
          }
       }
+      part_type_get {
+         return: Edje_Part_Type;
+         params {
+            @in part_name: const(char) *;
+         }
+      }
       redo {
          return: bool;
       }

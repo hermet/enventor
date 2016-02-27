@@ -402,7 +402,7 @@ enventor_cursor_group_changed_cb(void *data EINA_UNUSED,
 {
    const char *group_name = event_info;
    stats_edc_group_update(group_name);
-   base_edc_navigator_parts_reload();
+   base_edc_navigator_group_update(group_name);
 }
 
 static void
@@ -431,7 +431,7 @@ enventor_live_view_loaded_cb(void *data EINA_UNUSED, Evas_Object *obj,
    Evas_Coord w, h;
    config_view_size_get(&w, &h);
    enventor_object_live_view_size_set(obj, w, h);
-   base_edc_navigator_group_reload();
+   base_edc_navigator_reload();
 }
 
 static void
@@ -487,7 +487,6 @@ enventor_live_view_updated_cb(void *data, Evas_Object *obj,
                               void *event_info EINA_UNUSED)
 {
    app_data *ad = data;
-
    if (ad->lazy_save && enventor_object_modified_get(obj))
      {
         enventor_object_save(obj, config_input_path_get());
@@ -498,6 +497,8 @@ enventor_live_view_updated_cb(void *data, Evas_Object *obj,
         ad->lazy_save = EINA_FALSE;
         ad->on_saving = EINA_FALSE;
      }
+
+   base_edc_navigator_group_update(stats_group_name_get());
 }
 
 static void
@@ -924,7 +925,7 @@ init(app_data *ad, int argc, char **argv)
 }
 
 static void
-term(app_data *ad EINA_UNUSED)
+term(app_data *ad)
 {
    menu_term();
    live_edit_term();

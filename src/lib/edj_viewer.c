@@ -760,6 +760,12 @@ view_programs_list_get(view_data *vd)
    return edje_edit_programs_list_get(vd->layout);
 }
 
+Edje_Part_Type
+view_part_type_get(view_data *vd, const char *part)
+{
+   return edje_edit_part_type_get(vd->layout, part);
+}
+
 Eina_List *
 view_part_states_list_get(view_data *vd, const char *part)
 {

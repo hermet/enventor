@@ -323,6 +323,14 @@ _enventor_object_part_states_list_get(Eo *obj EINA_UNUSED,
    return view_part_states_list_get(VIEW_DATA, part);
 }
 
+EOLIAN static Edje_Part_Type
+_enventor_object_part_type_get(Eo *obj EINA_UNUSED,
+                               Enventor_Object_Data *pd EINA_UNUSED,
+                               const char *part_name)
+{
+   return view_part_type_get(VIEW_DATA, part_name);
+}
+
 EOLIAN static Eina_List *
 _enventor_object_parts_list_get(Eo *obj EINA_UNUSED,
                                 Enventor_Object_Data *pd EINA_UNUSED)

@@ -17,6 +17,12 @@ typedef struct edc_navigator_s
    Elm_Genlist_Item_Class *state_itc;
 } navi_data;
 
+typedef struct part_item_data_s
+{
+   const char *text;
+   Edje_Part_Type type;
+} part_item_data;
+
 static navi_data *g_nd = NULL;
 
 /*****************************************************************************/
@@ -70,24 +76,69 @@ gl_text_get_cb(void *data, Evas_Object *obj EINA_UNUSED,
 }
 
 static Evas_Object *
-gl_content_get_cb(void *data, Evas_Object *obj EINA_UNUSED,
-                  const char *part EINA_UNUSED)
+gl_state_content_get_cb(void *data, Evas_Object *obj, const char *part)
 {
-   return NULL;
+   if (strcmp("elm.swallow.icon", part)) return NULL;
+
+   //TODO: Add Icon
+   Evas_Object *image = elm_image_add(obj);
+   elm_image_file_set(image, EDJE_PATH, "navi_state");
+   return image;
 }
 
 static void
-gl_del_cb(void *data, Evas_Object *obj EINA_UNUSED)
+gl_part_del_cb(void *data, Evas_Object *obj EINA_UNUSED)
 {
-
+   part_item_data *item_data = data;
+   free(item_data);
 }
 
-static void
-gl_group_selected_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
+static char *
+gl_part_text_get_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                    const char *part EINA_UNUSED)
 {
-   Elm_Object_Item *it = event_info;
+   part_item_data *item_data = data;
+   return strdup(item_data->text);
+}
 
-   //TODO: Search Current Group
+static Evas_Object *
+gl_part_content_get_cb(void *data, Evas_Object *obj, const char *part)
+{
+   if (strcmp("elm.swallow.icon", part)) return NULL;
+   part_item_data *item_data = data;
+
+   //TODO: Add Icon
+   Evas_Object *image = elm_image_add(obj);
+   const char *group;
+
+   switch (item_data->type)
+     {
+      case EDJE_PART_TYPE_RECTANGLE:
+         group = "navi_rect";
+         break;
+      case EDJE_PART_TYPE_TEXT:
+         group = "navi_text";
+         break;
+      case EDJE_PART_TYPE_IMAGE:
+         group = "navi_image";
+         break;
+      case EDJE_PART_TYPE_SWALLOW:
+         group = "navi_swallow";
+         break;
+      case EDJE_PART_TYPE_TEXTBLOCK:
+         group = "navi_textblock";
+         break;
+      case EDJE_PART_TYPE_SPACER:
+         group = "navi_spacer";
+         break;
+      default:
+         group = "navi_unknown";
+         break;
+     }
+
+   elm_image_file_set(image, EDJE_PATH, group);
+
+   return image;
 }
 
 static void
@@ -101,17 +152,43 @@ gl_part_selected_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
    states_reload(nd, it);
 }
 
+static Evas_Object *
+gl_group_content_get_cb(void *data, Evas_Object *obj, const char *part)
+{
+   if (strcmp("elm.swallow.icon", part)) return NULL;
+
+   //TODO: Add Icon
+   Evas_Object *image = elm_image_add(obj);
+   elm_image_file_set(image, EDJE_PATH, "navi_group");
+   return image;
+}
+
+static void
+gl_group_selected_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
+{
+   Elm_Object_Item *it = event_info;
+
+   //TODO: Search Current Group
+}
+
 /*****************************************************************************/
 /* Externally accessible calls                                               */
 /*****************************************************************************/
 
 void
-edc_navigator_parts_reload(void)
+edc_navigator_group_update(const char *cur_group)
 {
-   if (!config_edc_navigator_get()) return;
-
    navi_data *nd = g_nd;
    if (!nd) return;
+
+   if (!config_edc_navigator_get()) return;
+
+   if (!cur_group)
+     {
+        Elm_Object_Item *it = elm_genlist_selected_item_get(nd->genlist);
+        elm_genlist_item_selected_set(it, EINA_FALSE);
+        return;
+     }
 
    Eina_List *l;
    Elm_Object_Item *it;
@@ -121,20 +198,18 @@ edc_navigator_parts_reload(void)
       elm_object_item_del(it);
 
    //Find a current group item
-   const char *cur_group = stats_group_name_get();
-   if (!cur_group) return;
-
    Elm_Object_Item *group_item = NULL;
 
    EINA_LIST_FOREACH(nd->group_items, l, it)
      {
         group_item = it;
-        const char *group_name = elm_object_item_text_get(it);
+        const char *group_name = elm_object_item_data_get(it);
         if (!group_name) continue;
 
         if (!strcmp(group_name, cur_group) &&
             strlen(group_name) == strlen(cur_group))
           {
+             elm_genlist_item_selected_set(it, EINA_TRUE);
              group_item = it;
              break;
           }
@@ -147,22 +222,31 @@ edc_navigator_parts_reload(void)
    edje_edit_string_list_free(nd->part_list);
    nd->part_list = enventor_object_parts_list_get(enventor);
    char *name;
+   part_item_data *data;
+   Edje_Part_Type part_type;
 
    EINA_LIST_FOREACH(nd->part_list, l, name)
      {
+        part_type = enventor_object_part_type_get(enventor, name);
+        data = malloc(sizeof(part_item_data));
+        data->text = name;
+        data->type = part_type;
+
         it = elm_genlist_item_append(nd->genlist,
                                      nd->part_itc,          /* item class */
-                                     name,                  /* item data */
+                                     data,
                                      group_item,            /* parent */
                                      ELM_GENLIST_ITEM_NONE, /* item type */
                                      gl_part_selected_cb,   /* select cb */
                                      nd);                   /* select cb data */
         nd->part_items = eina_list_append(nd->part_items, it);
      }
+
+   //Append Programs
 }
 
 void
-edc_navigator_group_reload(void)
+edc_navigator_reload(void)
 {
    if (!config_edc_navigator_get()) return;
 
@@ -181,7 +265,7 @@ edc_navigator_group_reload(void)
    const char *cur_group = stats_group_name_get();
 
    //Update Group
-   EINA_LIST_REVERSE_FOREACH(nd->group_list, l, name)
+   EINA_LIST_FOREACH(nd->group_list, l, name)
      {
         it = elm_genlist_item_append(nd->genlist,
                                      nd->group_itc,         /* item class */
@@ -189,14 +273,14 @@ edc_navigator_group_reload(void)
                                      NULL,                  /* parent */
                                      ELM_GENLIST_ITEM_NONE, /* item type */
                                      gl_group_selected_cb,  /* select cb */
-                                     nd);                   /* select cb data */
+                                     name);                 /* select cb data */
 
         nd->group_items = eina_list_append(nd->group_items, it);
 
         //Update Parts only if current group
         if (cur_group && !strcmp(name, cur_group) &&
             (strlen(name) == strlen(cur_group)))
-           edc_navigator_parts_reload();
+          edc_navigator_group_update(cur_group);
      }
 }
 
@@ -212,6 +296,7 @@ edc_navigator_init(Evas_Object *parent)
    g_nd = nd;
 
    Evas_Object *genlist = elm_genlist_add(parent);
+   elm_object_focus_allow_set(genlist, EINA_FALSE);
 
    //Group Item Class
    Elm_Genlist_Item_Class *itc;
@@ -219,17 +304,16 @@ edc_navigator_init(Evas_Object *parent)
    itc = elm_genlist_item_class_new();
    itc->item_style = "default";
    itc->func.text_get = gl_text_get_cb;
-   itc->func.content_get = gl_content_get_cb;
-   itc->func.del = gl_del_cb;
+   itc->func.content_get = gl_group_content_get_cb;
 
    nd->group_itc = itc;
 
    //Part Item Class
    itc = elm_genlist_item_class_new();
    itc->item_style = "default";
-   itc->func.text_get = gl_text_get_cb;
-   itc->func.content_get = gl_content_get_cb;
-   itc->func.del = gl_del_cb;
+   itc->func.text_get = gl_part_text_get_cb;
+   itc->func.content_get = gl_part_content_get_cb;
+   itc->func.del = gl_part_del_cb;
 
    nd->part_itc = itc;
 
@@ -237,8 +321,7 @@ edc_navigator_init(Evas_Object *parent)
    itc = elm_genlist_item_class_new();
    itc->item_style = "default";
    itc->func.text_get = gl_text_get_cb;
-   itc->func.content_get = gl_content_get_cb;
-   itc->func.del = gl_del_cb;
+   itc->func.content_get = gl_state_content_get_cb;
 
    nd->state_itc = itc;
 

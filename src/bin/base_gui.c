@@ -6,6 +6,7 @@ typedef struct base_s
    Evas_Object *layout;
    Evas_Object *console;
    Evas_Object *enventor;
+   Ecore_Timer *edc_navigator_timer;
    Eina_Bool console_msg : 1;
 } base_data;
 
@@ -29,6 +30,19 @@ win_resize_cb(void *data EINA_UNUSED, Evas *o EINA_UNUSED, Evas_Object *obj,
    Evas_Coord w, h;
    evas_object_geometry_get(obj, NULL, NULL, &w, &h);
    config_win_size_set(w, h);
+}
+
+static Eina_Bool
+edc_navigator_update_timer_cb(void *data)
+{
+   base_data *bd = g_bd;
+
+   const char *group_name = data;
+   edc_navigator_group_update(group_name);
+
+   bd->edc_navigator_timer = NULL;
+
+   return ECORE_CALLBACK_CANCEL;
 }
 
 /*****************************************************************************/
@@ -195,31 +209,38 @@ void
 base_gui_term(void)
 {
    base_data *bd = g_bd;
-   assert(bd);
+   if (!bd) return;
 
+   ecore_timer_del(bd->edc_navigator_timer);
    edc_navigator_term();
    panes_term();
 
    free(bd);
+   g_bd = NULL;
 }
 
 void
-base_edc_navigator_parts_reload(void)
+base_edc_navigator_group_update(const char *group_name)
 {
-   edc_navigator_parts_reload();
+   base_data *bd = g_bd;
+   if (!bd) return;
+
+   ecore_timer_del(bd->edc_navigator_timer);
+   bd->edc_navigator_timer = ecore_timer_add(1, edc_navigator_update_timer_cb,
+                                             group_name);
 }
 
 void
-base_edc_navigator_group_reload(void)
+base_edc_navigator_reload(void)
 {
-   edc_navigator_group_reload();
+   edc_navigator_reload();
 }
 
 void
 base_console_reset(void)
 {
    base_data *bd = g_bd;
-   assert(bd);
+   if (!bd) return;
 
    console_text_set(bd->console, "");
    bd->console_msg = EINA_FALSE;
