@@ -7,14 +7,18 @@ typedef struct edc_navigator_s
    Eina_List *group_items;                 //group object item
    Eina_List *part_items;                  //part object item
    Eina_List *state_items;                 //state object item
+   Eina_List *program_items;               //program object item
 
    Eina_List *group_list;                  //group name list
    Eina_List *part_list;                   //part name list
    Eina_List *state_list;                  //state name list
+   Eina_List *program_list;                //program name list
 
    Elm_Genlist_Item_Class *group_itc;
    Elm_Genlist_Item_Class *part_itc;
    Elm_Genlist_Item_Class *state_itc;
+   Elm_Genlist_Item_Class *program_itc;
+
 } navi_data;
 
 typedef struct part_item_data_s
@@ -25,6 +29,9 @@ typedef struct part_item_data_s
 
 static navi_data *g_nd = NULL;
 
+static void
+gl_part_selected_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info);
+
 /*****************************************************************************/
 /* Internal method implementation                                            */
 /*****************************************************************************/
@@ -32,6 +39,7 @@ static void
 gl_state_selected_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    Elm_Object_Item *it = event_info;
+
    //TODO: Search Current State
 }
 
@@ -45,12 +53,13 @@ states_reload(navi_data *nd, Elm_Object_Item *part_it)
    Elm_Object_Item *it;
 
    //Remove Previous Parts
-   EINA_LIST_FREE(nd->state_items, it)
-     elm_object_item_del(it);
+
+   //FIXME: Maybe we could optimize if parts list hasn't been changed.
+   EINA_LIST_FREE(nd->state_items, it) elm_object_item_del(it);
+   edje_edit_string_list_free(nd->state_list);
 
    //Append States
    Evas_Object *enventor = base_enventor_get();
-   edje_edit_string_list_free(nd->state_list);
    nd->state_list = enventor_object_part_states_list_get(enventor, part);
    char *name;
 
@@ -67,6 +76,44 @@ states_reload(navi_data *nd, Elm_Object_Item *part_it)
      }
 }
 
+static void
+parts_reload(navi_data *nd, Elm_Object_Item *group_it)
+{
+   Eina_List *l;
+   Elm_Object_Item *it;
+
+   //Remove Previous Parts
+
+   //FIXME: Maybe we could optimize if parts list hasn't been changed.
+   EINA_LIST_FREE(nd->part_items, it) elm_object_item_del(it);
+   nd->state_items = NULL;
+   edje_edit_string_list_free(nd->part_list);
+
+   //Append Parts
+   Evas_Object *enventor = base_enventor_get();
+   nd->part_list = enventor_object_parts_list_get(enventor);
+   char *name;
+   part_item_data *data;
+   Edje_Part_Type part_type;
+
+   EINA_LIST_FOREACH(nd->part_list, l, name)
+     {
+        part_type = enventor_object_part_type_get(enventor, name);
+        data = malloc(sizeof(part_item_data));
+        data->text = name;
+        data->type = part_type;
+
+        it = elm_genlist_item_append(nd->genlist,
+                                     nd->part_itc,          /* item class */
+                                     data,                  /* item data */
+                                     group_it,              /* parent */
+                                     ELM_GENLIST_ITEM_NONE, /* item type */
+                                     gl_part_selected_cb,   /* select cb */
+                                     nd);                   /* select cb data */
+        nd->part_items = eina_list_append(nd->part_items, it);
+     }
+}
+
 static char *
 gl_text_get_cb(void *data, Evas_Object *obj EINA_UNUSED,
                const char *part EINA_UNUSED)
@@ -76,13 +123,24 @@ gl_text_get_cb(void *data, Evas_Object *obj EINA_UNUSED,
 }
 
 static Evas_Object *
+gl_program_content_get_cb(void *data, Evas_Object *obj, const char *part)
+{
+   if (strcmp("elm.swallow.icon", part)) return NULL;
+
+   Evas_Object *image = elm_image_add(obj);
+   elm_image_file_set(image, EDJE_PATH, "navi_program");
+
+   return image;
+}
+
+static Evas_Object *
 gl_state_content_get_cb(void *data, Evas_Object *obj, const char *part)
 {
    if (strcmp("elm.swallow.icon", part)) return NULL;
 
-   //TODO: Add Icon
    Evas_Object *image = elm_image_add(obj);
    elm_image_file_set(image, EDJE_PATH, "navi_state");
+
    return image;
 }
 
@@ -107,7 +165,6 @@ gl_part_content_get_cb(void *data, Evas_Object *obj, const char *part)
    if (strcmp("elm.swallow.icon", part)) return NULL;
    part_item_data *item_data = data;
 
-   //TODO: Add Icon
    Evas_Object *image = elm_image_add(obj);
    const char *group;
 
@@ -146,9 +203,9 @@ gl_part_selected_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    navi_data *nd = data;
    Elm_Object_Item *it = event_info;
+
    //TODO: Search Current Part
 
-   //TODO: Add States List
    states_reload(nd, it);
 }
 
@@ -157,9 +214,9 @@ gl_group_content_get_cb(void *data, Evas_Object *obj, const char *part)
 {
    if (strcmp("elm.swallow.icon", part)) return NULL;
 
-   //TODO: Add Icon
    Evas_Object *image = elm_image_add(obj);
    elm_image_file_set(image, EDJE_PATH, "navi_group");
+
    return image;
 }
 
@@ -181,90 +238,81 @@ edc_navigator_group_update(const char *cur_group)
    navi_data *nd = g_nd;
    if (!nd) return;
 
-   if (!config_edc_navigator_get()) return;
-
+   //Cancel item selection if group was not indicated. 
    if (!cur_group)
      {
         Elm_Object_Item *it = elm_genlist_selected_item_get(nd->genlist);
-        elm_genlist_item_selected_set(it, EINA_FALSE);
+        if (it) elm_genlist_item_selected_set(it, EINA_FALSE);
+        return;
+     }
+
+   //If edc_navigator_reload() is not called yet?
+   if (!nd->group_list)
+     {
+        edc_navigator_reload(cur_group);
         return;
      }
 
    Eina_List *l;
    Elm_Object_Item *it;
 
-   //Remove Previous Parts
-   EINA_LIST_FREE(nd->part_items, it)
-      elm_object_item_del(it);
-
-   //Find a current group item
-   Elm_Object_Item *group_item = NULL;
+   //Find a current group item and select it.
+   Elm_Object_Item *group_it = NULL;
+   int cur_group_len = strlen(cur_group);
 
    EINA_LIST_FOREACH(nd->group_items, l, it)
      {
-        group_item = it;
         const char *group_name = elm_object_item_data_get(it);
         if (!group_name) continue;
 
         if (!strcmp(group_name, cur_group) &&
-            strlen(group_name) == strlen(cur_group))
+            (strlen(group_name) == cur_group_len))
           {
              elm_genlist_item_selected_set(it, EINA_TRUE);
-             group_item = it;
+             group_it = it;
              break;
           }
      }
 
-   if (!group_item) return;
+   //We couldn't find a group... ?
+   if (!group_it) return;
 
-   //Append Parts
-   Evas_Object *enventor = base_enventor_get();
-   edje_edit_string_list_free(nd->part_list);
-   nd->part_list = enventor_object_parts_list_get(enventor);
-   char *name;
-   part_item_data *data;
-   Edje_Part_Type part_type;
-
-   EINA_LIST_FOREACH(nd->part_list, l, name)
-     {
-        part_type = enventor_object_part_type_get(enventor, name);
-        data = malloc(sizeof(part_item_data));
-        data->text = name;
-        data->type = part_type;
-
-        it = elm_genlist_item_append(nd->genlist,
-                                     nd->part_itc,          /* item class */
-                                     data,
-                                     group_item,            /* parent */
-                                     ELM_GENLIST_ITEM_NONE, /* item type */
-                                     gl_part_selected_cb,   /* select cb */
-                                     nd);                   /* select cb data */
-        nd->part_items = eina_list_append(nd->part_items, it);
-     }
+   parts_reload(nd, group_it);
 
    //Append Programs
 }
 
 void
-edc_navigator_reload(void)
+edc_navigator_reload(const char *cur_group)
 {
-   if (!config_edc_navigator_get()) return;
-
    navi_data *nd = g_nd;
    if (!nd) return;
 
-   //Reset Navigator resource
+   //Reset Navigator resource.
+
+   //FIXME: Maybe we could optimize if group list hasn't been changed.
    nd->group_items = eina_list_free(nd->group_items);
+   nd->part_items = NULL;
+   nd->state_items = NULL;
+   nd->program_items = NULL;
+
    elm_genlist_clear(nd->genlist);
    edje_file_collection_list_free(nd->group_list);
+
+   if (!cur_group)
+     {
+        nd->group_list = NULL;
+        return;
+     }
+
    nd->group_list = edje_file_collection_list(config_output_path_get());
 
+   //Update Group
    Eina_List *l;
    char *name;
    Elm_Object_Item *it;
-   const char *cur_group = stats_group_name_get();
+   int cur_group_len = strlen(cur_group);
 
-   //Update Group
    EINA_LIST_FOREACH(nd->group_list, l, name)
      {
         it = elm_genlist_item_append(nd->genlist,
@@ -277,10 +325,12 @@ edc_navigator_reload(void)
 
         nd->group_items = eina_list_append(nd->group_items, it);
 
-        //Update Parts only if current group
-        if (cur_group && !strcmp(name, cur_group) &&
-            (strlen(name) == strlen(cur_group)))
-          edc_navigator_group_update(cur_group);
+        //Update a current group
+        if ((cur_group && !strcmp(name, cur_group)) &&
+            (strlen(name) == cur_group_len))
+          {
+             edc_navigator_group_update(cur_group);
+          }
      }
 }
 
@@ -325,6 +375,14 @@ edc_navigator_init(Evas_Object *parent)
 
    nd->state_itc = itc;
 
+   //Program Item Class
+   itc = elm_genlist_item_class_new();
+   itc->item_style = "default";
+   itc->func.text_get = gl_text_get_cb;
+   itc->func.content_get = gl_program_content_get_cb;
+
+   nd->program_itc = itc;
+
    nd->genlist = genlist;
 
    return genlist;
@@ -339,12 +397,18 @@ edc_navigator_term(void)
    eina_list_free(nd->state_items);
    eina_list_free(nd->part_items);
    eina_list_free(nd->group_items);
+   eina_list_free(nd->program_items);
+
    edje_file_collection_list_free(nd->group_list);
    edje_edit_string_list_free(nd->part_list);
    edje_edit_string_list_free(nd->state_list);
+   edje_edit_string_list_free(nd->program_list);
+
    elm_genlist_item_class_free(nd->group_itc);
    elm_genlist_item_class_free(nd->part_itc);
    elm_genlist_item_class_free(nd->state_itc);
+   elm_genlist_item_class_free(nd->program_itc);
+
    free(nd);
    g_nd = NULL;
 }

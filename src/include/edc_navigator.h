@@ -1,4 +1,4 @@
 Evas_Object *edc_navigator_init(Evas_Object *parent);
 void edc_navigator_term(void);
-void edc_navigator_reload(void);
+void edc_navigator_reload(const char *cur_group);
 void edc_navigator_group_update(const char *cur_group);
