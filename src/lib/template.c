@@ -401,6 +401,7 @@ template_insert(edit_data *ed, Enventor_Template_Insert_Type insert_type,
    elm_entry_cursor_pos_set(entry, cursor_pos);
 
    edit_syntax_color_partial_apply(ed, 0);
+   edit_changed_set(ed, EINA_TRUE);
 
    ret = EINA_TRUE;
 
