@@ -160,14 +160,8 @@ sub_programs_remove(navi_data *nd)
 {
    if (!nd->programs_it) return;
 
-   Eina_List *l;
    Elm_Object_Item *it;
    EINA_LIST_FREE(nd->program_items, it) elm_object_item_del(it);
-   if (nd->program_list)
-     {
-        edje_edit_string_list_free(nd->program_list);
-        nd->program_list = NULL;
-     }
 }
 
 static void
@@ -199,6 +193,8 @@ programs_reload(navi_data *nd, Elm_Object_Item *group_it)
 {
    //FIXME: Maybe we could optimize if programs list hasn't been changed.
    sub_programs_remove(nd);
+
+   if (nd->program_list) edje_edit_string_list_free(nd->program_list);
 
    //Append Parts
    Evas_Object *enventor = base_enventor_get();
