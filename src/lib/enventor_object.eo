@@ -113,6 +113,9 @@ class Enventor.Object (Elm.Widget, Efl.File) {
             @in type: Enventor_Path_Type;
          }
       }
+      programs_list_get {
+         return: Eina_List *;
+      }
       part_states_list_get {
          return: Eina_List *;
          params {
