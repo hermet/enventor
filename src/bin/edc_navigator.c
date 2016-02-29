@@ -34,6 +34,9 @@ static navi_data *g_nd = NULL;
 static void
 gl_part_selected_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info);
 
+static void
+sub_programs_remove(navi_data *nd);
+
 /*****************************************************************************/
 /* Internal method implementation                                            */
 /*****************************************************************************/
@@ -51,7 +54,11 @@ gl_text_get_cb(void *data, Evas_Object *obj EINA_UNUSED,
 static void
 gl_state_selected_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
+   navi_data *nd = data;
+
    Elm_Object_Item *it = event_info;
+
+   sub_programs_remove(nd);
 
    //TODO: Search Current State
 }
@@ -156,8 +163,11 @@ sub_programs_remove(navi_data *nd)
    Eina_List *l;
    Elm_Object_Item *it;
    EINA_LIST_FREE(nd->program_items, it) elm_object_item_del(it);
-   edje_edit_string_list_free(nd->program_list);
-   nd->program_list = NULL;
+   if (nd->program_list)
+     {
+        edje_edit_string_list_free(nd->program_list);
+        nd->program_list = NULL;
+     }
 }
 
 static void
@@ -294,6 +304,8 @@ gl_part_selected_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
    navi_data *nd = data;
    Elm_Object_Item *it = event_info;
 
+   sub_programs_remove(nd);
+
    //TODO: Search Current Part
 
    states_reload(nd, it);
@@ -353,7 +365,11 @@ gl_group_content_get_cb(void *data, Evas_Object *obj, const char *part)
 static void
 gl_group_selected_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
+   navi_data *nd = data;
+
    Elm_Object_Item *it = event_info;
+
+   sub_programs_remove(nd);
 
    //TODO: Search Current Group
 }
@@ -450,7 +466,7 @@ edc_navigator_reload(const char *cur_group)
                                      NULL,                  /* parent */
                                      ELM_GENLIST_ITEM_NONE, /* item type */
                                      gl_group_selected_cb,  /* select cb */
-                                     name);                 /* select cb data */
+                                     nd);                   /* select cb data */
 
         nd->group_items = eina_list_append(nd->group_items, it);
 
