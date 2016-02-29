@@ -109,6 +109,7 @@ Eina_Bool autocomp_enabled_get(void);
 Eina_Bool autocomp_event_dispatch(const char *key);
 void autocomp_list_show(void);
 void autocomp_reset(void);
+const char **autocomp_current_context_get(void);
 
 
 /* syntax color */

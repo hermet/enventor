@@ -27,6 +27,7 @@ typedef struct defined_macro_s
 typedef struct parser_attr_s
 {
    Eina_Stringshare *keyword;
+   const char *context;
    attr_value value;
 } parser_attr;
 
@@ -633,6 +634,49 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
 
    //FIXME: construct from the configuration file.
 
+
+   //Context depended attributes
+   Eina_Array *wh = eina_array_new(2);
+   eina_array_push(wh, eina_stringshare_add("W:"));
+   eina_array_push(wh, eina_stringshare_add("H:"));
+
+   memset(&attr, 0x00, sizeof(parser_attr));
+   attr.keyword = eina_stringshare_add("min");
+   attr.value.strs = wh;
+   attr.value.cnt = 2;
+   attr.value.min = 0;
+   attr.value.max = 1;
+   attr.value.type = ATTR_VALUE_BOOLEAN;
+   attr.value.prepend_str = ATTR_PREPEND_COLON;
+   attr.value.append_str = ATTR_APPEND_SEMICOLON;
+   attr.context = eina_stringshare_add("text");
+   eina_inarray_push(td->attrs, &attr);
+
+   wh = eina_array_new(2);
+   eina_array_push(wh, eina_stringshare_add("W:"));
+   eina_array_push(wh, eina_stringshare_add("H:"));
+
+   wh = eina_array_new(2);
+   eina_array_push(wh, eina_stringshare_add("W:"));
+   eina_array_push(wh, eina_stringshare_add("H:"));
+
+   memset(&attr, 0x00, sizeof(parser_attr));
+   attr.keyword = eina_stringshare_add("max");
+   attr.value.strs = wh;
+   attr.value.cnt = 2;
+   attr.value.min = 0;
+   attr.value.max = 1;
+   attr.value.type = ATTR_VALUE_BOOLEAN;
+   attr.value.prepend_str = ATTR_PREPEND_COLON;
+   attr.value.append_str = ATTR_APPEND_SEMICOLON;
+   attr.context = eina_stringshare_add("text");
+   eina_inarray_push(td->attrs, &attr);
+
+   wh = eina_array_new(2);
+   eina_array_push(wh, eina_stringshare_add("W:"));
+   eina_array_push(wh, eina_stringshare_add("H:"));
+
+   // Context independed attributes
    Eina_Array *trans = eina_array_new(11);
    eina_array_push(trans, eina_stringshare_add("LINEAR"));
    eina_array_push(trans, eina_stringshare_add("ACCELERATE"));
@@ -899,7 +943,7 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    attr.value.append_str = ATTR_APPEND_SEMICOLON;
    eina_inarray_push(td->attrs, &attr);
 
-   Eina_Array *wh = eina_array_new(2);
+   wh = eina_array_new(2);
    eina_array_push(wh, eina_stringshare_add("W:"));
    eina_array_push(wh, eina_stringshare_add("H:"));
 
@@ -1510,10 +1554,23 @@ parser_attribute_get(parser_data *pd, const char *text, const char *cur,
      }
    if (instring) return NULL;
 
+   const char **cur_context = autocomp_current_context_get();
+   int i = 0;
+
    EINA_INARRAY_FOREACH(pd->attrs, attr)
      {
         if (!strcmp(selected, attr->keyword))
-             return &attr->value;
+          {
+             if (!attr->context)
+               return &attr->value;
+
+             while (cur_context && (cur_context[i] != NULL))
+               {
+                  if (!strcmp(cur_context[i], attr->context))
+                    return &attr->value;
+                  i++;
+               }
+          }
      }
 
    return NULL;

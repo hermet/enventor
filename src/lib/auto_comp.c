@@ -922,3 +922,14 @@ autocomp_enabled_get(void)
    autocomp_data *ad = g_ad;
    return ad->enabled;
 }
+
+const char **
+autocomp_current_context_get(void)
+{
+   autocomp_data *ad = g_ad;
+
+   if (!ad->lexem_ptr || !ad->lexem_ptr->name)
+     return NULL;
+
+   return (const char **)ad->lexem_ptr->name;
+}
