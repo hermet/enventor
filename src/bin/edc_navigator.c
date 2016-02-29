@@ -29,15 +29,15 @@ typedef struct part_item_data_s
    Edje_Part_Type type;
 } part_item_data;
 
-typedef enum {
-   Search_Group = 0,
-   Search_Part,
-   Search_State,
-   Search_Programs,
-   Search_Program
-} Search_Type;
-
 static navi_data *g_nd = NULL;
+
+static const char *RECT_TYPE_STR = "rect";
+static const char *TEXT_TYPE_STR = "text";
+static const char *IMAGE_TYPE_STR = "image";
+static const char *SWALLOW_TYPE_STR = "swallow";
+static const char *TEXTBLOCK_TYPE_STR = "textblock";
+static const char *SPACER_TYPE_STR = "spacer";
+static const char *PART_TYPE_STR = "part";
 
 static void
 gl_part_selected_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info);
@@ -50,10 +50,76 @@ states_remove(navi_data *nd);
 /* Internal method implementation                                            */
 /*****************************************************************************/
 
-static void
-find_proc(navi_data *nd, Search_Type type, const char *name, const char *part_name, const char *group_name)
+const char *
+part_type_get(Elm_Object_Item *it)
 {
-   if (!name || !group_name) return;
+   part_item_data *item_data = elm_object_item_data_get(it);
+
+   switch (item_data->type)
+     {
+      case EDJE_PART_TYPE_RECTANGLE:
+         return RECT_TYPE_STR;
+      case EDJE_PART_TYPE_TEXT:
+         return TEXT_TYPE_STR;
+      case EDJE_PART_TYPE_IMAGE:
+         return IMAGE_TYPE_STR;
+      case EDJE_PART_TYPE_SWALLOW:
+         return SWALLOW_TYPE_STR;
+      case EDJE_PART_TYPE_TEXTBLOCK:
+         return TEXTBLOCK_TYPE_STR;
+      case EDJE_PART_TYPE_SPACER:
+         return SPACER_TYPE_STR;
+      default:
+         return PART_TYPE_STR;
+     }
+}
+
+static char *
+find_group_proc_internal(char *utf8, char *utf8_end, const char *group_name)
+{
+   char *p = utf8;
+   char *result = NULL;
+
+   //Find group
+   while (utf8_end > p)
+     {
+        //Skip " ~ " Section
+        if (*p == '\"')
+          {
+             p = strstr(++p, "\"");
+             if (!p) return NULL;
+             p++;
+             continue;
+          }
+
+        if (!strncmp("group", p, strlen("group")))
+          {
+             p = strstr((p + 5), "\"");
+             if (!p) return NULL;
+             p++;
+             if (!strncmp(group_name, p, strlen(group_name)))
+               {
+                  result = p;
+                  break;
+               }
+             else
+               {
+                  p = strstr(p, "\"");
+                  if (!p) return NULL;
+                  p++;
+                  continue;
+               }
+          }
+        p++;
+     }
+
+   return result;
+}
+
+static void
+find_group_proc(navi_data *nd, const char *group_name)
+{
+   if (!group_name) return;
 
    const char *text =
       (const char *) enventor_object_text_get(base_enventor_get());
@@ -61,50 +127,301 @@ find_proc(navi_data *nd, Search_Type type, const char *name, const char *part_na
    if (!text) return;
 
    char *utf8 = elm_entry_markup_to_utf8(text);
-
-   //get the character position begun with searching.
-   int cursor_pos = enventor_object_cursor_pos_get(base_enventor_get());
-
-   //Find group first
-   char *s = strstr(utf8, group_name);
-   char *result = NULL;
+   char *utf8_end = utf8 + strlen(utf8);
+   char *result = find_group_proc_internal(utf8, utf8_end, group_name);
 
    //No found
-   if (!s) goto end;
+   if (!result) goto end;
 
-   switch (type)
+   //Got you!
+   enventor_object_select_region_set(base_enventor_get(), (result - utf8),
+                                     (result - utf8) + strlen(group_name));
+end:
+   free(utf8);
+}
+
+static char *
+find_part_proc_internal(char *utf8, char *utf8_end, const char* group_name,
+                        const char *part_name, const char *part_type)
+{
+   char *p = find_group_proc_internal(utf8, utf8_end, group_name);
+
+   //No found
+   if (!p) return NULL;
+
+   p = strstr(p, "\"");
+   if (!p) return NULL;
+   p++;
+
+   char *result = NULL;
+
+   //Find part
+   while (utf8_end > p)
      {
-      case Search_Group:
-         //TODO: Check validation.
-         result = strstr(s, name);
-         break;
-      case Search_Part:
-         //TODO: Check validation.
-         result = strstr(s, name);
-         break;
-      case Search_State:
-         //TODO: Check validation.
-         result = strstr(s, part_name);
-         result = strstr(result, name);
-         break;
-      case Search_Programs:
-         //TODO: Check validation.
-         result = strstr(s, name);
-         break;
-      case Search_Program:
-         //TODO: Check validation.
-         result = strstr(s, "programs");
-         result = strstr(result, name);
-         break;
-      default:
-         break;
+        //Skip " ~ " Section
+        if (*p == '\"')
+          {
+             p = strstr(++p, "\"");
+             if (!p) return NULL;
+             p++;
+             continue;
+          }
+
+        if (!strncmp(part_type, p, strlen(part_type)))
+          {
+             p = strstr((p + strlen(part_type)), "\"");
+             if (!p) return NULL;
+             p++;
+             if (!strncmp(part_name, p, strlen(part_name)))
+               {
+                  result = p;
+                  break;
+               }
+             else
+               {
+                  p = strstr(p, "\"");
+                  if (!p) return NULL;
+                  p++;
+                  continue;
+               }
+          }
+
+        //compatibility: "part"
+        if (!strncmp("part", p, strlen("part")))
+          {
+             p = strstr((p + 4), "\"");
+             if (!p) return NULL;
+             p++;
+             if (!strncmp(part_name, p, strlen(part_name)))
+               {
+                  result = p;
+                  break;
+               }
+             else
+               {
+                  p = strstr(p, "\"");
+                  if (!p) return NULL;
+                  p++;
+                  continue;
+               }
+          }
+
+        p++;
+     }
+
+   return result;
+}
+
+static void
+find_part_proc(navi_data *nd, const char *group_name, const char *part_name,
+               const char *part_type)
+{
+   if (!group_name || !part_name) return;
+
+   const char *text =
+      (const char *) enventor_object_text_get(base_enventor_get());
+
+   if (!text) return;
+
+   char *utf8 = elm_entry_markup_to_utf8(text);
+   char *utf8_end = utf8 + strlen(utf8);
+
+   const char *result = find_part_proc_internal(utf8, utf8_end, group_name,
+                                                part_name, part_type);
+   if (!result) goto end;
+
+   //Got you!
+   enventor_object_select_region_set(base_enventor_get(), (result - utf8),
+                                     (result - utf8) + strlen(part_name));
+end:
+   free(utf8);
+}
+
+static void
+find_state_proc(navi_data *nd, const char *group_name, const char *part_name,
+                const char *part_type, const char *state_name)
+{
+   if (!group_name || !part_name) return;
+
+   const char *text =
+      (const char *) enventor_object_text_get(base_enventor_get());
+
+   if (!text) return;
+
+   char *utf8 = elm_entry_markup_to_utf8(text);
+   char *utf8_end = utf8 + strlen(utf8);
+
+   char *p = find_part_proc_internal(utf8, utf8_end, group_name,
+                                     part_name, part_type);
+   if (!p) goto end;
+
+   p = strstr(p, "\"");
+   if (!p) goto end;
+   p++;
+
+   char *result = NULL;
+
+   //Find programs
+   while (utf8_end > p)
+     {
+        //Skip " ~ " Section
+        if (*p == '\"')
+          {
+             p = strstr(++p, "\"");
+             if (!p) goto end;
+             p++;
+             continue;
+          }
+
+        if (!strncmp("desc", p, strlen("desc")))
+          {
+             p = strstr((p + 4), "\"");
+             if (!p) goto end;
+             p++;
+             if (!strncmp(state_name, p, strlen(state_name)))
+               {
+                  result = p;
+                  break;
+               }
+             else
+               {
+                  p = strstr(p, "\"");
+                  if (!p) goto end;
+                  p++;
+                  continue;
+               }
+          }
+        p++;
      }
 
    if (!result) goto end;
 
    //Got you!
    enventor_object_select_region_set(base_enventor_get(), (result - utf8),
-                                     (result - utf8) + strlen(name));
+                                     (result - utf8) + strlen(state_name));
+end:
+   free(utf8);
+}
+
+static char*
+find_programs_proc_internal(char *utf8, char *utf8_end, const char *group_name)
+{
+   char *p = find_group_proc_internal(utf8, utf8_end, group_name);
+   if (!p) return;
+
+   p = strstr(p, "\"");
+   if (!p) return NULL;
+   p++;
+
+   char *result = NULL;
+
+   //Find programs
+   while (utf8_end > p)
+     {
+        //Skip " ~ " Section
+        if (*p == '\"')
+          {
+             p = strstr(++p, "\"");
+             if (!p) return NULL;
+             p++;
+             continue;
+          }
+
+        if (!strncmp("programs", p, strlen("programs")))
+          {
+             result = p;
+             break;
+          }
+        p++;
+     }
+
+   return result;
+}
+
+static void
+find_programs_proc(navi_data *nd, const char *group_name)
+{
+   if (!group_name) return;
+
+   const char *text =
+      (const char *) enventor_object_text_get(base_enventor_get());
+
+   if (!text) return;
+
+   char *utf8 = elm_entry_markup_to_utf8(text);
+   char *utf8_end = utf8 + strlen(utf8);
+
+   char *result = find_programs_proc_internal(utf8, utf8_end, group_name);
+
+   //No found
+   if (!result) goto end;
+
+   //Got you!
+   enventor_object_select_region_set(base_enventor_get(), (result - utf8),
+                                     (result - utf8) + strlen("programs"));
+end:
+   free(utf8);
+}
+
+static void
+find_program_proc(navi_data *nd, const char *group_name,
+                  const char *program_name)
+{
+   if (!group_name || !program_name) return;
+
+   const char *text =
+      (const char *) enventor_object_text_get(base_enventor_get());
+
+   if (!text) return;
+
+   char *utf8 = elm_entry_markup_to_utf8(text);
+   char *utf8_end = utf8 + strlen(utf8);
+   char *p = find_programs_proc_internal(utf8, utf8_end, group_name);
+   if (!p) goto end;
+
+   char *result = NULL;
+
+   p += strlen("programs");
+
+   //Find program
+   while (utf8_end > p)
+     {
+        //Skip " ~ " Section
+        if (*p == '\"')
+          {
+             p = strstr(++p, "\"");
+             if (!p) goto end;
+             p++;
+             continue;
+          }
+
+        if (!strncmp("program", p, strlen("program")))
+          {
+             p = strstr((p + 6), "\"");
+             if (!p) goto end;
+             p++;
+             if (!strncmp(program_name, p, strlen(program_name)))
+               {
+                  result = p;
+                  break;
+               }
+             else
+               {
+                  p = strstr(p, "\"");
+                  if (!p) goto end;
+                  p++;
+                  continue;
+               }
+          }
+        p++;
+     }
+
+   //No found
+   if (!result) goto end;
+
+   //Got you!
+   enventor_object_select_region_set(base_enventor_get(), (result - utf8),
+                                     (result - utf8) + strlen(program_name));
 end:
    free(utf8);
 }
@@ -130,8 +447,11 @@ gl_state_selected_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 
    Elm_Object_Item *parent_it = elm_genlist_item_parent_get(it);
 
-   find_proc(nd, Search_State, elm_object_item_text_get(it),
-             elm_object_item_text_get(parent_it), stats_group_name_get());
+   const char *part_type = part_type_get(parent_it);
+
+   find_state_proc(nd, stats_group_name_get(),
+                   elm_object_item_text_get(parent_it), part_type,
+                   elm_object_item_text_get(it));
 }
 
 static void
@@ -220,8 +540,7 @@ gl_program_selected_cb(void *data, Evas_Object *obj EINA_UNUSED,
 {
    navi_data *nd = data;
    Elm_Object_Item *it = event_info;
-   find_proc(nd, Search_Program, elm_object_item_text_get(it), NULL,
-             stats_group_name_get());
+   find_program_proc(nd, stats_group_name_get(), elm_object_item_text_get(it));
 }
 
 static void
@@ -282,8 +601,7 @@ gl_programs_selected_cb(void *data, Evas_Object *obj EINA_UNUSED,
 
    Elm_Object_Item *parent_it = elm_genlist_item_parent_get(it);
 
-   find_proc(nd, Search_Programs, "programs", NULL,
-             elm_object_item_text_get(parent_it));
+   find_programs_proc(nd, elm_object_item_text_get(parent_it));
 }
 
 static void
@@ -404,8 +722,11 @@ gl_part_selected_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 
    part_item_data *item_data = elm_object_item_data_get(it);
    Elm_Object_Item *parent_it = elm_genlist_item_parent_get(it);
-   find_proc(nd, Search_Part, item_data->text, NULL,
-             elm_object_item_text_get(parent_it));
+
+   const char *part_type = part_type_get(it);
+
+   find_part_proc(nd, elm_object_item_text_get(parent_it), item_data->text,
+                  part_type);
 }
 
 static void
@@ -469,8 +790,7 @@ gl_group_selected_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
    states_remove(nd);
    sub_programs_remove(nd);
 
-   find_proc(nd, Search_Group, elm_object_item_text_get(it), NULL,
-             elm_object_item_text_get(it));
+   find_group_proc(nd, elm_object_item_text_get(it));
 }
 
 /*****************************************************************************/
