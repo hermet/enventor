@@ -149,7 +149,6 @@ file_mgr_edc_save(void)
 
    Eina_Bool save_success = enventor_object_save(base_enventor_get(),
                                                  config_input_path_get());
-   enventor_object_modified_set(base_enventor_get(), !save_success);
 
    if (!config_stats_bar_get()) return;
 
