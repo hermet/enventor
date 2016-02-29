@@ -865,6 +865,8 @@ edit_text_insert(edit_data *ed, const char *text)
    evas_textblock_cursor_pos_set(cur, old_pos);
 
    elm_entry_calc_force(ed->en_edit);
+
+   edit_changed_set(ed, EINA_TRUE);
    free(selection_utf8);
 }
 
