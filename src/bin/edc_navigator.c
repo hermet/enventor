@@ -29,17 +29,85 @@ typedef struct part_item_data_s
    Edje_Part_Type type;
 } part_item_data;
 
+typedef enum {
+   Search_Group = 0,
+   Search_Part,
+   Search_State,
+   Search_Programs,
+   Search_Program
+} Search_Type;
+
 static navi_data *g_nd = NULL;
 
 static void
 gl_part_selected_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info);
-
 static void
 sub_programs_remove(navi_data *nd);
+static void
+states_remove(navi_data *nd);
 
 /*****************************************************************************/
 /* Internal method implementation                                            */
 /*****************************************************************************/
+
+static void
+find_proc(navi_data *nd, Search_Type type, const char *name, const char *part_name, const char *group_name)
+{
+   if (!name || !group_name) return;
+
+   const char *text =
+      (const char *) enventor_object_text_get(base_enventor_get());
+
+   if (!text) return;
+
+   char *utf8 = elm_entry_markup_to_utf8(text);
+
+   //get the character position begun with searching.
+   int cursor_pos = enventor_object_cursor_pos_get(base_enventor_get());
+
+   //Find group first
+   char *s = strstr(utf8, group_name);
+   char *result = NULL;
+
+   //No found
+   if (!s) goto end;
+
+   switch (type)
+     {
+      case Search_Group:
+         //TODO: Check validation.
+         result = strstr(s, name);
+         break;
+      case Search_Part:
+         //TODO: Check validation.
+         result = strstr(s, name);
+         break;
+      case Search_State:
+         //TODO: Check validation.
+         result = strstr(s, part_name);
+         result = strstr(result, name);
+         break;
+      case Search_Programs:
+         //TODO: Check validation.
+         result = strstr(s, name);
+         break;
+      case Search_Program:
+         //TODO: Check validation.
+         result = strstr(s, "programs");
+         result = strstr(result, name);
+         break;
+      default:
+         break;
+     }
+
+   if (!result) goto end;
+
+   //Got you!
+   enventor_object_select_region_set(base_enventor_get(), (result - utf8),
+                                     (result - utf8) + strlen(name));
+end:
+   free(utf8);
+}
 
 static char *
 gl_text_get_cb(void *data, Evas_Object *obj EINA_UNUSED,
@@ -60,7 +128,22 @@ gl_state_selected_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 
    sub_programs_remove(nd);
 
-   //TODO: Search Current State
+   Elm_Object_Item *parent_it = elm_genlist_item_parent_get(it);
+
+   find_proc(nd, Search_State, elm_object_item_text_get(it),
+             elm_object_item_text_get(parent_it), stats_group_name_get());
+}
+
+static void
+states_remove(navi_data *nd)
+{
+   Elm_Object_Item *it;
+   EINA_LIST_FREE(nd->state_items, it) elm_object_item_del(it);
+   if (nd->state_list)
+     {
+        edje_edit_string_list_free(nd->state_list);
+        nd->state_list = NULL;
+     }
 }
 
 static void
@@ -75,8 +158,7 @@ states_reload(navi_data *nd, Elm_Object_Item *part_it)
    //Remove Previous Parts
 
    //FIXME: Maybe we could optimize if parts list hasn't been changed.
-   EINA_LIST_FREE(nd->state_items, it) elm_object_item_del(it);
-   edje_edit_string_list_free(nd->state_list);
+   states_remove(nd);
 
    //Append States
    Evas_Object *enventor = base_enventor_get();
@@ -94,6 +176,17 @@ states_reload(navi_data *nd, Elm_Object_Item *part_it)
                                      nd);                   /* select cb data */
         nd->state_items = eina_list_append(nd->state_items, it);
      }
+}
+
+static char *
+gl_state_text_get_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                     const char *part EINA_UNUSED)
+{
+   const char *text = data;
+   //Parsing "default" "0.00". We don't take care 0.00 in the state name.
+   const char *brk = strpbrk(text, " ");
+   if (brk) return strndup(text, brk - text);
+   else return strdup(text);
 }
 
 static Evas_Object *
@@ -125,9 +218,10 @@ static void
 gl_program_selected_cb(void *data, Evas_Object *obj EINA_UNUSED,
                        void *event_info)
 {
+   navi_data *nd = data;
    Elm_Object_Item *it = event_info;
-
-   //TODO: Search Current Program
+   find_proc(nd, Search_Program, elm_object_item_text_get(it), NULL,
+             stats_group_name_get());
 }
 
 static void
@@ -183,9 +277,13 @@ gl_programs_selected_cb(void *data, Evas_Object *obj EINA_UNUSED,
    navi_data *nd = data;
    Elm_Object_Item *it = event_info;
 
-   //TODO: Search Current Programs
-
+   states_remove(nd);
    sub_programs_reload(nd, it);
+
+   Elm_Object_Item *parent_it = elm_genlist_item_parent_get(it);
+
+   find_proc(nd, Search_Programs, "programs", NULL,
+             elm_object_item_text_get(parent_it));
 }
 
 static void
@@ -302,9 +400,12 @@ gl_part_selected_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 
    sub_programs_remove(nd);
 
-   //TODO: Search Current Part
-
    states_reload(nd, it);
+
+   part_item_data *item_data = elm_object_item_data_get(it);
+   Elm_Object_Item *parent_it = elm_genlist_item_parent_get(it);
+   find_proc(nd, Search_Part, item_data->text, NULL,
+             elm_object_item_text_get(parent_it));
 }
 
 static void
@@ -365,9 +466,11 @@ gl_group_selected_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 
    Elm_Object_Item *it = event_info;
 
+   states_remove(nd);
    sub_programs_remove(nd);
 
-   //TODO: Search Current Group
+   find_proc(nd, Search_Group, elm_object_item_text_get(it), NULL,
+             elm_object_item_text_get(it));
 }
 
 /*****************************************************************************/
@@ -511,7 +614,7 @@ edc_navigator_init(Evas_Object *parent)
    //State Item Class
    itc = elm_genlist_item_class_new();
    itc->item_style = "default";
-   itc->func.text_get = gl_text_get_cb;
+   itc->func.text_get = gl_state_text_get_cb;
    itc->func.content_get = gl_state_content_get_cb;
 
    nd->state_itc = itc;

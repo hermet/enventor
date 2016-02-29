@@ -1,7 +1,7 @@
 #include "panes.h"
 #include "edc_navigator.h"
 
-#define EDC_NAVIGATOR_UPDATE_TIME 0.5
+#define EDC_NAVIGATOR_UPDATE_TIME 0.25
 
 Eina_Bool base_gui_init(void);
 void base_gui_show(void);
