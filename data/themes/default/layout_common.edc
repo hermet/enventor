@@ -2152,7 +2152,7 @@ group { name: "statusbar_layout";
             rel2.relative: 1.0 0.5;
             rel1.offset: 3 0;
             align: 0 0.5;
-            fixed: 1 0;
+            fixed: 1 1;
             min: 12 12;
             image.normal: "cursor_arrow.png";
          }
