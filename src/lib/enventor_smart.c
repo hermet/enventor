@@ -678,26 +678,11 @@ EOLIAN static Eina_Bool
 _enventor_object_save(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd,
                       const char *file)
 {
-   Eina_Bool edc_modified = EINA_FALSE;
-
    //Update edc file and try to save if the edc path is different.
    if (build_edc_path_get() != file) edit_changed_set(pd->ed, EINA_TRUE);
 
-   //Build edc file and call modified smart callback if edc file is modified.
-   if (edit_changed_get(pd->ed)) edc_modified = EINA_TRUE;
-
    Eina_Bool saved = edit_save(pd->ed, file);
-   //EDC file is newly generated, we need to reload as the input.
-   if (saved && edc_modified)
-     {
-        Enventor_EDC_Modified modified;
-
-        build_edc();
-        edit_saved_set(pd->ed, EINA_FALSE);
-
-        modified.self_changed = EINA_TRUE;
-        evas_object_smart_callback_call(pd->obj, SIG_EDC_MODIFIED, &modified);
-     }
+   if (saved) build_edc();
    return saved;
 }
 

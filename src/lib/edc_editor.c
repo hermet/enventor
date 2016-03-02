@@ -1270,6 +1270,10 @@ edit_save(edit_data *ed, const char *file)
    edit_changed_set(ed, EINA_FALSE);
    edit_saved_set(ed, EINA_TRUE);
 
+   Enventor_EDC_Modified modified;
+   modified.self_changed = EINA_TRUE;
+   evas_object_smart_callback_call(ed->enventor, SIG_EDC_MODIFIED, &modified);
+
    return EINA_TRUE;
 }
 
