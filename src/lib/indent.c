@@ -666,6 +666,8 @@ indent_text_check(indent_data *id EINA_UNUSED, const char *utf8)
                        macro_found = EINA_FALSE;
                     }
                }
+             if (utf8_ptr >= utf8_end - 1)
+               return EINA_FALSE;
              space = 0;
              nonspace_found = EINA_FALSE;
           }
