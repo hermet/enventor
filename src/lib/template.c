@@ -369,14 +369,14 @@ template_insert(edit_data *ed, Enventor_Template_Insert_Type insert_type,
 
    if (!t) goto end;
 
+   int cursor_pos = elm_entry_cursor_pos_get(entry);
+   int cursor_pos1 = elm_entry_cursor_pos_get(entry);
+
    if (strcmp(paragh, "images"))
      {
         elm_entry_entry_insert(entry, p);
         elm_entry_entry_insert(entry, first_line);
      }
-
-   int cursor_pos = elm_entry_cursor_pos_get(entry);
-   int cursor_pos1 = elm_entry_cursor_pos_get(entry);
 
    int i;
    for (i = 0; i < (line_cnt - 1); i++)
