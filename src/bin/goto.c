@@ -78,6 +78,9 @@ entry_changed_cb(void *data, Evas_Object *obj, void* event_info EINA_UNUSED)
 {
    goto_data *gd = data;
    const char *txt = elm_entry_entry_get(obj);
+
+   if (!txt) return;
+
    if (txt[0] == 0) return;
 
    int line = atoi(txt);
