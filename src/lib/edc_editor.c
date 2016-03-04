@@ -1696,6 +1696,9 @@ error_line_num_highlight(edit_data *ed)
    char *utf8 = (char *)color_cancel(syntax_color_data_get(ed->sh), text,
                                      strlen(text), from_line, to_line, &from,
                                      &to);
+
+   if (!utf8) return;
+
    if (ed->error_line == -1)
      {
         evas_object_textblock_text_markup_set(tb, utf8);
