@@ -307,7 +307,7 @@ static char*
 find_programs_proc_internal(char *utf8, char *utf8_end, const char *group_name)
 {
    char *p = find_group_proc_internal(utf8, utf8_end, group_name);
-   if (!p) return;
+   if (!p) return NULL;
 
    p = strstr(p, "\"");
    if (!p) return NULL;
