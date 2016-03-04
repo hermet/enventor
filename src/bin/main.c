@@ -392,7 +392,7 @@ enventor_cursor_line_changed_cb(void *data EINA_UNUSED, Evas_Object *obj,
                                 void *event_info)
 {
    Enventor_Cursor_Line *cur_line = (Enventor_Cursor_Line *)event_info;
-   stats_line_num_update(cur_line->line, enventor_object_max_line_get(obj));
+   stats_line_num_update(cur_line->cur_line, cur_line->max_line);
 }
 
 static void
@@ -520,6 +520,8 @@ static void
 enventor_setup(app_data *ad)
 {
    Evas_Object *enventor = enventor_object_add(base_layout_get());
+   evas_object_smart_callback_add(enventor, "max_line,changed",
+                                  enventor_cursor_line_changed_cb, ad);
    evas_object_smart_callback_add(enventor, "cursor,line,changed",
                                   enventor_cursor_line_changed_cb, ad);
    evas_object_smart_callback_add(enventor, "cursor,group,changed",

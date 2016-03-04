@@ -800,7 +800,8 @@ cur_line_pos_set(edit_data *ed, Eina_Bool force)
    ed->cur_line = line;
 
    Enventor_Cursor_Line cur_line;
-   cur_line.line = line;
+   cur_line.cur_line = line;
+   cur_line.max_line = ed->line_max;
    evas_object_smart_callback_call(ed->enventor, SIG_CURSOR_LINE_CHANGED,
                                    &cur_line);
 }
@@ -1008,7 +1009,6 @@ static Eina_Bool
 edit_edc_load(edit_data *ed, const char *file_path)
 {
    char buf[MAX_LINE_DIGIT_CNT];
-
    Eina_File *file = NULL;
    Eina_Strbuf *strbuf_line = NULL;
    Eina_Stringshare *group_name = NULL;
@@ -1093,10 +1093,11 @@ err:
    if (utf8_edit) eina_file_map_free(file, utf8_edit);
    if (file) eina_file_close(file);
 
-   Enventor_Max_Line max_line;
-   max_line.line = ed->line_max;
+   Enventor_Cursor_Line cursor_line;
+   cursor_line.cur_line = ed->cur_line;
+   cursor_line.max_line = ed->line_max;
    evas_object_smart_callback_call(ed->enventor, SIG_MAX_LINE_CHANGED,
-                                   &max_line);
+                                   &cursor_line);
 
    if (ed->view_sync_cb)
      ed->view_sync_cb(ed->view_sync_cb_data, NULL, 0.0, NULL, group_name);
@@ -1737,10 +1738,11 @@ edit_line_increase(edit_data *ed, int cnt)
      }
    elm_entry_calc_force(ed->en_line);
 
-   Enventor_Max_Line max_line;
-   max_line.line = ed->line_max;
+   Enventor_Cursor_Line cur_line;
+   cur_line.cur_line = ed->cur_line;
+   cur_line.max_line = ed->line_max;
    evas_object_smart_callback_call(ed->enventor, SIG_MAX_LINE_CHANGED,
-                                   &max_line);
+                                   &cur_line);
 }
 
 void
@@ -1771,10 +1773,11 @@ edit_line_decrease(edit_data *ed, int cnt)
 
    if (ed->line_max < 1) line_init(ed);
 
-   Enventor_Max_Line max_line;
-   max_line.line = ed->line_max;
+   Enventor_Cursor_Line cur_line;
+   cur_line.cur_line = ed->cur_line;
+   cur_line.max_line = ed->line_max;
    evas_object_smart_callback_call(ed->enventor, SIG_MAX_LINE_CHANGED,
-                                   &max_line);
+                                   &cur_line);
 }
 
 void

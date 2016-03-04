@@ -50,13 +50,9 @@ typedef struct
 
 typedef struct
 {
-   int line;
+   int cur_line;
+   int max_line;
 } Enventor_Cursor_Line;
-
-typedef struct
-{
-   int line;
-} Enventor_Max_Line;
 
 typedef struct
 {
