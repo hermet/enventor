@@ -145,6 +145,23 @@ template_part_insert_cursor_pos_set(edit_data *ed,
    return cursor_pos;
 }
 
+static void
+select_random_name(Evas_Object *entry, const char* first_line,
+                   const char* random_name, int space)
+{
+   char *matched = strstr(first_line, random_name);
+   if (matched)
+     {
+        int random_name_pos = matched - first_line;
+        random_name_pos += space;
+        elm_entry_cursor_line_begin_set(entry);
+        int line_start = elm_entry_cursor_pos_get(entry);
+        int start = line_start + random_name_pos;
+        int end = start + strlen(random_name);
+        elm_entry_select_region_set(entry, start, end);
+     }
+}
+
 /*****************************************************************************/
 /* Externally accessible calls                                               */
 /*****************************************************************************/
@@ -289,6 +306,9 @@ template_part_insert(edit_data *ed, Edje_Part_Type part_type,
    else if (part_type == EDJE_PART_TYPE_TEXTBLOCK)
      textblock_style_add(ed, random_name);
 
+   //select random name
+   select_random_name(edit_entry, first_line, random_name, space);
+
    edit_syntax_color_partial_apply(ed, 0);
    edit_changed_set(ed, EINA_TRUE);
 
@@ -399,6 +419,9 @@ template_insert(edit_data *ed, Enventor_Template_Insert_Type insert_type,
      cursor_pos += (cursor_pos2 - cursor_pos1);
 
    elm_entry_cursor_pos_set(entry, cursor_pos);
+
+   //select random name
+   select_random_name(entry, first_line, random_name, space);
 
    edit_syntax_color_partial_apply(ed, 0);
    edit_changed_set(ed, EINA_TRUE);
