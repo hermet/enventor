@@ -394,7 +394,8 @@ colorselector_changed_cb(void *data, Evas_Object *obj,
    evas_object_color_set(ctxdata->color_view, (r * a) / 255 , (g * a) / 255, (b * a) / 255, a);
 
    ecore_animator_del(ctxdata->animator);
-   sprintf(ctxdata->candidate, ": %d %d %d %d;", r, g, b, a);
+   snprintf(ctxdata->candidate, sizeof(ctxdata->candidate), ": %d %d %d %d;",
+            r, g, b, a);
    ctxdata->animator = ecore_animator_add(changed_animator_cb, ctxdata);
 
    preset_cur_color.r = r;
@@ -421,7 +422,8 @@ colorselector_inputs_changed_cb(void *data, Evas_Object *obj,
    elm_colorselector_color_set(ctxdata->colorselector, r, g, b, a);
 
    ecore_animator_del(ctxdata->animator);
-   sprintf(ctxdata->candidate, ": %d %d %d %d;", r, g, b, a);
+   snprintf(ctxdata->candidate, sizeof(ctxdata->candidate), ": %d %d %d %d;",
+            r, g, b, a);
    ctxdata->animator = ecore_animator_add(changed_animator_cb, ctxdata);
 
    preset_cur_color.r = r;
@@ -455,7 +457,8 @@ colorselector_preset_clicked_cb(void *data,  Evas *e EINA_UNUSED, Evas_Object *o
    elm_spinner_value_set(ctxdata->input_colors[3], a);
 
    ecore_animator_del(ctxdata->animator);
-   sprintf(ctxdata->candidate, ": %d %d %d %d;", r, g, b, a);
+   snprintf(ctxdata->candidate, sizeof(ctxdata->candidate), ": %d %d %d %d;",
+            r, g, b, a);
    ctxdata->animator = ecore_animator_add(changed_animator_cb, ctxdata);
 
    preset_cur_color.r = r;
