@@ -159,8 +159,7 @@ view_obj_create_post_job(view_data *vd)
 
    if (vd->part_name) view_part_highlight_set(vd, vd->part_name);
 
-   Eina_Bool ret;
-   if (eo_do_ret(vd->enventor, ret, enventor_obj_dummy_parts_get()))
+   if (enventor_obj_dummy_parts_get(vd->enventor))
      dummy_obj_new(vd->layout);
 
    if (vd->changed_part.part)
