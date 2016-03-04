@@ -295,7 +295,7 @@ base_gui_init(void)
 
    Evas_Coord w, h;
    config_win_size_get(&w, &h);
-   if ((w > 0) && (w > 0))
+   if ((w > 0) && (h > 0))
      evas_object_resize(win, w, h);
 
    evas_object_event_callback_add(win, EVAS_CALLBACK_RESIZE, win_resize_cb,
