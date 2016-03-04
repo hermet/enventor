@@ -1078,6 +1078,7 @@ edit_edc_load(edit_data *ed, const char *file_path)
    elm_entry_entry_append(ed->en_line, markup_line);
    free(markup_line);
 
+   ed->cur_line = 1;
    ed->line_max = line_num;
 
    group_name = parser_first_group_name_get(ed->pd, ed->en_edit);
@@ -1103,6 +1104,8 @@ err:
      ed->view_sync_cb(ed->view_sync_cb_data, NULL, 0.0, NULL, group_name);
 
    eina_stringshare_del(group_name);
+
+   elm_entry_cursor_pos_set(ed->en_edit, 0);
 
    return ret;
 }
