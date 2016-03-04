@@ -167,9 +167,10 @@ slider_changed_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
              else
                snprintf(buf, sizeof(buf), " %0.2f", val);
           }
-        strcat(ctxdata->candidate, buf);
+        strncat(ctxdata->candidate, buf, strlen(buf));
      }
-   strcat(ctxdata->candidate, ctxdata->attr->append_str);
+   strncat(ctxdata->candidate, ctxdata->attr->append_str,
+           strlen(ctxdata->attr->append_str));
    ecore_animator_del(ctxdata->animator);
    ctxdata->animator = ecore_animator_add(changed_animator_cb, ctxdata);
 }
@@ -219,9 +220,10 @@ toggle_changed_cb(void *data, Evas_Object *obj EINA_UNUSED,
    EINA_LIST_FOREACH(ctxdata->toggles, l, toggle)
      {
         snprintf(buf, sizeof(buf), " %d", (int) elm_check_state_get(toggle));
-        strcat(ctxdata->candidate, buf);
+        strncat(ctxdata->candidate, buf, strlen(buf));
      }
-   strcat(ctxdata->candidate, ctxdata->attr->append_str);
+   strncat(ctxdata->candidate, ctxdata->attr->append_str,
+           strlen(ctxdata->attr->append_str));
    ctxdata->changed_cb(ctxdata->data, ctxdata->ctxpopup, ctxdata->candidate);
 }
 
