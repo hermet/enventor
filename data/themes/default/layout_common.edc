@@ -2406,7 +2406,7 @@ group { name: "statusbar_layout";
             fixed: 1 0;
             color: COL_NM;
             text {
-               text: "Line [";
+               text: "Line  ";
                size: 11;
                align: 1 0.5;
                min: 1 0;
@@ -2463,33 +2463,12 @@ group { name: "statusbar_layout";
          scale: 1;
          effect: GLOW;
          description { state: "default" 0.0;
-            rel1.to_x: "elm.text.line]";
-            rel2.to_x: "elm.text.line]";
-            rel1.relative: 0.0 0.0;
-            rel2.relative: 0.0 1.0;
+            rel1.relative: 1.0 0.0;
+            rel2.relative: 1.0 1.0;
             align: 1 0.5;
             fixed: 1 0;
             color: COL_HI;
             text {
-               size: 11;
-               align: 1 0.5;
-               min: 1 0;
-               ellipsis: -1;
-            }
-         }
-      }
-      part { name: "elm.text.line]";
-         type: TEXT;
-         clip_to: "base_clip";
-         scale: 1;
-         effect: SHADOW BOTTOM;
-         description { state: "default" 0.0;
-            rel1.relative: 1 0;
-            align: 1 0.5;
-            fixed: 1 0;
-            color: COL_NM;
-            text {
-               text: "]";
                size: 11;
                align: 1 0.5;
                min: 1 0;
