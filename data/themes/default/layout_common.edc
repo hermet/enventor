@@ -10,6 +10,7 @@ images {
    image: "pm_fill.png" COMP;
    image: "full_logo.png" COMP;
    image: "cursor_arrow.png" COMP;
+   image: "navi_group.png" COMP;
 }
 
 group { name: "about_layout";
@@ -2333,39 +2334,19 @@ group { name: "statusbar_layout";
             align: 1 0.5;
          }
       }
-      swallow { "group_btn";
+      image { "group_icon";
          clip_to: "base_clip";
          scale: 1;
-         description { state: "default" 0.0;
-            rel1.to_x: "elm.text.group[";
-            rel2.to_x: "elm.text.group[";
-            rel1.relative: 0.0 0.0;
-            rel2.relative: 0.0 1.0;
-            align: 1 0.5;
-            min: 18 18;
-            fixed: 1 0;
-         }
-      }
-      part { name: "elm.text.group[";
-         type: TEXT;
-         clip_to: "base_clip";
-         scale: 1;
-         effect: SHADOW BOTTOM;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.to_x: "cursor_spacer";
             rel2.to_x: "elm.text.group_name";
             rel1.relative: 1.0 0.0;
             rel2.relative: 0.0 1.0;
+            rel1.offset: 0 1;
+            min: 15 15;
+            max: 15 15;
             align: 1 0.5;
-            color: COL_NM;
-            text {
-               text: "Group [";
-               size: 11;
-               align: 1 0.5;
-               min: 1 0;
-               max: 1 0;
-               ellipsis: -1;
-            }
+            image.normal: "navi_group.png";
          }
       }
       part { name: "elm.text.group_name";
@@ -2375,7 +2356,7 @@ group { name: "statusbar_layout";
          effect: GLOW;
          description { state: "default" 0.0;
             rel1.to_x: "group_spacer";
-            rel2.to_x: "elm.text.group]";
+            rel2.to_x: "line_spacer";
             rel1.relative: 0.0 0.0;
             rel2.relative: 0.0 1.0;
             align: 1 0.5;
@@ -2386,28 +2367,6 @@ group { name: "statusbar_layout";
                align: 1 0.5;
                min: 0 0;
                max: 1 0;
-            }
-         }
-      }
-      part { name: "elm.text.group]";
-         type: TEXT;
-         scale: 1;
-         effect: SHADOW BOTTOM;
-         clip_to: "base_clip";
-         description {
-            rel1.to_x: "line_spacer";
-            rel1.relative: 0 0.0;
-            rel2.to_x: "line_spacer";
-            rel2.relative: 0 1.0;
-            align: 1 0.5;
-            fixed: 1 0;
-            color: COL_NM;
-            text {
-               text: "]";
-               size: 11;
-               align: 1 0.5;
-               min: 1 0;
-               ellipsis: -1;
             }
          }
       }
