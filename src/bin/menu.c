@@ -315,10 +315,9 @@ exit_yes_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 }
 
 static void
-exit_save_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
+exit_save_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
                  void *event_info EINA_UNUSED)
 {
-   menu_data *md = data;
    enventor_object_save(base_enventor_get(), config_input_path_get());
    elm_exit();
 }

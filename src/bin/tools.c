@@ -67,7 +67,7 @@ status_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 }
 
 static void
-find_cb(void *data, Evas_Object *obj EINA_UNUSED,
+find_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
         void *event_info EINA_UNUSED)
 {
    live_edit_cancel();
@@ -76,7 +76,7 @@ find_cb(void *data, Evas_Object *obj EINA_UNUSED,
 }
 
 static void
-goto_cb(void *data, Evas_Object *obj EINA_UNUSED,
+goto_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
         void *event_info EINA_UNUSED)
 {
    live_edit_cancel();
@@ -112,7 +112,7 @@ redo_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 }
 
 static void
-undo_cb(void *data, Evas_Object *obj EINA_UNUSED,
+undo_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
         void *event_info EINA_UNUSED)
 {
    if (enventor_object_undo(base_enventor_get()))

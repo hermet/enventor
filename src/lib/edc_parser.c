@@ -1959,7 +1959,6 @@ parser_first_group_name_get(parser_data *pd, Evas_Object *entry)
    const char *semicol = SEMICOL_UTF8;
    const char *group = "group";
    const int quot_len = QUOT_UTF8_LEN;
-   const int semicol_len = SEMICOL_UTF8_LEN;
    const int group_len = 5; //strlen("group");
 
    const char *group_name = NULL;

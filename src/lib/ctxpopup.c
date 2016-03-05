@@ -176,36 +176,6 @@ slider_changed_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
 }
 
 static void
-entry_changed_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
-{
-   ctxpopup_data *ctxdata = data;
-   Evas_Object *slider = evas_object_data_get(obj, "slider");
-   double text_val, val, min_val, max_val;
-   char buf[128];
-
-   text_val = atof(elm_object_text_get(obj));
-   val = elm_slider_value_get(slider);
-
-   //no change.
-   if (fabs(val - text_val) < 0.000006) return;
-
-   elm_slider_min_max_get(slider, &min_val, &max_val);
-
-   if (text_val < min_val) val = min_val;
-   else if (text_val > max_val) val = max_val;
-   else val = text_val;
-
-   if (val != text_val)
-     {
-        if (ctxdata->integer) snprintf(buf, sizeof(buf), "%1.0f", val);
-        else snprintf(buf, sizeof(buf), "%1.2f", val);
-        elm_object_text_set(obj, buf);
-     }
-   else
-     elm_slider_value_set(slider, val);
-}
-
-static void
 toggle_changed_cb(void *data, Evas_Object *obj EINA_UNUSED,
                   void *event_info EINA_UNUSED)
 {
@@ -378,7 +348,7 @@ slider_layout_set(Evas_Object *ctxpopup, ctxpopup_data *ctxdata)
 }
 
 static void
-colorselector_changed_cb(void *data, Evas_Object *obj,
+colorselector_changed_cb(void *data, Evas_Object *obj EINA_UNUSED,
                          void *event_info EINA_UNUSED)
 {
    ctxpopup_data *ctxdata = data;
@@ -407,7 +377,7 @@ colorselector_changed_cb(void *data, Evas_Object *obj,
 }
 
 static void
-colorselector_inputs_changed_cb(void *data, Evas_Object *obj,
+colorselector_inputs_changed_cb(void *data, Evas_Object *obj EINA_UNUSED,
                   void *event_info EINA_UNUSED)
 {
    ctxpopup_data *ctxdata = data;

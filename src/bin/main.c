@@ -168,9 +168,9 @@ main_mouse_wheel_cb(void *data, int type EINA_UNUSED, void *ev)
         scale = config_view_scale_get();
         enventor_object_live_view_scale_set(ad->enventor, scale);
 
-        Evas_Coord w, h;
-        config_view_size_get(&w, &h);
-        enventor_object_live_view_size_set(base_enventor_get(), w, h);
+        Evas_Coord ww, hh;
+        config_view_size_get(&ww, &hh);
+        enventor_object_live_view_size_set(base_enventor_get(), ww, hh);
 
         //Just in live edit mode case.
         live_edit_update();
@@ -211,7 +211,7 @@ main_mouse_wheel_cb(void *data, int type EINA_UNUSED, void *ev)
 }
 
 static Evas_Object *
-tools_set(Evas_Object *enventor)
+tools_set(void)
 {
    Evas_Object *tools = tools_init(base_layout_get());
    base_tools_set(tools);
@@ -388,7 +388,8 @@ elm_setup()
 }
 
 static void
-enventor_cursor_line_changed_cb(void *data EINA_UNUSED, Evas_Object *obj,
+enventor_cursor_line_changed_cb(void *data EINA_UNUSED,
+                                Evas_Object *obj EINA_UNUSED,
                                 void *event_info)
 {
    Enventor_Cursor_Line *cur_line = (Enventor_Cursor_Line *)event_info;
@@ -456,7 +457,9 @@ enventor_program_run_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 }
 
 static void
-enventor_ctxpopup_activated_cb(void *data, Evas_Object *obj, void *event_info)
+enventor_ctxpopup_activated_cb(void *data EINA_UNUSED,
+                               Evas_Object *obj EINA_UNUSED,
+                               void *event_info)
 {
    Enventor_Ctxpopup_Type type = (Enventor_Ctxpopup_Type) event_info;
 
@@ -817,7 +820,7 @@ statusbar_set()
 }
 
 static void
-live_edit_set(Evas_Object *enventor, Evas_Object *tools)
+live_edit_set(Evas_Object *tools)
 {
    Evas_Object *trigger = tools_live_edit_get(tools);
    live_edit_init(trigger);
@@ -903,8 +906,8 @@ init(app_data *ad, int argc, char **argv)
    statusbar_set();
    enventor_setup(ad);
    file_mgr_init();
-   Evas_Object *tools = tools_set(ad->enventor);
-   live_edit_set(ad->enventor, tools);
+   Evas_Object *tools = tools_set();
+   live_edit_set(tools);
 
    base_gui_show();
 
@@ -927,7 +930,7 @@ init(app_data *ad, int argc, char **argv)
 }
 
 static void
-term(app_data *ad)
+term(void)
 {
    menu_term();
    live_edit_term();
@@ -947,13 +950,13 @@ int elm_main(int argc, char **argv)
 
    if (!init(&ad, argc, argv))
      {
-        term(&ad);
+        term();
         return 0;
      }
 
    elm_run();
 
-   term(&ad);
+   term();
 
    return 0;
 }

@@ -27,12 +27,9 @@ stats_data *g_sd = NULL;
 /*****************************************************************************/
 
 static void
-view_scale_slider_changed_cb(void *data, Evas_Object *obj,
+view_scale_slider_changed_cb(void *data EINA_UNUSED, Evas_Object *obj,
                              void *event_info EINA_UNUSED)
 {
-
-   stats_data *sd = data;
-
    double scale = elm_slider_value_get(obj);
    double rounded = ROUNDING(scale, 1);
 
@@ -88,10 +85,9 @@ view_invert_transit_end(void *data, Elm_Transit *transit EINA_UNUSED)
 }
 
 static void
-view_invert_btn_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
+view_invert_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+                   void *event_info EINA_UNUSED)
 {
-   stats_data *sd = data;
-
    invert_data *id = malloc(sizeof(invert_data));
 
    Evas_Coord w, h;
@@ -110,7 +106,7 @@ view_invert_btn_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
 }
 
 static void
-view_resize_slider_changed_cb(void *data, Evas_Object *obj,
+view_resize_slider_changed_cb(void *data, Evas_Object *obj EINA_UNUSED,
                               void *event_info EINA_UNUSED)
 {
    Evas_Object *layout = data;

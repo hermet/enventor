@@ -713,7 +713,6 @@ view_size_set(view_data *vd, Evas_Coord w, Evas_Coord h)
 
    if (!vd) return;
 
-   double scale = edj_mgr_view_scale_get();
    int prev_w = vd->view_config_size.w;
    int prev_h = vd->view_config_size.h;
 
