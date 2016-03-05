@@ -26,14 +26,14 @@ error_word_select(Evas_Object *console)
    char *error_token, *edc_token;
 
    //parse edc line
-   if (edc_token = strstr(console_text, "edc:"))
+   if ((edc_token = strstr(console_text, "edc:")))
      token_value_get(edc_token, "edc:", ' ', 0, error_line);
    else return;
 
    //parse error word
-   if (error_token = strstr(console_text, "keyword"))
+   if ((error_token = strstr(console_text, "keyword")))
      token_value_get(error_token, "keyword", '<', 1, error_word);
-   else if (error_token = strstr(console_text, "name"))
+   else if ((error_token = strstr(console_text, "name")))
      token_value_get(error_token, "name", '<', 1, error_word);
    else return;
 
