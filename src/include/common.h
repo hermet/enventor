@@ -1,9 +1,6 @@
 #ifndef __COMMON_H__
 #define __COMMON_H__
 
-typedef struct statusbar_s stats_data;
-
-
 #define ENVENTOR_HELP_EXAMPLES \
 "Examples of Enventor command line usage:\n \
 $ enventor\n \

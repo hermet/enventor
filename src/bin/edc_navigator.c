@@ -1,5 +1,8 @@
 #include "common.h"
 
+#define EDJE_EDIT_IS_UNSTABLE_AND_I_KNOW_ABOUT_IT
+#include <Edje_Edit.h>
+
 typedef struct edc_navigator_s
 {
    Evas_Object *genlist;
@@ -536,10 +539,9 @@ gl_program_content_get_cb(void *data EINA_UNUSED, Evas_Object *obj,
 
 
 static void
-gl_program_selected_cb(void *data, Evas_Object *obj EINA_UNUSED,
+gl_program_selected_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
                        void *event_info)
 {
-   navi_data *nd = data;
    Elm_Object_Item *it = event_info;
    find_program_proc(stats_group_name_get(), elm_object_item_text_get(it));
 }
@@ -826,7 +828,7 @@ edc_navigator_group_update(const char *cur_group)
 
    //Find a current group item and select it.
    Elm_Object_Item *group_it = NULL;
-   int cur_group_len = strlen(cur_group);
+   unsigned int cur_group_len = strlen(cur_group);
 
    EINA_LIST_FOREACH(nd->group_items, l, it)
      {
@@ -878,7 +880,7 @@ edc_navigator_reload(const char *cur_group)
    Eina_List *l;
    char *name;
    Elm_Object_Item *it;
-   int cur_group_len = strlen(cur_group);
+   unsigned int cur_group_len = strlen(cur_group);
 
    EINA_LIST_FOREACH(nd->group_list, l, name)
      {
