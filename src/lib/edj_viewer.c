@@ -25,7 +25,9 @@ struct viewer_s
 
    Ecore_Idler *idler;
    Ecore_Animator *animator;
-   Ecore_Timer *timer;
+   Ecore_Timer *update_img_timer;
+   Ecore_Timer *update_edj_timer;
+   Ecore_Timer *edj_monitor_timer;
    Eio_Monitor *edj_monitor;
    Eina_List *img_monitors;
    Eina_List *part_names;
@@ -63,15 +65,14 @@ exe_del_event_cb(void *data, int type, void *even);
 /*****************************************************************************/
 
 static Eina_Bool
-img_changed_animator_cb(void *data)
+img_changed_timer_cb(void *data)
 {
    view_data *vd = data;
    Eina_File *file = eina_file_open(eio_monitor_path_get(vd->img_monitor),
                                     EINA_FALSE);
    if (!file) return ECORE_CALLBACK_RENEW;
-
    vd->edj_reload_need = EINA_TRUE;
-   vd->timer = NULL;
+   vd->update_img_timer = NULL;
    vd->img_monitor = NULL;
    build_edc();
    eina_file_close(file);
@@ -89,8 +90,11 @@ img_changed_cb(void *data, int type EINA_UNUSED, void *event)
      {
         if (ev->monitor != monitor) continue;
         vd->img_monitor = monitor;
-        ecore_timer_del(vd->timer);
-        vd->timer = ecore_timer_add(0.025, img_changed_animator_cb, vd);
+        ecore_timer_del(vd->update_img_timer);
+        //FIXME: here 0.5 was confirmed by experimental way. But we need to
+        //decide the time size based on the image file size in order that
+        //we could update small images quickly but large images slowly.
+        vd->update_img_timer = ecore_timer_add(1, img_changed_timer_cb, vd);
         return ECORE_CALLBACK_DONE;
      }
    return ECORE_CALLBACK_PASS_ON;
@@ -353,21 +357,9 @@ view_obj_parts_callbacks_set(view_data *vd)
    edje_edit_string_list_free(parts);
 }
 
-static Eina_Bool
-exe_del_event_cb(void *data, int type EINA_UNUSED, void *event EINA_UNUSED)
+static void
+update_edj_file_internal(view_data *vd)
 {
-   view_data *vd = data;
-
-   if (!vd->edj_reload_need) return ECORE_CALLBACK_PASS_ON;
-
-   if (!edje_object_file_set(vd->layout, build_edj_path_get(), vd->group_name))
-     {
-        vd->del_cb(vd->data);
-        view_term(vd);
-        EINA_LOG_ERR("Failed to load edj file \"%s\"", build_edj_path_get());
-        return ECORE_CALLBACK_DONE;
-     }
-
    view_images_monitor_set(vd);
    view_obj_min_update(vd);
    view_part_highlight_set(vd, vd->part_name);
@@ -382,8 +374,70 @@ exe_del_event_cb(void *data, int type EINA_UNUSED, void *event EINA_UNUSED)
 
    evas_object_smart_callback_call(vd->enventor, SIG_LIVE_VIEW_UPDATED,
                                    edj_mgr_obj_get());
+}
+
+static Eina_Bool
+update_edj_file(void *data)
+{
+   view_data *vd = data;
+
+   if (!vd->edj_reload_need)
+     {
+        vd->update_edj_timer = NULL;
+        return ECORE_CALLBACK_DONE;
+     }
+
+   //wait for whether edj is generated completely.
+   Eina_File *file = eina_file_open(build_edj_path_get(), EINA_FALSE);
+   if (!file) return ECORE_CALLBACK_RENEW;
+   eina_file_close(file);
+
+   //Failed to load edj? I have no idea. Try again.
+   if (!edje_object_file_set(vd->layout, build_edj_path_get(), vd->group_name))
+     return ECORE_CALLBACK_RENEW;
+
+   update_edj_file_internal(vd);
+   vd->update_edj_timer = NULL;
+
+   return ECORE_CALLBACK_DONE;
+}
+
+static Eina_Bool
+exe_del_event_cb(void *data, int type EINA_UNUSED, void *event EINA_UNUSED)
+{
+   view_data *vd = data;
+
+   if (!vd->edj_reload_need) return ECORE_CALLBACK_PASS_ON;
+
+   //Failed to load edj? I have no idea. Try again.
+   if (!edje_object_file_set(vd->layout, build_edj_path_get(), vd->group_name))
+     {
+        ecore_timer_del(vd->update_edj_timer);
+        vd->update_edj_timer = ecore_timer_add(0.25, update_edj_file, vd);
+        return ECORE_CALLBACK_PASS_ON;
+     }
+
+   update_edj_file_internal(vd);
 
    return ECORE_CALLBACK_PASS_ON;
+}
+
+static Eina_Bool
+edj_monitor_timer_cb(void *data)
+{
+   view_data *vd = data;
+
+   Eina_File *file = eina_file_open(build_edj_path_get(), EINA_FALSE);
+   if (!file) return ECORE_CALLBACK_PASS_ON;
+   eina_file_close(file);
+   vd->edj_monitor = eio_monitor_add(build_edj_path_get());
+   if (!vd->edj_monitor)
+     {
+        EINA_LOG_ERR("Failed to add Eio_Monitor!");
+        return ECORE_CALLBACK_PASS_ON;
+     }
+   vd->edj_monitor_timer = NULL;
+   return ECORE_CALLBACK_CANCEL;
 }
 
 static Eina_Bool
@@ -397,6 +451,17 @@ edj_changed_cb(void *data, int type EINA_UNUSED, void *event)
 
    //FIXME: why it need to add monitor again??
    eio_monitor_del(vd->edj_monitor);
+
+   //Exceptional case. Try again.
+   Eina_File *file = eina_file_open(build_edj_path_get(), EINA_FALSE);
+   if (!file)
+     {
+        ecore_timer_del(vd->edj_monitor_timer);
+        vd->edj_monitor_timer = ecore_timer_add(0.25, edj_monitor_timer_cb, vd);
+        return ECORE_CALLBACK_DONE;
+     }
+   eina_file_close(file);
+
    vd->edj_monitor = eio_monitor_add(build_edj_path_get());
    if (!vd->edj_monitor) EINA_LOG_ERR("Failed to add Eio_Monitor!");
 
@@ -563,7 +628,9 @@ view_term(view_data *vd)
    evas_object_del(vd->scroller);
    ecore_idler_del(vd->idler);
    ecore_animator_del(vd->animator);
-   ecore_timer_del(vd->timer);
+   ecore_timer_del(vd->update_img_timer);
+   ecore_timer_del(vd->update_edj_timer);
+   ecore_timer_del(vd->edj_monitor_timer);
    eio_monitor_del(vd->edj_monitor);
 
    Eio_Monitor *monitor;
