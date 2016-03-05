@@ -616,7 +616,7 @@ font_cmp_cb(const void *data1,
 }
 
 static void
-font_style_selected_cb(void *data, Evas_Object *obj,
+font_style_selected_cb(void *data EINA_UNUSED, Evas_Object *obj,
                        void *event_info EINA_UNUSED)
 {
    text_setting_data *tsd = g_tsd;

@@ -987,7 +987,8 @@ live_edit_cancel(void)
 }
 
 static void
-live_btn_clicked_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
+live_btn_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                    void *event_info EINA_UNUSED)
 {
    live_edit_cancel();
    goto_close();

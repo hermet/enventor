@@ -117,7 +117,7 @@ find_group_proc_internal(char *utf8, char *utf8_end, const char *group_name)
 }
 
 static void
-find_group_proc(navi_data *nd, const char *group_name)
+find_group_proc(const char *group_name)
 {
    if (!group_name) return;
 
@@ -213,7 +213,7 @@ find_part_proc_internal(char *utf8, char *utf8_end, const char* group_name,
 }
 
 static void
-find_part_proc(navi_data *nd, const char *group_name, const char *part_name,
+find_part_proc(const char *group_name, const char *part_name,
                const char *part_type)
 {
    if (!group_name || !part_name) return;
@@ -238,7 +238,7 @@ end:
 }
 
 static void
-find_state_proc(navi_data *nd, const char *group_name, const char *part_name,
+find_state_proc(const char *group_name, const char *part_name,
                 const char *part_type, const char *state_name)
 {
    if (!group_name || !part_name) return;
@@ -339,7 +339,7 @@ find_programs_proc_internal(char *utf8, char *utf8_end, const char *group_name)
 }
 
 static void
-find_programs_proc(navi_data *nd, const char *group_name)
+find_programs_proc(const char *group_name)
 {
    if (!group_name) return;
 
@@ -364,8 +364,7 @@ end:
 }
 
 static void
-find_program_proc(navi_data *nd, const char *group_name,
-                  const char *program_name)
+find_program_proc(const char *group_name, const char *program_name)
 {
    if (!group_name || !program_name) return;
 
@@ -449,7 +448,7 @@ gl_state_selected_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 
    const char *part_type = part_type_get(parent_it);
 
-   find_state_proc(nd, stats_group_name_get(),
+   find_state_proc(stats_group_name_get(),
                    elm_object_item_text_get(parent_it), part_type,
                    elm_object_item_text_get(it));
 }
@@ -510,7 +509,8 @@ gl_state_text_get_cb(void *data, Evas_Object *obj EINA_UNUSED,
 }
 
 static Evas_Object *
-gl_state_content_get_cb(void *data, Evas_Object *obj, const char *part)
+gl_state_content_get_cb(void *data EINA_UNUSED, Evas_Object *obj,
+                        const char *part)
 {
    if (strcmp("elm.swallow.icon", part)) return NULL;
 
@@ -523,7 +523,8 @@ gl_state_content_get_cb(void *data, Evas_Object *obj, const char *part)
 /* Program Related */
 
 static Evas_Object *
-gl_program_content_get_cb(void *data, Evas_Object *obj, const char *part)
+gl_program_content_get_cb(void *data EINA_UNUSED, Evas_Object *obj,
+                          const char *part)
 {
    if (strcmp("elm.swallow.icon", part)) return NULL;
 
@@ -540,7 +541,7 @@ gl_program_selected_cb(void *data, Evas_Object *obj EINA_UNUSED,
 {
    navi_data *nd = data;
    Elm_Object_Item *it = event_info;
-   find_program_proc(nd, stats_group_name_get(), elm_object_item_text_get(it));
+   find_program_proc(stats_group_name_get(), elm_object_item_text_get(it));
 }
 
 static void
@@ -601,7 +602,7 @@ gl_programs_selected_cb(void *data, Evas_Object *obj EINA_UNUSED,
 
    Elm_Object_Item *parent_it = elm_genlist_item_parent_get(it);
 
-   find_programs_proc(nd, elm_object_item_text_get(parent_it));
+   find_programs_proc(elm_object_item_text_get(parent_it));
 }
 
 static void
@@ -643,7 +644,8 @@ gl_programs_text_get_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 
 
 static Evas_Object *
-gl_programs_content_get_cb(void *data, Evas_Object *obj, const char *part)
+gl_programs_content_get_cb(void *data EINA_UNUSED, Evas_Object *obj,
+                           const char *part)
 {
    if (strcmp("elm.swallow.icon", part)) return NULL;
 
@@ -725,7 +727,7 @@ gl_part_selected_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 
    const char *part_type = part_type_get(it);
 
-   find_part_proc(nd, elm_object_item_text_get(parent_it), item_data->text,
+   find_part_proc(elm_object_item_text_get(parent_it), item_data->text,
                   part_type);
 }
 
@@ -770,7 +772,8 @@ parts_reload(navi_data *nd, Elm_Object_Item *group_it)
 /* Group Related */
 
 static Evas_Object *
-gl_group_content_get_cb(void *data, Evas_Object *obj, const char *part)
+gl_group_content_get_cb(void *data EINA_UNUSED, Evas_Object *obj,
+                        const char *part)
 {
    if (strcmp("elm.swallow.icon", part)) return NULL;
 
@@ -790,7 +793,7 @@ gl_group_selected_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
    states_remove(nd);
    sub_programs_remove(nd);
 
-   find_group_proc(nd, elm_object_item_text_get(it));
+   find_group_proc(elm_object_item_text_get(it));
 }
 
 /*****************************************************************************/

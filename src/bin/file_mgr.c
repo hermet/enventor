@@ -145,7 +145,6 @@ void
 file_mgr_edc_save(void)
 {
    char buf[PATH_MAX];
-   file_mgr_data *fmd = g_fmd;
 
    Eina_Bool save_success = enventor_object_save(base_enventor_get(),
                                                  config_input_path_get());
