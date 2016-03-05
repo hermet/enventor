@@ -13,9 +13,11 @@
 
 #define ENABLED_TEXTBLOCK_TAGS                            \
    tag: "hilight" "+ style=glow glow_color=#3388ddaa";    \
+   tag: "error" "+ underline=single underline_color=#ff0000 underline2_color=#ff0000"; \
 
 #define DISABLED_TEXTBLOCK_TAGS                           \
    tag: "hilight" "+ style=glow glow_color=#3399ff20";    \
+   tag: "error" "+ underline=single underline_color=#ff0000 underline2_color=#ff0000"; \
 
 group { name: "elm/scroller/base/enventor";
    images.image: "inset_shadow.png" COMP;
