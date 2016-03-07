@@ -655,10 +655,6 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    eina_array_push(wh, eina_stringshare_add("W:"));
    eina_array_push(wh, eina_stringshare_add("H:"));
 
-   wh = eina_array_new(2);
-   eina_array_push(wh, eina_stringshare_add("W:"));
-   eina_array_push(wh, eina_stringshare_add("H:"));
-
    memset(&attr, 0x00, sizeof(parser_attr));
    attr.keyword = eina_stringshare_add("max");
    attr.value.strs = wh;
