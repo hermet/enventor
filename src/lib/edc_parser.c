@@ -1671,7 +1671,11 @@ parser_paragh_name_get(parser_data *pd EINA_UNUSED, Evas_Object *entry)
           {
              cur += quot_len;
              cur = strstr(cur, quot);
-             if (!cur) return NULL;
+             if (!cur)
+               {
+                  free(utf8);
+                  return NULL;
+               }
              cur += quot_len;
           }
 
@@ -1687,7 +1691,11 @@ parser_paragh_name_get(parser_data *pd EINA_UNUSED, Evas_Object *entry)
         cur++;
      }
 
-   if (depth == 0) return NULL;
+   if (depth == 0)
+     {
+        free(utf8);
+        return NULL;
+     }
 
    //2. Parse the paragraph Name
    cur = stack[depth - 1];
@@ -1699,10 +1707,14 @@ parser_paragh_name_get(parser_data *pd EINA_UNUSED, Evas_Object *entry)
           {
              group_info *gi = &group_list[i];
              if (!strncmp(cur, gi->str, gi->len))
-               return eina_stringshare_add_length(gi->str, gi->len);
+               {
+                  free(utf8);
+                  return eina_stringshare_add_length(gi->str, gi->len);
+               }
           }
      }
 
+   free(utf8);
    return NULL;
 }
 
