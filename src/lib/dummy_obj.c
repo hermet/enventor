@@ -121,7 +121,8 @@ dummy_objs_update(dummy_obj *dummy)
 
              //New part. Add fake object.
              Evas_Object *obj = edje_object_add(evas);
-             edje_object_file_set(obj, EDJE_PATH, "swallow");
+             if (!edje_object_file_set(obj, EDJE_PATH, "swallow"))
+               EINA_LOG_ERR("Failed to set File to Edje Object!");
              edje_object_part_swallow(dummy->layout, part_name, obj);
 
              po->obj = obj;
