@@ -39,7 +39,7 @@ error_word_select(Evas_Object *console)
 
     //find error word position
     const char *entry_text = enventor_object_text_get(base_enventor_get());
-    const char *utf8 = elm_entry_markup_to_utf8(entry_text);
+    char *utf8 = elm_entry_markup_to_utf8(entry_text);
 
     enventor_object_line_goto(base_enventor_get(), atoi(error_line));
     int pos = enventor_object_cursor_pos_get(base_enventor_get());
@@ -48,11 +48,16 @@ error_word_select(Evas_Object *console)
     const char *matched = strstr(search_line, error_word);
 
     if (matched == NULL)
-      return;
+      {
+         free(utf8);
+         return;
+      }
 
     int start, end;
     start = matched - utf8;
     end = start + strlen(error_word);
+
+    free(utf8);
 
     //select error word
     enventor_object_select_region_set(base_enventor_get(), start, end);
