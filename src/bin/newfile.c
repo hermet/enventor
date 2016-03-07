@@ -36,7 +36,7 @@ newfile_set(Eina_Bool template_new)
    snprintf(buf, sizeof(buf), "%s/templates/%s.edc",
             elm_app_data_dir_get(), elm_object_item_text_get(it));
    if (template_new && config_input_path_get())
-     sprintf(path, "%s", config_input_path_get());
+     snprintf(path, sizeof(path), "%s", config_input_path_get());
    else
      {
         Eina_Tmpstr *tmp_path;
