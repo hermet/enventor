@@ -513,7 +513,7 @@ ctxpopup_candidate_changed_cb(void *data, Evas_Object *obj EINA_UNUSED,
 {
    edit_data *ed = data;
    const char *text = event_info;
-   char *ch;
+   char *ch = NULL;
    int cur_pos, end_pos;
    int i;
    cur_pos = elm_entry_cursor_pos_get(ed->en_edit);
@@ -521,16 +521,18 @@ ctxpopup_candidate_changed_cb(void *data, Evas_Object *obj EINA_UNUSED,
    end_pos = elm_entry_cursor_pos_get(ed->en_edit);
 
    for (i = cur_pos; i <= end_pos; i++)
-   {
-      elm_entry_cursor_pos_set(ed->en_edit, i);
-      ch = elm_entry_cursor_content_get(ed->en_edit);
-      if (!strcmp(ch, ";"))
-        {
-           //1 more space for end_pos to replace until ';'.
-           end_pos = elm_entry_cursor_pos_get(ed->en_edit) + 1;
-           break;
-        }
-   }
+     {
+        elm_entry_cursor_pos_set(ed->en_edit, i);
+        ch = elm_entry_cursor_content_get(ed->en_edit);
+        if (!strcmp(ch, ";"))
+          {
+             //1 more space for end_pos to replace until ';'.
+             end_pos = elm_entry_cursor_pos_get(ed->en_edit) + 1;
+             free(ch);
+             break;
+          }
+        free(ch);
+     }
 
    elm_entry_select_region_set(ed->en_edit, cur_pos, end_pos);
 
