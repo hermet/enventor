@@ -133,7 +133,7 @@ build_err_noti_cb(void *data, const char *msg)
      {
         ptr += strlen(".edc");
         if (!ptr || (ptr[0] != ':')) goto call_error;
-        if (!(ptr++)) goto call_error;
+        if (!(++ptr)) goto call_error;
         line_num = atoi(ptr);
      }
    else if ((ptr = strstr(utf8, "image")) ||
