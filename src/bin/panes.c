@@ -16,6 +16,7 @@ typedef struct _pane_data
    double origin;
    double delta;
    double last_size[2]; //when down the panes bar
+   Elm_Transit *transit;
 } pane_data;
 
 typedef struct _panes_data
@@ -89,17 +90,35 @@ h_unpress_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
 }
 
 static void
+horiz_transit_del_cb(void *data, Elm_Transit *transit EINA_UNUSED)
+{
+   panes_data *pd = data;
+   pd->horiz.transit = NULL;
+}
+
+static void
+vert_transit_del_cb(void *data, Elm_Transit *transit EINA_UNUSED)
+{
+   panes_data *pd = data;
+   pd->vert.transit = NULL;
+}
+
+static void
 panes_h_full_view_cancel(panes_data *pd)
 {
    pd->horiz.origin = elm_panes_content_right_size_get(pd->horiz.obj);
    pd->horiz.delta = pd->horiz.last_size[1] - pd->horiz.origin;
 
+   elm_transit_del(pd->horiz.transit);
+
    Elm_Transit *transit = elm_transit_add();
    elm_transit_effect_add(transit, transit_op_h, pd, NULL);
    elm_transit_tween_mode_set(transit, ELM_TRANSIT_TWEEN_MODE_DECELERATE);
    elm_transit_duration_set(transit, TRANSIT_TIME);
+   elm_transit_del_cb_set(transit, horiz_transit_del_cb, pd);
    elm_transit_go(transit);
 
+   pd->horiz.transit = transit;
    pd->horiz.state = PANES_SPLIT_VIEW;
 }
 
@@ -116,12 +135,16 @@ panes_v_full_view_cancel(panes_data *pd)
         config_console_size_set(DEFAULT_CONSOLE_SIZE);
      }
 
+   elm_transit_del(pd->vert.transit);
+
    Elm_Transit *transit = elm_transit_add();
+   elm_transit_del_cb_set(transit, vert_transit_del_cb, pd);
    elm_transit_effect_add(transit, transit_op_v, pd, NULL);
    elm_transit_tween_mode_set(transit, ELM_TRANSIT_TWEEN_MODE_DECELERATE);
    elm_transit_duration_set(transit, TRANSIT_TIME);
    elm_transit_go(transit);
 
+   pd->vert.transit = transit;
    pd->vert.state = PANES_SPLIT_VIEW;
 }
 
@@ -143,12 +166,16 @@ panes_text_editor_full_view(void)
    pd->horiz.origin = origin;
    pd->horiz.delta = 0.0 - pd->horiz.origin;
 
+   elm_transit_del(pd->horiz.transit);
+
    Elm_Transit *transit = elm_transit_add();
    elm_transit_effect_add(transit, transit_op_h, pd, NULL);
    elm_transit_tween_mode_set(transit, ELM_TRANSIT_TWEEN_MODE_DECELERATE);
    elm_transit_duration_set(transit, TRANSIT_TIME);
+   elm_transit_del_cb_set(transit, horiz_transit_del_cb, pd);
    elm_transit_go(transit);
 
+   pd->horiz.transit = transit;
    pd->horiz.state = PANES_TEXT_EDITOR_EXPAND;
 }
 
@@ -170,12 +197,16 @@ panes_live_view_full_view(void)
    pd->horiz.origin = origin;
    pd->horiz.delta = 1.0 - pd->horiz.origin;
 
+   elm_transit_del(pd->horiz.transit);
+
    Elm_Transit *transit = elm_transit_add();
    elm_transit_effect_add(transit, transit_op_h, pd, NULL);
    elm_transit_tween_mode_set(transit, ELM_TRANSIT_TWEEN_MODE_DECELERATE);
    elm_transit_duration_set(transit, TRANSIT_TIME);
+   elm_transit_del_cb_set(transit, horiz_transit_del_cb, pd);
    elm_transit_go(transit);
 
+   pd->horiz.transit = transit;
    pd->horiz.state = PANES_LIVE_VIEW_EXPAND;
 }
 
@@ -198,12 +229,15 @@ panes_editors_full_view(Eina_Bool full_view)
         pd->vert.origin = elm_panes_content_right_size_get(pd->vert.obj);
         pd->vert.delta = 0.0 - pd->vert.origin;
 
+        elm_transit_del(pd->vert.transit);
         Elm_Transit *transit = elm_transit_add();
         elm_transit_effect_add(transit, transit_op_v, pd, NULL);
         elm_transit_tween_mode_set(transit, ELM_TRANSIT_TWEEN_MODE_DECELERATE);
         elm_transit_duration_set(transit, TRANSIT_TIME);
+        elm_transit_del_cb_set(transit, vert_transit_del_cb, pd);
         elm_transit_go(transit);
 
+        pd->vert.transit = transit;
         pd->vert.state = PANES_EDITORS_EXPAND;
      }
    else
@@ -232,12 +266,16 @@ panes_console_full_view(void)
    pd->vert.origin = origin;
    pd->vert.delta = 1.0 - pd->vert.origin;
 
+   elm_transit_del(pd->vert.transit);
+
    Elm_Transit *transit = elm_transit_add();
    elm_transit_effect_add(transit, transit_op_v, pd, NULL);
    elm_transit_tween_mode_set(transit, ELM_TRANSIT_TWEEN_MODE_DECELERATE);
    elm_transit_duration_set(transit, TRANSIT_TIME);
+   elm_transit_del_cb_set(transit, vert_transit_del_cb, pd);
    elm_transit_go(transit);
 
+   pd->vert.transit = transit;
    pd->vert.state = PANES_CONSOLE_EXPAND;
 }
 
@@ -267,6 +305,8 @@ panes_term(void)
 {
    panes_data *pd = g_pd;
    evas_object_del(pd->vert.obj);
+   elm_transit_del(pd->vert.transit);
+   elm_transit_del(pd->horiz.transit);
    free(pd);
 }
 
@@ -294,6 +334,7 @@ panes_init(Evas_Object *parent)
    pd->vert.state = PANES_SPLIT_VIEW;
    pd->vert.last_size[0] = config_console_size_get();
    pd->vert.last_size[1] = config_console_size_get();
+   pd->vert.transit = NULL;
 
    //Panes Horizontal
    Evas_Object *panes_h = elm_panes_add(parent);
@@ -310,6 +351,7 @@ panes_init(Evas_Object *parent)
    pd->horiz.state = PANES_SPLIT_VIEW;
    pd->horiz.last_size[0] = config_editor_size_get();
    pd->horiz.last_size[1] = config_editor_size_get();
+   pd->horiz.transit = NULL;
 
    elm_panes_content_right_size_set(panes_h, config_editor_size_get());
    elm_panes_content_right_size_set(panes_v, config_console_size_get());
