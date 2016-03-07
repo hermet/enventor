@@ -340,7 +340,7 @@ defaults:
    ecore_getopt_list_free(dd);
 }
 
-static void
+static Eina_Bool
 config_data_set(app_data *ad, int argc, char **argv, Eina_Bool *default_edc,
                 Eina_Bool *template)
 {
@@ -353,8 +353,11 @@ config_data_set(app_data *ad, int argc, char **argv, Eina_Bool *default_edc,
 
    args_dispatch(argc, argv, edc_path, edj_path, &img_path, &snd_path,
                  &fnt_path, &dat_path, default_edc, template);
-   config_init(edc_path, edj_path, img_path, snd_path, fnt_path, dat_path);
+   if (!config_init(edc_path, edj_path, img_path, snd_path, fnt_path, dat_path))
+     return EINA_FALSE;
    config_update_cb_set(config_update_cb, ad);
+
+   return EINA_TRUE;
 }
 
 static void
@@ -900,7 +903,8 @@ init(app_data *ad, int argc, char **argv)
 
    Eina_Bool template = EINA_FALSE;
    Eina_Bool default_edc = EINA_TRUE;
-   config_data_set(ad, argc, argv, &default_edc, &template);
+   if (!config_data_set(ad, argc, argv, &default_edc, &template))
+     return EINA_FALSE;
    newfile_default_set(default_edc);
    base_gui_init();
    statusbar_set();

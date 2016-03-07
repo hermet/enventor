@@ -311,7 +311,7 @@ config_input_path_set(const char *input_path)
    config_edj_path_update(cd);
 }
 
-void
+Eina_Bool
 config_init(const char *input_path, const char *output_path,
             Eina_List *img_path, Eina_List *snd_path,
             Eina_List *fnt_path, Eina_List *dat_path)
@@ -319,6 +319,7 @@ config_init(const char *input_path, const char *output_path,
    eddc_init();
 
    config_data *cd = config_load();
+   if (!cd) return EINA_FALSE;
    g_cd = cd;
 
    if (input_path[0]) config_input_path_set(input_path);
@@ -335,6 +336,8 @@ config_init(const char *input_path, const char *output_path,
 
    if (dat_path)
      g_cd->dat_path_list = dat_path;
+
+   return EINA_TRUE;
 }
 
 void
