@@ -283,12 +283,12 @@ args_dispatch(int argc, char **argv, char *edc_path, char *edj_path,
      {
         if (strstr(argv[i], ".edc"))
           {
-             sprintf(edc_path, "%s", argv[i]);
+             snprintf(edc_path, strlen(argv[i]), "%s", argv[i]);
              *default_edc = EINA_FALSE;
           }
         else if (strstr(argv[i], ".edj"))
           {
-             sprintf(edj_path, "%s", argv[i]);
+             snprintf(edj_path, strlen(argv[i]), "%s", argv[i]);
           }
      }
 
@@ -305,7 +305,7 @@ defaults:
      {
         Eina_Tmpstr *tmp_path;
         eina_file_mkstemp(DEFAULT_EDC_FORMAT, &tmp_path);
-        sprintf(edc_path, "%s", (const char *)tmp_path);
+        snprintf(edc_path, strlen(tmp_path), "%s", (const char *)tmp_path);
         eina_tmpstr_del(tmp_path);
      }
 
