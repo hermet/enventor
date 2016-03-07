@@ -181,7 +181,7 @@ text_setting_syntax_color_update(Evas_Object *ctxpopup,
                                              "elm.swallow.slider");
         snprintf(buf, sizeof(buf), "%02X",
                  (int) roundf(elm_slider_value_get(slider)));
-        strcat(color, buf);
+        strncat(color, buf, strlen(buf));
      }
    color[SYNTAX_COLOR_LEN - 1] = '\0';
 
@@ -417,7 +417,7 @@ syntax_template_format_create(void)
 
    char *syntax_template_format = calloc(1, sizeof(char) * (strlen(utf8) + 1));
    if (!syntax_template_format) goto err;
-   strcpy(syntax_template_format, utf8);
+   strncpy(syntax_template_format, utf8, strlen(utf8) + 1);
 
    tsd->syntax_template_format = syntax_template_format;
 
