@@ -892,6 +892,8 @@ indent_text_create(indent_data *id,
    eina_strbuf_free(buf);
    free(utf8_buf);
 
+   eina_list_free(code_lines);
+
    if (indented_line_cnt) *indented_line_cnt = line_cnt;
    return indented_markup;
 }
