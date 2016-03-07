@@ -127,8 +127,12 @@ setting_apply_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
    config_dummy_parts_set(elm_check_state_get(sd->toggle_swallow));
    text_setting_config_set();
 
-   Evas_Coord w = (Evas_Coord)atoi(elm_entry_entry_get(sd->view_size_w_entry));
-   Evas_Coord h = (Evas_Coord)atoi(elm_entry_entry_get(sd->view_size_h_entry));
+   Evas_Coord w = 0;
+   Evas_Coord h = 0;
+   const char *w_entry = elm_entry_entry_get(sd->view_size_w_entry);
+   if (w_entry) w = (Evas_Coord)atoi(w_entry);
+   const char *h_entry = elm_entry_entry_get(sd->view_size_h_entry);
+   if (h_entry) h = (Evas_Coord)atoi(h_entry);
    config_view_size_set(w, h);
 
    text_setting_syntax_color_save();
