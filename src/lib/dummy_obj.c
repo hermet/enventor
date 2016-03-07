@@ -228,6 +228,8 @@ dummy_obj_update(Evas_Object *layout)
 void
 dummy_obj_new(Evas_Object *layout)
 {
+   if (!layout) return;
+
    dummy_obj *dummy = evas_object_data_get(layout, DUMMYOBJ);
    if (dummy) return;
 
