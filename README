@@ -1,34 +1,34 @@
-[Enventor v0.7.0]
- 
+[Enventor v0.8.0]
+
 This is an EDC editor with some convenient functions. It was started near the begining of June 2013, so expecting it to do everything a mature script editor does is a bit premature.  However, considering its young age, it does a lot.
- 
- 
+
+
 [Requirements]
-  
+
   efl (>= 1.16.0)
   elementary (>= 1.16.0)
-  
+
 Please note that some features may not quite function correctly or completely prior to EFL 1.16. Newer would be better.
-  
+
 Please see the following sites for more information.
- 
+
 http://www.enlightenment.org
 https://phab.enlightenment.org/w/projects/enventor/
-http://www.openhub.net/p/enventor 
-  
- 
+http://www.openhub.net/p/enventor
+
+
 [Compiling]
- 
+
 Once you have met the requirements, compiling and installing is simple:
- 
+
   $ ./autogen.sh
   $ make
   $ sudo make install
   $ sudo ldconfig (it may need on Linux System) 
- 
+
 
 [Short Cut Keys]
- 
+
 Esc - Open/Close Menu
 F1 - About
 F2 - New
@@ -39,7 +39,7 @@ F9 - Toggle Tools
 F10 - Toggle EDC Navigator
 F11 - Toggle Status
 F12 - Settings
- 
+
 Ctrl+S - Quick Save + Update Live View
 Ctrl+I - Toggle Auto Indentation
 Ctrl+O - Toggle Auto Completion
@@ -67,13 +67,13 @@ Ctrl+L - Go to line
 Ctrl+Home - Go to the Top line
 Ctrl+End - Go to the Bottom line
 Ctrl+Space - Search candidate keywords in the context
- 
- 
+
+
 [Command Line Usage]
- 
+
 enventor --help
 enventor [input file] [output file] [-t] [-i image path] [-s sound path] [-f font path] [-d data path]
- 
+
 input file = EDC file to open. If input file is skipped, Enventor will open a default template code with a temporary file.
 output file = EDJ file to store compiled file. If output file is skipped, Enventor will store the binary file to the temporary directory.
 -t = Open template menu when you launch Enventor
@@ -81,27 +81,29 @@ output file = EDJ file to store compiled file. If output file is skipped, Envent
 -s = path to sound resources that the edc includes
 -f = path to font resources that the edc includes
 -d = path to data resources that the edc includes
- 
+
 Examples of Enventor command line usage:
 $ enventor
 $ enventor -t
 $ enventor newfile.edc -t
 $ enventor sample.edc output.edj -i ./images -s ./sounds
- 
- 
+
+
 [Developers]
-  
+
 Many developers have contributed to Enventor project. The following names are dedicated Enventor developers' names but there are more people who've gladly contributed for Enventor. For a complete list of contributors, See AUTHORS file.
- 
+
 Copyright (C) 2013 - 2016 by:
- 
+
 Hermet Park
 Jaehyun Cho
 Mykyta Biliavskyi
 Kateryna Fesyna
+Tae-Hyup Kim
 Yunho Jeong
 Mincheol Seo
 Raoul Hecky
-  
+Yurii Tsivun
+
 And various contributors (See AUTHORS)
- 
+
