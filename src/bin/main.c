@@ -224,7 +224,8 @@ static void
 args_dispatch(int argc, char **argv, char *edc_path, char *edj_path,
               Eina_List **img_path, Eina_List **snd_path,
               Eina_List **fnt_path, Eina_List **dat_path,
-              Eina_Bool *default_edc, Eina_Bool *template)
+              Eina_Bool *default_edc, Eina_Bool *template,
+              int path_size)
 {
 
    Eina_List *id = NULL;
@@ -283,12 +284,12 @@ args_dispatch(int argc, char **argv, char *edc_path, char *edj_path,
      {
         if (strstr(argv[i], ".edc"))
           {
-             snprintf(edc_path, strlen(argv[i]), "%s", argv[i]);
+             snprintf(edc_path, path_size, "%s", argv[i]);
              *default_edc = EINA_FALSE;
           }
         else if (strstr(argv[i], ".edj"))
           {
-             snprintf(edj_path, strlen(argv[i]), "%s", argv[i]);
+             snprintf(edj_path, path_size, "%s", argv[i]);
           }
      }
 
@@ -305,7 +306,7 @@ defaults:
      {
         Eina_Tmpstr *tmp_path;
         eina_file_mkstemp(DEFAULT_EDC_FORMAT, &tmp_path);
-        snprintf(edc_path, strlen(tmp_path), "%s", (const char *)tmp_path);
+        snprintf(edc_path, path_size, "%s", (const char *)tmp_path);
         eina_tmpstr_del(tmp_path);
      }
 
@@ -352,7 +353,7 @@ config_data_set(app_data *ad, int argc, char **argv, Eina_Bool *default_edc,
    Eina_List *dat_path = NULL;
 
    args_dispatch(argc, argv, edc_path, edj_path, &img_path, &snd_path,
-                 &fnt_path, &dat_path, default_edc, template);
+                 &fnt_path, &dat_path, default_edc, template, PATH_MAX);
    if (!config_init(edc_path, edj_path, img_path, snd_path, fnt_path, dat_path))
      return EINA_FALSE;
    config_update_cb_set(config_update_cb, ad);
