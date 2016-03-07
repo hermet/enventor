@@ -372,17 +372,17 @@ bracket_update(edit_data *ed)
    Evas_Object *tb = elm_entry_textblock_get(ed->en_edit);
    Evas_Textblock_Cursor *cur1 = evas_object_textblock_cursor_get(tb);
 
-   char ch1, ch2;
-   ch1 = -1;
-   ch2 = -1;
+   char *ch1 = NULL;
+   char *ch2 = NULL;
 
-   ch1 = evas_textblock_cursor_content_get(cur1)[0];
+   ch1 = evas_textblock_cursor_content_get(cur1);
    Eina_Bool is_exist = evas_textblock_cursor_char_prev(cur1);
    if (is_exist)
-     ch2 = evas_textblock_cursor_content_get(cur1)[0];
+     ch2 = evas_textblock_cursor_content_get(cur1);
    evas_textblock_cursor_char_next(cur1);
 
-   if (ch1 != '{' && ch1 != '}' && ch2 != '{' && ch2 != '}')
+   if (is_exist && (*ch1 != '{') && (*ch1 != '}') && (*ch2 != '{')
+       && (*ch2 != '}'))
      {
         if (ed->bracket.prev_left != -1 && ed->bracket.prev_right != -1)
           {
@@ -394,9 +394,13 @@ bracket_update(edit_data *ed)
 
              syntax_color_partial_update(ed, SYNTAX_COLOR_SHORT_TIME);
           }
+        free(ch1);
+        free(ch2);
         return;
      }
    parser_bracket_find(ed->pd, ed->en_edit, bracket_changed_cb, ed);
+   free(ch1);
+   free(ch2);
 }
 
 static void
