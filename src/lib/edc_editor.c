@@ -182,12 +182,17 @@ error_highlight(edit_data *ed, Evas_Object *tb)
 {
    Evas_Textblock_Cursor *cur1 = evas_object_textblock_cursor_new(tb);
    error_line_num_highlight(ed);
+   char *p;
    if (ed->error_line != -1)
      {
         evas_textblock_cursor_line_set(cur1, ed->error_line);
         evas_textblock_cursor_line_char_first(cur1);
-        while(evas_textblock_cursor_content_get(cur1)[0] == ' ')
-           evas_textblock_cursor_char_next(cur1);
+        while((p = evas_textblock_cursor_content_get(cur1)) && (*p == ' '))
+          {
+             evas_textblock_cursor_char_next(cur1);
+             free(p);
+          }
+        free(p);
         evas_object_textblock_text_markup_prepend(cur1, "<error>");
         evas_textblock_cursor_line_char_last(cur1);
         evas_object_textblock_text_markup_prepend(cur1, "</error>");
@@ -203,8 +208,12 @@ error_highlight(edit_data *ed, Evas_Object *tb)
                 break;
           }
         evas_textblock_cursor_paragraph_char_first(cur1);
-        while(evas_textblock_cursor_content_get(cur1)[0] == ' ')
-           evas_textblock_cursor_char_next(cur1);
+        while((p = evas_textblock_cursor_content_get(cur1)) && (*p == ' '))
+          {
+             evas_textblock_cursor_char_next(cur1);
+             free(p);
+          }
+        free(p);
         evas_object_textblock_text_markup_prepend(cur1, "<error>");
         evas_textblock_cursor_paragraph_char_last(cur1);
         evas_object_textblock_text_markup_prepend(cur1, "</error>");
@@ -477,7 +486,7 @@ ctxpopup_candidate_dismiss_cb(void *data, Evas_Object *obj,
    elm_entry_cursor_line_end_set(ed->en_edit);
    int end_pos = elm_entry_cursor_pos_get(ed->en_edit);
    int i = 0;
-   char *ch;
+   char *ch = NULL;
 
    for (i = cur_pos; i <= end_pos; i++)
      {
@@ -486,8 +495,10 @@ ctxpopup_candidate_dismiss_cb(void *data, Evas_Object *obj,
         if (*ch == ';')
           {
              elm_entry_cursor_pos_set(ed->en_edit, i + 1);
+             free(ch);
              break;
           }
+        free(ch);
      }
 
    evas_object_del(obj);
