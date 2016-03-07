@@ -563,6 +563,7 @@ cp_mouse_move_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 
    //Dispatch to actual mouse move call
    Ctrl_Pt cp = (Ctrl_Pt) evas_object_data_get(obj, "index");
+   if (cp == Ctrl_Pt_Cnt) return; //not to use Ctrl_Pt_Cnt as index.
 
    //Show Control Point
    live_data *ld = data;
@@ -593,8 +594,6 @@ cp_mouse_move_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
           break;
         case Ctrl_Pt_Right:
           cp_right_mouse_move_cb(data, e, obj, event_info);
-          break;
-        case Ctrl_Pt_Cnt: //for avoiding compiler warning.
           break;
      }
    live_edit_update_internal(ld);
