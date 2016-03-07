@@ -379,6 +379,7 @@ indent_code_lines_create(indent_data *id EINA_UNUSED, const char *utf8)
                               code_lines = eina_list_append(code_lines,
                                               eina_stringshare_add(utf8_lexem));
                             else
+                              //FIXME: Here stringshare occurs memory leak. :(
                               code_lines =
                                  eina_list_append(code_lines,
                                     eina_stringshare_add_length(utf8_lexem,
