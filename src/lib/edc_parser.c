@@ -1342,12 +1342,14 @@ parser_collections_block_pos_get(const Evas_Object *entry,
                     {
                        block = strchr(block, '\n');
                        *ret = block - utf8 + 1;
+                       free(utf8);
                        return EINA_FALSE;
                     }
                   else if (*block == '{')
                     {
                        block = strchr(block, '\n');
                        *ret = block - utf8 + 1;
+                       free(utf8);
                        return EINA_TRUE;
                     }
                   block++;
@@ -1364,14 +1366,17 @@ parser_collections_block_pos_get(const Evas_Object *entry,
                     {
                        group_block = strchr(group_block, '\n');
                        *ret = group_block - utf8 + 1;
+                       free(utf8);
                        return EINA_FALSE;
                     }
                   group_block++;
                }
+             free(utf8);
              return EINA_FALSE;
           }
         pos--;
       }
+   free(utf8);
    return EINA_FALSE;
 }
 
