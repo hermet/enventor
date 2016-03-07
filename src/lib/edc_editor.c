@@ -1055,7 +1055,7 @@ edit_edc_load(edit_data *ed, const char *file_path)
         //Use line_num given by indent_text_create().
         while (num <= line_num)
           {
-             sprintf(buf, "\n%d", num);
+             snprintf(buf, sizeof(buf), "\n%d", num);
              if (!eina_strbuf_append(strbuf_line, buf)) goto err;
              num++;
           }
@@ -1068,7 +1068,7 @@ edit_edc_load(edit_data *ed, const char *file_path)
           {
              line_num++;
              ++p;
-             sprintf(buf, "\n%d", line_num);
+             snprintf(buf, sizeof(buf), "\n%d", line_num);
              if (!eina_strbuf_append(strbuf_line, buf)) goto err;
           }
      }
