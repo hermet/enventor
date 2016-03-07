@@ -543,7 +543,7 @@ cur_state_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
                   while (temp_pos && (temp_pos < name_end))
                     {
                        space_pos = temp_pos;
-                       if (++temp_pos) break;
+                       temp_pos++;
                        temp_pos = strchr(temp_pos, ' ');
                     }
 
@@ -552,6 +552,7 @@ cur_state_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
                   while (temp_pos && (temp_pos < name_end))
                     {
                        tab_pos = temp_pos;
+                       temp_pos++;
                        temp_pos = strchr(p, '\t');
                     }
 
