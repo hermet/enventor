@@ -190,7 +190,7 @@ config_load(void)
 
    if (!cd->img_path_list)
      {
-        sprintf(buf, "%s/images", elm_app_data_dir_get());
+        snprintf(buf, sizeof(buf), "%s/images", elm_app_data_dir_get());
         config_img_path_set(buf);
      }
    else cd->img_path_buf =
@@ -198,7 +198,7 @@ config_load(void)
 
    if (!cd->snd_path_list)
      {
-        sprintf(buf, "%s/sounds", elm_app_data_dir_get());
+        snprintf(buf, sizeof(buf), "%s/sounds", elm_app_data_dir_get());
         config_snd_path_set(buf);
      }
    else cd->snd_path_buf =
@@ -206,7 +206,7 @@ config_load(void)
 
    if (!cd->fnt_path_list)
      {
-        sprintf(buf, "%s/fonts", elm_app_data_dir_get());
+        snprintf(buf, sizeof(buf), "%s/fonts", elm_app_data_dir_get());
         config_fnt_path_set(buf);
      }
    else cd->fnt_path_buf =
@@ -214,7 +214,7 @@ config_load(void)
 
    if (!cd->dat_path_list)
      {
-        sprintf(buf, "%s/data", elm_app_data_dir_get());
+        snprintf(buf, sizeof(buf), "%s/data", elm_app_data_dir_get());
         config_dat_path_set(buf);
      }
    else cd->dat_path_buf =
