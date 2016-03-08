@@ -15,4 +15,5 @@ EXTRA_DIST = common.h \
 	search.h \
 	live_edit.h \
 	console.h \
-	file_mgr.h
+	file_mgr.h \
+	edc_navigator.h

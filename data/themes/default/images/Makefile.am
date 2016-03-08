@@ -79,4 +79,6 @@ EXTRA_DIST = \
 	navi_text.png \
 	navi_textblock.png \
 	navi_spacer.png \
-	navi_unknown.png
+	navi_unknown.png \
+	navi_state.png \
+	navi_program.png
