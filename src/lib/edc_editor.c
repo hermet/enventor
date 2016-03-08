@@ -1139,13 +1139,8 @@ static Eina_Bool
 auto_save_timer_cb(void *data)
 {
    edit_data *ed = data;
-
-   //Avoid auto save if save has been already accomplished.
-   if (ed->edit_changed)
-     {
-        edit_save(ed, build_edc_path_get());
-        build_edc();
-     }
+   edit_save(ed, build_edc_path_get());
+   build_edc();
    ed->auto_save_timer = NULL;
    return ECORE_CALLBACK_CANCEL;
 }
