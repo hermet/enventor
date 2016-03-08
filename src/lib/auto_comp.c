@@ -506,6 +506,8 @@ list_del_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 {
    autocomp_data *ad = data;
    ad->list = NULL;
+
+   edit_auto_save_timer_apply(ad->ed);
 }
 
 
@@ -578,6 +580,8 @@ entry_tooltip_content_cb(void *data, Evas_Object *obj EINA_UNUSED,
      }
    elm_list_go(ad->list);
    evas_object_show(ad->list);
+
+   edit_auto_save_timer_cancel(ad->ed);
 
    return ad->list;
 }
