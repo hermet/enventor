@@ -196,7 +196,7 @@ _enventor_object_evas_object_smart_add(Eo *obj, Enventor_Object_Data *pd)
    pd->obj = obj;
 
    elm_widget_sub_object_parent_add(obj);
-   evas_obj_smart_add(eo_super(obj, MY_CLASS));
+   eo_do_super(obj, MY_CLASS, evas_obj_smart_add());
 
    build_init();
    autocomp_init();
@@ -288,9 +288,10 @@ EOLIAN static Eo *
 _enventor_object_eo_base_constructor(Eo *obj,
                                      Enventor_Object_Data *pd EINA_UNUSED)
 {
-   obj = eo_constructor(eo_super(obj, MY_CLASS));
-   evas_obj_type_set(obj, MY_CLASS_NAME_LEGACY);
-   evas_obj_smart_callbacks_descriptions_set(obj, _smart_callbacks);
+   obj = eo_do_super_ret(obj, MY_CLASS, obj, eo_constructor());
+   eo_do(obj,
+         evas_obj_type_set(MY_CLASS_NAME_LEGACY),
+         evas_obj_smart_callbacks_descriptions_set(_smart_callbacks));
 
    return obj;
 }
@@ -758,7 +759,8 @@ enventor_object_add(Evas_Object *parent)
 EAPI Eina_Bool
 enventor_object_file_set(Evas_Object *obj, const char *file)
 {
-   return efl_file_set(obj, file, NULL);
+   Eina_Bool ret;
+   return eo_do_ret(obj, ret, efl_file_set(file, NULL));
 }
 
 #include "enventor_object.eo.c"
