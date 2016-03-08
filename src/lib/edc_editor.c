@@ -13,7 +13,6 @@ const int MAX_LINE_DIGIT_CNT = 10;
 const int SYNTAX_COLOR_SPARE_LINES = 42;
 const double SYNTAX_COLOR_DEFAULT_TIME = 0.25;
 const double SYNTAX_COLOR_SHORT_TIME = 0.025;
-const double AUTO_SAVE_TIME = 2.0;
 
 typedef struct syntax_color_thread_data_s
 {
@@ -49,7 +48,6 @@ struct editor_s
       int right;
    } bracket;
 
-   Ecore_Timer *auto_save_timer;
    Ecore_Timer *syntax_color_timer;
    Ecore_Thread *syntax_color_thread;
 
@@ -472,8 +470,6 @@ edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
    syntax_color_partial_update(ed, SYNTAX_COLOR_DEFAULT_TIME);
 
    parser_bracket_cancel(ed->pd);
-
-   edit_auto_save_timer_apply(ed);
 }
 
 static void
@@ -568,8 +564,6 @@ ctxpopup_del_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 {
    edit_data *ed = data;
    ed->ctxpopup = NULL;
-
-   edit_auto_save_timer_apply(ed);
 }
 
 //This function is called when user press up/down key or mouse wheel up/down
@@ -731,8 +725,6 @@ candidate_list_show(edit_data *ed, char *text, char *cur, char *selected)
    evas_object_event_callback_add(ctxpopup, EVAS_CALLBACK_DEL, ctxpopup_del_cb, ed);
    ed->ctxpopup = ctxpopup;
    elm_object_tree_focus_allow_set(ed->layout, EINA_FALSE);
-
-   edit_auto_save_timer_cancel(ed);
 }
 
 static void
@@ -1133,16 +1125,6 @@ edit_focused_cb(void *data, Evas_Object *obj EINA_UNUSED,
 {
    edit_data *ed = data;
    evas_object_smart_callback_call(ed->enventor, SIG_FOCUSED, NULL);
-}
-
-static Eina_Bool
-auto_save_timer_cb(void *data)
-{
-   edit_data *ed = data;
-   edit_save(ed, build_edc_path_get());
-   build_edc();
-   ed->auto_save_timer = NULL;
-   return ECORE_CALLBACK_CANCEL;
 }
 
 /*****************************************************************************/
@@ -1902,24 +1884,5 @@ edit_redoundo(edit_data *ed, Eina_Bool undo)
    edit_changed_set(ed, EINA_TRUE);
    syntax_color_full_update(ed, EINA_TRUE);
 
-   edit_auto_save_timer_apply(ed);
-
    return EINA_TRUE;
-}
-
-void
-edit_auto_save_timer_apply(edit_data *ed)
-{
-   if (ed->auto_save_timer)
-     ecore_timer_del(ed->auto_save_timer);
-   ed->auto_save_timer = ecore_timer_add(AUTO_SAVE_TIME, auto_save_timer_cb,
-                                         ed);
-}
-
-void
-edit_auto_save_timer_cancel(edit_data *ed)
-{
-   if (ed->auto_save_timer)
-     ecore_timer_del(ed->auto_save_timer);
-   ed->auto_save_timer = NULL;
 }
