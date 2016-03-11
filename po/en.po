@@ -107,6 +107,10 @@ msgstr ""
 msgid "Double click the part to confirm."
 msgstr ""
 
+#: src/bin/live_edit.c:995
+msgid "Select a part to add in Live View."
+msgstr ""
+
 #: src/bin/live_edit.c:1070
 msgid "Faild to allocate Memory!"
 msgstr ""
@@ -125,6 +129,11 @@ msgstr ""
 
 #: src/bin/main.c:35
 msgid "Auto Indentation Disabled."
+msgstr ""
+
+#: src/bin/main.c:180
+#, c-format
+msgid "Live View Scale: %2.2fx"
 msgstr ""
 
 #: src/bin/main.c:206
@@ -237,6 +246,10 @@ msgstr ""
 
 #: src/bin/menu.c:672
 msgid "Close Enventor Menu (Esc)"
+msgstr ""
+
+#: src/bin/menu.c:673
+msgid "Back"
 msgstr ""
 
 #: src/bin/newfile.c:56 src/bin/newfile.c:79
