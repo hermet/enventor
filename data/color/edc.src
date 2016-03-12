@@ -48,6 +48,7 @@ group "syntax_color_group" struct {
             value "key" string: "item";
             value "key" string: "map";
             value "key" string: "origin";
+            value "key" string: "params";
             value "key" string: "parts";
             value "key" string: "part";
             value "key" string: "programs";
@@ -138,6 +139,7 @@ group "syntax_color_group" struct {
             value "key" string: "span";
             value "key" string: "spread";
             value "key" string: "state";
+            value "key" string: "string";
             value "key" string: "style";
             value "key" string: "smooth";
             value "key" string: "source";
