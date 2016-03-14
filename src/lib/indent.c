@@ -393,8 +393,11 @@ indent_code_lines_create(indent_data *id EINA_UNUSED, const char *utf8)
           }
         utf8_ptr++;
      }
+   //FIXME: Now string is not added to code line and indentation is not applied
+   //       if string does not contain keywords which cause a new line.
+   //       (e.g. string not containing ';')
    //Append rest of the input string.
-   if (utf8_lexem > utf8_append_ptr)
+   if (utf8_append_ptr && (utf8_lexem > utf8_append_ptr))
      code_lines = eina_list_append(code_lines,
                                    eina_stringshare_add(utf8_lexem));
 
