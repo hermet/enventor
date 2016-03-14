@@ -347,7 +347,7 @@ color_ctxpopup_create(Evas_Object *parent,
 
    elm_config_focus_autoscroll_mode_set(ELM_FOCUS_AUTOSCROLL_MODE_NONE);
 
-   elm_object_style_set(ctxpopup, elm_app_name_get());
+   elm_object_style_set(ctxpopup, "enventor");
    evas_object_data_set(ctxpopup, "color_keyword", selected_color_keyword);
    elm_ctxpopup_direction_priority_set(ctxpopup, ELM_CTXPOPUP_DIRECTION_RIGHT,
                                        ELM_CTXPOPUP_DIRECTION_LEFT,
@@ -595,7 +595,7 @@ text_setting_font_apply(void)
 
    char text_class_name[32];
    snprintf(text_class_name, sizeof(text_class_name), "%s_setting_entry",
-            elm_app_name_get());
+            "enventor");
 
    char *font = NULL;
    if (tsd->font_name)
@@ -709,7 +709,7 @@ text_setting_layout_create(Evas_Object *parent)
    //Text Editor
    Evas_Object *entry = elm_entry_add(layout);
    char style_name[128];
-   snprintf(style_name, sizeof(style_name), "%s_setting", elm_app_name_get());
+   snprintf(style_name, sizeof(style_name), "%s_setting", "enventor");
    elm_object_style_set(entry, style_name);
    elm_entry_context_menu_disabled_set(entry, EINA_TRUE);
    elm_entry_line_wrap_set(entry, ELM_WRAP_NONE);

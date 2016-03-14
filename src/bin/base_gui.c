@@ -289,8 +289,7 @@ base_gui_init(void)
    g_bd = bd;
 
    //Window
-   Evas_Object *win = elm_win_util_standard_add(elm_app_name_get(),
-                                                "Enventor");
+   Evas_Object *win = elm_win_util_standard_add("enventor", "Enventor");
    elm_win_focus_highlight_enabled_set(win, EINA_TRUE);
 
    Evas_Coord w, h;

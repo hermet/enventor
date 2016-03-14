@@ -1009,7 +1009,7 @@ static Evas_Object *
 live_btn_create(Evas_Object *parent, const char *name, void * data)
 {
    Evas_Object *btn = elm_button_add(parent);
-   elm_object_style_set(btn, elm_app_name_get());
+   elm_object_style_set(btn, "enventor");
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_focus_allow_set(btn, EINA_FALSE);
