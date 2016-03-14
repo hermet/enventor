@@ -125,6 +125,7 @@ setting_apply_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
    config_stats_bar_set(elm_check_state_get(sd->toggle_stats));
    config_part_highlight_set(elm_check_state_get(sd->toggle_highlight));
    config_dummy_parts_set(elm_check_state_get(sd->toggle_swallow));
+   config_edc_navigator_set(elm_check_state_get(sd->toggle_edc_navigator));
    text_setting_config_set();
 
    Evas_Coord w = 0;
@@ -171,6 +172,7 @@ setting_reset_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
    elm_check_state_set(sd->toggle_stats, config_stats_bar_get());
    elm_check_state_set(sd->toggle_highlight, config_part_highlight_get());
    elm_check_state_set(sd->toggle_swallow, config_dummy_parts_get());
+   elm_check_state_set(sd->toggle_edc_navigator, config_edc_navigator_get());
 
    //Reset view scale
    int view_size_w, view_size_h;
