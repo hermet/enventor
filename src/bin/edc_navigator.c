@@ -24,6 +24,8 @@ typedef struct edc_navigator_s
    Elm_Genlist_Item_Class *programs_itc;
    Elm_Genlist_Item_Class *program_itc;
 
+   Eina_Bool group_select_skip : 1;
+
 } navi_data;
 
 typedef struct part_item_data_s
@@ -789,6 +791,7 @@ static void
 gl_group_selected_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    navi_data *nd = data;
+   if (nd->group_select_skip) return;
 
    Elm_Object_Item *it = event_info;
 
@@ -838,7 +841,14 @@ edc_navigator_group_update(const char *cur_group)
         if (!strcmp(group_name, cur_group) &&
             (strlen(group_name) == cur_group_len))
           {
+
+             //Skip a group selection callback because it leads the editor
+             //cursor jump on to the group area. But this group updation could
+             //be triggered in a various scenario. The cursor should be jumped
+             //only when user clicks a group item in the genlist.
+             nd->group_select_skip = EINA_TRUE;
              elm_genlist_item_selected_set(it, EINA_TRUE);
+             nd->group_select_skip = EINA_FALSE;
              group_it = it;
              break;
           }
