@@ -85,7 +85,7 @@ view_invert_transit_end(void *data, Elm_Transit *transit EINA_UNUSED)
 }
 
 static void
-view_invert_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+view_invert_btn_cb(void *data EINA_UNUSED, Evas_Object *obj,
                    void *event_info EINA_UNUSED)
 {
    invert_data *id = malloc(sizeof(invert_data));
@@ -98,6 +98,7 @@ view_invert_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
    id->diff_h = w - h;
 
    Elm_Transit *transit = elm_transit_add();
+   elm_transit_object_add(transit, obj);
    elm_transit_effect_add(transit, view_invert_transit_op, id,
                           view_invert_transit_end);
    elm_transit_tween_mode_set(transit, ELM_TRANSIT_TWEEN_MODE_DECELERATE);
