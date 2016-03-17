@@ -263,7 +263,8 @@ indent_code_lines_create(indent_data *id EINA_UNUSED, const char *utf8)
     */
    while (utf8_ptr < utf8_end)
      {
-        if (*utf8_ptr != ' ' && *utf8_ptr != '\t' &&  *utf8_ptr != '\n' )
+        if (*utf8_ptr != ' ' && *utf8_ptr != '\t' &&  *utf8_ptr != '\n' &&
+            *utf8_ptr != '\r')
           {
              //Renew the start position of lexeme.
              if (!keep_lexem_start_pos) utf8_lexem = utf8_ptr;
