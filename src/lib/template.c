@@ -14,12 +14,22 @@ const int NAME_SEED_LEN = 52;
 /*****************************************************************************/
 
 static void
-template_random_string_create(char *buf, int size)
+template_random_string_create(char *paragh, char *buf, int size)
 {
-   int i;
-   for (i = 0; i < (size - 1); i++)
-     buf[i] = NAME_SEED[(rand() % NAME_SEED_LEN)];
-   buf[i]='\0';
+   int i, paragh_len = 0;
+
+   if (paragh)
+     paragh_len = strlen(paragh);
+
+   if (paragh_len > 0)
+     {
+        memcpy(buf, paragh, paragh_len);
+        buf[paragh_len++] = '_';
+     }
+
+   for (i = 0; i < size; i++)
+     buf[paragh_len + i] = NAME_SEED[(rand() % NAME_SEED_LEN)];
+   buf[paragh_len + i] = '\0';
 }
 
 static void
@@ -244,8 +254,8 @@ template_part_insert(edit_data *ed, Edje_Part_Type part_type,
 
    //Insert first line of the part block with generated name.
    char first_line[40];
-   char random_name[9];
-   template_random_string_create(random_name, 9);
+   char random_name[15];
+   template_random_string_create(type_name, random_name, 4);
 
    elm_entry_entry_insert(edit_entry, p);
    snprintf(first_line, 40, "%s { \"%s\";<br/>", type_name, random_name);
@@ -347,7 +357,7 @@ template_insert(edit_data *ed, Enventor_Template_Insert_Type insert_type,
    memset(p, ' ', space);
    p[space] = '\0';
 
-   template_random_string_create(random_name, 9);
+   template_random_string_create(NULL, random_name, 8);
    elm_entry_cursor_line_begin_set(entry);
 
    if (!strcmp(paragh, "part") || !strcmp(paragh, "image") ||
