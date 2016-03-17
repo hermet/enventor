@@ -62,7 +62,7 @@ typedef struct live_editor_s
       float rel2_x, rel2_y;
    } part_info;
 
-   Ecore_Event_Handler *key_down_handler;
+   Evas_Object *keygrabber;
 
    Eina_Bool on : 1;
 } live_data;
@@ -205,18 +205,18 @@ live_edit_insert(live_data *ld)
    enventor_object_save(base_enventor_get(), config_input_path_get());
 }
 
-static Eina_Bool
-key_down_cb(void *data, int type EINA_UNUSED, void *ev)
+static void
+keygrabber_key_down_cb(void *data, Evas *e EINA_UNUSED,
+                       Evas_Object *obj EINA_UNUSED, void *event_info)
 {
-   Ecore_Event_Key *event = ev;
    live_data *ld = data;
+   Evas_Event_Key_Down *ev = event_info;
 
-   if (!strcmp(event->key, "Return")) live_edit_insert(ld);
-   else if (strcmp(event->key, "Delete") &&
-            strcmp(event->key, "BackSpace")) return EINA_TRUE;
+   if (!strcmp(ev->key, "Return")) live_edit_insert(ld);
+   else if (strcmp(ev->key, "Delete") &&
+            strcmp(ev->key, "BackSpace")) return;
 
    live_edit_cancel();
-   return EINA_TRUE;
 }
 
 static void
@@ -873,9 +873,18 @@ info_text_init(live_data *ld)
 static void
 live_edit_layer_set(live_data *ld)
 {
-   ld->key_down_handler = ecore_event_handler_add(ECORE_EVENT_KEY_DOWN,
-                                                  key_down_cb,
-                                                  ld);
+   //Keygrabber
+   ld->keygrabber =
+      evas_object_rectangle_add(evas_object_evas_get(ld->live_view));
+   evas_object_event_callback_add(ld->keygrabber, EVAS_CALLBACK_KEY_DOWN,
+                                  keygrabber_key_down_cb, ld);
+   if (!evas_object_key_grab(ld->keygrabber, "Return", 0, 0, EINA_TRUE))
+     EINA_LOG_ERR(_("Failed to grab key - Return"));
+   if (!evas_object_key_grab(ld->keygrabber, "Delete", 0, 0, EINA_TRUE))
+     EINA_LOG_ERR(_("Failed to grab key - Delete"));
+   if (!evas_object_key_grab(ld->keygrabber, "BackSpace", 0, 0, EINA_TRUE))
+     EINA_LOG_ERR(_("Failed to grab key - BackSpace"));
+
    evas_object_event_callback_add(ld->live_view, EVAS_CALLBACK_RESIZE,
                                   live_view_geom_cb, ld);
    evas_object_event_callback_add(ld->live_view, EVAS_CALLBACK_MOVE,
@@ -942,8 +951,8 @@ live_edit_cancel(void)
 
    enventor_object_disabled_set(base_enventor_get(), EINA_FALSE);
 
-   ecore_event_handler_del(ld->key_down_handler);
-   ld->key_down_handler = NULL;
+   evas_object_del(ld->keygrabber);
+   ld->keygrabber = NULL;
 
    evas_object_event_callback_del(ld->live_view, EVAS_CALLBACK_RESIZE,
                                   live_view_geom_cb);
