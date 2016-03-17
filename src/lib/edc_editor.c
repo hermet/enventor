@@ -1142,11 +1142,11 @@ edit_part_cursor_set(edit_data *ed,
    char *utf8 = elm_entry_markup_to_utf8(text);
 
    int part_name_size = strlen(part_name) + 2; // 2 - is quotes.
-   char *part_name_search = calloc(part_name_size, sizeof(char));
+   char *part_name_search = calloc(part_name_size + 1, sizeof(char));
    snprintf(part_name_search, part_name_size, "\"%s\"", part_name);
 
    int group_name_size = strlen(group_name) + 2; // 2 - is quotes.
-   char *group_name_search = calloc(group_name_size, sizeof(char));
+   char *group_name_search = calloc(group_name_size + 1, sizeof(char));
    snprintf(group_name_search, group_name_size, "\"%s\"", group_name);
 
    const char *group_pos = strstr(utf8, group_name_search);
