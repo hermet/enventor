@@ -1151,6 +1151,7 @@ edit_part_cursor_set(edit_data *ed,
 
    const char *group_pos = strstr(utf8, group_name_search);
 
+   if (!group_pos) return;
    char *itr = strstr(group_pos, part_name_search);
    const char *part_pos = itr;
 
