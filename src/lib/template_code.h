@@ -165,11 +165,10 @@ const char *TEMPLATE_PROG[TEMPLATE_PROG_LINE_CNT] =
    "}"
 };
 
-#define TEMPLATE_IMG_LINE_CNT 2
+#define TEMPLATE_IMG_LINE_CNT 1
 
 const char *TEMPLATE_IMG[TEMPLATE_IMG_LINE_CNT] =
 {
-   "/* TODO: Please replace embedded image files to your application image files. */<br/>",
    "image: \"ENVENTOR_EMBEDDED_LOGO.png\" COMP;<br/>"
 };
 
