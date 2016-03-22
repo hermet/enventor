@@ -412,6 +412,7 @@ exe_del_event_cb(void *data, int type EINA_UNUSED, void *event EINA_UNUSED)
    //Failed to load edj? I have no idea. Try again.
    if (!edje_object_file_set(vd->layout, build_edj_path_get(), vd->group_name))
      {
+        dummy_obj_update(vd->layout);
         ecore_timer_del(vd->update_edj_timer);
         vd->update_edj_timer = ecore_timer_add(0.25, update_edj_file, vd);
         return ECORE_CALLBACK_PASS_ON;
