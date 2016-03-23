@@ -573,6 +573,7 @@ part_candidate_set(Evas_Object *ctxpopup, ctxpopup_data *ctxdata)
    view_data *vd = edj_mgr_view_get(NULL);
    if (!vd) return EINA_FALSE;
    Eina_List *parts = view_parts_list_get(vd);
+   if (!parts) return EINA_FALSE;
    Eina_List *l;
    char *part;
    EINA_LIST_FOREACH(parts, l, part)
@@ -592,6 +593,7 @@ image_candidate_set(Evas_Object *ctxpopup, ctxpopup_data *ctxdata)
    view_data *vd = edj_mgr_view_get(NULL);
    if (!vd) return EINA_FALSE;
    Eina_List *parts = view_images_list_get(vd);
+   if (!parts) return EINA_FALSE;
    Eina_List *l;
    char *part;
    EINA_LIST_FOREACH(parts, l, part)
@@ -610,6 +612,7 @@ program_candidate_set(Evas_Object *ctxpopup, ctxpopup_data *ctxdata)
    view_data *vd = edj_mgr_view_get(NULL);
    if (!vd) return EINA_FALSE;
    Eina_List *parts = view_programs_list_get(vd);
+   if (!parts) return EINA_FALSE;
    Eina_List *l;
    char *part;
    EINA_LIST_FOREACH(parts, l, part)
@@ -644,6 +647,7 @@ state_candidate_set(Evas_Object *ctxpopup, ctxpopup_data *ctxdata,
         program = edit_cur_prog_name_get(ed);
         if (!program) return EINA_FALSE;
         targets = view_program_targets_get(vd, program);
+        if (!targets) goto end;
         target = eina_list_data_get(targets);
         if (!target) goto end;
      }
@@ -655,6 +659,7 @@ state_candidate_set(Evas_Object *ctxpopup, ctxpopup_data *ctxdata,
      }
 
    Eina_List *states = view_part_states_list_get(vd, target);
+   if (!states) goto end;
 
    /* Since the states have the name + float values, it needs to filterout the
       values. */

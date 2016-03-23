@@ -49,6 +49,7 @@ struct viewer_s
    } changed_part;
 
    Eina_Bool edj_reload_need : 1;
+   Eina_Bool file_set_finished : 1;
 };
 
 const char *PART_NAME = "part_name";
@@ -153,6 +154,8 @@ view_images_monitor_set(view_data *vd)
 static void
 view_obj_create_post_job(view_data *vd)
 {
+   vd->file_set_finished = EINA_TRUE;
+
    vd->exe_del_event =
       ecore_event_handler_add(ECORE_EXE_EVENT_DEL, exe_del_event_cb, vd);
 
@@ -662,6 +665,7 @@ view_program_run(view_data *vd, const char *program)
 {
    if (!vd) return;
    if (!program || !vd->layout) return;
+   if (!vd->file_set_finished) return;
    edje_edit_program_run(vd->layout, program);
    evas_object_smart_callback_call(vd->enventor, SIG_PROGRAM_RUN,
                                    (void*)program);
@@ -811,36 +815,42 @@ view_size_get(view_data *vd, Evas_Coord *w, Evas_Coord *h)
 Eina_List *
 view_parts_list_get(view_data *vd)
 {
+   if (!vd->file_set_finished) return NULL;
    return edje_edit_parts_list_get(vd->layout);
 }
 
 Eina_List *
 view_images_list_get(view_data *vd)
 {
+   if (!vd->file_set_finished) return NULL;
    return edje_edit_images_list_get(vd->layout);
 }
 
 Eina_List *
 view_programs_list_get(view_data *vd)
 {
+   if (!vd->file_set_finished) return NULL;
    return edje_edit_programs_list_get(vd->layout);
 }
 
 Edje_Part_Type
 view_part_type_get(view_data *vd, const char *part)
 {
+   if (!vd->file_set_finished) return EDJE_PART_TYPE_NONE;
    return edje_edit_part_type_get(vd->layout, part);
 }
 
 Eina_List *
 view_part_states_list_get(view_data *vd, const char *part)
 {
+   if (!vd->file_set_finished) return NULL;
    return edje_edit_part_states_list_get(vd->layout, part);
 }
 
 Eina_List *
 view_program_targets_get(view_data *vd, const char *prog)
 {
+   if (!vd->file_set_finished) return NULL;
    return edje_edit_program_targets_get(vd->layout, prog);
 }
 
@@ -856,6 +866,7 @@ view_part_state_set(view_data *vd, Eina_Stringshare *part,
 {
    if (!vd) return;
    if (!part && !vd->changed_part.part) return;
+   if (!vd->file_set_finished) return;
 
    //reset previous part?
    if (part != vd->changed_part.part)
