@@ -1,10 +1,10 @@
 collections {
    base_scale: 1.0;
-   /* TODO: Please replace embedded image files to your application image files. */
-   images {
-      image: "ENVENTOR_EMBEDDED_LOGO.png" COMP;
-   }
    group { "main";
+      /* TODO: Please replace embedded image files to your application image files. */
+      images {
+         image: "ENVENTOR_EMBEDDED_LOGO.png" COMP;
+      }
       parts {
          image { "logo";
             desc { "default";
