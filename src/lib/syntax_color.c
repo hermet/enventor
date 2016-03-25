@@ -377,20 +377,32 @@ string_apply(Eina_Strbuf *strbuf, char **cur, char **prev,
              const Eina_Stringshare *col, Eina_Bool inside_string)
 {
    //escape string: " ~ "
-   if (strncmp(*cur, QUOT, QUOT_LEN)) return 0;
+   Eina_Bool is_eol = EINA_FALSE;
+   if (inside_string && !strncmp(*cur, EOL, EOL_LEN)) is_eol = EINA_TRUE;
+   else if (strncmp(*cur, QUOT, QUOT_LEN)) return 0;
 
    char buf[128];
 
    eina_strbuf_append_length(strbuf, *prev, (*cur - *prev));
 
-   if (!inside_string)
-     snprintf(buf, sizeof(buf), "<color=#%s>%s", col, QUOT);
+   // these conditions limit string range to end of line
+   // case 1: this condition checks end of line for string
+   if (is_eol)
+     {
+        snprintf(buf, sizeof(buf), "</color>");
+        eina_strbuf_append(strbuf, buf);
+     }
+   // case 2: this condition checks start and end for string
    else
-     snprintf(buf, sizeof(buf), "%s</color>", QUOT);
+     {
+        if (!inside_string)
+          snprintf(buf, sizeof(buf), "<color=#%s>%s", col, QUOT);
+        else
+          snprintf(buf, sizeof(buf), "%s</color>", QUOT);
+          eina_strbuf_append(strbuf, buf);
+          *cur += QUOT_LEN;
+     }
 
-   eina_strbuf_append(strbuf, buf);
-
-   *cur += QUOT_LEN;
    *prev = *cur;
 
    return 1;
