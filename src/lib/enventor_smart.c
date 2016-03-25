@@ -546,7 +546,7 @@ _enventor_object_mirror_mode_set(Eo *obj EINA_UNUSED,
                                  Eina_Bool mirror_mode)
 {
    pd->mirror_mode = !!mirror_mode;
-   view_mirror_mode_set(VIEW_DATA, mirror_mode);
+   view_mirror_mode_update(VIEW_DATA);
 }
 
 EOLIAN static Eina_Bool

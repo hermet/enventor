@@ -50,7 +50,6 @@ struct viewer_s
 
    Eina_Bool edj_reload_need : 1;
    Eina_Bool file_set_finished : 1;
-   Eina_Bool mirror_mode : 1;
 };
 
 const char *PART_NAME = "part_name";
@@ -150,13 +149,6 @@ view_images_monitor_set(view_data *vd)
      }
 
    edje_edit_string_list_free(imgs);
-}
-
-static void
-view_mirror_mode_update(view_data *vd)
-{
-   if (!vd) return;
-   edje_object_mirrored_set(vd->layout, vd->mirror_mode);
 }
 
 static void
@@ -623,8 +615,6 @@ view_init(Evas_Object *enventor, const char *group,
    vd->view_config_size.w = 0;
    vd->view_config_size.h = 0;
 
-   vd->mirror_mode = enventor_object_mirror_mode_get(vd->enventor);
-
    return vd;
 }
 
@@ -825,15 +815,6 @@ view_size_get(view_data *vd, Evas_Coord *w, Evas_Coord *h)
      *h = vd->view_config_size.h;
 }
 
-void
-view_mirror_mode_set(view_data *vd, Eina_Bool mirror_mode)
-{
-  if (!vd) return;
-
-   vd->mirror_mode = mirror_mode;
-   view_mirror_mode_update(vd);
-}
-
 Eina_List *
 view_parts_list_get(view_data *vd)
 {
@@ -904,3 +885,10 @@ view_part_state_set(view_data *vd, Eina_Stringshare *part,
    vd->changed_part.state = state;
 }
 
+void
+view_mirror_mode_update(view_data *vd)
+{
+   if (!vd || !vd->layout) return;
+   edje_object_mirrored_set(vd->layout,
+                            enventor_obj_mirror_mode_get(vd->enventor));
+}
