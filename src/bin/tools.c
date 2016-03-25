@@ -198,7 +198,6 @@ tools_init(Evas_Object *parent)
    //icon image is temporary, it should be changed to its own icon.
    btn = tools_btn_create(box, "highlight", _("Mirror Mode (Ctrl + M)"),
                           mirror_cb);
-   elm_object_tooltip_orient_set(btn, ELM_TOOLTIP_ORIENT_BOTTOM_RIGHT);
    evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
    elm_box_pack_end(box, btn);
