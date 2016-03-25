@@ -304,7 +304,16 @@ _enventor_object_efl_file_file_set(Eo *obj EINA_UNUSED,
 {
    build_edc_path_set(file);
    autocomp_target_set(pd->ed);
-   if (!edit_load(pd->ed, file)) goto err;
+   if (!file) goto err;
+
+   /* Create empty file*/
+   if (!ecore_file_exists(file))
+     {
+         FILE *fp = fopen(file, "w");
+         fclose(fp);
+     }
+
+   edit_load(pd->ed, file);
    build_edc();
    edit_changed_set(pd->ed, EINA_FALSE);
 
