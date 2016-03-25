@@ -246,6 +246,7 @@ view_scale_btn_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
 static Evas_Object *
 create_statusbar_btn(Evas_Object *layout, const char *image,
                      const char *part_name, const char *tooltip_msg,
+                     Elm_Tooltip_Orient tooltip_orient,
                      Evas_Smart_Cb func, void *data)
 {
    Evas_Object *box = elm_box_add(layout);
@@ -264,7 +265,7 @@ create_statusbar_btn(Evas_Object *layout, const char *image,
    elm_object_content_set(btn, img);
 
    elm_object_tooltip_text_set(box, tooltip_msg);
-   elm_object_tooltip_orient_set(box, ELM_TOOLTIP_ORIENT_TOP_RIGHT);
+   elm_object_tooltip_orient_set(box, tooltip_orient);
 
    elm_box_pack_end(box, btn);
    elm_object_part_content_set(layout, part_name, box);
@@ -316,14 +317,17 @@ stats_init(Evas_Object *parent)
    //View Scale button
    create_statusbar_btn(layout, "expand", "scale_btn",
                         "View Scale (Ctrl + Mouse Wheel)",
+                        ELM_TOOLTIP_ORIENT_TOP_RIGHT,
                         view_scale_btn_cb, sd);
    //View Resize Button
    create_statusbar_btn(layout, "expand", "resize_btn",
                         "Resize View Size",
+                        ELM_TOOLTIP_ORIENT_TOP,
                         view_resize_btn_cb, sd);
    //View Invert Button
    create_statusbar_btn(layout, "invert", "invert_btn",
                         "Invert View Size",
+                        ELM_TOOLTIP_ORIENT_TOP,
                         view_invert_btn_cb, sd);
 
    sd->layout = layout;
