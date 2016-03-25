@@ -49,6 +49,7 @@ EXTRA_DIST = \
    console.png \
    status.png \
    dummy.png \
+   mirror.png \
    goto.png \
    downlight_glow_left.png \
    downlight_glow_right.png \

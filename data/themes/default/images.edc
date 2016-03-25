@@ -9,6 +9,7 @@ images {
    image: "console.png" COMP;
    image: "status.png" COMP;
    image: "dummy.png" COMP;
+   image: "mirror.png" COMP;
    image: "goto.png" COMP;
    image: "save.png" COMP;
    image: "redo.png" COMP;
@@ -52,6 +53,7 @@ ICON_GROUP("lines", "lines.png")
 ICON_GROUP("console", "console.png")
 ICON_GROUP("status", "status.png")
 ICON_GROUP("dummy", "dummy.png")
+ICON_GROUP("mirror", "mirror.png")
 ICON_GROUP("up", "slider_up.png")
 ICON_GROUP("down", "slider_down.png")
 ICON_GROUP("save", "save.png")

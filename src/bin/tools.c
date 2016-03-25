@@ -196,7 +196,7 @@ tools_init(Evas_Object *parent)
    td->swallow_btn = btn;
 
    //icon image is temporary, it should be changed to its own icon.
-   btn = tools_btn_create(box, "highlight", _("Mirror Mode (Ctrl + M)"),
+   btn = tools_btn_create(box, "mirror", _("Mirror Mode (Ctrl + M)"),
                           mirror_cb);
    evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
