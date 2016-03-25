@@ -11,6 +11,7 @@ typedef struct tools_s
    Evas_Object *edc_navigator_btn;
    Evas_Object *lines_btn;
    Evas_Object *highlight_btn;
+   Evas_Object *mirror_btn;
    Evas_Object *goto_btn;
    Evas_Object *find_btn;
    Evas_Object *console_btn;
@@ -43,6 +44,13 @@ dummy_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
          void *event_info EINA_UNUSED)
 {
    tools_dummy_update(EINA_TRUE);
+}
+
+static void
+mirror_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+             void *event_info EINA_UNUSED)
+{
+   tools_mirror_mode_update(EINA_TRUE);
 }
 
 static void
@@ -186,6 +194,15 @@ tools_init(Evas_Object *parent)
    evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
    elm_box_pack_end(box, btn);
    td->swallow_btn = btn;
+
+   //icon image is temporary, it should be changed to its own icon.
+   btn = tools_btn_create(box, "highlight", _("Mirror Mode (Ctrl + M)"),
+                          mirror_cb);
+   elm_object_tooltip_orient_set(btn, ELM_TOOLTIP_ORIENT_BOTTOM_RIGHT);
+   evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
+   elm_box_pack_end(box, btn);
+   td->mirror_btn = btn;
 
    Evas_Object *sp;
    sp = elm_separator_add(box);
@@ -385,6 +402,30 @@ tools_dummy_update(Eina_Bool toggle)
      elm_object_signal_emit(td->swallow_btn, "icon,highlight,enabled", "");
    else
      elm_object_signal_emit(td->swallow_btn, "icon,highlight,disabled", "");
+}
+
+void
+tools_mirror_mode_update(Eina_Bool toggle)
+{
+   tools_data *td = g_td;
+   if (!td) return;
+
+   if (toggle) config_mirror_mode_set(!config_mirror_mode_get());
+   enventor_object_mirror_mode_set(base_enventor_get(),
+                                   config_mirror_mode_get());
+   if (toggle)
+     {
+        if (config_mirror_mode_get())
+          stats_info_msg_update(_("Mirror Mode Enabled."));
+        else
+          stats_info_msg_update(_("Mirror Mode Disabled."));
+     }
+
+   //Toggle on/off
+   if (config_mirror_mode_get())
+     elm_object_signal_emit(td->mirror_btn, "icon,highlight,enabled", "");
+   else
+     elm_object_signal_emit(td->mirror_btn, "icon,highlight,disabled", "");
 }
 
 void

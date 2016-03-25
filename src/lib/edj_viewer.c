@@ -50,6 +50,7 @@ struct viewer_s
 
    Eina_Bool edj_reload_need : 1;
    Eina_Bool file_set_finished : 1;
+   Eina_Bool mirror_mode : 1;
 };
 
 const char *PART_NAME = "part_name";
@@ -152,6 +153,13 @@ view_images_monitor_set(view_data *vd)
 }
 
 static void
+view_mirror_mode_update(view_data *vd)
+{
+   if (!vd) return;
+   edje_object_mirrored_set(vd->layout, vd->mirror_mode);
+}
+
+static void
 view_obj_create_post_job(view_data *vd)
 {
    vd->file_set_finished = EINA_TRUE;
@@ -168,6 +176,8 @@ view_obj_create_post_job(view_data *vd)
 
    if (enventor_obj_dummy_parts_get(vd->enventor))
      dummy_obj_new(vd->layout);
+
+   view_mirror_mode_update(vd);
 
    if (vd->changed_part.part)
      edje_edit_part_selected_state_set(vd->layout, vd->changed_part.part,
@@ -367,6 +377,7 @@ update_edj_file_internal(view_data *vd)
    view_obj_min_update(vd);
    view_part_highlight_set(vd, vd->part_name);
    dummy_obj_update(vd->layout);
+   view_mirror_mode_update(vd);
    if (vd->changed_part.part)
    edje_edit_part_selected_state_set(vd->layout, vd->changed_part.part,
                                      vd->changed_part.desc,
@@ -612,6 +623,8 @@ view_init(Evas_Object *enventor, const char *group,
    vd->view_config_size.w = 0;
    vd->view_config_size.h = 0;
 
+   vd->mirror_mode = enventor_object_mirror_mode_get(vd->enventor);
+
    return vd;
 }
 
@@ -810,6 +823,15 @@ view_size_get(view_data *vd, Evas_Coord *w, Evas_Coord *h)
 
    if (vd->view_config_size.h > 0)
      *h = vd->view_config_size.h;
+}
+
+void
+view_mirror_mode_set(view_data *vd, Eina_Bool mirror_mode)
+{
+  if (!vd) return;
+
+   vd->mirror_mode = mirror_mode;
+   view_mirror_mode_update(vd);
 }
 
 Eina_List *

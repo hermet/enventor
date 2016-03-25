@@ -42,6 +42,7 @@ tools_update(void)
    tools_lines_update(EINA_FALSE);
    tools_highlight_update(EINA_FALSE);
    tools_dummy_update(EINA_FALSE);
+   tools_mirror_mode_update(EINA_FALSE);
    tools_status_update(EINA_FALSE);
    tools_edc_navigator_update(EINA_FALSE);
 }
@@ -674,6 +675,12 @@ ctrl_func(app_data *ad, Evas_Event_Key_Down *event)
         tools_dummy_update(EINA_TRUE);
         return EINA_TRUE;
      }
+   //Mirror Mode
+   if (!strcmp(event->key, "m") || !strcmp(event->key, "M"))
+     {
+        tools_mirror_mode_update(EINA_TRUE);
+        return EINA_TRUE;
+     }
    //Template Code
    if (!strcmp(event->key, "t") || !strcmp(event->key, "T"))
      {
@@ -871,6 +878,8 @@ keygrabber_init(app_data *ad)
    GRAB_ADD("H", modifier);
    GRAB_ADD("w", modifier);
    GRAB_ADD("W", modifier);
+   GRAB_ADD("m", modifier);
+   GRAB_ADD("M", modifier);
    GRAB_ADD("t", modifier);
    GRAB_ADD("T", modifier);
    GRAB_ADD("i", modifier);

@@ -31,6 +31,7 @@ typedef struct _Enventor_Object_Data
    Eina_Bool dummy_parts : 1;
    Eina_Bool key_down : 1;
    Eina_Bool part_cursor_jump : 1;
+   Eina_Bool mirror_mode : 1;
 
 } Enventor_Object_Data;
 
@@ -537,6 +538,22 @@ _enventor_object_part_highlight_get(Eo *obj EINA_UNUSED,
                                     Enventor_Object_Data *pd)
 {
    return edit_part_highlight_get(pd->ed);
+}
+
+EOLIAN static void
+_enventor_object_mirror_mode_set(Eo *obj EINA_UNUSED,
+                                 Enventor_Object_Data *pd,
+                                 Eina_Bool mirror_mode)
+{
+   pd->mirror_mode = !!mirror_mode;
+   view_mirror_mode_set(VIEW_DATA, mirror_mode);
+}
+
+EOLIAN static Eina_Bool
+_enventor_object_mirror_mode_get(Eo *obj EINA_UNUSED,
+                                 Enventor_Object_Data *pd)
+{
+   return pd->mirror_mode;
 }
 
 EOLIAN static void

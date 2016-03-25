@@ -28,6 +28,15 @@ class Enventor.Object (Elm.Widget, Efl.File) {
             dummy_parts: bool;
          }
       }
+      @property mirror_mode {
+         set {
+         }
+         get {
+         }
+         values {
+            mirror_mode: bool;
+         }
+      }
       @property auto_complete {
          set {
          }

@@ -33,6 +33,7 @@ typedef struct config_s
    Eina_Bool linenumber;
    Eina_Bool part_highlight;
    Eina_Bool dummy_parts;
+   Eina_Bool mirror_mode;
    Eina_Bool auto_indent;
    Eina_Bool tools;
    Eina_Bool console;
@@ -177,6 +178,7 @@ config_load(void)
         cd->linenumber = EINA_TRUE;
         cd->part_highlight = EINA_TRUE;
         cd->dummy_parts = EINA_TRUE;
+        cd->mirror_mode = EINA_FALSE;
         cd->auto_indent = EINA_TRUE;
         cd->tools = EINA_TRUE;
         cd->console = EINA_TRUE;
@@ -289,6 +291,8 @@ eddc_init(void)
                                  part_highlight, EET_T_UCHAR);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "dummy_parts",
                                  dummy_parts, EET_T_UCHAR);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "mirror_mode",
+                                 mirror_mode, EET_T_UCHAR);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "auto_indent",
                                  auto_indent, EET_T_UCHAR);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "tools",
@@ -700,6 +704,20 @@ config_dummy_parts_set(Eina_Bool dummy_parts)
 {
    config_data *cd = g_cd;
    cd->dummy_parts = dummy_parts;
+}
+
+Eina_Bool
+config_mirror_mode_get(void)
+{
+   config_data *cd = g_cd;
+   return cd->mirror_mode;
+}
+
+void
+config_mirror_mode_set(Eina_Bool mirror_mode)
+{
+   config_data *cd = g_cd;
+   cd->mirror_mode = mirror_mode;
 }
 
 Eina_Bool
