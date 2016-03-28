@@ -2737,10 +2737,10 @@ group { name: "edit_layout";
             rel1.to: "elm.swallow.linenumber";
             rel2.to: "elm.swallow.linenumber";
             rel2.relative: 1 1;
+            fixed: 1 0;
          }
          description { state: "hide" 0.0;
-            rel1.to: "elm.swallow.linenumber";
-            rel2.to: "elm.swallow.linenumber";
+            inherit: "default";
             rel2.relative: 0 1;
          }
       }
