@@ -161,7 +161,7 @@ indent_data *indent_init(Eina_Strbuf *strbuf);
 void indent_term(indent_data *id);
 int indent_space_get(indent_data *id, Evas_Object *entry);
 int indent_insert_apply(indent_data *id, Evas_Object *entry, const char *insert, int cur_line);
-Eina_Bool indent_delete_apply(indent_data *id, Evas_Object *entry, const char *del, int cur_line);
+void indent_delete_apply(indent_data *id, Evas_Object *entry, const char *del, int cur_line);
 Eina_Bool indent_text_check(indent_data *id EINA_UNUSED, const char *utf8);
 char * indent_text_create(indent_data *id, const char *utf8, int *indented_line_cnt);
 

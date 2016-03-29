@@ -451,16 +451,13 @@ edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
      }
    else
      {
-        int decrease = parser_line_cnt_get(ed->pd, info->change.del.content);
-
         if (edit_auto_indent_get(ed))
           {
-             if (indent_delete_apply(syntax_indent_data_get(ed->sh),
-                                     ed->en_edit, info->change.del.content,
-                                     ed->cur_line))
-               decrease++;
+             indent_delete_apply(syntax_indent_data_get(ed->sh), ed->en_edit,
+                                 info->change.del.content, ed->cur_line);
           }
 
+        int decrease = parser_line_cnt_get(ed->pd, info->change.del.content);
         edit_line_decrease(ed, decrease);
         if (info->change.del.content[0] == ' ') return;
      }
