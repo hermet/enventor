@@ -743,6 +743,15 @@ _enventor_object_template_part_insert(Eo *obj EINA_UNUSED,
                                       float rel1_x, float rel1_y, float rel2_x,
                                       float rel2_y, char *syntax, size_t n)
 {
+   if (pd->mirror_mode)
+     {
+       float x1, x2;
+       x1 = 1.0 - rel2_x;
+       x2 = 1.0 - rel1_x;
+       rel1_x = x1;
+       rel2_x = x2;
+     }
+
    return template_part_insert(pd->ed, part, insert_type, rel1_x, rel1_y, rel2_x,
                                rel2_y, NULL, syntax, n);
 }
