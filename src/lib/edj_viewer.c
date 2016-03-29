@@ -891,4 +891,6 @@ view_mirror_mode_update(view_data *vd)
    if (!vd || !vd->layout) return;
    edje_object_mirrored_set(vd->layout,
                             enventor_obj_mirror_mode_get(vd->enventor));
+   dummy_obj_update(vd->layout);
+   part_obj_geom_cb(vd, evas_object_evas_get(vd->layout), vd->part_obj, NULL);
 }
