@@ -412,6 +412,8 @@ tools_mirror_mode_update(Eina_Bool toggle)
    if (toggle) config_mirror_mode_set(!config_mirror_mode_get());
    enventor_object_mirror_mode_set(base_enventor_get(),
                                    config_mirror_mode_get());
+   live_edit_update();
+
    if (toggle)
      {
         if (config_mirror_mode_get())

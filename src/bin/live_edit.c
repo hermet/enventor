@@ -118,17 +118,33 @@ info_text_update(live_data *ld)
    Evas_Coord lx, ly, lw, lh;
    evas_object_geometry_get(ld->live_view, &lx, &ly, &lw, &lh);
 
+   Evas_Object *enventor = base_enventor_get();
+
+   //reverse coordinates if mirror mode is enabled.
+   double ox = ld->part_info.rel1_x;
+   double ox2 = ld->part_info.rel2_x;
+   double ow = (ld->part_info.rel1_x * (double) lw);
+   double ow2 = (ld->part_info.rel2_x * (double) lw);
+
+   if (enventor_object_mirror_mode_get(enventor))
+     {
+        ox = 1 - ox;
+        ox2 = 1 - ox2;
+        ow = lw - ow;
+        ow2 = lw - ow2;
+     }
+
    //Rel1
    snprintf(buf, sizeof(buf), "%.2f %.2f (%d, %d)",
-            ld->part_info.rel1_x, ld->part_info.rel1_y,
-            (int) round(ld->part_info.rel1_x * (double) lw),
+            ox, ld->part_info.rel1_y,
+            (int) round(ow),
             (int) round(ld->part_info.rel1_y * (double) lh));
-  evas_object_text_text_set(ld->info_text[Info_Text_Rel1], buf);
+   evas_object_text_text_set(ld->info_text[Info_Text_Rel1], buf);
 
    //Rel2
    snprintf(buf, sizeof(buf), "%.2f %.2f (%d, %d)",
-            ld->part_info.rel2_x, ld->part_info.rel2_y,
-            (int) round(ld->part_info.rel2_x * (double) lw),
+            ox2, ld->part_info.rel2_y,
+            (int) round(ow2),
             (int) round(ld->part_info.rel2_y * (double) lh));
    evas_object_text_text_set(ld->info_text[Info_Text_Rel2], buf);
 
@@ -137,9 +153,9 @@ info_text_update(live_data *ld)
    config_view_size_get(&vw, &vh);
 
    vw = (Evas_Coord) (((double) vw) *
-                            (ld->part_info.rel2_x - ld->part_info.rel1_x));
+                      (ld->part_info.rel2_x - ld->part_info.rel1_x));
    vh = (Evas_Coord) (((double) vh) *
-                            (ld->part_info.rel2_y - ld->part_info.rel1_y));
+                      (ld->part_info.rel2_y - ld->part_info.rel1_y));
    snprintf(buf, sizeof(buf), "[%d x %d]", vw, vh);
    evas_object_text_text_set(ld->info_text[Info_Text_Size], buf);
 
@@ -920,6 +936,49 @@ live_edit_layer_set(live_data *ld)
    info_text_init(ld);
 }
 
+static void
+live_btn_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                    void *event_info EINA_UNUSED)
+{
+   live_edit_cancel();
+   goto_close();
+   search_close();
+
+   live_data *ld = g_ld;
+
+   ld->part_info.type = (unsigned int)(uintptr_t)data;
+   enventor_object_disabled_set(base_enventor_get(), EINA_TRUE);
+   ld->live_view = enventor_object_live_view_get(base_enventor_get());
+   ld->on = EINA_TRUE;
+
+   live_edit_layer_set(ld);
+
+   stats_info_msg_update(_("Double click the part to confirm. (Esc = cancel)"));
+}
+
+static Evas_Object *
+live_btn_create(Evas_Object *parent, const char *name, void * data)
+{
+   Evas_Object *btn = elm_button_add(parent);
+   elm_object_style_set(btn, "enventor");
+   evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_object_focus_allow_set(btn, EINA_FALSE);
+   char buf[128];
+   snprintf(buf, sizeof(buf), "Add %s", name);
+   elm_object_tooltip_text_set(btn, buf);
+   elm_object_tooltip_orient_set(btn, ELM_TOOLTIP_ORIENT_BOTTOM);
+
+   Evas_Object *img = elm_image_add(btn);
+   elm_image_file_set(img, EDJE_PATH, name);
+   elm_object_content_set(btn, img);
+
+   evas_object_smart_callback_add(btn, "clicked", live_btn_clicked_cb, data);
+   evas_object_show(btn);
+
+   return btn;
+}
+
 void
 live_edit_update(void)
 {
@@ -940,6 +999,7 @@ Eina_Bool
 live_edit_get(void)
 {
    live_data *ld = g_ld;
+   if (!ld) return EINA_FALSE;
    return ld->on;
 }
 
@@ -992,49 +1052,6 @@ live_edit_cancel(void)
    ld->on = EINA_FALSE;
 
    return EINA_TRUE;
-}
-
-static void
-live_btn_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
-                    void *event_info EINA_UNUSED)
-{
-   live_edit_cancel();
-   goto_close();
-   search_close();
-
-   live_data *ld = g_ld;
-
-   ld->part_info.type = (unsigned int)(uintptr_t)data;
-   enventor_object_disabled_set(base_enventor_get(), EINA_TRUE);
-   ld->live_view = enventor_object_live_view_get(base_enventor_get());
-   ld->on = EINA_TRUE;
-
-   live_edit_layer_set(ld);
-
-   stats_info_msg_update(_("Double click the part to confirm. (Esc = cancel)"));
-}
-
-static Evas_Object *
-live_btn_create(Evas_Object *parent, const char *name, void * data)
-{
-   Evas_Object *btn = elm_button_add(parent);
-   elm_object_style_set(btn, "enventor");
-   evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_object_focus_allow_set(btn, EINA_FALSE);
-   char buf[128];
-   snprintf(buf, sizeof(buf), "Add %s", name);
-   elm_object_tooltip_text_set(btn, buf);
-   elm_object_tooltip_orient_set(btn, ELM_TOOLTIP_ORIENT_BOTTOM);
-
-   Evas_Object *img = elm_image_add(btn);
-   elm_image_file_set(img, EDJE_PATH, name);
-   elm_object_content_set(btn, img);
-
-   evas_object_smart_callback_add(btn, "clicked", live_btn_clicked_cb, data);
-   evas_object_show(btn);
-
-   return btn;
 }
 
 Evas_Object *
