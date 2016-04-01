@@ -32,9 +32,9 @@ error_word_select(Evas_Object *console)
 
    //parse error word
    if ((error_token = strstr(console_text, "keyword")))
-     token_value_get(error_token, "keyword", '<', 1, error_word);
+     token_value_get(error_token, "keyword", '\0', 1, error_word);
    else if ((error_token = strstr(console_text, "name")))
-     token_value_get(error_token, "name", '<', 1, error_word);
+     token_value_get(error_token, "name", '\0', 1, error_word);
    else return;
 
     //find error word position
@@ -63,6 +63,17 @@ error_word_select(Evas_Object *console)
     enventor_object_select_region_set(base_enventor_get(), start, end);
 }
 
+static void
+make_single_error_msg(const char *src, char *dst)
+{
+   /* We cut a error messages since it contains unnecessary information.
+      Most of the time, first one line has a practical information. */
+   const char *new_line  = "<br/>";
+   const char *eol = strstr(src, new_line);
+   if (!eol) return;
+   strncpy(dst, src, eol - src);
+   dst[eol - src] = '\0';
+}
 /*****************************************************************************/
 /* Externally accessible calls                                               */
 /*****************************************************************************/
@@ -70,7 +81,11 @@ error_word_select(Evas_Object *console)
 void
 console_text_set(Evas_Object *console, const char *text)
 {
-   elm_entry_entry_set(console, text);
+   char * single_error_msg = NULL;
+   single_error_msg = alloca(strlen(text) + 1);
+   if (!single_error_msg) return;
+   make_single_error_msg(text, single_error_msg);
+   elm_entry_entry_set(console, single_error_msg);
    error_word_select(console);
 }
 
