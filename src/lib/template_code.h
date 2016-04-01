@@ -1,7 +1,11 @@
-#define TEMPLATE_GROUP_LINE_CNT 26
+#define TEMPLATE_GROUP_LINE_CNT 30
 
 const char *TEMPLATE_GROUP[TEMPLATE_GROUP_LINE_CNT] =
 {
+   "   /* TODO: Please replace embedded image files to your application image files. */<br/>",
+   "   images {<br/>",
+   "      image: \"ENVENTOR_EMBEDDED_LOGO.png\" COMP;<br/>",
+   "   }<br/>",
    "   parts {<br/>",
    "      image { \"XXX\";<br/>",
    "         scale: 1;<br/>",
