@@ -2186,6 +2186,34 @@ parser_styles_pos_get(const Evas_Object *entry, int *ret)
    return parser_collections_block_pos_get(entry, "styles", ret);
 }
 
+Eina_Bool
+parser_is_image_name(const Evas_Object *entry, const char *str)
+{
+   int start_pos, end_pos, i;
+   if (!parser_collections_block_pos_get(entry, "images", &start_pos))
+     return EINA_FALSE;
+
+   const char *text = elm_entry_entry_get(entry);
+   char *utf8 = elm_entry_markup_to_utf8(text);
+
+   for (i = start_pos ; i < strlen(utf8); i++)
+      if (utf8[i] == '}')
+        {
+           end_pos = i;
+           break;
+        }
+
+   char *candidate_str = alloca(end_pos - start_pos + 1);
+   const char *src_str = elm_entry_markup_to_utf8(str);
+   strncpy(candidate_str, utf8 + start_pos, end_pos - start_pos);
+   candidate_str[end_pos - start_pos] = '\0';
+
+   if (strstr(candidate_str, src_str))
+     return EINA_TRUE;
+   else
+     return EINA_FALSE;
+}
+
 void
 parser_macro_update(parser_data *pd, Eina_Bool macro_update)
 {

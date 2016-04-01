@@ -49,8 +49,15 @@ image_description_add(edit_data *ed)
    int cursor_pos2;
    if (images_block)
      {
-        template_insert(ed, ENVENTOR_TEMPLATE_INSERT_LIVE_EDIT, NULL, 0);
-        cursor_pos2 = elm_entry_cursor_pos_get(edit_entry);
+        // the first line of TEMPLATE_IMG to check it is already exist
+        const char *template_image_str = TEMPLATE_IMG[0];
+        if (parser_is_image_name(edit_entry, template_image_str))
+          cursor_pos2 = cursor_pos1;
+        else
+          {
+             template_insert(ed, ENVENTOR_TEMPLATE_INSERT_LIVE_EDIT, NULL, 0);
+             cursor_pos2 = elm_entry_cursor_pos_get(edit_entry);
+          }
      }
    else
      {
