@@ -64,16 +64,23 @@ error_word_select(Evas_Object *console)
 }
 
 static void
-make_single_error_msg(const char *src, char *dst)
+set_console_error_msg(Evas_Object *console, const char *src)
 {
-   /* We cut a error messages since it contains unnecessary information.
+   /* We cut error messages since it contains unnecessary information.
       Most of the time, first one line has a practical information. */
    const char *new_line  = "<br/>";
    const char *eol = strstr(src, new_line);
    if (!eol) return;
-   strncpy(dst, src, eol - src);
-   dst[eol - src] = '\0';
+
+   char * single_error_msg = alloca((eol - src) + 1);
+   if (!single_error_msg) return;
+
+   strncpy(single_error_msg, src, eol - src);
+   single_error_msg[eol - src] = '\0';
+
+   elm_entry_entry_set(console, single_error_msg);
 }
+
 /*****************************************************************************/
 /* Externally accessible calls                                               */
 /*****************************************************************************/
@@ -81,11 +88,7 @@ make_single_error_msg(const char *src, char *dst)
 void
 console_text_set(Evas_Object *console, const char *text)
 {
-   char * single_error_msg = NULL;
-   single_error_msg = alloca(strlen(text) + 1);
-   if (!single_error_msg) return;
-   make_single_error_msg(text, single_error_msg);
-   elm_entry_entry_set(console, single_error_msg);
+   set_console_error_msg(console, text);
    error_word_select(console);
 }
 
