@@ -62,21 +62,17 @@ smart_analyser(redoundo_data *rd, diff_data *diff)
         rd->smart.timer = NULL;
      }
 
-   if ((!diff) || (diff->length > 1) || (!rd->last_diff)) return diff;
+   if ((!diff) || (diff->length > 1)) return diff;
 
-   /*  Autoindent. Here need  edit_data pointer,
-   *  for check status of autoindent feature.
-   *
-   *  if (edit_auto_indent_get(edit_obj_get))
-   *   {
-   *     if (strstr(diff->text, "<br/>")) diff->relative = EINA_TRUE;
-   *       else diff->relative = EINA_FALSE;
-   *    }
-   */
+   if (edit_auto_indent_get(rd->edit_data))
+     {
+       if (strstr(diff->text, "<br/>")) diff->relative = EINA_TRUE;
+         else diff->relative = EINA_FALSE;
+     }
 
    // Analyse speed of text input and words separates
    if ((rd->smart.continues_input) && (!diff->relative) &&
-       (isalpha(diff->text[0])) && (isalpha(rd->last_diff->text[0])))
+       (isalpha(diff->text[0])) && (rd->last_diff && (isalpha(rd->last_diff->text[0]))))
      {
         diff_data *tmp = diff;
         const char *text;
