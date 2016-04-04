@@ -62,9 +62,9 @@ smart_analyser(redoundo_data *rd, diff_data *diff)
         rd->smart.timer = NULL;
      }
 
-   if ((!diff) || (diff->length > 1)) return diff;
+   if (!diff) return diff;
 
-   if (edit_auto_indent_get(rd->edit_data))
+   if (diff->length == 1 && edit_auto_indent_get(rd->edit_data))
      {
        if (strstr(diff->text, "<br/>")) diff->relative = EINA_TRUE;
          else diff->relative = EINA_FALSE;
@@ -373,6 +373,9 @@ redoundo_text_push(redoundo_data *rd, const char *text, int pos, int length,
    diff->cursor_pos = pos;
    diff->action = insert;
    diff->relative = EINA_FALSE;
+
+   diff = smart_analyser(rd, diff);
+   rd->smart.continues_input = EINA_FALSE;
 
    untracked_diff_free(rd);
    rd->queue = eina_list_append(rd->queue, diff);
