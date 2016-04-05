@@ -16,4 +16,5 @@ EXTRA_DIST = common.h \
 	live_edit.h \
 	console.h \
 	file_mgr.h \
-	edc_navigator.h
+	edc_navigator.h \
+	file_browser.h

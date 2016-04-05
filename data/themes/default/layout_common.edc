@@ -1931,7 +1931,7 @@ group { name: "colorselector_layout";
             rel2.relative: 1.0 1.0;
          }
       }
-	  swallow { "elm.swallow.input_green";
+      swallow { "elm.swallow.input_green";
          scale: 1;
          desc {
             align: 0.0 0.0;
@@ -2582,14 +2582,9 @@ group { name: "main_layout";
       swallow { "elm.swallow.panes";
          scale: 1;
          desc { "default";
-            rel1.relative: 0 1;
-            rel2.relative: 1 0;
-            rel1.to_y: "elm.swallow.tools";
-            rel2.to_y: "elm.swallow.statusbar";
-         }
-         desc { "visible";
             rel1 {
-               relative: 0.0 1.0;
+               relative: 1.0 1.0;
+               to_x: "elm.swallow.file_browser";
                to_y: "elm.swallow.tools";
             }
             rel2 {
@@ -2627,21 +2622,32 @@ group { name: "main_layout";
             align: 0.5 1;
          }
       }
-      swallow { "elm.swallow.edc_navigator";
+      swallow { "elm.swallow.file_browser";
          scale: 1;
          desc { "default";
-            rel1.relative: 1 1;
-            rel2.relative: 1.5 0;
-            rel1.to_y: "elm.swallow.tools";
-            rel2.to_y: "elm.swallow.statusbar";
+            rel1 {
+               relative: 0.0 1.0;
+               to_y: "elm.swallow.tools";
+            }
+            rel2 {
+               relative: 0.0 0.0;
+               to_y: "elm.swallow.statusbar";
+            }
             align: 1 0;
-            min: 0 0;
+            min: 200 0;
             max: 0 -1;
             fixed: 1 0;
+            visible: 0;
          }
          desc { "visible";
             inherit: "default";
-            min: 200 0;
+            align: 0 0;
+            visible: 1;
+         }
+      }
+      swallow { "elm.swallow.edc_navigator";
+         scale: 1;
+         desc { "default";
             rel1 {
                relative: 1.0 1.0;
                to_y: "elm.swallow.tools";
@@ -2650,10 +2656,40 @@ group { name: "main_layout";
                relative: 1.0 0.0;
                to_y: "elm.swallow.statusbar";
             }
+            align: 0 0;
+            min: 200 0;
+            max: 0 -1;
+            fixed: 1 0;
+            visible: 0;
+         }
+         desc { "visible";
+            inherit: "default";
+            align: 1 0;
+            rel1 {
+               relative: 1.0 1.0;
+               to_y: "elm.swallow.tools";
+            }
+            rel2 {
+               relative: 1.0 0.0;
+               to_y: "elm.swallow.statusbar";
+            }
+            visible: 1;
          }
       }
    }
    programs {
+      program { "file_browser_show";
+         signal: "elm,state,file_browser,show";
+         action: STATE_SET "visible" 0.0;
+         target: "elm.swallow.file_browser";
+         transition: DECELERATE 0.25;
+      }
+      program { "file_browser_hide";
+         signal: "elm,state,file_browser,hide";
+         action: STATE_SET "default" 0.0;
+         target: "elm.swallow.file_browser";
+         transition: DECELERATE 0.25;
+      }
       program { "edc_navigator_show";
          signal: "elm,state,edc_navigator,show";
          action: STATE_SET "visible" 0.0;
@@ -2663,22 +2699,8 @@ group { name: "main_layout";
       program { "edc_navigator_hide";
          signal: "elm,state,edc_navigator,hide";
          action: STATE_SET "default" 0.0;
-         target: "elm.swallow.panes";
-         transition: DECELERATE 0.25;
-      }
-      program { name: "navigator_hide";
-         signal: "elm,state,edc_navigator,hide";
-         action: STATE_SET "default" 0.0;
-         transition: LINEAR 0.25;
-         in: 0.05 0.0;
          target: "elm.swallow.edc_navigator";
-      }
-      program { name: "navigator_show";
-         signal: "elm,state,edc_navigator,show";
-         action: STATE_SET "visible" 0.0;
-         transition: LINEAR 0.25;
-         in: 0.05 0.0;
-         target: "elm.swallow.panes";
+         transition: DECELERATE 0.25;
       }
       program { name: "statusbar_show";
          signal: "elm,state,statusbar,show";
@@ -2719,7 +2741,7 @@ group { name: "main_layout";
 }
 
 group { name: "padding3_layout";
-    parts {
+   parts {
       part { name: "elm.swallow.content";
          type: SWALLOW;
          description { state: "default" 0.0;

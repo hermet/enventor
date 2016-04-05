@@ -8,6 +8,7 @@ typedef struct tools_s
 {
    Evas_Object *swallow_btn;
    Evas_Object *status_btn;
+   Evas_Object *file_browser_btn;
    Evas_Object *edc_navigator_btn;
    Evas_Object *lines_btn;
    Evas_Object *highlight_btn;
@@ -58,6 +59,13 @@ lines_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
          void *event_info EINA_UNUSED)
 {
    tools_lines_update(EINA_TRUE);
+}
+
+static void
+file_browser_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+                void *event_info EINA_UNUSED)
+{
+   tools_file_browser_update(EINA_TRUE);
 }
 
 static void
@@ -274,6 +282,13 @@ tools_init(Evas_Object *parent)
    elm_box_pack_end(box, btn);
    td->console_btn = btn;
 
+   btn = tools_btn_create(box, "file_browser", _("File Browser (F9)"),
+                          file_browser_cb);
+   evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn, 1.0, EVAS_HINT_FILL);
+   elm_box_pack_end(box, btn);
+   td->file_browser_btn = btn;
+
    btn = tools_btn_create(box, "edc_navigator", _("EDC Navigator (F10)"),
                           edc_navigator_cb);
    evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
@@ -338,6 +353,29 @@ tools_highlight_update(Eina_Bool toggle)
      elm_object_signal_emit(td->highlight_btn, "icon,highlight,enabled", "");
    else
      elm_object_signal_emit(td->highlight_btn, "icon,highlight,disabled", "");
+}
+
+void
+tools_file_browser_update(Eina_Bool toggle)
+{
+   tools_data *td = g_td;
+   if (!td) return;
+
+   if (toggle) config_file_browser_set(!config_file_browser_get());
+
+   base_file_browser_toggle(EINA_FALSE);
+
+   //Toggle on/off
+   if (config_file_browser_get())
+     {
+        elm_object_signal_emit(td->file_browser_btn, "icon,highlight,enabled",
+                               "");
+     }
+   else
+     {
+        elm_object_signal_emit(td->file_browser_btn, "icon,highlight,disabled",
+                               "");
+     }
 }
 
 void

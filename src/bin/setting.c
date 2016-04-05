@@ -23,6 +23,7 @@ struct setting_s
    Evas_Object *toggle_highlight;
    Evas_Object *toggle_swallow;
    Evas_Object *toggle_stats;
+   Evas_Object *toggle_file_browser;
    Evas_Object *toggle_edc_navigator;
    Evas_Object *toggle_tools;
    Evas_Object *toggle_console;
@@ -125,6 +126,7 @@ setting_apply_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
    config_stats_bar_set(elm_check_state_get(sd->toggle_stats));
    config_part_highlight_set(elm_check_state_get(sd->toggle_highlight));
    config_dummy_parts_set(elm_check_state_get(sd->toggle_swallow));
+   config_file_browser_set(elm_check_state_get(sd->toggle_file_browser));
    config_edc_navigator_set(elm_check_state_get(sd->toggle_edc_navigator));
    text_setting_config_set();
 
@@ -172,6 +174,7 @@ setting_reset_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
    elm_check_state_set(sd->toggle_stats, config_stats_bar_get());
    elm_check_state_set(sd->toggle_highlight, config_part_highlight_get());
    elm_check_state_set(sd->toggle_swallow, config_dummy_parts_get());
+   elm_check_state_set(sd->toggle_file_browser, config_file_browser_get());
    elm_check_state_set(sd->toggle_edc_navigator, config_edc_navigator_get());
 
    //Reset view scale
@@ -421,6 +424,11 @@ general_layout_create(setting_data *sd, Evas_Object *parent)
                                              config_stats_bar_get());
    elm_box_pack_end(box, toggle_stats);
 
+   //Toggle (File Browser)
+   Evas_Object *toggle_file_browser = toggle_create(box, _("File Browser"),
+                                                    config_file_browser_get());
+   elm_box_pack_end(box, toggle_file_browser);
+
    //Toggle (EDC Navigator)
    Evas_Object *toggle_edc_navigator = toggle_create(box, _("EDC Navigator"),
                                                config_edc_navigator_get());
@@ -447,6 +455,7 @@ general_layout_create(setting_data *sd, Evas_Object *parent)
    sd->toggle_highlight = toggle_highlight;
    sd->toggle_swallow = toggle_swallow;
    sd->toggle_stats = toggle_stats;
+   sd->toggle_file_browser = toggle_file_browser;
    sd->toggle_edc_navigator = toggle_edc_navigator;
    sd->toggle_tools = toggle_tools;
    sd->toggle_console = toggle_console;

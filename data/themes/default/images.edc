@@ -22,6 +22,7 @@ images {
    image: "live_textblock.png" COMP;
    image: "expand.png" COMP;
    image: "invert.png" COMP;
+   image: "file_browser.png" COMP;
    image: "edc_navigator.png" COMP;
    image: "navi_group.png" COMP;
    image: "navi_rect.png" COMP;
@@ -68,6 +69,7 @@ ICON_GROUP("Swallow", "live_swallow.png")
 ICON_GROUP("Text", "live_text.png")
 ICON_GROUP("Textblock", "live_textblock.png")
 ICON_GROUP("close", "icon_close.png")
+ICON_GROUP("file_browser", "file_browser.png")
 ICON_GROUP("edc_navigator", "edc_navigator.png")
 ICON_GROUP("navi_group", "navi_group.png")
 ICON_GROUP("navi_image", "navi_image.png")

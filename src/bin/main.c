@@ -44,6 +44,7 @@ tools_update(void)
    tools_dummy_update(EINA_FALSE);
    tools_mirror_mode_update(EINA_FALSE);
    tools_status_update(EINA_FALSE);
+   tools_file_browser_update(EINA_FALSE);
    tools_edc_navigator_update(EINA_FALSE);
 }
 
@@ -790,10 +791,17 @@ keygrabber_key_down_cb(void *data, Evas *e EINA_UNUSED,
         return;
      }
    //Tools
-   if (!strcmp(ev->key, "F9"))
+   if (!strcmp(ev->key, "F8"))
      {
         enventor_object_ctxpopup_dismiss(ad->enventor);
         base_tools_toggle(EINA_TRUE);
+        return;
+     }
+   //File Browser
+   if (!strcmp(ev->key, "F9"))
+     {
+        enventor_object_ctxpopup_dismiss(ad->enventor);
+        tools_file_browser_update(EINA_TRUE);
         return;
      }
    //EDC Navigator

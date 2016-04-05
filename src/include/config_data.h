@@ -58,5 +58,7 @@ void config_win_size_get(Evas_Coord *w, Evas_Coord *h);
 void config_win_size_set(Evas_Coord w, Evas_Coord h);
 void config_smart_undo_redo_set(Eina_Bool smart_undo_redo);
 Eina_Bool config_smart_undo_redo_get(void);
+void config_file_browser_set(Eina_Bool enabled);
+Eina_Bool config_file_browser_get(void);
 void config_edc_navigator_set(Eina_Bool enabled);
 Eina_Bool config_edc_navigator_get(void);

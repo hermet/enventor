@@ -6,6 +6,7 @@ void tools_lines_update(Eina_Bool toggle);
 void tools_dummy_update(Eina_Bool toggle);
 void tools_mirror_mode_update(Eina_Bool toggle);
 void tools_status_update(Eina_Bool toggle);
+void tools_file_browser_update(Eina_Bool toggle);
 void tools_edc_navigator_update(Eina_Bool toggle);
 void tools_goto_update(void);
 void tools_search_update(void);

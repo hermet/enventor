@@ -97,6 +97,19 @@ base_statusbar_toggle(Eina_Bool toggle)
      elm_object_signal_emit(bd->layout, "elm,state,statusbar,hide", "");
 }
 
+void base_file_browser_toggle(Eina_Bool toggle)
+{
+   base_data *bd = g_bd;
+   assert(bd);
+
+   if (toggle) config_file_browser_set(!config_file_browser_get());
+
+   if (config_file_browser_get())
+     elm_object_signal_emit(bd->layout, "elm,state,file_browser,show", "");
+   else
+     elm_object_signal_emit(bd->layout, "elm,state,file_browser,hide", "");
+}
+
 void base_edc_navigator_toggle(Eina_Bool toggle)
 {
    base_data *bd = g_bd;
@@ -229,6 +242,7 @@ base_gui_term(void)
 
    ecore_timer_del(bd->edc_navi_update_timer);
    ecore_timer_del(bd->edc_navi_reload_timer);
+   file_browser_term();
    edc_navigator_term();
    panes_term();
 
@@ -246,8 +260,8 @@ base_edc_navigator_group_update(const char *group_name)
 
    ecore_timer_del(bd->edc_navi_update_timer);
    bd->edc_navi_update_timer = ecore_timer_add(EDC_NAVIGATOR_UPDATE_TIME,
-                                             edc_navigator_update_timer_cb,
-                                             group_name);
+                                               edc_navigator_update_timer_cb,
+                                               group_name);
 }
 
 void
@@ -327,11 +341,16 @@ base_gui_init(void)
    if (config_console_get())
      panes_editors_full_view(EINA_TRUE);
 
+   //File Browser
+   Evas_Object *file_browser = file_browser_init(layout);
+   elm_object_part_content_set(layout, "elm.swallow.file_browser",
+                               file_browser);
+   file_browser_edc_file_set(config_input_path_get());
+
    //EDC Navigator
    Evas_Object *edc_navigator = edc_navigator_init(layout);
    elm_object_part_content_set(layout, "elm.swallow.edc_navigator",
                                edc_navigator);
-
    bd->win = win;
    bd->layout = layout;
    bd->console = console;

@@ -1,5 +1,6 @@
 #include "panes.h"
 #include "edc_navigator.h"
+#include "file_browser.h"
 
 #define EDC_NAVIGATOR_UPDATE_TIME 0.25
 
@@ -24,6 +25,7 @@ void base_gui_term(void);
 void base_console_reset(void);
 void base_error_msg_set(const char *msg);
 void base_console_full_view(void);
+void base_file_browser_toggle(Eina_Bool toggle);
 void base_edc_navigator_toggle(Eina_Bool toggle);
 void base_edc_navigator_reload(void);
 void base_edc_navigator_group_update(const char *group_name);

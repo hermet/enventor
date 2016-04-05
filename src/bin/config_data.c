@@ -39,6 +39,7 @@ typedef struct config_s
    Eina_Bool console;
    Eina_Bool auto_complete;
    Eina_Bool smart_undo_redo;
+   Eina_Bool file_browser;
    Eina_Bool edc_navigator;
 } config_data;
 
@@ -185,6 +186,7 @@ config_load(void)
         cd->auto_complete = EINA_TRUE;
         cd->version = ENVENTOR_CONFIG_VERSION;
         cd->smart_undo_redo = EINA_FALSE;
+        cd->file_browser = EINA_TRUE;
         cd->edc_navigator = EINA_TRUE;
      }
 
@@ -303,6 +305,8 @@ eddc_init(void)
                                     auto_complete, EET_T_UCHAR);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "smart_undo_redo",
                                     smart_undo_redo, EET_T_UCHAR);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "file_browser",
+                                    file_browser, EET_T_UCHAR);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "edc_navigator",
                                     edc_navigator, EET_T_UCHAR);
 }
@@ -909,6 +913,20 @@ config_tools_set(Eina_Bool enabled)
 {
    config_data *cd = g_cd;
    cd->tools = enabled;
+}
+
+void
+config_file_browser_set(Eina_Bool enabled)
+{
+   config_data *cd = g_cd;
+   cd->file_browser = enabled;
+}
+
+Eina_Bool
+config_file_browser_get(void)
+{
+   config_data *cd = g_cd;
+   return cd->file_browser;
 }
 
 void
