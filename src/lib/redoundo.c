@@ -147,11 +147,9 @@ entry_changed_user_cb(void *data, Evas_Object *obj EINA_UNUSED,
      {
         if (info->change.insert.plain_length == 0) goto nochange;
         diff->text = eina_stringshare_add(info->change.insert.content);
-        char *utf8 = evas_textblock_text_markup_to_utf8(NULL, diff->text);
         diff->length = info->change.insert.plain_length;
         diff->cursor_pos = info->change.insert.pos;
         diff->action = EINA_TRUE;
-        free(utf8);
      }
    else
      {
