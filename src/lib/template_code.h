@@ -93,19 +93,18 @@ const char *TEMPLATE_PART_SPACER[TEMPLATE_PART_SPACER_LINE_CNT] =
    "      min: 0 0;<br/>"
 };
 
-#define TEMPLATE_PART_TEXT_LINE_CNT 17
+#define TEMPLATE_PART_TEXT_LINE_CNT 16
 
 const char *TEMPLATE_PART_TEXT[TEMPLATE_PART_TEXT_LINE_CNT] =
 {
    "   scale: 1;<br/>",
-   "   effect: FAR_SOFT_SHADOW;<br/>",
+   "   effect: SOFT_OUTLINE;<br/>",
    "   desc { \"default\";<br/>",
    "      align: 0.5 0.5;<br/>",
    "      fixed: 0 0;<br/>",
    "      min: 0 0;<br/>",
-   "      color: 0 136 170 255;<br/>",
-   "      color2: 0 136 170 50;<br/>",
-   "      color3: 0 136 170 25;<br/>",
+   "      color: 255 255 255 255;<br/>",
+   "      color2: 0 136 170 100;<br/>",
    "      visible: 1;<br/>",
    "      text {<br/>",
    "         size: 50;<br/>",
@@ -192,7 +191,7 @@ const char *TEMPLATE_TEXTBLOCK_STYLE_BLOCK[TEMPLATE_TEXTBLOCK_STYLE_LINE_CNT] =
 {
    "styles {<br/>",
    "   style { \"%s\";<br/>",
-   "      base: \"font=\"Sans\" font_size=30 text_class=entry color=#0088AA style=shadow,bottom shadow_color=#00000080 valign=0.5 ellipsis=1.0 wrap=none align=center\";<br/>",
+   "      base: \"font=\"Sans\" font_size=30 text_class=entry color=#FFFFFF style=soft_outline outline_color=#0088AA64 valign=0.5 ellipsis=1.0 wrap=none align=center\";<br/>",
    "   }<br/>",
    "}<br/>"
 };
