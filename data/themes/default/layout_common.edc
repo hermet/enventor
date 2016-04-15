@@ -7,10 +7,10 @@ images {
    image: "bub_over_bot.png" COMP;
    image: "disabler.png" COMP;
    image: "bevel_out.png" COMP;
-   image: "pm_fill.png" COMP;
    image: "full_logo.png" COMP;
    image: "cursor_arrow.png" COMP;
    image: "navi_group.png" COMP;
+   image: "bg_demo.png" COMP;
 }
 
 group { name: "about_layout";
@@ -1413,28 +1413,19 @@ group { name: "live_edit_layout";
 
 group { name: "viewer_layout_bg";
    parts {
-      part { name: "clipper";
-         type: RECT;
-         description { state: "default" 0.0;
-            rel1.to: "bg";
-            rel2.to: "bg";
-         }
-      }
-      part { name: "bg";
-         type: IMAGE;
-         description { state: "default" 0.0;
-            rel1.to: "elm.swallow.content";
-            rel2.to: "elm.swallow.content";
-            image.normal: "pm_fill.png";
+      image { "bg"; nomouse;
+         desc { "default";
+            image.normal: "bg_demo.png";
             fill {
                size.relative: 0 0;
-               size.offset: 64 64;
+               size.offset: 16 16;
             }
+            rel1.to: "elm.swallow.content";
+            rel2.to: "elm.swallow.content";
          }
       }
       part { name: "elm.swallow.content";
          type: SWALLOW;
-         clip_to: "clipper";
          description { state: "default" 0.0;
          }
       }

@@ -40,7 +40,6 @@ EXTRA_DIST = \
    sym_up_light_normal.png \
    vgrad_med_lighter.png \
    warning.png \
-   pm_fill.png \
    menu.png \
    find.png \
    highlight.png \
@@ -69,18 +68,19 @@ EXTRA_DIST = \
    white_bar_vert_glow.png \
    horizontal_separated_bar_small_glow.png \
    expand.png \
-	invert.png \
-	icon_close.png \
+   invert.png \
+   icon_close.png \
    file_browser.png \
    edc_navigator.png \
-	cursor_arrow.png \
-	navi_group.png \
-	navi_image.png \
-	navi_rect.png \
-	navi_swallow.png \
-	navi_text.png \
-	navi_textblock.png \
-	navi_spacer.png \
-	navi_unknown.png \
-	navi_state.png \
-	navi_program.png
+   cursor_arrow.png \
+   navi_group.png \
+   navi_image.png \
+   navi_rect.png \
+   navi_swallow.png \
+   navi_text.png \
+   navi_textblock.png \
+   navi_spacer.png \
+   navi_unknown.png \
+   navi_state.png \
+   navi_program.png \
+   bg_demo.png
