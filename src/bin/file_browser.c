@@ -22,6 +22,7 @@ struct file_browser_file_s
 typedef struct file_browser_s
 {
    brows_file *col_edc;   //collections edc
+   brows_file *workspace; //workspace directory
 
    Evas_Object *genlist;
    Elm_Genlist_Item_Class *itc;
@@ -44,23 +45,29 @@ gl_file_selected_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 }
 
 static Elm_Object_Item *
-file_genlist_item_append(char *file_name, Elm_Object_Item *parent_it,
-                         Elm_Genlist_Item_Type it_type, brows_file *file)
+file_genlist_item_append(brows_file *file, Elm_Object_Item *parent_it,
+                         Elm_Genlist_Item_Type it_type)
 {
    brows_data *bd = g_bd;
    if (!bd) return NULL;
 
-   if (!file_name) return NULL;
    if (!file) return NULL;
 
    Elm_Object_Item *it =
       elm_genlist_item_append(bd->genlist,
                               bd->itc,             /* item class */
-                              file_name,           /* item data */
+                              file,                /* item data */
                               parent_it,           /* parent */
                               it_type,             /* item type */
                               gl_file_selected_cb, /* select cb */
                               file);               /* select cb data */
+
+   char it_str[EINA_PATH_MAX];
+   snprintf(it_str, EINA_PATH_MAX, "%p", it);
+   evas_object_data_set(bd->genlist, it_str, file);
+
+   elm_genlist_item_expanded_set(it, EINA_FALSE);
+
    return it;
 }
 
@@ -68,11 +75,89 @@ static char *
 gl_file_text_get_cb(void *data, Evas_Object *obj EINA_UNUSED,
                     const char *part EINA_UNUSED)
 {
+   brows_file *file = data;
+   return strdup(file->name);
+}
+
+static Evas_Object *
+gl_file_content_get_cb(void *data, Evas_Object *obj, const char *part)
+{
+   brows_file *file = data;
+
+   if (!strcmp(part, "elm.swallow.icon"))
+     {
+        Evas_Object *img = elm_image_add(obj);
+
+        if (ecore_file_is_dir(file->path))
+          elm_image_file_set(img, EDJE_PATH, "folder");
+        else
+          elm_image_file_set(img, EDJE_PATH, "file");
+
+        return img;
+     }
+   else return NULL;
+}
+
+static char *
+gl_group_text_get_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                     const char *part EINA_UNUSED)
+{
    char *file_name = data;
    return strdup(file_name);
 }
 
-/* Find including sub edc files and Create a list of brows_file. */
+static void
+gl_exp_req(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
+{
+   Elm_Object_Item *it = event_info;
+   elm_genlist_item_expanded_set(it, EINA_TRUE);
+}
+
+static void
+gl_con_req(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
+{
+   Elm_Object_Item *it = event_info;
+   elm_genlist_item_expanded_set(it, EINA_FALSE);
+}
+
+static void
+gl_exp(void *data, Evas_Object *obj, void *event_info)
+{
+   brows_data *bd = data;
+   if (!bd) return;
+
+   Elm_Object_Item *it = event_info;
+
+   char it_str[EINA_PATH_MAX];
+   snprintf(it_str, EINA_PATH_MAX, "%p", it);
+   brows_file *file = evas_object_data_get(obj, it_str);
+   if (!file) return;
+
+   if (file->sub_file_list)
+     {
+        Eina_List *l = NULL;
+        brows_file *sub_file = NULL;
+        EINA_LIST_FOREACH(file->sub_file_list, l, sub_file)
+          {
+             Elm_Genlist_Item_Type type = ELM_GENLIST_ITEM_NONE;
+             if (sub_file->sub_file_list)
+               type = ELM_GENLIST_ITEM_TREE;
+             sub_file->it = file_genlist_item_append(sub_file, file->it, type);
+
+             if (type == ELM_GENLIST_ITEM_TREE)
+               gl_exp_req(NULL, NULL, sub_file->it);
+          }
+     }
+}
+
+static void
+gl_con(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
+{
+   Elm_Object_Item *it = event_info;
+   elm_genlist_item_subitems_clear(it);
+}
+
+/* Find sub files and Create a list of brows_file. */
 static Eina_List *
 sub_file_list_create(brows_file *file)
 {
@@ -90,9 +175,6 @@ sub_file_list_create(brows_file *file)
    char *dir_path = file->path;
    EINA_LIST_FOREACH(sub_file_name_list, l, sub_file_name)
      {
-        if (!strcmp(".", sub_file_name) || !strcmp("..", sub_file_name))
-          continue;
-
         brows_file *sub_file = calloc(1, sizeof(brows_file));
 
         int sub_file_path_len = strlen(dir_path) + strlen(sub_file_name) + 2;
@@ -174,7 +256,7 @@ file_set_internal(const char *file_path, File_Browser_File_Type file_type)
    Elm_Genlist_Item_Type it_type = ELM_GENLIST_ITEM_NONE;
    if (file->sub_file_list)
      it_type = ELM_GENLIST_ITEM_TREE;
-   file->it = file_genlist_item_append(file->name, NULL, it_type, file);
+   file->it = file_genlist_item_append(file, NULL, it_type);
 
    return file;
 }
@@ -182,6 +264,46 @@ file_set_internal(const char *file_path, File_Browser_File_Type file_type)
 /*****************************************************************************/
 /* Externally accessible calls                                               */
 /*****************************************************************************/
+
+/* Set workspace directory. */
+void
+file_browser_workspace_set(const char *workspace_path)
+{
+   brows_data *bd = g_bd;
+   if (!bd) return;
+
+   if (!workspace_path) return;
+   if (!ecore_file_exists(workspace_path)) return;
+   if (!ecore_file_is_dir(workspace_path)) return;
+
+   if (bd->workspace)
+     {
+        if (!strcmp(workspace_path, bd->workspace->path))
+          return;
+
+        brows_file_free(bd->workspace);
+        bd->workspace = NULL;
+     }
+
+   Elm_Object_Item *group_it =
+      elm_genlist_item_append(bd->genlist,
+                              bd->group_itc,         /* item class */
+                              "Workspace",           /* item data */
+                              NULL,                  /* parent */
+                              ELM_GENLIST_ITEM_NONE, /* item type */
+                              NULL,                  /* select_cb */
+                              NULL);                 /* select_cb data */
+   elm_genlist_item_select_mode_set(group_it,
+                                    ELM_OBJECT_SELECT_MODE_DISPLAY_ONLY);
+
+   brows_file *workspace = file_set_internal(workspace_path,
+                                             FILE_BROWSER_FILE_TYPE_DIR);
+   if (!workspace) return;
+   bd->workspace = workspace;
+
+   if (workspace->sub_file_list)
+     gl_exp_req(NULL, NULL, workspace->it);
+}
 
 /* Set "collections" edc file. */
 void
@@ -209,7 +331,7 @@ file_browser_edc_file_set(const char *edc_file)
    Elm_Object_Item *group_it =
       elm_genlist_item_append(bd->genlist,
                               bd->group_itc,         /* item class */
-                              "Collections",         /* item data */
+                              "Collections EDC",     /* item data */
                               NULL,                  /* parent */
                               ELM_GENLIST_ITEM_NONE, /* item type */
                               NULL,                  /* select_cb */
@@ -236,18 +358,25 @@ file_browser_init(Evas_Object *parent)
    Evas_Object *genlist = elm_genlist_add(parent);
    elm_object_focus_allow_set(genlist, EINA_FALSE);
 
+   evas_object_smart_callback_add(genlist, "expand,request", gl_exp_req, NULL);
+   evas_object_smart_callback_add(genlist, "contract,request", gl_con_req,
+                                  NULL);
+   evas_object_smart_callback_add(genlist, "expanded", gl_exp, bd);
+   evas_object_smart_callback_add(genlist, "contracted", gl_con, NULL);
+
    //Item Class
    Elm_Genlist_Item_Class *itc;
    itc = elm_genlist_item_class_new();
-   itc->item_style = "no_icon";
+   itc->item_style = "default";
    itc->func.text_get = gl_file_text_get_cb;
+   itc->func.content_get = gl_file_content_get_cb;
    bd->itc = itc;
 
    //Group Index Item Class
    Elm_Genlist_Item_Class *group_itc;
    group_itc = elm_genlist_item_class_new();
    group_itc->item_style = "group_index";
-   group_itc->func.text_get = gl_file_text_get_cb;
+   group_itc->func.text_get = gl_group_text_get_cb;
    bd->group_itc = group_itc;
 
    bd->genlist = genlist;
@@ -262,6 +391,7 @@ file_browser_term(void)
    if (!bd) return;
 
    if (bd->col_edc) brows_file_free(bd->col_edc);
+   if (bd->workspace) brows_file_free(bd->workspace);
 
    elm_genlist_item_class_free(bd->itc);
    elm_genlist_item_class_free(bd->group_itc);

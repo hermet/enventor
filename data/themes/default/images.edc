@@ -1,5 +1,7 @@
 images {
    image: "icon_close.png" COMP;
+   image: "icon_file.png" COMP;
+   image: "icon_folder.png" COMP;
    image: "slider_up.png" COMP;
    image: "slider_down.png" COMP;
    image: "menu.png" COMP;
@@ -69,6 +71,8 @@ ICON_GROUP("Swallow", "live_swallow.png")
 ICON_GROUP("Text", "live_text.png")
 ICON_GROUP("Textblock", "live_textblock.png")
 ICON_GROUP("close", "icon_close.png")
+ICON_GROUP("file", "icon_file.png")
+ICON_GROUP("folder", "icon_folder.png")
 ICON_GROUP("file_browser", "file_browser.png")
 ICON_GROUP("edc_navigator", "edc_navigator.png")
 ICON_GROUP("navi_group", "navi_group.png")

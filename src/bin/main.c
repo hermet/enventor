@@ -223,7 +223,8 @@ tools_set(void)
 }
 
 static void
-args_dispatch(int argc, char **argv, char *edc_path, char *edj_path,
+args_dispatch(int argc, char **argv,
+              char *edc_path, char *edj_path, char *workspace_path,
               Eina_List **img_path, Eina_List **snd_path,
               Eina_List **fnt_path, Eina_List **dat_path,
               Eina_Bool *default_edc, Eina_Bool *template,
@@ -234,6 +235,8 @@ args_dispatch(int argc, char **argv, char *edc_path, char *edj_path,
    Eina_List *fd = NULL;
    Eina_List *sd = NULL;
    Eina_List *dd = NULL;
+
+   char *wd = NULL;
 
    Eina_Bool quit = EINA_FALSE;
    Eina_Bool help = EINA_FALSE;
@@ -259,6 +262,8 @@ args_dispatch(int argc, char **argv, char *edc_path, char *edj_path,
                                       "path", ECORE_GETOPT_TYPE_STR),
           ECORE_GETOPT_APPEND_METAVAR('d', "dd", "Data path",
                                       "path", ECORE_GETOPT_TYPE_STR),
+          ECORE_GETOPT_STORE('w', "wd", "Workspace path",
+                             ECORE_GETOPT_TYPE_STR),
           ECORE_GETOPT_VERSION('v', "version"),
           ECORE_GETOPT_COPYRIGHT('c', "copyright"),
           ECORE_GETOPT_LICENSE('l', "license"),
@@ -273,6 +278,7 @@ args_dispatch(int argc, char **argv, char *edc_path, char *edj_path,
       ECORE_GETOPT_VALUE_LIST(sd),
       ECORE_GETOPT_VALUE_LIST(fd),
       ECORE_GETOPT_VALUE_LIST(dd),
+      ECORE_GETOPT_VALUE_STR(wd),
       ECORE_GETOPT_VALUE_BOOL(quit),
       ECORE_GETOPT_VALUE_BOOL(quit),
       ECORE_GETOPT_VALUE_BOOL(quit),
@@ -336,6 +342,7 @@ defaults:
           *dat_path = eina_list_append(*dat_path, eina_stringshare_add(s));
           free(s);
        }
+     if (wd) sprintf(workspace_path, "%s", wd);
 
    ecore_getopt_list_free(id);
    ecore_getopt_list_free(fd);
@@ -349,14 +356,17 @@ config_data_set(app_data *ad, int argc, char **argv, Eina_Bool *default_edc,
 {
    char edc_path[PATH_MAX] = { 0, };
    char edj_path[PATH_MAX] = { 0, };
+   char workspace_path[PATH_MAX] = { 0, };
    Eina_List *img_path = NULL;
    Eina_List *snd_path = NULL;
    Eina_List *fnt_path = NULL;
    Eina_List *dat_path = NULL;
 
-   args_dispatch(argc, argv, edc_path, edj_path, &img_path, &snd_path,
-                 &fnt_path, &dat_path, default_edc, template, PATH_MAX);
-   if (!config_init(edc_path, edj_path, img_path, snd_path, fnt_path, dat_path))
+   args_dispatch(argc, argv, edc_path, edj_path, workspace_path,
+                 &img_path, &snd_path, &fnt_path, &dat_path,
+                 default_edc, template, PATH_MAX);
+   if (!config_init(edc_path, edj_path, workspace_path,
+                    img_path, snd_path, fnt_path, dat_path))
      return EINA_FALSE;
    config_update_cb_set(config_update_cb, ad);
 

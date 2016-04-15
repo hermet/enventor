@@ -70,6 +70,8 @@ EXTRA_DIST = \
    expand.png \
    invert.png \
    icon_close.png \
+   icon_file.png \
+   icon_folder.png \
    file_browser.png \
    edc_navigator.png \
    cursor_arrow.png \

@@ -4,6 +4,7 @@ typedef struct config_s
 {
    const char *input_path;
    const char *output_path;
+   const char *workspace_path;
    const char *font_name;
    const char *font_style;
 
@@ -321,6 +322,7 @@ config_input_path_set(const char *input_path)
 
 Eina_Bool
 config_init(const char *input_path, const char *output_path,
+            const char *workspace_path,
             Eina_List *img_path, Eina_List *snd_path,
             Eina_List *fnt_path, Eina_List *dat_path)
 {
@@ -332,6 +334,8 @@ config_init(const char *input_path, const char *output_path,
 
    if (input_path[0]) config_input_path_set(input_path);
    if (output_path[0]) eina_stringshare_replace(&cd->output_path, output_path);
+   if (workspace_path[0])
+     eina_stringshare_replace(&cd->workspace_path, workspace_path);
 
    if (img_path)
      g_cd->img_path_list = img_path;
@@ -357,6 +361,7 @@ config_term(void)
 
    eina_stringshare_del(cd->input_path);
    eina_stringshare_del(cd->output_path);
+   eina_stringshare_del(cd->workspace_path);
 
    Eina_Stringshare *str;
    EINA_LIST_FREE(cd->img_path_list, str) eina_stringshare_del(str);
@@ -622,6 +627,13 @@ config_output_path_get(void)
 {
    config_data *cd = g_cd;
    return cd->output_path;
+}
+
+const char *
+config_workspace_path_get(void)
+{
+   config_data *cd = g_cd;
+   return cd->workspace_path;
 }
 
 void

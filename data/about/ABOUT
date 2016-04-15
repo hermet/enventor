@@ -56,7 +56,7 @@ Ctrl+Space - Search candidate keywords in the context</br>
 <font_size=11><b>[Command Line Usage]</b></font_size></br>
 </br>
 enventor --help</br>
-enventor [input file] [output file] [-t] [-i image path] [-s sound path] [-f font path] [-d data path]</br>
+enventor [input file] [output file] [-t] [-i image path] [-s sound path] [-f font path] [-d data path] [-w workspace path]</br>
 </br>
 input file = EDC file to open. If input file is skipped, Enventor will open a default template code with a temporary file.</br>
 output file = EDJ file to store compiled file. If output file is skipped, Enventor will store the binary file to the temporary directory.</br>
@@ -65,12 +65,13 @@ output file = EDJ file to store compiled file. If output file is skipped, Envent
 -s = path to sound resources that the edc includes</br>
 -f = path to font resources that the edc includes</br>
 -d = path to data resources that the edc includes</br>
+-w = workspace directory path that contains group edc files</br>
 </br>
 Examples of Enventor command line usage:</br>
 $ enventor</br>
 $ enventor -t</br>
 $ enventor newfile.edc -t</br>
-$ enventor sample.edc output.edj -i ./images -s ./sounds</br>
+$ enventor sample.edc output.edj -i ./images -s ./sounds -w ./workspace</br>
 </br>
 </br>
 <font_size=11><b>[Developers]</b></font_size></br>
