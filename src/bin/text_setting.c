@@ -2,7 +2,6 @@
 #include "config.h"
 #endif
 #include "common.h"
-#include "text_setting.h"
 
 #define UNSUPPORTED_FONT_CNT 28
 #define UNSUPPORTED_FONT_MAX_LEN 32
@@ -10,6 +9,35 @@
 #define SYNTAX_TEMPLATE_MAX_LEN 3072
 #define SYNTAX_TEMPLATE_FONT_SIZE 10
 #define SYNTAX_COLOR_LEN 7
+
+typedef struct color_keyword_s
+{
+   int pos_begin;
+   int pos_end;
+   int color_type;
+} color_keyword;
+
+typedef struct text_setting_s
+{
+   Evas_Object *layout;
+   Evas_Object *text_edit_entry;
+   Evas_Object *color_ctxpopup;
+
+   Evas_Object *slider_font;
+   Evas_Object *toggle_linenum;
+   Evas_Object *toggle_indent;
+   Evas_Object *toggle_autocomp;
+   Evas_Object *toggle_smart_undo_redo;
+   Evas_Object *list_font_name;
+
+   color_keyword *color_keyword_list;
+   char *syntax_template_format;
+   char *syntax_template_str;
+
+   const char *font_name;
+   const char *font_style;
+   double font_scale;
+} text_setting_data;
 
 static char unsupported_font_list[UNSUPPORTED_FONT_CNT][UNSUPPORTED_FONT_MAX_LEN] =
 {
@@ -67,13 +95,18 @@ static int color_type_list[COLOR_KEYWORD_MAX_CNT] =
 
 static text_setting_data *g_tsd = NULL;
 
+/*****************************************************************************/
+/* Internal method implementation                                            */
+/*****************************************************************************/
+
 static void
 syntax_template_set(char *syntax_template_str, char *syntax_template_format,
                     double font_scale)
 {
    if (!syntax_template_str || !syntax_template_format) return;
 
-   snprintf(syntax_template_str, SYNTAX_TEMPLATE_MAX_LEN, syntax_template_format,
+   snprintf(syntax_template_str, SYNTAX_TEMPLATE_MAX_LEN,
+            syntax_template_format,
             (int) ((SYNTAX_TEMPLATE_FONT_SIZE * font_scale) + 0.5),
             color_val[color_type_list[0]],  color_val[color_type_list[1]],
             color_val[color_type_list[2]],  color_val[color_type_list[3]],
@@ -119,7 +152,7 @@ static void
 syntax_template_apply(void)
 {
    text_setting_data *tsd = g_tsd;
-   Evas_Object *layout = tsd->text_setting_layout;
+   Evas_Object *layout = tsd->layout;
    if (!layout) return;
 
    Evas_Object *entry = elm_object_part_content_get(layout,
@@ -204,7 +237,7 @@ color_ctxpopup_del_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
    color_keyword *selected_color_keyword;
    selected_color_keyword = evas_object_data_get(obj, "color_keyword");
 
-   elm_object_disabled_set(tsd->text_setting_layout, EINA_FALSE);
+   elm_object_disabled_set(tsd->layout, EINA_FALSE);
    elm_object_focus_set(tsd->slider_font, EINA_TRUE);
 
    text_setting_syntax_color_update(obj, selected_color_keyword);
@@ -529,7 +562,7 @@ text_setting_double_clicked_cb(void *data, Evas_Object *obj,
         if ((pos >= selected_color_keyword->pos_begin) &&
             (pos <= selected_color_keyword->pos_end))
           {
-             ctxpopup = color_ctxpopup_create(tsd->text_setting_layout,
+             ctxpopup = color_ctxpopup_create(tsd->layout,
                                               selected_color_keyword);
              if (!ctxpopup) return;
 
@@ -695,10 +728,15 @@ is_supported_font(const char *font_name)
    return EINA_TRUE;
 }
 
+/*****************************************************************************/
+/* Externally accessible calls                                               */
+/*****************************************************************************/
+
 Evas_Object *
-text_setting_layout_create(Evas_Object *parent)
+text_setting_content_get(Evas_Object *parent)
 {
    text_setting_data *tsd = g_tsd;
+   if (tsd->layout) return tsd->layout;
 
    //Layout
    Evas_Object *layout = elm_layout_add(parent);
@@ -882,7 +920,7 @@ text_setting_layout_create(Evas_Object *parent)
    elm_list_go(list_font_name);
    if (font_name_it) elm_list_item_selected_set(font_name_it, EINA_TRUE);
 
-   tsd->text_setting_layout = layout;
+   tsd->layout = layout;
    tsd->text_edit_entry = entry;
    tsd->slider_font = slider_font;
    tsd->toggle_linenum = toggle_linenum;
@@ -890,39 +928,15 @@ text_setting_layout_create(Evas_Object *parent)
    tsd->toggle_autocomp = toggle_autocomp;
    tsd->toggle_smart_undo_redo = toggle_smart_undo_redo;
    tsd->list_font_name = list_font_name;
+
    return layout;
 }
 
 void
-text_setting_layout_show(Evas_Object *setting_layout, Evas_Object *tabbar,
-                         Evas_Object *apply_btn, Evas_Object *reset_btn,
-                         Evas_Object *cancel_btn)
+text_setting_focus_set(void)
 {
    text_setting_data *tsd = g_tsd;
-   Evas_Object *content;
-
-   if (!setting_layout) return;
-
-   content = elm_object_part_content_get(setting_layout,
-                                         "elm.swallow.content");
-
-   if (content == tsd->text_setting_layout) return;
-
-   elm_object_part_content_unset(setting_layout, "elm.swallow.content");
-   evas_object_hide(content);
-
-   elm_object_part_content_set(setting_layout, "elm.swallow.content",
-                               tsd->text_setting_layout);
    elm_object_focus_set(tsd->slider_font, EINA_TRUE);
-
-   //Set a custom chain to set the focus order.
-   Eina_List *custom_chain = NULL;
-   custom_chain = eina_list_append(custom_chain, tabbar);
-   custom_chain = eina_list_append(custom_chain, tsd->text_setting_layout);
-   custom_chain = eina_list_append(custom_chain, apply_btn);
-   custom_chain = eina_list_append(custom_chain, reset_btn);
-   custom_chain = eina_list_append(custom_chain, cancel_btn);
-   elm_object_focus_custom_chain_set(setting_layout, custom_chain);
 }
 
 void
@@ -1020,15 +1034,10 @@ text_setting_term(void)
    text_setting_data *tsd = g_tsd;
    if (!tsd) return;
 
-   if (tsd->color_ctxpopup)
-     evas_object_del(tsd->color_ctxpopup);
-
-   if (tsd->color_keyword_list)
-     free(tsd->color_keyword_list);
-   if (tsd->syntax_template_format)
-     free(tsd->syntax_template_format);
-   if (tsd->syntax_template_str)
-     free(tsd->syntax_template_str);
+   evas_object_del(tsd->color_ctxpopup);
+   free(tsd->color_keyword_list);
+   free(tsd->syntax_template_format);
+   free(tsd->syntax_template_str);
    eina_stringshare_del(tsd->font_name);
    eina_stringshare_del(tsd->font_style);
    free(tsd);

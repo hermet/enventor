@@ -4,7 +4,12 @@
 #include "common.h"
 #include "text_setting.h"
 
-struct setting_s
+typedef enum {
+   SETTING_VIEW_GENERAL = 0,
+   SETTING_VIEW_TEXT
+} setting_view;
+
+typedef struct setting_s
 {
    Evas_Object *setting_layout;
 
@@ -31,11 +36,16 @@ struct setting_s
    Evas_Object *apply_btn;
    Evas_Object *reset_btn;
    Evas_Object *cancel_btn;
-};
 
-typedef struct setting_s setting_data;
+   setting_view current_view;
+} setting_data;
 
 static setting_data *g_sd = NULL;
+
+
+/*****************************************************************************/
+/* Internal method implementation                                            */
+/*****************************************************************************/
 
 static void
 img_path_entry_update(Evas_Object *entry, Eina_List *edc_img_paths)
@@ -194,7 +204,6 @@ setting_reset_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
    text_setting_linenumber_set(config_linenumber_get());
    text_setting_auto_indent_set(config_auto_indent_get());
    text_setting_auto_complete_set(config_auto_complete_get());
-
    text_setting_syntax_color_reset();
 }
 
@@ -464,26 +473,22 @@ general_layout_create(setting_data *sd, Evas_Object *parent)
 }
 
 static void
-general_tab_cb(void *data, Evas_Object *obj EINA_UNUSED,
-               void *event_info EINA_UNUSED)
+general_setting_focus_set(void)
 {
-   setting_data *sd = data;
-   Evas_Object *content;
-
-   if (!sd->setting_layout) return;
-
-   content = elm_object_part_content_get(sd->setting_layout,
-                                         "elm.swallow.content");
-
-   if (content == sd->general_layout) return;
-
-   elm_object_part_content_unset(sd->setting_layout, "elm.swallow.content");
-   evas_object_hide(content);
-
-   elm_object_part_content_set(sd->setting_layout, "elm.swallow.content",
-                               sd->general_layout);
+   setting_data *sd = g_sd;
    elm_object_focus_set(sd->img_path_entry, EINA_TRUE);
+}
 
+static Evas_Object *
+general_setting_content_get(Evas_Object *parent EINA_UNUSED)
+{
+   setting_data *sd = g_sd;
+   return sd->general_layout;
+}
+
+static void
+focus_custom_chain_set(setting_data *sd, Evas_Object *content)
+{
    //Set a custom chain to set the focus order.
    Eina_List *custom_chain = NULL;
    custom_chain = eina_list_append(custom_chain, sd->tabbar);
@@ -495,13 +500,51 @@ general_tab_cb(void *data, Evas_Object *obj EINA_UNUSED,
 }
 
 static void
-text_setting_tab_cb(void *data, Evas_Object *obj EINA_UNUSED,
-                   void *event_info EINA_UNUSED)
+toolbar_general_cb(void *data, Evas_Object *obj EINA_UNUSED,
+               void *event_info EINA_UNUSED)
 {
    setting_data *sd = data;
-   text_setting_layout_show(sd->setting_layout, sd->tabbar, sd->apply_btn,
-                            sd->reset_btn, sd->cancel_btn);
+
+   if (sd->current_view == SETTING_VIEW_GENERAL) return;
+
+   //Hide previous tab view
+   Evas_Object *pcontent = elm_object_part_content_unset(sd->setting_layout,
+                                                        "elm.swallow.content");
+   evas_object_hide(pcontent);
+
+   Evas_Object *content = general_setting_content_get(obj);
+   elm_object_part_content_set(sd->setting_layout, "elm.swallow.content",
+                               content);
+   focus_custom_chain_set(sd, content);
+   general_setting_focus_set();
+
+   sd->current_view = SETTING_VIEW_GENERAL;
 }
+
+static void
+toolbar_text_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
+{
+   setting_data *sd = data;
+
+   if (sd->current_view == SETTING_VIEW_TEXT) return;
+
+   //Hide previous tab view
+   Evas_Object *pcontent = elm_object_part_content_unset(sd->setting_layout,
+                                                        "elm.swallow.content");
+   evas_object_hide(pcontent);
+
+   Evas_Object *content = text_setting_content_get(obj);
+   elm_object_part_content_set(sd->setting_layout, "elm.swallow.content",
+                               content);
+   focus_custom_chain_set(sd, content);
+   text_setting_focus_set();
+
+   sd->current_view = SETTING_VIEW_TEXT;
+}
+
+/*****************************************************************************/
+/* Externally accessible calls                                               */
+/*****************************************************************************/
 
 void
 setting_open(void)
@@ -538,19 +581,14 @@ setting_open(void)
    elm_toolbar_select_mode_set(tabbar, ELM_OBJECT_SELECT_MODE_ALWAYS);
    evas_object_size_hint_weight_set(tabbar, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 
-   elm_toolbar_item_append(tabbar, NULL, _("General"), general_tab_cb, sd);
-   elm_toolbar_item_append(tabbar, NULL, _("Text Editor"), text_setting_tab_cb, sd);
+   elm_toolbar_item_append(tabbar, NULL, _("General"), toolbar_general_cb, sd);
+   elm_toolbar_item_append(tabbar, NULL, _("Text Editor"), toolbar_text_cb, sd);
 
    elm_object_part_content_set(layout, "elm.swallow.tabbar", tabbar);
 
    //General layout
    Evas_Object *general_layout = general_layout_create(sd, layout);
    elm_object_part_content_set(layout, "elm.swallow.content", general_layout);
-
-   //Text setting layout
-   Evas_Object *text_setting_layout;
-   text_setting_layout = text_setting_layout_create(layout);
-   evas_object_hide(text_setting_layout);
 
    //Apply Button
    Evas_Object *apply_btn = elm_button_add(layout);
@@ -578,6 +616,7 @@ setting_open(void)
    sd->apply_btn = apply_btn;
    sd->reset_btn = reset_btn;
    sd->cancel_btn = cancel_btn;
+   sd->current_view = SETTING_VIEW_GENERAL;
 
    menu_activate_request();
 }
