@@ -1020,5 +1020,6 @@ text_setting_term(text_setting_data *tsd)
    free(tsd->syntax_template_str);
    eina_stringshare_del(tsd->font_name);
    eina_stringshare_del(tsd->font_style);
+   evas_object_del(tsd->layout);
    free(tsd);
 }

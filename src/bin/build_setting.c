@@ -13,8 +13,6 @@ typedef struct build_setting_s
 
 } build_setting_data;
 
-static build_setting_data *g_bsd = NULL;
-
 /*****************************************************************************/
 /* Internal method implementation                                            */
 /*****************************************************************************/
@@ -193,8 +191,6 @@ void
 build_setting_term(build_setting_data *bsd)
 {
    if (!bsd) return;
-
+   evas_object_del(bsd->layout);
    free(bsd);
-
-   g_bsd = NULL;
 }
