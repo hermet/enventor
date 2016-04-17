@@ -115,13 +115,14 @@ preference_setting_reset(preference_setting_data *psd)
 }
 
 Evas_Object *
-preference_setting_content_get(preference_setting_data *psd, Evas_Object *parent)
+preference_setting_content_get(preference_setting_data *psd,
+                               Evas_Object *parent)
 {
-   if (!psd) return NULL;
-   if (psd->scroller) return psd->scroller;
-
    static Elm_Entry_Filter_Accept_Set digits_filter_data;
    static Elm_Entry_Filter_Limit_Size limit_filter_data;
+
+   if (!psd) return NULL;
+   if (psd->scroller) return psd->scroller;
 
    //Preference
    Evas_Object *scroller = elm_scroller_add(parent);
@@ -133,6 +134,14 @@ preference_setting_content_get(preference_setting_data *psd, Evas_Object *parent
    evas_object_show(box);
 
    elm_object_content_set(scroller, box);
+
+   //Live View Label
+   Evas_Object *live_view_label = elm_label_add(box);
+   elm_object_scale_set(live_view_label, 1.1);
+   elm_object_text_set(live_view_label, "<b>Live View:");
+   evas_object_size_hint_align_set(live_view_label, 0, 0);
+   evas_object_show(live_view_label);
+   elm_box_pack_end(box, live_view_label);
 
    Evas_Object *box2;
    Evas_Object *layout_padding3;
@@ -156,7 +165,7 @@ preference_setting_content_get(preference_setting_data *psd, Evas_Object *parent
    elm_box_pack_end(box2, layout_padding3);
 
    Evas_Object *label_view_scale = label_create(layout_padding3,
-                                               _("Live View Scale"));
+                                               _("View Scale"));
    elm_object_part_content_set(layout_padding3, "elm.swallow.content",
                                label_view_scale);
 
@@ -198,7 +207,7 @@ preference_setting_content_get(preference_setting_data *psd, Evas_Object *parent
    elm_box_pack_end(box2, layout_padding3);
 
    Evas_Object *label_view_size = label_create(layout_padding3,
-                                               _("Live View Size"));
+                                               _("View Size"));
    elm_object_part_content_set(layout_padding3, "elm.swallow.content",
                                label_view_size);
 
@@ -261,6 +270,22 @@ preference_setting_content_get(preference_setting_data *psd, Evas_Object *parent
    Evas_Object *toggle_swallow = toggle_create(box, _("Dummy Parts"),
                                                config_dummy_parts_get());
    elm_box_pack_end(box, toggle_swallow);
+
+   //Separator
+   Evas_Object *separator = elm_separator_add(box);
+   evas_object_size_hint_weight_set(separator, EVAS_HINT_EXPAND, 0);
+   evas_object_size_hint_align_set(separator, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_separator_horizontal_set(separator, EINA_TRUE);
+   evas_object_show(separator);
+   elm_box_pack_end(box, separator);
+
+   //GUIs
+   Evas_Object *gui_label = elm_label_add(box);
+   elm_object_scale_set(gui_label, 1.1);
+   evas_object_size_hint_align_set(gui_label, 0, 0);
+   elm_object_text_set(gui_label, "<b>GUI Preference:");
+   evas_object_show(gui_label);
+   elm_box_pack_end(box, gui_label);
 
    //Toggle (Status)
    Evas_Object *toggle_stats = toggle_create(box, _("Status"),
