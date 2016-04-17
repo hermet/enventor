@@ -877,7 +877,7 @@ text_setting_content_get(text_setting_data *tsd, Evas_Object *parent)
 
    //Font Style (Box)
    box2 = elm_box_add(box);
-   evas_object_size_hint_weight_set(box2, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_weight_set(box2, 0.4, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(box2, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_show(box2);
 
