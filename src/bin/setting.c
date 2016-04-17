@@ -12,9 +12,7 @@ typedef enum {
 typedef struct setting_s
 {
    Evas_Object *setting_layout;
-
-   Evas_Object *tabbar;
-
+   Evas_Object *toolbar;
    Evas_Object *general_layout;
 
    Evas_Object *img_path_entry;
@@ -491,7 +489,7 @@ focus_custom_chain_set(setting_data *sd, Evas_Object *content)
 {
    //Set a custom chain to set the focus order.
    Eina_List *custom_chain = NULL;
-   custom_chain = eina_list_append(custom_chain, sd->tabbar);
+   custom_chain = eina_list_append(custom_chain, sd->toolbar);
    custom_chain = eina_list_append(custom_chain, sd->general_layout);
    custom_chain = eina_list_append(custom_chain, sd->apply_btn);
    custom_chain = eina_list_append(custom_chain, sd->reset_btn);
@@ -576,15 +574,15 @@ setting_open(void)
    base_win_resize_object_add(layout);
 
    //Tabbar
-   Evas_Object *tabbar = elm_toolbar_add(layout);
-   elm_toolbar_shrink_mode_set(tabbar, ELM_TOOLBAR_SHRINK_EXPAND);
-   elm_toolbar_select_mode_set(tabbar, ELM_OBJECT_SELECT_MODE_ALWAYS);
-   evas_object_size_hint_weight_set(tabbar, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   Evas_Object *toolbar = elm_toolbar_add(layout);
+   elm_toolbar_shrink_mode_set(toolbar, ELM_TOOLBAR_SHRINK_EXPAND);
+   elm_toolbar_select_mode_set(toolbar, ELM_OBJECT_SELECT_MODE_ALWAYS);
+   evas_object_size_hint_weight_set(toolbar, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 
-   elm_toolbar_item_append(tabbar, NULL, _("General"), toolbar_general_cb, sd);
-   elm_toolbar_item_append(tabbar, NULL, _("Text Editor"), toolbar_text_cb, sd);
+   elm_toolbar_item_append(toolbar, NULL, _("General"), toolbar_general_cb, sd);
+   elm_toolbar_item_append(toolbar, NULL, _("Text Editor"), toolbar_text_cb, sd);
 
-   elm_object_part_content_set(layout, "elm.swallow.tabbar", tabbar);
+   elm_object_part_content_set(layout, "elm.swallow.toolbar", toolbar);
 
    //General layout
    Evas_Object *general_layout = general_layout_create(sd, layout);
@@ -612,7 +610,7 @@ setting_open(void)
    elm_object_part_content_set(layout, "elm.swallow.cancel_btn", cancel_btn);
 
    sd->setting_layout = layout;
-   sd->tabbar = tabbar;
+   sd->toolbar = toolbar;
    sd->apply_btn = apply_btn;
    sd->reset_btn = reset_btn;
    sd->cancel_btn = cancel_btn;

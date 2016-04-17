@@ -104,7 +104,7 @@ group { name: "setting_layout";
             color: COL_HI;
          }
       }
-      part { name: "elm.swallow.tabbar";
+      part { name: "elm.swallow.toolbar";
          type: SWALLOW;
          scale: 1;
          clip_to: "clipper";
@@ -123,7 +123,7 @@ group { name: "setting_layout";
          clip_to: "clipper";
          description { state: "default" 0.0;
             rel1 {
-               to: "elm.swallow.tabbar";
+               to: "elm.swallow.toolbar";
                relative: 0.0 1.0;
             }
             rel2 {
