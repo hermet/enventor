@@ -22,7 +22,6 @@ EXTRA_DIST = \
    full_logo.png \
    frame_bg.png \
    part_highlight.png \
-   preference.png \
    runner_glow_horiz.png \
    runner_glow_vert.png \
    runner_horiz.png \

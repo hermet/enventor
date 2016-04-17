@@ -1,3 +1,6 @@
+/*****************************************************************************/
+/* Externally accessible calls                                               */
+/*****************************************************************************/
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -5,21 +8,28 @@
 #include "text_setting.h"
 
 typedef enum {
-   SETTING_VIEW_GENERAL = 0,
-   SETTING_VIEW_TEXT
+   SETTING_VIEW_PREFERENCE = 0,
+   SETTING_VIEW_TEXT,
+   SETTING_VIEW_BUILD,
+   SETTING_VIEW_NONE
 } setting_view;
 
 typedef struct setting_s
 {
    Evas_Object *setting_layout;
    Evas_Object *toolbar;
-   Evas_Object *general_layout;
 
-   Evas_Object *img_path_entry;
-   Evas_Object *snd_path_entry;
-   Evas_Object *fnt_path_entry;
-   Evas_Object *dat_path_entry;
+   text_setting_data *tsd;
+   build_setting_data *bsd;
 
+   setting_view current_view;
+
+   Evas_Object *apply_btn;
+   Evas_Object *reset_btn;
+   Evas_Object *cancel_btn;
+
+   //below: preference setting data
+   Evas_Object *preference;
    Evas_Object *slider_view;
    Evas_Object *view_size_w_entry;
    Evas_Object *view_size_h_entry;
@@ -31,75 +41,17 @@ typedef struct setting_s
    Evas_Object *toggle_tools;
    Evas_Object *toggle_console;
 
-   Evas_Object *apply_btn;
-   Evas_Object *reset_btn;
-   Evas_Object *cancel_btn;
-
-   setting_view current_view;
 } setting_data;
 
 static setting_data *g_sd = NULL;
+
+static void preference_setting_config_set(setting_data *sd);
+static void preference_setting_reset(setting_data *sd);
 
 
 /*****************************************************************************/
 /* Internal method implementation                                            */
 /*****************************************************************************/
-
-static void
-img_path_entry_update(Evas_Object *entry, Eina_List *edc_img_paths)
-{
-   elm_entry_entry_set(entry, NULL);
-
-   Eina_List *l;
-   char *edc_img_path;
-   EINA_LIST_FOREACH(edc_img_paths, l, edc_img_path)
-     {
-        elm_entry_entry_append(entry, edc_img_path);
-        elm_entry_entry_append(entry, ";");
-     }
-}
-
-static void
-fnt_path_entry_update(Evas_Object *entry, Eina_List *edc_fnt_paths)
-{
-   elm_entry_entry_set(entry, NULL);
-
-   Eina_List *l;
-   char *edc_fnt_path;
-   EINA_LIST_FOREACH(edc_fnt_paths, l, edc_fnt_path)
-     {
-        elm_entry_entry_append(entry, edc_fnt_path);
-        elm_entry_entry_append(entry, ";");
-     }
-}
-
-static void
-dat_path_entry_update(Evas_Object *entry, Eina_List *edc_dat_paths)
-{
-   elm_entry_entry_set(entry, NULL);
-
-   Eina_List *l;
-   char *edc_dat_path;
-   EINA_LIST_FOREACH(edc_dat_paths, l, edc_dat_path)
-     {
-        elm_entry_entry_append(entry, edc_dat_path);
-        elm_entry_entry_append(entry, ";");
-     }
-}
-
-static void
-snd_path_entry_update(Evas_Object *entry, Eina_List *edc_snd_paths)
-{
-   elm_entry_entry_set(entry, NULL);
-
-   Eina_List *l;
-   char *edc_snd_path;
-   EINA_LIST_FOREACH(edc_snd_paths, l, edc_snd_path)
-     {
-        elm_entry_entry_append(entry, edc_snd_path);
-        elm_entry_entry_append(entry, ";");
-     }
-}
 
 static void
 setting_dismiss_done_cb(void *data, Evas_Object *obj EINA_UNUSED,
@@ -108,7 +60,8 @@ setting_dismiss_done_cb(void *data, Evas_Object *obj EINA_UNUSED,
 {
    setting_data *sd = data;
 
-   text_setting_term();
+   text_setting_term(sd->tsd);
+   build_setting_term(sd->bsd);
 
    evas_object_del(sd->setting_layout);
    sd->setting_layout = NULL;
@@ -124,29 +77,9 @@ setting_apply_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
 {
    setting_data *sd = data;
 
-   config_img_path_set(elm_object_text_get(sd->img_path_entry));
-   config_snd_path_set(elm_object_text_get(sd->snd_path_entry));
-   config_fnt_path_set(elm_object_text_get(sd->fnt_path_entry));
-   config_dat_path_set(elm_object_text_get(sd->dat_path_entry));
-   config_view_scale_set(elm_slider_value_get(sd->slider_view));
-   config_tools_set(elm_check_state_get(sd->toggle_tools));
-   config_console_set(elm_check_state_get(sd->toggle_console));
-   config_stats_bar_set(elm_check_state_get(sd->toggle_stats));
-   config_part_highlight_set(elm_check_state_get(sd->toggle_highlight));
-   config_dummy_parts_set(elm_check_state_get(sd->toggle_swallow));
-   config_file_browser_set(elm_check_state_get(sd->toggle_file_browser));
-   config_edc_navigator_set(elm_check_state_get(sd->toggle_edc_navigator));
-   text_setting_config_set();
-
-   Evas_Coord w = 0;
-   Evas_Coord h = 0;
-   const char *w_entry = elm_entry_entry_get(sd->view_size_w_entry);
-   if (w_entry) w = (Evas_Coord)atoi(w_entry);
-   const char *h_entry = elm_entry_entry_get(sd->view_size_h_entry);
-   if (h_entry) h = (Evas_Coord)atoi(h_entry);
-   config_view_size_set(w, h);
-
-   text_setting_syntax_color_save();
+   preference_setting_config_set(sd);
+   build_setting_config_set(sd->bsd);
+   text_setting_config_set(sd->tsd);
 
    config_apply();
 
@@ -166,43 +99,22 @@ setting_reset_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 {
    setting_data *sd = data;
 
-   img_path_entry_update(sd->img_path_entry,
-                         (Eina_List *)config_img_path_list_get());
-   snd_path_entry_update(sd->snd_path_entry,
-                         (Eina_List *)config_snd_path_list_get());
-   fnt_path_entry_update(sd->fnt_path_entry,
-                         (Eina_List *)config_fnt_path_list_get());
-   dat_path_entry_update(sd->dat_path_entry,
-                         (Eina_List *)config_dat_path_list_get());
+   preference_setting_reset(sd);
+   text_setting_reset(sd->tsd);
+   build_setting_reset(sd->bsd);
+}
 
-   elm_slider_value_set(sd->slider_view, (double) config_view_scale_get());
-
-   elm_check_state_set(sd->toggle_console, config_console_get());
-   elm_check_state_set(sd->toggle_tools, config_tools_get());
-   elm_check_state_set(sd->toggle_stats, config_stats_bar_get());
-   elm_check_state_set(sd->toggle_highlight, config_part_highlight_get());
-   elm_check_state_set(sd->toggle_swallow, config_dummy_parts_get());
-   elm_check_state_set(sd->toggle_file_browser, config_file_browser_get());
-   elm_check_state_set(sd->toggle_edc_navigator, config_edc_navigator_get());
-
-   //Reset view scale
-   int view_size_w, view_size_h;
-   config_view_size_get(&view_size_w, &view_size_h);
-   char buf[10];
-   snprintf(buf, sizeof(buf), "%d", view_size_w);
-   elm_entry_entry_set(sd->view_size_w_entry, buf);
-   snprintf(buf, sizeof(buf), "%d", view_size_h);
-   elm_entry_entry_set(sd->view_size_h_entry, buf);
-
-   const char *font_name;
-   const char *font_style;
-   config_font_get(&font_name, &font_style);
-   text_setting_font_set(font_name, font_style);
-   text_setting_font_scale_set((double) config_font_scale_get());
-   text_setting_linenumber_set(config_linenumber_get());
-   text_setting_auto_indent_set(config_auto_indent_get());
-   text_setting_auto_complete_set(config_auto_complete_get());
-   text_setting_syntax_color_reset();
+static void
+focus_custom_chain_set(setting_data *sd, Evas_Object *content)
+{
+   //Set a custom chain to set the focus order.
+   Eina_List *custom_chain = NULL;
+   custom_chain = eina_list_append(custom_chain, sd->toolbar);
+   custom_chain = eina_list_append(custom_chain, sd->preference);
+   custom_chain = eina_list_append(custom_chain, sd->apply_btn);
+   custom_chain = eina_list_append(custom_chain, sd->reset_btn);
+   custom_chain = eina_list_append(custom_chain, sd->cancel_btn);
+   elm_object_focus_custom_chain_set(sd->setting_layout, custom_chain);
 }
 
 static Evas_Object *
@@ -240,55 +152,57 @@ toggle_create(Evas_Object *parent, const char *text, Eina_Bool state)
    return toggle;
 }
 
+static void
+preference_setting_reset(setting_data *sd)
+{
+   elm_slider_value_set(sd->slider_view, (double) config_view_scale_get());
+   elm_check_state_set(sd->toggle_console, config_console_get());
+   elm_check_state_set(sd->toggle_tools, config_tools_get());
+   elm_check_state_set(sd->toggle_stats, config_stats_bar_get());
+   elm_check_state_set(sd->toggle_highlight, config_part_highlight_get());
+   elm_check_state_set(sd->toggle_swallow, config_dummy_parts_get());
+   elm_check_state_set(sd->toggle_file_browser, config_file_browser_get());
+   elm_check_state_set(sd->toggle_edc_navigator, config_edc_navigator_get());
+
+   //Reset view scale
+   int view_size_w, view_size_h;
+   config_view_size_get(&view_size_w, &view_size_h);
+   char buf[10];
+   snprintf(buf, sizeof(buf), "%d", view_size_w);
+   elm_entry_entry_set(sd->view_size_w_entry, buf);
+   snprintf(buf, sizeof(buf), "%d", view_size_h);
+   elm_entry_entry_set(sd->view_size_h_entry, buf);
+}
+
+static void
+preference_setting_config_set(setting_data *sd)
+{
+   config_view_scale_set(elm_slider_value_get(sd->slider_view));
+   config_tools_set(elm_check_state_get(sd->toggle_tools));
+   config_console_set(elm_check_state_get(sd->toggle_console));
+   config_stats_bar_set(elm_check_state_get(sd->toggle_stats));
+   config_part_highlight_set(elm_check_state_get(sd->toggle_highlight));
+   config_dummy_parts_set(elm_check_state_get(sd->toggle_swallow));
+   config_file_browser_set(elm_check_state_get(sd->toggle_file_browser));
+   config_edc_navigator_set(elm_check_state_get(sd->toggle_edc_navigator));
+
+   Evas_Coord w = 0;
+   Evas_Coord h = 0;
+   const char *w_entry = elm_entry_entry_get(sd->view_size_w_entry);
+   if (w_entry) w = (Evas_Coord)atoi(w_entry);
+   const char *h_entry = elm_entry_entry_get(sd->view_size_h_entry);
+   if (h_entry) h = (Evas_Coord)atoi(h_entry);
+   config_view_size_set(w, h);
+}
+
 static Evas_Object *
-general_layout_create(setting_data *sd, Evas_Object *parent)
+preference_create(setting_data *sd, Evas_Object *parent)
 {
    static Elm_Entry_Filter_Accept_Set digits_filter_data;
    static Elm_Entry_Filter_Limit_Size limit_filter_data;
 
-   //Layout
-   Evas_Object *layout = elm_layout_add(parent);
-   elm_layout_file_set(layout, EDJE_PATH, "general_layout");
-   evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_show(layout);
-
-   //Image Path Entry
-   Evas_Object *img_path_entry = entry_create(layout);
-   img_path_entry_update(img_path_entry,
-                         (Eina_List *)config_img_path_list_get());
-   elm_object_focus_set(img_path_entry, EINA_TRUE);
-   elm_object_part_content_set(layout, "elm.swallow.img_path_entry",
-                               img_path_entry);
-   elm_layout_text_set(layout, "img_path_guide", _("Image Paths:"));
-
-   //Sound Path Entry
-   Evas_Object *snd_path_entry = entry_create(layout);
-   snd_path_entry_update(snd_path_entry,
-                         (Eina_List *)config_snd_path_list_get());
-   elm_object_part_content_set(layout, "elm.swallow.snd_path_entry",
-                               snd_path_entry);
-   elm_layout_text_set(layout, "snd_path_guide", _("Sound Paths:"));
-
-   //Font Path Entry
-   Evas_Object *fnt_path_entry = entry_create(layout);
-   fnt_path_entry_update(fnt_path_entry,
-                         (Eina_List *)config_fnt_path_list_get());
-   elm_object_part_content_set(layout, "elm.swallow.fnt_path_entry",
-                               fnt_path_entry);
-   elm_layout_text_set(layout, "fnt_path_guide", _("Font Paths:"));
-
-   //Data Path Entry
-   Evas_Object *dat_path_entry = entry_create(layout);
-   dat_path_entry_update(dat_path_entry,
-                         (Eina_List *)config_dat_path_list_get());
-   elm_object_part_content_set(layout, "elm.swallow.dat_path_entry",
-                               dat_path_entry);
-   elm_layout_text_set(layout, "dat_path_guide", _("Data Paths:"));
-
    //Preference
-   Evas_Object *scroller = elm_scroller_add(layout);
-   elm_object_part_content_set(layout, "elm.swallow.preference", scroller);
-   elm_layout_text_set(layout, "preference_guide", _("Preferences:"));
+   Evas_Object *scroller = elm_scroller_add(parent);
 
    //Box
    Evas_Object *box = elm_box_add(scroller);
@@ -449,13 +363,11 @@ general_layout_create(setting_data *sd, Evas_Object *parent)
    //Toggle (Console)
    Evas_Object *toggle_console = toggle_create(box, _("Auto Hiding Console"),
                                                config_console_get());
+   evas_object_size_hint_weight_set(toggle_console, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(toggle_console, EVAS_HINT_FILL, 0);
    elm_box_pack_end(box, toggle_console);
 
-   sd->general_layout = layout;
-   sd->img_path_entry = img_path_entry;
-   sd->snd_path_entry = snd_path_entry;
-   sd->fnt_path_entry = fnt_path_entry;
-   sd->dat_path_entry = dat_path_entry;
+   sd->preference = scroller;
    sd->slider_view = slider_view;
    sd->view_size_w_entry = entry_view_size_w;
    sd->view_size_h_entry = entry_view_size_h;
@@ -467,56 +379,43 @@ general_layout_create(setting_data *sd, Evas_Object *parent)
    sd->toggle_tools = toggle_tools;
    sd->toggle_console = toggle_console;
 
-   return layout;
+   return scroller;
 }
 
 static void
-general_setting_focus_set(void)
+preference_setting_focus_set(void)
 {
    setting_data *sd = g_sd;
-   elm_object_focus_set(sd->img_path_entry, EINA_TRUE);
+   elm_object_focus_set(sd->slider_view, EINA_TRUE);
 }
 
 static Evas_Object *
-general_setting_content_get(Evas_Object *parent EINA_UNUSED)
+preference_setting_content_get(Evas_Object *parent EINA_UNUSED)
 {
    setting_data *sd = g_sd;
-   return sd->general_layout;
+   return sd->preference;
 }
 
 static void
-focus_custom_chain_set(setting_data *sd, Evas_Object *content)
-{
-   //Set a custom chain to set the focus order.
-   Eina_List *custom_chain = NULL;
-   custom_chain = eina_list_append(custom_chain, sd->toolbar);
-   custom_chain = eina_list_append(custom_chain, sd->general_layout);
-   custom_chain = eina_list_append(custom_chain, sd->apply_btn);
-   custom_chain = eina_list_append(custom_chain, sd->reset_btn);
-   custom_chain = eina_list_append(custom_chain, sd->cancel_btn);
-   elm_object_focus_custom_chain_set(sd->setting_layout, custom_chain);
-}
-
-static void
-toolbar_general_cb(void *data, Evas_Object *obj EINA_UNUSED,
-               void *event_info EINA_UNUSED)
+toolbar_preferene_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                       void *event_info EINA_UNUSED)
 {
    setting_data *sd = data;
 
-   if (sd->current_view == SETTING_VIEW_GENERAL) return;
+   if (sd->current_view == SETTING_VIEW_PREFERENCE) return;
 
    //Hide previous tab view
    Evas_Object *pcontent = elm_object_part_content_unset(sd->setting_layout,
                                                         "elm.swallow.content");
    evas_object_hide(pcontent);
 
-   Evas_Object *content = general_setting_content_get(obj);
+   Evas_Object *content = preference_setting_content_get(obj);
    elm_object_part_content_set(sd->setting_layout, "elm.swallow.content",
                                content);
    focus_custom_chain_set(sd, content);
-   general_setting_focus_set();
+   preference_setting_focus_set();
 
-   sd->current_view = SETTING_VIEW_GENERAL;
+   sd->current_view = SETTING_VIEW_PREFERENCE;
 }
 
 static void
@@ -526,19 +425,45 @@ toolbar_text_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
 
    if (sd->current_view == SETTING_VIEW_TEXT) return;
 
+   if (!sd->tsd) sd->tsd = text_setting_init();
+
    //Hide previous tab view
    Evas_Object *pcontent = elm_object_part_content_unset(sd->setting_layout,
                                                         "elm.swallow.content");
    evas_object_hide(pcontent);
 
-   Evas_Object *content = text_setting_content_get(obj);
+   Evas_Object *content = text_setting_content_get(sd->tsd, obj);
    elm_object_part_content_set(sd->setting_layout, "elm.swallow.content",
                                content);
    focus_custom_chain_set(sd, content);
-   text_setting_focus_set();
+   text_setting_focus_set(sd->tsd);
 
    sd->current_view = SETTING_VIEW_TEXT;
 }
+
+static void
+toolbar_build_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
+{
+   setting_data *sd = data;
+
+   if (sd->current_view == SETTING_VIEW_BUILD) return;
+
+   if (!sd->bsd) sd->bsd = build_setting_init();
+
+   //Hide previous tab view
+   Evas_Object *pcontent = elm_object_part_content_unset(sd->setting_layout,
+                                                        "elm.swallow.content");
+   evas_object_hide(pcontent);
+
+   Evas_Object *content = build_setting_content_get(sd->bsd, obj);
+   elm_object_part_content_set(sd->setting_layout, "elm.swallow.content",
+                               content);
+   focus_custom_chain_set(sd, content);
+   build_setting_focus_set(sd->bsd);
+
+   sd->current_view = SETTING_VIEW_BUILD;
+}
+
 
 /*****************************************************************************/
 /* Externally accessible calls                                               */
@@ -558,8 +483,6 @@ setting_open(void)
      }
    g_sd = sd;
 
-   text_setting_init();
-
    search_close();
    goto_close();
 
@@ -575,18 +498,25 @@ setting_open(void)
 
    //Tabbar
    Evas_Object *toolbar = elm_toolbar_add(layout);
+   //elm_object_style_set(toolbar, "item_horizontal");
    elm_toolbar_shrink_mode_set(toolbar, ELM_TOOLBAR_SHRINK_EXPAND);
    elm_toolbar_select_mode_set(toolbar, ELM_OBJECT_SELECT_MODE_ALWAYS);
-   evas_object_size_hint_weight_set(toolbar, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_weight_set(toolbar, EVAS_HINT_EXPAND,
+                                    EVAS_HINT_EXPAND);
 
-   elm_toolbar_item_append(toolbar, NULL, _("General"), toolbar_general_cb, sd);
-   elm_toolbar_item_append(toolbar, NULL, _("Text Editor"), toolbar_text_cb, sd);
+   elm_toolbar_item_append(toolbar, NULL,  _("Preferences"),
+                           toolbar_preferene_cb, sd);
+   elm_toolbar_item_append(toolbar, NULL, _("Text Editor"), toolbar_text_cb,
+                           sd);
+   elm_toolbar_item_append(toolbar, NULL, _("EDC Build"), toolbar_build_cb,
+                           sd);
 
    elm_object_part_content_set(layout, "elm.swallow.toolbar", toolbar);
 
-   //General layout
-   Evas_Object *general_layout = general_layout_create(sd, layout);
-   elm_object_part_content_set(layout, "elm.swallow.content", general_layout);
+   //Preference layout
+   Evas_Object *preference = preference_create(sd, layout);
+   elm_object_part_content_set(layout, "elm.swallow.content", preference);
+   preference_setting_focus_set();
 
    //Apply Button
    Evas_Object *apply_btn = elm_button_add(layout);
@@ -614,7 +544,6 @@ setting_open(void)
    sd->apply_btn = apply_btn;
    sd->reset_btn = reset_btn;
    sd->cancel_btn = cancel_btn;
-   sd->current_view = SETTING_VIEW_GENERAL;
 
    menu_activate_request();
 }

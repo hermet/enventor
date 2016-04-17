@@ -29,6 +29,7 @@ typedef struct text_setting_s
    Evas_Object *toggle_autocomp;
    Evas_Object *toggle_smart_undo_redo;
    Evas_Object *list_font_name;
+   Evas_Object *list_font_style;
 
    color_keyword *color_keyword_list;
    char *syntax_template_format;
@@ -93,8 +94,6 @@ static int color_type_list[COLOR_KEYWORD_MAX_CNT] =
    ENVENTOR_SYNTAX_COLOR_SYMBOL,         ENVENTOR_SYNTAX_COLOR_SYMBOL
 };
 
-static text_setting_data *g_tsd = NULL;
-
 /*****************************************************************************/
 /* Internal method implementation                                            */
 /*****************************************************************************/
@@ -149,9 +148,8 @@ syntax_template_set(char *syntax_template_str, char *syntax_template_format,
 }
 
 static void
-syntax_template_apply(void)
+syntax_template_apply(text_setting_data *tsd)
 {
-   text_setting_data *tsd = g_tsd;
    Evas_Object *layout = tsd->layout;
    if (!layout) return;
 
@@ -175,15 +173,14 @@ text_setting_syntax_color_load(void)
      }
 }
 
-void
-text_setting_syntax_color_reset(void)
+static void
+text_setting_syntax_color_reset(text_setting_data *tsd)
 {
    text_setting_syntax_color_load();
-
-   syntax_template_apply();
+   syntax_template_apply(tsd);
 }
 
-void
+static void
 text_setting_syntax_color_save(void)
 {
    Enventor_Syntax_Color_Type color_type = ENVENTOR_SYNTAX_COLOR_STRING;
@@ -230,10 +227,10 @@ color_ctxpopup_dismiss_cb(void *data EINA_UNUSED, Evas_Object *obj,
 }
 
 static void
-color_ctxpopup_del_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
+color_ctxpopup_del_cb(void *data, Evas *e EINA_UNUSED,
                       Evas_Object *obj, void *event_info EINA_UNUSED)
 {
-   text_setting_data *tsd = g_tsd;
+   text_setting_data *tsd = data;
    color_keyword *selected_color_keyword;
    selected_color_keyword = evas_object_data_get(obj, "color_keyword");
 
@@ -241,7 +238,7 @@ color_ctxpopup_del_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
    elm_object_focus_set(tsd->slider_font, EINA_TRUE);
 
    text_setting_syntax_color_update(obj, selected_color_keyword);
-   syntax_template_apply();
+   syntax_template_apply(tsd);
 
    elm_config_focus_autoscroll_mode_set(ELM_FOCUS_AUTOSCROLL_MODE_SHOW);
 
@@ -249,20 +246,23 @@ color_ctxpopup_del_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
 }
 
 static void
-color_slider_changed_cb(void *data EINA_UNUSED, Evas_Object *obj,
+color_slider_changed_cb(void *data, Evas_Object *obj,
                         void *event_info EINA_UNUSED)
 {
+   text_setting_data *tsd = data;
+
    Evas_Object *ctxpopup = evas_object_data_get(obj, "ctxpopup");
    color_keyword *selected_color_keyword;
    selected_color_keyword = evas_object_data_get(ctxpopup, "color_keyword");
 
    text_setting_syntax_color_update(ctxpopup, selected_color_keyword);
-   syntax_template_apply();
+   syntax_template_apply(tsd);
 }
 
 static Evas_Object *
-color_slider_layout_create(Evas_Object *parent, Evas_Object *ctxpopup,
-                           const char *type, double slider_val)
+color_slider_layout_create(text_setting_data *tsd, Evas_Object *parent,
+                           Evas_Object *ctxpopup, const char *type,
+                           double slider_val)
 {
    //Layout
    Evas_Object *layout = elm_layout_add(parent);
@@ -289,7 +289,7 @@ color_slider_layout_create(Evas_Object *parent, Evas_Object *ctxpopup,
    elm_object_part_text_set(layout, "elm.text.slider_max", slider_max);
    elm_object_part_content_set(layout, "elm.swallow.slider", slider);
    evas_object_smart_callback_add(slider, "changed", color_slider_changed_cb,
-                                  NULL);
+                                  tsd);
    return layout;
 }
 
@@ -321,7 +321,7 @@ convert_hexadecimal_to_decimal(char *hexadecimal)
 }
 
 static void
-color_slider_layout_set(Evas_Object *ctxpopup)
+color_slider_layout_set(text_setting_data *tsd, Evas_Object *ctxpopup)
 {
    Eina_Array *type_array;
    Eina_Stringshare *type = NULL;
@@ -358,7 +358,7 @@ color_slider_layout_set(Evas_Object *ctxpopup)
 
    EINA_ARRAY_ITER_NEXT(type_array, i, type, itr)
      {
-        layout = color_slider_layout_create(box, ctxpopup, type,
+        layout = color_slider_layout_create(tsd, box, ctxpopup, type,
                                             color_rgb_val[i]);
         if (i % 2) elm_object_signal_emit(layout, "odd,item,set", "");
         elm_box_pack_end(box, layout);
@@ -372,10 +372,10 @@ color_slider_layout_set(Evas_Object *ctxpopup)
 }
 
 static Evas_Object *
-color_ctxpopup_create(Evas_Object *parent,
+color_ctxpopup_create(text_setting_data *tsd,
                       color_keyword *selected_color_keyword)
 {
-   Evas_Object *ctxpopup = elm_ctxpopup_add(parent);
+   Evas_Object *ctxpopup = elm_ctxpopup_add(tsd->layout);
    if (!ctxpopup) return NULL;
 
    elm_config_focus_autoscroll_mode_set(ELM_FOCUS_AUTOSCROLL_MODE_NONE);
@@ -386,10 +386,10 @@ color_ctxpopup_create(Evas_Object *parent,
                                        ELM_CTXPOPUP_DIRECTION_LEFT,
                                        ELM_CTXPOPUP_DIRECTION_UP,
                                        ELM_CTXPOPUP_DIRECTION_DOWN);
-   color_slider_layout_set(ctxpopup);
+   color_slider_layout_set(tsd, ctxpopup);
 
    evas_object_event_callback_add(ctxpopup, EVAS_CALLBACK_DEL,
-                                  color_ctxpopup_del_cb, NULL);
+                                  color_ctxpopup_del_cb, tsd);
    evas_object_smart_callback_add(ctxpopup, "dismissed",
                                   color_ctxpopup_dismiss_cb, NULL);
    return ctxpopup;
@@ -427,10 +427,8 @@ color_keyword_list_create(char *syntax_template_str)
 }
 
 static char *
-syntax_template_format_create(void)
+syntax_template_format_create(text_setting_data *tsd)
 {
-   text_setting_data *tsd = g_tsd;
-
    text_setting_syntax_color_load();
 
    char file_path[PATH_MAX];
@@ -468,17 +466,17 @@ err:
 }
 
 static char *
-syntax_template_create(double font_scale)
+syntax_template_create(text_setting_data *tsd)
 {
-   text_setting_data *tsd = g_tsd;
    char *syntax_template_str = NULL;
-   char *syntax_template_format = syntax_template_format_create();
+   char *syntax_template_format = syntax_template_format_create(tsd);
    if (!syntax_template_format) goto err;
 
    syntax_template_str = calloc(1, sizeof(char) * SYNTAX_TEMPLATE_MAX_LEN);
    if (!syntax_template_str) goto err;
 
-   syntax_template_set(syntax_template_str, syntax_template_format, font_scale);
+   syntax_template_set(syntax_template_str, syntax_template_format,
+                       tsd->font_scale);
 
    color_keyword *color_keyword_list;
    color_keyword_list = color_keyword_list_create(syntax_template_str);
@@ -562,8 +560,7 @@ text_setting_double_clicked_cb(void *data, Evas_Object *obj,
         if ((pos >= selected_color_keyword->pos_begin) &&
             (pos <= selected_color_keyword->pos_end))
           {
-             ctxpopup = color_ctxpopup_create(tsd->layout,
-                                              selected_color_keyword);
+             ctxpopup = color_ctxpopup_create(tsd, selected_color_keyword);
              if (!ctxpopup) return;
 
              evas_pointer_output_xy_get(evas_object_evas_get(obj), &x, &y);
@@ -618,14 +615,12 @@ font_scale_slider_changed_cb(void *data, Evas_Object *obj,
    double val = elm_slider_value_get(obj);
    tsd->font_scale = val;
 
-   syntax_template_apply();
+   syntax_template_apply(tsd);
 }
 
 static void
-text_setting_font_apply(void)
+text_setting_font_apply(text_setting_data *tsd)
 {
-   text_setting_data *tsd = g_tsd;
-
    char text_class_name[32];
    snprintf(text_class_name, sizeof(text_class_name), "%s_setting_entry",
             "enventor");
@@ -649,23 +644,22 @@ font_cmp_cb(const void *data1,
 }
 
 static void
-font_style_selected_cb(void *data EINA_UNUSED, Evas_Object *obj,
+font_style_selected_cb(void *data, Evas_Object *obj,
                        void *event_info EINA_UNUSED)
 {
-   text_setting_data *tsd = g_tsd;
+   text_setting_data *tsd = data;
    Elm_Object_Item *font_style_it = elm_list_selected_item_get(obj);
    const char *font_style = elm_object_item_text_get(font_style_it);
 
    eina_stringshare_replace(&tsd->font_style, font_style);
-   text_setting_font_apply();
+   text_setting_font_apply(tsd);
 }
 
 static void
 font_name_selected_cb(void *data, Evas_Object *obj,
                       void *event_info EINA_UNUSED)
 {
-   text_setting_data *tsd = g_tsd;
-   Evas_Object *list_font_style = data;
+   text_setting_data *tsd = data;
    Elm_Object_Item *font_name_it = elm_list_selected_item_get(obj);
    Elm_Object_Item *font_style_it = NULL;
    const char *sel_font_name = elm_object_item_text_get(font_name_it);
@@ -674,7 +668,7 @@ font_name_selected_cb(void *data, Evas_Object *obj,
 
    config_font_get(&font_name, &font_style);
 
-   elm_list_clear(list_font_style);
+   elm_list_clear(tsd->list_font_style);
 
    //Append Items of Font Style List
    Elm_Font_Properties *efp;
@@ -694,9 +688,10 @@ font_name_selected_cb(void *data, Evas_Object *obj,
                   EINA_LIST_FOREACH(efp->styles, ll, style)
                     {
                        Elm_Object_Item *it
-                          = elm_list_item_append(list_font_style, style, NULL,
+                          = elm_list_item_append(tsd->list_font_style, style,
+                                                 NULL,
                                                  NULL, font_style_selected_cb,
-                                                 NULL);
+                                                 tsd);
                        if (font_name && !strcmp(font_name, efp->name) &&
                            font_style && !strcmp(font_style, style))
                          font_style_it = it;
@@ -705,12 +700,12 @@ font_name_selected_cb(void *data, Evas_Object *obj,
              elm_font_properties_free(efp);
           }
      }
-   elm_list_go(list_font_style);
+   elm_list_go(tsd->list_font_style);
    if (font_style_it) elm_list_item_selected_set(font_style_it, EINA_TRUE);
 
    eina_stringshare_replace(&tsd->font_name, sel_font_name);
    eina_stringshare_replace(&tsd->font_style, NULL);
-   text_setting_font_apply();
+   text_setting_font_apply(tsd);
 }
 
 static Eina_Bool
@@ -728,14 +723,38 @@ is_supported_font(const char *font_name)
    return EINA_TRUE;
 }
 
+static void
+text_setting_font_set(text_setting_data *tsd, const char *font_name,
+                      const char *font_style)
+{
+   eina_stringshare_replace(&tsd->font_name, font_name);
+   eina_stringshare_replace(&tsd->font_style, font_style);
+
+   if (!tsd->list_font_name) return;
+
+   const Eina_List *it_list = elm_list_items_get(tsd->list_font_name);
+   const Eina_List *l;
+   Elm_Object_Item *it;
+
+   EINA_LIST_FOREACH(it_list, l, it)
+     {
+        const char *name = elm_object_item_text_get(it);
+        if (font_name && !strcmp(font_name, name))
+          {
+             elm_list_item_selected_set(it, EINA_TRUE);
+             break;
+          }
+     }
+}
+
 /*****************************************************************************/
 /* Externally accessible calls                                               */
 /*****************************************************************************/
 
 Evas_Object *
-text_setting_content_get(Evas_Object *parent)
+text_setting_content_get(text_setting_data *tsd, Evas_Object *parent)
 {
-   text_setting_data *tsd = g_tsd;
+   if (!tsd) return NULL;
    if (tsd->layout) return tsd->layout;
 
    //Layout
@@ -759,7 +778,7 @@ text_setting_content_get(Evas_Object *parent)
 
    //Font Scale Information
    tsd->font_scale = (double) config_font_scale_get();
-   char *syntax_template_str = syntax_template_create(tsd->font_scale);
+   char *syntax_template_str = syntax_template_create(tsd);
    elm_entry_entry_set(entry, syntax_template_str);
    evas_object_smart_callback_add(entry, "clicked,double",
                                   text_setting_double_clicked_cb, tsd);
@@ -879,8 +898,8 @@ text_setting_content_get(Evas_Object *parent)
                                label_font_style);
 
    //Font Style (List)
-   Evas_Object *list_font_style = list_create(box2);
-   elm_box_pack_end(box2, list_font_style);
+   tsd->list_font_style = list_create(box2);
+   elm_box_pack_end(box2, tsd->list_font_style);
 
    //Font Name and Style Information
    const char *font_name;
@@ -909,7 +928,7 @@ text_setting_content_get(Evas_Object *parent)
                   Elm_Object_Item *it
                      = elm_list_item_append(list_font_name, efp->name, NULL,
                                             NULL, font_name_selected_cb,
-                                            list_font_style);
+                                            tsd);
                   if (font_name && !strcmp(font_name, efp->name))
                     font_name_it = it;
                   snprintf(prev_font, sizeof(prev_font), "%s", efp->name);
@@ -933,16 +952,17 @@ text_setting_content_get(Evas_Object *parent)
 }
 
 void
-text_setting_focus_set(void)
+text_setting_focus_set(text_setting_data *tsd)
 {
-   text_setting_data *tsd = g_tsd;
+   if (!tsd) return;
+
    elm_object_focus_set(tsd->slider_font, EINA_TRUE);
 }
 
 void
-text_setting_config_set(void)
+text_setting_config_set(text_setting_data *tsd)
 {
-   text_setting_data *tsd = g_tsd;
+   if (!tsd) return;
 
    config_font_set(tsd->font_name, tsd->font_style);
    config_font_scale_set((float) elm_slider_value_get(tsd->slider_font));
@@ -950,88 +970,48 @@ text_setting_config_set(void)
    config_auto_indent_set(elm_check_state_get(tsd->toggle_indent));
    config_auto_complete_set(elm_check_state_get(tsd->toggle_autocomp));
    config_smart_undo_redo_set(elm_check_state_get(tsd->toggle_smart_undo_redo));
+
+   text_setting_syntax_color_save();
 }
 
 void
-text_setting_font_set(const char *font_name, const char *font_style)
+text_setting_reset(text_setting_data *tsd)
 {
-   text_setting_data *tsd = g_tsd;
+   if (!tsd) return;
 
-   eina_stringshare_replace(&tsd->font_name, font_name);
-   eina_stringshare_replace(&tsd->font_style, font_style);
-
-   if (!tsd->list_font_name) return;
-
-   const Eina_List *it_list = elm_list_items_get(tsd->list_font_name);
-   const Eina_List *l;
-   Elm_Object_Item *it;
-
-   EINA_LIST_FOREACH(it_list, l, it)
-     {
-        const char *name = elm_object_item_text_get(it);
-        if (font_name && !strcmp(font_name, name))
-          {
-             elm_list_item_selected_set(it, EINA_TRUE);
-             break;
-          }
-     }
-}
-
-void
-text_setting_font_scale_set(double font_scale)
-{
-   text_setting_data *tsd = g_tsd;
-   tsd->font_scale = font_scale;
+   //font scale
+   tsd->font_scale = (double) config_font_scale_get();
    elm_slider_value_set(tsd->slider_font, tsd->font_scale);
+
+   elm_check_state_set(tsd->toggle_linenum, config_linenumber_get());
+   elm_check_state_set(tsd->toggle_indent, config_auto_indent_get());
+   elm_check_state_set(tsd->toggle_autocomp, config_auto_complete_get());
+   elm_check_state_set(tsd->toggle_smart_undo_redo,
+                       config_smart_undo_redo_get());
+
+   //font reset
+   const char *font_name, *font_style;
+   config_font_get(&font_name, &font_style);
+   text_setting_font_set(tsd, font_name, font_style);
+
+   text_setting_syntax_color_reset(tsd);
 }
 
-void
-text_setting_linenumber_set(Eina_Bool enabled)
-{
-   text_setting_data *tsd = g_tsd;
-   elm_check_state_set(tsd->toggle_linenum, enabled);
-}
-
-void
-text_setting_auto_indent_set(Eina_Bool enabled)
-{
-   text_setting_data *tsd = g_tsd;
-   elm_check_state_set(tsd->toggle_indent, enabled);
-}
-
-void
-text_setting_auto_complete_set(Eina_Bool enabled)
-{
-   text_setting_data *tsd = g_tsd;
-   elm_check_state_set(tsd->toggle_autocomp, enabled);
-}
-
-void
-text_setting_smart_undo_redo_set(Eina_Bool enabled)
-{
-   text_setting_data *tsd = g_tsd;
-   elm_check_state_set(tsd->toggle_smart_undo_redo, enabled);
-}
-
-void
+text_setting_data *
 text_setting_init(void)
 {
-   text_setting_data *tsd = g_tsd;
-   if (tsd) return;
-
-   tsd = calloc(1, sizeof(text_setting_data));
+   text_setting_data *tsd = calloc(1, sizeof(text_setting_data));
    if (!tsd)
      {
         EINA_LOG_ERR(_("Failed to allocate Memory!"));
-        return;
+        return NULL;
      }
-   g_tsd = tsd;
+   return tsd;
 }
 
 void
-text_setting_term(void)
+text_setting_term(text_setting_data *tsd)
 {
-   text_setting_data *tsd = g_tsd;
    if (!tsd) return;
 
    evas_object_del(tsd->color_ctxpopup);
@@ -1041,5 +1021,4 @@ text_setting_term(void)
    eina_stringshare_del(tsd->font_name);
    eina_stringshare_del(tsd->font_style);
    free(tsd);
-   g_tsd = NULL;
 }

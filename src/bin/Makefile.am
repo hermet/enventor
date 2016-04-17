@@ -30,7 +30,8 @@ enventor_SOURCES = \
 	console.c \
 	file_mgr.c \
 	edc_navigator.c \
-	file_browser.c
+	file_browser.c \
+	build_setting.c
 
 enventor_LDADD = \
 	$(top_builddir)/src/lib/libenventor.la \
