@@ -286,12 +286,33 @@ template_part_insert(edit_data *ed, Edje_Part_Type part_type,
 
    //Insert relatives
    elm_entry_entry_insert(edit_entry, p);
-   snprintf(buf, sizeof(buf), "      rel1.relative: %.2f %.2f;<br/>", rel1_x,
-            rel1_y);
-   elm_entry_entry_insert(edit_entry, buf);
-   elm_entry_entry_insert(edit_entry, p);
-   snprintf(buf, sizeof(buf), "      rel2.relative: %.2f %.2f;<br/>", rel2_x,
-            rel2_y);
+
+   //These conditions check whether the relative number is 4 places of decimals or not
+   //Condition 1: relative values are 4 places of decimals
+   if ((int)(rel1_x * 10000 + 0.5) % 100 ||
+       (int)(rel1_y * 10000 + 0.5) % 100 ||
+       (int)(rel2_x * 10000 + 0.5) % 100 ||
+       (int)(rel2_y * 10000 + 0.5) % 100)
+     {
+
+        snprintf(buf, sizeof(buf), "      rel1.relative: %.4f %.4f;<br/>", rel1_x,
+               rel1_y);
+        elm_entry_entry_insert(edit_entry, buf);
+        elm_entry_entry_insert(edit_entry, p);
+        snprintf(buf, sizeof(buf), "      rel2.relative: %.4f %.4f;<br/>", rel2_x,
+               rel2_y);
+     }
+   //Condition 2: relative values are 2 places of decimals
+   else
+     {
+        snprintf(buf, sizeof(buf), "      rel1.relative: %.2f %.2f;<br/>", rel1_x,
+               rel1_y);
+        elm_entry_entry_insert(edit_entry, buf);
+        elm_entry_entry_insert(edit_entry, p);
+        snprintf(buf, sizeof(buf), "      rel2.relative: %.2f %.2f;<br/>", rel2_x,
+               rel2_y);
+     }
+
    elm_entry_entry_insert(edit_entry, buf);
 
    //Insert the tale of the part that contains closing brackets

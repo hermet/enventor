@@ -386,6 +386,54 @@ align_line_update(live_data *ld)
 }
 
 static void
+keygrabber_direction_key_down_cb(void *data, Evas *e EINA_UNUSED,
+                       Evas_Object *obj EINA_UNUSED, void *event_info)
+{
+   live_data *ld = data;
+   Evas_Event_Key_Down *ev = event_info;
+
+   Evas_Coord x, y, w, h;
+   evas_object_geometry_get(ld->layout, &x, &y, &w, &h);
+
+   Evas_Coord vx, vy, vw, vh;
+   Evas_Object *view = view_obj_get(ld);
+   evas_object_geometry_get(view, &vx, &vy, &vw, &vh);
+
+   //Move the live item by 1 pixel to set detailed
+   //Move up
+   if (!strcmp(ev->key, "Up"))
+     y -= 1;
+   //Move down
+   else if (!strcmp(ev->key, "Down"))
+     y += 1;
+   //Move left
+   else if (!strcmp(ev->key, "Left"))
+     x -= 1;
+   //Move Right
+   else if (!strcmp(ev->key, "Right"))
+     x += 1;
+
+   //Check live view boundary
+   if (vx > x) x = vx;
+   if ((x + w) > (vx + vw)) x = (vx + vw) - w;
+   if (vy > y) y = vy;
+   if ((y + h) > (vy + vh)) y -= ((y + h) - (vy + vh));
+
+   evas_object_move(ld->layout, x, y);
+
+   //Calculate the relative value of live view item to 4 places of decimals
+   double orig_rel1_x = ld->part_info.rel1_x;
+   double orig_rel1_y = ld->part_info.rel1_y;
+   ld->part_info.rel1_x = ROUNDING(((double) (x - vx) / vw), 4);
+   ld->part_info.rel1_y = ROUNDING(((double) (y - vy) / vh), 4);
+   ld->part_info.rel2_x += ROUNDING((ld->part_info.rel1_x - orig_rel1_x), 4);
+   ld->part_info.rel2_y += ROUNDING((ld->part_info.rel1_y - orig_rel1_y), 4);
+
+   ctrl_pt_update(ld);
+   info_text_update(ld);
+}
+
+static void
 cp_rel1_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
                       Evas_Object *obj EINA_UNUSED,
                       void *event_info)
@@ -894,12 +942,22 @@ live_edit_layer_set(live_data *ld)
       evas_object_rectangle_add(evas_object_evas_get(ld->live_view));
    evas_object_event_callback_add(ld->keygrabber, EVAS_CALLBACK_KEY_DOWN,
                                   keygrabber_key_down_cb, ld);
+   evas_object_event_callback_add(ld->keygrabber, EVAS_CALLBACK_KEY_DOWN,
+                                  keygrabber_direction_key_down_cb, ld);
    if (!evas_object_key_grab(ld->keygrabber, "Return", 0, 0, EINA_TRUE))
      EINA_LOG_ERR(_("Failed to grab key - Return"));
    if (!evas_object_key_grab(ld->keygrabber, "Delete", 0, 0, EINA_TRUE))
      EINA_LOG_ERR(_("Failed to grab key - Delete"));
    if (!evas_object_key_grab(ld->keygrabber, "BackSpace", 0, 0, EINA_TRUE))
      EINA_LOG_ERR(_("Failed to grab key - BackSpace"));
+   if (!evas_object_key_grab(ld->keygrabber, "Up", 0, 0, EINA_TRUE))
+     EINA_LOG_ERR(_("Failed to grab key - Up"));
+   if (!evas_object_key_grab(ld->keygrabber, "Down", 0, 0, EINA_TRUE))
+     EINA_LOG_ERR(_("Failed to grab key - Down"));
+   if (!evas_object_key_grab(ld->keygrabber, "Left", 0, 0, EINA_TRUE))
+     EINA_LOG_ERR(_("Failed to grab key - Left"));
+   if (!evas_object_key_grab(ld->keygrabber, "Right", 0, 0, EINA_TRUE))
+     EINA_LOG_ERR(_("Failed to grab key - Right"));
 
    evas_object_event_callback_add(ld->live_view, EVAS_CALLBACK_RESIZE,
                                   live_view_geom_cb, ld);
