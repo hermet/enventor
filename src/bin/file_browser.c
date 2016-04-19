@@ -27,6 +27,9 @@ typedef struct file_browser_s
    Evas_Object *genlist;
    Elm_Genlist_Item_Class *itc;
    Elm_Genlist_Item_Class *group_itc;
+
+   Elm_Object_Item *col_edc_group_it;   //Show "Collections EDC" group index.
+   Elm_Object_Item *workspace_group_it; //Show "Workspace" group index.
 } brows_data;
 
 static brows_data *g_bd = NULL;
@@ -35,6 +38,7 @@ static brows_data *g_bd = NULL;
 /* Internal method implementation                                            */
 /*****************************************************************************/
 
+static Eina_List *sub_brows_file_list_create(brows_file *file);
 static void brows_file_list_free(Eina_List *file_list);
 
 static void
@@ -157,9 +161,48 @@ gl_con(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
    elm_genlist_item_subitems_clear(it);
 }
 
+static int
+file_strcmp_cb(const void *data1, const void *data2)
+{
+   const brows_file *file1 = data1;
+   const brows_file *file2 = data2;
+
+   return strcmp(file1->name, file2->name);
+}
+
+static brows_file *
+brows_file_create(const char *file_path)
+{
+   if (!file_path) return NULL;
+   if (!ecore_file_exists(file_path)) return NULL;
+
+   brows_file *file = calloc(1, sizeof(brows_file));
+   if (!file)
+     {
+        EINA_LOG_ERR("Failed to allocate Memory!");
+        return NULL;
+     }
+
+   //realpath() works only if the given file exists.
+   char *file_abs_path = ecore_file_realpath(file_path);
+   file->path = file_abs_path;
+   file->name = strdup(ecore_file_file_get(file_abs_path));
+
+   if (ecore_file_is_dir(file_abs_path))
+     file->type = FILE_BROWSER_FILE_TYPE_DIR;
+   else
+     file->type = FILE_BROWSER_FILE_TYPE_FILE;
+
+   file->sub_file_list = sub_brows_file_list_create(file);
+
+   file->it = NULL;
+
+   return file;
+}
+
 /* Find sub files and Create a list of brows_file. */
 static Eina_List *
-sub_file_list_create(brows_file *file)
+sub_brows_file_list_create(brows_file *file)
 {
    brows_data *bd = g_bd;
    if (!bd) return NULL;
@@ -175,25 +218,18 @@ sub_file_list_create(brows_file *file)
    char *dir_path = file->path;
    EINA_LIST_FOREACH(sub_file_name_list, l, sub_file_name)
      {
-        brows_file *sub_file = calloc(1, sizeof(brows_file));
-
         int sub_file_path_len = strlen(dir_path) + strlen(sub_file_name) + 2;
         char *sub_file_path = calloc(1, sizeof(char) * (sub_file_path_len));
         snprintf(sub_file_path, sub_file_path_len, "%s/%s", dir_path,
                  sub_file_name);
-        sub_file->path = sub_file_path;
-        sub_file->name = strdup(sub_file_name);
 
-        if (ecore_file_is_dir(sub_file_path))
-          sub_file->type = FILE_BROWSER_FILE_TYPE_DIR;
-        else
-          sub_file->type = FILE_BROWSER_FILE_TYPE_FILE;
+        brows_file *sub_file = brows_file_create(sub_file_path);
+        free(sub_file_path);
 
-        sub_file->sub_file_list = sub_file_list_create(sub_file);
-
-        sub_file->it = NULL;
-
-        sub_file_list = eina_list_append(sub_file_list, sub_file);
+        sub_file_list =
+           eina_list_sorted_insert(sub_file_list,
+                                   (Eina_Compare_Cb)file_strcmp_cb,
+                                   sub_file);
      }
 
    EINA_LIST_FREE(sub_file_name_list, sub_file_name)
@@ -214,6 +250,8 @@ brows_file_free(brows_file *file)
 
    if (file->sub_file_list)
      brows_file_list_free(file->sub_file_list);
+
+   if (file->it) elm_object_item_del(file->it);
 }
 
 static void
@@ -229,29 +267,15 @@ brows_file_list_free(Eina_List *file_list)
 }
 
 static brows_file *
-file_set_internal(const char *file_path, File_Browser_File_Type file_type)
+file_set_internal(const char *file_path)
 {
    brows_data *bd = g_bd;
-   if (!bd) return;
+   if (!bd) return NULL;
 
-   if (!file_path) return;
+   if (!file_path) return NULL;
 
-   brows_file *file = calloc(1, sizeof(brows_file));
-   if (!file)
-     {
-        EINA_LOG_ERR("Failed to allocate Memory!");
-        return NULL;
-     }
-
-   file->path = ecore_file_realpath(file_path);
-   file->name = strdup(ecore_file_file_get(file->path));
-
-   file->type = file_type;
-
-   if (file_type == FILE_BROWSER_FILE_TYPE_DIR)
-     file->sub_file_list = sub_file_list_create(file);
-   else
-     file->sub_file_list = NULL;
+   brows_file *file = brows_file_create(file_path);
+   if (!file) return NULL;
 
    Elm_Genlist_Item_Type it_type = ELM_GENLIST_ITEM_NONE;
    if (file->sub_file_list)
@@ -285,7 +309,13 @@ file_browser_workspace_set(const char *workspace_path)
         bd->workspace = NULL;
      }
 
-   Elm_Object_Item *group_it =
+   if (bd->workspace_group_it)
+     {
+        elm_object_item_del(bd->workspace_group_it);
+        bd->workspace_group_it = NULL;
+     }
+   //Show "Workspace" group index.
+   bd->workspace_group_it =
       elm_genlist_item_append(bd->genlist,
                               bd->group_itc,         /* item class */
                               "Workspace",           /* item data */
@@ -293,11 +323,10 @@ file_browser_workspace_set(const char *workspace_path)
                               ELM_GENLIST_ITEM_NONE, /* item type */
                               NULL,                  /* select_cb */
                               NULL);                 /* select_cb data */
-   elm_genlist_item_select_mode_set(group_it,
+   elm_genlist_item_select_mode_set(bd->workspace_group_it,
                                     ELM_OBJECT_SELECT_MODE_DISPLAY_ONLY);
 
-   brows_file *workspace = file_set_internal(workspace_path,
-                                             FILE_BROWSER_FILE_TYPE_DIR);
+   brows_file *workspace = file_set_internal(workspace_path);
    if (!workspace) return;
    bd->workspace = workspace;
 
@@ -328,7 +357,13 @@ file_browser_edc_file_set(const char *edc_file)
         bd->col_edc = NULL;
      }
 
-   Elm_Object_Item *group_it =
+   if (bd->col_edc_group_it)
+     {
+        elm_object_item_del(bd->col_edc_group_it);
+        bd->col_edc_group_it = NULL;
+     }
+   //Show "Collections EDC" group index.
+   bd->col_edc_group_it =
       elm_genlist_item_append(bd->genlist,
                               bd->group_itc,         /* item class */
                               "Collections EDC",     /* item data */
@@ -336,10 +371,10 @@ file_browser_edc_file_set(const char *edc_file)
                               ELM_GENLIST_ITEM_NONE, /* item type */
                               NULL,                  /* select_cb */
                               NULL);                 /* select_cb data */
-   elm_genlist_item_select_mode_set(group_it,
+   elm_genlist_item_select_mode_set(bd->col_edc_group_it,
                                     ELM_OBJECT_SELECT_MODE_DISPLAY_ONLY);
 
-   brows_file *edc = file_set_internal(edc_file, FILE_BROWSER_FILE_TYPE_FILE);
+   brows_file *edc = file_set_internal(edc_file);
    if (!edc) return;
    bd->col_edc = edc;
 }
@@ -347,7 +382,10 @@ file_browser_edc_file_set(const char *edc_file)
 Evas_Object *
 file_browser_init(Evas_Object *parent)
 {
-   brows_data *bd = calloc(1, sizeof(brows_data));
+   brows_data *bd = g_bd;
+   if (bd) return bd->genlist;
+
+   bd = calloc(1, sizeof(brows_data));
    if (!bd)
      {
         EINA_LOG_ERR("Failed to allocate Memory!");
@@ -395,6 +433,8 @@ file_browser_term(void)
 
    elm_genlist_item_class_free(bd->itc);
    elm_genlist_item_class_free(bd->group_itc);
+
+   evas_object_del(bd->genlist);
 
    free(bd);
    g_bd = NULL;
