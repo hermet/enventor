@@ -249,6 +249,7 @@ group { name: "fileselector_layout";
                align: 0.5 1;
             }
             color: COL_NM_TRANS;
+            fixed: 0 1;
          }
          description { state: "show" 0.0;
             inherit: "default" 0.0;
