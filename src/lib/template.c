@@ -445,9 +445,6 @@ template_insert(edit_data *ed, Enventor_Template_Insert_Type insert_type,
    elm_entry_entry_insert(entry, p);
    elm_entry_entry_insert(entry, t[i]);
 
-   /* Line increase count should be -1 in entry template insertion because the
-      cursor position would be taken one line additionally. */
-   if (insert_type == ENVENTOR_TEMPLATE_INSERT_DEFAULT) line_cnt--;
    edit_line_increase(ed, line_cnt);
 
    int cursor_pos2 = elm_entry_cursor_pos_get(entry);
