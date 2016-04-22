@@ -27,6 +27,8 @@ typedef struct edc_navigator_s
    Elm_Genlist_Item_Class *programs_itc;
    Elm_Genlist_Item_Class *program_itc;
 
+   Eina_Bool selected : 1;
+
 } navi_data;
 
 typedef enum
@@ -112,6 +114,26 @@ static void programs_contract(programs_it *pit);
 /*****************************************************************************/
 /* Internal method implementation                                            */
 /*****************************************************************************/
+static void
+gl_selected_cb(void *data, Evas_Object *obj, void *event_info)
+{
+   navi_data *nd = data;
+   nd->selected = EINA_TRUE;
+}
+
+static void
+gl_unselected_cb(void *data, Evas_Object *obj, void *event_info)
+{
+   navi_data *nd = data;
+   nd->selected = EINA_FALSE;
+}
+
+static void
+navigator_item_deselect(navi_data *nd)
+{
+   Elm_Object_Item *it = elm_genlist_selected_item_get(nd->genlist);
+   if (it) elm_genlist_item_selected_set(it, EINA_FALSE);
+}
 
 static int
 gl_comp_func(const void *pa, const void *pb)
@@ -626,7 +648,6 @@ gl_state_selected_cb(void *data, Evas_Object *obj EINA_UNUSED,
    state_it *sit = data;
    find_state_proc(sit->pit->git->name, sit->pit->name, part_type_get(sit->pit),
                    sit->name);
-
 }
 
 static void
@@ -1227,6 +1248,13 @@ gl_contract_request_cb(void *data, Evas_Object *obj, void *event_info)
 /*****************************************************************************/
 /* Externally accessible calls                                               */
 /*****************************************************************************/
+void
+edc_navigator_deselect(void)
+{
+   navi_data *nd = g_nd;
+   if (!nd || !nd->selected) return;
+   navigator_item_deselect(nd);
+}
 
 void
 edc_navigator_group_update(const char *cur_group)
@@ -1235,11 +1263,7 @@ edc_navigator_group_update(const char *cur_group)
    if (!nd) return;
 
    //Cancel item selection if group was not indicated. 
-   if (!cur_group)
-     {
-        Elm_Object_Item *it = elm_genlist_selected_item_get(nd->genlist);
-        if (it) elm_genlist_item_selected_set(it, EINA_FALSE);
-     }
+   if (!cur_group) navigator_item_deselect(nd);
 
    Eina_List *group_list = edje_file_collection_list(config_output_path_get());
    unsigned int cur_group_len = 0;
@@ -1347,6 +1371,10 @@ edc_navigator_init(Evas_Object *parent)
                                   gl_expand_request_cb, nd);
    evas_object_smart_callback_add(genlist, "contract,request",
                                   gl_contract_request_cb, nd);
+   evas_object_smart_callback_add(genlist, "selected",
+                                  gl_selected_cb, nd);
+   evas_object_smart_callback_add(genlist, "selected",
+                                  gl_unselected_cb, nd);
    evas_object_size_hint_weight_set(genlist, EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(genlist, EVAS_HINT_FILL, EVAS_HINT_FILL);

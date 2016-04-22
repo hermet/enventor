@@ -94,6 +94,12 @@ void base_file_browser_toggle(Eina_Bool toggle)
      elm_object_signal_emit(bd->layout, "elm,state,file_browser,hide", "");
 }
 
+void base_edc_navigator_deselect(void)
+{
+   if (config_edc_navigator_get())
+     edc_navigator_deselect();
+}
+
 void base_edc_navigator_toggle(Eina_Bool toggle)
 {
    base_data *bd = g_bd;
@@ -107,7 +113,10 @@ void base_edc_navigator_toggle(Eina_Bool toggle)
         elm_object_signal_emit(bd->layout, "elm,state,edc_navigator,show", "");
      }
    else
-     elm_object_signal_emit(bd->layout, "elm,state,edc_navigator,hide", "");
+     {
+        elm_object_signal_emit(bd->layout, "elm,state,edc_navigator,hide", "");
+        edc_navigator_deselect();
+     }
 }
 
 void

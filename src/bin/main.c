@@ -459,6 +459,7 @@ enventor_live_view_cursor_moved_cb(void *data EINA_UNUSED,
    if (!config_stats_bar_get()) return;
    Enventor_Live_View_Cursor *cursor = event_info;
    stats_cursor_pos_update(cursor->x, cursor->y, cursor->relx, cursor->rely);
+   base_edc_navigator_deselect();
 }
 
 static void
@@ -536,6 +537,14 @@ enventor_focused_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 }
 
 static void
+enventor_mouse_down_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
+                       Evas_Object *obj EINA_UNUSED,
+                       void *event_info EINA_UNUSED)
+{
+   base_edc_navigator_deselect();
+}
+
+static void
 enventor_setup(app_data *ad)
 {
    Evas_Object *enventor = enventor_object_add(base_layout_get());
@@ -565,6 +574,8 @@ enventor_setup(app_data *ad)
                                   enventor_ctxpopup_dismissed_cb, ad);
    evas_object_smart_callback_add(enventor, "focused",
                                   enventor_focused_cb, ad);
+   evas_object_event_callback_add(enventor, EVAS_CALLBACK_MOUSE_DOWN,
+                                  enventor_mouse_down_cb, ad);
 
    evas_object_size_hint_expand_set(enventor, EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
