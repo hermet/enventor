@@ -27,8 +27,6 @@ typedef struct edc_navigator_s
    Elm_Genlist_Item_Class *programs_itc;
    Elm_Genlist_Item_Class *program_itc;
 
-   Eina_Bool auto_contract : 1;
-
 } navi_data;
 
 typedef enum
@@ -131,9 +129,10 @@ static void
 check_changed_cb(void *data, Evas_Object *obj, void *event_info)
 {
    navi_data *nd = data;
-   nd->auto_contract = elm_check_state_get(obj);
+   Eina_Bool auto_contract = elm_check_state_get(obj);
+   config_auto_contract_set(auto_contract);
 
-   if (!nd->auto_contract) return;
+   if (!auto_contract) return;
 
    // Contract all groups instantly.
    Eina_List *l;
@@ -778,7 +777,7 @@ programs_expand(programs_it *pit)
    sub_programs_update(pit->git->nd, pit);
 
    //If auto contraction is enabled, then close other parts
-   if (!(pit->git->nd->auto_contract)) return;
+   if (!config_auto_contract_get()) return;
 
    //Contract part states
    part_it *pit2;
@@ -1084,7 +1083,7 @@ part_expand(part_it *pit)
    states_update(pit->git->nd, pit);
 
    //If auto contraction is enabled, then close other parts and programs
-   if (!(pit->git->nd->auto_contract)) return;
+   if (!config_auto_contract_get()) return;
 
    //Contract other part states
    part_it *pit2;
@@ -1129,7 +1128,7 @@ group_expand(group_it *git)
    group_update(git->nd, git);
 
    //If auto contraction is enabled, then close other parts
-   if (!(git->nd->auto_contract)) return;
+   if (!config_auto_contract_get()) return;
 
    //Contract other groups
    group_it *git2;
@@ -1357,7 +1356,7 @@ edc_navigator_init(Evas_Object *parent)
    //Check for genlist option
    Evas_Object *check = elm_check_add(box);
    elm_object_text_set(check, "Automatic Contraction");
-   elm_check_state_set(check, EINA_FALSE);
+   elm_check_state_set(check, config_auto_contract_get());
    evas_object_smart_callback_add(check, "changed", check_changed_cb, nd);
    elm_object_focus_allow_set(check, EINA_FALSE);
    evas_object_size_hint_weight_set(check, EVAS_HINT_EXPAND, 0);

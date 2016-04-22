@@ -42,6 +42,7 @@ typedef struct config_s
    Eina_Bool smart_undo_redo;
    Eina_Bool file_browser;
    Eina_Bool edc_navigator;
+   Eina_Bool auto_contract;
 } config_data;
 
 static config_data *g_cd = NULL;
@@ -189,6 +190,7 @@ config_load(void)
         cd->smart_undo_redo = EINA_FALSE;
         cd->file_browser = EINA_TRUE;
         cd->edc_navigator = EINA_TRUE;
+        cd->auto_contract = EINA_FALSE;
      }
 
    g_cd = cd;
@@ -310,6 +312,8 @@ eddc_init(void)
                                     file_browser, EET_T_UCHAR);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "edc_navigator",
                                     edc_navigator, EET_T_UCHAR);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "auto_contract",
+                                    auto_contract, EET_T_UCHAR);
 }
 
 void
@@ -939,6 +943,20 @@ config_file_browser_get(void)
 {
    config_data *cd = g_cd;
    return cd->file_browser;
+}
+
+void
+config_auto_contract_set(Eina_Bool enabled)
+{
+   config_data *cd = g_cd;
+   cd->auto_contract = enabled;
+}
+
+Eina_Bool
+config_auto_contract_get(void)
+{
+   config_data *cd = g_cd;
+   return cd->auto_contract;
 }
 
 void
