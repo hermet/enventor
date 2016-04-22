@@ -27,5 +27,4 @@ void base_error_msg_set(const char *msg);
 void base_console_full_view(void);
 void base_file_browser_toggle(Eina_Bool toggle);
 void base_edc_navigator_toggle(Eina_Bool toggle);
-void base_edc_navigator_reload(void);
-void base_edc_navigator_group_update(const char *group_name);
+void base_edc_navigator_group_update(void);

@@ -7,7 +7,6 @@ typedef struct base_s
    Evas_Object *console;
    Evas_Object *enventor;
    Ecore_Timer *edc_navi_update_timer;
-   Ecore_Timer *edc_navi_reload_timer;
    Eina_Bool console_msg : 1;
 } base_data;
 
@@ -34,25 +33,10 @@ win_resize_cb(void *data EINA_UNUSED, Evas *o EINA_UNUSED, Evas_Object *obj,
 }
 
 static Eina_Bool
-edc_navigator_reload_timer_cb(void *data)
-{
-   base_data *bd = data;
-
-   edc_navigator_reload(stats_group_name_get());
-
-   bd->edc_navi_reload_timer = NULL;
-
-   return ECORE_CALLBACK_CANCEL;
-}
-
-static Eina_Bool
 edc_navigator_update_timer_cb(void *data)
 {
-   base_data *bd = g_bd;
-
-   const char *group_name = data;
-   edc_navigator_group_update(group_name);
-
+   base_data *bd = data;
+   edc_navigator_group_update(stats_group_name_get());
    bd->edc_navi_update_timer = NULL;
 
    return ECORE_CALLBACK_CANCEL;
@@ -119,7 +103,7 @@ void base_edc_navigator_toggle(Eina_Bool toggle)
 
    if (config_edc_navigator_get())
      {
-        base_edc_navigator_reload();
+        base_edc_navigator_group_update();
         elm_object_signal_emit(bd->layout, "elm,state,edc_navigator,show", "");
      }
    else
@@ -241,7 +225,6 @@ base_gui_term(void)
    if (!bd) return;
 
    ecore_timer_del(bd->edc_navi_update_timer);
-   ecore_timer_del(bd->edc_navi_reload_timer);
    file_browser_term();
    edc_navigator_term();
    panes_term();
@@ -251,7 +234,7 @@ base_gui_term(void)
 }
 
 void
-base_edc_navigator_group_update(const char *group_name)
+base_edc_navigator_group_update(void)
 {
    if (!config_edc_navigator_get()) return;
 
@@ -261,20 +244,6 @@ base_edc_navigator_group_update(const char *group_name)
    ecore_timer_del(bd->edc_navi_update_timer);
    bd->edc_navi_update_timer = ecore_timer_add(EDC_NAVIGATOR_UPDATE_TIME,
                                                edc_navigator_update_timer_cb,
-                                               group_name);
-}
-
-void
-base_edc_navigator_reload(void)
-{
-   if (!config_edc_navigator_get()) return;
-
-   base_data *bd = g_bd;
-   if (!bd) return;
-
-   ecore_timer_del(bd->edc_navi_reload_timer);
-   bd->edc_navi_reload_timer = ecore_timer_add(EDC_NAVIGATOR_UPDATE_TIME,
-                                               edc_navigator_reload_timer_cb,
                                                bd);
 }
 
