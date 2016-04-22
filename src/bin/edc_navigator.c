@@ -847,14 +847,13 @@ programs_update(navi_data *nd, group_it *git)
         pit->tag.type = Item_Type_Programs;
         pit->tag.idx = PROGRAM_IDX;
         pit->git = git;
-        pit->it = elm_genlist_item_sorted_insert(nd->genlist,
-                                                 nd->programs_itc,
-                                                 pit,
-                                                 git->it,
-                                                 ELM_GENLIST_ITEM_TREE,
-                                                 gl_comp_func,
-                                                 gl_programs_selected_cb,
-                                                 pit);
+        pit->it = elm_genlist_item_append(nd->genlist,
+                                          nd->programs_itc,
+                                          pit,
+                                          git->it,
+                                          ELM_GENLIST_ITEM_TREE,
+                                          gl_programs_selected_cb,
+                                          pit);
         return;
      }
 
@@ -1313,14 +1312,13 @@ edc_navigator_group_update(const char *cur_group)
         git->tag.idx = idx;
         git->name = strdup(name);
         git->nd = nd;
-        git->it = elm_genlist_item_sorted_insert(nd->genlist,
-                                                 nd->group_itc,
-                                                 git,
-                                                 NULL,
-                                                 ELM_GENLIST_ITEM_TREE,
-                                                 gl_comp_func,
-                                                 gl_group_selected_cb,
-                                                 git);
+        git->it = elm_genlist_item_append(nd->genlist,
+                                          nd->group_itc,
+                                          git,
+                                          NULL,
+                                          ELM_GENLIST_ITEM_TREE,
+                                          gl_group_selected_cb,
+                                          git);
         nd->groups = eina_list_append(nd->groups, git);
      }
 
@@ -1396,7 +1394,7 @@ edc_navigator_init(Evas_Object *parent)
    Elm_Genlist_Item_Class *itc;
 
    itc = elm_genlist_item_class_new();
-   itc->item_style = "tree_effect";
+   itc->item_style = "default";
    itc->func.text_get = gl_group_text_get_cb;
    itc->func.content_get = gl_group_content_get_cb;
 
@@ -1404,7 +1402,7 @@ edc_navigator_init(Evas_Object *parent)
 
    //Part Item Class
    itc = elm_genlist_item_class_new();
-   itc->item_style = "tree_effect";
+   itc->item_style = "default";
    itc->func.text_get = gl_part_text_get_cb;
    itc->func.content_get = gl_part_content_get_cb;
 
@@ -1420,7 +1418,7 @@ edc_navigator_init(Evas_Object *parent)
 
    //Programs Item Class
    itc = elm_genlist_item_class_new();
-   itc->item_style = "tree_effect";
+   itc->item_style = "default";
    itc->func.text_get = gl_programs_text_get_cb;
    itc->func.content_get = gl_programs_content_get_cb;
 
