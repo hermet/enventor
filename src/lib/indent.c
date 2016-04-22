@@ -251,12 +251,22 @@ indent_code_line_list_create(indent_data *id EINA_UNUSED, const char *utf8)
    char *utf8_appended = NULL;
 
    Eina_Bool keep_lexem = EINA_FALSE;
+
+   //Single line comment begins in the beginning of the line.
    Eina_Bool single_comment_begin = EINA_FALSE;
+   //Single line comment begins in the middle of the line.
    Eina_Bool single_comment_middle = EINA_FALSE;
+
+   //Multi line comment begins in the beginning of the line.
    Eina_Bool multi_comment_begin = EINA_FALSE;
+   //Multi line comment begins in the middle of the line.
    Eina_Bool multi_comment_middle = EINA_FALSE;
+   //Multi line comment ends in the line.
    Eina_Bool multi_comment_end = EINA_FALSE;
+
+   //Macro begins in the beginning of the line.
    Eina_Bool macro_begin = EINA_FALSE;
+   //Macro begins in the middle of the line.
    Eina_Bool macro_middle = EINA_FALSE;
 
    int cur_indent_depth = 0;
@@ -284,7 +294,7 @@ indent_code_line_list_create(indent_data *id EINA_UNUSED, const char *utf8)
              if (!utf8_appended) append_begin = (char *)utf8;
 
              if (single_comment_begin || multi_comment_begin ||
-                 multi_comment_end || macro_begin || macro_middle)
+                 macro_begin || macro_middle)
                {
                   if (!append_begin)
                     append_begin = utf8_appended + 1;
@@ -321,7 +331,11 @@ indent_code_line_list_create(indent_data *id EINA_UNUSED, const char *utf8)
                   multi_comment_begin = EINA_TRUE;
                }
              if (multi_comment_end)
-               multi_comment_end = EINA_FALSE;
+               {
+                  multi_comment_begin = EINA_FALSE;
+                  multi_comment_middle = EINA_FALSE;
+                  multi_comment_end = EINA_FALSE;
+               }
 
              //Check if macro ends.
              if (macro_begin || macro_middle)
@@ -342,9 +356,10 @@ indent_code_line_list_create(indent_data *id EINA_UNUSED, const char *utf8)
                   keep_lexem = EINA_TRUE;
                }
 
-             if (!single_comment_begin && !single_comment_middle &&
-                 !multi_comment_begin && !multi_comment_middle &&
-                 !multi_comment_end)
+             //Check if current character is outside of line comment.
+             if ((!single_comment_begin && !single_comment_middle) &&
+                 ((!multi_comment_begin && !multi_comment_middle) ||
+                  (multi_comment_end)))
                {
                   if ((*utf8_ptr == '/') && (utf8_ptr + 1 < utf8_end))
                     {
@@ -391,8 +406,6 @@ indent_code_line_list_create(indent_data *id EINA_UNUSED, const char *utf8)
                   if ((*utf8_ptr == '*') && (utf8_ptr + 1 < utf8_end) &&
                       (*(utf8_ptr + 1) == '/'))
                     {
-                       multi_comment_begin = EINA_FALSE;
-                       multi_comment_middle = EINA_FALSE;
                        multi_comment_end = EINA_TRUE;
                     }
                }
@@ -407,8 +420,7 @@ indent_code_line_list_create(indent_data *id EINA_UNUSED, const char *utf8)
 
         code_line = (indent_line *)calloc(1, sizeof(indent_line));
 
-        if (single_comment_begin || multi_comment_begin || macro_begin ||
-            multi_comment_end)
+        if (single_comment_begin || multi_comment_begin || macro_begin)
           {
              if (!append_begin)
                append_begin = utf8_appended + 1;
