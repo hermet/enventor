@@ -36,6 +36,7 @@ images {
    image: "navi_state.png" COMP;
    image: "navi_program.png" COMP;
    image: "navi_unknown.png" COMP;
+   image: "navi_play.png" COMP;
 }
 
 #define ICON_GROUP(_group_name, _image_path) \
@@ -85,5 +86,6 @@ ICON_GROUP("navi_spacer", "navi_spacer.png")
 ICON_GROUP("navi_state", "navi_state.png")
 ICON_GROUP("navi_program", "navi_program.png")
 ICON_GROUP("navi_unknown", "navi_unknown.png")
+ICON_GROUP("navi_play", "navi_play.png")
 
 #undef ICON_GROUP

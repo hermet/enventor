@@ -44,7 +44,6 @@ static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_LIVE_VIEW_UPDATED, ""},
    {SIG_MAX_LINE_CHANGED, ""},
    {SIG_COMPILE_ERROR, ""},
-   {SIG_PROGRAM_RUN, ""},
    {SIG_CTXPOPUP_CHANGED, ""},
    {SIG_CTXPOPUP_DISMISSED, ""},
    {SIG_CTXPOPUP_ACTIVATED, ""},
@@ -777,6 +776,14 @@ EOLIAN static Eina_Bool
 _enventor_object_undo(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
 {
    return edit_redoundo(pd->ed, EINA_TRUE);
+}
+
+EOLIAN static void
+_enventor_object_program_run(Eo *obj EINA_UNUSED,
+                             Enventor_Object_Data *pd,
+                             const char *program)
+{
+   view_program_run(VIEW_DATA, program);
 }
 
 /*****************************************************************************/

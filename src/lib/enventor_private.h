@@ -51,7 +51,6 @@ extern const char SIG_LIVE_VIEW_LOADED[];
 extern const char SIG_LIVE_VIEW_UPDATED[];
 extern const char SIG_LIVE_VIEW_CURSOR_MOVED[];
 extern const char SIG_LIVE_VIEW_RESIZED[];
-extern const char SIG_PROGRAM_RUN[];
 extern const char SIG_CTXPOPUP_CHANGED[];
 extern const char SIG_CTXPOPUP_DISMISSED[];
 extern const char SIG_CTXPOPUP_ACTIVATED[];

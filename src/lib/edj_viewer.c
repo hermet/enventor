@@ -670,8 +670,6 @@ view_program_run(view_data *vd, const char *program)
    if (!program || !vd->layout) return;
    if (!vd->file_set_finished) return;
    edje_edit_program_run(vd->layout, program);
-   evas_object_smart_callback_call(vd->enventor, SIG_PROGRAM_RUN,
-                                   (void*)program);
 }
 
 void

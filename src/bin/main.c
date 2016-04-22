@@ -463,17 +463,6 @@ enventor_live_view_cursor_moved_cb(void *data EINA_UNUSED,
 }
 
 static void
-enventor_program_run_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
-                        void *event_info)
-{
-   if (!config_stats_bar_get()) return;
-   const char *program = event_info;
-   char buf[256];
-   snprintf(buf, sizeof(buf),_("Program Run: \"%s\""), program);
-   stats_info_msg_update(buf);
-}
-
-static void
 enventor_ctxpopup_activated_cb(void *data EINA_UNUSED,
                                Evas_Object *obj EINA_UNUSED,
                                void *event_info)
@@ -564,8 +553,6 @@ enventor_setup(app_data *ad)
                                   enventor_live_view_resized_cb, ad);
    evas_object_smart_callback_add(enventor, "live_view,updated",
                                   enventor_live_view_updated_cb, ad);
-   evas_object_smart_callback_add(enventor, "program,run",
-                                  enventor_program_run_cb, ad);
    evas_object_smart_callback_add(enventor, "ctxpopup,activated",
                                   enventor_ctxpopup_activated_cb, ad);
    evas_object_smart_callback_add(enventor, "ctxpopup,changed",

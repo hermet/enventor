@@ -712,6 +712,20 @@ gl_state_content_get_cb(void *data EINA_UNUSED, Evas_Object *obj,
 
 /* Program Related */
 
+static void
+program_btn_clicked_cb(void *data, Evas_Object *obj, void *event_info)
+{
+   program_it *pit = data;
+   Evas_Object *enventor = base_enventor_get();
+   enventor_object_program_run(enventor, pit->name);
+
+   if (!config_stats_bar_get()) return;
+
+   char buf[256];
+   snprintf(buf, sizeof(buf),_("Program Run: \"%s\""), pit->name);
+   stats_info_msg_update(buf);
+}
+
 static char *
 gl_program_text_get_cb(void *data, Evas_Object *obj EINA_UNUSED,
                        const char *part EINA_UNUSED)
@@ -724,14 +738,25 @@ static Evas_Object *
 gl_program_content_get_cb(void *data EINA_UNUSED, Evas_Object *obj,
                           const char *part)
 {
-   if (strcmp("elm.swallow.icon", part)) return NULL;
+   if (!strcmp("elm.swallow.icon", part))
+     {
+        Evas_Object *image = elm_image_add(obj);
+        elm_image_file_set(image, EDJE_PATH, "navi_state");
+        return image;
+     }
 
-   Evas_Object *image = elm_image_add(obj);
-   elm_image_file_set(image, EDJE_PATH, "navi_state");
-
-   return image;
+   //play/stop button
+   program_it *pit = data;
+   Evas_Object *btn = elm_button_add(obj);
+   evas_object_smart_callback_add(btn, "clicked", program_btn_clicked_cb,
+                                  pit);
+/*
+   Evas_Object *img = elm_image_add(btn);
+   elm_image_file_set(img, EDJE_PATH, "navi_play");
+   elm_object_content_set(btn, img);
+*/
+   return btn;
 }
-
 
 static void
 gl_program_selected_cb(void *data, Evas_Object *obj EINA_UNUSED,
@@ -1260,6 +1285,8 @@ edc_navigator_group_update(const char *cur_group)
 {
    navi_data *nd = g_nd;
    if (!nd) return;
+
+   //FIXME: This function is unnecessarily called... why?
 
    //Cancel item selection if group was not indicated. 
    if (!cur_group) navigator_item_deselect(nd);

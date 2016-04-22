@@ -185,6 +185,11 @@ class Enventor.Object (Elm.Widget, Efl.File) {
             @in line: int;
          }
       }
+      program_run {
+         params {
+            @in program: const(char) *;
+         }
+      }
       syntax_color_set {
          params {
             @in color_type: Enventor_Syntax_Color_Type;
@@ -300,7 +305,6 @@ class Enventor.Object (Elm.Widget, Efl.File) {
       live_view,resized;
       max_line,changed;
       compile,error;
-      program,run;
       ctxpopup,activated;
       ctxpopup,changed;
       ctxpopup,dismissed;

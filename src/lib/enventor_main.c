@@ -16,7 +16,6 @@ const char SIG_LIVE_VIEW_CURSOR_MOVED[] = "live_view,cursor,moved";
 const char SIG_LIVE_VIEW_RESIZED[] = "live_view,resized";
 const char SIG_MAX_LINE_CHANGED[] = "max_line,changed";
 const char SIG_COMPILE_ERROR[] = "compile,error";
-const char SIG_PROGRAM_RUN[] = "program,run";
 const char SIG_CTXPOPUP_CHANGED[] = "ctxpopup,changed";
 const char SIG_CTXPOPUP_DISMISSED[] = "ctxpopup,dismissed";
 const char SIG_CTXPOPUP_ACTIVATED[] = "ctxpopup,activated";

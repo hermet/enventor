@@ -725,18 +725,6 @@ candidate_list_show(edit_data *ed, char *text, char *cur, char *selected)
 }
 
 static void
-program_run(edit_data *ed, char *cur)
-{
-   char *program = parser_name_get(ed->pd, cur);
-   if (program)
-     {
-        view_data *vd = edj_mgr_view_get(NULL);
-        view_program_run(vd, program);
-        free(program);
-     }
-}
-
-static void
 edit_cursor_double_clicked_cb(void *data, Evas_Object *obj,
                               void *event_info EINA_UNUSED)
 {
@@ -764,13 +752,9 @@ edit_cursor_double_clicked_cb(void *data, Evas_Object *obj,
    * Because right now any text inside quotes that placed after selection is
    * recognized as name.
    */
-  if (!strcmp(selected, "program"))
-     {
-        program_run(ed, cur);
-     }
-   else if ((!strncmp(selected, "image", 5)) ||  //5: sizeof("image")
-            (!strcmp(selected, "normal")) ||
-            (!strcmp(selected, "tween")))
+   if ((!strncmp(selected, "image", 5)) ||  //5: sizeof("image")
+       (!strcmp(selected, "normal")) ||
+       (!strcmp(selected, "tween")))
      {
         int x, y;
         evas_pointer_output_xy_get(evas_object_evas_get(ed->en_edit), &x, &y);
