@@ -1410,6 +1410,8 @@ edc_navigator_init(Evas_Object *parent)
    Evas_Object *check = elm_check_add(box);
    elm_object_text_set(check, "Automatic Contraction");
    elm_check_state_set(check, config_auto_contract_get());
+   elm_object_tooltip_text_set(check, "Automatic Contraction contracts items</br> when other items are expanded");
+   elm_object_tooltip_orient_set(check, ELM_TOOLTIP_ORIENT_TOP);
    evas_object_smart_callback_add(check, "changed", check_changed_cb, nd);
    elm_object_focus_allow_set(check, EINA_FALSE);
    evas_object_size_hint_weight_set(check, EVAS_HINT_EXPAND, 0);
