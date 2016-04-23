@@ -786,6 +786,14 @@ _enventor_object_program_run(Eo *obj EINA_UNUSED,
    view_program_run(VIEW_DATA, program);
 }
 
+EOLIAN static void
+_enventor_object_programs_stop(Eo *obj EINA_UNUSED,
+                               Enventor_Object_Data *pd)
+{
+   view_programs_stop(VIEW_DATA);
+}
+
+
 /*****************************************************************************/
 /* Externally accessible calls                                               */
 /*****************************************************************************/

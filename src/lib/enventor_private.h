@@ -221,6 +221,7 @@ void view_part_highlight_set(view_data *vd, const char *part_name);
 void view_dummy_set(view_data *vd, Eina_Bool dummy_on);
 void view_mirror_mode_update(view_data *vd);
 void view_program_run(view_data *vd, const char *program);
+void view_programs_stop(view_data *vd);
 Eina_Stringshare *view_group_name_get(view_data *vd);
 void *view_data_get(view_data *vd);
 void view_scale_set(view_data *vd, double scale);

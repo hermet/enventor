@@ -664,6 +664,14 @@ view_obj_need_reload_set(view_data *vd)
 }
 
 void
+view_programs_stop(view_data *vd)
+{
+   if (!vd || !vd->layout) return;
+   if (!vd->file_set_finished) return;
+   edje_edit_program_stop_all(vd->layout);
+}
+
+void
 view_program_run(view_data *vd, const char *program)
 {
    if (!vd) return;

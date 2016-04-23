@@ -506,7 +506,7 @@ enventor_live_view_updated_cb(void *data, Evas_Object *obj,
         ad->lazy_save = EINA_FALSE;
         ad->on_saving = EINA_FALSE;
      }
-
+printf("%s\n", __func__);
    base_edc_navigator_group_update();
 }
 

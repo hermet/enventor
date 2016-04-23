@@ -738,6 +738,7 @@ static Evas_Object *
 gl_program_content_get_cb(void *data EINA_UNUSED, Evas_Object *obj,
                           const char *part)
 {
+   //1. Icon
    if (!strcmp("elm.swallow.icon", part))
      {
         Evas_Object *image = elm_image_add(obj);
@@ -745,17 +746,30 @@ gl_program_content_get_cb(void *data EINA_UNUSED, Evas_Object *obj,
         return image;
      }
 
-   //play/stop button
+   //2. Play Button
    program_it *pit = data;
-   Evas_Object *btn = elm_button_add(obj);
+
+   //Box
+   Evas_Object *box = elm_box_add(obj);
+   elm_object_tooltip_text_set(box, "Play Program");
+
+   //Button
+   Evas_Object *btn = elm_button_add(box);
+   evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_scale_set(btn, 0.5);
    evas_object_smart_callback_add(btn, "clicked", program_btn_clicked_cb,
                                   pit);
+   evas_object_show(btn);
+
+   //Image
    Evas_Object *img = elm_image_add(btn);
    elm_image_file_set(img, EDJE_PATH, "navi_play");
    elm_object_content_set(btn, img);
 
-   return btn;
+   elm_box_pack_end(box, btn);
+
+   return box;
 }
 
 static void
@@ -812,6 +826,18 @@ sub_programs_update(navi_data *nd, programs_it *pit)
 }
 
 /* Programs Related */
+
+static void
+programs_btn_clicked_cb(void *data, Evas_Object *obj, void *event_info)
+{
+   programs_it *pit = data;
+   Evas_Object *enventor = base_enventor_get();
+   enventor_object_programs_stop(enventor);
+
+   if (!config_stats_bar_get()) return;
+
+   stats_info_msg_update(_("Stop all running programs."));
+}
 
 static void
 programs_expand(programs_it *pit)
@@ -966,12 +992,39 @@ static Evas_Object *
 gl_programs_content_get_cb(void *data EINA_UNUSED, Evas_Object *obj,
                            const char *part)
 {
-   if (strcmp("elm.swallow.icon", part)) return NULL;
+   //1. Icon
+   if (!strcmp("elm.swallow.icon", part))
+     {
+        Evas_Object *image = elm_image_add(obj);
+        elm_image_file_set(image, EDJE_PATH, "navi_program");
 
-   Evas_Object *image = elm_image_add(obj);
-   elm_image_file_set(image, EDJE_PATH, "navi_program");
+        return image;
+     }
 
-   return image;
+   //2. Stop All Button
+   programs_it *pit = data;
+
+   //Box
+   Evas_Object *box = elm_box_add(obj);
+   elm_object_tooltip_text_set(box, "Stop All Programs");
+
+   //Button
+   Evas_Object *btn = elm_button_add(box);
+   evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_object_scale_set(btn, 0.5);
+   evas_object_smart_callback_add(btn, "clicked", programs_btn_clicked_cb,
+                                  pit);
+   evas_object_show(btn);
+
+   //Image
+   Evas_Object *img = elm_image_add(btn);
+   elm_image_file_set(img, EDJE_PATH, "navi_stop");
+   elm_object_content_set(btn, img);
+
+   elm_box_pack_end(box, btn);
+
+   return box;
 }
 
 

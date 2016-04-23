@@ -185,6 +185,8 @@ class Enventor.Object (Elm.Widget, Efl.File) {
             @in line: int;
          }
       }
+      programs_stop {
+      }
       program_run {
          params {
             @in program: const(char) *;
