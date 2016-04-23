@@ -748,13 +748,13 @@ gl_program_content_get_cb(void *data EINA_UNUSED, Evas_Object *obj,
    //play/stop button
    program_it *pit = data;
    Evas_Object *btn = elm_button_add(obj);
+   elm_object_scale_set(btn, 0.5);
    evas_object_smart_callback_add(btn, "clicked", program_btn_clicked_cb,
                                   pit);
-/*
    Evas_Object *img = elm_image_add(btn);
    elm_image_file_set(img, EDJE_PATH, "navi_play");
    elm_object_content_set(btn, img);
-*/
+
    return btn;
 }
 
