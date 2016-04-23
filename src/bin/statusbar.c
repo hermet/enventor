@@ -174,7 +174,7 @@ view_resize_btn_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
    Evas_Object *ctxpopup = elm_ctxpopup_add(base_layout_get());
    if (!ctxpopup) return;
 
-   elm_object_style_set(ctxpopup, "enventor");
+   elm_object_style_set(ctxpopup, ENVENTOR_NAME);
    elm_ctxpopup_direction_priority_set(ctxpopup, ELM_CTXPOPUP_DIRECTION_UP,
                                        ELM_CTXPOPUP_DIRECTION_RIGHT,
                                        ELM_CTXPOPUP_DIRECTION_LEFT,
@@ -215,7 +215,7 @@ view_scale_btn_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
 
    //Ctxpopup
    Evas_Object *ctxpopup = elm_ctxpopup_add(base_layout_get());
-   elm_object_style_set(ctxpopup, "enventor");
+   elm_object_style_set(ctxpopup, ENVENTOR_NAME);
 
    //Slider
    Evas_Object *slider = elm_slider_add(ctxpopup);
@@ -252,7 +252,7 @@ create_statusbar_btn(Evas_Object *layout, const char *image,
    Evas_Object *box = elm_box_add(layout);
 
    Evas_Object *btn = elm_button_add(box);
-   elm_object_style_set(btn, "enventor");
+   elm_object_style_set(btn, ENVENTOR_NAME);
    elm_object_focus_allow_set(btn, EINA_FALSE);
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);

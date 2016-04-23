@@ -338,7 +338,7 @@ panes_init(Evas_Object *parent)
 
    //Panes Horizontal
    Evas_Object *panes_h = elm_panes_add(parent);
-   elm_object_style_set(panes_h, "enventor");
+   elm_object_style_set(panes_h, ENVENTOR_NAME);
    elm_panes_horizontal_set(panes_v, EINA_TRUE);
    evas_object_size_hint_weight_set(panes_h, EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);

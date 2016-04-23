@@ -247,7 +247,7 @@ about_open(menu_data *md)
 
    //Back Button
    Evas_Object *back_button = elm_button_add(layout);
-   elm_object_style_set(back_button, "enventor");
+   elm_object_style_set(back_button, ENVENTOR_NAME);
    elm_object_scale_set(back_button, 1.15);
    elm_object_focus_allow_set(back_button, EINA_FALSE);
    evas_object_show(back_button);
@@ -629,7 +629,7 @@ menu_open(menu_data *md)
 
    //Back Button
    Evas_Object *back_button = elm_button_add(layout);
-   elm_object_style_set(back_button, "enventor");
+   elm_object_style_set(back_button, ENVENTOR_NAME);
    elm_object_scale_set(back_button, 1.15);
    elm_object_focus_allow_set(back_button, EINA_FALSE);
    evas_object_show(back_button);

@@ -142,7 +142,7 @@ tools_btn_create(Evas_Object *parent, const char *icon,
                  const char *tooltip_msg, Evas_Smart_Cb func)
 {
    Evas_Object *btn = elm_button_add(parent);
-   elm_object_style_set(btn, "enventor");
+   elm_object_style_set(btn, ENVENTOR_NAME);
    elm_object_focus_allow_set(btn, EINA_FALSE);
    elm_object_tooltip_text_set(btn, tooltip_msg);
    elm_object_tooltip_orient_set(btn, ELM_TOOLTIP_ORIENT_BOTTOM);
