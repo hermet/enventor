@@ -788,6 +788,15 @@ gl_program_del_cb(void *data, Evas_Object *obj EINA_UNUSED)
    evas_object_del(pit->content);
 }
 
+static void
+program_content_del_cb(void *data, Evas *e EINA_UNUSED,
+                        Evas_Object *obj EINA_UNUSED,
+                        void *event_info EINA_UNUSED)
+{
+   programs_it *pit = data;
+   pit->content = NULL;
+}
+
 static Evas_Object *
 gl_program_content_get_cb(void *data EINA_UNUSED, Evas_Object *obj,
                           const char *part)
@@ -803,9 +812,13 @@ gl_program_content_get_cb(void *data EINA_UNUSED, Evas_Object *obj,
    //2. Play Button
    program_it *pit = data;
 
+   evas_object_del(pit->content);
+
    //Box
    Evas_Object *box = elm_box_add(obj);
    elm_object_tooltip_text_set(box, "Play Program");
+   evas_object_event_callback_add(box, EVAS_CALLBACK_DEL,
+                                  program_content_del_cb, pit);
 
    //Button
    Evas_Object *btn = elm_button_add(box);
@@ -1053,6 +1066,15 @@ gl_programs_del_cb(void *data, Evas_Object *obj EINA_UNUSED)
    evas_object_del(pit->content);
 }
 
+static void
+programs_content_del_cb(void *data, Evas *e EINA_UNUSED,
+                        Evas_Object *obj EINA_UNUSED,
+                        void *event_info EINA_UNUSED)
+{
+   programs_it *pit = data;
+   pit->content = NULL;
+}
+
 static Evas_Object *
 gl_programs_content_get_cb(void *data, Evas_Object *obj, const char *part)
 {
@@ -1068,8 +1090,12 @@ gl_programs_content_get_cb(void *data, Evas_Object *obj, const char *part)
    //2. Stop All Button
    programs_it *pit = data;
 
+   evas_object_del(pit->content);
+
    //Box
    Evas_Object *box = elm_box_add(obj);
+   evas_object_event_callback_add(box, EVAS_CALLBACK_DEL,
+                                  programs_content_del_cb, pit);
    elm_object_tooltip_text_set(box, "Stop All Programs");
 
    //Button
