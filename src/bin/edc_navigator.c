@@ -85,6 +85,8 @@ struct state_it_s
    char *name;
    Elm_Object_Item *it;
    part_it *pit;
+
+   Eina_Bool discarded : 1;
 };
 
 struct program_it_s
@@ -653,23 +655,50 @@ gl_state_selected_cb(void *data, Evas_Object *obj EINA_UNUSED,
 static void
 states_update(navi_data *nd, part_it *pit)
 {
-   navigator_states_clear(pit);
-
    Evas_Object *enventor = base_enventor_get();
    Eina_List *state_list = enventor_object_part_states_list_get(enventor,
                                                                 pit->name);
-   if (!state_list) return;
-
-   //Append state list
    char *name;
-   Eina_List *l;
+   Eina_List *l, *ll;
    state_it *sit;
    int idx = 0;
 
+   if (!state_list)
+     {
+        navigator_states_clear(pit);
+        return;
+     }
+
+   //1. Prepare for validation.
+   EINA_LIST_FOREACH(pit->states, l, sit)
+     {
+        sit->discarded = EINA_TRUE;
+        sit->tag.idx = IDX_MAX;
+     }
+
+   //2. New States
    EINA_LIST_FOREACH(state_list, l, name)
      {
+        Eina_Bool new_state = EINA_TRUE;
         idx++;
 
+        //Check if it is existed?
+        EINA_LIST_FOREACH(pit->states, ll, sit)
+          {
+             if (!strcmp(name, sit->name) &&
+                 (strlen(name) == strlen(sit->name)))
+               {
+                  sit->discarded = EINA_FALSE;
+                  new_state = EINA_FALSE;
+                  //update index of the item
+                  sit->tag.idx = idx;
+                  break;
+               }
+
+          }
+        if (!new_state) continue;
+
+        //Ok, this state is newly added
         sit = calloc(1, sizeof(state_it));
         if (!sit)
           {
@@ -693,6 +722,18 @@ states_update(navi_data *nd, part_it *pit)
                                                  gl_state_selected_cb,
                                                  sit);
         pit->states = eina_list_append(pit->states, sit);
+     }
+
+   //3. Update states
+   EINA_LIST_FOREACH_SAFE(pit->states, l, ll, sit)
+     {
+        //Remove them from the previous list.
+        if (sit->discarded)
+          {
+             pit->states = eina_list_remove_list(pit->states, l);
+             navigator_state_free(sit);
+             continue;
+          }
      }
 
    edje_edit_string_list_free(state_list);
