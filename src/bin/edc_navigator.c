@@ -15,9 +15,7 @@ typedef struct list_it_s list_it;
 
 typedef struct edc_navigator_s
 {
-   Evas_Object *box;
    Evas_Object *genlist;
-   Evas_Object *check;
 
    Eina_List *groups;
 
@@ -151,23 +149,6 @@ gl_comp_func(const void *pa, const void *pb)
    list_it *it_b = (list_it *) elm_object_item_data_get(b);
 
    return (it_a->idx - it_b->idx);
-}
-
-static void
-check_changed_cb(void *data, Evas_Object *obj, void *event_info)
-{
-   navi_data *nd = data;
-   Eina_Bool auto_contract = elm_check_state_get(obj);
-   config_auto_contract_set(auto_contract);
-
-   if (!auto_contract) return;
-
-   // Contract all groups instantly.
-   Eina_List *l;
-   group_it *git;
-
-   EINA_LIST_FOREACH(nd->groups, l, git)
-     group_contract(git);
 }
 
 static void
@@ -916,15 +897,6 @@ programs_expand(programs_it *pit)
    elm_genlist_item_expanded_set(pit->it, EINA_TRUE);
 
    sub_programs_update(pit->git->nd, pit);
-
-   //If auto contraction is enabled, then close other parts
-   if (!config_auto_contract_get()) return;
-
-   //Contract part states
-   part_it *pit2;
-   Eina_List *l;
-   EINA_LIST_FOREACH(pit->git->parts, l, pit2)
-     part_contract(pit2);
 }
 
 static void
@@ -1271,22 +1243,6 @@ part_expand(part_it *pit)
    elm_genlist_item_expanded_set(pit->it, EINA_TRUE);
 
    states_update(pit->git->nd, pit);
-
-   //If auto contraction is enabled, then close other parts and programs
-   if (!config_auto_contract_get()) return;
-
-   //Contract other part states
-   part_it *pit2;
-   Eina_List *l;
-
-   EINA_LIST_FOREACH(pit->git->parts, l, pit2)
-     {
-        if (pit2 == pit) continue;
-        part_contract(pit2);
-     }
-
-   //Contract programs
-   programs_contract(&pit->git->programs);
 }
 
 static void
@@ -1316,19 +1272,6 @@ group_expand(group_it *git)
    elm_genlist_item_expanded_set(git->it, EINA_TRUE);
 
    group_update(git->nd, git);
-
-   //If auto contraction is enabled, then close other parts
-   if (!config_auto_contract_get()) return;
-
-   //Contract other groups
-   group_it *git2;
-   Eina_List *l;
-
-   EINA_LIST_FOREACH(git->nd->groups, l, git2)
-     {
-        if (git2 == git) continue;
-        group_contract(git2);
-     }
 }
 
 static void
@@ -1530,12 +1473,8 @@ edc_navigator_init(Evas_Object *parent)
      }
    g_nd = nd;
 
-   //Box
-   Evas_Object *box = elm_box_add(parent);
-   elm_object_focus_allow_set(box, EINA_FALSE);
-
    //Genlist
-   Evas_Object *genlist = elm_genlist_add(box);
+   Evas_Object *genlist = elm_genlist_add(parent);
    elm_object_focus_allow_set(genlist, EINA_FALSE);
    evas_object_smart_callback_add(genlist, "expand,request",
                                   gl_expand_request_cb, nd);
@@ -1549,20 +1488,6 @@ edc_navigator_init(Evas_Object *parent)
                                     EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(genlist, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_show(genlist);
-   elm_box_pack_end(box, genlist);
-
-   //Check for genlist option
-   Evas_Object *check = elm_check_add(box);
-   elm_object_text_set(check, "Automatic Contraction");
-   elm_check_state_set(check, config_auto_contract_get());
-   elm_object_tooltip_text_set(check, "Automatic Contraction contracts items</br> when other items are expanded");
-   elm_object_tooltip_orient_set(check, ELM_TOOLTIP_ORIENT_TOP);
-   evas_object_smart_callback_add(check, "changed", check_changed_cb, nd);
-   elm_object_focus_allow_set(check, EINA_FALSE);
-   evas_object_size_hint_weight_set(check, EVAS_HINT_EXPAND, 0);
-   evas_object_size_hint_align_set(check, 0.05, EVAS_HINT_FILL);
-   evas_object_show(check);
-   elm_box_pack_end(box, check);
 
    //Group Item Class
    Elm_Genlist_Item_Class *itc;
@@ -1608,11 +1533,9 @@ edc_navigator_init(Evas_Object *parent)
 
    nd->program_itc = itc;
 
-   nd->box = box;
    nd->genlist = genlist;
-   nd->check = check;
 
-   return box;
+   return genlist;
 }
 
 void
@@ -1629,7 +1552,7 @@ edc_navigator_term(void)
    elm_genlist_item_class_free(nd->programs_itc);
    elm_genlist_item_class_free(nd->program_itc);
 
-   evas_object_del(nd->box);
+   evas_object_del(nd->genlist);
 
    free(nd);
    g_nd = NULL;
