@@ -1010,7 +1010,7 @@ live_btn_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
 
    live_edit_layer_set(ld);
 
-   stats_info_msg_update(_("Double click the part to confirm. (Esc = cancel)"));
+   stats_info_msg_update(_("Double click part to confirm. (Esc = cancel)"));
 }
 
 static Evas_Object *

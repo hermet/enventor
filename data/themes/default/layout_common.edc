@@ -2506,7 +2506,7 @@ group { name: "statusbar_layout";
       program { name: "info_msg_idle";
          action: STATE_SET "show" 0.0;
          target: "elm.text.info_msg";
-         transition: LINEAR 2;
+         transition: LINEAR 3.5;
          after: "info_msg_hide";
       }
       program { name: "info_msg_hide";
