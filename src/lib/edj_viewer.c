@@ -377,6 +377,7 @@ update_edj_file_internal(view_data *vd)
 
    view_obj_parts_callbacks_set(vd);
    vd->edj_reload_need = EINA_FALSE;
+   vd->file_set_finished = EINA_TRUE;
 
    evas_object_smart_callback_call(vd->enventor, SIG_LIVE_VIEW_UPDATED,
                                    edj_mgr_obj_get());
@@ -420,6 +421,7 @@ exe_del_event_cb(void *data, int type EINA_UNUSED, void *event EINA_UNUSED)
      {
         dummy_obj_update(vd->layout);
         ecore_timer_del(vd->update_edj_timer);
+        vd->file_set_finished = EINA_FALSE;
         vd->update_edj_timer = ecore_timer_add(0.25, update_edj_file, vd);
         return ECORE_CALLBACK_PASS_ON;
      }
@@ -824,42 +826,42 @@ view_size_get(view_data *vd, Evas_Coord *w, Evas_Coord *h)
 Eina_List *
 view_parts_list_get(view_data *vd)
 {
-   if (!vd->file_set_finished) return NULL;
+   if (!vd || !vd->file_set_finished) return NULL;
    return edje_edit_parts_list_get(vd->layout);
 }
 
 Eina_List *
 view_images_list_get(view_data *vd)
 {
-   if (!vd->file_set_finished) return NULL;
+   if (!vd || !vd->file_set_finished) return NULL;
    return edje_edit_images_list_get(vd->layout);
 }
 
 Eina_List *
 view_programs_list_get(view_data *vd)
 {
-   if (!vd->file_set_finished) return NULL;
+   if (!vd || !vd->file_set_finished) return NULL;
    return edje_edit_programs_list_get(vd->layout);
 }
 
 Edje_Part_Type
 view_part_type_get(view_data *vd, const char *part)
 {
-   if (!vd->file_set_finished) return EDJE_PART_TYPE_NONE;
+   if (!vd || !vd->file_set_finished) return EDJE_PART_TYPE_NONE;
    return edje_edit_part_type_get(vd->layout, part);
 }
 
 Eina_List *
 view_part_states_list_get(view_data *vd, const char *part)
 {
-   if (!vd->file_set_finished) return NULL;
+   if (!vd || !vd->file_set_finished) return NULL;
    return edje_edit_part_states_list_get(vd->layout, part);
 }
 
 Eina_List *
 view_program_targets_get(view_data *vd, const char *prog)
 {
-   if (!vd->file_set_finished) return NULL;
+   if (!vd || !vd->file_set_finished) return NULL;
    return edje_edit_program_targets_get(vd->layout, prog);
 }
 
