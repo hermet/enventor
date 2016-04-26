@@ -1528,13 +1528,6 @@ parser_name_get(parser_data *pd EINA_UNUSED, const char *cur)
    return strndup(p, (end - p));
 }
 
-const char *
-parser_colon_pos_get(parser_data *pd EINA_UNUSED, const char *cur)
-{
-   if (!cur) return NULL;
-   return strstr(cur, ":");
-}
-
 attr_value *
 parser_attribute_get(parser_data *pd, const char *text, const char *cur,
                      const char *selected)

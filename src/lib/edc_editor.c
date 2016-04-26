@@ -593,22 +593,21 @@ preview_img_relay_show(edit_data *ed, Evas_Object *ctxpopup, Eina_Bool next)
    if (image_preview_show(ed, text, x, y))
      {
         //Set the entry selection region to next image.
-        const char *colon = parser_colon_pos_get(NULL, text);
+        const char *colon = strstr(text, ":");
         if (!colon) goto end;
 
-        const char *selection = elm_entry_selection_get(ed->en_edit);
-        if (!selection) goto end;
+        const char *image = strstr(text, "image");
+        if (!image) goto end;
 
-        char *select_utf8 = elm_entry_markup_to_utf8(selection);
-        if (!select_utf8) goto end;
-        int select_len = strlen(select_utf8);
-        free(select_utf8);
-        const char *p = (colon - select_len);
-        if (p < text) goto end;
+        //Check validation
+        if (0 >= (colon - image)) goto end;
 
-        int cursor_pos = elm_entry_cursor_pos_get(ed->en_edit);
-        elm_entry_select_region_set(ed->en_edit, (cursor_pos - select_len),
-                                    cursor_pos);
+        //Compute new selection region.
+        elm_entry_cursor_line_begin_set(ed->en_edit);
+        int cur_pos = elm_entry_cursor_pos_get(ed->en_edit);
+        int begin = cur_pos + (image - text);
+        elm_entry_select_region_set(ed->en_edit, begin,
+                                    (begin + (int) (colon - image)));
         free(text);
         return;
      }
