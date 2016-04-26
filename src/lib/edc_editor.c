@@ -609,10 +609,12 @@ preview_img_relay_show(edit_data *ed, Evas_Object *ctxpopup, Eina_Bool next)
         int cursor_pos = elm_entry_cursor_pos_get(ed->en_edit);
         elm_entry_select_region_set(ed->en_edit, (cursor_pos - select_len),
                                     cursor_pos);
+        free(text);
         return;
      }
 end:
    elm_ctxpopup_dismiss(ctxpopup);
+   free(text);
 }
 
 static void
