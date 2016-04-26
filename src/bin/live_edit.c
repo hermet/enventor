@@ -935,6 +935,13 @@ info_text_init(live_data *ld)
 }
 
 static void
+key_grab_add(Evas_Object *keygrabber, const char *key)
+{
+   if (!evas_object_key_grab(keygrabber, key, 0, 0, EINA_TRUE))
+     EINA_LOG_ERR(_("Failed to grab key - %s"), key);
+}
+
+static void
 live_edit_layer_set(live_data *ld)
 {
    //Keygrabber
@@ -944,25 +951,17 @@ live_edit_layer_set(live_data *ld)
                                   keygrabber_key_down_cb, ld);
    evas_object_event_callback_add(ld->keygrabber, EVAS_CALLBACK_KEY_DOWN,
                                   keygrabber_direction_key_down_cb, ld);
-   if (!evas_object_key_grab(ld->keygrabber, "Return", 0, 0, EINA_TRUE))
-     EINA_LOG_ERR(_("Failed to grab key - Return"));
-   if (!evas_object_key_grab(ld->keygrabber, "Delete", 0, 0, EINA_TRUE))
-     EINA_LOG_ERR(_("Failed to grab key - Delete"));
-   if (!evas_object_key_grab(ld->keygrabber, "BackSpace", 0, 0, EINA_TRUE))
-     EINA_LOG_ERR(_("Failed to grab key - BackSpace"));
-   if (!evas_object_key_grab(ld->keygrabber, "Up", 0, 0, EINA_TRUE))
-     EINA_LOG_ERR(_("Failed to grab key - Up"));
-   if (!evas_object_key_grab(ld->keygrabber, "Down", 0, 0, EINA_TRUE))
-     EINA_LOG_ERR(_("Failed to grab key - Down"));
-   if (!evas_object_key_grab(ld->keygrabber, "Left", 0, 0, EINA_TRUE))
-     EINA_LOG_ERR(_("Failed to grab key - Left"));
-   if (!evas_object_key_grab(ld->keygrabber, "Right", 0, 0, EINA_TRUE))
-     EINA_LOG_ERR(_("Failed to grab key - Right"));
-
    evas_object_event_callback_add(ld->live_view, EVAS_CALLBACK_RESIZE,
                                   live_view_geom_cb, ld);
    evas_object_event_callback_add(ld->live_view, EVAS_CALLBACK_MOVE,
                                   live_view_geom_cb, ld);
+   key_grab_add(ld->keygrabber, "Return");
+   key_grab_add(ld->keygrabber, "Delete");
+   key_grab_add(ld->keygrabber, "BackSpace");
+   key_grab_add(ld->keygrabber, "Up");
+   key_grab_add(ld->keygrabber, "Down");
+   key_grab_add(ld->keygrabber, "Left");
+   key_grab_add(ld->keygrabber, "Right");
 
    //Create Live View Layout
    Evas_Object *layout = elm_layout_add(ld->live_view);

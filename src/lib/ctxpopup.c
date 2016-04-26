@@ -759,6 +759,13 @@ ctxpopup_key_down_cb(void *data, Evas *e EINA_UNUSED,
    else if (!strcmp(ev->key, "BackSpace")) candidate_reset(ctxdata);
 }
 
+static void
+key_grab_add(Evas_Object *keygrabber, const char *key)
+{
+   if (!evas_object_key_grab(keygrabber, key, 0, 0, EINA_TRUE))
+     EINA_LOG_ERR(_("Failed to grab key - %s"), key);
+}
+
 /*****************************************************************************/
 /* Externally accessible calls                                               */
 /*****************************************************************************/
@@ -825,12 +832,9 @@ ctxpopup_img_preview_create(edit_data *ed,
                                   ctxpopup_mouse_wheel_cb, ctxdata);
    evas_object_focus_set(ctxpopup, EINA_TRUE);
 
-   if (!evas_object_key_grab(ctxpopup, "Up", 0, 0, EINA_TRUE))
-     EINA_LOG_ERR("Failed to grab key - Up");
-   if (!evas_object_key_grab(ctxpopup, "Down", 0, 0, EINA_TRUE))
-     EINA_LOG_ERR("Failed to grab key - Down");
-   if (!evas_object_key_grab(ctxpopup, "BackSpace", 0, 0, EINA_TRUE))
-     EINA_LOG_ERR("Failed to grab key - BackSpace");
+   key_grab_add(ctxpopup, "Up");
+   key_grab_add(ctxpopup, "Down");
+   key_grab_add(ctxpopup, "BackSpace");
 
    return ctxpopup;
 }
@@ -942,12 +946,9 @@ ctxpopup_candidate_list_create(edit_data *ed, attr_value *attr,
    evas_object_smart_callback_add(ctxpopup, "dismissed", ctxpopup_dismiss_cb,
                                   ed);
 
-   if (!evas_object_key_grab(ctxpopup, "Up", 0, 0, EINA_TRUE))
-     EINA_LOG_ERR("Failed to grab key - Up");
-   if (!evas_object_key_grab(ctxpopup, "Down", 0, 0, EINA_TRUE))
-     EINA_LOG_ERR("Failed to grab key - Down");
-   if (!evas_object_key_grab(ctxpopup, "BackSpace", 0, 0, EINA_TRUE))
-     EINA_LOG_ERR("Failed to grab key - BackSpace");
+   key_grab_add(ctxpopup, "Up");
+   key_grab_add(ctxpopup, "Down");
+   key_grab_add(ctxpopup, "BackSpace");
 
    return ctxpopup;
 

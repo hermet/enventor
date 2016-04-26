@@ -362,6 +362,19 @@ init_thread_cancel_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
 }
 
 static void
+key_grab_add(Evas_Object *keygrabber, const char *key)
+{
+   if (!evas_object_key_grab(keygrabber, key, 0, 0, EINA_TRUE))
+     EINA_LOG_ERR(_("Failed to grab key - %s"), key);
+}
+
+static void
+key_grab_del(Evas_Object *keygrabber, const char *key)
+{
+   evas_object_key_ungrab(keygrabber, key, 0, 0);
+}
+
+static void
 anchor_keygrab_set(autocomp_data *ad, Eina_Bool grab)
 {
    Evas_Object *anchor = ad->anchor;
@@ -369,26 +382,21 @@ anchor_keygrab_set(autocomp_data *ad, Eina_Bool grab)
    if (grab)
      {
         if (ad->on_keygrab) return;
-        if (!evas_object_key_grab(anchor, "BackSpace", 0, 0, EINA_TRUE))
-          EINA_LOG_ERR("Failed to grab key - BackSpace");
-        if (!evas_object_key_grab(anchor, "Return", 0, 0, EINA_TRUE))
-          EINA_LOG_ERR("Failed to grab key - Return");
-        if (!evas_object_key_grab(anchor, "Tab", 0, 0, EINA_TRUE))
-          EINA_LOG_ERR("Failed to grab key - Tab");
-        if (!evas_object_key_grab(anchor, "Up", 0, 0, EINA_TRUE))
-          EINA_LOG_ERR("Failed to grab key - Up");
-        if (!evas_object_key_grab(anchor, "Down", 0, 0, EINA_TRUE))
-          EINA_LOG_ERR("Failed to grab key - Down");
+        key_grab_add(anchor, "BackSpace");
+        key_grab_add(anchor, "Return");
+        key_grab_add(anchor, "Tab");
+        key_grab_add(anchor, "Up");
+        key_grab_add(anchor, "Down");
         ad->on_keygrab = EINA_TRUE;
      }
    else
      {
         if (!ad->on_keygrab) return;
-        evas_object_key_ungrab(anchor, "BackSpace", 0, 0);
-        evas_object_key_ungrab(anchor, "Return", 0, 0);
-        evas_object_key_ungrab(anchor, "Tab", 0, 0);
-        evas_object_key_ungrab(anchor, "Up", 0, 0);
-        evas_object_key_ungrab(anchor, "Down", 0, 0);
+        key_grab_del(anchor, "BackSpace");
+        key_grab_del(anchor, "Return");
+        key_grab_del(anchor, "Tab");
+        key_grab_del(anchor, "Up");
+        key_grab_del(anchor, "Down");
         ad->on_keygrab = EINA_FALSE;
      }
 }
