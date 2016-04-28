@@ -189,7 +189,7 @@ info_text_update(live_data *ld)
    x = (layout_x + (layout_w/2)) - (w/2);
    y = (layout_y + (layout_h/2)) - (h/2);
    if (x < lx) x = lx;
-   if (y < lx) y = ly;
+   if (y < ly) y = ly;
    if ((x + w) > (lx + lw)) x = ((lx + lw) - w);
    if ((y + h) > (ly + lh)) y = ((ly + lh) - h);
    evas_object_move(ld->info_text[Info_Text_Size], x, y);
