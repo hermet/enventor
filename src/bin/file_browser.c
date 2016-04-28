@@ -24,7 +24,10 @@ typedef struct file_browser_s
    brows_file *col_edc;   //collections edc
    brows_file *workspace; //workspace directory
 
+   Evas_Object *box;
    Evas_Object *genlist;
+   Evas_Object *button;
+
    Elm_Genlist_Item_Class *itc;
    Elm_Genlist_Item_Class *group_itc;
 
@@ -379,11 +382,27 @@ file_browser_edc_file_set(const char *edc_file)
    bd->col_edc = edc;
 }
 
+static void
+btn_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
+               void *event_info EINA_UNUSED)
+{
+   brows_data *bd = data;
+   if (!bd) return;
+
+   if (bd->workspace_group_it)
+     elm_object_item_del(bd->workspace_group_it);
+
+   brows_file_free(bd->workspace);
+   bd->workspace = NULL;
+
+   file_browser_workspace_set(config_workspace_path_get());
+}
+
 Evas_Object *
 file_browser_init(Evas_Object *parent)
 {
    brows_data *bd = g_bd;
-   if (bd) return bd->genlist;
+   if (bd) return bd->box;
 
    bd = calloc(1, sizeof(brows_data));
    if (!bd)
@@ -393,7 +412,11 @@ file_browser_init(Evas_Object *parent)
      }
    g_bd = bd;
 
-   Evas_Object *genlist = elm_genlist_add(parent);
+   Evas_Object *box = elm_box_add(parent);
+
+   Evas_Object *genlist = elm_genlist_add(box);
+   evas_object_size_hint_weight_set(genlist, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(genlist, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_focus_allow_set(genlist, EINA_FALSE);
 
    evas_object_smart_callback_add(genlist, "expand,request", gl_exp_req, NULL);
@@ -401,6 +424,9 @@ file_browser_init(Evas_Object *parent)
                                   NULL);
    evas_object_smart_callback_add(genlist, "expanded", gl_exp, bd);
    evas_object_smart_callback_add(genlist, "contracted", gl_con, NULL);
+
+   evas_object_show(genlist);
+   elm_box_pack_end(box, genlist);
 
    //Item Class
    Elm_Genlist_Item_Class *itc;
@@ -417,9 +443,17 @@ file_browser_init(Evas_Object *parent)
    group_itc->func.text_get = gl_group_text_get_cb;
    bd->group_itc = group_itc;
 
-   bd->genlist = genlist;
+   Evas_Object *button = elm_button_add(box);
+   evas_object_smart_callback_add(button, "clicked", btn_clicked_cb, bd);
+   elm_object_text_set(button, "Refresh");
+   evas_object_show(button);
+   elm_box_pack_end(box, button);
 
-   return genlist;
+   bd->box = box;
+   bd->genlist = genlist;
+   bd->button = button;
+
+   return box;
 }
 
 void
@@ -434,7 +468,7 @@ file_browser_term(void)
    elm_genlist_item_class_free(bd->itc);
    elm_genlist_item_class_free(bd->group_itc);
 
-   evas_object_del(bd->genlist);
+   evas_object_del(bd->box);
 
    free(bd);
    g_bd = NULL;
