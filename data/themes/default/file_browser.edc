@@ -1,0 +1,65 @@
+group { "workspace";
+   parts {
+      spacer { "title_base";
+         scale: 1.0;
+         desc { "default";
+            min: 186 22;
+            max: 186 22;
+            align: 0.0 0.0;
+            fixed: 1 1;
+         }
+      }
+      spacer { "title_left_padding";
+         scale: 1.0;
+         desc { "default";
+            rel1.to: "title_base";
+            rel2 {
+               to: "title_base";
+               relative: 0.0 1.0;
+            }
+            min: 5 0;
+            max: 5 0;
+            align: 0.0 0.5;
+            fixed: 1 0;
+         }
+      }
+      text { "title_text";
+         scale: 1.0;
+         desc { "default";
+            text {
+               text: "Workspace";
+               size: 10;
+               align: 0.0 0.5;
+            }
+            rel1 {
+               to: "title_left_padding";
+               relative: 1.0 0.0;
+            }
+            rel2.to: "title_base";
+         }
+      }
+      swallow { "refresh_btn";
+         scale: 1.0;
+         desc { "default";
+            rel1 {
+               to: "title_base";
+               relative: 1.0 0.0;
+            }
+            rel2.to: "title_base";
+            min: 22 0;
+            max: 22 -1;
+            align: 1.0 0.5;
+            fixed: 1 0;
+         }
+      }
+      swallow { "content";
+         scale: 1.0;
+         desc { "default";
+            rel1 {
+               to: "title_base";
+               relative: 0.0 1.0;
+            }
+         }
+      }
+   }
+}

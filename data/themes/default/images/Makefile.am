@@ -86,4 +86,5 @@ EXTRA_DIST = \
    navi_program.png \
    navi_play.png \
    navi_stop.png \
-   bg_demo.png
+   bg_demo.png \
+   refresh.png

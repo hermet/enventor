@@ -23,14 +23,11 @@ typedef struct file_browser_s
 {
    brows_file *workspace; //workspace directory
 
-   Evas_Object *box;
+   Evas_Object *workspace_ly;
+   Evas_Object *refresh_btn;
    Evas_Object *genlist;
-   Evas_Object *button;
 
    Elm_Genlist_Item_Class *itc;
-   Elm_Genlist_Item_Class *group_itc;
-
-   Elm_Object_Item *workspace_group_it; //Show "Workspace" group index.
 } brows_data;
 
 static brows_data *g_bd = NULL;
@@ -286,6 +283,19 @@ file_set_internal(const char *file_path)
    return file;
 }
 
+static void
+refresh_btn_clicked_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+                       void *event_info EINA_UNUSED)
+{
+   brows_data *bd = g_bd;
+   if (!bd) return;
+
+   brows_file_free(bd->workspace);
+   bd->workspace = NULL;
+
+   file_browser_workspace_set(config_workspace_path_get());
+}
+
 /*****************************************************************************/
 /* Externally accessible calls                                               */
 /*****************************************************************************/
@@ -310,23 +320,6 @@ file_browser_workspace_set(const char *workspace_path)
         bd->workspace = NULL;
      }
 
-   if (bd->workspace_group_it)
-     {
-        elm_object_item_del(bd->workspace_group_it);
-        bd->workspace_group_it = NULL;
-     }
-   //Show "Workspace" group index.
-   bd->workspace_group_it =
-      elm_genlist_item_append(bd->genlist,
-                              bd->group_itc,         /* item class */
-                              "Workspace",           /* item data */
-                              NULL,                  /* parent */
-                              ELM_GENLIST_ITEM_NONE, /* item type */
-                              NULL,                  /* select_cb */
-                              NULL);                 /* select_cb data */
-   elm_genlist_item_select_mode_set(bd->workspace_group_it,
-                                    ELM_OBJECT_SELECT_MODE_DISPLAY_ONLY);
-
    brows_file *workspace = file_set_internal(workspace_path);
    if (!workspace) return;
    bd->workspace = workspace;
@@ -335,27 +328,11 @@ file_browser_workspace_set(const char *workspace_path)
      gl_exp_req(NULL, NULL, workspace->it);
 }
 
-static void
-btn_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
-               void *event_info EINA_UNUSED)
-{
-   brows_data *bd = data;
-   if (!bd) return;
-
-   if (bd->workspace_group_it)
-     elm_object_item_del(bd->workspace_group_it);
-
-   brows_file_free(bd->workspace);
-   bd->workspace = NULL;
-
-   file_browser_workspace_set(config_workspace_path_get());
-}
-
 Evas_Object *
 file_browser_init(Evas_Object *parent)
 {
    brows_data *bd = g_bd;
-   if (bd) return bd->box;
+   if (bd) return bd->workspace_ly;
 
    bd = calloc(1, sizeof(brows_data));
    if (!bd)
@@ -365,11 +342,30 @@ file_browser_init(Evas_Object *parent)
      }
    g_bd = bd;
 
-   Evas_Object *box = elm_box_add(parent);
+   Evas_Object *workspace_ly = elm_layout_add(parent);
+   elm_layout_file_set(workspace_ly, EDJE_PATH, "workspace");
 
-   Evas_Object *genlist = elm_genlist_add(box);
-   evas_object_size_hint_weight_set(genlist, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(genlist, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   Evas_Object *box = elm_box_add(workspace_ly);
+   elm_object_tooltip_text_set(box, "Refresh");
+
+   Evas_Object *refresh_btn = elm_button_add(box);
+   evas_object_size_hint_weight_set(refresh_btn, EVAS_HINT_EXPAND,
+                                    EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(refresh_btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_object_scale_set(refresh_btn, 0.5);
+   evas_object_smart_callback_add(refresh_btn, "clicked",
+                                  refresh_btn_clicked_cb, NULL);
+
+   Evas_Object *refresh_btn_img = elm_image_add(refresh_btn);
+   elm_image_file_set(refresh_btn_img, EDJE_PATH, "refresh");
+   elm_object_content_set(refresh_btn, refresh_btn_img);
+
+   evas_object_show(refresh_btn);
+   elm_box_pack_end(box, refresh_btn);
+
+   elm_object_part_content_set(workspace_ly, "refresh_btn", box);
+
+   Evas_Object *genlist = elm_genlist_add(workspace_ly);
    elm_object_focus_allow_set(genlist, EINA_FALSE);
 
    evas_object_smart_callback_add(genlist, "expand,request", gl_exp_req, NULL);
@@ -378,8 +374,7 @@ file_browser_init(Evas_Object *parent)
    evas_object_smart_callback_add(genlist, "expanded", gl_exp, bd);
    evas_object_smart_callback_add(genlist, "contracted", gl_con, NULL);
 
-   evas_object_show(genlist);
-   elm_box_pack_end(box, genlist);
+   elm_object_part_content_set(workspace_ly, "content", genlist);
 
    //Item Class
    Elm_Genlist_Item_Class *itc;
@@ -389,24 +384,10 @@ file_browser_init(Evas_Object *parent)
    itc->func.content_get = gl_file_content_get_cb;
    bd->itc = itc;
 
-   //Group Index Item Class
-   Elm_Genlist_Item_Class *group_itc;
-   group_itc = elm_genlist_item_class_new();
-   group_itc->item_style = "group_index";
-   group_itc->func.text_get = gl_group_text_get_cb;
-   bd->group_itc = group_itc;
-
-   Evas_Object *button = elm_button_add(box);
-   evas_object_smart_callback_add(button, "clicked", btn_clicked_cb, bd);
-   elm_object_text_set(button, "Refresh");
-   evas_object_show(button);
-   elm_box_pack_end(box, button);
-
-   bd->box = box;
+   bd->workspace_ly = workspace_ly;
    bd->genlist = genlist;
-   bd->button = button;
 
-   return box;
+   return workspace_ly;
 }
 
 void
@@ -418,9 +399,8 @@ file_browser_term(void)
    if (bd->workspace) brows_file_free(bd->workspace);
 
    elm_genlist_item_class_free(bd->itc);
-   elm_genlist_item_class_free(bd->group_itc);
 
-   evas_object_del(bd->box);
+   evas_object_del(bd->workspace_ly);
 
    free(bd);
    g_bd = NULL;

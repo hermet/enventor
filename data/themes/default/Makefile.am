@@ -15,7 +15,8 @@ EXTRA_DIST = enventor.edc \
              layout_common.edc \
              layout_setting.edc \
              theme_ext.edc \
-             live_edit.edc
+             live_edit.edc \
+             file_browser.edc
 
 enventor.edj: Makefile $(EXTRA_DIST)
 	$(EDJE_CC) $(EDJE_FLAGS) \
