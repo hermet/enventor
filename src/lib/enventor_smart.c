@@ -590,18 +590,21 @@ _enventor_object_focus_get(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
    return elm_object_focus_get(edit_entry_get(pd->ed));
 }
 
+//TODO: Itemize
 EOLIAN static const char *
 _enventor_object_text_get(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
 {
    return elm_entry_entry_get(edit_entry_get(pd->ed));
 }
 
+//TODO: Itemize
 EOLIAN static int
 _enventor_object_cursor_pos_get(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
 {
    return elm_entry_cursor_pos_get(edit_entry_get(pd->ed));
 }
 
+//TODO: Itemize
 EOLIAN static void
 _enventor_object_cursor_pos_set(Eo *obj EINA_UNUSED,
                                 Enventor_Object_Data *pd,
@@ -610,18 +613,21 @@ _enventor_object_cursor_pos_set(Eo *obj EINA_UNUSED,
    elm_entry_cursor_pos_set(edit_entry_get(pd->ed), position);
 }
 
+//TODO: Itemize
 EOLIAN static const char *
 _enventor_object_selection_get(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
 {
    return elm_entry_selection_get(edit_entry_get(pd->ed));
 }
 
+//TODO: Itemize
 EOLIAN static void
 _enventor_object_select_none(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
 {
    elm_entry_select_none(edit_entry_get(pd->ed));
 }
 
+//TODO: Itemize
 EOLIAN static void
 _enventor_object_text_insert(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd,
                              const char *text)
@@ -629,6 +635,7 @@ _enventor_object_text_insert(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd,
    edit_text_insert(pd->ed, text);
 }
 
+//TODO: Itemize
 EOLIAN static void
 _enventor_object_select_region_set(Eo *obj EINA_UNUSED,
                                    Enventor_Object_Data *pd, int start, int end)
@@ -665,12 +672,14 @@ _enventor_object_font_get(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd,
    edit_font_get(pd->ed, font_name, font_style);
 }
 
+//TODO: Itemize
 EOLIAN static int
 _enventor_object_max_line_get(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
 {
    return edit_max_line_get(pd->ed);
 }
 
+//TODO: Itemize
 EOLIAN static void
 _enventor_object_line_goto(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd,
                            int line)
@@ -711,6 +720,7 @@ _enventor_object_syntax_color_partial_apply(Eo *obj EINA_UNUSED,
    edit_syntax_color_partial_apply(pd->ed, interval);
 }
 
+//TODO: Might need for items
 EOLIAN static Eina_Bool
 _enventor_object_save(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd,
                       const char *file)
@@ -723,6 +733,7 @@ _enventor_object_save(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd,
    return saved;
 }
 
+//TODO: Itemize
 EOLIAN static void
 _enventor_object_line_delete(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
 {
@@ -767,6 +778,7 @@ _enventor_object_template_part_insert(Eo *obj EINA_UNUSED,
                                rel2_y, NULL, syntax, n);
 }
 
+//TODO: Might need for items
 EOLIAN static void
 _enventor_object_disabled_set(Eo *obj EINA_UNUSED,
                               Enventor_Object_Data *pd,
@@ -778,12 +790,14 @@ _enventor_object_disabled_set(Eo *obj EINA_UNUSED,
    else pd->part_cursor_jump = EINA_TRUE;
 }
 
+//TODO: Itemize
 EOLIAN static Eina_Bool
 _enventor_object_redo(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
 {
    return edit_redoundo(pd->ed, EINA_FALSE);
 }
 
+//TODO: Itemize
 EOLIAN static Eina_Bool
 _enventor_object_undo(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
 {
