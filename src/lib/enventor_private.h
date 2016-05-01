@@ -1,25 +1,6 @@
 #ifndef __ENVENTOR_PRIVATE_H__
 #define __ENVENTOR_PRIVATE_H__
 
-/***
- * Compatible ABI for Win32
- ***/
-#ifdef _WIN32
-# ifdef EAPI
-#  undef EAPI
-# endif
-# ifdef ENVENTOR_WIN32_BUILD_SUPPORT
-#  define EAPI __declspec(dllexport)
-# else
-#  define EAPI __declspec(dllimport)
-# endif
-# ifdef EOAPI
-#  undef EOAPI
-# endif
-#define EOAPI EAPI
-#endif
-
-
 #include "common.h"
 
 #define QUOT "&quot;"
