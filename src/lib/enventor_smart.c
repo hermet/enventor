@@ -19,7 +19,6 @@
 
 typedef struct _Enventor_Object_Data
 {
-   EINA_REFCOUNT;
    Evas_Object *obj;
    Eina_List *items;
 
@@ -229,16 +228,13 @@ EOLIAN static void
 _enventor_object_evas_object_smart_del(Evas_Object *obj EINA_UNUSED,
                                        Enventor_Object_Data *pd)
 {
-   EINA_REFCOUNT_UNREF(pd)
-     {
-        eina_stringshare_del(pd->group_name);
-        autocomp_term();
-        edit_term(pd->ed);
-        ecore_event_handler_del(pd->key_down_handler);
-        ecore_event_handler_del(pd->key_up_handler);
-        edj_mgr_term();
-        build_term();
-     }
+   eina_stringshare_del(pd->group_name);
+   autocomp_term();
+   edit_term(pd->ed);
+   ecore_event_handler_del(pd->key_down_handler);
+   ecore_event_handler_del(pd->key_up_handler);
+   edj_mgr_term();
+   build_term();
 }
 
 EOLIAN static void
