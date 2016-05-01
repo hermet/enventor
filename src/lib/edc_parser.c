@@ -1151,7 +1151,7 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    attr.keyword = eina_stringshare_add("base_scale");
    attr.value.strs = base_scale;
    attr.value.cnt = 1;
-   attr.value.min = 0.0;
+   attr.value.min = 0.01;
    attr.value.max = 10.0;
    attr.value.type = ATTR_VALUE_FLOAT;
    attr.value.prepend_str = ATTR_PREPEND_COLON;
