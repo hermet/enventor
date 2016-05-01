@@ -118,7 +118,7 @@ info_text_update(live_data *ld)
    Evas_Coord lx, ly, lw, lh;
    evas_object_geometry_get(ld->live_view, &lx, &ly, &lw, &lh);
 
-   Evas_Object *enventor = base_enventor_get();
+   Enventor_Object *enventor = base_enventor_get();
 
    //reverse coordinates if mirror mode is enabled.
    double ox = ld->part_info.rel1_x;

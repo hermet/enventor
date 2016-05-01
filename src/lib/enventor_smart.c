@@ -797,8 +797,8 @@ _enventor_object_programs_stop(Eo *obj EINA_UNUSED,
 /*****************************************************************************/
 /* Externally accessible calls                                               */
 /*****************************************************************************/
-EAPI Evas_Object *
-enventor_object_add(Evas_Object *parent)
+EAPI Enventor_Object *
+enventor_object_add(Enventor_Object *parent)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(parent, NULL);
    Evas_Object *obj = eo_add(MY_CLASS, parent);
@@ -806,7 +806,7 @@ enventor_object_add(Evas_Object *parent)
 }
 
 EAPI Eina_Bool
-enventor_object_file_set(Evas_Object *obj, const char *file)
+enventor_object_file_set(Enventor_Object *obj, const char *file)
 {
    return efl_file_set(obj, file, NULL);
 }

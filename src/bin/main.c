@@ -8,7 +8,6 @@
 
 typedef struct app_s
 {
-   Evas_Object *enventor;
    Evas_Object *keygrabber;
    Eina_Bool on_saving : 1;
    Eina_Bool lazy_save : 1;
@@ -20,7 +19,7 @@ void
 auto_comp_toggle(app_data *ad)
 {
    Eina_Bool toggle = !config_auto_complete_get();
-   enventor_object_auto_complete_set(ad->enventor, toggle);
+   enventor_object_auto_complete_set(base_enventor_get(), toggle);
    if (toggle) stats_info_msg_update(_("Auto Completion Enabled."));
    else stats_info_msg_update(_("Auto Completion Disabled."));
    config_auto_complete_set(toggle);
@@ -30,7 +29,7 @@ static void
 auto_indent_toggle(app_data *ad)
 {
    Eina_Bool toggle = !config_auto_indent_get();
-   enventor_object_auto_indent_set(ad->enventor, toggle);
+   enventor_object_auto_indent_set(base_enventor_get(), toggle);
    if (toggle) stats_info_msg_update(_("Auto Indentation Enabled."));
    else stats_info_msg_update(_("Auto Indentation Disabled."));
    config_auto_indent_set(toggle);
@@ -49,7 +48,7 @@ tools_update(void)
 }
 
 static void
-enventor_common_setup(Evas_Object *enventor)
+enventor_common_setup(Enventor_Object *enventor)
 {
    const char *font_name;
    const char *font_style;
@@ -76,7 +75,7 @@ enventor_common_setup(Evas_Object *enventor)
 }
 
 static void
-syntax_color_update(Evas_Object *enventor)
+syntax_color_update(Enventor_Object *enventor)
 {
    const char *config_color;
    const char *enventor_color;
@@ -105,7 +104,7 @@ syntax_color_update(Evas_Object *enventor)
 }
 
 static void
-syntax_color_init(Evas_Object *enventor)
+syntax_color_init(Enventor_Object *enventor)
 {
    const char *config_color;
    const char *enventor_color;
@@ -128,7 +127,7 @@ static void
 config_update_cb(void *data)
 {
    app_data *ad = data;
-   Evas_Object *enventor = ad->enventor;
+   Enventor_Object *enventor = base_enventor_get();
 
    enventor_common_setup(enventor);
    tools_update();
@@ -155,7 +154,7 @@ main_mouse_wheel_cb(void *data, int type EINA_UNUSED, void *ev)
       return ECORE_CALLBACK_PASS_ON;
 
    //View Scale
-   Evas_Object *view = enventor_object_live_view_get(ad->enventor);
+   Evas_Object *view = enventor_object_live_view_get(base_enventor_get());
    evas_object_geometry_get(view, &x, &y, &w, &h);
 
    if ((event->x >= x) && (event->x <= (x + w)) &&
@@ -168,7 +167,7 @@ main_mouse_wheel_cb(void *data, int type EINA_UNUSED, void *ev)
 
         config_view_scale_set(scale);
         scale = config_view_scale_get();
-        enventor_object_live_view_scale_set(ad->enventor, scale);
+        enventor_object_live_view_scale_set(base_enventor_get(), scale);
 
         Evas_Coord ww, hh;
         config_view_size_get(&ww, &hh);
@@ -183,7 +182,7 @@ main_mouse_wheel_cb(void *data, int type EINA_UNUSED, void *ev)
      }
 
    //Font Size
-   evas_object_geometry_get(ad->enventor, &x, &y, &w, &h);
+   evas_object_geometry_get(base_enventor_get(), &x, &y, &w, &h);
 
    if ((event->x >= x) && (event->x <= (x + w)) &&
        (event->y >= y) && (event->y <= (y + h)))
@@ -191,13 +190,13 @@ main_mouse_wheel_cb(void *data, int type EINA_UNUSED, void *ev)
         if (event->z < 0)
           {
              config_font_scale_set(config_font_scale_get() + 0.1f);
-             enventor_object_font_scale_set(ad->enventor,
+             enventor_object_font_scale_set(base_enventor_get(),
                                             config_font_scale_get());
           }
         else
           {
              config_font_scale_set(config_font_scale_get() - 0.1f);
-             enventor_object_font_scale_set(ad->enventor,
+             enventor_object_font_scale_set(base_enventor_get(),
                                             config_font_scale_get());
           }
 
@@ -405,7 +404,7 @@ elm_setup()
 
 static void
 enventor_cursor_line_changed_cb(void *data EINA_UNUSED,
-                                Evas_Object *obj EINA_UNUSED,
+                                Enventor_Object *obj EINA_UNUSED,
                                 void *event_info)
 {
    Enventor_Cursor_Line *cur_line = (Enventor_Cursor_Line *)event_info;
@@ -414,7 +413,7 @@ enventor_cursor_line_changed_cb(void *data EINA_UNUSED,
 
 static void
 enventor_cursor_group_changed_cb(void *data EINA_UNUSED,
-                                 Evas_Object *obj EINA_UNUSED,
+                                 Enventor_Object *obj EINA_UNUSED,
                                  void *event_info)
 {
    const char *group_name = event_info;
@@ -423,7 +422,8 @@ enventor_cursor_group_changed_cb(void *data EINA_UNUSED,
 }
 
 static void
-enventor_compile_error_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+enventor_compile_error_cb(void *data EINA_UNUSED,
+                          Enventor_Object *obj EINA_UNUSED,
                           void *event_info)
 {
    const char *msg = event_info;
@@ -432,7 +432,7 @@ enventor_compile_error_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 
 static void
 enventor_live_view_resized_cb(void *data EINA_UNUSED,
-                              Evas_Object *obj EINA_UNUSED,
+                              Enventor_Object *obj EINA_UNUSED,
                               void *event_info)
 {
    if (!config_stats_bar_get()) return;
@@ -442,7 +442,7 @@ enventor_live_view_resized_cb(void *data EINA_UNUSED,
 }
 
 static void
-enventor_live_view_loaded_cb(void *data EINA_UNUSED, Evas_Object *obj,
+enventor_live_view_loaded_cb(void *data EINA_UNUSED, Enventor_Object *obj,
                              void *event_info EINA_UNUSED)
 {
    Evas_Coord w, h;
@@ -453,7 +453,7 @@ enventor_live_view_loaded_cb(void *data EINA_UNUSED, Evas_Object *obj,
 
 static void
 enventor_live_view_cursor_moved_cb(void *data EINA_UNUSED,
-                                   Evas_Object *obj EINA_UNUSED,
+                                   Enventor_Object *obj EINA_UNUSED,
                                    void *event_info)
 {
    if (!config_stats_bar_get()) return;
@@ -464,7 +464,7 @@ enventor_live_view_cursor_moved_cb(void *data EINA_UNUSED,
 
 static void
 enventor_ctxpopup_activated_cb(void *data EINA_UNUSED,
-                               Evas_Object *obj EINA_UNUSED,
+                               Enventor_Object *obj EINA_UNUSED,
                                void *event_info)
 {
    Enventor_Ctxpopup_Type type = (Enventor_Ctxpopup_Type) event_info;
@@ -477,7 +477,7 @@ enventor_ctxpopup_activated_cb(void *data EINA_UNUSED,
 }
 
 static void
-enventor_ctxpopup_changed_cb(void *data, Evas_Object *obj,
+enventor_ctxpopup_changed_cb(void *data, Enventor_Object *obj,
                              void *event_info EINA_UNUSED)
 {
    app_data *ad = data;
@@ -492,7 +492,7 @@ enventor_ctxpopup_changed_cb(void *data, Evas_Object *obj,
 }
 
 static void
-enventor_live_view_updated_cb(void *data, Evas_Object *obj,
+enventor_live_view_updated_cb(void *data, Enventor_Object *obj,
                               void *event_info EINA_UNUSED)
 {
    app_data *ad = data;
@@ -510,7 +510,7 @@ enventor_live_view_updated_cb(void *data, Evas_Object *obj,
 }
 
 static void
-enventor_ctxpopup_dismissed_cb(void *data EINA_UNUSED, Evas_Object *obj,
+enventor_ctxpopup_dismissed_cb(void *data EINA_UNUSED, Enventor_Object *obj,
                                void *event_info EINA_UNUSED)
 {
    if (menu_activated_get() > 0)
@@ -518,7 +518,7 @@ enventor_ctxpopup_dismissed_cb(void *data EINA_UNUSED, Evas_Object *obj,
 }
 
 static void
-enventor_focused_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+enventor_focused_cb(void *data EINA_UNUSED, Enventor_Object *obj EINA_UNUSED,
                     void *event_info EINA_UNUSED)
 {
    if (file_mgr_edc_modified_get()) file_mgr_warning_open();
@@ -526,7 +526,7 @@ enventor_focused_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 
 static void
 enventor_mouse_down_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
-                       Evas_Object *obj EINA_UNUSED,
+                       Enventor_Object *obj EINA_UNUSED,
                        void *event_info EINA_UNUSED)
 {
    base_edc_navigator_deselect();
@@ -535,7 +535,7 @@ enventor_mouse_down_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
 static void
 enventor_setup(app_data *ad)
 {
-   Evas_Object *enventor = enventor_object_add(base_layout_get());
+   Enventor_Object *enventor = enventor_object_add(base_layout_get());
    evas_object_smart_callback_add(enventor, "max_line,changed",
                                   enventor_cursor_line_changed_cb, ad);
    evas_object_smart_callback_add(enventor, "cursor,line,changed",
@@ -574,8 +574,6 @@ enventor_setup(app_data *ad)
    base_enventor_set(enventor);
    base_title_set(config_input_path_get());
    base_live_view_set(enventor_object_live_view_get(enventor));
-
-   ad->enventor = enventor;
 }
 
 static void
@@ -588,12 +586,14 @@ default_template_insert(app_data *ad)
      }
 
    char syntax[12];
-   if (enventor_object_template_insert(ad->enventor, ENVENTOR_TEMPLATE_INSERT_DEFAULT, syntax, sizeof(syntax)))
+   if (enventor_object_template_insert(base_enventor_get(),
+                                       ENVENTOR_TEMPLATE_INSERT_DEFAULT,
+                                       syntax, sizeof(syntax)))
      {
         char msg[64];
         snprintf(msg, sizeof(msg), _("Template code inserted, (%s)"), syntax);
         stats_info_msg_update(msg);
-        enventor_object_save(ad->enventor, config_input_path_get());
+        enventor_object_save(base_enventor_get(), config_input_path_get());
      }
    else
      {
@@ -654,7 +654,7 @@ ctrl_func(app_data *ad, Evas_Event_Key_Down *event)
   //Delete Line
    if (!strcmp(event->key, "d") || !strcmp(event->key, "D"))
      {
-        enventor_object_line_delete(ad->enventor);
+        enventor_object_line_delete(base_enventor_get());
         return EINA_TRUE;
      }
    //Find/Replace
@@ -710,7 +710,7 @@ ctrl_func(app_data *ad, Evas_Event_Key_Down *event)
 
    if (!strcmp(event->key, "space"))
      {
-        enventor_object_auto_complete_list_show(ad->enventor);
+        enventor_object_auto_complete_list_show(base_enventor_get());
         return EINA_TRUE;
      }
 
@@ -731,7 +731,7 @@ keygrabber_key_down_cb(void *data, Evas *e EINA_UNUSED,
 
         if (live_edit_cancel())
           {
-             enventor_object_focus_set(ad->enventor, EINA_TRUE);
+             enventor_object_focus_set(base_enventor_get(), EINA_TRUE);
              return;
           }
         if (file_mgr_warning_is_opened())
@@ -739,9 +739,9 @@ keygrabber_key_down_cb(void *data, Evas *e EINA_UNUSED,
              file_mgr_warning_close();
              return;
           }
-        if (enventor_object_ctxpopup_visible_get(ad->enventor))
+        if (enventor_object_ctxpopup_visible_get(base_enventor_get()))
           {
-             enventor_object_ctxpopup_dismiss(ad->enventor);
+             enventor_object_ctxpopup_dismiss(base_enventor_get());
              return;
           }
 
@@ -752,7 +752,7 @@ keygrabber_key_down_cb(void *data, Evas *e EINA_UNUSED,
    if (menu_activated_get() > 0) return;
    if (file_mgr_warning_is_opened()) return;
 
-   enventor_object_ctxpopup_dismiss(ad->enventor);
+   enventor_object_ctxpopup_dismiss(base_enventor_get());
    stats_ctxpopup_dismiss();
 
    if (ctrl_func(ad, ev)) return;
@@ -761,7 +761,7 @@ keygrabber_key_down_cb(void *data, Evas *e EINA_UNUSED,
    //README
    if (!strcmp(ev->key, "F1"))
      {
-        enventor_object_ctxpopup_dismiss(ad->enventor);
+        enventor_object_ctxpopup_dismiss(base_enventor_get());
         live_edit_cancel();
         menu_about();
         return;
@@ -769,7 +769,7 @@ keygrabber_key_down_cb(void *data, Evas *e EINA_UNUSED,
    //New
    if (!strcmp(ev->key, "F2"))
      {
-        enventor_object_ctxpopup_dismiss(ad->enventor);
+        enventor_object_ctxpopup_dismiss(base_enventor_get());
         live_edit_cancel();
         menu_edc_new(EINA_FALSE);
         return;
@@ -777,7 +777,7 @@ keygrabber_key_down_cb(void *data, Evas *e EINA_UNUSED,
    //Save
    if (!strcmp(ev->key, "F3"))
      {
-        enventor_object_ctxpopup_dismiss(ad->enventor);
+        enventor_object_ctxpopup_dismiss(base_enventor_get());
         live_edit_cancel();
         menu_edc_save();
         return;
@@ -785,7 +785,7 @@ keygrabber_key_down_cb(void *data, Evas *e EINA_UNUSED,
    //Load
    if (!strcmp(ev->key, "F4"))
      {
-        enventor_object_ctxpopup_dismiss(ad->enventor);
+        enventor_object_ctxpopup_dismiss(base_enventor_get());
         live_edit_cancel();
         menu_edc_load();
         return;
@@ -793,35 +793,35 @@ keygrabber_key_down_cb(void *data, Evas *e EINA_UNUSED,
    //Line Number
    if (!strcmp(ev->key, "F5"))
      {
-        enventor_object_ctxpopup_dismiss(ad->enventor);
+        enventor_object_ctxpopup_dismiss(base_enventor_get());
         tools_lines_update(EINA_TRUE);
         return;
      }
    //Tools
    if (!strcmp(ev->key, "F8"))
      {
-        enventor_object_ctxpopup_dismiss(ad->enventor);
+        enventor_object_ctxpopup_dismiss(base_enventor_get());
         base_tools_toggle(EINA_TRUE);
         return;
      }
    //File Browser
    if (!strcmp(ev->key, "F9"))
      {
-        enventor_object_ctxpopup_dismiss(ad->enventor);
+        enventor_object_ctxpopup_dismiss(base_enventor_get());
         tools_file_browser_update(EINA_TRUE);
         return;
      }
    //EDC Navigator
    if (!strcmp(ev->key, "F10"))
      {
-        enventor_object_ctxpopup_dismiss(ad->enventor);
+        enventor_object_ctxpopup_dismiss(base_enventor_get());
         tools_edc_navigator_update(EINA_TRUE);
         return;
      }
    //Statusbar
    if (!strcmp(ev->key, "F11"))
      {
-        enventor_object_ctxpopup_dismiss(ad->enventor);
+        enventor_object_ctxpopup_dismiss(base_enventor_get());
         tools_status_update(EINA_TRUE);
         return;
      }
@@ -829,7 +829,7 @@ keygrabber_key_down_cb(void *data, Evas *e EINA_UNUSED,
    if (!strcmp(ev->key, "F12"))
      {
         live_edit_cancel();
-        enventor_object_ctxpopup_dismiss(ad->enventor);
+        enventor_object_ctxpopup_dismiss(base_enventor_get());
         menu_setting();
         return;
      }
@@ -855,7 +855,7 @@ live_edit_set(Evas_Object *tools)
 static void
 keygrabber_init(app_data *ad)
 {
-   Evas *e = evas_object_evas_get(ad->enventor);
+   Evas *e = evas_object_evas_get(base_enventor_get());
    ad->keygrabber = evas_object_rectangle_add(e);
    evas_object_event_callback_add(ad->keygrabber, EVAS_CALLBACK_KEY_DOWN,
                                   keygrabber_key_down_cb, ad);
@@ -941,15 +941,15 @@ init(app_data *ad, int argc, char **argv)
    base_gui_show();
 
    //Guarantee Enventor editor has focus.
-   enventor_object_focus_set(ad->enventor, EINA_TRUE);
+   enventor_object_focus_set(base_enventor_get(), EINA_TRUE);
 
    menu_init();
 
    if (template) menu_edc_new(EINA_TRUE);
 
    //Initialize syntax color.
-   syntax_color_init(ad->enventor);
-   syntax_color_update(ad->enventor);
+   syntax_color_init(base_enventor_get());
+   syntax_color_update(base_enventor_get());
 
    keygrabber_init(ad);
 

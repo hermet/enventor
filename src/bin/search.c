@@ -59,7 +59,7 @@ replace_all_proc(search_data *sd)
 
    char buf[256];
    int replace_cnt = 0;
-   Evas_Object *enventor = base_enventor_get();
+   Enventor_Object *enventor = base_enventor_get();
 
    const char *text =
       (const char *) enventor_object_text_get(enventor);
@@ -104,7 +104,7 @@ find_forward_proc(search_data *sd)
 
    char buf[256];
    Eina_Bool need_iterate = EINA_TRUE;
-   Evas_Object *enventor = base_enventor_get();
+   Enventor_Object *enventor = base_enventor_get();
 
    const char *text = (const char *) enventor_object_text_get(enventor);
    if (!text) return;
@@ -153,7 +153,7 @@ find_backward_proc(search_data *sd)
    char buf[256];
    Eina_Bool need_iterate = EINA_TRUE;
    int len = 0;
-   Evas_Object *enventor = base_enventor_get();
+   Enventor_Object *enventor = base_enventor_get();
 
 
    const char *text = (const char *) enventor_object_text_get(enventor);
@@ -211,7 +211,7 @@ static Eina_Bool
 replace_proc(search_data *sd)
 {
    const char *find = elm_entry_entry_get(sd->en_find);
-   Evas_Object *enventor = base_enventor_get();
+   Enventor_Object *enventor = base_enventor_get();
    const char *selection =
       (const char * ) enventor_object_selection_get(enventor);
    if (!find || !selection) return EINA_FALSE;
@@ -449,7 +449,7 @@ search_close(void)
    search_data *sd = g_sd;
    if (!sd) return EINA_FALSE;
 
-   Evas_Object *enventor = base_enventor_get();
+   Enventor_Object *enventor = base_enventor_get();
 
    enventor_object_select_none(enventor);
    while (sd->syntax_color > 0)

@@ -5,7 +5,7 @@ typedef struct base_s
    Evas_Object *win;
    Evas_Object *layout;
    Evas_Object *console;
-   Evas_Object *enventor;
+   Enventor_Object *enventor;
    Ecore_Timer *edc_navi_update_timer;
    Eina_Bool console_msg : 1;
 } base_data;
@@ -343,7 +343,7 @@ base_gui_show(void)
    evas_object_show(g_bd->win);
 }
 
-Evas_Object *
+Enventor_Object *
 base_enventor_get(void)
 {
    base_data *bd = g_bd;
@@ -352,7 +352,7 @@ base_enventor_get(void)
 }
 
 void
-base_enventor_set(Evas_Object *enventor)
+base_enventor_set(Enventor_Object *enventor)
 {
    base_data *bd = g_bd;
    assert(bd);

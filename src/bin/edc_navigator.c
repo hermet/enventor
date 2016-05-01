@@ -640,7 +640,7 @@ gl_state_selected_cb(void *data, Evas_Object *obj EINA_UNUSED,
 static void
 states_update(navi_data *nd, part_it *pit)
 {
-   Evas_Object *enventor = base_enventor_get();
+   Enventor_Object *enventor = base_enventor_get();
    Eina_List *state_list = enventor_object_part_states_list_get(enventor,
                                                                 pit->name);
    char *name;
@@ -742,8 +742,7 @@ static void
 program_btn_clicked_cb(void *data, Evas_Object *obj, void *event_info)
 {
    program_it *pit = data;
-   Evas_Object *enventor = base_enventor_get();
-   enventor_object_program_run(enventor, pit->name);
+   enventor_object_program_run(base_enventor_get(), pit->name);
 
    if (!config_stats_bar_get()) return;
 
@@ -835,7 +834,7 @@ sub_programs_update(navi_data *nd, programs_it *pit)
 {
    navigator_sub_programs_clear(pit);
 
-   Evas_Object *enventor = base_enventor_get();
+   Enventor_Object *enventor = base_enventor_get();
    Eina_List *program_list = enventor_object_programs_list_get(enventor);
    if (!program_list) return;
 
@@ -881,8 +880,7 @@ static void
 programs_btn_clicked_cb(void *data, Evas_Object *obj, void *event_info)
 {
    programs_it *pit = data;
-   Evas_Object *enventor = base_enventor_get();
-   enventor_object_programs_stop(enventor);
+   enventor_object_programs_stop(base_enventor_get());
 
    if (!config_stats_bar_get()) return;
 
@@ -921,7 +919,7 @@ gl_programs_selected_cb(void *data, Evas_Object *obj EINA_UNUSED,
 static void
 programs_update(navi_data *nd, group_it *git)
 {
-   Evas_Object *enventor = base_enventor_get();
+   Enventor_Object *enventor = base_enventor_get();
    Eina_List *program_list = enventor_object_programs_list_get(enventor);
 
    //oh, no programs.. 
@@ -1155,7 +1153,7 @@ gl_part_selected_cb(void *data, Evas_Object *obj EINA_UNUSED,
 static void
 parts_update(navi_data *nd, group_it *git)
 {
-   Evas_Object *enventor = base_enventor_get();
+   Enventor_Object *enventor = base_enventor_get();
    Eina_List *part_list = enventor_object_parts_list_get(enventor);
    Eina_List *l, *ll;
    part_it *pit;

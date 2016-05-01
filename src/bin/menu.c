@@ -412,7 +412,7 @@ fileselector_save_done_cb(void *data, Evas_Object *obj, void *event_info)
         is_edc = EINA_TRUE;
      }
 
-   Evas_Object *enventor = base_enventor_get();
+   Enventor_Object *enventor = base_enventor_get();
 
    if (is_edc)
      {
@@ -796,7 +796,7 @@ void
 menu_exit(void)
 {
    menu_data *md = g_md;
-   Evas_Object *enventor = base_enventor_get();
+   Enventor_Object *enventor = base_enventor_get();
    if (enventor_object_modified_get(enventor))
      {
         search_close();
