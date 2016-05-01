@@ -432,7 +432,7 @@ fileselector_save_done_cb(void *data, Evas_Object *obj, void *event_info)
              eina_stringshare_del(selected);
              return;
           }
-        enventor_object_file_set(enventor, selected);
+        enventor_object_main_file_set(enventor, selected);
         base_title_set(selected);
      }
    else if (is_edj)
@@ -507,7 +507,7 @@ fileselector_load_done_cb(void *data, Evas_Object *obj, void *event_info)
         return;
      }
    config_input_path_set(selected);
-   enventor_object_file_set(base_enventor_get(), selected);
+   enventor_object_main_file_set(base_enventor_get(), selected);
    base_title_set(selected);
    base_console_reset();
    fileselector_close(md);

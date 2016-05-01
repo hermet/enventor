@@ -57,7 +57,7 @@ newfile_set(Eina_Bool template_new)
         EINA_LOG_ERR(_("Cannot find file! \"%s\""), buf);
         return;
      }
-   enventor_object_file_set(base_enventor_get(), path);
+   enventor_object_main_file_set(base_enventor_get(), path);
    base_title_set(path);
    base_console_reset();
    file_mgr_reset();

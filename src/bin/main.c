@@ -569,7 +569,7 @@ enventor_setup(app_data *ad)
 
    enventor_common_setup(enventor);
 
-   enventor_object_file_set(enventor, config_input_path_get());
+   enventor_object_main_file_set(enventor, config_input_path_get());
 
    base_enventor_set(enventor);
    base_title_set(config_input_path_get());

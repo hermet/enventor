@@ -21,6 +21,7 @@ typedef struct _Enventor_Object_Data
 {
    EINA_REFCOUNT;
    Evas_Object *obj;
+   Eina_List *items;
 
    edit_data *ed;
    Eina_Stringshare *group_name;
@@ -34,6 +35,12 @@ typedef struct _Enventor_Object_Data
    Eina_Bool mirror_mode : 1;
 
 } Enventor_Object_Data;
+
+typedef struct _Enventor_Item_Data
+{
+   Enventor_Object *enventor;
+
+} Enventor_Item_Data;
 
 static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_CURSOR_LINE_CHANGED, ""},
@@ -192,7 +199,6 @@ _enventor_object_class_constructor(Eo_Class *klass)
 EOLIAN static void
 _enventor_object_evas_object_smart_add(Eo *obj, Enventor_Object_Data *pd)
 {
-   EINA_REFCOUNT_INIT(pd);
    pd->obj = obj;
 
    elm_widget_sub_object_parent_add(obj);
@@ -805,10 +811,25 @@ enventor_object_add(Enventor_Object *parent)
    return obj;
 }
 
-EAPI Eina_Bool
-enventor_object_file_set(Enventor_Object *obj, const char *file)
+EAPI Enventor_Item *
+enventor_object_main_file_set(Enventor_Object *obj, const char *file)
 {
-   return efl_file_set(obj, file, NULL);
+   Eina_Bool ret = efl_file_set(obj, file, NULL);
+   if (!ret) return NULL;
+
+   Enventor_Item *it = calloc(1, sizeof(Enventor_Item));
+   if (!it)
+     {
+        EINA_LOG_ERR("Failed to allocate Memory!");
+        return EINA_FALSE;
+     }
+
+   it->enventor = obj;
+
+   Enventor_Object_Data *pd = eo_data_scope_get(obj, ENVENTOR_OBJECT_CLASS);
+   pd->items = eina_list_append(pd->items, it);
+
+   return it;
 }
 
 #include "enventor_object.eo.c"
