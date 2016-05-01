@@ -61,6 +61,14 @@ static const Evas_Smart_Cb_Description _smart_callbacks[] = {
 /*****************************************************************************/
 /* Internal method implementation                                            */
 /*****************************************************************************/
+static void
+_enventor_items_free(Enventor_Object_Data *pd)
+{
+   //Free Item Memory
+   Enventor_Item *it;
+   EINA_LIST_FREE(pd->items, it) free(it);
+}
+
 static Eina_Bool
 key_up_cb(void *data, int type EINA_UNUSED, void *ev EINA_UNUSED)
 {
@@ -235,6 +243,8 @@ _enventor_object_evas_object_smart_del(Evas_Object *obj EINA_UNUSED,
    ecore_event_handler_del(pd->key_up_handler);
    edj_mgr_term();
    build_term();
+
+   _enventor_items_free(pd);
 }
 
 EOLIAN static void
@@ -810,10 +820,16 @@ enventor_object_add(Enventor_Object *parent)
 EAPI Enventor_Item *
 enventor_object_main_file_set(Enventor_Object *obj, const char *file)
 {
+   Enventor_Object_Data *pd = eo_data_scope_get(obj, ENVENTOR_OBJECT_CLASS);
+
+   //For now, we free items here before supporting sub_file_set() properly.
+   _enventor_items_free(pd);
+
    Eina_Bool ret = efl_file_set(obj, file, NULL);
    if (!ret) return NULL;
 
    Enventor_Item *it = calloc(1, sizeof(Enventor_Item));
+
    if (!it)
      {
         EINA_LOG_ERR("Failed to allocate Memory!");
@@ -822,7 +838,6 @@ enventor_object_main_file_set(Enventor_Object *obj, const char *file)
 
    it->enventor = obj;
 
-   Enventor_Object_Data *pd = eo_data_scope_get(obj, ENVENTOR_OBJECT_CLASS);
    pd->items = eina_list_append(pd->items, it);
 
    return it;
