@@ -95,8 +95,16 @@ gl_file_content_get_cb(void *data, Evas_Object *obj, const char *part)
      {
         Evas_Object *img = elm_image_add(obj);
 
-        if (ecore_file_is_dir(file->path))
+        if (file->type == FILE_BROWSER_FILE_TYPE_DIR)
           elm_image_file_set(img, EDJE_PATH, "folder");
+        else if (file->type == FILE_BROWSER_FILE_TYPE_EDC)
+          elm_image_file_set(img, EDJE_PATH, "brows_logo");
+        else if (file->type == FILE_BROWSER_FILE_TYPE_IMAGE)
+          elm_image_file_set(img, EDJE_PATH, "brows_image");
+        else if (file->type == FILE_BROWSER_FILE_TYPE_SOUND)
+          elm_image_file_set(img, EDJE_PATH, "brows_sound");
+        else if (file->type == FILE_BROWSER_FILE_TYPE_FONT)
+          elm_image_file_set(img, EDJE_PATH, "brows_font");
         else
           elm_image_file_set(img, EDJE_PATH, "file");
 

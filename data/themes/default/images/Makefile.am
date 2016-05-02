@@ -87,4 +87,8 @@ EXTRA_DIST = \
    navi_play.png \
    navi_stop.png \
    bg_demo.png \
-   refresh.png
+   refresh.png \
+   brows_logo.png \
+   brows_image.png \
+   brows_sound.png \
+   brows_font.png
