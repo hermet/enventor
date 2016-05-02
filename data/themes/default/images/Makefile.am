@@ -71,6 +71,7 @@ EXTRA_DIST = \
    icon_close.png \
    icon_file.png \
    icon_folder.png \
+   icon_search.png \
    file_browser.png \
    edc_navigator.png \
    cursor_arrow.png \

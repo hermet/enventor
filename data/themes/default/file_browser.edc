@@ -1,11 +1,49 @@
 group { "workspace";
    parts {
+      spacer { "search_base";
+         scale: 1.0;
+         desc { "default";
+            min: 0 22; 
+            max: -1 22; 
+            align: 0.5 0.0;
+            fixed: 1 1;
+         }
+      }   
+      swallow { "search_img";
+         scale: 1.0;
+         desc { "default";
+            rel1.to: "search_base";
+            rel2 {
+               to: "search_base";
+               relative: 0.0 1.0;
+            }
+            min: 18 18;
+            max: 18 18;
+            align: 0.0 0.5;
+            fixed: 1 1;
+         }
+      }
+      swallow { "search_entry";
+         scale: 1.0;
+         desc { "default";
+            rel1 {
+               to: "search_img";
+               relative: 1.0 0.0;
+            }
+            rel2.to: "search_base";
+         }
+      }
       spacer { "title_base";
          scale: 1.0;
          desc { "default";
+            rel1 {
+               to: "search_base";
+               relative: 0.0 1.0;
+            }
+            rel2.to_y: "search_base";
             min: 0 22;
-            max: 999999 22;
-            align: 0.0 0.0;
+            max: -1 22;
+            align: 0.5 0.0;
             fixed: 1 1;
          }
       }

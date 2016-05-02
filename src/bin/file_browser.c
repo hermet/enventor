@@ -23,16 +23,25 @@ struct file_browser_file_s
    Elm_Object_Item *it;
 };
 
+typedef enum
+{
+   FILE_BROWSER_MODE_DEFAULT = 0,
+   FILE_BROWSER_MODE_SEARCH
+} File_Browser_Mode;
+
 typedef struct file_browser_s
 {
    brows_file *workspace; //workspace directory
 
    Evas_Object *workspace_ly;
-   Evas_Object *refresh_btn;
+   Evas_Object *search_entry;
    Evas_Object *genlist;
    Evas_Object *show_all_check;
 
    Elm_Genlist_Item_Class *itc;
+   Elm_Genlist_Item_Class *search_itc;
+
+   File_Browser_Mode mode;
 } brows_data;
 
 static brows_data *g_bd = NULL;
@@ -60,9 +69,14 @@ file_genlist_item_append(brows_file *file, Elm_Object_Item *parent_it,
 
    if (!file) return NULL;
 
+
+   Elm_Genlist_Item_Class *itc = bd->itc;
+   if (bd->mode == FILE_BROWSER_MODE_SEARCH)
+     itc = bd->search_itc;
+
    Elm_Object_Item *it =
       elm_genlist_item_append(bd->genlist,
-                              bd->itc,             /* item class */
+                              itc,                 /* item class */
                               file,                /* item data */
                               parent_it,           /* parent */
                               it_type,             /* item type */
@@ -114,16 +128,32 @@ gl_file_content_get_cb(void *data, Evas_Object *obj, const char *part)
 }
 
 static char *
-gl_group_text_get_cb(void *data, Evas_Object *obj EINA_UNUSED,
-                     const char *part EINA_UNUSED)
+gl_search_text_get_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                      const char *part)
 {
-   char *file_name = data;
-   return strdup(file_name);
+   brows_file *file = data;
+
+   if (!strcmp(part, "elm.text"))
+     return strdup(file->name);
+   else if (!strcmp(part, "elm.text.sub"))
+     return strdup(file->path);
+
+   return NULL;
+}
+
+static Evas_Object *
+gl_search_content_get_cb(void *data, Evas_Object *obj, const char *part)
+{
+   gl_file_content_get_cb(data, obj, part);
 }
 
 static void
 gl_exp_req(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
+   brows_data *bd = g_bd;
+   if (!bd) return;
+   if (bd->mode == FILE_BROWSER_MODE_SEARCH) return;
+
    Elm_Object_Item *it = event_info;
    elm_genlist_item_expanded_set(it, EINA_TRUE);
 }
@@ -131,15 +161,20 @@ gl_exp_req(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_inf
 static void
 gl_con_req(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
+   brows_data *bd = g_bd;
+   if (!bd) return;
+   if (bd->mode == FILE_BROWSER_MODE_SEARCH) return;
+
    Elm_Object_Item *it = event_info;
    elm_genlist_item_expanded_set(it, EINA_FALSE);
 }
 
 static void
-gl_exp(void *data, Evas_Object *obj, void *event_info)
+gl_exp(void *data EINA_UNUSED, Evas_Object *obj, void *event_info)
 {
-   brows_data *bd = data;
+   brows_data *bd = g_bd;
    if (!bd) return;
+   if (bd->mode == FILE_BROWSER_MODE_SEARCH) return;
 
    Elm_Object_Item *it = event_info;
 
@@ -174,6 +209,10 @@ gl_exp(void *data, Evas_Object *obj, void *event_info)
 static void
 gl_con(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
+   brows_data *bd = g_bd;
+   if (!bd) return;
+   if (bd->mode == FILE_BROWSER_MODE_SEARCH) return;
+
    Elm_Object_Item *it = event_info;
    elm_genlist_item_subitems_clear(it);
 }
@@ -343,8 +382,7 @@ file_set_internal(const char *file_path)
 }
 
 static void
-refresh_btn_clicked_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
-                       void *event_info EINA_UNUSED)
+file_browser_workspace_reset(void)
 {
    brows_data *bd = g_bd;
    if (!bd) return;
@@ -355,6 +393,107 @@ refresh_btn_clicked_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
    file_browser_workspace_set(config_workspace_path_get());
 }
 
+/* Create brows_file and append genlist item if the given file name contains
+   search word. This function is called recursively. */
+static void
+search_file_set(const char *file_path)
+{
+   brows_data *bd = g_bd;
+   if (!bd) return;
+   if (!bd->search_entry) return;
+
+   if (!file_path) return;
+
+   const char *search_word = elm_entry_entry_get(bd->search_entry);
+   if (!search_word || !strcmp(search_word, "")) return;
+
+   /* Create brows_file and append genlist item if current file name contains
+      search word. */
+   const char *file_name = ecore_file_file_get(file_path);
+   if (file_name && strstr(file_name, search_word))
+     {
+        //Check "Show All Files" option.
+        File_Browser_File_Type type = brows_file_type_get(file_path);
+        if (elm_check_state_get(bd->show_all_check) ||
+            ((type == FILE_BROWSER_FILE_TYPE_EDC) ||
+             (type == FILE_BROWSER_FILE_TYPE_IMAGE) ||
+             (type == FILE_BROWSER_FILE_TYPE_SOUND) ||
+             (type == FILE_BROWSER_FILE_TYPE_FONT)))
+          {
+             brows_file *file = brows_file_create(file_path, EINA_FALSE);
+             if (file)
+               file_genlist_item_append(file, NULL, ELM_GENLIST_ITEM_NONE);
+          }
+     }
+
+   if (!ecore_file_is_dir(file_path)) return;
+
+   //Set sub files by calling function resursively.
+   Eina_List *sub_file_name_list = ecore_file_ls(file_path);
+   Eina_List *l = NULL;
+   char *sub_file_name = NULL;
+   const char *dir_path = file_path;
+   EINA_LIST_FOREACH(sub_file_name_list, l, sub_file_name)
+     {
+        int sub_file_path_len = strlen(dir_path) + strlen(sub_file_name) + 2;
+        char *sub_file_path = calloc(1, sizeof(char) * (sub_file_path_len));
+        snprintf(sub_file_path, sub_file_path_len, "%s/%s", dir_path,
+                 sub_file_name);
+
+        search_file_set(sub_file_path);
+        free(sub_file_path);
+     }
+
+   EINA_LIST_FREE(sub_file_name_list, sub_file_name)
+     {
+        free(sub_file_name);
+     }
+}
+
+static void
+search_entry_changed_cb(void *data EINA_UNUSED, Evas_Object *obj,
+                        void *event_info EINA_UNUSED)
+{
+   brows_data *bd = g_bd;
+   if (!bd) return;
+
+   const char *search_word = elm_entry_entry_get(obj);
+   //Default Mode
+   if (!search_word || !strcmp(search_word, ""))
+     {
+        //Change mode first because mode is used in following functions.
+        bd->mode = FILE_BROWSER_MODE_DEFAULT;
+
+        elm_genlist_clear(bd->genlist);
+        file_browser_workspace_reset();
+     }
+   //Search Mode
+   else
+     {
+        //Change mode first because mode is used in following functions.
+        bd->mode = FILE_BROWSER_MODE_SEARCH;
+
+        elm_genlist_clear(bd->genlist);
+        search_file_set(config_workspace_path_get());
+     }
+}
+
+static void
+refresh_btn_clicked_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+                       void *event_info EINA_UNUSED)
+{
+   brows_data *bd = g_bd;
+   if (!bd) return;
+
+   if (bd->mode == FILE_BROWSER_MODE_DEFAULT)
+     file_browser_workspace_reset();
+   else
+     {
+        elm_genlist_clear(bd->genlist);
+        search_file_set(config_workspace_path_get());
+     }
+}
+
 static void
 show_all_check_changed_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
                           void *event_info EINA_UNUSED)
@@ -362,10 +501,13 @@ show_all_check_changed_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
    brows_data *bd = g_bd;
    if (!bd) return;
 
-   if (!bd->workspace) return;
-
-   gl_con_req(NULL, NULL, bd->workspace->it);
-   gl_exp_req(NULL, NULL, bd->workspace->it);
+   if (bd->mode == FILE_BROWSER_MODE_DEFAULT)
+     file_browser_workspace_reset();
+   else
+     {
+        elm_genlist_clear(bd->genlist);
+        search_file_set(config_workspace_path_get());
+     }
 }
 
 /*****************************************************************************/
@@ -417,6 +559,18 @@ file_browser_init(Evas_Object *parent)
    Evas_Object *workspace_ly = elm_layout_add(parent);
    elm_layout_file_set(workspace_ly, EDJE_PATH, "workspace");
 
+   Evas_Object *search_img = elm_image_add(workspace_ly);
+   elm_image_file_set(search_img, EDJE_PATH, "search");
+   elm_object_part_content_set(workspace_ly, "search_img", search_img);
+
+   Evas_Object *search_entry = elm_entry_add(workspace_ly);
+   elm_entry_single_line_set(search_entry, EINA_TRUE);
+   elm_entry_scrollable_set(search_entry, EINA_TRUE);
+   elm_object_part_text_set(search_entry, "guide", "Type file name to search");
+   evas_object_smart_callback_add(search_entry, "changed",
+                                  search_entry_changed_cb, NULL);
+   elm_object_part_content_set(workspace_ly, "search_entry", search_entry);
+
    Evas_Object *box = elm_box_add(workspace_ly);
    elm_object_tooltip_text_set(box, "Refresh");
 
@@ -443,7 +597,7 @@ file_browser_init(Evas_Object *parent)
    evas_object_smart_callback_add(genlist, "expand,request", gl_exp_req, NULL);
    evas_object_smart_callback_add(genlist, "contract,request", gl_con_req,
                                   NULL);
-   evas_object_smart_callback_add(genlist, "expanded", gl_exp, bd);
+   evas_object_smart_callback_add(genlist, "expanded", gl_exp, NULL);
    evas_object_smart_callback_add(genlist, "contracted", gl_con, NULL);
 
    elm_object_part_content_set(workspace_ly, "content", genlist);
@@ -454,7 +608,7 @@ file_browser_init(Evas_Object *parent)
                                   show_all_check_changed_cb, NULL);
    elm_object_part_content_set(workspace_ly, "show_all_check", show_all_check);
 
-   //Item Class
+   //Default Mode Item Class
    Elm_Genlist_Item_Class *itc;
    itc = elm_genlist_item_class_new();
    itc->item_style = "default";
@@ -462,7 +616,16 @@ file_browser_init(Evas_Object *parent)
    itc->func.content_get = gl_file_content_get_cb;
    bd->itc = itc;
 
+   //Search Mode Item Class
+   Elm_Genlist_Item_Class *search_itc;
+   search_itc = elm_genlist_item_class_new();
+   search_itc->item_style = "double_label";
+   search_itc->func.text_get = gl_search_text_get_cb;
+   search_itc->func.content_get = gl_search_content_get_cb;
+   bd->search_itc = search_itc;
+
    bd->workspace_ly = workspace_ly;
+   bd->search_entry = search_entry;
    bd->genlist = genlist;
    bd->show_all_check = show_all_check;
 
@@ -478,6 +641,7 @@ file_browser_term(void)
    if (bd->workspace) brows_file_free(bd->workspace);
 
    elm_genlist_item_class_free(bd->itc);
+   elm_genlist_item_class_free(bd->search_itc);
 
    evas_object_del(bd->workspace_ly);
 
