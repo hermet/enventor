@@ -3,7 +3,11 @@
 typedef enum
 {
    FILE_BROWSER_FILE_TYPE_DIR = 0,
-   FILE_BROWSER_FILE_TYPE_FILE
+   FILE_BROWSER_FILE_TYPE_EDC,
+   FILE_BROWSER_FILE_TYPE_IMAGE,
+   FILE_BROWSER_FILE_TYPE_SOUND,
+   FILE_BROWSER_FILE_TYPE_FONT,
+   FILE_BROWSER_FILE_TYPE_OTHERS
 } File_Browser_File_Type;
 
 typedef struct file_browser_file_s brows_file;
@@ -26,6 +30,7 @@ typedef struct file_browser_s
    Evas_Object *workspace_ly;
    Evas_Object *refresh_btn;
    Evas_Object *genlist;
+   Evas_Object *show_all_check;
 
    Elm_Genlist_Item_Class *itc;
 } brows_data;
@@ -141,6 +146,10 @@ gl_exp(void *data, Evas_Object *obj, void *event_info)
         brows_file *sub_file = NULL;
         EINA_LIST_FOREACH(file->sub_file_list, l, sub_file)
           {
+             if (!elm_check_state_get(bd->show_all_check) &&
+                 (sub_file->type == FILE_BROWSER_FILE_TYPE_OTHERS))
+               continue;
+
              Elm_Genlist_Item_Type type = ELM_GENLIST_ITEM_NONE;
              if (sub_file->sub_file_list)
                type = ELM_GENLIST_ITEM_TREE;
@@ -168,6 +177,44 @@ file_strcmp_cb(const void *data1, const void *data2)
    return strcmp(file1->name, file2->name);
 }
 
+static File_Browser_File_Type
+brows_file_type_get(const char *file_path)
+{
+   if (!file_path) return FILE_BROWSER_FILE_TYPE_OTHERS;
+
+   if (ecore_file_is_dir(file_path)) return FILE_BROWSER_FILE_TYPE_DIR;
+
+   const char *file_path_end = file_path + strlen(file_path);
+   char *file_ext = strrchr(file_path, '.');
+
+   if (!file_ext) return FILE_BROWSER_FILE_TYPE_OTHERS;
+   file_ext++;
+
+   if (file_ext >= file_path_end) return FILE_BROWSER_FILE_TYPE_OTHERS;
+
+   if (!strcmp(file_ext, "edc") || !strcmp(file_ext, "EDC"))
+     return FILE_BROWSER_FILE_TYPE_EDC;
+
+   if (!strcmp(file_ext, "png") || !strcmp(file_ext, "PNG") ||
+       !strcmp(file_ext, "jpg") || !strcmp(file_ext, "JPG") ||
+       !strcmp(file_ext, "jpeg") || !strcmp(file_ext, "JPEG") ||
+       !strcmp(file_ext, "bmp") || !strcmp(file_ext, "BMP") ||
+       !strcmp(file_ext, "gif") || !strcmp(file_ext, "GIF") ||
+       !strcmp(file_ext, "svg") || !strcmp(file_ext, "SVG"))
+     return FILE_BROWSER_FILE_TYPE_IMAGE;
+
+   if (!strcmp(file_ext, "wav") || !strcmp(file_ext, "WAV") ||
+       !strcmp(file_ext, "ogg") || !strcmp(file_ext, "OGG") ||
+       !strcmp(file_ext, "mp3") || !strcmp(file_ext, "MP3"))
+     return FILE_BROWSER_FILE_TYPE_SOUND;
+
+   if (!strcmp(file_ext, "ttf") || !strcmp(file_ext, "TTF") ||
+       !strcmp(file_ext, "fon") || !strcmp(file_ext, "FON"))
+     return FILE_BROWSER_FILE_TYPE_FONT;
+
+   return FILE_BROWSER_FILE_TYPE_OTHERS;
+}
+
 static brows_file *
 brows_file_create(const char *file_path)
 {
@@ -185,12 +232,7 @@ brows_file_create(const char *file_path)
    char *file_abs_path = ecore_file_realpath(file_path);
    file->path = file_abs_path;
    file->name = strdup(ecore_file_file_get(file_abs_path));
-
-   if (ecore_file_is_dir(file_abs_path))
-     file->type = FILE_BROWSER_FILE_TYPE_DIR;
-   else
-     file->type = FILE_BROWSER_FILE_TYPE_FILE;
-
+   file->type = brows_file_type_get(file_abs_path);
    file->sub_file_list = sub_brows_file_list_create(file);
 
    file->it = NULL;
@@ -296,6 +338,19 @@ refresh_btn_clicked_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
    file_browser_workspace_set(config_workspace_path_get());
 }
 
+static void
+show_all_check_changed_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+                          void *event_info EINA_UNUSED)
+{
+   brows_data *bd = g_bd;
+   if (!bd) return;
+
+   if (!bd->workspace) return;
+
+   gl_con_req(NULL, NULL, bd->workspace->it);
+   gl_exp_req(NULL, NULL, bd->workspace->it);
+}
+
 /*****************************************************************************/
 /* Externally accessible calls                                               */
 /*****************************************************************************/
@@ -376,6 +431,12 @@ file_browser_init(Evas_Object *parent)
 
    elm_object_part_content_set(workspace_ly, "content", genlist);
 
+   Evas_Object *show_all_check = elm_check_add(workspace_ly);
+   elm_object_text_set(show_all_check, "Show All Files");
+   evas_object_smart_callback_add(show_all_check, "changed",
+                                  show_all_check_changed_cb, NULL);
+   elm_object_part_content_set(workspace_ly, "show_all_check", show_all_check);
+
    //Item Class
    Elm_Genlist_Item_Class *itc;
    itc = elm_genlist_item_class_new();
@@ -386,6 +447,7 @@ file_browser_init(Evas_Object *parent)
 
    bd->workspace_ly = workspace_ly;
    bd->genlist = genlist;
+   bd->show_all_check = show_all_check;
 
    return workspace_ly;
 }

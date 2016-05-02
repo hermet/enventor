@@ -59,6 +59,23 @@ group { "workspace";
                to: "title_base";
                relative: 0.0 1.0;
             }
+            rel2 {
+               to: "show_all_check";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+      swallow { "show_all_check";
+         scale: 1.0;
+         desc { "default";
+            rel1 {
+               to: "title_base";
+               relative: 0.0 1.0;
+            }
+            min: 0 22;
+            max: -1 22;
+            align: 0.0 1.0;
+            fixed: 0 1;
          }
       }
    }
