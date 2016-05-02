@@ -3,8 +3,8 @@ group { "workspace";
       spacer { "title_base";
          scale: 1.0;
          desc { "default";
-            min: 186 22;
-            max: 186 22;
+            min: 0 22;
+            max: 999999 22;
             align: 0.0 0.0;
             fixed: 1 1;
          }
@@ -46,6 +46,7 @@ group { "workspace";
                relative: 1.0 0.0;
             }
             rel2.to: "title_base";
+            rel2.offset: -2 -1;
             min: 22 0;
             max: 22 -1;
             align: 1.0 0.5;
