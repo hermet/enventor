@@ -21,7 +21,6 @@ struct file_browser_file_s
 
 typedef struct file_browser_s
 {
-   brows_file *col_edc;   //collections edc
    brows_file *workspace; //workspace directory
 
    Evas_Object *box;
@@ -31,7 +30,6 @@ typedef struct file_browser_s
    Elm_Genlist_Item_Class *itc;
    Elm_Genlist_Item_Class *group_itc;
 
-   Elm_Object_Item *col_edc_group_it;   //Show "Collections EDC" group index.
    Elm_Object_Item *workspace_group_it; //Show "Workspace" group index.
 } brows_data;
 
@@ -337,51 +335,6 @@ file_browser_workspace_set(const char *workspace_path)
      gl_exp_req(NULL, NULL, workspace->it);
 }
 
-/* Set "collections" edc file. */
-void
-file_browser_edc_file_set(const char *edc_file)
-{
-   brows_data *bd = g_bd;
-   if (!bd) return;
-
-   if (!edc_file) return;
-   if (!ecore_file_exists(edc_file)) return;
-
-   char *ext = strrchr(edc_file, '.');
-   if (!ext || (strlen(ext) != 4) || strncmp(ext, ".edc", 4))
-     return;
-
-   if (bd->col_edc)
-     {
-        if (!strcmp(edc_file, bd->col_edc->path))
-          return;
-
-        brows_file_free(bd->col_edc);
-        bd->col_edc = NULL;
-     }
-
-   if (bd->col_edc_group_it)
-     {
-        elm_object_item_del(bd->col_edc_group_it);
-        bd->col_edc_group_it = NULL;
-     }
-   //Show "Collections EDC" group index.
-   bd->col_edc_group_it =
-      elm_genlist_item_append(bd->genlist,
-                              bd->group_itc,         /* item class */
-                              "Collections EDC",     /* item data */
-                              NULL,                  /* parent */
-                              ELM_GENLIST_ITEM_NONE, /* item type */
-                              NULL,                  /* select_cb */
-                              NULL);                 /* select_cb data */
-   elm_genlist_item_select_mode_set(bd->col_edc_group_it,
-                                    ELM_OBJECT_SELECT_MODE_DISPLAY_ONLY);
-
-   brows_file *edc = file_set_internal(edc_file);
-   if (!edc) return;
-   bd->col_edc = edc;
-}
-
 static void
 btn_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
                void *event_info EINA_UNUSED)
@@ -462,7 +415,6 @@ file_browser_term(void)
    brows_data *bd = g_bd;
    if (!bd) return;
 
-   if (bd->col_edc) brows_file_free(bd->col_edc);
    if (bd->workspace) brows_file_free(bd->workspace);
 
    elm_genlist_item_class_free(bd->itc);

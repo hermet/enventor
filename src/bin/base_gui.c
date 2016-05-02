@@ -323,7 +323,6 @@ base_gui_init(void)
    Evas_Object *file_browser = file_browser_init(layout);
    elm_object_part_content_set(layout, "elm.swallow.file_browser",
                                file_browser);
-   file_browser_edc_file_set(config_input_path_get());
    file_browser_workspace_set(config_workspace_path_get());
 
    //EDC Navigator
