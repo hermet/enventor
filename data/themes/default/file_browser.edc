@@ -18,7 +18,7 @@ group { "workspace";
                relative: 0.0 1.0;
             }
             min: 5 0;
-            max: 5 0;
+            max: 5 -1;
             align: 0.0 0.5;
             fixed: 1 0;
          }
