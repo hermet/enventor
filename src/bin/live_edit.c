@@ -55,6 +55,7 @@ typedef struct live_editor_s
    Evas_Object *info_text[Info_Text_Cnt];
    Evas_Coord_Point move_delta;
    double half_ctrl_size;
+   unsigned int auto_align_dist;
 
    struct {
       unsigned int type;
@@ -63,9 +64,17 @@ typedef struct live_editor_s
    } part_info;
 
    Evas_Object *keygrabber;
+   Eina_Array *auto_align_array;
 
    Eina_Bool on : 1;
 } live_data;
+
+typedef struct auto_align_data_s
+{
+   Evas_Coord_Point pt1;
+   Evas_Coord_Point pt2;
+} auto_align_data;
+
 
 static void live_edit_update_internal(live_data *ld);
 
@@ -235,6 +244,69 @@ keygrabber_key_down_cb(void *data, Evas *e EINA_UNUSED,
    live_edit_cancel();
 }
 
+Evas_Coord_Point
+calc_ctrl_pt_auto_align_pos(live_data *ld, int cursor_x, int cursor_y)
+{
+   int res_x, res_y;
+   int nx, ny;
+   res_x = res_y = -1;
+   nx = ny = LIVE_EDIT_MAX_DIST;
+   int dist = ld->auto_align_dist;
+
+   // This loop finds the closest position of part to control point
+   // And then return the position
+   unsigned int i;
+   auto_align_data *al_pos;
+   Eina_Array_Iterator iter;
+   EINA_ARRAY_ITER_NEXT(ld->auto_align_array, i, al_pos, iter)
+   {
+      unsigned int dx, dy, i;
+
+      dx = abs(al_pos->pt1.x - cursor_x);
+      dy = abs(al_pos->pt1.y - cursor_y);
+
+      if ((dx < dist) && (dx < nx) && (cursor_y >= al_pos->pt1.y) && (cursor_y <= al_pos->pt2.y))
+        {
+           nx = dx;
+           res_x = al_pos->pt1.x;
+        }
+      if ((dy < dist) && (dy < ny) && (cursor_x >= al_pos->pt1.x) && (cursor_x <= al_pos->pt2.x))
+        {
+           ny = dy;
+           res_y = al_pos->pt1.y;
+        }
+
+      dx = abs(al_pos->pt2.x - cursor_x);
+      dy = abs(al_pos->pt2.y - cursor_y);
+
+      if ((dx < dist) && (dx < nx) && (cursor_y >= al_pos->pt1.y) && (cursor_y <= al_pos->pt2.y))
+        {
+           nx = dx;
+           res_x = al_pos->pt2.x;
+        }
+      if ((dy < dist) && (dy < ny) && (cursor_x >= al_pos->pt1.x) && (cursor_x <= al_pos->pt2.x))
+        {
+           ny = dy;
+           res_y = al_pos->pt2.y;
+        }
+   }
+
+   Evas_Coord_Point pt;
+
+   if (res_x != -1)
+     pt.x = res_x;
+   else
+     pt.x = cursor_x;
+
+   if (res_y != -1)
+     pt.y = res_y;
+   else
+     pt.y = cursor_y;
+
+   return pt;
+}
+
+
 static void
 ctrl_pt_update(live_data *ld)
 {
@@ -297,6 +369,8 @@ cp_top_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
    live_data *ld = data;
    Evas_Event_Mouse_Move *ev = event_info;
 
+
+   Evas_Coord x = ev->cur.canvas.x;
    Evas_Coord y = ev->cur.canvas.y;
 
    Evas_Object *view = view_obj_get(ld);
@@ -306,6 +380,11 @@ cp_top_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
    Evas_Coord rel2_y;
    evas_object_geometry_get(ld->ctrl_pt[Ctrl_Pt_Rel2], NULL, &rel2_y,
                             NULL, NULL);
+
+
+   Evas_Coord_Point pt = calc_ctrl_pt_auto_align_pos(ld, x, y);
+   y = pt.y;
+
    if (vy > y) y = vy;
    if ((y - ld->half_ctrl_size) > rel2_y) y = (rel2_y + ld->half_ctrl_size);
 
@@ -322,6 +401,8 @@ cp_bottom_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
    live_data *ld = data;
    Evas_Event_Mouse_Move *ev = event_info;
 
+
+   Evas_Coord x = ev->cur.canvas.x;
    Evas_Coord y = ev->cur.canvas.y;
 
    Evas_Object *view = view_obj_get(ld);
@@ -331,6 +412,11 @@ cp_bottom_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
    Evas_Coord rel1_y;
    evas_object_geometry_get(ld->ctrl_pt[Ctrl_Pt_Rel1], NULL, &rel1_y,
                             NULL, NULL);
+
+   Evas_Coord_Point pt = calc_ctrl_pt_auto_align_pos(ld, x, y);
+   y = pt.y;
+
+
    if (y > (vy + vh)) y = (vy + vh);
    if (rel1_y > (y + ld->half_ctrl_size)) y = (rel1_y + ld->half_ctrl_size);
 
@@ -451,6 +537,12 @@ cp_rel1_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
    Evas_Coord rel2_x, rel2_y;
    evas_object_geometry_get(ld->ctrl_pt[Ctrl_Pt_Rel2], &rel2_x, &rel2_y,
                             NULL, NULL);
+
+   Evas_Coord_Point pt = calc_ctrl_pt_auto_align_pos(ld, x, y);
+   x = pt.x;
+   y = pt.y;
+
+
    if (vx > x) x = vx;
    if (vy > y) y = vy;
    if ((x - ld->half_ctrl_size) > rel2_x) x = (rel2_x + ld->half_ctrl_size);
@@ -482,6 +574,11 @@ cp_rel2_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
    Evas_Coord rel1_x, rel1_y;
    evas_object_geometry_get(ld->ctrl_pt[Ctrl_Pt_Rel1], &rel1_x, &rel1_y,
                             NULL, NULL);
+
+   Evas_Coord_Point pt = calc_ctrl_pt_auto_align_pos(ld, x, y);
+   x = pt.x;
+   y = pt.y;
+
    if (x > (vx + vw)) x = (vx + vw);
    if (y > (vy + vh)) y = (vy + vh);
    if (rel1_x > (x + ld->half_ctrl_size)) x = (rel1_x + ld->half_ctrl_size);
@@ -514,6 +611,11 @@ cp_rel3_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
    Evas_Coord rel1_x;
    evas_object_geometry_get(ld->ctrl_pt[Ctrl_Pt_Rel1], &rel1_x, NULL,
                             NULL, NULL);
+
+   Evas_Coord_Point pt = calc_ctrl_pt_auto_align_pos(ld, x, y);
+   x = pt.x;
+   y = pt.y;
+
    if (x > (vx + vw)) x = (vx + vw);
    if (rel1_x > (x + ld->half_ctrl_size)) x = (rel1_x - ld->half_ctrl_size);
 
@@ -549,6 +651,11 @@ cp_rel4_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
    Evas_Coord rel2_x;
    evas_object_geometry_get(ld->ctrl_pt[Ctrl_Pt_Rel2], &rel2_x, NULL,
                             NULL, NULL);
+
+   Evas_Coord_Point pt = calc_ctrl_pt_auto_align_pos(ld, x, y);
+   x = pt.x;
+   y = pt.y;
+
    if (vx > x) x = vx;
    if ((x - ld->half_ctrl_size) > rel2_x) x = (rel2_x + ld->half_ctrl_size);
 
@@ -576,6 +683,7 @@ cp_left_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
    Evas_Event_Mouse_Move *ev = event_info;
 
    Evas_Coord x = ev->cur.canvas.x;
+   Evas_Coord y = ev->cur.canvas.y;
 
    Evas_Object *view = view_obj_get(ld);
    Evas_Coord vx, vy, vw, vh;
@@ -584,6 +692,11 @@ cp_left_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
    Evas_Coord rel2_x;
    evas_object_geometry_get(ld->ctrl_pt[Ctrl_Pt_Rel2], &rel2_x, NULL,
                             NULL, NULL);
+
+   Evas_Coord_Point pt = calc_ctrl_pt_auto_align_pos(ld, x, y);
+   x = pt.x;
+
+
    if (vx > x) x = vx;
    if ((x - ld->half_ctrl_size) > rel2_x) x = (rel2_x + ld->half_ctrl_size);
 
@@ -602,6 +715,7 @@ cp_right_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
    Evas_Event_Mouse_Move *ev = event_info;
 
    Evas_Coord x = ev->cur.canvas.x;
+   Evas_Coord y = ev->cur.canvas.y;
 
    Evas_Object *view = view_obj_get(ld);
    Evas_Coord vx, vy, vw, vh;
@@ -610,6 +724,12 @@ cp_right_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
    Evas_Coord rel1_x;
    evas_object_geometry_get(ld->ctrl_pt[Ctrl_Pt_Rel1], &rel1_x, NULL,
                             NULL, NULL);
+
+
+   Evas_Coord_Point pt = calc_ctrl_pt_auto_align_pos(ld, x, y);
+   x = pt.x;
+
+
    if (x > (vx + vw)) x = (vx + vw);
    if (rel1_x > (x + ld->half_ctrl_size)) x = (rel1_x + ld->half_ctrl_size);
 
@@ -753,6 +873,80 @@ ctrl_pt_init(live_data *ld)
    ctrl_pt_update(ld);
 }
 
+static free_auto_align_data(Eina_Array *arr)
+{
+   unsigned int i;
+   Eina_Array_Iterator iter;
+   auto_align_data *al_pos;
+
+   if (arr)
+     {
+        EINA_ARRAY_ITER_NEXT(arr, i, al_pos, iter)
+        {
+           free(al_pos);
+        }
+        eina_array_free(arr);
+        arr = NULL;
+     }
+}
+
+static void
+live_edit_auto_align_target_parts_init(live_data *ld, Eina_Bool is_update)
+{
+   Eina_List *l;
+
+   Evas_Object *view_obj = view_obj_get(ld);
+   Evas_Coord vx, vy;
+   evas_object_geometry_get(view_obj, &vx, &vy, NULL, NULL);
+
+   // set target parts for finding the boundary of exists parts
+   char *part_name;
+   Eina_List *parts = enventor_object_parts_list_get(base_enventor_get());
+
+   Evas_Object *part_obj;
+   Evas_Coord x,y,w,h;
+   //Case 1: create new auto_align_data for new live edit item
+   if (!is_update)
+     {
+        free_auto_align_data(ld->auto_align_array);
+        ld->auto_align_array = eina_array_new(eina_list_count(parts));
+        EINA_LIST_FOREACH(parts, l, part_name)
+        {
+           part_obj = (Evas_Object *) edje_object_part_object_get(view_obj, part_name);
+           edje_object_part_geometry_get(view_obj, part_name, &x, &y, &w, &h);
+           auto_align_data *al_pos = calloc(1, sizeof(auto_align_data));
+           al_pos->pt1.x = x + vx;
+           al_pos->pt1.y = y + vy;
+           al_pos->pt2.x = x + w + vx;
+           al_pos->pt2.y = y + h + vy;
+           eina_array_push(ld->auto_align_array, al_pos);
+        }
+     }
+   //Case 2: update the exsit auto_align_data when view is resized
+   else
+     {
+        int i = 0, item_cnt;
+        if (ld->auto_align_array)
+          {
+             item_cnt = eina_array_count_get(ld->auto_align_array);
+             EINA_LIST_FOREACH(parts, l, part_name)
+             {
+                part_obj = (Evas_Object *) edje_object_part_object_get(view_obj, part_name);
+                edje_object_part_geometry_get(view_obj, part_name, &x, &y, &w, &h);
+
+                if (i < item_cnt)
+                  {
+                     auto_align_data *al_pos = eina_array_data_get(ld->auto_align_array, i++);
+                     al_pos->pt1.x = x + vx;
+                     al_pos->pt1.y = y + vy;
+                     al_pos->pt2.x = x + w + vx;
+                     al_pos->pt2.y = y + h + vy;
+                  }
+              }
+         }
+     }
+}
+
 static void
 layout_update(live_data *ld)
 {
@@ -768,6 +962,8 @@ layout_update(live_data *ld)
    double h2 =
      round(((double) h * (ld->part_info.rel2_y - ld->part_info.rel1_y)));
    evas_object_resize(ld->layout, w2, h2);
+
+   live_edit_auto_align_target_parts_init(ld, EINA_TRUE);
 }
 
 static void
@@ -786,6 +982,164 @@ live_view_geom_cb(void *data, Evas *e EINA_UNUSED,
 {
    live_data *ld = data;
    live_edit_update_internal(ld);
+}
+
+static void
+calc_layout_auto_align_pos(Evas_Object *layout, live_data *ld, int x, int y,
+                           int layout_dir_x, int layout_dir_y, int *ret_x, int *ret_y)
+{
+   // This function cacluates the position of layout to the closest part edge
+   static int pre_layout_dir_x, pre_layout_dir_y;
+
+   Eina_Bool is_up, is_down, is_left, is_right;
+   is_up = is_down = is_left = is_right = EINA_FALSE;
+
+   Evas_Coord w, h;
+   evas_object_geometry_get(layout, NULL, NULL, &w, &h);
+
+   // layout_dir_x and layout_dir_y are the current direction of layout,
+   // pre_layout_dir_x and pre_layout_dir_y are previous direction of layout.
+   // These conditions are used to align the layout in moving direction
+   if (layout_dir_x == 0)
+     {
+       if (pre_layout_dir_x < 0)
+         {
+            is_left = EINA_TRUE;
+            pre_layout_dir_x = -1;
+         }
+       else
+         {
+            is_right = EINA_TRUE;
+            pre_layout_dir_x = 1;
+         }
+     }
+   else
+     {
+        pre_layout_dir_x = layout_dir_x;
+        if (layout_dir_x < 0)
+          is_left = EINA_TRUE;
+        else if (layout_dir_x > 0)
+          is_right = EINA_TRUE;
+     }
+
+   if (layout_dir_y == 0)
+     {
+       if (pre_layout_dir_y < 0)
+         {
+            is_up = EINA_TRUE;
+            pre_layout_dir_y = -1;
+         }
+     else
+       {
+          is_down = EINA_TRUE;
+          pre_layout_dir_y = 1;
+       }
+     }
+   else
+     {
+        pre_layout_dir_y = layout_dir_y;
+        if (layout_dir_y < 0)
+          is_up = EINA_TRUE;
+        else if (layout_dir_y > 0)
+          is_down = EINA_TRUE;
+     }
+
+   unsigned int res_x1, res_y1, res_x2, res_y2;
+   unsigned int nx, ny, nx2, ny2;
+   res_x1 = res_y1 = res_x2 = res_y2 = -1;
+   nx = ny = nx2 = ny2 = LIVE_EDIT_MAX_DIST;
+   unsigned int dist = ld->auto_align_dist;
+
+   // This loop finds the closest part to the layout
+   Eina_Array *arr;
+   unsigned int i;
+   auto_align_data *al_pos;
+   Eina_Array_Iterator iter;
+   EINA_ARRAY_ITER_NEXT(ld->auto_align_array, i, al_pos, iter)
+   {
+      unsigned int dx1, dy1, dx2, dy2;
+      dx1 = dy1 = dx2 = dy2 = LIVE_EDIT_MAX_DIST;
+      if ((al_pos->pt1.y <= y) && (al_pos->pt2.y >= y) || (al_pos->pt1.y <= (y + h)) &&
+          (al_pos->pt2.y >= (y + h)) || (al_pos->pt1.y >= y) && (al_pos->pt2.y <= (y + h)))
+        {
+           dx1 = abs(al_pos->pt1.x - x);
+           dx2 = abs(al_pos->pt1.x - (x + w));
+        }
+
+      if ((al_pos->pt1.x <= x) && (al_pos->pt2.x >= x) || (al_pos->pt1.x <= (x + w)) &&
+          (al_pos->pt2.x >= (x + w)) || (al_pos->pt1.x >= x) && (al_pos->pt2.x <= (x + w)))
+        {
+           dy1 = abs(al_pos->pt1.y - y);
+           dy2 = abs(al_pos->pt1.y - (y + h));
+        }
+
+      if (is_left && (dx1 < dist) && (dx1 < nx))
+        {
+           nx = dx1;
+           res_x1 = al_pos->pt1.x;
+        }
+      if (is_right && (dx2 < dist) && (dx2 < nx2))
+        {
+           nx2 = dx2;
+           res_x2 = al_pos->pt1.x;
+        }
+      if (is_up && (dy1 < dist) && (dy1 < ny))
+        {
+           ny = dy1;
+           res_y1 = al_pos->pt1.y;
+        }
+      if (is_down && (dy2 < dist) && (dy2 < ny2))
+        {
+           ny2 = dy2;
+           res_y2 = al_pos->pt1.y;
+        }
+
+      if ((al_pos->pt1.y <= y) && (al_pos->pt2.y >= y) || (al_pos->pt1.y <= (y + h)) &&
+          (al_pos->pt2.y >= (y + h)) || (al_pos->pt1.y >= y) && (al_pos->pt2.y <= (y + h)))
+        {
+           dx1 = abs(al_pos->pt2.x - x);
+           dx2 = abs(al_pos->pt2.x - (x + w));
+        }
+
+      if ((al_pos->pt1.x <= x) && (al_pos->pt2.x >= x) || (al_pos->pt1.x <= (x + w)) &&
+          (al_pos->pt2.x >= (x + w)) || (al_pos->pt1.x >= x) && (al_pos->pt2.x <= (x + w)))
+        {
+           dy1 = abs(al_pos->pt2.y - y);
+           dy2 = abs(al_pos->pt2.y - (y + h));
+        }
+
+      if (is_left && (dx1 < dist) && (dx1 < nx))
+        {
+           nx = dx1;
+           res_x1 = al_pos->pt2.x;
+        }
+      if (is_right && (dx2 < dist) && (dx2 < nx2))
+        {
+           nx2 = dx2;
+           res_x2 = al_pos->pt2.x;
+        }
+      if (is_up && (dy1 < dist) && (dy1 < ny))
+        {
+           ny = dy1;
+           res_y1 = al_pos->pt2.y;
+        }
+      if (is_down && (dy2 < dist) && (dy2 < ny2))
+        {
+           ny2 = dy2;
+           res_y2 = al_pos->pt2.y;
+        }
+   }
+
+   // If we find the closest position and return it
+   if (is_left && (res_x1 != -1))
+     *ret_x = res_x1;
+   else if (is_right && (res_x2 != -1))
+     *ret_x = res_x2 - w;
+
+   if (is_up && (res_y1 != -1))
+     *ret_y = res_y1;
+   else if (is_down && (res_y2 != -1))
+     *ret_y = res_y2 - h;
 }
 
 static void
@@ -812,6 +1166,20 @@ layout_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
 
    x = ev->cur.canvas.x - ld->move_delta.x;
    y = ev->cur.canvas.y - ld->move_delta.y;
+
+   Evas_Coord dir_x, dir_y;
+   dir_x =  ev->cur.canvas.x - ev->prev.canvas.x;
+   dir_y = ev->cur.canvas.y - ev->prev.canvas.y;
+
+   int ret_x, ret_y;
+   ret_x = x;
+   ret_y = y;
+
+   // This function set the position of layout to the closest part edge
+   calc_layout_auto_align_pos(obj, ld, x, y, dir_x, dir_y, &ret_x, &ret_y);
+
+   x = ret_x;
+   y = ret_y;
 
    //limit to live view boundary
    if (vx > x) x = vx;
@@ -991,6 +1359,7 @@ live_edit_layer_set(live_data *ld)
    align_line_init(ld);
    live_edit_update_internal(ld);
    info_text_init(ld);
+   live_edit_auto_align_target_parts_init(ld, EINA_FALSE);
 }
 
 static void
@@ -1143,6 +1512,7 @@ live_edit_init(Evas_Object *trigger)
      }
    g_ld = ld;
    ld->trigger = trigger;
+   ld->auto_align_dist = LIVE_EDIT_AUTO_ALIGN_DIST;
 }
 
 void
@@ -1151,6 +1521,8 @@ live_edit_term(void)
    live_data *ld = g_ld;
    evas_object_del(ld->toolbox);
    live_edit_cancel();
+
+   free_auto_align_data(ld->auto_align_array);
    free(ld);
    g_ld = NULL;
 }

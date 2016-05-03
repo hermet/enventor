@@ -2,6 +2,8 @@
 #define LIVE_EDIT_REL2 0.75
 #define LIVE_EDIT_FONT "Sans"
 #define LIVE_EDIT_FONT_SIZE 10
+#define LIVE_EDIT_MAX_DIST 999999
+#define LIVE_EDIT_AUTO_ALIGN_DIST 10
 
 void live_edit_init(Evas_Object *trigger);
 void live_edit_term(void);
