@@ -148,6 +148,11 @@ gl_exp(void *data, Evas_Object *obj, void *event_info)
    brows_file *file = evas_object_data_get(obj, it_str);
    if (!file) return;
 
+   /* Basically, sub file list is not created. So if sub file list has not been
+      created before, then create sub file list. */
+   if (!file->sub_file_list)
+     file->sub_file_list = sub_brows_file_list_create(file);
+
    if (file->sub_file_list)
      {
         Eina_List *l = NULL;
@@ -159,12 +164,9 @@ gl_exp(void *data, Evas_Object *obj, void *event_info)
                continue;
 
              Elm_Genlist_Item_Type type = ELM_GENLIST_ITEM_NONE;
-             if (sub_file->sub_file_list)
+             if (sub_file->type == FILE_BROWSER_FILE_TYPE_DIR)
                type = ELM_GENLIST_ITEM_TREE;
              sub_file->it = file_genlist_item_append(sub_file, file->it, type);
-
-             if (type == ELM_GENLIST_ITEM_TREE)
-               gl_exp_req(NULL, NULL, sub_file->it);
           }
      }
 }
@@ -224,7 +226,7 @@ brows_file_type_get(const char *file_path)
 }
 
 static brows_file *
-brows_file_create(const char *file_path)
+brows_file_create(const char *file_path, Eina_Bool create_sub_file_list)
 {
    if (!file_path) return NULL;
    if (!ecore_file_exists(file_path)) return NULL;
@@ -241,7 +243,11 @@ brows_file_create(const char *file_path)
    file->path = file_abs_path;
    file->name = strdup(ecore_file_file_get(file_abs_path));
    file->type = brows_file_type_get(file_abs_path);
-   file->sub_file_list = sub_brows_file_list_create(file);
+
+   if (create_sub_file_list)
+     file->sub_file_list = sub_brows_file_list_create(file);
+   else
+     file->sub_file_list = NULL;
 
    file->it = NULL;
 
@@ -271,7 +277,8 @@ sub_brows_file_list_create(brows_file *file)
         snprintf(sub_file_path, sub_file_path_len, "%s/%s", dir_path,
                  sub_file_name);
 
-        brows_file *sub_file = brows_file_create(sub_file_path);
+        //Create sub file without creating its sub file list.
+        brows_file *sub_file = brows_file_create(sub_file_path, EINA_FALSE);
         free(sub_file_path);
         if (!sub_file) continue;
 
@@ -323,7 +330,8 @@ file_set_internal(const char *file_path)
 
    if (!file_path) return NULL;
 
-   brows_file *file = brows_file_create(file_path);
+   //Create file with creating its sub file list.
+   brows_file *file = brows_file_create(file_path, EINA_TRUE);
    if (!file) return NULL;
 
    Elm_Genlist_Item_Type it_type = ELM_GENLIST_ITEM_NONE;
