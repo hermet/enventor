@@ -273,6 +273,7 @@ sub_brows_file_list_create(brows_file *file)
 
         brows_file *sub_file = brows_file_create(sub_file_path);
         free(sub_file_path);
+        if (!sub_file) continue;
 
         sub_file_list =
            eina_list_sorted_insert(sub_file_list,
