@@ -538,6 +538,8 @@ file_browser_workspace_set(const char *workspace_path)
    if (!workspace) return;
    bd->workspace = workspace;
 
+   elm_object_disabled_set(bd->workspace_ly, EINA_FALSE);
+
    if (workspace->sub_file_list)
      gl_exp_req(NULL, NULL, workspace->it);
 }
@@ -628,6 +630,8 @@ file_browser_init(Evas_Object *parent)
    bd->search_entry = search_entry;
    bd->genlist = genlist;
    bd->show_all_check = show_all_check;
+
+   elm_object_disabled_set(workspace_ly, EINA_TRUE);
 
    return workspace_ly;
 }
