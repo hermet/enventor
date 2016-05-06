@@ -443,7 +443,7 @@ edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
         if (edit_auto_indent_get(ed))
           {
              increase =
-                indent_insert_apply(syntax_indent_data_get(ed->sh), ed->en_edit,
+                indent_insert_apply(syntax_indent_data_get(ed->sh),
                                     info->change.insert.content, ed->cur_line);
           }
         edit_line_increase(ed, increase);
@@ -453,7 +453,7 @@ edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
      {
         if (edit_auto_indent_get(ed))
           {
-             indent_delete_apply(syntax_indent_data_get(ed->sh), ed->en_edit,
+             indent_delete_apply(syntax_indent_data_get(ed->sh),
                                  info->change.del.content, ed->cur_line);
           }
 
@@ -1392,23 +1392,18 @@ edit_line_delete(edit_data *ed)
 int
 edit_cur_indent_depth_get(edit_data *ed)
 {
-   return indent_space_get(syntax_indent_data_get(ed->sh), ed->en_edit);
+   return indent_space_get(syntax_indent_data_get(ed->sh));
 }
 
 edit_data *
 edit_init(Evas_Object *enventor)
 {
-   parser_data *pd = parser_init();
-   syntax_helper *sh = syntax_init();
-
    edit_data *ed = calloc(1, sizeof(edit_data));
    if (!ed)
      {
         EINA_LOG_ERR("Failed to allocate Memory!");
         return NULL;
      }
-   ed->pd = pd;
-   ed->sh = sh;
    ed->error_line = -1;
    ed->bracket.prev_left = -1;
    ed->bracket.prev_right = -1;
@@ -1493,7 +1488,8 @@ edit_init(Evas_Object *enventor)
    ed->cur_line = -1;
    ed->select_pos = -1;
    ed->font_scale = 1;
-
+   ed->pd = parser_init();
+   ed->sh = syntax_init(en_edit);
    ed->rd = redoundo_init(en_edit, ed);
    evas_object_data_set(ed->en_edit, "redoundo", ed->rd);
 

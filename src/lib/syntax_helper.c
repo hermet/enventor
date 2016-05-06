@@ -35,7 +35,7 @@ buf_flush_timer_cb(void *data)
 /*****************************************************************************/
 
 syntax_helper *
-syntax_init(void)
+syntax_init(Evas_Object *entry)
 {
    syntax_helper *sh = malloc(sizeof(syntax_helper));
    if (!sh)
@@ -47,7 +47,7 @@ syntax_init(void)
    sh->buf_flush_timer = ecore_timer_add(1800, buf_flush_timer_cb, sh);
 
    sh->cd = color_init(sh->strbuf);
-   sh->id = indent_init(sh->strbuf);
+   sh->id = indent_init(sh->strbuf, entry);
 
    return sh;
 }

@@ -8,6 +8,7 @@
 struct indent_s
 {
    Eina_Strbuf *strbuf;
+   Evas_Object *entry;
 };
 
 typedef struct indent_line_s
@@ -52,14 +53,16 @@ indent_depth_get(indent_data *id EINA_UNUSED, char *src, int pos)
 }
 
 static void
-indent_insert_br_case(indent_data *id, Evas_Object *entry)
+indent_insert_br_case(indent_data *id)
 {
+   Evas_Object *entry = id->entry;
    Evas_Object *tb = elm_entry_textblock_get(entry);
    Evas_Textblock_Cursor *cur = evas_object_textblock_cursor_get(tb);
    redoundo_data *rd = evas_object_data_get(entry, "redoundo");
    const char *text = evas_textblock_cursor_paragraph_text_get(cur);
    char *utf8 = elm_entry_markup_to_utf8(text);
-   Eina_Strbuf* diff = eina_strbuf_new();
+   Eina_Strbuf* diff = id->strbuf;
+   eina_strbuf_reset(diff);
    int rd_cur_pos = evas_textblock_cursor_pos_get(cur);
 
    if (strlen(utf8) > 0)
@@ -76,9 +79,8 @@ indent_insert_br_case(indent_data *id, Evas_Object *entry)
    free(utf8);
    redoundo_text_push(rd, eina_strbuf_string_get(diff), rd_cur_pos, 0,
                       EINA_FALSE);
-   eina_strbuf_free(diff);
 
-   int space = indent_space_get(id, entry);
+   int space = indent_space_get(id);
    if (space <= 0) return;
 
    //Alloc Empty spaces
@@ -92,8 +94,9 @@ indent_insert_br_case(indent_data *id, Evas_Object *entry)
 }
 
 static void
-indent_insert_bracket_case(indent_data *id, Evas_Object *entry, int cur_line)
+indent_insert_bracket_case(indent_data *id, int cur_line)
 {
+   Evas_Object *entry = id->entry;
    Evas_Object *tb = elm_entry_textblock_get(entry);
    Evas_Textblock_Cursor *cur = evas_object_textblock_cursor_new(tb);
    evas_textblock_cursor_line_set(cur, cur_line - 1);
@@ -109,7 +112,7 @@ indent_insert_bracket_case(indent_data *id, Evas_Object *entry, int cur_line)
         len--;
      }
 
-   int space = indent_space_get(id, entry);
+   int space = indent_space_get(id);
    if (space == len)
      {
         free(utf8);
@@ -153,90 +156,6 @@ indent_insert_bracket_case(indent_data *id, Evas_Object *entry, int cur_line)
    elm_entry_calc_force(entry);
    evas_textblock_cursor_free(cur);
    free(utf8);
-}
-
-/*****************************************************************************/
-/* Externally accessible calls                                               */
-/*****************************************************************************/
-
-indent_data *
-indent_init(Eina_Strbuf *strbuf)
-{
-   indent_data *id = malloc(sizeof(indent_data));
-   if (!id)
-     {
-        EINA_LOG_ERR("Failed to allocate Memory!");
-        return NULL;
-     }
-   id->strbuf = strbuf;
-   return id;
-}
-
-void
-indent_term(indent_data *id)
-{
-   free(id);
-}
-
-int
-indent_space_get(indent_data *id, Evas_Object *entry)
-{
-   //Get the indentation depth
-   int pos = elm_entry_cursor_pos_get(entry);
-   char *src = elm_entry_markup_to_utf8(elm_entry_entry_get(entry));
-   int space = indent_depth_get(id, src, pos);
-   if (space < 0) space = 0;
-   space *= TAB_SPACE;
-   free(src);
-
-   return space;
-}
-
-void
-indent_delete_apply(indent_data *id EINA_UNUSED, Evas_Object *entry,
-                    const char *del, int cur_line)
-{
-   if (del[0] != ' ') return;
-
-   Evas_Object *tb = elm_entry_textblock_get(entry);
-   Evas_Textblock_Cursor *cur = evas_object_textblock_cursor_new(tb);
-   evas_textblock_cursor_line_set(cur, cur_line - 1);
-   const char *text = evas_textblock_cursor_paragraph_text_get(cur);
-   char *utf8 = elm_entry_markup_to_utf8(text);
-   char *last_markup = NULL;
-   Eina_Strbuf* diff = eina_strbuf_new();
-
-   int rd_cur_pos = evas_textblock_cursor_pos_get(cur);
-   redoundo_data *rd = evas_object_data_get(entry, "redoundo");
-
-   int len = strlen(utf8);
-   if (len <= 0) goto end;
-
-   evas_textblock_cursor_paragraph_char_last(cur);
-   last_markup = evas_textblock_cursor_content_get(cur);
-   if (last_markup && !strncmp(last_markup, "<br/>", 5))
-     evas_textblock_cursor_char_prev(cur);
-
-   while (len > 0)
-     {
-        if ((utf8[(len - 1)] == ' '))
-          {
-             eina_strbuf_append(diff, evas_textblock_cursor_content_get(cur));
-             evas_textblock_cursor_char_delete(cur);
-             evas_textblock_cursor_char_prev(cur);
-          }
-        else break;
-        len--;
-     }
-   redoundo_text_push(rd, eina_strbuf_string_get(diff), rd_cur_pos, 0,
-                      EINA_FALSE);
-   elm_entry_calc_force(entry);
-
-end:
-   evas_textblock_cursor_free(cur);
-   if (utf8) free(utf8);
-   if (last_markup) free(last_markup);
-   eina_strbuf_free(diff);
 }
 
 static Eina_List *
@@ -450,20 +369,19 @@ indent_code_line_list_create(indent_data *id EINA_UNUSED, const char *utf8)
 }
 
 static int
-indent_text_auto_format(indent_data *id,
-                        Evas_Object *entry, const char *insert)
+indent_text_auto_format(indent_data *id, const char *insert)
 {
    int line_cnt = 0;
    //FIXME: To improve performance, change logic not to translate text.
    char *utf8 = evas_textblock_text_markup_to_utf8(NULL, insert);
    int utf8_size = strlen(utf8);
 
-   Evas_Object *tb = elm_entry_textblock_get(entry);
+   Evas_Object *tb = elm_entry_textblock_get(id->entry);
    Evas_Textblock_Cursor *cur_start = evas_object_textblock_cursor_new(tb);
    Evas_Textblock_Cursor *cur_end = evas_object_textblock_cursor_get(tb);
    int tb_cur_pos = 0;
 
-   redoundo_data *rd = evas_object_data_get(entry, "redoundo");
+   redoundo_data *rd = evas_object_data_get(id->entry, "redoundo");
 
    Eina_List *code_line_list = indent_code_line_list_create(id, utf8);
    indent_line *code_line = NULL;
@@ -578,10 +496,11 @@ indent_text_auto_format(indent_data *id,
         evas_textblock_cursor_pos_set(cur_start, tb_cur_pos);
      }
 
-   int space = indent_space_get(id, entry);
+   int space = indent_space_get(id);
 
    Eina_List *l = NULL;
-   Eina_Strbuf *buf = eina_strbuf_new();
+   Eina_Strbuf *buf = id->strbuf;
+   eina_strbuf_reset(buf);
 
    EINA_LIST_FOREACH(code_line_list, l, code_line)
      {
@@ -621,7 +540,6 @@ indent_text_auto_format(indent_data *id,
 
    //FIXME: To improve performance, change logic not to translate text.
    char *markup_buf = evas_textblock_text_utf8_to_markup(NULL, utf8_buf);
-   eina_strbuf_free(buf);
    free(utf8_buf);
 
    //Initialize cursor position to the beginning of the pasted string.
@@ -643,44 +561,90 @@ end:
    return line_cnt;
 }
 
-int
-indent_insert_apply(indent_data *id, Evas_Object *entry, const char *insert,
-                    int cur_line)
+/*****************************************************************************/
+/* Externally accessible calls                                               */
+/*****************************************************************************/
+
+indent_data *
+indent_init(Eina_Strbuf *strbuf, Evas_Object *entry)
 {
-   int len = strlen(insert);
-   if (len == 0)
+   indent_data *id = malloc(sizeof(indent_data));
+   if (!id)
      {
-        return 0;
+        EINA_LOG_ERR("Failed to allocate Memory!");
+        return NULL;
      }
-   else if (len == 1)
-     {
-        if (insert[0] == '}')
-          indent_insert_bracket_case(id, entry, cur_line);
-        return 0;
-     }
-   else
-     {
-        if (!strcmp(insert, EOL))
-          {
-             indent_insert_br_case(id, entry);
-             return 1;
-          }
-        else if (!strcmp(insert, QUOT))
-          return 0;
-        else if (!strcmp(insert, LESS))
-          return 0;
-        else if (!strcmp(insert, GREATER))
-          return 0;
-        else if (!strcmp(insert, AMP))
-          return 0;
-        else
-          {
-             int increase = indent_text_auto_format(id, entry, insert);
-             if (increase > 0) increase--;
-             return increase;
-          }
-     }
+   id->strbuf = strbuf;
+   id->entry = entry;
+   return id;
 }
+
+void
+indent_term(indent_data *id)
+{
+   free(id);
+}
+
+int
+indent_space_get(indent_data *id)
+{
+   //Get the indentation depth
+   int pos = elm_entry_cursor_pos_get(id->entry);
+   char *src = elm_entry_markup_to_utf8(elm_entry_entry_get(id->entry));
+   int space = indent_depth_get(id, src, pos);
+   if (space < 0) space = 0;
+   space *= TAB_SPACE;
+   free(src);
+
+   return space;
+}
+
+void
+indent_delete_apply(indent_data *id, const char *del, int cur_line)
+{
+   if (del[0] != ' ') return;
+
+   Evas_Object *tb = elm_entry_textblock_get(id->entry);
+   Evas_Textblock_Cursor *cur = evas_object_textblock_cursor_new(tb);
+   evas_textblock_cursor_line_set(cur, cur_line - 1);
+   const char *text = evas_textblock_cursor_paragraph_text_get(cur);
+   char *utf8 = elm_entry_markup_to_utf8(text);
+   char *last_markup = NULL;
+   Eina_Strbuf* diff = id->strbuf;
+   eina_strbuf_reset(diff);
+
+   int rd_cur_pos = evas_textblock_cursor_pos_get(cur);
+   redoundo_data *rd = evas_object_data_get(id->entry, "redoundo");
+
+   int len = strlen(utf8);
+   if (len <= 0) goto end;
+
+   evas_textblock_cursor_paragraph_char_last(cur);
+   last_markup = evas_textblock_cursor_content_get(cur);
+   if (last_markup && !strncmp(last_markup, "<br/>", 5))
+     evas_textblock_cursor_char_prev(cur);
+
+   while (len > 0)
+     {
+        if ((utf8[(len - 1)] == ' '))
+          {
+             eina_strbuf_append(diff, evas_textblock_cursor_content_get(cur));
+             evas_textblock_cursor_char_delete(cur);
+             evas_textblock_cursor_char_prev(cur);
+          }
+        else break;
+        len--;
+     }
+   redoundo_text_push(rd, eina_strbuf_string_get(diff), rd_cur_pos, 0,
+                      EINA_FALSE);
+   elm_entry_calc_force(id->entry);
+
+end:
+   evas_textblock_cursor_free(cur);
+   if (utf8) free(utf8);
+   if (last_markup) free(last_markup);
+}
+
 
 /* Check if indentation of input text is correct.
    Return EINA_TRUE if indentation is correct.
@@ -874,8 +838,7 @@ indent_text_check(indent_data *id EINA_UNUSED, const char *utf8)
    Count the number of lines of indented text.
    Return created indented markup text. */
 char *
-indent_text_create(indent_data *id,
-                   const char *utf8, int *indented_line_cnt)
+indent_text_create(indent_data *id, const char *utf8, int *indented_line_cnt)
 {
    if (!utf8)
      {
@@ -892,7 +855,8 @@ indent_text_create(indent_data *id,
 
    indent_line *code_line = NULL;
    Eina_List *l = NULL;
-   Eina_Strbuf *buf = eina_strbuf_new();
+   Eina_Strbuf *buf = id->strbuf;
+   eina_strbuf_reset(buf);
 
    EINA_LIST_FOREACH(code_line_list, l, code_line)
      {
@@ -932,9 +896,46 @@ indent_text_create(indent_data *id,
 
    //FIXME: This translation may cause low performance.
    char *indented_markup = evas_textblock_text_utf8_to_markup(NULL, utf8_buf);
-   eina_strbuf_free(buf);
    free(utf8_buf);
 
    if (indented_line_cnt) *indented_line_cnt = line_cnt;
    return indented_markup;
+}
+
+int
+indent_insert_apply(indent_data *id, const char *insert, int cur_line)
+{
+   int len = strlen(insert);
+   if (len == 0)
+     {
+        return 0;
+     }
+   else if (len == 1)
+     {
+        if (insert[0] == '}')
+          indent_insert_bracket_case(id, cur_line);
+        return 0;
+     }
+   else
+     {
+        if (!strcmp(insert, EOL))
+          {
+             indent_insert_br_case(id);
+             return 1;
+          }
+        else if (!strcmp(insert, QUOT))
+          return 0;
+        else if (!strcmp(insert, LESS))
+          return 0;
+        else if (!strcmp(insert, GREATER))
+          return 0;
+        else if (!strcmp(insert, AMP))
+          return 0;
+        else
+          {
+             int increase = indent_text_auto_format(id, insert);
+             if (increase > 0) increase--;
+             return increase;
+          }
+     }
 }

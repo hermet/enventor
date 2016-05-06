@@ -129,18 +129,18 @@ void parser_bracket_find(parser_data *pd, Evas_Object *entry, Bracket_Update_Cb 
 void parser_bracket_cancel(parser_data *pd);
 
 /* syntax helper */
-syntax_helper *syntax_init(void);
+syntax_helper *syntax_init(Evas_Object *entry);
 void syntax_term(syntax_helper *sh);
 color_data *syntax_color_data_get(syntax_helper *sh);
 indent_data *syntax_indent_data_get(syntax_helper *sh);
 
 
 /* indent */
-indent_data *indent_init(Eina_Strbuf *strbuf);
+indent_data *indent_init(Eina_Strbuf *strbuf, Evas_Object *entry);
 void indent_term(indent_data *id);
-int indent_space_get(indent_data *id, Evas_Object *entry);
-int indent_insert_apply(indent_data *id, Evas_Object *entry, const char *insert, int cur_line);
-void indent_delete_apply(indent_data *id, Evas_Object *entry, const char *del, int cur_line);
+int indent_space_get(indent_data *id);
+int indent_insert_apply(indent_data *id, const char *insert, int cur_line);
+void indent_delete_apply(indent_data *id, const char *del, int cur_line);
 Eina_Bool indent_text_check(indent_data *id EINA_UNUSED, const char *utf8);
 char * indent_text_create(indent_data *id, const char *utf8, int *indented_line_cnt);
 
