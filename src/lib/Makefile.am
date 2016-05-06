@@ -32,10 +32,10 @@ libenventor_la_SOURCES = \
    enventor_main.c \
    enventor_smart.c \
    edc_parser.c \
-   indent.c \
    redoundo.c \
    syntax_helper.c \
    syntax_color.c \
+   syntax_indent.c \
    ctxpopup.c \
    edc_editor.c \
    auto_comp.c \
