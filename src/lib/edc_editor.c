@@ -1489,11 +1489,16 @@ edit_init(Evas_Object *enventor)
    ed->select_pos = -1;
    ed->font_scale = 1;
    ed->pd = parser_init();
-   ed->sh = syntax_init(en_edit);
-   ed->rd = redoundo_init(en_edit, ed);
-   evas_object_data_set(ed->en_edit, "redoundo", ed->rd);
+   ed->rd = redoundo_init(ed);
+   ed->sh = syntax_init(ed);
 
    return ed;
+}
+
+redoundo_data *
+edit_redoundo_get(edit_data *ed)
+{
+   return ed->rd;
 }
 
 Evas_Object *

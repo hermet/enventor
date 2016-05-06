@@ -382,9 +382,14 @@ redoundo_text_push(redoundo_data *rd, const char *text, int pos, int length,
 }
 
 redoundo_data *
-redoundo_init(Evas_Object *entry, edit_data *ed)
+redoundo_init(edit_data *ed)
 {
-   if (!entry) return NULL;
+   Evas_Object *entry = edit_entry_get(ed);
+   if (!entry)
+     {
+        EINA_LOG_ERR("Should be initialized after edit entry is initialized!");
+        return NULL;
+     }
 
    redoundo_data *rd = calloc(1, sizeof(redoundo_data));
    if (!rd)
@@ -402,7 +407,7 @@ redoundo_init(Evas_Object *entry, edit_data *ed)
    rd->edit_data = ed;
 
    //FIXME: Why signal callback? not smart callback?
-   elm_object_signal_callback_add(entry, "entry,changed,user", "*",
+   elm_object_signal_callback_add(rd->entry, "entry,changed,user", "*",
                                   entry_changed_user_cb, rd);
    return rd;
 }

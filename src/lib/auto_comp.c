@@ -498,7 +498,7 @@ insert_completed_text(autocomp_data *ad)
      }
 
    int cursor_pos2 = elm_entry_cursor_pos_get(entry);
-   redoundo_data *rd = evas_object_data_get(entry, "redoundo");
+   redoundo_data *rd = edit_redoundo_get(ad->ed);
    redoundo_entry_region_push(rd, cursor_pos, cursor_pos2);
 
    entry_anchor_off(ad);

@@ -168,7 +168,7 @@ call_error:
    if (line_num || target)
      edit_syntax_color_full_apply(pd->ed, EINA_TRUE);
 
-   redoundo_data *rd = evas_object_data_get(edit_entry_get(pd->ed), "redoundo");
+   redoundo_data *rd = edit_redoundo_get(pd->ed);
 
    // When msg == NULL it mean, that needed to reset error state
    if (msg)

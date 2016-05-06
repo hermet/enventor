@@ -9,6 +9,7 @@ struct indent_s
 {
    Eina_Strbuf *strbuf;
    Evas_Object *entry;
+   redoundo_data *rd;
 };
 
 typedef struct indent_line_s
@@ -58,7 +59,6 @@ indent_insert_br_case(indent_data *id)
    Evas_Object *entry = id->entry;
    Evas_Object *tb = elm_entry_textblock_get(entry);
    Evas_Textblock_Cursor *cur = evas_object_textblock_cursor_get(tb);
-   redoundo_data *rd = evas_object_data_get(entry, "redoundo");
    const char *text = evas_textblock_cursor_paragraph_text_get(cur);
    char *utf8 = elm_entry_markup_to_utf8(text);
    Eina_Strbuf* diff = id->strbuf;
@@ -77,7 +77,7 @@ indent_insert_br_case(indent_data *id)
           }
      }
    free(utf8);
-   redoundo_text_push(rd, eina_strbuf_string_get(diff), rd_cur_pos, 0,
+   redoundo_text_push(id->rd, eina_strbuf_string_get(diff), rd_cur_pos, 0,
                       EINA_FALSE);
 
    int space = indent_space_get(id);
@@ -88,7 +88,7 @@ indent_insert_br_case(indent_data *id)
    memset(p, ' ', space);
    p[space] = '\0';
 
-   redoundo_text_push(rd, p, elm_entry_cursor_pos_get(entry), 0, EINA_TRUE);
+   redoundo_text_push(id->rd, p, elm_entry_cursor_pos_get(entry), 0, EINA_TRUE);
 
    elm_entry_entry_insert(entry, p);
 }
@@ -381,8 +381,6 @@ indent_text_auto_format(indent_data *id, const char *insert)
    Evas_Textblock_Cursor *cur_end = evas_object_textblock_cursor_get(tb);
    int tb_cur_pos = 0;
 
-   redoundo_data *rd = evas_object_data_get(id->entry, "redoundo");
-
    Eina_List *code_line_list = indent_code_line_list_create(id, utf8);
    indent_line *code_line = NULL;
    free(utf8);
@@ -458,7 +456,7 @@ indent_text_auto_format(indent_data *id, const char *insert)
    evas_textblock_cursor_range_delete(cur_start, cur_end);
 
    //Cancel last added diff, that was created when text pasted into entry.
-   redoundo_n_diff_cancel(rd, 1);
+   redoundo_n_diff_cancel(id->rd, 1);
 
    evas_textblock_cursor_line_char_first(cur_start);
 
@@ -484,7 +482,7 @@ indent_text_auto_format(indent_data *id, const char *insert)
                   tb_cur_pos = evas_textblock_cursor_pos_get(cur_end);
                   /* Add data about removal of prior spaces into the redoundo
                      queue. */
-                  redoundo_text_push(rd, prior_space, tb_cur_pos, 0,
+                  redoundo_text_push(id->rd, prior_space, tb_cur_pos, 0,
                                      EINA_FALSE);
                   free(prior_space);
                }
@@ -549,7 +547,7 @@ indent_text_auto_format(indent_data *id, const char *insert)
    evas_object_textblock_text_markup_prepend(cur_start, markup_buf);
 
    //Add data about formatted change into the redoundo queue.
-   redoundo_text_push(rd, markup_buf, tb_cur_pos, 0, EINA_TRUE);
+   redoundo_text_push(id->rd, markup_buf, tb_cur_pos, 0, EINA_TRUE);
    free(markup_buf);
 
    //Update cursor position to the end of the pasted string.
@@ -566,7 +564,7 @@ end:
 /*****************************************************************************/
 
 indent_data *
-indent_init(Eina_Strbuf *strbuf, Evas_Object *entry)
+indent_init(Eina_Strbuf *strbuf, edit_data *ed)
 {
    indent_data *id = malloc(sizeof(indent_data));
    if (!id)
@@ -575,7 +573,12 @@ indent_init(Eina_Strbuf *strbuf, Evas_Object *entry)
         return NULL;
      }
    id->strbuf = strbuf;
-   id->entry = entry;
+   id->entry = edit_entry_get(ed);
+   id->rd = edit_redoundo_get(ed);
+
+   if (!id->entry || !id->rd)
+     EINA_LOG_ERR("Should be called after edit entry and redoundo is initialized!");
+
    return id;
 }
 
@@ -614,7 +617,6 @@ indent_delete_apply(indent_data *id, const char *del, int cur_line)
    eina_strbuf_reset(diff);
 
    int rd_cur_pos = evas_textblock_cursor_pos_get(cur);
-   redoundo_data *rd = evas_object_data_get(id->entry, "redoundo");
 
    int len = strlen(utf8);
    if (len <= 0) goto end;
@@ -635,7 +637,7 @@ indent_delete_apply(indent_data *id, const char *del, int cur_line)
         else break;
         len--;
      }
-   redoundo_text_push(rd, eina_strbuf_string_get(diff), rd_cur_pos, 0,
+   redoundo_text_push(id->rd, eina_strbuf_string_get(diff), rd_cur_pos, 0,
                       EINA_FALSE);
    elm_entry_calc_force(id->entry);
 

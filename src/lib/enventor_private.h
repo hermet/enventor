@@ -129,14 +129,14 @@ void parser_bracket_find(parser_data *pd, Evas_Object *entry, Bracket_Update_Cb 
 void parser_bracket_cancel(parser_data *pd);
 
 /* syntax helper */
-syntax_helper *syntax_init(Evas_Object *entry);
+syntax_helper *syntax_init(edit_data *ed);
 void syntax_term(syntax_helper *sh);
 color_data *syntax_color_data_get(syntax_helper *sh);
 indent_data *syntax_indent_data_get(syntax_helper *sh);
 
 
 /* indent */
-indent_data *indent_init(Eina_Strbuf *strbuf, Evas_Object *entry);
+indent_data *indent_init(Eina_Strbuf *strbuf, edit_data *ed);
 void indent_term(indent_data *id);
 int indent_space_get(indent_data *id);
 int indent_insert_apply(indent_data *id, const char *insert, int cur_line);
@@ -179,7 +179,7 @@ void edj_mgr_all_views_reload(void);
 
 
 /* redoundo */
-redoundo_data *redoundo_init(Evas_Object *entry, edit_data *ed);
+redoundo_data *redoundo_init(edit_data *ed);
 void redoundo_term(redoundo_data *rd);
 void redoundo_clear(redoundo_data *rd);
 void redoundo_text_push(redoundo_data *rd, const char *text, int pos, int length, Eina_Bool insert);
@@ -278,5 +278,5 @@ void edit_disabled_set(edit_data *ed, Eina_Bool disabled);
 void edit_error_set(edit_data *ed, int line, const char *target);
 void edit_text_insert(edit_data *ed, const char *text);
 void edit_part_cursor_set(edit_data *ed, const char *group_name, const char *part_name);
-
+redoundo_data *edit_redoundo_get(edit_data *ed);
 #endif
