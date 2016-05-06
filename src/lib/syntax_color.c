@@ -28,18 +28,24 @@ typedef struct syntax_color_group
    color colors[MAX_COL_NUM];
 } syntax_color_group;
 
-struct syntax_color_s
+typedef struct syntax_color_source
 {
-   Eina_Strbuf *strbuf;
-   Eina_Strbuf *cachebuf;
    Eina_Hash *color_hash;
    Eina_Stringshare *col_string;
    Eina_Stringshare *col_comment;
    Eina_Stringshare *col_macro;
    Eina_Stringshare *cols[MAX_COL_NUM];
    int color_cnt;
+
+} syntax_color_source;
+
+struct syntax_color_s
+{
+   Eina_Strbuf *strbuf;
+   Eina_Strbuf *cachebuf;
    Eina_List *macros;
    Ecore_Thread *thread;
+   syntax_color_source *col_src;
 
    Eina_Bool ready: 1;
 };
@@ -53,6 +59,10 @@ typedef struct color_hash_foreach_data
 static Eet_Data_Descriptor *edd_scg = NULL;
 static Eet_Data_Descriptor *edd_color = NULL;
 static syntax_color_group *scg = NULL;
+
+//We could share this color source through editor instances.
+static syntax_color_source g_color_src;
+static init_count = 0;
 
 /*****************************************************************************/
 /* Internal method implementation                                            */
@@ -121,7 +131,7 @@ color_load()
 }
 
 static void
-color_table_init(color_data *cd)
+color_table_init(void)
 {
    color_tuple tuple;
    int i;
@@ -131,21 +141,22 @@ color_table_init(color_data *cd)
    Eina_Inarray *inarray;
 
    if (!scg) return;
+   syntax_color_source *color_src = &g_color_src;
 
-   cd->col_string = eina_stringshare_add(scg->string);
+   color_src->col_string = eina_stringshare_add(scg->string);
    //free(scg->string);
-   cd->col_comment = eina_stringshare_add(scg->comment);
+   color_src->col_comment = eina_stringshare_add(scg->comment);
    //free(scg->comment);
-   cd->col_macro = eina_stringshare_add(scg->macro);
+   color_src->col_macro = eina_stringshare_add(scg->macro);
    //free(scg->macro);
-   cd->color_cnt = atoi(scg->count);
+   color_src->color_cnt = atoi(scg->count);
    //free(scg->count);
 
-   cd->color_hash = eina_hash_string_small_new(hash_free_cb);
+   color_src->color_hash = eina_hash_string_small_new(hash_free_cb);
 
-   for (i = 0; i < cd->color_cnt; i++)
+   for (i = 0; i < color_src->color_cnt; i++)
      {
-        cd->cols[i] = eina_stringshare_add(scg->colors[i].val);
+        color_src->cols[i] = eina_stringshare_add(scg->colors[i].val);
         //free(scg->colors[i].val);
 
         EINA_LIST_FOREACH(scg->colors[i].keys, l, key)
@@ -153,14 +164,14 @@ color_table_init(color_data *cd)
              tmp[0] = key[0];
              tmp[1] = '\0';
 
-             inarray = eina_hash_find(cd->color_hash, tmp);
+             inarray = eina_hash_find(color_src->color_hash, tmp);
              if (!inarray)
                {
                   inarray = eina_inarray_new(sizeof(color_tuple), 20);
-                  eina_hash_add(cd->color_hash, tmp, inarray);
+                  eina_hash_add(color_src->color_hash, tmp, inarray);
                }
 
-             tuple.col = cd->cols[i];
+             tuple.col = color_src->cols[i];
              tuple.key = eina_stringshare_add(key);
              eina_inarray_push(inarray, &tuple);
           }
@@ -175,6 +186,7 @@ static void
 macro_key_push(color_data *cd, char *str)
 {
    char *key = str;
+   syntax_color_source *col_src = cd->col_src;
 
    //cutoff "()" from the macro name
    char *cut = strchr(key, '(');
@@ -184,15 +196,15 @@ macro_key_push(color_data *cd, char *str)
    tmp[0] = key[0];
    tmp[1] = '\0';
 
-   Eina_Inarray *inarray = eina_hash_find(cd->color_hash, tmp);
+   Eina_Inarray *inarray = eina_hash_find(col_src->color_hash, tmp);
    if (!inarray)
      {
         inarray = eina_inarray_new(sizeof(color_tuple), 20);
-        eina_hash_add(cd->color_hash, tmp, inarray);
+        eina_hash_add(col_src->color_hash, tmp, inarray);
      }
 
    color_tuple tuple;
-   tuple.col = cd->col_macro;
+   tuple.col = col_src->col_macro;
    tuple.key = eina_stringshare_add(key);
    eina_inarray_push(inarray, &tuple);
 
@@ -206,11 +218,16 @@ init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
    color_data *cd = data;
 
-   eddc_init();
-   color_load();
-   eddc_term();
-   color_table_init(cd);
+   //Initialize color table once.
+   if (init_count == 1)
+     {
+        eddc_init();
+        color_load();
+        eddc_term();
+        color_table_init();
+     }
 
+   cd->col_src = &g_color_src;
    cd->thread = NULL;
    cd->ready = EINA_TRUE;
 }
@@ -593,12 +610,13 @@ macro_keys_free(color_data *cd)
    Eina_Inarray *inarray;
    color_tuple *tuple;
    char key[2];
+   syntax_color_source *col_src = cd->col_src;
 
    EINA_LIST_FREE(cd->macros, macro)
      {
         key[0] = macro[0];
         key[1] = '\0';
-        inarray = eina_hash_find(cd->color_hash, key);
+        inarray = eina_hash_find(col_src->color_hash, key);
 
         if (inarray)
           {
@@ -629,11 +647,12 @@ color_markup_insert(Eina_Strbuf *strbuf, const char **src, int length, char **cu
         if (!strchr(SYMBOLS, *(*cur -1))) return 0;
      }
 
+   syntax_color_source *col_src = cd->col_src;
    char tmp[2];
    tmp[0] = (*cur)[0];
    tmp[1] = '\0';
 
-   Eina_Inarray *inarray = eina_hash_find(cd->color_hash, tmp);
+   Eina_Inarray *inarray = eina_hash_find(col_src->color_hash, tmp);
    if (!inarray) return 0;
 
    //Found tuple list. Search in detail.
@@ -680,9 +699,16 @@ color_init(Eina_Strbuf *strbuf)
         EINA_LOG_ERR("Failed to allocate Memory!");
         return NULL;
      }
+
+   init_count++;
+
    cd->strbuf = strbuf;
    cd->cachebuf = eina_strbuf_new();
    cd->thread = ecore_thread_run(init_thread_blocking, NULL, NULL, cd);
+
+   /* TODO: Improve to share macro info through color instances. Might be this
+      could be global static instance and could be shared with locking
+      mechanism... */
    cd->macros = NULL;
 
    return cd;
@@ -693,21 +719,27 @@ color_term(color_data *cd)
 {
    ecore_thread_cancel(cd->thread);
 
-   eina_hash_free(cd->color_hash);
-   eina_strbuf_free(cd->cachebuf);
-
-   eina_stringshare_del(cd->col_string);
-   eina_stringshare_del(cd->col_comment);
-   eina_stringshare_del(cd->col_macro);
-
    Eina_Stringshare *macro;
    EINA_LIST_FREE(cd->macros, macro) eina_stringshare_del(macro);
 
-   int i;
-   for(i = 0; i < cd->color_cnt; i++)
-     eina_stringshare_del(cd->cols[i]);
+   eina_strbuf_free(cd->cachebuf);
 
    free(cd);
+
+   //release shared color source.
+   if ((--init_count) == 0)
+     {
+        syntax_color_source *col_src = &g_color_src;
+
+        eina_hash_free(col_src->color_hash);
+        eina_stringshare_del(col_src->col_string);
+        eina_stringshare_del(col_src->col_comment);
+        eina_stringshare_del(col_src->col_macro);
+
+        int i;
+        for(i = 0; i < col_src->color_cnt; i++)
+          eina_stringshare_del(col_src->cols[i]);
+     }
 }
 
 static Eina_Bool
@@ -726,90 +758,93 @@ color_hash_foreach_cb(const Eina_Hash *hash EINA_UNUSED,
    return EINA_TRUE;
 }
 
+//FIXME: Need synchronization... ?
 void
-color_set(color_data *cd, Enventor_Syntax_Color_Type color_type, const char *val)
+color_set(color_data *cd, Enventor_Syntax_Color_Type color_type,
+          const char *val)
 {
    Eina_Stringshare *col;
    color_hash_foreach_data fd;
+   syntax_color_source *col_src = cd->col_src;
 
    switch (color_type)
      {
         case ENVENTOR_SYNTAX_COLOR_STRING:
           {
-             eina_stringshare_del(cd->col_string);
-             cd->col_string = eina_stringshare_add(val);
+             eina_stringshare_del(col_src->col_string);
+             col_src->col_string = eina_stringshare_add(val);
              break;
           }
         case ENVENTOR_SYNTAX_COLOR_COMMENT:
           {
-             eina_stringshare_del(cd->col_comment);
-             cd->col_comment = eina_stringshare_add(val);
+             eina_stringshare_del(col_src->col_comment);
+             col_src->col_comment = eina_stringshare_add(val);
              break;
           }
         case ENVENTOR_SYNTAX_COLOR_MACRO:
           {
-             eina_stringshare_del(cd->col_macro);
-             cd->col_macro = eina_stringshare_add(val);
+             eina_stringshare_del(col_src->col_macro);
+             col_src->col_macro = eina_stringshare_add(val);
              break;
           }
         case ENVENTOR_SYNTAX_COLOR_SYMBOL:
           {
              col = eina_stringshare_add(val);
-             fd.cur_col = cd->cols[0];
+             fd.cur_col = col_src->cols[0];
              fd.new_col = col;
-             eina_hash_foreach(cd->color_hash, color_hash_foreach_cb, &fd);
-             eina_stringshare_del(cd->cols[0]);
-             cd->cols[0] = col;
+             eina_hash_foreach(col_src->color_hash, color_hash_foreach_cb, &fd);
+             eina_stringshare_del(col_src->cols[0]);
+             col_src->cols[0] = col;
              break;
           }
         case ENVENTOR_SYNTAX_COLOR_MAIN_KEYWORD:
           {
              col = eina_stringshare_add(val);
-             fd.cur_col = cd->cols[1];
+             fd.cur_col = col_src->cols[1];
              fd.new_col = col;
-             eina_hash_foreach(cd->color_hash, color_hash_foreach_cb, &fd);
-             eina_stringshare_del(cd->cols[1]);
-             cd->cols[1] = col;
+             eina_hash_foreach(col_src->color_hash, color_hash_foreach_cb, &fd);
+             eina_stringshare_del(col_src->cols[1]);
+             col_src->cols[1] = col;
              break;
           }
         case ENVENTOR_SYNTAX_COLOR_SUB_KEYWORD:
           {
              col = eina_stringshare_add(val);
-             fd.cur_col = cd->cols[2];
+             fd.cur_col = col_src->cols[2];
              fd.new_col = col;
-             eina_hash_foreach(cd->color_hash, color_hash_foreach_cb, &fd);
-             eina_stringshare_del(cd->cols[2]);
-             cd->cols[2] = col;
+             eina_hash_foreach(col_src->color_hash, color_hash_foreach_cb, &fd);
+             eina_stringshare_del(col_src->cols[2]);
+             col_src->cols[2] = col;
              break;
           }
         case ENVENTOR_SYNTAX_COLOR_CONSTANT:
           {
              col = eina_stringshare_add(val);
-             fd.cur_col = cd->cols[3];
+             fd.cur_col = col_src->cols[3];
              fd.new_col = col;
-             eina_hash_foreach(cd->color_hash, color_hash_foreach_cb, &fd);
-             eina_stringshare_del(cd->cols[3]);
-             cd->cols[3] = col;
+             eina_hash_foreach(col_src->color_hash, color_hash_foreach_cb, &fd);
+             eina_stringshare_del(col_src->cols[3]);
+             col_src->cols[3] = col;
              break;
           }
         case ENVENTOR_SYNTAX_COLOR_SCRIPT_FUNC:
           {
              col = eina_stringshare_add(val);
-             fd.cur_col = cd->cols[4];
+             fd.cur_col = col_src->cols[4];
              fd.new_col = col;
-             eina_hash_foreach(cd->color_hash, color_hash_foreach_cb, &fd);
-             eina_stringshare_del(cd->cols[4]);
-             cd->cols[4] = col;
+             eina_hash_foreach(col_src->color_hash, color_hash_foreach_cb, &fd);
+             eina_stringshare_del(col_src->cols[4]);
+             col_src->cols[4] = col;
              break;
           }
         case ENVENTOR_SYNTAX_COLOR_SCRIPT_KEYWORD:
           {
              col = eina_stringshare_add(val);
-             fd.cur_col = cd->cols[5];
+             fd.cur_col = col_src->cols[5];
              fd.new_col = col;
-             eina_hash_foreach(cd->color_hash, color_hash_foreach_cb, &fd);
-             eina_stringshare_del(cd->cols[5]);
-             cd->cols[5] = col;
+             eina_hash_foreach(col_src->color_hash, color_hash_foreach_cb, &fd);
+             eina_stringshare_del(col_src->cols[5]);
+             col_src->cols[5] = col;
              break;
           }
         case ENVENTOR_SYNTAX_COLOR_LAST:  //avoiding compiler warning
@@ -820,26 +855,28 @@ color_set(color_data *cd, Enventor_Syntax_Color_Type color_type, const char *val
 const char *
 color_get(color_data *cd, Enventor_Syntax_Color_Type color_type)
 {
+   syntax_color_source *col_src = cd->col_src;
+
    switch (color_type)
      {
         case ENVENTOR_SYNTAX_COLOR_STRING:
-          return (const char *) cd->col_string;
+          return (const char *) col_src->col_string;
         case ENVENTOR_SYNTAX_COLOR_COMMENT:
-          return (const char *) cd->col_comment;
+          return (const char *) col_src->col_comment;
         case ENVENTOR_SYNTAX_COLOR_MACRO:
-          return (const char *) cd->col_macro;
+          return (const char *) col_src->col_macro;
         case ENVENTOR_SYNTAX_COLOR_SYMBOL:
-          return (const char *) cd->cols[0];
+          return (const char *) col_src->cols[0];
         case ENVENTOR_SYNTAX_COLOR_MAIN_KEYWORD:
-          return (const char *) cd->cols[1];
+          return (const char *) col_src->cols[1];
         case ENVENTOR_SYNTAX_COLOR_SUB_KEYWORD:
-          return (const char *) cd->cols[2];
+          return (const char *) col_src->cols[2];
         case ENVENTOR_SYNTAX_COLOR_CONSTANT:
-          return (const char *) cd->cols[3];
+          return (const char *) col_src->cols[3];
         case ENVENTOR_SYNTAX_COLOR_SCRIPT_FUNC:
-          return (const char *) cd->cols[4];
+          return (const char *) col_src->cols[4];
         case ENVENTOR_SYNTAX_COLOR_SCRIPT_KEYWORD:
-          return (const char *) cd->cols[5];
+          return (const char *) col_src->cols[5];
         default:
           return NULL;
      }
@@ -852,6 +889,8 @@ color_apply(color_data *cd, const char *src, int length, char *from, char *to)
    Eina_Bool inside_comment = EINA_FALSE;
 
    if (!src || (length < 1)) return NULL;
+
+   syntax_color_source *col_src = cd->col_src;
 
    Eina_Strbuf *strbuf = cd->cachebuf;
    eina_strbuf_reset(strbuf);
@@ -879,7 +918,8 @@ color_apply(color_data *cd, const char *src, int length, char *from, char *to)
           }
 
         //escape string: " ~ "
-        ret = string_apply(strbuf, &cur, &prev, cd->col_string, inside_string);
+        ret = string_apply(strbuf, &cur, &prev, col_src->col_string,
+                           inside_string);
         if (ret == 1)
           {
              inside_string = !inside_string;
@@ -893,8 +933,8 @@ color_apply(color_data *cd, const char *src, int length, char *from, char *to)
           }
 
         //handle comment: /* ~ */
-        ret = comment_apply(strbuf, &src, length, &cur, &prev, cd->col_comment,
-                            &inside_comment);
+        ret = comment_apply(strbuf, &src, length, &cur, &prev,
+                            col_src->col_comment, &inside_comment);
         if (ret == 1) continue;
         else if (ret == -1) goto finished;
 
@@ -902,7 +942,7 @@ color_apply(color_data *cd, const char *src, int length, char *from, char *to)
         if (!from || (cur >= from))
           {
              ret = comment2_apply(strbuf, &src, length, &cur, &prev,
-                                  cd->col_comment, &inside_comment);
+                                  col_src->col_comment, &inside_comment);
              if (ret == 1) continue;
              else if (ret == -1) goto finished;
           }
@@ -925,7 +965,8 @@ color_apply(color_data *cd, const char *src, int length, char *from, char *to)
           }
 
         //handle comment: preprocessors, #
-        ret = macro_apply(strbuf, &src, length, &cur, &prev, cd->col_macro, cd);
+        ret = macro_apply(strbuf, &src, length, &cur, &prev, col_src->col_macro,
+                          cd);
         if (ret == 1) continue;
 
         //apply color markup

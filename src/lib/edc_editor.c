@@ -1398,7 +1398,6 @@ edit_cur_indent_depth_get(edit_data *ed)
 edit_data *
 edit_init(Evas_Object *enventor)
 {
-   srand(time(NULL));
    parser_data *pd = parser_init();
    syntax_helper *sh = syntax_init();
 
