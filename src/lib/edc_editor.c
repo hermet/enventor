@@ -901,57 +901,6 @@ syntax_color_full_update(edit_data *ed, Eina_Bool thread)
      }
 }
 
-static Eina_Bool
-key_down_cb(void *data, int type EINA_UNUSED, void *ev)
-{
-   Ecore_Event_Key *event = ev;
-   edit_data *ed = data;
-
-   /* FIXME: seems event fd handler is broken. so key down event
-      is triggered multiple times, to make enventor stable,
-      we put the workaround code here. please remove if this won't
-      be problem anymore */
-   if (event->timestamp == 0) return ECORE_CALLBACK_PASS_ON;
-
-   //Control Key
-   if (!strcmp("Control_L", event->key))
-     {
-        ed->ctrl_pressed = EINA_TRUE;
-        return ECORE_CALLBACK_PASS_ON;
-     }
-
-   if (ed->ctrl_pressed)
-     {
-        //Undo
-        if (!strcmp(event->key, "z") || !strcmp(event->key, "Z"))
-          {
-             edit_redoundo(ed, EINA_TRUE);
-             return ECORE_CALLBACK_DONE;
-          }
-        //Redo
-        if (!strcmp(event->key, "r") || !strcmp(event->key, "R"))
-          {
-             edit_redoundo(ed, EINA_FALSE);
-             return ECORE_CALLBACK_DONE;
-          }
-     }
-
-   return ECORE_CALLBACK_PASS_ON;
-}
-
-static Eina_Bool
-key_up_cb(void *data, int type EINA_UNUSED, void *ev)
-{
-   Ecore_Event_Key *event = ev;
-   edit_data *ed = data;
-
-   //Control Key
-   if (!strcmp("Control_L", event->key))
-     ed->ctrl_pressed = EINA_FALSE;
-
-   return ECORE_CALLBACK_PASS_ON;
-}
-
 static void
 scroller_scroll_cb(void *data, Evas_Object *obj EINA_UNUSED,
                    void *event_info EINA_UNUSED)
@@ -1407,9 +1356,6 @@ edit_init(Enventor_Object *enventor)
    ed->bracket.left = -1;
    ed->bracket.right = -1;
 
-   ecore_event_handler_add(ECORE_EVENT_KEY_DOWN, key_down_cb, ed);
-   ecore_event_handler_add(ECORE_EVENT_KEY_UP, key_up_cb, ed);
-
    //Scroller
    Evas_Object *scroller = elm_scroller_add(enventor);
    elm_scroller_policy_set(scroller, ELM_SCROLLER_POLICY_AUTO,
@@ -1806,3 +1752,44 @@ edit_redoundo(edit_data *ed, Eina_Bool undo)
 
    return EINA_TRUE;
 }
+
+Eina_Bool
+edit_key_down_event_dispatch(edit_data *ed, const char *key)
+{
+   //Control Key
+   if (!strcmp("Control_L", key))
+     {
+        ed->ctrl_pressed = EINA_TRUE;
+        return EINA_FALSE;
+     }
+
+   if (ed->ctrl_pressed)
+     {
+        //Undo
+        if (!strcmp(key, "z") || !strcmp(key, "Z"))
+          {
+             edit_redoundo(ed, EINA_TRUE);
+             return EINA_TRUE;
+          }
+        //Redo
+        if (!strcmp(key, "r") || !strcmp(key, "R"))
+          {
+             edit_redoundo(ed, EINA_FALSE);
+             return EINA_TRUE;
+          }
+     }
+
+   return EINA_FALSE;
+}
+
+Eina_Bool
+edit_key_up_event_dispatch(edit_data *ed, const char *key)
+{
+   //Control Key
+   if (!strcmp("Control_L", key))
+     ed->ctrl_pressed = EINA_FALSE;
+
+   return EINA_FALSE;
+}
+
+

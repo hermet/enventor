@@ -227,6 +227,8 @@ Evas_Object *ctxpopup_img_preview_create(edit_data*ed, const char *imgpath, Evas
 void ctxpopup_img_preview_reload(Evas_Object *ctxpopup, const char *imgpath);
 
 /* edc_editor */
+Eina_Bool edit_key_down_event_dispatch(edit_data *ed, const char *key);
+Eina_Bool edit_key_up_event_dispatch(edit_data *ed, const char *key);
 edit_data *edit_init(Enventor_Object *enventor);
 void edit_term(edit_data *ed);
 Evas_Object *edit_obj_get(edit_data *ed);

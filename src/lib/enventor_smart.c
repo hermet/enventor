@@ -82,10 +82,15 @@ _enventor_main_item_free(Enventor_Object_Data *pd)
 }
 
 static Eina_Bool
-key_up_cb(void *data, int type EINA_UNUSED, void *ev EINA_UNUSED)
+key_up_cb(void *data, int type EINA_UNUSED, void *ev)
 {
    Enventor_Object_Data *pd = data;
+   Ecore_Event_Key *event = ev;
+
    pd->key_down = EINA_FALSE;
+
+   edit_key_down_event_dispatch(pd->main_it.ed, event->key);
+
    return ECORE_CALLBACK_DONE;
 }
 
@@ -102,7 +107,12 @@ key_down_cb(void *data, int type EINA_UNUSED, void *ev)
    if (pd->key_down) return ECORE_CALLBACK_PASS_ON;
    pd->key_down = EINA_TRUE;
 
-   if (autocomp_event_dispatch(event->key)) return ECORE_CALLBACK_DONE;
+   if (edit_key_down_event_dispatch(pd->main_it.ed, event->key))
+     return ECORE_CALLBACK_DONE;
+
+   if (autocomp_event_dispatch(event->key))
+     return ECORE_CALLBACK_DONE;
+
    return ECORE_CALLBACK_PASS_ON;
 }
 
