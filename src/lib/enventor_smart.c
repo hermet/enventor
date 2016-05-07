@@ -45,7 +45,6 @@ struct _Enventor_Object_Data
    double font_scale;
 
    Eina_Bool dummy_parts : 1;
-   Eina_Bool key_down : 1;
    Eina_Bool disabled : 1;
    Eina_Bool mirror_mode : 1;
    Eina_Bool linenumber : 1;
@@ -87,9 +86,7 @@ key_up_cb(void *data, int type EINA_UNUSED, void *ev)
    Enventor_Object_Data *pd = data;
    Ecore_Event_Key *event = ev;
 
-   pd->key_down = EINA_FALSE;
-
-   edit_key_down_event_dispatch(pd->main_it.ed, event->key);
+   edit_key_up_event_dispatch(pd->main_it.ed, event->key);
 
    return ECORE_CALLBACK_DONE;
 }
@@ -99,13 +96,8 @@ key_down_cb(void *data, int type EINA_UNUSED, void *ev)
 {
    Enventor_Object_Data *pd = data;
    Ecore_Event_Key *event = ev;
-   Eina_Bool ret;
-
-   ret = enventor_object_focus_get(pd->obj);
+   Eina_Bool ret = enventor_object_focus_get(pd->obj);
    if (!ret) return ECORE_CALLBACK_PASS_ON;
-
-   if (pd->key_down) return ECORE_CALLBACK_PASS_ON;
-   pd->key_down = EINA_TRUE;
 
    if (edit_key_down_event_dispatch(pd->main_it.ed, event->key))
      return ECORE_CALLBACK_DONE;
@@ -244,7 +236,7 @@ _enventor_object_evas_object_smart_add(Eo *obj, Enventor_Object_Data *pd)
    pd->key_down_handler =
       ecore_event_handler_add(ECORE_EVENT_KEY_DOWN, key_down_cb, pd);
    pd->key_up_handler =
-      ecore_event_handler_add(ECORE_EVENT_KEY_DOWN, key_up_cb, pd);
+      ecore_event_handler_add(ECORE_EVENT_KEY_UP, key_up_cb, pd);
 
    evas_object_smart_callback_add(pd->obj, "part,clicked",
                                   _enventor_part_clicked_cb, pd);
