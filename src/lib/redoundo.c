@@ -22,13 +22,14 @@ struct redoundo_s
 {
    Evas_Object *entry;
    Evas_Object *textblock;
+   Enventor_Object *enventor;
    Evas_Textblock_Cursor *cursor;
    Eina_List *queue;
    Eina_List *current_node;
    diff_data *last_diff;
    unsigned int queue_max;        //Maximum queuing data count 0: unlimited
    Eina_Bool internal_change : 1; //Entry change by redoundo
-   edit_data *edit_data;
+   edit_data *ed;
    struct {
       Eina_Bool enable;
       Ecore_Timer *timer;
@@ -64,7 +65,7 @@ smart_analyser(redoundo_data *rd, diff_data *diff)
 
    if (!diff) return diff;
 
-   if (diff->length == 1 && edit_auto_indent_get(rd->edit_data))
+   if (diff->length == 1 && enventor_obj_auto_indent_get(rd->enventor))
      {
        if (strstr(diff->text, "<br/>")) diff->relative = EINA_TRUE;
          else diff->relative = EINA_FALSE;
@@ -186,7 +187,7 @@ redoundo_undo(redoundo_data *rd, Eina_Bool *changed)
 
    if (!rd->last_diff)
      {
-        edit_save(rd->edit_data, build_edc_path_get());
+        edit_save(rd->ed, build_edc_path_get());
         build_edc();
         return 0;
      }
@@ -249,7 +250,7 @@ redoundo_undo(redoundo_data *rd, Eina_Bool *changed)
 
    if (rd->last_diff && rd->last_diff->buildable)
      {
-        edit_save(rd->edit_data, build_edc_path_get());
+        edit_save(rd->ed, build_edc_path_get());
         build_edc();
      }
 
@@ -334,7 +335,7 @@ redoundo_redo(redoundo_data *rd, Eina_Bool *changed)
 
    if (rd->last_diff && rd->last_diff->buildable)
      {
-        edit_save(rd->edit_data, build_edc_path_get());
+        edit_save(rd->ed, build_edc_path_get());
         build_edc();
      }
 
@@ -382,7 +383,7 @@ redoundo_text_push(redoundo_data *rd, const char *text, int pos, int length,
 }
 
 redoundo_data *
-redoundo_init(edit_data *ed)
+redoundo_init(edit_data *ed, Enventor_Object *enventor)
 {
    Evas_Object *entry = edit_entry_get(ed);
    if (!entry)
@@ -399,12 +400,13 @@ redoundo_init(edit_data *ed)
      }
 
    rd->entry = entry;
+   rd->enventor = enventor;
    rd->textblock = elm_entry_textblock_get(entry);
    rd->cursor = evas_object_textblock_cursor_new(rd->textblock);
    rd->queue_max = DEFAULT_QUEUE_SIZE;
    rd->smart.enable = EINA_FALSE;
    rd->smart.input_delay = INPUT_SPEED;
-   rd->edit_data = ed;
+   rd->ed = ed;
 
    //FIXME: Why signal callback? not smart callback?
    elm_object_signal_callback_add(rd->entry, "entry,changed,user", "*",

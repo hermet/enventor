@@ -15,7 +15,7 @@ struct viewer_s
    Evas_Object *base;
    Evas_Object *scroller;
    Evas_Object *event_rect;
-   Evas_Object *enventor;
+   Enventor_Object *enventor;
 
    Evas_Object *part_obj;
    Evas_Object *part_highlight;
@@ -591,7 +591,7 @@ view_dummy_set(view_data *vd, Eina_Bool dummy_parts)
 }
 
 view_data *
-view_init(Evas_Object *enventor, const char *group,
+view_init(Enventor_Object *enventor, const char *group,
           void (*del_cb)(void *data), void *data)
 {
    view_data *vd = calloc(1, sizeof(view_data));

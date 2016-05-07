@@ -28,7 +28,7 @@ struct editor_s
    Evas_Object *scroller;
    Evas_Object *layout;
    Evas_Object *ctxpopup;
-   Evas_Object *enventor;
+   Enventor_Object *enventor;
 
    syntax_helper *sh;
    parser_data *pd;
@@ -55,17 +55,13 @@ struct editor_s
                         Eina_Stringshare *part_name, Eina_Stringshare *group_name);
    void *view_sync_cb_data;
    int select_pos;
-   double font_scale;
    const char *font_name;
    const char *font_style;
    const char *error_target;
 
    Eina_Bool edit_changed : 1;
-   Eina_Bool linenumber : 1;
    Eina_Bool ctrl_pressed : 1;
    Eina_Bool on_select_recover : 1;
-   Eina_Bool auto_indent : 1;
-   Eina_Bool part_highlight : 1;
    Eina_Bool ctxpopup_enabled : 1;
    Eina_Bool on_save : 1;
    Eina_Bool smart_undo_redo : 1;
@@ -440,7 +436,7 @@ edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
                 parser_line_cnt_get(ed->pd, info->change.insert.content);
           }
 
-        if (edit_auto_indent_get(ed))
+        if (enventor_obj_auto_indent_get(ed->enventor))
           {
              increase =
                 indent_insert_apply(syntax_indent_data_get(ed->sh),
@@ -451,7 +447,7 @@ edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
      }
    else
      {
-        if (edit_auto_indent_get(ed))
+        if (enventor_obj_auto_indent_get(ed->enventor))
           {
              indent_delete_apply(syntax_indent_data_get(ed->sh),
                                  info->change.del.content, ed->cur_line);
@@ -1026,7 +1022,7 @@ edit_edc_load(edit_data *ed, const char *file_path)
       = indent_text_check(id, (const char *)utf8_edit);
 
    //Set edc text to entry.
-   if (edit_auto_indent_get(ed) && !indent_correct)
+   if (enventor_obj_auto_indent_get(ed->enventor) && !indent_correct)
      //Create indented markup text from utf8 text of EDC file.
      markup_edit = indent_text_create(id, (const char *)utf8_edit,
                                       &line_num);
@@ -1034,13 +1030,13 @@ edit_edc_load(edit_data *ed, const char *file_path)
      markup_edit = elm_entry_utf8_to_markup(utf8_edit);
    if (!markup_edit) goto err;
    elm_entry_entry_set(ed->en_edit, markup_edit);
-   if (edit_auto_indent_get(ed) && !indent_correct)
+   if (enventor_obj_auto_indent_get(ed->enventor) && !indent_correct)
      edit_changed_set(ed, EINA_TRUE);
    free(markup_edit);
 
    //Append line numbers.
    if (!eina_strbuf_append_char(strbuf_line, '1')) goto err;
-   if (edit_auto_indent_get(ed) && !indent_correct)
+   if (enventor_obj_auto_indent_get(ed->enventor) && !indent_correct)
      {
         int num = 2;
         //Use line_num given by indent_text_create().
@@ -1396,7 +1392,7 @@ edit_cur_indent_depth_get(edit_data *ed)
 }
 
 edit_data *
-edit_init(Evas_Object *enventor)
+edit_init(Enventor_Object *enventor)
 {
    edit_data *ed = calloc(1, sizeof(edit_data));
    if (!ed)
@@ -1475,21 +1471,19 @@ edit_init(Evas_Object *enventor)
    elm_object_focus_set(en_edit, EINA_TRUE);
    elm_object_part_content_set(layout, "elm.swallow.edit", en_edit);
 
+   evas_object_smart_member_add(scroller, enventor);
+
    ed->scroller = scroller;
    ed->en_line = en_line;
    ed->en_edit = en_edit;
    ed->layout = layout;
    ed->enventor = enventor;
-   ed->linenumber = EINA_TRUE;
-   ed->auto_indent = EINA_TRUE;
-   ed->part_highlight = EINA_TRUE;
    ed->ctxpopup_enabled = EINA_TRUE;
    ed->smart_undo_redo = EINA_FALSE;
    ed->cur_line = -1;
    ed->select_pos = -1;
-   ed->font_scale = 1;
    ed->pd = parser_init();
-   ed->rd = redoundo_init(ed);
+   ed->rd = redoundo_init(ed, enventor);
    ed->sh = syntax_init(ed);
 
    return ed;
@@ -1539,18 +1533,9 @@ edit_changed_set(edit_data *ed, Eina_Bool changed)
    ed->edit_changed = changed;
 }
 
-Eina_Bool
-edit_linenumber_get(edit_data *ed)
-{
-   return ed->linenumber;
-}
-
 void
 edit_linenumber_set(edit_data *ed, Eina_Bool linenumber)
 {
-   if (ed->linenumber == linenumber) return;
-   ed->linenumber = !!linenumber;
-
    if (linenumber)
      elm_object_signal_emit(ed->layout, "elm,state,linenumber,show", "");
    else
@@ -1560,16 +1545,8 @@ edit_linenumber_set(edit_data *ed, Eina_Bool linenumber)
 void
 edit_font_scale_set(edit_data *ed, double font_scale)
 {
-   if (ed->font_scale == font_scale) return;
    elm_object_scale_set(ed->layout, font_scale);
    syntax_color_partial_update(ed, 0);
-   ed->font_scale = font_scale;
-}
-
-double
-edit_font_scale_get(edit_data *ed)
-{
-   return ed->font_scale;
 }
 
 void
@@ -1585,25 +1562,6 @@ edit_font_get(edit_data *ed, const char **font_name, const char **font_style)
 {
    if (font_name) *font_name = ed->font_name;
    if (font_style) *font_style = ed->font_style;
-}
-
-void
-edit_part_highlight_set(edit_data *ed, Eina_Bool part_highlight)
-{
-   part_highlight = !!part_highlight;
-
-   if (ed->part_highlight == part_highlight) return;
-
-   ed->part_highlight = part_highlight;
-
-   if (part_highlight) edit_view_sync(ed);
-   else view_part_highlight_set(VIEW_DATA, NULL);
-}
-
-Eina_Bool
-edit_part_highlight_get(edit_data *ed)
-{
-   return ed->part_highlight;
 }
 
 Eina_Bool
@@ -1789,7 +1747,7 @@ edit_disabled_set(edit_data *ed, Eina_Bool disabled)
 
    //Turn off the part highlight in case of disable.
    if (disabled) view_part_highlight_set(VIEW_DATA, NULL);
-   else if (ed->part_highlight) edit_view_sync(ed);
+   else if (enventor_obj_part_highlight_get(ed->enventor)) edit_view_sync(ed);
 }
 
 void
@@ -1804,19 +1762,6 @@ Eina_Bool
 edit_smart_undo_redo_get(edit_data *ed)
 {
    return ed->smart_undo_redo;
-}
-
-void
-edit_auto_indent_set(edit_data *ed, Eina_Bool auto_indent)
-{
-   auto_indent = !!auto_indent;
-   ed->auto_indent = auto_indent;
-}
-
-Eina_Bool
-edit_auto_indent_get(edit_data *ed)
-{
-   return ed->auto_indent;
 }
 
 void

@@ -17,7 +17,7 @@ typedef struct edj_mgr_s
 {
    Eina_List *edjs;
    edj_data *edj;
-   Evas_Object *enventor;
+   Enventor_Object *enventor;
    Evas_Object *layout;
    double view_scale;
 
@@ -73,7 +73,7 @@ edj_mgr_clear(void)
 }
 
 void
-edj_mgr_init(Evas_Object *enventor)
+edj_mgr_init(Enventor_Object *enventor)
 {
    edj_mgr *em = calloc(1, sizeof(edj_mgr));
    if (!em)

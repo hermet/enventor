@@ -163,7 +163,7 @@ void dummy_obj_update(Evas_Object *layout);
 
 
 /* edj_mgr */
-void edj_mgr_init(Evas_Object *enventor);
+void edj_mgr_init(Enventor_Object *enventor);
 void edj_mgr_term(void);
 view_data * edj_mgr_view_new(const char *group);
 view_data *edj_mgr_view_get(Eina_Stringshare *group);
@@ -179,7 +179,7 @@ void edj_mgr_all_views_reload(void);
 
 
 /* redoundo */
-redoundo_data *redoundo_init(edit_data *ed);
+redoundo_data *redoundo_init(edit_data *ed, Enventor_Object *enventor);
 void redoundo_term(redoundo_data *rd);
 void redoundo_clear(redoundo_data *rd);
 void redoundo_text_push(redoundo_data *rd, const char *text, int pos, int length, Eina_Bool insert);
@@ -193,7 +193,7 @@ void redoundo_diff_buildable(redoundo_data *rd, Eina_Bool buildable);
 
 
 /* edj_viewer */
-view_data * view_init(Evas_Object *enventor, const char *group, void (*del_cb)(void *data), void *data);
+view_data * view_init(Enventor_Object *enventor, const char *group, void (*del_cb)(void *data), void *data);
 void view_term(view_data *vd);
 Evas_Object *view_obj_get(view_data *vd);
 void view_new(view_data *vd, const char *group);
@@ -228,13 +228,12 @@ Evas_Object *ctxpopup_img_preview_create(edit_data*ed, const char *imgpath, Evas
 void ctxpopup_img_preview_reload(Evas_Object *ctxpopup, const char *imgpath);
 
 /* edc_editor */
-edit_data *edit_init(Evas_Object *enventor);
+edit_data *edit_init(Enventor_Object *enventor);
 void edit_term(edit_data *ed);
 Evas_Object *edit_obj_get(edit_data *ed);
 Eina_Bool edit_changed_get(edit_data *ed);
 void edit_changed_set(edit_data *ed, Eina_Bool changed);
 void edit_linenumber_set(edit_data *ed, Eina_Bool linenumber);
-Eina_Bool edit_linenumber_get(edit_data *ed);
 Eina_Bool edit_saved_get(edit_data *ed);
 void edit_saved_set(edit_data *ed, Eina_Bool saved);
 Eina_Bool edit_save(edit_data *ed, const char *file);
@@ -242,10 +241,8 @@ void edit_new(edit_data* ed);
 void edit_view_sync_cb_set(edit_data *ed, void (*cb)(void *data, Eina_Stringshare *state_name, double state_value, Eina_Stringshare *part_name, Eina_Stringshare *group_name), void *data);
 void edit_view_sync(edit_data *ed);
 void edit_font_scale_set(edit_data *ed, double font_scale);
-double edit_font_scale_get(edit_data *ed);
 void edit_font_set(edit_data *ed, const char *font_name, const char *font_style);
 void edit_font_get(edit_data *ed, const char **font_name, const char **font_style);
-void edit_part_highlight_toggle(edit_data *ed, Eina_Bool msg);
 void edit_line_delete(edit_data *ed);
 Eina_Stringshare *edit_cur_prog_name_get(edit_data *ed);
 Eina_Stringshare *edit_cur_part_name_get(edit_data *ed);
@@ -261,10 +258,6 @@ void edit_line_increase(edit_data *ed, int cnt);
 void edit_line_decrease(edit_data *ed, int cnt);
 int edit_cur_indent_depth_get(edit_data *ed);
 void edit_redoundo_region_push(edit_data *ed, int cursor_pos1, int cursor_pos2);
-void edit_auto_indent_set(edit_data *ed, Eina_Bool auto_indent);
-Eina_Bool edit_auto_indent_get(edit_data *ed);
-void edit_part_highlight_set(edit_data *ed, Eina_Bool part_highlight);
-Eina_Bool edit_part_highlight_get(edit_data *ed);
 void edit_ctxpopup_enabled_set(edit_data *ed, Eina_Bool enabled);
 Eina_Bool edit_ctxpopup_enabled_get(edit_data *ed);
 Eina_Bool edit_ctxpopup_visible_get(edit_data *ed);

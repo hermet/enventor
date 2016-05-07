@@ -17,7 +17,10 @@
 
 #define MY_CLASS ENVENTOR_OBJECT_CLASS
 
-typedef struct _Enventor_Object_Data
+typedef struct _Enventor_Object_Data Enventor_Object_Data;
+typedef struct _Enventor_Item_Data Enventor_Item_Data;
+
+struct _Enventor_Object_Data
 {
    Evas_Object *obj;
    Eina_List *items;
@@ -28,18 +31,21 @@ typedef struct _Enventor_Object_Data
    Ecore_Event_Handler *key_down_handler;
    Ecore_Event_Handler *key_up_handler;
 
+   double font_scale;
+
    Eina_Bool dummy_parts : 1;
    Eina_Bool key_down : 1;
    Eina_Bool part_cursor_jump : 1;
    Eina_Bool mirror_mode : 1;
+   Eina_Bool linenumber : 1;
+   Eina_Bool auto_indent : 1;
+   Eina_Bool part_highlight : 1;
+};
 
-} Enventor_Object_Data;
-
-typedef struct _Enventor_Item_Data
+struct _Enventor_Item_Data
 {
    Enventor_Object *enventor;
-
-} Enventor_Item_Data;
+};
 
 static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_CURSOR_LINE_CHANGED, ""},
@@ -116,7 +122,7 @@ edit_view_sync_cb(void *data, Eina_Stringshare *state_name, double state_value,
         evas_object_smart_callback_call(pd->obj, SIG_CURSOR_GROUP_CHANGED,
                                         (void *) group_name);
      }
-   if (edit_part_highlight_get(pd->ed))
+   if (pd->part_highlight)
      view_part_highlight_set(VIEW_DATA, part_name);
    else
      view_part_highlight_set(VIEW_DATA, NULL);
@@ -218,7 +224,6 @@ _enventor_object_evas_object_smart_add(Eo *obj, Enventor_Object_Data *pd)
    edit_view_sync_cb_set(pd->ed, edit_view_sync_cb, pd);
    build_err_noti_cb_set(build_err_noti_cb, pd);
 
-   evas_object_smart_member_add(edit_obj_get(pd->ed), obj);
    elm_widget_can_focus_set(obj, EINA_FALSE);
 
    pd->key_down_handler =
@@ -229,7 +234,11 @@ _enventor_object_evas_object_smart_add(Eo *obj, Enventor_Object_Data *pd)
    evas_object_smart_callback_add(pd->obj, "part,clicked",
                                   _enventor_part_clicked_cb, pd);
 
+   pd->font_scale = 1;
    pd->part_cursor_jump = EINA_TRUE;
+   pd->linenumber = EINA_TRUE;
+   pd->auto_indent = EINA_TRUE;
+   pd->part_highlight = EINA_TRUE;
 }
 
 EOLIAN static void
@@ -369,13 +378,19 @@ EOLIAN static void
 _enventor_object_linenumber_set(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd,
                                 Eina_Bool linenumber)
 {
+   linenumber = !!linenumber;
+
+   if (pd->linenumber == linenumber) return;
+
    edit_linenumber_set(pd->ed, linenumber);
+
+   pd->linenumber = linenumber;
 }
 
 EOLIAN static Eina_Bool
 _enventor_object_linenumber_get(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
 {
-   return edit_linenumber_get(pd->ed);
+   return pd->linenumber;
 }
 
 EOLIAN static void
@@ -395,13 +410,13 @@ EOLIAN static void
 _enventor_object_auto_indent_set(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd,
                                  Eina_Bool auto_indent)
 {
-   edit_auto_indent_set(pd->ed, auto_indent);
+   pd->auto_indent = !!auto_indent;
 }
 
 EOLIAN static Eina_Bool
 _enventor_object_auto_indent_get(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
 {
-   return edit_auto_indent_get(pd->ed);
+   return pd->auto_indent;
 }
 
 EOLIAN static void
@@ -550,14 +565,19 @@ _enventor_object_part_highlight_set(Eo *obj EINA_UNUSED,
                                     Enventor_Object_Data *pd,
                                     Eina_Bool part_highlight)
 {
-   edit_part_highlight_set(pd->ed, part_highlight);
+   part_highlight = !!part_highlight;
+   if (pd->part_highlight == part_highlight) return;
+   pd->part_highlight = part_highlight;
+
+   if (part_highlight) edit_view_sync(pd->ed);
+   else view_part_highlight_set(VIEW_DATA, NULL);
 }
 
 EOLIAN static Eina_Bool
 _enventor_object_part_highlight_get(Eo *obj EINA_UNUSED,
                                     Enventor_Object_Data *pd)
 {
-   return edit_part_highlight_get(pd->ed);
+   return pd->part_highlight;
 }
 
 EOLIAN static void
@@ -649,13 +669,16 @@ EOLIAN static void
 _enventor_object_font_scale_set(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd,
                                 double font_scale)
 {
+   if (pd->font_scale == font_scale) return;
+   pd->font_scale = font_scale;
+
    edit_font_scale_set(pd->ed, font_scale);
 }
 
 EOLIAN static double
 _enventor_object_font_scale_get(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
 {
-   return edit_font_scale_get(pd->ed);
+   return pd->font_scale;
 }
 
 EOLIAN static void
