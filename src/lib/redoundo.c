@@ -44,10 +44,9 @@ Eina_Bool
 _input_timer_cb(void *data)
 {
    redoundo_data *rd = (redoundo_data *)data;
+   rd->smart.timer = NULL;
    if (!rd->smart.continues_input) return ECORE_CALLBACK_CANCEL;
    rd->smart.continues_input = EINA_FALSE;
-   ecore_timer_del(rd->smart.timer);
-   rd->smart.timer = NULL;
    return ECORE_CALLBACK_CANCEL;
 }
 
@@ -424,6 +423,7 @@ redoundo_clear(redoundo_data *rd)
      }
    rd->internal_change = EINA_FALSE;
    ecore_timer_del(rd->smart.timer);
+   rd->smart.timer = NULL;
 }
 
 void
