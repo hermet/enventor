@@ -21,6 +21,7 @@
 #define DEFAULT_FONT_SCALE 1
 #define DEFAULT_AUTO_INDENT EINA_TRUE
 #define DEFAULT_PART_HIGHLIGHT EINA_TRUE
+#define DEFAULT_SMART_UNDO_REDO EINA_FALSE
 
 typedef struct _Enventor_Object_Data Enventor_Object_Data;
 typedef struct _Enventor_Item_Data Enventor_Item_Data;
@@ -50,6 +51,7 @@ struct _Enventor_Object_Data
    Eina_Bool linenumber : 1;
    Eina_Bool auto_indent : 1;
    Eina_Bool part_highlight : 1;
+   Eina_Bool smart_undo_redo : 1;
 };
 
 static const Evas_Smart_Cb_Description _smart_callbacks[] = {
@@ -241,6 +243,7 @@ _enventor_object_evas_object_smart_add(Eo *obj, Enventor_Object_Data *pd)
    pd->linenumber = DEFAULT_LINENUMBER;
    pd->auto_indent = DEFAULT_AUTO_INDENT;
    pd->part_highlight = DEFAULT_PART_HIGHLIGHT;
+   pd->smart_undo_redo = DEFAULT_SMART_UNDO_REDO;
 }
 
 EOLIAN static void
@@ -415,15 +418,14 @@ _enventor_object_smart_undo_redo_set(Eo *obj EINA_UNUSED,
                                      Enventor_Object_Data *pd,
                                      Eina_Bool smart_undo_redo)
 {
-   //Main Item
-   edit_smart_undo_redo_set(pd->main_it.ed, smart_undo_redo);
+   smart_undo_redo = !!smart_undo_redo;
+   pd->smart_undo_redo = smart_undo_redo;
 }
 
 EOLIAN static Eina_Bool
 _enventor_object_smart_undo_redo_get(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
 {
-   //FIXME: ...
-   return edit_smart_undo_redo_get(pd->main_it.ed);
+   return pd->smart_undo_redo;
 }
 
 EOLIAN static void

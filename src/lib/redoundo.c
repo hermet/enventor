@@ -31,7 +31,6 @@ struct redoundo_s
    Eina_Bool internal_change : 1; //Entry change by redoundo
    edit_data *ed;
    struct {
-      Eina_Bool enable;
       Ecore_Timer *timer;
       Eina_Bool continues_input;
       double input_delay;
@@ -55,7 +54,7 @@ _input_timer_cb(void *data)
 static diff_data *
 smart_analyser(redoundo_data *rd, diff_data *diff)
 {
-   if (!rd->smart.enable) return diff;
+   if (!enventor_obj_smart_undo_redo_get(rd->enventor)) return diff;
 
    if (rd->smart.timer)
      {
@@ -404,7 +403,6 @@ redoundo_init(edit_data *ed, Enventor_Object *enventor)
    rd->textblock = elm_entry_textblock_get(entry);
    rd->cursor = evas_object_textblock_cursor_new(rd->textblock);
    rd->queue_max = DEFAULT_QUEUE_SIZE;
-   rd->smart.enable = EINA_FALSE;
    rd->smart.input_delay = INPUT_SPEED;
    rd->ed = ed;
 
@@ -483,13 +481,6 @@ redoundo_n_diff_cancel(redoundo_data *rd, unsigned int n)
      rd->current_node = eina_list_prev(rd->current_node);
    rd->last_diff = (diff_data *)eina_list_data_get(rd->current_node);
    untracked_diff_free(rd);
-}
-
-void
-redoundo_smart_set(redoundo_data *rd, Eina_Bool status)
-{
-   if (!rd) return;
-   rd->smart.enable = status;
 }
 
 void

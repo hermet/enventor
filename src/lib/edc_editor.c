@@ -64,7 +64,6 @@ struct editor_s
    Eina_Bool on_select_recover : 1;
    Eina_Bool ctxpopup_enabled : 1;
    Eina_Bool on_save : 1;
-   Eina_Bool smart_undo_redo : 1;
 };
 
 /*****************************************************************************/
@@ -1481,7 +1480,6 @@ edit_init(Enventor_Object *enventor)
    ed->layout = layout;
    ed->enventor = enventor;
    ed->ctxpopup_enabled = EINA_TRUE;
-   ed->smart_undo_redo = EINA_FALSE;
    ed->cur_line = -1;
    ed->select_pos = -1;
    ed->pd = parser_init();
@@ -1756,22 +1754,6 @@ edit_disabled_set(edit_data *ed, Eina_Bool disabled)
    //Turn off the part highlight in case of disable.
    if (disabled) view_part_highlight_set(VIEW_DATA, NULL);
    else if (enventor_obj_part_highlight_get(ed->enventor)) edit_view_sync(ed);
-}
-
-void
-edit_smart_undo_redo_set(edit_data *ed, Eina_Bool smart_undo_redo)
-{
-   if (!ed) return;
-
-   smart_undo_redo = !!smart_undo_redo;
-   ed->smart_undo_redo = smart_undo_redo;
-   redoundo_smart_set(ed->rd, smart_undo_redo);
-}
-
-Eina_Bool
-edit_smart_undo_redo_get(edit_data *ed)
-{
-   return ed->smart_undo_redo;
 }
 
 void

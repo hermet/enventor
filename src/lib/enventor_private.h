@@ -188,7 +188,6 @@ void redoundo_entry_region_push(redoundo_data *rd, int cursor_pos, int cursor_po
 int redoundo_undo(redoundo_data *rd, Eina_Bool *changed);
 int redoundo_redo(redoundo_data *rd, Eina_Bool *changed);
 void redoundo_n_diff_cancel(redoundo_data *rd, unsigned int n);
-void redoundo_smart_set(redoundo_data *rd, Eina_Bool status);
 void redoundo_diff_buildable(redoundo_data *rd, Eina_Bool buildable);
 
 
@@ -261,8 +260,6 @@ void edit_redoundo_region_push(edit_data *ed, int cursor_pos1, int cursor_pos2);
 void edit_ctxpopup_enabled_set(edit_data *ed, Eina_Bool enabled);
 Eina_Bool edit_ctxpopup_enabled_get(edit_data *ed);
 Eina_Bool edit_ctxpopup_visible_get(edit_data *ed);
-void edit_smart_undo_redo_set(edit_data *ed, Eina_Bool smart_undo_redo);
-Eina_Bool edit_smart_undo_redo_get(edit_data *ed);
 void edit_ctxpopup_dismiss(edit_data *ed);
 Eina_Bool edit_load(edit_data *ed, const char *edc_path);
 void edit_selection_clear(edit_data *ed);
