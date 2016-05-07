@@ -62,7 +62,6 @@ struct editor_s
    Eina_Bool edit_changed : 1;
    Eina_Bool ctrl_pressed : 1;
    Eina_Bool on_select_recover : 1;
-   Eina_Bool ctxpopup_enabled : 1;
    Eina_Bool on_save : 1;
 };
 
@@ -727,7 +726,7 @@ edit_cursor_double_clicked_cb(void *data, Evas_Object *obj,
    edit_data *ed = data;
 
    if (ed->ctrl_pressed) return;
-   if (!ed->ctxpopup_enabled) return;
+   if (!enventor_obj_ctxpopup_get(ed->enventor)) return;
 
    char *selected = (char *) elm_entry_selection_get(obj);
    if (!selected) return;
@@ -1425,7 +1424,6 @@ edit_init(Enventor_Object *enventor)
    ed->en_edit = en_edit;
    ed->layout = layout;
    ed->enventor = enventor;
-   ed->ctxpopup_enabled = EINA_TRUE;
    ed->cur_line = -1;
    ed->select_pos = -1;
    ed->pd = parser_init();
@@ -1707,19 +1705,6 @@ edit_error_set(edit_data *ed, int line, const char *target)
 {
    ed->error_line = line;
    ed->error_target = target;
-}
-
-Eina_Bool
-edit_ctxpopup_enabled_get(edit_data *ed)
-{
-   return ed->ctxpopup_enabled;
-}
-
-void
-edit_ctxpopup_enabled_set(edit_data *ed, Eina_Bool enabled)
-{
-   enabled = !!enabled;
-   ed->ctxpopup_enabled = enabled;
 }
 
 Eina_Bool

@@ -22,6 +22,7 @@
 #define DEFAULT_AUTO_INDENT EINA_TRUE
 #define DEFAULT_PART_HIGHLIGHT EINA_TRUE
 #define DEFAULT_SMART_UNDO_REDO EINA_FALSE
+#define DEFAULT_CTXPOPUP EINA_TRUE
 
 typedef struct _Enventor_Object_Data Enventor_Object_Data;
 typedef struct _Enventor_Item_Data Enventor_Item_Data;
@@ -51,6 +52,7 @@ struct _Enventor_Object_Data
    Eina_Bool auto_indent : 1;
    Eina_Bool part_highlight : 1;
    Eina_Bool smart_undo_redo : 1;
+   Eina_Bool ctxpopup : 1;
 };
 
 static const Evas_Smart_Cb_Description _smart_callbacks[] = {
@@ -246,6 +248,7 @@ _enventor_object_evas_object_smart_add(Eo *obj, Enventor_Object_Data *pd)
    pd->auto_indent = DEFAULT_AUTO_INDENT;
    pd->part_highlight = DEFAULT_PART_HIGHLIGHT;
    pd->smart_undo_redo = DEFAULT_SMART_UNDO_REDO;
+   pd->ctxpopup = DEFAULT_CTXPOPUP;
 }
 
 EOLIAN static void
@@ -555,16 +558,15 @@ EOLIAN static Eina_Bool
 _enventor_object_ctxpopup_get(Eo *obj EINA_UNUSED,
                               Enventor_Object_Data *pd)
 {
-   //FIXME: Move to enventor object data
-   return edit_ctxpopup_enabled_get(pd->main_it.ed);
+   return pd->ctxpopup;
 }
 
 EOLIAN static void
 _enventor_object_ctxpopup_set(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd,
                               Eina_Bool ctxpopup)
 {
-   //Main Item
-   edit_ctxpopup_enabled_set(pd->main_it.ed, ctxpopup);
+   ctxpopup = !!ctxpopup;
+   pd->ctxpopup = ctxpopup;
 }
 
 EOLIAN static Eina_Bool

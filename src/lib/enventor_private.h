@@ -259,8 +259,6 @@ void edit_line_increase(edit_data *ed, int cnt);
 void edit_line_decrease(edit_data *ed, int cnt);
 int edit_cur_indent_depth_get(edit_data *ed);
 void edit_redoundo_region_push(edit_data *ed, int cursor_pos1, int cursor_pos2);
-void edit_ctxpopup_enabled_set(edit_data *ed, Eina_Bool enabled);
-Eina_Bool edit_ctxpopup_enabled_get(edit_data *ed);
 Eina_Bool edit_ctxpopup_visible_get(edit_data *ed);
 void edit_ctxpopup_dismiss(edit_data *ed);
 Eina_Bool edit_load(edit_data *ed, const char *edc_path);
