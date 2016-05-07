@@ -2624,6 +2624,7 @@ group { name: "main_layout";
             rel1 {
                relative: 0.0 1.0;
                to_y: "elm.swallow.tools";
+               offset: 1 0;
             }
             rel2 {
                relative: 0.0 0.0;
@@ -2631,7 +2632,6 @@ group { name: "main_layout";
             }
             align: 1 0;
             min: 200 0;
-            max: 0 -1;
             fixed: 1 0;
             visible: 0;
          }

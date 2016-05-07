@@ -33,7 +33,7 @@ typedef struct file_browser_s
 {
    brows_file *workspace; //workspace directory
 
-   Evas_Object *workspace_ly;
+   Evas_Object *main_box;
    Evas_Object *search_entry;
    Evas_Object *genlist;
    Evas_Object *show_all_check;
@@ -52,6 +52,7 @@ static brows_data *g_bd = NULL;
 
 static Eina_List *sub_brows_file_list_create(brows_file *file);
 static void brows_file_list_free(Eina_List *file_list);
+static void refresh_btn_clicked_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED);
 
 static void
 gl_file_selected_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
@@ -124,7 +125,40 @@ gl_file_content_get_cb(void *data, Evas_Object *obj, const char *part)
 
         return img;
      }
-   else return NULL;
+   else
+     {
+        //Refresh button for the most top directory
+        if ((file->type == FILE_BROWSER_FILE_TYPE_DIR) &&
+            !elm_genlist_item_parent_get(file->it) &&
+            !strcmp(part, "elm.swallow.end"))
+          {
+             //Workspace Refresh button
+             //This wrapper box is used for non-scaled button tooltip.
+             Evas_Object *box = elm_box_add(obj);
+             elm_object_tooltip_text_set(box, "Refresh Workspace");
+
+             Evas_Object *btn = elm_button_add(box);
+             evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND,
+                                              EVAS_HINT_EXPAND);
+             evas_object_size_hint_align_set(btn, EVAS_HINT_FILL,
+                                             EVAS_HINT_FILL);
+             elm_object_scale_set(btn, 0.6);
+             evas_object_smart_callback_add(btn, "clicked",
+                                            refresh_btn_clicked_cb, NULL);
+             evas_object_show(btn);
+
+             //Workspace Refresh button icon
+             Evas_Object *img = elm_image_add(btn);
+             elm_image_file_set(img, EDJE_PATH, "refresh");
+             elm_object_content_set(btn, img);
+
+             elm_box_pack_end(box, btn);
+
+             return box;
+          }
+     }
+
+   return NULL;
 }
 
 static char *
@@ -538,7 +572,7 @@ file_browser_workspace_set(const char *workspace_path)
    if (!workspace) return;
    bd->workspace = workspace;
 
-   elm_object_disabled_set(bd->workspace_ly, EINA_FALSE);
+   elm_object_disabled_set(bd->main_box, EINA_FALSE);
 
    if (workspace->sub_file_list)
      gl_exp_req(NULL, NULL, workspace->it);
@@ -548,7 +582,7 @@ Evas_Object *
 file_browser_init(Evas_Object *parent)
 {
    brows_data *bd = g_bd;
-   if (bd) return bd->workspace_ly;
+   if (bd) return bd->main_box;
 
    bd = calloc(1, sizeof(brows_data));
    if (!bd)
@@ -558,57 +592,71 @@ file_browser_init(Evas_Object *parent)
      }
    g_bd = bd;
 
-   Evas_Object *workspace_ly = elm_layout_add(parent);
-   elm_layout_file_set(workspace_ly, EDJE_PATH, "workspace");
+   //Main Box
+   Evas_Object *main_box = elm_box_add(parent);
+   evas_object_size_hint_align_set(main_box, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_size_hint_weight_set(main_box, EVAS_HINT_EXPAND,
+                                   EVAS_HINT_EXPAND);
+   evas_object_show(main_box);
 
-   Evas_Object *search_img = elm_image_add(workspace_ly);
+   Evas_Object *sub_box;
+
+   //Sub box for search.
+   sub_box = elm_box_add(main_box);
+   elm_box_padding_set(sub_box, ELM_SCALE_SIZE(5), 0);
+   elm_box_horizontal_set(sub_box, EINA_TRUE);
+   evas_object_size_hint_align_set(sub_box, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_size_hint_weight_set(sub_box, EVAS_HINT_EXPAND, 0);
+   evas_object_show(sub_box);
+   elm_box_pack_end(main_box, sub_box);
+
+   //Search Icon
+   Evas_Object *search_img = elm_image_add(sub_box);
+   evas_object_size_hint_min_set(search_img, ELM_SCALE_SIZE(15),
+                                 ELM_SCALE_SIZE(15));
    elm_image_file_set(search_img, EDJE_PATH, "search");
-   elm_object_part_content_set(workspace_ly, "search_img", search_img);
+   evas_object_show(search_img);
+   elm_box_pack_end(sub_box, search_img);
 
-   Evas_Object *search_entry = elm_entry_add(workspace_ly);
+   //Search Entry
+   Evas_Object *search_entry = elm_entry_add(sub_box);
    elm_entry_single_line_set(search_entry, EINA_TRUE);
    elm_entry_scrollable_set(search_entry, EINA_TRUE);
    elm_object_part_text_set(search_entry, "guide", "Type file name to search");
    evas_object_smart_callback_add(search_entry, "changed",
                                   search_entry_changed_cb, NULL);
-   elm_object_part_content_set(workspace_ly, "search_entry", search_entry);
-
-   Evas_Object *box = elm_box_add(workspace_ly);
-   elm_object_tooltip_text_set(box, "Refresh");
-
-   Evas_Object *refresh_btn = elm_button_add(box);
-   evas_object_size_hint_weight_set(refresh_btn, EVAS_HINT_EXPAND,
+   evas_object_size_hint_align_set(search_entry, EVAS_HINT_FILL,
+                                   EVAS_HINT_FILL);
+   evas_object_size_hint_weight_set(search_entry, EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(refresh_btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_object_scale_set(refresh_btn, 0.5);
-   evas_object_smart_callback_add(refresh_btn, "clicked",
-                                  refresh_btn_clicked_cb, NULL);
+   evas_object_show(search_entry);
+   elm_box_pack_end(sub_box, search_entry);
 
-   Evas_Object *refresh_btn_img = elm_image_add(refresh_btn);
-   elm_image_file_set(refresh_btn_img, EDJE_PATH, "refresh");
-   elm_object_content_set(refresh_btn, refresh_btn_img);
 
-   evas_object_show(refresh_btn);
-   elm_box_pack_end(box, refresh_btn);
-
-   elm_object_part_content_set(workspace_ly, "refresh_btn", box);
-
-   Evas_Object *genlist = elm_genlist_add(workspace_ly);
+   //Genlist
+   Evas_Object *genlist = elm_genlist_add(main_box);
    elm_object_focus_allow_set(genlist, EINA_FALSE);
+   evas_object_size_hint_align_set(genlist, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_size_hint_weight_set(genlist, EVAS_HINT_EXPAND,
+                                    EVAS_HINT_EXPAND);
 
    evas_object_smart_callback_add(genlist, "expand,request", gl_exp_req, NULL);
    evas_object_smart_callback_add(genlist, "contract,request", gl_con_req,
                                   NULL);
    evas_object_smart_callback_add(genlist, "expanded", gl_exp, NULL);
    evas_object_smart_callback_add(genlist, "contracted", gl_con, NULL);
+   evas_object_show(genlist);
+   elm_box_pack_end(main_box, genlist);
 
-   elm_object_part_content_set(workspace_ly, "content", genlist);
-
-   Evas_Object *show_all_check = elm_check_add(workspace_ly);
+   //Show All Files Check
+   Evas_Object *show_all_check = elm_check_add(main_box);
+   evas_object_size_hint_align_set(show_all_check, 0, 1);
+   evas_object_size_hint_weight_set(show_all_check, EVAS_HINT_EXPAND, 0);
    elm_object_text_set(show_all_check, "Show All Files");
    evas_object_smart_callback_add(show_all_check, "changed",
                                   show_all_check_changed_cb, NULL);
-   elm_object_part_content_set(workspace_ly, "show_all_check", show_all_check);
+   evas_object_show(show_all_check);
+   elm_box_pack_end(main_box, show_all_check);
 
    //Default Mode Item Class
    Elm_Genlist_Item_Class *itc;
@@ -626,14 +674,14 @@ file_browser_init(Evas_Object *parent)
    search_itc->func.content_get = gl_search_content_get_cb;
    bd->search_itc = search_itc;
 
-   bd->workspace_ly = workspace_ly;
+   bd->main_box = main_box;
    bd->search_entry = search_entry;
    bd->genlist = genlist;
    bd->show_all_check = show_all_check;
 
-   elm_object_disabled_set(workspace_ly, EINA_TRUE);
+   elm_object_disabled_set(main_box, EINA_TRUE);
 
-   return workspace_ly;
+   return main_box;
 }
 
 void
@@ -647,7 +695,7 @@ file_browser_term(void)
    elm_genlist_item_class_free(bd->itc);
    elm_genlist_item_class_free(bd->search_itc);
 
-   evas_object_del(bd->workspace_ly);
+   evas_object_del(bd->main_box);
 
    free(bd);
    g_bd = NULL;

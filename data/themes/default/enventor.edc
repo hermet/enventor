@@ -15,5 +15,4 @@ collections {
    #include "layout_common.edc"
    #include "layout_setting.edc"
    #include "live_edit.edc"
-   #include "file_browser.edc"
 }
