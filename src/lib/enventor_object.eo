@@ -293,9 +293,9 @@ class Enventor.Object (Elm.Widget, Efl.File) {
       Evas.Object_Smart.resize;
       Evas.Object_Smart.show;
       Evas.Object_Smart.hide;
-      Evas.Object_Smart.color.set;
       Evas.Object_Smart.clip.set;
       Evas.Object_Smart.clip_unset;
+      Evas.Object_Smart.member_add;
       Efl.File.file.set;
    }
    events {

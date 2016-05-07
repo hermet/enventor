@@ -1228,8 +1228,10 @@ finish:
 
 void
 edit_view_sync_cb_set(edit_data *ed,
-                      void (*cb)(void *data, Eina_Stringshare *state_name, double state_value,
-                      Eina_Stringshare *part_name, Eina_Stringshare *group_name), void *data)
+                      void (*cb)(void *data, Eina_Stringshare *state_name,
+                                 double state_value,
+                                 Eina_Stringshare *part_name,
+                                 Eina_Stringshare *group_name), void *data)
 {
    ed->view_sync_cb = cb;
    ed->view_sync_cb_data = data;
@@ -1515,6 +1517,8 @@ edit_term(edit_data *ed)
    redoundo_term(ed->rd);
    ecore_thread_cancel(ed->syntax_color_thread);
    ecore_timer_del(ed->syntax_color_timer);
+   evas_object_del(ed->scroller);
+
    free(ed);
 
    syntax_term(sh);
@@ -1545,6 +1549,8 @@ edit_linenumber_set(edit_data *ed, Eina_Bool linenumber)
 void
 edit_font_scale_set(edit_data *ed, double font_scale)
 {
+   if (!ed) return;
+
    elm_object_scale_set(ed->layout, font_scale);
    syntax_color_partial_update(ed, 0);
 }
@@ -1552,6 +1558,8 @@ edit_font_scale_set(edit_data *ed, double font_scale)
 void
 edit_font_set(edit_data *ed, const char *font_name, const char *font_style)
 {
+   if (!ed) return;
+
    eina_stringshare_replace(&ed->font_name, font_name);
    eina_stringshare_replace(&ed->font_style, font_style);
    edit_font_apply(ed, font_name, font_style);
@@ -1753,6 +1761,8 @@ edit_disabled_set(edit_data *ed, Eina_Bool disabled)
 void
 edit_smart_undo_redo_set(edit_data *ed, Eina_Bool smart_undo_redo)
 {
+   if (!ed) return;
+
    smart_undo_redo = !!smart_undo_redo;
    ed->smart_undo_redo = smart_undo_redo;
    redoundo_smart_set(ed->rd, smart_undo_redo);
