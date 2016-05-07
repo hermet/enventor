@@ -132,11 +132,11 @@ gl_file_content_get_cb(void *data, Evas_Object *obj, const char *part)
             !elm_genlist_item_parent_get(file->it) &&
             !strcmp(part, "elm.swallow.end"))
           {
-             //Workspace Refresh button
              //This wrapper box is used for non-scaled button tooltip.
              Evas_Object *box = elm_box_add(obj);
              elm_object_tooltip_text_set(box, "Refresh Workspace");
 
+             //Button
              Evas_Object *btn = elm_button_add(box);
              evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND,
                                               EVAS_HINT_EXPAND);
@@ -147,7 +147,7 @@ gl_file_content_get_cb(void *data, Evas_Object *obj, const char *part)
                                             refresh_btn_clicked_cb, NULL);
              evas_object_show(btn);
 
-             //Workspace Refresh button icon
+             //Icon
              Evas_Object *img = elm_image_add(btn);
              elm_image_file_set(img, EDJE_PATH, "refresh");
              elm_object_content_set(btn, img);
