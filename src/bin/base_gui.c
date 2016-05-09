@@ -122,15 +122,14 @@ void base_edc_navigator_toggle(Eina_Bool toggle)
 void
 base_tools_toggle(Eina_Bool config)
 {
-   base_data *bd = g_bd;
-   assert(bd);
-
    if (config) config_tools_set(!config_tools_get());
 
-   if (config_tools_get())
-     elm_object_signal_emit(bd->layout, "elm,state,tools,show", "");
-   else
-     elm_object_signal_emit(bd->layout, "elm,state,tools,hide", "");
+   Eina_Bool visible = config_tools_get();
+
+   panes_live_view_tools_visible_set(visible);
+   panes_text_editor_tools_visible_set(visible);
+   file_browser_tools_visible_set(visible);
+   edc_navigator_tools_visible_set(visible);
 }
 
 Evas_Object *
@@ -157,16 +156,20 @@ base_win_resize_object_add(Evas_Object *resize_obj)
    elm_win_resize_object_add(bd->win, resize_obj);
 }
 
-void base_tools_set(Evas_Object *tools)
+void base_tools_set(Evas_Object *live_view_tools,
+                    Evas_Object *text_editor_tools)
 {
-   base_data *bd = g_bd;
-   assert(bd);
-   elm_object_part_content_set(bd->layout, "elm.swallow.tools", tools);
+   panes_live_view_tools_set(live_view_tools);
+   panes_text_editor_tools_set(text_editor_tools);
+   file_browser_tools_set();
+   edc_navigator_tools_set();
 
-   if (config_tools_get())
-     elm_object_signal_emit(bd->layout, "elm,state,tools,show", "");
-   else
-     elm_object_signal_emit(bd->layout, "elm,state,tools,hide", "");
+   Eina_Bool visible = config_tools_get();
+
+   panes_live_view_tools_visible_set(visible);
+   panes_text_editor_tools_visible_set(visible);
+   file_browser_tools_visible_set(visible);
+   edc_navigator_tools_visible_set(visible);
 }
 
 void

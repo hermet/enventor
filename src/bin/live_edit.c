@@ -1479,25 +1479,22 @@ live_edit_cancel(void)
    return EINA_TRUE;
 }
 
-Evas_Object *
+//Create and return a list of buttons.
+Eina_List *
 live_edit_tools_create(Evas_Object *parent)
 {
-   Evas_Object *box = elm_box_add(parent);
-   elm_box_horizontal_set(box, EINA_TRUE);
-   elm_box_padding_set(box, ELM_SCALE_SIZE(5), 0);
-
+   Eina_List *btn_list = NULL;
    Evas_Object *btn;
    int i;
 
    for (i = 0; i < LIVEEDIT_ITEMS_NUM; i++)
      {
-        btn = live_btn_create(box, LIVEEDIT_ITEMS[i].name,
+        btn = live_btn_create(parent, LIVEEDIT_ITEMS[i].name,
                               (void *)(uintptr_t) i);
-        elm_box_pack_end(box, btn);
+        btn_list = eina_list_append(btn_list, btn);
      }
 
-   evas_object_show(box);
-   return box;
+   return btn_list;
 }
 
 void

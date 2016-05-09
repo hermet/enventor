@@ -1,4 +1,4 @@
-Evas_Object *tools_init(Evas_Object *parent);
+void tools_init(Evas_Object *parent);
 void tools_term(void);
 void tools_highlight_update(Eina_Bool toggle);
 void tools_lines_update(Eina_Bool toggle);
@@ -12,3 +12,5 @@ void tools_search_update(void);
 void tools_live_update(Eina_Bool on);
 void tools_console_update(Eina_Bool on);
 void tools_menu_update(Eina_Bool on);
+Evas_Object *tools_live_view_get(void);
+Evas_Object *tools_text_editor_get(void);

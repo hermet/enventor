@@ -15,6 +15,7 @@ typedef struct list_it_s list_it;
 
 typedef struct edc_navigator_s
 {
+   Evas_Object *base_layout;
    Evas_Object *genlist;
 
    Eina_List *groups;
@@ -1471,6 +1472,14 @@ edc_navigator_init(Evas_Object *parent)
      }
    g_nd = nd;
 
+   //Base layout
+   Evas_Object *base_layout = elm_layout_add(parent);
+   elm_layout_file_set(base_layout, EDJE_PATH, "tools_layout");
+   evas_object_size_hint_weight_set(base_layout, EVAS_HINT_EXPAND,
+                                    EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(base_layout, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_show(base_layout);
+
    //Genlist
    Evas_Object *genlist = elm_genlist_add(parent);
    elm_object_focus_allow_set(genlist, EINA_FALSE);
@@ -1485,7 +1494,7 @@ edc_navigator_init(Evas_Object *parent)
    evas_object_size_hint_weight_set(genlist, EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(genlist, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_show(genlist);
+   elm_object_content_set(base_layout, genlist);
 
    //Group Item Class
    Elm_Genlist_Item_Class *itc;
@@ -1531,9 +1540,10 @@ edc_navigator_init(Evas_Object *parent)
 
    nd->program_itc = itc;
 
+   nd->base_layout = base_layout;
    nd->genlist = genlist;
 
-   return genlist;
+   return base_layout;
 }
 
 void
@@ -1550,8 +1560,32 @@ edc_navigator_term(void)
    elm_genlist_item_class_free(nd->programs_itc);
    elm_genlist_item_class_free(nd->program_itc);
 
-   evas_object_del(nd->genlist);
+   evas_object_del(nd->base_layout);
 
    free(nd);
    g_nd = NULL;
+}
+
+void
+edc_navigator_tools_set(void)
+{
+   navi_data *nd = g_nd;
+   if (!nd) return;
+
+   Evas_Object *rect =
+      evas_object_rectangle_add(evas_object_evas_get(nd->base_layout));
+   evas_object_color_set(rect, 0, 0, 0, 0);
+   elm_object_part_content_set(nd->base_layout, "elm.swallow.tools", rect);
+}
+
+void
+edc_navigator_tools_visible_set(Eina_Bool visible)
+{
+   navi_data *nd = g_nd;
+   if (!nd) return;
+
+   if (visible)
+     elm_object_signal_emit(nd->base_layout, "elm,state,tools,show", "");
+   else
+     elm_object_signal_emit(nd->base_layout, "elm,state,tools,hide", "");
 }

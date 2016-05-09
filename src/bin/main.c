@@ -211,14 +211,12 @@ main_mouse_wheel_cb(void *data, int type EINA_UNUSED, void *ev)
    return ECORE_CALLBACK_PASS_ON;
 }
 
-static Evas_Object *
+static void
 tools_set(void)
 {
-   Evas_Object *tools = tools_init(base_layout_get());
-   base_tools_set(tools);
+   tools_init(base_layout_get());
+   base_tools_set(tools_live_view_get(), tools_text_editor_get());
    tools_update();
-
-   return tools;
 }
 
 static void
@@ -928,7 +926,7 @@ init(app_data *ad, int argc, char **argv)
    statusbar_set();
    enventor_setup(ad);
    file_mgr_init();
-   Evas_Object *tools = tools_set();
+   tools_set();
    live_edit_init();
 
    base_gui_show();

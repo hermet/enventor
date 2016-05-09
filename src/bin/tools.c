@@ -17,7 +17,8 @@ typedef struct tools_s
    Evas_Object *find_btn;
    Evas_Object *console_btn;
    Evas_Object *menu_btn;
-   Evas_Object *box;
+   Evas_Object *live_view_ly;
+   Evas_Object *text_editor_ly;
 } tools_data;
 
 static tools_data *g_td = NULL;
@@ -165,164 +166,178 @@ tools_term(void)
    free(td);
 }
 
-Evas_Object *
+void
 tools_init(Evas_Object *parent)
 {
    tools_data *td = g_td;
-   if (td) return (td->box);
+   if (td) return;
 
    td = calloc(1, sizeof(tools_data));
    if (!td)
      {
         EINA_LOG_ERR(_("Failed to allocate Memory!"));
-        return NULL;
+        return;
      }
    g_td = td;
 
-   Evas_Object *box = elm_box_add(parent);
-   elm_box_horizontal_set(box, EINA_TRUE);
-   elm_box_padding_set(box, 10, 0);
-   evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND,
+   //Live view tools
+   Evas_Object *live_view_ly = elm_layout_add(parent);
+   elm_layout_file_set(live_view_ly, EDJE_PATH, "live_view_tools_layout");
+   evas_object_size_hint_weight_set(live_view_ly, EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(box, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_size_hint_align_set(live_view_ly, EVAS_HINT_FILL,
+                                   EVAS_HINT_FILL);
 
    Evas_Object *btn;
-   btn = tools_btn_create(box, "highlight", _("Part Highlighting (Ctrl + H)"),
-                          highlight_cb);
+   btn = tools_btn_create(live_view_ly, "highlight",
+                          _("Part Highlighting (Ctrl + H)"), highlight_cb);
    elm_object_tooltip_orient_set(btn, ELM_TOOLTIP_ORIENT_BOTTOM_RIGHT);
-   evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
-   elm_box_pack_end(box, btn);
+   evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_object_part_content_set(live_view_ly, "elm.swallow.highlight", btn);
    td->highlight_btn = btn;
 
-   btn = tools_btn_create(box, "dummy", _("Dummy Parts (Ctrl + W)"),
+   btn = tools_btn_create(live_view_ly, "dummy", _("Dummy Parts (Ctrl + W)"),
                           dummy_cb);
    elm_object_tooltip_orient_set(btn, ELM_TOOLTIP_ORIENT_BOTTOM_RIGHT);
-   evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
-   elm_box_pack_end(box, btn);
+   evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_object_part_content_set(live_view_ly, "elm.swallow.dummy", btn);
    td->swallow_btn = btn;
 
    //icon image is temporary, it should be changed to its own icon.
-   btn = tools_btn_create(box, "mirror", _("Mirror Mode (Ctrl + M)"),
+   btn = tools_btn_create(live_view_ly, "mirror", _("Mirror Mode (Ctrl + M)"),
                           mirror_cb);
-   evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
-   elm_box_pack_end(box, btn);
+   evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_object_part_content_set(live_view_ly, "elm.swallow.mirror", btn);
    td->mirror_btn = btn;
 
-   Evas_Object *sp;
-   sp = elm_separator_add(box);
-   evas_object_show(sp);
-   elm_box_pack_end(box, sp);
+   //Live edit tools
+   Eina_List *btn_list = live_edit_tools_create(live_view_ly);
+   Eina_List *l = NULL;
+   int i = 1;
+   EINA_LIST_FOREACH(btn_list, l, btn)
+     {
+        evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+        evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
-   //Live edit tool
-   btn = live_edit_tools_create(box);
-   evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
-   elm_box_pack_end(box, btn);
+        char swallow_part[32];
+        snprintf(swallow_part, sizeof(swallow_part), "elm.swallow.live_edit%d",
+                 i);
+        elm_object_part_content_set(live_view_ly, swallow_part, btn);
+        i++;
+     }
 
-   sp = elm_separator_add(box);
-   evas_object_show(sp);
-   elm_box_pack_end(box, sp);
+   td->live_view_ly = live_view_ly;
 
-   //For a empty space
-   Evas_Object *rect = evas_object_rectangle_add(evas_object_evas_get(box));
-   evas_object_size_hint_weight_set(rect, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(rect, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_box_pack_end(box, rect);
+   //Text editor tools
+   Evas_Object *text_editor_ly = elm_layout_add(parent);
+   elm_layout_file_set(text_editor_ly, EDJE_PATH, "text_editor_tools_layout");
+   evas_object_size_hint_weight_set(text_editor_ly, EVAS_HINT_EXPAND,
+                                    EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(text_editor_ly, EVAS_HINT_FILL,
+                                   EVAS_HINT_FILL);
 
-   btn = tools_btn_create(box, "save",_("Save File (Ctrl + S)"),
+   btn = tools_btn_create(text_editor_ly, "save",_("Save File (Ctrl + S)"),
                           save_cb);
-   evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
-   elm_box_pack_end(box, btn);
+   evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_object_part_content_set(text_editor_ly, "elm.swallow.save", btn);
 
-   btn = tools_btn_create(box, "undo", _("Undo Text (Ctrl + Z)"),
+   btn = tools_btn_create(text_editor_ly, "undo", _("Undo Text (Ctrl + Z)"),
                           undo_cb);
-   evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
-   elm_box_pack_end(box, btn);
+   evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_object_part_content_set(text_editor_ly, "elm.swallow.undo", btn);
 
-   btn = tools_btn_create(box, "redo", _("Redo Text (Ctrl + R)"),
+   btn = tools_btn_create(text_editor_ly, "redo", _("Redo Text (Ctrl + R)"),
                           redo_cb);
-   evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
-   elm_box_pack_end(box, btn);
+   evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_object_part_content_set(text_editor_ly, "elm.swallow.redo", btn);
 
-   btn = tools_btn_create(box, "find", _("Find/Replace (Ctrl + F)"),
+   btn = tools_btn_create(text_editor_ly, "find", _("Find/Replace (Ctrl + F)"),
                           find_cb);
-   evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
-   elm_box_pack_end(box, btn);
+   evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_object_part_content_set(text_editor_ly, "elm.swallow.find", btn);
    td->find_btn = btn;
 
-   btn = tools_btn_create(box, "goto", _("Goto Lines (Ctrl + L)"),
+   btn = tools_btn_create(text_editor_ly, "goto", _("Goto Lines (Ctrl + L)"),
                           goto_cb);
-   evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
-   elm_box_pack_end(box, btn);
+   evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_object_part_content_set(text_editor_ly, "elm.swallow.goto", btn);
    td->goto_btn = btn;
 
-   btn = tools_btn_create(box, "lines", _("Line Numbers (F5)"),
+   btn = tools_btn_create(text_editor_ly, "lines", _("Line Numbers (F5)"),
                           lines_cb);
-   evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
-   elm_box_pack_end(box, btn);
+   evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_object_part_content_set(text_editor_ly, "elm.swallow.lines", btn);
    td->lines_btn = btn;
 
-   sp = elm_separator_add(box);
-   evas_object_show(sp);
-   elm_box_pack_end(box, sp);
-
-   btn = tools_btn_create(box, "console", _("Console Box (Alt + Down)"),
-                          console_cb);
-   evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(btn, 1.0, EVAS_HINT_FILL);
-   elm_box_pack_end(box, btn);
+   btn = tools_btn_create(text_editor_ly, "console",
+                          _("Console Box (Alt + Down)"), console_cb);
+   evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_object_part_content_set(text_editor_ly, "elm.swallow.console", btn);
    td->console_btn = btn;
 
-   btn = tools_btn_create(box, "file_browser", _("File Browser (F9)"),
-                          file_browser_cb);
-   evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(btn, 1.0, EVAS_HINT_FILL);
-   elm_box_pack_end(box, btn);
+   btn = tools_btn_create(text_editor_ly, "file_browser",
+                          _("File Browser (F9)"), file_browser_cb);
+   evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_object_part_content_set(text_editor_ly, "elm.swallow.file_browser", btn);
    td->file_browser_btn = btn;
 
-   btn = tools_btn_create(box, "edc_navigator", _("EDC Navigator (F10)"),
-                          edc_navigator_cb);
-   evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(btn, 1.0, EVAS_HINT_FILL);
-   elm_box_pack_end(box, btn);
+   btn = tools_btn_create(text_editor_ly, "edc_navigator",
+                          _("EDC Navigator (F10)"), edc_navigator_cb);
+   evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_object_part_content_set(text_editor_ly, "elm.swallow.edc_navigator",
+                               btn);
    td->edc_navigator_btn = btn;
 
-   btn = tools_btn_create(box, "status", _("Status (F11)"), status_cb);
-   evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(btn, 1.0, EVAS_HINT_FILL);
-   elm_box_pack_end(box, btn);
+   btn = tools_btn_create(text_editor_ly, "status", _("Status (F11)"),
+                          status_cb);
+   evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_object_part_content_set(text_editor_ly, "elm.swallow.status", btn);
    td->status_btn = btn;
 
-   sp = elm_separator_add(box);
-   evas_object_show(sp);
-   elm_box_pack_end(box, sp);
-
-   btn = tools_btn_create(box, "menu", _("Enventor Menu (Esc)"),
+   btn = tools_btn_create(text_editor_ly, "menu", _("Enventor Menu (Esc)"),
                           menu_cb);
    elm_object_tooltip_orient_set(btn, ELM_TOOLTIP_ORIENT_BOTTOM_LEFT);
-   evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(btn, 0.0, EVAS_HINT_FILL);
-   elm_box_pack_end(box, btn);
+   evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_object_part_content_set(text_editor_ly, "elm.swallow.menu", btn);
    td->menu_btn = btn;
 
-   evas_object_show(box);
-
-   td->box = box;
+   td->text_editor_ly = text_editor_ly;
 
    //Turn on if console is valid size.
    if (!config_console_get() && (config_console_size_get() > 0))
      tools_console_update(EINA_TRUE);
+}
 
-   return box;
+Evas_Object *
+tools_live_view_get(void)
+{
+   tools_data *td = g_td;
+   if (!td) return;
+
+   return td->live_view_ly;
+}
+
+Evas_Object *
+tools_text_editor_get(void)
+{
+   tools_data *td = g_td;
+   if (!td) return;
+
+   return td->text_editor_ly;
 }
 
 void

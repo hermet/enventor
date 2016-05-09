@@ -33,7 +33,7 @@ typedef struct file_browser_s
 {
    brows_file *workspace; //workspace directory
 
-   Evas_Object *main_box;
+   Evas_Object *base_layout;
    Evas_Object *search_entry;
    Evas_Object *genlist;
    Evas_Object *show_all_check;
@@ -572,7 +572,7 @@ file_browser_workspace_set(const char *workspace_path)
    if (!workspace) return;
    bd->workspace = workspace;
 
-   elm_object_disabled_set(bd->main_box, EINA_FALSE);
+   elm_object_disabled_set(bd->base_layout, EINA_FALSE);
 
    if (workspace->sub_file_list)
      gl_exp_req(NULL, NULL, workspace->it);
@@ -582,7 +582,7 @@ Evas_Object *
 file_browser_init(Evas_Object *parent)
 {
    brows_data *bd = g_bd;
-   if (bd) return bd->main_box;
+   if (bd) return bd->base_layout;
 
    bd = calloc(1, sizeof(brows_data));
    if (!bd)
@@ -592,12 +592,20 @@ file_browser_init(Evas_Object *parent)
      }
    g_bd = bd;
 
+   //Base layout
+   Evas_Object *base_layout = elm_layout_add(parent);
+   elm_layout_file_set(base_layout, EDJE_PATH, "tools_layout");
+   evas_object_size_hint_align_set(base_layout, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_size_hint_weight_set(base_layout, EVAS_HINT_EXPAND,
+                                    EVAS_HINT_EXPAND);
+   evas_object_show(base_layout);
+
    //Main Box
-   Evas_Object *main_box = elm_box_add(parent);
+   Evas_Object *main_box = elm_box_add(base_layout);
    evas_object_size_hint_align_set(main_box, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(main_box, EVAS_HINT_EXPAND,
-                                   EVAS_HINT_EXPAND);
-   evas_object_show(main_box);
+                                    EVAS_HINT_EXPAND);
+   elm_object_content_set(base_layout, main_box);
 
    Evas_Object *sub_box;
 
@@ -674,14 +682,14 @@ file_browser_init(Evas_Object *parent)
    search_itc->func.content_get = gl_search_content_get_cb;
    bd->search_itc = search_itc;
 
-   bd->main_box = main_box;
+   bd->base_layout = base_layout;
    bd->search_entry = search_entry;
    bd->genlist = genlist;
    bd->show_all_check = show_all_check;
 
-   elm_object_disabled_set(main_box, EINA_TRUE);
+   elm_object_disabled_set(base_layout, EINA_TRUE);
 
-   return main_box;
+   return base_layout;
 }
 
 void
@@ -695,8 +703,32 @@ file_browser_term(void)
    elm_genlist_item_class_free(bd->itc);
    elm_genlist_item_class_free(bd->search_itc);
 
-   evas_object_del(bd->main_box);
+   evas_object_del(bd->base_layout);
 
    free(bd);
    g_bd = NULL;
+}
+
+void
+file_browser_tools_set(void)
+{
+   brows_data *bd = g_bd;
+   if (!bd) return;
+
+   Evas_Object *rect =
+      evas_object_rectangle_add(evas_object_evas_get(bd->base_layout));
+   evas_object_color_set(rect, 0, 0, 0, 0);
+   elm_object_part_content_set(bd->base_layout, "elm.swallow.tools", rect);
+}
+
+void
+file_browser_tools_visible_set(Eina_Bool visible)
+{
+   brows_data *bd = g_bd;
+   if (!bd) return;
+
+   if (visible)
+     elm_object_signal_emit(bd->base_layout, "elm,state,tools,show", "");
+   else
+     elm_object_signal_emit(bd->base_layout, "elm,state,tools,hide", "");
 }

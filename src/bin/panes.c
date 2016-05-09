@@ -283,14 +283,30 @@ void
 panes_text_editor_set(Evas_Object *text_editor)
 {
    panes_data *pd = g_pd;
-   elm_object_part_content_set(pd->horiz.obj, "right", text_editor);
+
+   Evas_Object *base_layout = elm_layout_add(pd->horiz.obj);
+   elm_layout_file_set(base_layout, EDJE_PATH, "tools_layout");
+   evas_object_size_hint_weight_set(base_layout, EVAS_HINT_EXPAND,
+                                    EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(base_layout, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_object_content_set(base_layout, text_editor);
+
+   elm_object_part_content_set(pd->horiz.obj, "right", base_layout);
 }
 
 void
 panes_live_view_set(Evas_Object *live_view)
 {
    panes_data *pd = g_pd;
-   elm_object_part_content_set(pd->horiz.obj, "left", live_view);
+
+   Evas_Object *base_layout = elm_layout_add(pd->horiz.obj);
+   elm_layout_file_set(base_layout, EDJE_PATH, "tools_layout");
+   evas_object_size_hint_weight_set(base_layout, EVAS_HINT_EXPAND,
+                                    EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(base_layout, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_object_content_set(base_layout, live_view);
+
+   elm_object_part_content_set(pd->horiz.obj, "left", base_layout);
 }
 
 void
@@ -357,4 +373,54 @@ panes_init(Evas_Object *parent)
    elm_panes_content_right_size_set(panes_v, config_console_size_get());
 
    return panes_v;
+}
+
+void
+panes_live_view_tools_set(Evas_Object *tools)
+{
+   panes_data *pd = g_pd;
+   if (!pd) return;
+
+   Evas_Object *live_view = elm_object_part_content_get(pd->horiz.obj, "left");
+   elm_object_part_content_set(live_view, "elm.swallow.tools", tools);
+}
+
+void
+panes_text_editor_tools_set(Evas_Object *tools)
+{
+   panes_data *pd = g_pd;
+   if (!pd) return;
+
+   Evas_Object *text_editor = elm_object_part_content_get(pd->horiz.obj,
+                                                          "right");
+   elm_object_part_content_set(text_editor, "elm.swallow.tools", tools);
+}
+
+void
+panes_live_view_tools_visible_set(Eina_Bool visible)
+{
+   panes_data *pd = g_pd;
+   if (!pd) return;
+
+   Evas_Object *live_view = elm_object_part_content_get(pd->horiz.obj, "left");
+
+   if (visible)
+     elm_object_signal_emit(live_view, "elm,state,tools,show", "");
+   else
+     elm_object_signal_emit(live_view, "elm,state,tools,hide", "");
+}
+
+void
+panes_text_editor_tools_visible_set(Eina_Bool visible)
+{
+   panes_data *pd = g_pd;
+   if (!pd) return;
+
+   Evas_Object *text_editor = elm_object_part_content_get(pd->horiz.obj,
+                                                          "right");
+
+   if (visible)
+     elm_object_signal_emit(text_editor, "elm,state,tools,show", "");
+   else
+     elm_object_signal_emit(text_editor, "elm,state,tools,hide", "");
 }
