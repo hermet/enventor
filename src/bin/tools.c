@@ -325,12 +325,6 @@ tools_init(Evas_Object *parent)
    return box;
 }
 
-Evas_Object *
-tools_live_edit_get(Evas_Object *tools)
-{
-   return evas_object_data_get(tools, "live_edit");
-}
-
 void
 tools_highlight_update(Eina_Bool toggle)
 {

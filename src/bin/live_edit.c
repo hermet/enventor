@@ -49,7 +49,6 @@ typedef struct live_editor_s
    Evas_Object *toolbox;
    Evas_Object *layout;
    Evas_Object *live_view;
-   Evas_Object *trigger;
    Evas_Object *ctrl_pt[Ctrl_Pt_Cnt];
    Evas_Object *align_line[Align_Line_Cnt];
    Evas_Object *info_text[Info_Text_Cnt];
@@ -1502,7 +1501,7 @@ live_edit_tools_create(Evas_Object *parent)
 }
 
 void
-live_edit_init(Evas_Object *trigger)
+live_edit_init(void)
 {
    live_data *ld = calloc(1, sizeof(live_data));
    if (!ld)
@@ -1511,7 +1510,6 @@ live_edit_init(Evas_Object *trigger)
         return;
      }
    g_ld = ld;
-   ld->trigger = trigger;
    ld->auto_align_dist = LIVE_EDIT_AUTO_ALIGN_DIST;
 }
 

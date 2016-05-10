@@ -846,13 +846,6 @@ statusbar_set()
 }
 
 static void
-live_edit_set(Evas_Object *tools)
-{
-   Evas_Object *trigger = tools_live_edit_get(tools);
-   live_edit_init(trigger);
-}
-
-static void
 keygrabber_init(app_data *ad)
 {
    Evas *e = evas_object_evas_get(base_enventor_get());
@@ -936,7 +929,7 @@ init(app_data *ad, int argc, char **argv)
    enventor_setup(ad);
    file_mgr_init();
    Evas_Object *tools = tools_set();
-   live_edit_set(tools);
+   live_edit_init();
 
    base_gui_show();
 

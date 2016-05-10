@@ -1,6 +1,5 @@
 Evas_Object *tools_init(Evas_Object *parent);
 void tools_term(void);
-Evas_Object *tools_live_edit_get(Evas_Object *tools);
 void tools_highlight_update(Eina_Bool toggle);
 void tools_lines_update(Eina_Bool toggle);
 void tools_dummy_update(Eina_Bool toggle);
