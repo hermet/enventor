@@ -3211,7 +3211,7 @@ group { "text_editor_tools_layout";
                relative: 0.0 0.5;
             }
             min: 1 18;
-            fixed: 1 0;
+            fixed: 1 1;
             align: 1.0 0.5;
             color: 48 48 48 255;
          }
