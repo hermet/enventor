@@ -42,67 +42,52 @@ const char *TEMPLATE_PART_TALE[TEMPLATE_PART_TALE_LINE_CNT] =
    "}"
 };
 
-#define TEMPLATE_PART_IMAGE_LINE_CNT 9
+#define TEMPLATE_PART_IMAGE_LINE_CNT 6
 
 const char *TEMPLATE_PART_IMAGE[TEMPLATE_PART_IMAGE_LINE_CNT] =
 {
    "   scale: 1;<br/>",
    "   desc { \"default\";<br/>",
-   "      align: 0.5 0.5;<br/>",
-   "      fixed: 0 0;<br/>",
-   "      min: 0 0;<br/>",
    "      visible: 1;<br/>",
    "      /* TODO: Please replace embedded image files to your application image files. */<br/>",
    "      image.normal: \"ENVENTOR_EMBEDDED_LOGO.png\";<br/>",
    "      //aspect: 1 1;<br/>"
 };
 
-#define TEMPLATE_PART_RECT_LINE_CNT 7
+#define TEMPLATE_PART_RECT_LINE_CNT 4
 
 const char *TEMPLATE_PART_RECT[TEMPLATE_PART_RECT_LINE_CNT] =
 {
    "   scale: 1;<br/>",
    "   desc { \"default\";<br/>",
    "      color: 0 136 170 255;<br/>",
-   "      align: 0.5 0.5;<br/>",
-   "      fixed: 0 0;<br/>",
-   "      min: 0 0;<br/>",
    "      visible: 1;<br/>"
 };
 
-#define TEMPLATE_PART_SWALLOW_LINE_CNT 6
+#define TEMPLATE_PART_SWALLOW_LINE_CNT 3
 
 const char *TEMPLATE_PART_SWALLOW[TEMPLATE_PART_SWALLOW_LINE_CNT] =
 {
    "   scale: 1;<br/>",
    "   desc { \"default\";<br/>",
-   "      align: 0.5 0.5;<br/>",
-   "      fixed: 0 0;<br/>",
-   "      min: 0 0;<br/>",
    "      visible: 1;<br/>"
 };
 
-#define TEMPLATE_PART_SPACER_LINE_CNT 5
+#define TEMPLATE_PART_SPACER_LINE_CNT 2
 
 const char *TEMPLATE_PART_SPACER[TEMPLATE_PART_SPACER_LINE_CNT] =
 {
    "   scale: 1;<br/>",
    "   desc { \"default\";<br/>",
-   "      align: 0.5 0.5;<br/>",
-   "      fixed: 0 0;<br/>",
-   "      min: 0 0;<br/>"
 };
 
-#define TEMPLATE_PART_TEXT_LINE_CNT 16
+#define TEMPLATE_PART_TEXT_LINE_CNT 13
 
 const char *TEMPLATE_PART_TEXT[TEMPLATE_PART_TEXT_LINE_CNT] =
 {
    "   scale: 1;<br/>",
    "   effect: SOFT_OUTLINE;<br/>",
    "   desc { \"default\";<br/>",
-   "      align: 0.5 0.5;<br/>",
-   "      fixed: 0 0;<br/>",
-   "      min: 0 0;<br/>",
    "      color: 255 255 255 255;<br/>",
    "      color2: 0 136 170 100;<br/>",
    "      visible: 1;<br/>",
@@ -115,15 +100,12 @@ const char *TEMPLATE_PART_TEXT[TEMPLATE_PART_TEXT_LINE_CNT] =
    "      }<br/>"
 };
 
-#define TEMPLATE_PART_TEXTBLOCK_LINE_CNT 7
+#define TEMPLATE_PART_TEXTBLOCK_LINE_CNT 4
 
 const char *TEMPLATE_PART_TEXTBLOCK[TEMPLATE_PART_TEXTBLOCK_LINE_CNT] =
 {
    "   scale: 1;<br/>",
    "   desc { \"default\";<br/>",
-   "      align: 0.5 0.5;<br/>",
-   "      fixed: 0 0;<br/>",
-   "      min: 0 0;<br/>",
    "      visible: 1;<br/>",
    "      text.text: \"TEXTBLOCK\";<br/>"
 };

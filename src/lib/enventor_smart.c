@@ -822,9 +822,15 @@ _enventor_object_template_part_insert(Eo *obj EINA_UNUSED,
                                       Enventor_Object_Data *pd,
                                       Edje_Part_Type part,
                                       Enventor_Template_Insert_Type insert_type,
-                                      float rel1_x, float rel1_y, float rel2_x,
-                                      float rel2_y, char *syntax, size_t n)
+                                      Eina_Bool fixed_w, Eina_Bool fixed_h,
+                                      char *rel1_x_to, char *rel1_y_to,
+                                      char *rel2_x_to, char *rel2_y_to,
+                                      float align_x, float align_y,
+                                      int min_w, int min_h,
+                                      float rel1_x, float rel1_y, float rel2_x,float rel2_y,
+                                      char *syntax, size_t n)
 {
+   // if mirror mode, exchange properties about left and right
    if (pd->mirror_mode)
      {
        float x1, x2;
@@ -832,10 +838,26 @@ _enventor_object_template_part_insert(Eo *obj EINA_UNUSED,
        x2 = 1.0 - rel1_x;
        rel1_x = x1;
        rel2_x = x2;
+
+       if (align_x == 0.0)
+         align_x = 1.0;
+       else if (align_x == 1.0)
+         align_x = 0.0;
+      
+       char buf[1024];
+       strcpy(buf, rel1_x_to);
+       strcpy(rel1_x_to, rel2_x_to); 
+       strcpy(rel2_x_to, buf); 
+
      }
 
-   return template_part_insert(pd->main_it.ed, part, insert_type, rel1_x,
-                               rel1_y, rel2_x, rel2_y, NULL, syntax, n);
+   return template_part_insert(pd->main_it.ed, part, insert_type,
+                               fixed_w, fixed_h,
+                               rel1_x_to, rel1_y_to,
+                               rel2_x_to, rel2_y_to,
+                               align_x, align_y, min_w, min_h,
+                               rel1_x, rel1_y, rel2_x, rel2_y,
+                               NULL, syntax, n);
 }
 
 //TODO: Might need for items

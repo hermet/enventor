@@ -185,8 +185,12 @@ select_random_name(Evas_Object *entry, const char* first_line,
 
 Eina_Bool
 template_part_insert(edit_data *ed, Edje_Part_Type part_type,
-                     Enventor_Template_Insert_Type insert_type, float rel1_x,
-                     float rel1_y, float rel2_x, float rel2_y,
+                     Enventor_Template_Insert_Type insert_type,
+                     Eina_Bool fixed_w, Eina_Bool fixed_h,
+                     char *rel1_x_to, char *rel1_y_to,
+                     char *rel2_x_to, char *rel2_y_to,
+                     float align_x, float align_y, int min_w, int min_h,
+                     float rel1_x, float rel1_y, float rel2_x, float rel2_y,
                      const Eina_Stringshare *group_name, char *syntax, size_t n)
 {
    Evas_Object *edit_entry = edit_entry_get(ed);
@@ -284,6 +288,81 @@ template_part_insert(edit_data *ed, Edje_Part_Type part_type,
         elm_entry_entry_insert(edit_entry, buf);
      }
 
+   //Apply align values
+   elm_entry_entry_insert(edit_entry, p);
+   snprintf(buf, sizeof(buf), "      align: %.1f %.1f;<br/>", align_x, align_y);
+   elm_entry_entry_insert(edit_entry, buf);
+   line_cnt++;
+
+   //Width is fixed or Height is fixed
+   if ((fixed_w && !fixed_h) || (!fixed_w && fixed_h))
+     {
+        if (align_x != 0.5)
+          {
+             elm_entry_entry_insert(edit_entry, p);
+             snprintf(buf, sizeof(buf), "      fixed: %d %d;<br/>", 1, 0);
+             elm_entry_entry_insert(edit_entry, buf);
+             elm_entry_entry_insert(edit_entry, p);
+             snprintf(buf, sizeof(buf), "      min: %d %d;<br/>", min_w, 0);
+             elm_entry_entry_insert(edit_entry, buf);
+             line_cnt += 2;
+          }
+        else if (align_y != 0.5)
+         {
+            elm_entry_entry_insert(edit_entry, p);
+            snprintf(buf, sizeof(buf), "      fixed: %d %d;<br/>", 0, 1);
+            elm_entry_entry_insert(edit_entry, buf);
+            elm_entry_entry_insert(edit_entry, p);
+            snprintf(buf, sizeof(buf), "      min: %d %d;<br/>", 0, min_h);
+            elm_entry_entry_insert(edit_entry, buf);
+            line_cnt += 2;
+         }
+     }
+   //Width and Height are fixed
+   else if(fixed_w && fixed_h)
+     {
+        if (!rel1_x_to || !rel1_y_to || !rel2_x_to || !rel2_y_to)
+          {
+             elm_entry_entry_insert(edit_entry, p);
+             snprintf(buf, sizeof(buf), "      fixed: %d %d;<br/>", 1, 1);
+             elm_entry_entry_insert(edit_entry, buf);
+             elm_entry_entry_insert(edit_entry, p);
+             snprintf(buf, sizeof(buf), "      min: %d %d;<br/>", min_w, min_h);
+             elm_entry_entry_insert(edit_entry, buf);
+             line_cnt += 2;
+          }
+     }
+
+   //If there are some relative_to part then insert relative_to 
+   if (rel1_x_to)
+     {
+        elm_entry_entry_insert(edit_entry, p);
+        snprintf(buf, sizeof(buf), "      rel1.to_x: \"%s\";<br/>", rel1_x_to);
+        elm_entry_entry_insert(edit_entry, buf);
+        line_cnt++;
+     }
+   if (rel1_y_to)
+     {
+        elm_entry_entry_insert(edit_entry, p);
+        snprintf(buf, sizeof(buf), "      rel1.to_y: \"%s\";<br/>", rel1_y_to);
+        elm_entry_entry_insert(edit_entry, buf);
+        line_cnt++;
+     }
+   if (rel2_x_to)
+     {
+        elm_entry_entry_insert(edit_entry, p);
+        snprintf(buf, sizeof(buf), "      rel2.to_x: \"%s\";<br/>", rel2_x_to);
+        elm_entry_entry_insert(edit_entry, buf);
+        line_cnt++;
+     }
+   if (rel2_y_to)
+     {
+        elm_entry_entry_insert(edit_entry, p);
+        snprintf(buf, sizeof(buf), "      rel2.to_y: \"%s\";<br/>", rel2_y_to);
+        elm_entry_entry_insert(edit_entry, buf);
+        line_cnt++;
+     }
+
    //Insert relatives
    elm_entry_entry_insert(edit_entry, p);
 
@@ -295,22 +374,22 @@ template_part_insert(edit_data *ed, Edje_Part_Type part_type,
        (int)(rel2_y * 10000 + 0.5) % 100)
      {
 
-        snprintf(buf, sizeof(buf), "      rel1.relative: %.4f %.4f;<br/>", rel1_x,
-               rel1_y);
+        snprintf(buf, sizeof(buf), "      rel1.relative: %.4f %.4f;<br/>",
+                 rel1_x, rel1_y);
         elm_entry_entry_insert(edit_entry, buf);
         elm_entry_entry_insert(edit_entry, p);
-        snprintf(buf, sizeof(buf), "      rel2.relative: %.4f %.4f;<br/>", rel2_x,
-               rel2_y);
+        snprintf(buf, sizeof(buf), "      rel2.relative: %.4f %.4f;<br/>",
+                 rel2_x, rel2_y);
      }
    //Condition 2: relative values are 2 places of decimals
    else
      {
-        snprintf(buf, sizeof(buf), "      rel1.relative: %.2f %.2f;<br/>", rel1_x,
-               rel1_y);
+        snprintf(buf, sizeof(buf), "      rel1.relative: %.2f %.2f;<br/>",
+                 rel1_x, rel1_y);
         elm_entry_entry_insert(edit_entry, buf);
         elm_entry_entry_insert(edit_entry, p);
-        snprintf(buf, sizeof(buf), "      rel2.relative: %.2f %.2f;<br/>", rel2_x,
-               rel2_y);
+        snprintf(buf, sizeof(buf), "      rel2.relative: %.2f %.2f;<br/>",
+                 rel2_x, rel2_y);
      }
 
    elm_entry_entry_insert(edit_entry, buf);
@@ -369,6 +448,9 @@ template_insert(edit_data *ed, Enventor_Template_Insert_Type insert_type,
      {
         ret = template_part_insert(ed, EDJE_PART_TYPE_IMAGE,
                                    ENVENTOR_TEMPLATE_INSERT_DEFAULT,
+                                   EINA_FALSE, EINA_FALSE,
+                                   NULL, NULL, NULL, NULL,
+                                   0.5, 0.5, 0, 0,
                                    REL1_X, REL1_Y, REL2_X, REL2_Y, NULL, syntax,
                                    n);
         goto end;

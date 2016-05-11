@@ -7,6 +7,7 @@
 
 #define CTRL_PT_LAYER 3
 #define INFO_TEXT_LAYER (CTRL_PT_LAYER+1)
+#define PART_NAME_MAX 1024
 
 typedef struct livedit_item_s
 {
@@ -54,26 +55,57 @@ typedef struct live_editor_s
    Evas_Object *info_text[Info_Text_Cnt];
    Evas_Coord_Point move_delta;
    double half_ctrl_size;
-   unsigned int auto_align_dist;
 
+   unsigned int type;
+
+   //Live edit item information
    struct {
-      unsigned int type;
       float rel1_x, rel1_y;
       float rel2_x, rel2_y;
-   } part_info;
+   } rel_info;
+
+   //Relative to information for live edit item
+   struct {
+      char *rel1_x_to;
+      char *rel1_y_to;
+      char *rel2_x_to;
+      char *rel2_y_to;
+      float align_x, align_y;
+      float rel1_to_x, rel1_to_y;
+      float rel2_to_x, rel2_to_y;
+   } rel_to_info;
 
    Evas_Object *keygrabber;
    Eina_Array *auto_align_array;
+   Ctrl_Pt last_cp;
+   unsigned int auto_align_dist;
+
+   //Relative setting properties
+   Evas_Object *rel_type_ctxpopup;
+   Evas_Object *rel_to_ctxpopup;
+   float rel1_x, rel1_y;
+   float rel2_x, rel2_y;
+   Eina_Bool fixed_w : 1;
+   Eina_Bool fixed_h : 1;
 
    Eina_Bool on : 1;
 } live_data;
 
 typedef struct auto_align_data_s
 {
+   char part_name[PART_NAME_MAX];
    Evas_Coord_Point pt1;
    Evas_Coord_Point pt2;
 } auto_align_data;
 
+typedef struct rel_to_data_s
+{
+  char part_name[PART_NAME_MAX];
+  int is_rel_to_x, is_rel_to_y;
+  float rel_x, rel_y;
+  Evas_Coord_Point pt1, pt2;
+  live_data *ld;
+} rel_to_data;
 
 static void live_edit_update_internal(live_data *ld);
 
@@ -129,10 +161,10 @@ info_text_update(live_data *ld)
    Enventor_Object *enventor = base_enventor_get();
 
    //reverse coordinates if mirror mode is enabled.
-   double ox = ld->part_info.rel1_x;
-   double ox2 = ld->part_info.rel2_x;
-   double ow = (ld->part_info.rel1_x * (double) lw);
-   double ow2 = (ld->part_info.rel2_x * (double) lw);
+   double ox = ld->rel_info.rel1_x;
+   double ox2 = ld->rel_info.rel2_x;
+   double ow = (ld->rel_info.rel1_x * (double) lw);
+   double ow2 = (ld->rel_info.rel2_x * (double) lw);
 
    if (enventor_object_mirror_mode_get(enventor))
      {
@@ -144,16 +176,16 @@ info_text_update(live_data *ld)
 
    //Rel1
    snprintf(buf, sizeof(buf), "%.2f %.2f (%d, %d)",
-            ox, ld->part_info.rel1_y,
+            ox, ld->rel_info.rel1_y,
             (int) round(ow),
-            (int) round(ld->part_info.rel1_y * (double) lh));
+            (int) round(ld->rel_info.rel1_y * (double) lh));
    evas_object_text_text_set(ld->info_text[Info_Text_Rel1], buf);
 
    //Rel2
    snprintf(buf, sizeof(buf), "%.2f %.2f (%d, %d)",
-            ox2, ld->part_info.rel2_y,
+            ox2, ld->rel_info.rel2_y,
             (int) round(ow2),
-            (int) round(ld->part_info.rel2_y * (double) lh));
+            (int) round(ld->rel_info.rel2_y * (double) lh));
    evas_object_text_text_set(ld->info_text[Info_Text_Rel2], buf);
 
    //Size
@@ -161,9 +193,9 @@ info_text_update(live_data *ld)
    config_view_size_get(&vw, &vh);
 
    vw = (Evas_Coord) (((double) vw) *
-                      (ld->part_info.rel2_x - ld->part_info.rel1_x));
+                      (ld->rel_info.rel2_x - ld->rel_info.rel1_x));
    vh = (Evas_Coord) (((double) vh) *
-                      (ld->part_info.rel2_y - ld->part_info.rel1_y));
+                      (ld->rel_info.rel2_y - ld->rel_info.rel1_y));
    snprintf(buf, sizeof(buf), "[%d x %d]", vw, vh);
    evas_object_text_text_set(ld->info_text[Info_Text_Size], buf);
 
@@ -207,7 +239,7 @@ static void
 live_edit_symbol_set(live_data *ld)
 {
    char buf[PATH_MAX];
-   snprintf(buf, sizeof(buf), "%s_bg", LIVEEDIT_ITEMS[ld->part_info.type].name);
+   snprintf(buf, sizeof(buf), "%s_bg", LIVEEDIT_ITEMS[ld->type].name);
    Evas_Object *layout_symbol = elm_layout_add(ld->layout);
    elm_layout_file_set(layout_symbol, EDJE_PATH, buf);
    elm_object_scale_set(layout_symbol, config_view_scale_get());
@@ -217,16 +249,55 @@ live_edit_symbol_set(live_data *ld)
 static void
 live_edit_insert(live_data *ld)
 {
-   int type = LIVEEDIT_ITEMS[ld->part_info.type].type;
+   int type = LIVEEDIT_ITEMS[ld->type].type;
+
+   //Set relative_to values
+   if (!ld->rel_to_info.rel1_x_to)
+     ld->rel_to_info.rel1_to_x = ld->rel_info.rel1_x;
+   if (!ld->rel_to_info.rel1_y_to)
+     ld->rel_to_info.rel1_to_y = ld->rel_info.rel1_y;
+   if (!ld->rel_to_info.rel2_x_to)
+     ld->rel_to_info.rel2_to_x = ld->rel_info.rel2_x;
+   if (!ld->rel_to_info.rel2_y_to)
+     ld->rel_to_info.rel2_to_y = ld->rel_info.rel2_y;
+
+   //Calculate min size
+   Evas_Coord vw, vh;
+   config_view_size_get(&vw, &vh);
+
+   Evas_Coord min_w = (Evas_Coord) (((double) vw) *
+                      (ld->rel_info.rel2_x - ld->rel_info.rel1_x));
+   Evas_Coord min_h = (Evas_Coord) (((double) vh) *
+                      (ld->rel_info.rel2_y - ld->rel_info.rel1_y));
+
    enventor_object_template_part_insert(base_enventor_get(),
                                         type,
                                         ENVENTOR_TEMPLATE_INSERT_LIVE_EDIT,
-                                        ld->part_info.rel1_x,
-                                        ld->part_info.rel1_y,
-                                        ld->part_info.rel2_x,
-                                        ld->part_info.rel2_y,
+                                        ld->fixed_w,
+                                        ld->fixed_h,
+                                        ld->rel_to_info.rel1_x_to,
+                                        ld->rel_to_info.rel1_y_to,
+                                        ld->rel_to_info.rel2_x_to,
+                                        ld->rel_to_info.rel2_y_to,
+                                        ld->rel_to_info.align_x,
+                                        ld->rel_to_info.align_y,
+                                        min_w,
+                                        min_h,
+                                        ld->rel_to_info.rel1_to_x,
+                                        ld->rel_to_info.rel1_to_y,
+                                        ld->rel_to_info.rel2_to_x,
+                                        ld->rel_to_info.rel2_to_y,
                                         NULL, 0);
    enventor_object_save(base_enventor_get(), config_input_path_get());
+   
+   if (ld->rel_to_info.rel1_x_to)
+     free(ld->rel_to_info.rel1_x_to);
+   if (ld->rel_to_info.rel1_y_to)
+     free(ld->rel_to_info.rel1_y_to);
+   if (ld->rel_to_info.rel2_x_to)
+     free(ld->rel_to_info.rel2_x_to);
+   if (ld->rel_to_info.rel2_y_to)
+     free(ld->rel_to_info.rel2_y_to);
 }
 
 static void
@@ -387,7 +458,7 @@ cp_top_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
    if (vy > y) y = vy;
    if ((y - ld->half_ctrl_size) > rel2_y) y = (rel2_y + ld->half_ctrl_size);
 
-   ld->part_info.rel1_y = ROUNDING(((double) (y - vy) / (double) vh), 2);
+   ld->rel_info.rel1_y = ROUNDING(((double) (y - vy) / (double) vh), 2);
 
    elm_object_signal_emit(ld->align_line[Align_Line_Top], "elm,state,show", "");
 }
@@ -419,7 +490,7 @@ cp_bottom_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
    if (y > (vy + vh)) y = (vy + vh);
    if (rel1_y > (y + ld->half_ctrl_size)) y = (rel1_y + ld->half_ctrl_size);
 
-   ld->part_info.rel2_y = ROUNDING(((double) (y - vy) / (double) vh), 2);
+   ld->rel_info.rel2_y = ROUNDING(((double) (y - vy) / (double) vh), 2);
 
    elm_object_signal_emit(ld->align_line[Align_Line_Bottom], "elm,state,show",
                           "");
@@ -507,12 +578,12 @@ keygrabber_direction_key_down_cb(void *data, Evas *e EINA_UNUSED,
    evas_object_move(ld->layout, x, y);
 
    //Calculate the relative value of live view item to 4 places of decimals
-   double orig_rel1_x = ld->part_info.rel1_x;
-   double orig_rel1_y = ld->part_info.rel1_y;
-   ld->part_info.rel1_x = ROUNDING(((double) (x - vx) / vw), 4);
-   ld->part_info.rel1_y = ROUNDING(((double) (y - vy) / vh), 4);
-   ld->part_info.rel2_x += ROUNDING((ld->part_info.rel1_x - orig_rel1_x), 4);
-   ld->part_info.rel2_y += ROUNDING((ld->part_info.rel1_y - orig_rel1_y), 4);
+   double orig_rel1_x = ld->rel_info.rel1_x;
+   double orig_rel1_y = ld->rel_info.rel1_y;
+   ld->rel_info.rel1_x = ROUNDING(((double) (x - vx) / vw), 4);
+   ld->rel_info.rel1_y = ROUNDING(((double) (y - vy) / vh), 4);
+   ld->rel_info.rel2_x += ROUNDING((ld->rel_info.rel1_x - orig_rel1_x), 4);
+   ld->rel_info.rel2_y += ROUNDING((ld->rel_info.rel1_y - orig_rel1_y), 4);
 
    ctrl_pt_update(ld);
    info_text_update(ld);
@@ -547,8 +618,8 @@ cp_rel1_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
    if ((x - ld->half_ctrl_size) > rel2_x) x = (rel2_x + ld->half_ctrl_size);
    if ((y - ld->half_ctrl_size) > rel2_y) y = (rel2_y + ld->half_ctrl_size);
 
-   ld->part_info.rel1_x = ROUNDING(((double) (x - vx) / (double) vw), 2);
-   ld->part_info.rel1_y = ROUNDING(((double) (y - vy) / (double) vh), 2);
+   ld->rel_info.rel1_x = ROUNDING(((double) (x - vx) / (double) vw), 2);
+   ld->rel_info.rel1_y = ROUNDING(((double) (y - vy) / (double) vh), 2);
 
    elm_object_signal_emit(ld->align_line[Align_Line_Left], "elm,state,show",
                           "");
@@ -583,8 +654,8 @@ cp_rel2_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
    if (rel1_x > (x + ld->half_ctrl_size)) x = (rel1_x + ld->half_ctrl_size);
    if (rel1_y > (y + ld->half_ctrl_size)) y = (rel1_y + ld->half_ctrl_size);
 
-   ld->part_info.rel2_x = ROUNDING(((double) (x - vx) / (double) vw), 2);
-   ld->part_info.rel2_y = ROUNDING(((double) (y - vy) / (double) vh), 2);
+   ld->rel_info.rel2_x = ROUNDING(((double) (x - vx) / (double) vw), 2);
+   ld->rel_info.rel2_y = ROUNDING(((double) (y - vy) / (double) vh), 2);
 
    elm_object_signal_emit(ld->align_line[Align_Line_Right], "elm,state,show",
                           "");
@@ -624,8 +695,8 @@ cp_rel3_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
    if (vy > y) y = vy;
    if ((y - ld->half_ctrl_size) > rel2_y) y = (rel2_y + ld->half_ctrl_size);
 
-   ld->part_info.rel2_x = ROUNDING(((double) (x - vx) / (double) vw), 2);
-   ld->part_info.rel1_y = ROUNDING(((double) (y - vy) / (double) vh), 2);
+   ld->rel_info.rel2_x = ROUNDING(((double) (x - vx) / (double) vw), 2);
+   ld->rel_info.rel1_y = ROUNDING(((double) (y - vy) / (double) vh), 2);
 
    elm_object_signal_emit(ld->align_line[Align_Line_Right], "elm,state,show",
                           "");
@@ -664,8 +735,8 @@ cp_rel4_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
    if (y > (vy + vh)) y = (vy + vh);
    if (rel1_y > (y + ld->half_ctrl_size)) y = (rel1_y + ld->half_ctrl_size);
 
-   ld->part_info.rel1_x = ROUNDING(((double) (x - vx) / (double) vw), 2);
-   ld->part_info.rel2_y = ROUNDING(((double) (y - vy) / (double) vh), 2);
+   ld->rel_info.rel1_x = ROUNDING(((double) (x - vx) / (double) vw), 2);
+   ld->rel_info.rel2_y = ROUNDING(((double) (y - vy) / (double) vh), 2);
 
    elm_object_signal_emit(ld->align_line[Align_Line_Left], "elm,state,show",
                           "");
@@ -699,7 +770,7 @@ cp_left_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
    if (vx > x) x = vx;
    if ((x - ld->half_ctrl_size) > rel2_x) x = (rel2_x + ld->half_ctrl_size);
 
-   ld->part_info.rel1_x = ROUNDING(((double) (x - vx) / (double) vw), 2);
+   ld->rel_info.rel1_x = ROUNDING(((double) (x - vx) / (double) vw), 2);
 
    elm_object_signal_emit(ld->align_line[Align_Line_Left], "elm,state,show",
                           "");
@@ -732,7 +803,7 @@ cp_right_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
    if (x > (vx + vw)) x = (vx + vw);
    if (rel1_x > (x + ld->half_ctrl_size)) x = (rel1_x + ld->half_ctrl_size);
 
-   ld->part_info.rel2_x = ROUNDING(((double) (x - vx) / (double) vw), 2);
+   ld->rel_info.rel2_x = ROUNDING(((double) (x - vx) / (double) vw), 2);
 
    elm_object_signal_emit(ld->align_line[Align_Line_Right], "elm,state,show",
                           "");
@@ -779,6 +850,9 @@ cp_mouse_move_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
           cp_right_mouse_move_cb(data, e, obj, event_info);
           break;
      }
+
+   //Memorize last selected control point for setting relative_to
+   ld->last_cp = cp;
    live_edit_update_internal(ld);
 }
 
@@ -788,6 +862,364 @@ align_lines_hide(live_data *ld)
    int i;
    for (i = 0; i < Align_Line_Cnt; i++)
      elm_object_signal_emit(ld->align_line[i], "elm,state,hide", "");
+}
+
+static void
+rel_to_ctxpopup_cb(void *data, Evas_Object *obj, void *event_info)
+{
+   rel_to_data *rel_data = data;
+   live_data *ld = rel_data->ld;
+
+   Evas_Coord lx, ly, lw, lh;
+   evas_object_geometry_get(ld->layout, &lx, &ly, &lw, &lh);
+
+   //Set relative_to properties according to the user input value
+   //Case 1: width and height are relative
+   if (!ld->fixed_w && !ld->fixed_h)
+     {
+        if (rel_data->is_rel_to_x)
+          {
+             if ((rel_data->rel_x == 0.0) || (rel_data->rel_x == 1.0))
+               {
+                  if ((ld->last_cp == Ctrl_Pt_Rel1) || (ld->last_cp == Ctrl_Pt_Rel4) ||
+                      (ld->last_cp == Ctrl_Pt_Left))
+                    {
+                       ld->rel_to_info.rel1_to_x = rel_data->rel_x;
+                       if (ld->rel_to_info.rel1_x_to) free(ld->rel_to_info.rel1_x_to);
+                       ld->rel_to_info.rel1_x_to = strndup(rel_data->part_name, strlen(rel_data->part_name));
+                    }
+                  else if ((ld->last_cp == Ctrl_Pt_Rel2) || (ld->last_cp == Ctrl_Pt_Rel3) ||
+                           (ld->last_cp == Ctrl_Pt_Right))
+                    {
+                       ld->rel_to_info.rel2_to_x = rel_data->rel_x;
+                       if (ld->rel_to_info.rel2_x_to) free(ld->rel_to_info.rel2_x_to);
+                       ld->rel_to_info.rel2_x_to = strndup(rel_data->part_name, strlen(rel_data->part_name));
+                    }
+                }
+          }
+        if (rel_data->is_rel_to_y)
+          {
+             if ((rel_data->rel_y == 0.0) || (rel_data->rel_y == 1.0))
+               {
+                  if ((ld->last_cp == Ctrl_Pt_Rel1) || (ld->last_cp == Ctrl_Pt_Rel3) ||
+                      (ld->last_cp == Ctrl_Pt_Top))
+                    {
+                       ld->rel_to_info.rel1_to_y = rel_data->rel_y;
+                       if (ld->rel_to_info.rel1_y_to) free(ld->rel_to_info.rel1_y_to);
+                       ld->rel_to_info.rel1_y_to = strndup(rel_data->part_name, strlen(rel_data->part_name));
+                    }
+                  else if ((ld->last_cp == Ctrl_Pt_Rel2) || (ld->last_cp == Ctrl_Pt_Rel4) ||
+                           (ld->last_cp == Ctrl_Pt_Bottom))
+                    {
+                       ld->rel_to_info.rel2_to_y = rel_data->rel_y;
+                       if (ld->rel_to_info.rel2_y_to) free(ld->rel_to_info.rel2_y_to);
+                       ld->rel_to_info.rel2_y_to = strndup(rel_data->part_name, strlen(rel_data->part_name));
+                    }
+               }
+          }
+     }
+   //Case 2: width is fixed
+   else if(ld->fixed_w && !ld->fixed_h)
+     {
+        if (rel_data->is_rel_to_x)
+          {
+             if ((ld->last_cp == Ctrl_Pt_Rel1) || (ld->last_cp == Ctrl_Pt_Rel4) ||
+                 (ld->last_cp == Ctrl_Pt_Left))
+               {
+                  ld->rel_to_info.align_x = 0.0;
+                  ld->rel_to_info.align_y = 0.5;
+                  ld->rel_to_info.rel1_to_x = rel_data->rel_x;
+                  ld->rel_to_info.rel2_to_x = rel_data->rel_x;
+                  if (ld->rel_to_info.rel1_x_to) free(ld->rel_to_info.rel1_x_to);
+                  if (ld->rel_to_info.rel2_x_to) free(ld->rel_to_info.rel2_x_to);
+                  ld->rel_to_info.rel1_x_to = strndup(rel_data->part_name, strlen(rel_data->part_name));
+                  ld->rel_to_info.rel2_x_to = strndup(rel_data->part_name, strlen(rel_data->part_name));
+               }
+             if ((ld->last_cp == Ctrl_Pt_Rel2) || (ld->last_cp == Ctrl_Pt_Rel2) ||
+                 (ld->last_cp == Ctrl_Pt_Right))
+               {
+                  ld->rel_to_info.align_x = 1.0;
+                  ld->rel_to_info.align_y = 0.5;
+                  ld->rel_to_info.rel1_to_x = rel_data->rel_x;
+                  ld->rel_to_info.rel2_to_x = rel_data->rel_x;
+                  if (ld->rel_to_info.rel1_x_to) free(ld->rel_to_info.rel1_x_to);
+                  if (ld->rel_to_info.rel2_x_to) free(ld->rel_to_info.rel2_x_to);
+                  ld->rel_to_info.rel1_x_to = strndup(rel_data->part_name, strlen(rel_data->part_name));
+                  ld->rel_to_info.rel2_x_to = strndup(rel_data->part_name, strlen(rel_data->part_name));
+               }
+          }
+        if (rel_data->is_rel_to_y)
+          {
+             if ((rel_data->rel_y == 0.0) || (rel_data->rel_y == 1.0))
+               {
+                  if (ld->last_cp == Ctrl_Pt_Rel1 || ld->last_cp == Ctrl_Pt_Rel3 ||
+                      ld->last_cp == Ctrl_Pt_Top)
+                    {
+                       ld->rel_to_info.rel1_to_y = rel_data->rel_y;
+                       if (ld->rel_to_info.rel1_y_to) free(ld->rel_to_info.rel1_y_to);
+                       ld->rel_to_info.rel1_y_to = strndup(rel_data->part_name, strlen(rel_data->part_name));
+                    }
+                  else if ((ld->last_cp == Ctrl_Pt_Rel2) || (ld->last_cp == Ctrl_Pt_Rel4) ||
+                           (ld->last_cp == Ctrl_Pt_Bottom))
+                    {
+                       ld->rel_to_info.rel2_to_y = rel_data->rel_y;
+                       if (ld->rel_to_info.rel2_y_to) free(ld->rel_to_info.rel2_y_to);
+                       ld->rel_to_info.rel2_y_to = strndup(rel_data->part_name, strlen(rel_data->part_name));
+                    }
+               }
+          }
+     }
+   //Case 3: height is fixed
+   else if(!ld->fixed_w && ld->fixed_h)
+     {
+        if (rel_data->is_rel_to_y)
+          {
+             if ((ld->last_cp == Ctrl_Pt_Rel1) || (ld->last_cp == Ctrl_Pt_Rel3) ||
+                 (ld->last_cp == Ctrl_Pt_Top))
+               {
+                  ld->rel_to_info.align_x = 0.5;
+                  ld->rel_to_info.align_y = 0.0;
+                  ld->rel_to_info.rel1_to_y = rel_data->rel_y;
+                  ld->rel_to_info.rel2_to_y = rel_data->rel_y;
+                  if (ld->rel_to_info.rel1_y_to) free(ld->rel_to_info.rel1_y_to);
+                  if (ld->rel_to_info.rel2_y_to) free(ld->rel_to_info.rel2_y_to);
+                  ld->rel_to_info.rel1_y_to = strndup(rel_data->part_name, strlen(rel_data->part_name));
+                  ld->rel_to_info.rel2_y_to = strndup(rel_data->part_name, strlen(rel_data->part_name));
+               }
+             if ((ld->last_cp == Ctrl_Pt_Rel2) || (ld->last_cp == Ctrl_Pt_Rel4) ||
+                 (ld->last_cp == Ctrl_Pt_Bottom))
+               {
+                  ld->rel_to_info.align_x = 0.5;
+                  ld->rel_to_info.align_y = 1.0;
+                  ld->rel_to_info.rel1_to_y = rel_data->rel_y;
+                  ld->rel_to_info.rel2_to_y = rel_data->rel_y;
+                  if (ld->rel_to_info.rel1_y_to) free(ld->rel_to_info.rel1_y_to);
+                  if (ld->rel_to_info.rel2_y_to) free(ld->rel_to_info.rel2_y_to);
+                  ld->rel_to_info.rel1_y_to = strndup(rel_data->part_name, strlen(rel_data->part_name));
+                  ld->rel_to_info.rel2_y_to = strndup(rel_data->part_name, strlen(rel_data->part_name));
+               }
+          }
+        if (rel_data->is_rel_to_x)
+          {
+             if ((rel_data->rel_x == 0.0) || (rel_data->rel_x == 1.0))
+               {
+                  if ((ld->last_cp == Ctrl_Pt_Rel1) || (ld->last_cp == Ctrl_Pt_Rel4) ||
+                      (ld->last_cp == Ctrl_Pt_Left))
+                    {
+                       ld->rel_to_info.rel1_to_x = rel_data->rel_x;
+                       if (ld->rel_to_info.rel1_x_to) free(ld->rel_to_info.rel1_x_to);
+                       ld->rel_to_info.rel1_x_to = strndup(rel_data->part_name, strlen(rel_data->part_name));
+                    }
+                  else if ((ld->last_cp == Ctrl_Pt_Rel2) || (ld->last_cp == Ctrl_Pt_Rel3) ||
+                           (ld->last_cp == Ctrl_Pt_Right))
+                    {
+                       ld->rel_to_info.rel2_to_x = rel_data->rel_x;
+                       if (ld->rel_to_info.rel2_x_to) free(ld->rel_to_info.rel2_x_to);
+                       ld->rel_to_info.rel2_x_to = strndup(rel_data->part_name, strlen(rel_data->part_name));
+                    }
+               }
+          }
+     }
+   //Case 4: width and height are fixed
+   else if(ld->fixed_w && ld->fixed_h)
+     {
+        double x_add, y_add;
+        x_add = y_add = 0;
+
+       if (ld->last_cp == Ctrl_Pt_Rel1)
+         {
+            ld->rel_to_info.align_x = 0.0;
+            ld->rel_to_info.align_y = 0.0;
+         }
+       else if (ld->last_cp == Ctrl_Pt_Rel2)
+         {
+            x_add = lw;
+            y_add = lh;
+            ld->rel_to_info.align_x = 1.0;
+            ld->rel_to_info.align_y = 1.0;
+         }
+       else if (ld->last_cp == Ctrl_Pt_Rel3)
+         {
+            x_add = lw;
+            ld->rel_to_info.align_x = 1.0;
+            ld->rel_to_info.align_y = 0.0;
+         }
+       else if (ld->last_cp == Ctrl_Pt_Rel4)
+         {
+            y_add = lh;
+            ld->rel_to_info.align_x = 0.0;
+            ld->rel_to_info.align_y = 1.0;
+         }
+       else if (ld->last_cp == Ctrl_Pt_Left)
+         {
+            y_add = lh / 2;
+            ld->rel_to_info.align_x = 0.0;
+            ld->rel_to_info.align_y = 0.5;
+         }
+       else if (ld->last_cp == Ctrl_Pt_Right)
+         {
+            x_add = lw;
+            y_add = lh / 2;
+            ld->rel_to_info.align_x = 1.0;
+            ld->rel_to_info.align_y = 0.5;
+         }
+       else if (ld->last_cp == Ctrl_Pt_Top)
+         {
+            x_add = lw / 2;
+            ld->rel_to_info.align_x = 0.5;
+            ld->rel_to_info.align_y = 0.0;
+         }
+       else if (ld->last_cp == Ctrl_Pt_Bottom)
+         {
+            x_add = lw / 2;
+            y_add = lh;
+            ld->rel_to_info.align_x = 0.5;
+            ld->rel_to_info.align_y = 1.0;
+         }
+
+        if (ld->rel_to_info.rel1_x_to) free(ld->rel_to_info.rel1_x_to);
+        if (ld->rel_to_info.rel1_y_to) free(ld->rel_to_info.rel1_y_to);
+        if (ld->rel_to_info.rel2_x_to) free(ld->rel_to_info.rel2_x_to);
+        if (ld->rel_to_info.rel2_y_to) free(ld->rel_to_info.rel2_y_to);
+        ld->rel_to_info.rel1_x_to = strndup(rel_data->part_name, strlen(rel_data->part_name));
+        ld->rel_to_info.rel1_y_to = strndup(rel_data->part_name, strlen(rel_data->part_name));
+        ld->rel_to_info.rel2_x_to = strndup(rel_data->part_name, strlen(rel_data->part_name));
+        ld->rel_to_info.rel2_y_to = strndup(rel_data->part_name, strlen(rel_data->part_name));
+
+        //Calculate part relative which is matched to base relative
+        double part_rel_x = (double)abs(((lx + x_add) - rel_data->pt1.x)) /
+                            (rel_data->pt2.x - rel_data->pt1.x);
+        double part_rel_y = (double)abs(((ly + y_add) - rel_data->pt1.y)) /
+                            (rel_data->pt2.y - rel_data->pt1.y);
+
+
+        if (rel_data->is_rel_to_x)
+          {
+             ld->rel_to_info.rel1_to_x = rel_data->rel_x;
+             ld->rel_to_info.rel2_to_x = rel_data->rel_x;
+             ld->rel_to_info.rel1_to_y = part_rel_y;
+             ld->rel_to_info.rel2_to_y = part_rel_y;
+          }
+
+        if (rel_data->is_rel_to_y)
+          {
+             ld->rel_to_info.rel1_to_y = rel_data->rel_y;
+             ld->rel_to_info.rel2_to_y = rel_data->rel_y;
+             ld->rel_to_info.rel1_to_x = part_rel_x;
+             ld->rel_to_info.rel2_to_x = part_rel_x;
+          }
+     }
+
+   elm_ctxpopup_dismiss(obj);
+}
+
+static void
+rel_type_ctxpopup_dismissed_cb(void *data, Evas_Object *obj,  void *event_info)
+{
+   live_data *ld = data;
+   ld->rel_type_ctxpopup = NULL;
+   evas_object_del(obj);
+}
+
+static void
+rel_to_ctxpopup_dismissed_cb(void *data, Evas_Object *obj,  void *event_info)
+{
+   rel_to_data *rel_data = data;
+   live_data *ld = rel_data->ld;
+   ld->rel_to_ctxpopup = NULL;
+   free(rel_data);
+   evas_object_del(obj);
+}
+
+rel_to_data*
+make_rel_data(live_data *ld, auto_align_data *al_pos, int is_rel_to_x, int is_rel_to_y,
+              float rel_x, float rel_y, char *rel_dir)
+{
+   char rel_part_name[PART_NAME_MAX];
+   rel_to_data *rel_data = calloc(1, sizeof(rel_to_data));
+   int part_name_length = strlen(al_pos->part_name);
+   strncpy(rel_data->part_name, al_pos->part_name, part_name_length);
+   rel_data->is_rel_to_x = is_rel_to_x;
+   rel_data->is_rel_to_y = is_rel_to_y;
+   rel_data->rel_x = rel_x;
+   rel_data->rel_y = rel_y;
+   rel_data->ld = ld;
+   snprintf(rel_part_name, PART_NAME_MAX, "%s: %s", al_pos->part_name, rel_dir);
+   rel_data->pt1.x = al_pos->pt1.x;
+   rel_data->pt1.y = al_pos->pt1.y;
+   rel_data->pt2.x = al_pos->pt2.x;
+   rel_data->pt2.y = al_pos->pt2.y;
+   elm_ctxpopup_item_append(ld->rel_to_ctxpopup, rel_part_name, NULL,
+                            rel_to_ctxpopup_cb, rel_data);
+   evas_object_smart_callback_add(ld->rel_to_ctxpopup, "dismissed",
+                                  rel_to_ctxpopup_dismissed_cb, rel_data);
+
+   return rel_data;
+
+}
+
+static void
+show_relative_to_list(live_data *ld, int x, int y)
+{
+   unsigned int i;
+   Eina_Array_Iterator iter;
+   auto_align_data *al_pos;
+
+   Evas_Coord_Point cur_ctrl_pt = calc_ctrl_pt_auto_align_pos(ld, x, y);
+
+   if (ld->rel_to_ctxpopup)
+     return;
+
+   ld->rel_to_ctxpopup = elm_ctxpopup_add(ld->live_view);
+   //FIXME: because the focus highlighting is floated after ctxpopup is dismissed,
+   //       i disable the focus here
+   elm_object_tree_focus_allow_set(ld->rel_to_ctxpopup, EINA_FALSE);
+
+   Eina_Bool is_rel_to = EINA_FALSE;
+
+   //Find relative_to part corresponding to the current control point
+   EINA_ARRAY_ITER_NEXT(ld->auto_align_array, i, al_pos, iter)
+   {
+      //Case 1: Find relative_to x
+      if ((cur_ctrl_pt.y >= al_pos->pt1.y) && (cur_ctrl_pt.y <= al_pos->pt2.y))
+        {
+           if (al_pos->pt1.x == cur_ctrl_pt.x)
+             {
+                is_rel_to = EINA_TRUE;
+                make_rel_data(ld, al_pos, 1, 0, 0.0, 0.0, "to_x");
+             }
+           if (al_pos->pt2.x == cur_ctrl_pt.x)
+             {
+                is_rel_to = EINA_TRUE;
+                make_rel_data(ld, al_pos, 1, 0, 1.0, 0.0, "to_x");
+             }
+        }
+      //Case 2: Find relative_to y
+      if ((cur_ctrl_pt.x >= al_pos->pt1.x) && (cur_ctrl_pt.x <= al_pos->pt2.x))
+        {
+           if (al_pos->pt1.y == cur_ctrl_pt.y)
+             {
+                is_rel_to = EINA_TRUE;
+                make_rel_data(ld, al_pos, 0, 1, 0.0, 0.0, "to_y");
+             }
+           if (al_pos->pt2.y == cur_ctrl_pt.y)
+             {
+                is_rel_to = EINA_TRUE;
+                make_rel_data(ld, al_pos, 0, 1, 0.0, 1.0, "to_y");
+             }
+        }
+   }
+
+   if (is_rel_to == EINA_FALSE)
+     {
+        evas_object_del(ld->rel_to_ctxpopup);
+        ld->rel_to_ctxpopup = NULL;
+     }
+   else
+     {
+        evas_object_move(ld->rel_to_ctxpopup, x, y);
+        evas_object_show(ld->rel_to_ctxpopup);
+     }
 }
 
 static void
@@ -801,6 +1233,11 @@ cp_mouse_up_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
                                   cp_mouse_move_cb);
    live_data *ld = data;
    align_lines_hide(ld);
+
+   Evas_Coord x = ev->canvas.x;
+   Evas_Coord y = ev->canvas.y;
+
+   show_relative_to_list(ld, x, y);
 
    //Show All Control Points
    int i;
@@ -914,6 +1351,7 @@ live_edit_auto_align_target_parts_init(live_data *ld, Eina_Bool is_update)
            part_obj = (Evas_Object *) edje_object_part_object_get(view_obj, part_name);
            edje_object_part_geometry_get(view_obj, part_name, &x, &y, &w, &h);
            auto_align_data *al_pos = calloc(1, sizeof(auto_align_data));
+           snprintf(al_pos->part_name, PART_NAME_MAX, "%s", part_name);
            al_pos->pt1.x = x + vx;
            al_pos->pt1.y = y + vy;
            al_pos->pt2.x = x + w + vx;
@@ -953,13 +1391,13 @@ layout_update(live_data *ld)
    Evas_Object *view = view_obj_get(ld);
    evas_object_geometry_get(view, &x, &y, &w, &h);
 
-   double x2 = round(w * ld->part_info.rel1_x);
-   double y2 = round(h * ld->part_info.rel1_y);
+   double x2 = round(w * ld->rel_info.rel1_x);
+   double y2 = round(h * ld->rel_info.rel1_y);
    evas_object_move(ld->layout, (x + x2), (y + y2));
    double w2 =
-     round(((double) w * (ld->part_info.rel2_x - ld->part_info.rel1_x)));
+     round(((double) w * (ld->rel_info.rel2_x - ld->rel_info.rel1_x)));
    double h2 =
-     round(((double) h * (ld->part_info.rel2_y - ld->part_info.rel1_y)));
+     round(((double) h * (ld->rel_info.rel2_y - ld->rel_info.rel1_y)));
    evas_object_resize(ld->layout, w2, h2);
 
    live_edit_auto_align_target_parts_init(ld, EINA_TRUE);
@@ -1186,12 +1624,12 @@ layout_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
    if (vy > y) y = vy;
    if ((y + h) > (vy + vh)) y -= ((y + h) - (vy + vh));
 
-   double orig_rel1_x = ld->part_info.rel1_x;
-   double orig_rel1_y = ld->part_info.rel1_y;
-   ld->part_info.rel1_x = ROUNDING(((double) (x - vx) / vw), 2);
-   ld->part_info.rel1_y = ROUNDING(((double) (y - vy) / vh), 2);
-   ld->part_info.rel2_x += ROUNDING((ld->part_info.rel1_x - orig_rel1_x), 2);
-   ld->part_info.rel2_y += ROUNDING((ld->part_info.rel1_y - orig_rel1_y), 2);
+   double orig_rel1_x = ld->rel_info.rel1_x;
+   double orig_rel1_y = ld->rel_info.rel1_y;
+   ld->rel_info.rel1_x = ROUNDING(((double) (x - vx) / vw), 2);
+   ld->rel_info.rel1_y = ROUNDING(((double) (y - vy) / vh), 2);
+   ld->rel_info.rel2_x += ROUNDING((ld->rel_info.rel1_x - orig_rel1_x), 2);
+   ld->rel_info.rel2_y += ROUNDING((ld->rel_info.rel1_y - orig_rel1_y), 2);
 
    evas_object_move(obj, x, y);
 
@@ -1309,6 +1747,68 @@ key_grab_add(Evas_Object *keygrabber, const char *key)
 }
 
 static void
+fixed_w_check_changed_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
+{
+   live_data *ld = data;
+   ld->fixed_w = elm_check_state_get(obj);
+}
+
+static void
+fixed_h_check_changed_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
+{
+   live_data *ld = data;
+   ld->fixed_h = elm_check_state_get(obj);
+}
+
+static void
+show_fixed_check_list(live_data *ld)
+{
+   if (ld->rel_type_ctxpopup)
+     return;
+
+   ld->rel_type_ctxpopup = elm_ctxpopup_add(ld->live_view);
+   //FIXME: because the focus highlighting is floated after ctxpopup is dismissed,
+   //       i disable the focus here
+   elm_object_tree_focus_allow_set(ld->rel_type_ctxpopup, EINA_FALSE);
+   evas_object_smart_callback_add(ld->rel_type_ctxpopup, "dismissed",
+                                  rel_type_ctxpopup_dismissed_cb, ld);
+
+   Evas_Object *view_obj = view_obj_get(ld);
+   Evas_Coord vx, vy, vw, vh;
+   evas_object_geometry_get(view_obj, &vx, &vy, &vw, &vh);
+
+   evas_object_move(ld->rel_type_ctxpopup, vx + (vw / 2), vy + (vh / 2));
+   elm_object_scale_set(ld->rel_type_ctxpopup, 1.2);
+
+   Evas_Object *fixed_box = elm_box_add(ld->rel_type_ctxpopup);
+   elm_box_horizontal_set(fixed_box, EINA_TRUE);
+   evas_object_show(fixed_box);
+
+   Evas_Object *label = elm_label_add(fixed_box);
+   elm_object_text_set(label, "Set Fixed Properties: ");
+   evas_object_show(label);
+   elm_box_pack_end(fixed_box, label);
+
+   Evas_Object *fixed_w_check = elm_check_add(fixed_box);
+   Evas_Object *fixed_h_check = elm_check_add(fixed_box);
+
+   elm_check_state_set(fixed_w_check, ld->fixed_w);
+   elm_check_state_set(fixed_h_check, ld->fixed_h);
+   elm_object_text_set(fixed_w_check, "width");
+   elm_object_text_set(fixed_h_check, "height");
+   elm_box_pack_end(fixed_box, fixed_w_check);
+   elm_box_pack_end(fixed_box, fixed_h_check);
+   evas_object_show(fixed_w_check);
+   evas_object_show(fixed_h_check);
+
+   evas_object_smart_callback_add(fixed_w_check, "changed", fixed_w_check_changed_cb, ld);
+   evas_object_smart_callback_add(fixed_h_check, "changed", fixed_h_check_changed_cb, ld);
+
+   elm_object_content_set(ld->rel_type_ctxpopup, fixed_box);
+   evas_object_show(ld->rel_type_ctxpopup);
+}
+
+static void
 live_edit_layer_set(live_data *ld)
 {
    //Keygrabber
@@ -1348,10 +1848,16 @@ live_edit_layer_set(live_data *ld)
                                   view_scroll_cb, ld);
 
    //Initial Layout Geometry
-   ld->part_info.rel1_x = LIVE_EDIT_REL1;
-   ld->part_info.rel1_y = LIVE_EDIT_REL1;
-   ld->part_info.rel2_x = LIVE_EDIT_REL2;
-   ld->part_info.rel2_y = LIVE_EDIT_REL2;
+   ld->rel_info.rel1_x = LIVE_EDIT_REL1;
+   ld->rel_info.rel1_y = LIVE_EDIT_REL1;
+   ld->rel_info.rel2_x = LIVE_EDIT_REL2;
+   ld->rel_info.rel2_y = LIVE_EDIT_REL2;
+   ld->rel_to_info.align_x = 0.5;
+   ld->rel_to_info.align_y = 0.5;
+   ld->rel_to_info.rel1_x_to = NULL;
+   ld->rel_to_info.rel1_y_to = NULL;
+   ld->rel_to_info.rel2_x_to = NULL;
+   ld->rel_to_info.rel2_y_to = NULL;
 
    live_edit_symbol_set(ld);
    ctrl_pt_init(ld);
@@ -1359,6 +1865,8 @@ live_edit_layer_set(live_data *ld)
    live_edit_update_internal(ld);
    info_text_init(ld);
    live_edit_auto_align_target_parts_init(ld, EINA_FALSE);
+   show_fixed_check_list(ld);
+   ld->last_cp = Ctrl_Pt_Cnt;
 }
 
 static void
@@ -1371,7 +1879,7 @@ live_btn_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
 
    live_data *ld = g_ld;
 
-   ld->part_info.type = (unsigned int)(uintptr_t)data;
+   ld->type = (unsigned int)(uintptr_t)data;
    enventor_object_disabled_set(base_enventor_get(), EINA_TRUE);
    ld->live_view = enventor_object_live_view_get(base_enventor_get());
    ld->on = EINA_TRUE;
@@ -1433,6 +1941,18 @@ live_edit_cancel(void)
 {
    live_data *ld = g_ld;
    if (!ld->on) return EINA_FALSE;
+
+   if (ld->rel_type_ctxpopup)
+     {
+        elm_ctxpopup_dismiss(ld->rel_type_ctxpopup);
+        return EINA_TRUE;
+     }
+
+   if (ld->rel_to_ctxpopup)
+     {
+        elm_ctxpopup_dismiss(ld->rel_to_ctxpopup);
+        return EINA_TRUE;
+     }
 
    enventor_object_disabled_set(base_enventor_get(), EINA_FALSE);
 
