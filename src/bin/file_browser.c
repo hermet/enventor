@@ -375,13 +375,28 @@ brows_file_free(brows_file *file)
 {
    if (!file) return;
 
-   if (file->path) free(file->path);
-   if (file->name) free(file->name);
+   if (file->path)
+     {
+        free(file->path);
+        file->path = NULL;
+     }
+   if (file->name)
+     {
+        free(file->name);
+        file->name = NULL;
+     }
 
    if (file->sub_file_list)
-     brows_file_list_free(file->sub_file_list);
+     {
+        brows_file_list_free(file->sub_file_list);
+        file->sub_file_list = NULL;
+     }
 
-   if (file->it) elm_object_item_del(file->it);
+   if (file->it)
+     {
+        elm_object_item_del(file->it);
+        file->it = NULL;
+     }
 }
 
 static void
