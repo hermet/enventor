@@ -51,8 +51,6 @@ struct programs_it_s
    Elm_Object_Item *it;
    Eina_List *programs;
    group_it *git;
-
-   Evas_Object *content;  //Stop all programs
 };
 
 struct group_it_s
@@ -96,8 +94,6 @@ struct program_it_s
    char *name;
    Elm_Object_Item *it;
    programs_it *pit;
-
-   Evas_Object *content;  //Play button
 
    Eina_Bool discarded : 1;
 };
@@ -760,24 +756,6 @@ gl_program_text_get_cb(void *data, Evas_Object *obj EINA_UNUSED,
    return strdup(spit->name);
 }
 
-static void
-gl_program_del_cb(void *data, Evas_Object *obj EINA_UNUSED)
-{
-   //FIXME: Genlist reuses this content and it breaks edc navigator.
-   //This is an absolutely bug. This del_cb() is a workaround for this.
-   program_it *pit = data;
-   evas_object_del(pit->content);
-}
-
-static void
-program_content_del_cb(void *data, Evas *e EINA_UNUSED,
-                        Evas_Object *obj EINA_UNUSED,
-                        void *event_info EINA_UNUSED)
-{
-   programs_it *pit = data;
-   pit->content = NULL;
-}
-
 static Evas_Object *
 gl_program_content_get_cb(void *data EINA_UNUSED, Evas_Object *obj,
                           const char *part)
@@ -793,13 +771,9 @@ gl_program_content_get_cb(void *data EINA_UNUSED, Evas_Object *obj,
    //2. Play Button
    program_it *pit = data;
 
-   evas_object_del(pit->content);
-
    //Box
    Evas_Object *box = elm_box_add(obj);
    elm_object_tooltip_text_set(box, "Play Program");
-   evas_object_event_callback_add(box, EVAS_CALLBACK_DEL,
-                                  program_content_del_cb, pit);
 
    //Button
    Evas_Object *btn = elm_button_add(box);
@@ -816,8 +790,6 @@ gl_program_content_get_cb(void *data EINA_UNUSED, Evas_Object *obj,
    elm_object_content_set(btn, img);
 
    elm_box_pack_end(box, btn);
-
-   pit->content = box;
 
    return box;
 }
@@ -1028,24 +1000,6 @@ gl_programs_text_get_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
    return strdup("PROGRAMS");
 }
 
-static void
-gl_programs_del_cb(void *data, Evas_Object *obj EINA_UNUSED)
-{
-   //FIXME: Genlist reuses this content and it breaks edc navigator.
-   //This is an absolutely bug. This del_cb() is a workaround for this.
-   programs_it *pit = data;
-   evas_object_del(pit->content);
-}
-
-static void
-programs_content_del_cb(void *data, Evas *e EINA_UNUSED,
-                        Evas_Object *obj EINA_UNUSED,
-                        void *event_info EINA_UNUSED)
-{
-   programs_it *pit = data;
-   pit->content = NULL;
-}
-
 static Evas_Object *
 gl_programs_content_get_cb(void *data, Evas_Object *obj, const char *part)
 {
@@ -1061,12 +1015,8 @@ gl_programs_content_get_cb(void *data, Evas_Object *obj, const char *part)
    //2. Stop All Button
    programs_it *pit = data;
 
-   evas_object_del(pit->content);
-
    //Box
    Evas_Object *box = elm_box_add(obj);
-   evas_object_event_callback_add(box, EVAS_CALLBACK_DEL,
-                                  programs_content_del_cb, pit);
    elm_object_tooltip_text_set(box, "Stop All Programs");
 
    //Button
@@ -1084,8 +1034,6 @@ gl_programs_content_get_cb(void *data, Evas_Object *obj, const char *part)
    elm_object_content_set(btn, img);
 
    elm_box_pack_end(box, btn);
-
-   pit->content = box;
 
    return box;
 }
@@ -1527,7 +1475,6 @@ edc_navigator_init(Evas_Object *parent)
    itc->item_style = "default";
    itc->func.text_get = gl_programs_text_get_cb;
    itc->func.content_get = gl_programs_content_get_cb;
-   itc->func.del = gl_programs_del_cb;
 
    nd->programs_itc = itc;
 
@@ -1536,7 +1483,6 @@ edc_navigator_init(Evas_Object *parent)
    itc->item_style = "default";
    itc->func.text_get = gl_program_text_get_cb;
    itc->func.content_get = gl_program_content_get_cb;
-   itc->func.del = gl_program_del_cb;
 
    nd->program_itc = itc;
 
