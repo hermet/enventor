@@ -104,6 +104,9 @@ gl_file_text_get_cb(void *data, Evas_Object *obj EINA_UNUSED,
 static Evas_Object *
 gl_file_content_get_cb(void *data, Evas_Object *obj, const char *part)
 {
+   brows_data *bd = g_bd;
+   if (!bd) return NULL;
+
    brows_file *file = data;
 
    if (!strcmp(part, "elm.swallow.icon"))
@@ -128,9 +131,7 @@ gl_file_content_get_cb(void *data, Evas_Object *obj, const char *part)
    else
      {
         //Refresh button for the most top directory
-        if ((file->type == FILE_BROWSER_FILE_TYPE_DIR) &&
-            !elm_genlist_item_parent_get(file->it) &&
-            !strcmp(part, "elm.swallow.end"))
+        if (file == bd->workspace && !strcmp(part, "elm.swallow.end"))
           {
              //This wrapper box is used for non-scaled button tooltip.
              Evas_Object *box = elm_box_add(obj);
