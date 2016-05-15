@@ -4,6 +4,7 @@ type Enventor_Template_Insert_Type: __undefined_type;
 type Edje_Part_Type: __undefined_type;
 
 class Enventor.Object (Elm.Widget, Efl.File) {
+   legacy_prefix: enventor_object;
    eo_prefix: enventor_obj;
    methods {
       @property part_highlight {
