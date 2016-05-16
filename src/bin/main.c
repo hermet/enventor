@@ -16,7 +16,7 @@ typedef struct app_s
 int main(int argc, char **argv);
 
 void
-auto_comp_toggle(app_data *ad)
+auto_comp_toggle(void)
 {
    Eina_Bool toggle = !config_auto_complete_get();
    enventor_object_auto_complete_set(base_enventor_get(), toggle);
@@ -26,7 +26,7 @@ auto_comp_toggle(app_data *ad)
 }
 
 static void
-auto_indent_toggle(app_data *ad)
+auto_indent_toggle(void)
 {
    Eina_Bool toggle = !config_auto_indent_get();
    enventor_object_auto_indent_set(base_enventor_get(), toggle);
@@ -124,9 +124,8 @@ syntax_color_init(Enventor_Object *enventor)
 }
 
 static void
-config_update_cb(void *data)
+config_update_cb(void *data EINA_UNUSED)
 {
-   app_data *ad = data;
    Enventor_Object *enventor = base_enventor_get();
 
    enventor_common_setup(enventor);
@@ -144,10 +143,9 @@ config_update_cb(void *data)
 }
 
 static Eina_Bool
-main_mouse_wheel_cb(void *data, int type EINA_UNUSED, void *ev)
+main_mouse_wheel_cb(void *data EINA_UNUSED, int type EINA_UNUSED, void *ev)
 {
    Ecore_Event_Mouse_Wheel *event = ev;
-   app_data *ad = data;
    Evas_Coord x, y, w, h;
 
    if (!EVENT_KEY_MODIFIER_CHECK(CTRL, event->modifiers))
@@ -348,7 +346,7 @@ defaults:
 }
 
 static Eina_Bool
-config_data_set(app_data *ad, int argc, char **argv, Eina_Bool *default_edc,
+config_data_set(int argc, char **argv, Eina_Bool *default_edc,
                 Eina_Bool *template)
 {
    char edc_path[PATH_MAX] = { 0, };
@@ -365,7 +363,7 @@ config_data_set(app_data *ad, int argc, char **argv, Eina_Bool *default_edc,
    if (!config_init(edc_path, edj_path, workspace_path,
                     img_path, snd_path, fnt_path, dat_path))
      return EINA_FALSE;
-   config_update_cb_set(config_update_cb, ad);
+   config_update_cb_set(config_update_cb, NULL);
 
    return EINA_TRUE;
 }
@@ -575,7 +573,7 @@ enventor_setup(app_data *ad)
 }
 
 static void
-default_template_insert(app_data *ad)
+default_template_insert(void)
 {
    if (live_edit_get())
      {
@@ -602,7 +600,7 @@ default_template_insert(app_data *ad)
 }
 
 static Eina_Bool
-alt_func(app_data *ad EINA_UNUSED, Evas_Event_Key_Down *event)
+alt_func(Evas_Event_Key_Down *event)
 {
    if (evas_key_modifier_is_set(event->modifiers, "Shift") ||
        evas_key_modifier_is_set(event->modifiers, "Ctrl"))
@@ -637,7 +635,7 @@ alt_func(app_data *ad EINA_UNUSED, Evas_Event_Key_Down *event)
 }
 
 static Eina_Bool
-ctrl_func(app_data *ad, Evas_Event_Key_Down *event)
+ctrl_func(Evas_Event_Key_Down *event)
 {
    if (evas_key_modifier_is_set(event->modifiers, "Shift") ||
        evas_key_modifier_is_set(event->modifiers, "Alt"))
@@ -690,19 +688,19 @@ ctrl_func(app_data *ad, Evas_Event_Key_Down *event)
    //Template Code
    if (!strcmp(event->key, "t") || !strcmp(event->key, "T"))
      {
-        default_template_insert(ad);
+        default_template_insert();
         return EINA_TRUE;
      }
    //Auto Indentation
    if (!strcmp(event->key, "i") || !strcmp(event->key, "I"))
      {
-        auto_indent_toggle(ad);
+        auto_indent_toggle();
         return EINA_TRUE;
      }
    //Auto Completion
    if (!strcmp(event->key, "o") || !strcmp(event->key, "O"))
      {
-        auto_comp_toggle(ad);
+        auto_comp_toggle();
         return EINA_TRUE;
      }
 
@@ -716,10 +714,9 @@ ctrl_func(app_data *ad, Evas_Event_Key_Down *event)
 }
 
 static void
-keygrabber_key_down_cb(void *data, Evas *e EINA_UNUSED,
+keygrabber_key_down_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
                        Evas_Object *obj EINA_UNUSED, void *event_info)
 {
-   app_data *ad = data;
    Evas_Event_Key_Down *ev = event_info;
 
    //Main Menu
@@ -753,8 +750,8 @@ keygrabber_key_down_cb(void *data, Evas *e EINA_UNUSED,
    enventor_object_ctxpopup_dismiss(base_enventor_get());
    stats_ctxpopup_dismiss();
 
-   if (ctrl_func(ad, ev)) return;
-   if (alt_func(ad, ev)) return;
+   if (ctrl_func(ev)) return;
+   if (alt_func(ev)) return;
 
    //README
    if (!strcmp(ev->key, "F1"))
@@ -849,7 +846,7 @@ keygrabber_init(app_data *ad)
    Evas *e = evas_object_evas_get(base_enventor_get());
    ad->keygrabber = evas_object_rectangle_add(e);
    evas_object_event_callback_add(ad->keygrabber, EVAS_CALLBACK_KEY_DOWN,
-                                  keygrabber_key_down_cb, ad);
+                                  keygrabber_key_down_cb, NULL);
 #define GRAB_ADD(key, modifier) \
    if (!evas_object_key_grab(ad->keygrabber, (key), (modifier), 0, EINA_TRUE)) \
      EINA_LOG_ERR(_("Failed to grab key - %s"), (key))
@@ -919,7 +916,7 @@ init(app_data *ad, int argc, char **argv)
 
    Eina_Bool template = EINA_FALSE;
    Eina_Bool default_edc = EINA_TRUE;
-   if (!config_data_set(ad, argc, argv, &default_edc, &template))
+   if (!config_data_set(argc, argv, &default_edc, &template))
      return EINA_FALSE;
    newfile_default_set(default_edc);
    base_gui_init();
@@ -944,7 +941,7 @@ init(app_data *ad, int argc, char **argv)
 
    keygrabber_init(ad);
 
-   ecore_event_handler_add(ECORE_EVENT_MOUSE_WHEEL, main_mouse_wheel_cb, ad);
+   ecore_event_handler_add(ECORE_EVENT_MOUSE_WHEEL, main_mouse_wheel_cb, NULL);
 
    return EINA_TRUE;
 }
