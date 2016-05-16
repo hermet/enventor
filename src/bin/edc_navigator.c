@@ -116,14 +116,16 @@ static void programs_contract(programs_it *pit);
 /* Internal method implementation                                            */
 /*****************************************************************************/
 static void
-gl_selected_cb(void *data, Evas_Object *obj, void *event_info)
+gl_selected_cb(void *data, Evas_Object *obj EINA_UNUSED,
+               void *event_info EINA_UNUSED)
 {
    navi_data *nd = data;
    nd->selected = EINA_TRUE;
 }
 
 static void
-gl_unselected_cb(void *data, Evas_Object *obj, void *event_info)
+gl_unselected_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                 void *event_info EINA_UNUSED)
 {
    navi_data *nd = data;
    nd->selected = EINA_FALSE;
@@ -736,7 +738,8 @@ gl_state_content_get_cb(void *data EINA_UNUSED, Evas_Object *obj,
 /* Program Related */
 
 static void
-program_btn_clicked_cb(void *data, Evas_Object *obj, void *event_info)
+program_btn_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                       void *event_info EINA_UNUSED)
 {
    program_it *pit = data;
    enventor_object_program_run(base_enventor_get(), pit->name);
@@ -814,7 +817,6 @@ sub_programs_update(navi_data *nd, programs_it *pit)
    //Append program list
    char *name;
    Eina_List *l;
-   Elm_Object_Item *it;
    program_it *spit;
    int idx = 0;
 
@@ -850,9 +852,9 @@ sub_programs_update(navi_data *nd, programs_it *pit)
 /* Programs Related */
 
 static void
-programs_btn_clicked_cb(void *data, Evas_Object *obj, void *event_info)
+programs_btn_clicked_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+                        void *event_info EINA_UNUSED)
 {
-   programs_it *pit = data;
    enventor_object_programs_stop(base_enventor_get());
 
    if (!config_stats_bar_get()) return;
@@ -882,7 +884,7 @@ programs_contract(programs_it *pit)
 
 static void
 gl_programs_selected_cb(void *data, Evas_Object *obj EINA_UNUSED,
-                        void *event_info)
+                        void *event_info EINA_UNUSED)
 {
    programs_it *pit = data;
 
@@ -1001,7 +1003,8 @@ gl_programs_text_get_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 }
 
 static Evas_Object *
-gl_programs_content_get_cb(void *data, Evas_Object *obj, const char *part)
+gl_programs_content_get_cb(void *data EINA_UNUSED, Evas_Object *obj,
+                           const char *part)
 {
    //1. Icon
    if (!strcmp("elm.swallow.icon", part))
@@ -1013,8 +1016,6 @@ gl_programs_content_get_cb(void *data, Evas_Object *obj, const char *part)
      }
 
    //2. Stop All Button
-   programs_it *pit = data;
-
    //Box
    Evas_Object *box = elm_box_add(obj);
    elm_object_tooltip_text_set(box, "Stop All Programs");
@@ -1025,7 +1026,7 @@ gl_programs_content_get_cb(void *data, Evas_Object *obj, const char *part)
    evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_scale_set(btn, 0.5);
    evas_object_smart_callback_add(btn, "clicked", programs_btn_clicked_cb,
-                                  pit);
+                                  NULL);
    evas_object_show(btn);
 
    //Image
@@ -1254,14 +1255,16 @@ gl_group_content_get_cb(void *data EINA_UNUSED, Evas_Object *obj,
 }
 
 static void
-gl_group_selected_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
+gl_group_selected_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                     void *event_info EINA_UNUSED)
 {
    group_it *git = data;
    find_group_proc(git->name);
 }
 
 static void
-gl_expand_request_cb(void *data, Evas_Object *obj, void *event_info)
+gl_expand_request_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+                     void *event_info)
 {
    Elm_Object_Item *it = event_info;
    list_it *_it = (list_it *)elm_object_item_data_get(it);
@@ -1283,7 +1286,8 @@ gl_expand_request_cb(void *data, Evas_Object *obj, void *event_info)
 }
 
 static void
-gl_contract_request_cb(void *data, Evas_Object *obj, void *event_info)
+gl_contract_request_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+                       void *event_info)
 {
    Elm_Object_Item *it = event_info;
    list_it *_it = (list_it *)elm_object_item_data_get(it);
@@ -1363,7 +1367,7 @@ edc_navigator_group_update(const char *cur_group)
         if (!new_group) continue;
 
         //Ok, this group is newly added.
-        group_it *git = calloc(1, sizeof(group_it));
+        git = calloc(1, sizeof(group_it));
         if (!git)
           {
              EINA_LOG_ERR(_("Failed to allocate Memory!"));
