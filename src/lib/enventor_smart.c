@@ -843,12 +843,11 @@ _enventor_object_template_part_insert(Eo *obj EINA_UNUSED,
          align_x = 1.0;
        else if (align_x == 1.0)
          align_x = 0.0;
-      
-       char buf[1024];
-       strcpy(buf, rel1_x_to);
-       strcpy(rel1_x_to, rel2_x_to); 
-       strcpy(rel2_x_to, buf); 
 
+       char *buf;
+       buf = rel1_x_to;
+       rel1_x_to = rel2_x_to;
+       rel2_x_to =  buf;
      }
 
    return template_part_insert(pd->main_it.ed, part, insert_type,
