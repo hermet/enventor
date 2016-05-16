@@ -532,9 +532,12 @@ indent_text_auto_format(indent_data *id, const char *insert)
    char *utf8_buf = eina_strbuf_string_steal(buf);
    char *newline_ptr = utf8_buf;
    line_cnt = 1;
-   if (*newline_ptr == '\n') line_cnt++;
-   while (newline_ptr = strstr(newline_ptr + 1, "\n"))
-     line_cnt++;
+   newline_ptr = strstr(newline_ptr, "\n");
+   while (newline_ptr)
+     {
+        line_cnt++;
+        newline_ptr = strstr(newline_ptr + 1, "\n");
+     }
 
    //FIXME: To improve performance, change logic not to translate text.
    char *markup_buf = evas_textblock_text_utf8_to_markup(NULL, utf8_buf);
@@ -658,7 +661,6 @@ indent_text_check(indent_data *id EINA_UNUSED, const char *utf8)
    char *utf8_end = NULL;
    int utf8_size = 0;
    int depth = 0;
-   int saved_depth = 0;
    int space = 0;
    Eina_Bool nonspace_found = EINA_FALSE;
    Eina_Bool comment_found = EINA_FALSE;
@@ -892,9 +894,12 @@ indent_text_create(indent_data *id, const char *utf8, int *indented_line_cnt)
    char *utf8_buf = eina_strbuf_string_steal(buf);
    char *newline_ptr = utf8_buf;
    int line_cnt = 1;
-   if (*newline_ptr == '\n') line_cnt++;
-   while (newline_ptr = strstr(newline_ptr + 1, "\n"))
-     line_cnt++;
+   newline_ptr = strstr(newline_ptr, "\n");
+   while (newline_ptr)
+     {
+        line_cnt++;
+        newline_ptr = strstr(newline_ptr + 1, "\n");
+     }
 
    //FIXME: This translation may cause low performance.
    char *indented_markup = evas_textblock_text_utf8_to_markup(NULL, utf8_buf);
