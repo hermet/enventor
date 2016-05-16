@@ -321,16 +321,13 @@ template_part_insert(edit_data *ed, Edje_Part_Type part_type,
    //Width and Height are fixed
    else if(fixed_w && fixed_h)
      {
-        if (!rel1_x_to || !rel1_y_to || !rel2_x_to || !rel2_y_to)
-          {
-             elm_entry_entry_insert(edit_entry, p);
-             snprintf(buf, sizeof(buf), "      fixed: %d %d;<br/>", 1, 1);
-             elm_entry_entry_insert(edit_entry, buf);
-             elm_entry_entry_insert(edit_entry, p);
-             snprintf(buf, sizeof(buf), "      min: %d %d;<br/>", min_w, min_h);
-             elm_entry_entry_insert(edit_entry, buf);
-             line_cnt += 2;
-          }
+        elm_entry_entry_insert(edit_entry, p);
+        snprintf(buf, sizeof(buf), "      fixed: %d %d;<br/>", 1, 1);
+        elm_entry_entry_insert(edit_entry, buf);
+        elm_entry_entry_insert(edit_entry, p);
+        snprintf(buf, sizeof(buf), "      min: %d %d;<br/>", min_w, min_h);
+        elm_entry_entry_insert(edit_entry, buf);
+        line_cnt += 2;
      }
 
    //If there are some relative_to part then insert relative_to 
