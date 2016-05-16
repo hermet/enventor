@@ -63,3 +63,5 @@ void config_file_browser_set(Eina_Bool enabled);
 Eina_Bool config_file_browser_get(void);
 void config_edc_navigator_set(Eina_Bool enabled);
 Eina_Bool config_edc_navigator_get(void);
+Eina_Bool config_mirror_mode_get(void);
+void config_mirror_mode_set(Eina_Bool mirror_mode);

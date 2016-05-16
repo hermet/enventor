@@ -326,7 +326,7 @@ Evas_Object *
 tools_live_view_get(void)
 {
    tools_data *td = g_td;
-   if (!td) return;
+   if (!td) return NULL;
 
    return td->live_view_ly;
 }
@@ -335,7 +335,7 @@ Evas_Object *
 tools_text_editor_get(void)
 {
    tools_data *td = g_td;
-   if (!td) return;
+   if (!td) return NULL;
 
    return td->text_editor_ly;
 }
