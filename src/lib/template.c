@@ -432,7 +432,8 @@ template_part_insert(edit_data *ed, Edje_Part_Type part_type,
 }
 
 Eina_Bool
-template_insert(edit_data *ed, Enventor_Template_Insert_Type insert_type,
+template_insert(edit_data *ed,
+                Enventor_Template_Insert_Type insert_type EINA_UNUSED,
                 char *syntax, size_t n)
 {
    Evas_Object *entry = edit_entry_get(ed);
