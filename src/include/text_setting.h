@@ -5,3 +5,4 @@ void text_setting_config_set(text_setting_data *tsd);
 void text_setting_term(text_setting_data *tsd);
 text_setting_data *text_setting_init(void);
 void text_setting_focus_set(text_setting_data *tsd);
+void text_setting_reset(text_setting_data *tsd);

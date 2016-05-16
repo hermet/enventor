@@ -5,3 +5,4 @@ void preference_setting_config_set(preference_setting_data *psd);
 void preference_setting_term(preference_setting_data *psd);
 preference_setting_data *preference_setting_init(void);
 void preference_setting_focus_set(preference_setting_data *psd);
+void preference_setting_reset(preference_setting_data *psd);
