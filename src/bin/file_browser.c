@@ -55,10 +55,8 @@ static void brows_file_list_free(Eina_List *file_list);
 static void refresh_btn_clicked_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED);
 
 static void
-gl_file_selected_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
+gl_file_selected_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 {
-   brows_file *file = data;
-   Elm_Object_Item *it = event_info;
 }
 
 static Elm_Object_Item *
@@ -179,7 +177,7 @@ gl_search_text_get_cb(void *data, Evas_Object *obj EINA_UNUSED,
 static Evas_Object *
 gl_search_content_get_cb(void *data, Evas_Object *obj, const char *part)
 {
-   gl_file_content_get_cb(data, obj, part);
+   return gl_file_content_get_cb(data, obj, part);
 }
 
 static void
