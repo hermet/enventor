@@ -62,7 +62,7 @@ static syntax_color_group *scg = NULL;
 
 //We could share this color source through editor instances.
 static syntax_color_source g_color_src;
-static init_count = 0;
+static int init_count = 0;
 
 /*****************************************************************************/
 /* Internal method implementation                                            */
