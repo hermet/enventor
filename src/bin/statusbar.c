@@ -133,6 +133,9 @@ view_resize_slider_changed_cb(void *data, Evas_Object *obj EINA_UNUSED,
         config_view_size_set(w, val);
         enventor_object_live_view_size_set(base_enventor_get(), w, val);
      }
+
+   //Just in live edit mode case.
+   live_edit_update();
 }
 
 static Evas_Object *
