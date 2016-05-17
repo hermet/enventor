@@ -1739,7 +1739,6 @@ group { name: "colorselector_layout";
       spacer { "base";
          scale: 1;
          desc {
-            min: 251 170;
          }
       }
       swallow { "elm.swallow.colorselector";
@@ -1749,7 +1748,7 @@ group { name: "colorselector_layout";
             rel1.to: "base";
             rel2.to: "base";
             align: 0.0 0.0;
-            min: 160 0;
+            min: 160 130;
             max: 160 130;
          }
       }
@@ -1972,7 +1971,7 @@ group { name: "colorselector_layout";
             align: 0.0 0.0;
             min: 0 25;
             max: -1 25;
-            rel1.to_y: "colors_padding";
+            rel1.to_y: "elm.swallow.input_alpha";
             rel1.relative: 0.0 1.0;
             color: 128 0 0 128;
          }
