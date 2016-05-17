@@ -889,7 +889,7 @@ _enventor_object_undo(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
 
 EOLIAN static void
 _enventor_object_program_run(Eo *obj EINA_UNUSED,
-                             Enventor_Object_Data *pd,
+                             Enventor_Object_Data *pd EINA_UNUSED,
                              const char *program)
 {
    view_program_run(VIEW_DATA, program);
@@ -897,7 +897,7 @@ _enventor_object_program_run(Eo *obj EINA_UNUSED,
 
 EOLIAN static void
 _enventor_object_programs_stop(Eo *obj EINA_UNUSED,
-                               Enventor_Object_Data *pd)
+                               Enventor_Object_Data *pd EINA_UNUSED)
 {
    view_programs_stop(VIEW_DATA);
 }
