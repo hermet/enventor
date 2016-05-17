@@ -229,6 +229,7 @@ Evas_Object *ctxpopup_img_preview_create(edit_data*ed, const char *imgpath, Evas
 void ctxpopup_img_preview_reload(Evas_Object *ctxpopup, const char *imgpath);
 
 /* edc_editor */
+void edit_font_update(edit_data *ed);
 Eina_Bool edit_key_down_event_dispatch(edit_data *ed, const char *key);
 Eina_Bool edit_key_up_event_dispatch(edit_data *ed, const char *key);
 edit_data *edit_init(Enventor_Object *enventor);
@@ -244,8 +245,6 @@ void edit_new(edit_data* ed);
 void edit_view_sync_cb_set(edit_data *ed, void (*cb)(void *data, Eina_Stringshare *state_name, double state_value, Eina_Stringshare *part_name, Eina_Stringshare *group_name), void *data);
 void edit_view_sync(edit_data *ed);
 void edit_font_scale_set(edit_data *ed, double font_scale);
-void edit_font_set(edit_data *ed, const char *font_name, const char *font_style);
-void edit_font_get(edit_data *ed, const char **font_name, const char **font_style);
 void edit_line_delete(edit_data *ed);
 Eina_Stringshare *edit_cur_prog_name_get(edit_data *ed);
 Eina_Stringshare *edit_cur_part_name_get(edit_data *ed);

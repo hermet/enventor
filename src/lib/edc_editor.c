@@ -55,8 +55,6 @@ struct editor_s
                         Eina_Stringshare *part_name, Eina_Stringshare *group_name);
    void *view_sync_cb_data;
    int select_pos;
-   const char *font_name;
-   const char *font_style;
    const char *error_target;
 
    Eina_Bool edit_changed : 1;
@@ -71,8 +69,6 @@ struct editor_s
 
 static Eina_Bool
 image_preview_show(edit_data *ed, char *cur, Evas_Coord x, Evas_Coord y);
-static void
-edit_font_apply(edit_data *ed, const char *font_name, const char *font_style);
 static void
 error_line_num_highlight(edit_data *ed);
 
@@ -153,20 +149,13 @@ entry_recover(edit_data *ed, int cursor_pos, int sel_cur_begin, int sel_cur_end)
    ed->on_select_recover = EINA_FALSE;
 }
 
-static void
-edit_font_apply(edit_data *ed, const char *font_name, const char *font_style)
+void
+edit_font_update(edit_data *ed)
 {
-   char *font = NULL;
-   if (font_name)
-     font = elm_font_fontconfig_name_get(font_name, font_style);
-   edje_text_class_set("enventor_entry", font, -100);
-   elm_font_fontconfig_name_free(font);
+  if (!ed) return;
 
    elm_entry_calc_force(ed->en_line);
-
-   int cursor_pos;
-   entry_recover_param_get(ed, &cursor_pos, NULL, NULL);
-   entry_recover(ed, cursor_pos, -1, -1);
+   elm_entry_calc_force(ed->en_edit);
 }
 
 static void
@@ -1450,9 +1439,6 @@ edit_term(edit_data *ed)
 {
    if (!ed) return;
 
-   if (ed->font_name) eina_stringshare_del(ed->font_name);
-   if (ed->font_style) eina_stringshare_del(ed->font_style);
-
    syntax_helper *sh = ed->sh;
    parser_data *pd = ed->pd;
 
@@ -1495,23 +1481,6 @@ edit_font_scale_set(edit_data *ed, double font_scale)
 
    elm_object_scale_set(ed->layout, font_scale);
    syntax_color_partial_update(ed, 0);
-}
-
-void
-edit_font_set(edit_data *ed, const char *font_name, const char *font_style)
-{
-   if (!ed) return;
-
-   eina_stringshare_replace(&ed->font_name, font_name);
-   eina_stringshare_replace(&ed->font_style, font_style);
-   edit_font_apply(ed, font_name, font_style);
-}
-
-void
-edit_font_get(edit_data *ed, const char **font_name, const char **font_style)
-{
-   if (font_name) *font_name = ed->font_name;
-   if (font_style) *font_style = ed->font_style;
 }
 
 Eina_Bool

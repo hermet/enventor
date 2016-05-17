@@ -44,6 +44,8 @@ struct _Enventor_Object_Data
    Ecore_Event_Handler *key_up_handler;
 
    double font_scale;
+   Eina_Stringshare *font_name;
+   Eina_Stringshare *font_style;
 
    Eina_Bool dummy_parts : 1;
    Eina_Bool disabled : 1;
@@ -255,6 +257,8 @@ EOLIAN static void
 _enventor_object_evas_object_smart_del(Evas_Object *obj EINA_UNUSED,
                                        Enventor_Object_Data *pd)
 {
+   eina_stringshare_del(pd->font_name);
+   eina_stringshare_del(pd->font_style);   
    eina_stringshare_del(pd->group_name);
    autocomp_term();
    ecore_event_handler_del(pd->key_down_handler);
@@ -717,18 +721,29 @@ EOLIAN static void
 _enventor_object_font_set(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd,
                           const char *font_name, const char *font_style)
 {
-   //Main Item
-   edit_font_set(pd->main_it.ed, font_name, font_style);
+   if (!font_name) return;
 
-   //FIXME: store font_name, font_style...
+   eina_stringshare_replace(&pd->font_name, font_name);
+   eina_stringshare_replace(&pd->font_style, font_style);
+
+   char *font = NULL;
+   if (font_name) font = elm_font_fontconfig_name_get(font_name, font_style);   
+   elm_config_font_overlay_set("enventor_entry", font, -100);
+   elm_config_font_overlay_apply();
+   elm_config_save();
+
+   elm_font_fontconfig_name_free(font);
+   
+   //Main Item
+   edit_font_update(pd->main_it.ed); 
 }
 
 EOLIAN static void
 _enventor_object_font_get(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd,
                           const char **font_name, const char **font_style)
 {
-   //FIXME: ...
-   edit_font_get(pd->main_it.ed, font_name, font_style);
+   if (font_name) *font_name = pd->font_name;
+   if (font_style) *font_style = pd->font_style;
 }
 
 //TODO: Itemize
@@ -940,8 +955,6 @@ enventor_object_main_file_set(Enventor_Object *obj, const char *file)
      edit_disabled_set(pd->main_it.ed, EINA_TRUE);
 
    //FIXME: ...
-//   edit_smart_undo_redo_set(pd->main_it.ed, smart_undo_redo);
-//   edit_ctxpopup_enabled_set(pd->main_it.ed, ctxpopup);
 //   edit_font_set(pd->main_it.ed, font_name, font_style);
 //   edit_syntax_color_set(pd->main_it.ed, color_type, val);
 
