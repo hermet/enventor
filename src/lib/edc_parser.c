@@ -2188,8 +2188,9 @@ parser_is_image_name(const Evas_Object *entry, const char *str)
 
    const char *text = elm_entry_entry_get(entry);
    char *utf8 = elm_entry_markup_to_utf8(text);
+   int utf8_len = strlen(utf8);
 
-   for (i = start_pos ; i < strlen(utf8); i++)
+   for (i = start_pos ; i < utf8_len; i++)
       if (utf8[i] == '}')
         {
            end_pos = i;
