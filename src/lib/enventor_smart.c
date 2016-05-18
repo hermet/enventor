@@ -954,10 +954,6 @@ enventor_object_main_file_set(Enventor_Object *obj, const char *file)
    if (pd->disabled)
      edit_disabled_set(pd->main_it.ed, EINA_TRUE);
 
-   //FIXME: ...
-//   edit_font_set(pd->main_it.ed, font_name, font_style);
-//   edit_syntax_color_set(pd->main_it.ed, color_type, val);
-
    return &pd->main_it;
 }
 
