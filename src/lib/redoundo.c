@@ -40,6 +40,14 @@ struct redoundo_s
 /*****************************************************************************/
 /* Internal method implementation                                            */
 /*****************************************************************************/
+static void
+entry_del_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+             void *event_info EINA_UNUSED)
+{
+   redoundo_data *rd = data;
+   rd->cursor = NULL;
+}
+
 Eina_Bool
 _input_timer_cb(void *data)
 {
@@ -408,6 +416,8 @@ redoundo_init(edit_data *ed, Enventor_Object *enventor)
    //FIXME: Why signal callback? not smart callback?
    elm_object_signal_callback_add(rd->entry, "entry,changed,user", "*",
                                   entry_changed_user_cb, rd);
+   evas_object_event_callback_add(entry, EVAS_CALLBACK_DEL,
+                                  entry_del_cb, rd);
    return rd;
 }
 

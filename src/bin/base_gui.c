@@ -359,5 +359,12 @@ base_enventor_set(Enventor_Object *enventor)
    base_data *bd = g_bd;
    assert(bd);
    bd->enventor = enventor;
-   panes_text_editor_set(enventor);
+}
+
+void
+base_text_editor_set(Enventor_Item *it)
+{
+   base_data *bd = g_bd;
+   assert(bd);
+   panes_text_editor_set(enventor_item_editor_get(it));
 }

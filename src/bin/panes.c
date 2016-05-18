@@ -23,6 +23,8 @@ typedef struct _panes_data
 {
    pane_data horiz;  //horizontal pane data (live view, text editor)
    pane_data vert;    //vertical pane data (editors, console)
+   Evas_Object *text_tool_layout;
+   Evas_Object *live_tool_layout;
 } panes_data;
 
 static panes_data *g_pd = NULL;
@@ -283,30 +285,14 @@ void
 panes_text_editor_set(Evas_Object *text_editor)
 {
    panes_data *pd = g_pd;
-
-   Evas_Object *base_layout = elm_layout_add(pd->horiz.obj);
-   elm_layout_file_set(base_layout, EDJE_PATH, "tools_layout");
-   evas_object_size_hint_weight_set(base_layout, EVAS_HINT_EXPAND,
-                                    EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(base_layout, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_object_content_set(base_layout, text_editor);
-
-   elm_object_part_content_set(pd->horiz.obj, "right", base_layout);
+   elm_object_content_set(pd->text_tool_layout, text_editor);
 }
 
 void
 panes_live_view_set(Evas_Object *live_view)
 {
    panes_data *pd = g_pd;
-
-   Evas_Object *base_layout = elm_layout_add(pd->horiz.obj);
-   elm_layout_file_set(base_layout, EDJE_PATH, "tools_layout");
-   evas_object_size_hint_weight_set(base_layout, EVAS_HINT_EXPAND,
-                                    EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(base_layout, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_object_content_set(base_layout, live_view);
-
-   elm_object_part_content_set(pd->horiz.obj, "left", base_layout);
+   elm_object_content_set(pd->live_tool_layout, live_view);
 }
 
 void
@@ -371,6 +357,28 @@ panes_init(Evas_Object *parent)
 
    elm_panes_content_right_size_set(panes_h, config_editor_size_get());
    elm_panes_content_right_size_set(panes_v, config_console_size_get());
+
+   //Text Tools
+   Evas_Object *text_tool_layout = elm_layout_add(pd->horiz.obj);
+   elm_layout_file_set(text_tool_layout, EDJE_PATH, "tools_layout");
+   evas_object_size_hint_weight_set(text_tool_layout, EVAS_HINT_EXPAND,
+                                    EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(text_tool_layout, EVAS_HINT_FILL,
+                                   EVAS_HINT_FILL);
+   elm_object_part_content_set(pd->horiz.obj, "right", text_tool_layout);
+
+   pd->text_tool_layout = text_tool_layout;
+
+   //Live Edit Tools
+   Evas_Object *live_tool_layout = elm_layout_add(pd->horiz.obj);
+   elm_layout_file_set(live_tool_layout, EDJE_PATH, "tools_layout");
+   evas_object_size_hint_weight_set(live_tool_layout, EVAS_HINT_EXPAND,
+                                    EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(live_tool_layout, EVAS_HINT_FILL,
+                                   EVAS_HINT_FILL);
+   elm_object_part_content_set(pd->horiz.obj, "left", live_tool_layout);
+
+   pd->live_tool_layout = live_tool_layout;
 
    return panes_v;
 }

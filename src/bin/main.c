@@ -565,9 +565,11 @@ enventor_setup(app_data *ad)
 
    enventor_common_setup(enventor);
 
-   enventor_object_main_file_set(enventor, config_input_path_get());
+   Enventor_Item *it =
+      enventor_object_main_file_set(enventor, config_input_path_get());
 
    base_enventor_set(enventor);
+   base_text_editor_set(it);
    base_title_set(config_input_path_get());
    base_live_view_set(enventor_object_live_view_get(enventor));
 }

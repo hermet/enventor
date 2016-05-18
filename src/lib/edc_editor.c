@@ -1407,8 +1407,6 @@ edit_init(Enventor_Object *enventor)
    elm_object_focus_set(en_edit, EINA_TRUE);
    elm_object_part_content_set(layout, "elm.swallow.edit", en_edit);
 
-   evas_object_smart_member_add(scroller, enventor);
-
    ed->scroller = scroller;
    ed->en_line = en_line;
    ed->en_edit = en_edit;

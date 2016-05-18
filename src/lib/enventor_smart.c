@@ -727,15 +727,15 @@ _enventor_object_font_set(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd,
    eina_stringshare_replace(&pd->font_style, font_style);
 
    char *font = NULL;
-   if (font_name) font = elm_font_fontconfig_name_get(font_name, font_style);   
+   if (font_name) font = elm_font_fontconfig_name_get(font_name, font_style);
    elm_config_font_overlay_set("enventor_entry", font, -100);
    elm_config_font_overlay_apply();
    elm_config_save();
 
    elm_font_fontconfig_name_free(font);
-   
+
    //Main Item
-   edit_font_update(pd->main_it.ed); 
+   edit_font_update(pd->main_it.ed);
 }
 
 EOLIAN static void
@@ -842,7 +842,8 @@ _enventor_object_template_part_insert(Eo *obj EINA_UNUSED,
                                       char *rel2_x_to, char *rel2_y_to,
                                       float align_x, float align_y,
                                       int min_w, int min_h,
-                                      float rel1_x, float rel1_y, float rel2_x,float rel2_y,
+                                      float rel1_x, float rel1_y,
+                                      float rel2_x,float rel2_y,
                                       char *syntax, size_t n)
 {
    // if mirror mode, exchange properties about left and right
@@ -955,6 +956,16 @@ enventor_object_main_file_set(Enventor_Object *obj, const char *file)
      edit_disabled_set(pd->main_it.ed, EINA_TRUE);
 
    return &pd->main_it;
+}
+
+Evas_Object *
+enventor_item_editor_get(const Enventor_Item *it)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(it, NULL);
+
+   if (!it->ed) return NULL;
+
+   return edit_obj_get(it->ed);
 }
 
 #include "enventor_object.eo.c"

@@ -21,6 +21,7 @@ void base_console_auto_hide(void);
 void base_console_toggle(void);
 void base_live_view_set(Evas_Object *live_view);
 void base_enventor_set(Enventor_Object *enventor);
+void base_text_editor_set(Enventor_Item *it);
 void base_gui_term(void);
 void base_console_reset(void);
 void base_error_msg_set(const char *msg);
