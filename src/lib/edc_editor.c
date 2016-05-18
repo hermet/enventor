@@ -1305,7 +1305,7 @@ edit_line_delete(edit_data *ed)
 
    cur1_pos = evas_textblock_cursor_pos_get(cur1);
    cur2_pos = evas_textblock_cursor_pos_get(cur2);
-   const char *content = evas_textblock_cursor_range_text_get(cur1, cur2,
+   char *content = evas_textblock_cursor_range_text_get(cur1, cur2,
                                                     EVAS_TEXTBLOCK_TEXT_MARKUP);
 
    evas_textblock_cursor_range_delete(cur1, cur2);
@@ -1314,6 +1314,7 @@ edit_line_delete(edit_data *ed)
    redoundo_text_push(ed->rd, content, cur1_pos, abs(cur2_pos - cur1_pos),
                       EINA_FALSE);
    elm_entry_calc_force(ed->en_edit);
+   if (content) free(content);
 
    edit_line_decrease(ed, 1);
 
