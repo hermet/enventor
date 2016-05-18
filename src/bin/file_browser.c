@@ -19,8 +19,6 @@ struct file_browser_file_s
    File_Browser_File_Type type;
 
    Eina_List *sub_file_list; //NULL if file type is not directory.
-
-   Elm_Object_Item *it;
 };
 
 typedef enum
@@ -31,7 +29,9 @@ typedef enum
 
 typedef struct file_browser_s
 {
-   brows_file *workspace; //workspace directory
+   brows_file *workspace;       //workspace directory
+   Eina_List *search_file_list; /* list of searched files. This is only used for
+                                   showing search results. */
 
    Evas_Object *base_layout;
    Evas_Object *search_entry;
@@ -50,6 +50,7 @@ static brows_data *g_bd = NULL;
 /* Internal method implementation                                            */
 /*****************************************************************************/
 
+static void brows_file_free(brows_file *file);
 static Eina_List *sub_brows_file_list_create(brows_file *file);
 static void brows_file_list_free(Eina_List *file_list);
 static void refresh_btn_clicked_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED);
@@ -234,13 +235,13 @@ gl_exp(void *data EINA_UNUSED, Evas_Object *obj, void *event_info)
              Elm_Genlist_Item_Type type = ELM_GENLIST_ITEM_NONE;
              if (sub_file->type == FILE_BROWSER_FILE_TYPE_DIR)
                type = ELM_GENLIST_ITEM_TREE;
-             sub_file->it = file_genlist_item_append(sub_file, file->it, type);
+             file_genlist_item_append(sub_file, it, type);
           }
      }
 }
 
 static void
-gl_con(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
+gl_con(void *data EINA_UNUSED, Evas_Object *obj, void *event_info)
 {
    brows_data *bd = g_bd;
    if (!bd) return;
@@ -248,6 +249,15 @@ gl_con(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
 
    Elm_Object_Item *it = event_info;
    elm_genlist_item_subitems_clear(it);
+
+   char it_str[EINA_PATH_MAX];
+   snprintf(it_str, EINA_PATH_MAX, "%p", it);
+   brows_file *file = evas_object_data_get(obj, it_str);
+   if (file && file->sub_file_list)
+     {
+        brows_file_list_free(file->sub_file_list);
+        file->sub_file_list = NULL;
+     }
 }
 
 static int
@@ -321,8 +331,6 @@ brows_file_create(const char *file_path, Eina_Bool create_sub_file_list)
    else
      file->sub_file_list = NULL;
 
-   file->it = NULL;
-
    return file;
 }
 
@@ -360,11 +368,6 @@ sub_brows_file_list_create(brows_file *file)
                                    sub_file);
      }
 
-   EINA_LIST_FREE(sub_file_name_list, sub_file_name)
-     {
-        free(sub_file_name);
-     }
-
    return sub_file_list;
 }
 
@@ -390,11 +393,7 @@ brows_file_free(brows_file *file)
         file->sub_file_list = NULL;
      }
 
-   if (file->it)
-     {
-        elm_object_item_del(file->it);
-        file->it = NULL;
-     }
+   free(file);
 }
 
 static void
@@ -409,31 +408,13 @@ brows_file_list_free(Eina_List *file_list)
      }
 }
 
-static brows_file *
-file_set_internal(const char *file_path)
-{
-   brows_data *bd = g_bd;
-   if (!bd) return NULL;
-
-   if (!file_path) return NULL;
-
-   //Create file with creating its sub file list.
-   brows_file *file = brows_file_create(file_path, EINA_TRUE);
-   if (!file) return NULL;
-
-   Elm_Genlist_Item_Type it_type = ELM_GENLIST_ITEM_NONE;
-   if (file->sub_file_list)
-     it_type = ELM_GENLIST_ITEM_TREE;
-   file->it = file_genlist_item_append(file, NULL, it_type);
-
-   return file;
-}
-
 static void
 file_browser_workspace_reset(void)
 {
    brows_data *bd = g_bd;
    if (!bd) return;
+
+   elm_genlist_clear(bd->genlist);
 
    brows_file_free(bd->workspace);
    bd->workspace = NULL;
@@ -470,7 +451,11 @@ search_file_set(const char *file_path)
           {
              brows_file *file = brows_file_create(file_path, EINA_FALSE);
              if (file)
-               file_genlist_item_append(file, NULL, ELM_GENLIST_ITEM_NONE);
+               {
+                  bd->search_file_list = eina_list_append(bd->search_file_list,
+                                                          file);
+                  file_genlist_item_append(file, NULL, ELM_GENLIST_ITEM_NONE);
+               }
           }
      }
 
@@ -491,11 +476,6 @@ search_file_set(const char *file_path)
         search_file_set(sub_file_path);
         free(sub_file_path);
      }
-
-   EINA_LIST_FREE(sub_file_name_list, sub_file_name)
-     {
-        free(sub_file_name);
-     }
 }
 
 static void
@@ -505,6 +485,7 @@ search_entry_changed_cb(void *data EINA_UNUSED, Evas_Object *obj,
    brows_data *bd = g_bd;
    if (!bd) return;
 
+
    const char *search_word = elm_entry_entry_get(obj);
    //Default Mode
    if (!search_word || !strcmp(search_word, ""))
@@ -512,7 +493,6 @@ search_entry_changed_cb(void *data EINA_UNUSED, Evas_Object *obj,
         //Change mode first because mode is used in following functions.
         bd->mode = FILE_BROWSER_MODE_DEFAULT;
 
-        elm_genlist_clear(bd->genlist);
         file_browser_workspace_reset();
      }
    //Search Mode
@@ -521,7 +501,11 @@ search_entry_changed_cb(void *data EINA_UNUSED, Evas_Object *obj,
         //Change mode first because mode is used in following functions.
         bd->mode = FILE_BROWSER_MODE_SEARCH;
 
-        elm_genlist_clear(bd->genlist);
+        if (bd->search_file_list)
+          {
+             brows_file_list_free(bd->search_file_list);
+             bd->search_file_list = NULL;
+          }
         search_file_set(config_workspace_path_get());
      }
 }
@@ -537,7 +521,11 @@ refresh_btn_clicked_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
      file_browser_workspace_reset();
    else
      {
-        elm_genlist_clear(bd->genlist);
+        if (bd->search_file_list)
+          {
+             brows_file_list_free(bd->search_file_list);
+             bd->search_file_list = NULL;
+          }
         search_file_set(config_workspace_path_get());
      }
 }
@@ -553,7 +541,11 @@ show_all_check_changed_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
      file_browser_workspace_reset();
    else
      {
-        elm_genlist_clear(bd->genlist);
+        if (bd->search_file_list)
+          {
+             brows_file_list_free(bd->search_file_list);
+             bd->search_file_list = NULL;
+          }
         search_file_set(config_workspace_path_get());
      }
 }
@@ -582,14 +574,20 @@ file_browser_workspace_set(const char *workspace_path)
         bd->workspace = NULL;
      }
 
-   brows_file *workspace = file_set_internal(workspace_path);
+   //Create file with creating its sub file list.
+   brows_file *workspace = brows_file_create(workspace_path, EINA_TRUE);
    if (!workspace) return;
    bd->workspace = workspace;
 
    elm_object_disabled_set(bd->base_layout, EINA_FALSE);
 
+   Elm_Genlist_Item_Type it_type = ELM_GENLIST_ITEM_NONE;
    if (workspace->sub_file_list)
-     gl_exp_req(NULL, NULL, workspace->it);
+     it_type = ELM_GENLIST_ITEM_TREE;
+   Elm_Object_Item *it = file_genlist_item_append(workspace, NULL, it_type);
+
+   if (workspace->sub_file_list)
+     gl_exp_req(NULL, NULL, it);
 }
 
 Evas_Object *
@@ -713,6 +711,7 @@ file_browser_term(void)
    if (!bd) return;
 
    if (bd->workspace) brows_file_free(bd->workspace);
+   if (bd->search_file_list) brows_file_list_free(bd->search_file_list);
 
    elm_genlist_item_class_free(bd->itc);
    elm_genlist_item_class_free(bd->search_itc);
