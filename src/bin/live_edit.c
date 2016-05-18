@@ -81,7 +81,7 @@ typedef struct live_editor_s
    unsigned int auto_align_dist;
 
    //Relative setting properties
-   Evas_Object *rel_type_ctxpopup;
+   Evas_Object *fixed_ctxpopup;
    Evas_Object *rel_to_ctxpopup;
    float rel1_x, rel1_y;
    float rel2_x, rel2_y;
@@ -1116,11 +1116,11 @@ rel_to_ctxpopup_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
 }
 
 static void
-rel_type_ctxpopup_dismissed_cb(void *data, Evas_Object *obj,
-                               void *event_info EINA_UNUSED)
+fixed_ctxpopup_dismissed_cb(void *data, Evas_Object *obj,
+                            void *event_info EINA_UNUSED)
 {
    live_data *ld = data;
-   ld->rel_type_ctxpopup = NULL;
+   ld->fixed_ctxpopup = NULL;
    evas_object_del(obj);
 }
 
@@ -1768,24 +1768,24 @@ fixed_h_check_changed_cb(void *data, Evas_Object *obj, void *event_info EINA_UNU
 static void
 show_fixed_check_list(live_data *ld)
 {
-   if (ld->rel_type_ctxpopup)
+   if (ld->fixed_ctxpopup)
      return;
 
-   ld->rel_type_ctxpopup = elm_ctxpopup_add(ld->live_view);
+   ld->fixed_ctxpopup = elm_ctxpopup_add(ld->live_view);
    //FIXME: because the focus highlighting is floated after ctxpopup is dismissed,
    //       i disable the focus here
-   elm_object_tree_focus_allow_set(ld->rel_type_ctxpopup, EINA_FALSE);
-   evas_object_smart_callback_add(ld->rel_type_ctxpopup, "dismissed",
-                                  rel_type_ctxpopup_dismissed_cb, ld);
+   elm_object_tree_focus_allow_set(ld->fixed_ctxpopup, EINA_FALSE);
+   evas_object_smart_callback_add(ld->fixed_ctxpopup, "dismissed",
+                                  fixed_ctxpopup_dismissed_cb, ld);
 
    Evas_Object *view_obj = view_obj_get(ld);
    Evas_Coord vx, vy, vw, vh;
    evas_object_geometry_get(view_obj, &vx, &vy, &vw, &vh);
 
-   evas_object_move(ld->rel_type_ctxpopup, vx + (vw / 2), vy + (vh / 2));
-   elm_object_scale_set(ld->rel_type_ctxpopup, 1.2);
+   evas_object_move(ld->fixed_ctxpopup, vx + (vw / 2), vy + (vh / 2));
+   elm_object_scale_set(ld->fixed_ctxpopup, 1.2);
 
-   Evas_Object *fixed_box = elm_box_add(ld->rel_type_ctxpopup);
+   Evas_Object *fixed_box = elm_box_add(ld->fixed_ctxpopup);
    elm_box_horizontal_set(fixed_box, EINA_TRUE);
    evas_object_show(fixed_box);
 
@@ -1809,8 +1809,8 @@ show_fixed_check_list(live_data *ld)
    evas_object_smart_callback_add(fixed_w_check, "changed", fixed_w_check_changed_cb, ld);
    evas_object_smart_callback_add(fixed_h_check, "changed", fixed_h_check_changed_cb, ld);
 
-   elm_object_content_set(ld->rel_type_ctxpopup, fixed_box);
-   evas_object_show(ld->rel_type_ctxpopup);
+   elm_object_content_set(ld->fixed_ctxpopup, fixed_box);
+   evas_object_show(ld->fixed_ctxpopup);
 }
 
 static void
@@ -1947,17 +1947,10 @@ live_edit_cancel(void)
    live_data *ld = g_ld;
    if (!ld->on) return EINA_FALSE;
 
-   if (ld->rel_type_ctxpopup)
-     {
-        elm_ctxpopup_dismiss(ld->rel_type_ctxpopup);
-        return EINA_TRUE;
-     }
-
-   if (ld->rel_to_ctxpopup)
-     {
-        elm_ctxpopup_dismiss(ld->rel_to_ctxpopup);
-        return EINA_TRUE;
-     }
+   evas_object_del(ld->fixed_ctxpopup);
+   evas_object_del(ld->rel_to_ctxpopup);
+   ld->fixed_ctxpopup = NULL;
+   ld->rel_to_ctxpopup = NULL;
 
    enventor_object_disabled_set(base_enventor_get(), EINA_FALSE);
 
