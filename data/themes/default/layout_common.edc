@@ -3169,6 +3169,31 @@ group { "text_editor_tools_layout";
          scale: 1;
          desc { "default";
             rel1 {
+               to_x: "elm.swallow.lines";
+               relative: 1.0 0.0;
+            }
+            rel2.to_x: "elm.swallow.lines";
+            min: 8 0;
+            fixed: 1 0;
+            align: 0.0 0.5;
+         }
+      }
+      swallow { "elm.swallow.template";
+         scale: 1;
+         desc { "default";
+            rel1 {
+               to_x: "padding7";
+               relative: 1.0 0.0;
+            }
+            rel2.to_x: "padding7";
+            fixed: 1 0;
+            align: 0.0 0.5;
+         }
+      }
+      spacer { "padding8";
+         scale: 1;
+         desc { "default";
+            rel1 {
                to_x: "base";
                relative: 1.0 0.0;
             }
@@ -3181,16 +3206,16 @@ group { "text_editor_tools_layout";
       swallow { "elm.swallow.menu";
          scale: 1;
          desc { "default";
-            rel1.to_x: "padding7";
+            rel1.to_x: "padding8";
             rel2 {
-               to_x: "padding7";
+               to_x: "padding8";
                relative: 0.0 1.0;
             }
             fixed: 1 0;
             align: 1.0 0.5;
          }
       }
-      spacer { "padding8";
+      spacer { "padding9";
          scale: 1;
          desc { "default";
             rel1.to_x: "elm.swallow.menu";
@@ -3207,11 +3232,11 @@ group { "text_editor_tools_layout";
          scale: 1;
          desc { "default";
             rel1 {
-               to_x: "padding8";
+               to_x: "padding9";
                relative: 0.0 0.5;
             }
             rel2 {
-               to_x: "padding8";
+               to_x: "padding9";
                relative: 0.0 0.5;
             }
             min: 1 18;
@@ -3220,7 +3245,7 @@ group { "text_editor_tools_layout";
             color: 48 48 48 255;
          }
       }
-      spacer { "padding9";
+      spacer { "padding10";
          scale: 1;
          desc { "default";
             rel1.to_x: "separator";
@@ -3236,16 +3261,16 @@ group { "text_editor_tools_layout";
       swallow { "elm.swallow.status";
          scale: 1;
          desc { "default";
-            rel1.to_x: "padding9";
+            rel1.to_x: "padding10";
             rel2 {
-               to_x: "padding9";
+               to_x: "padding10";
                relative: 0.0 1.0;
             }
             fixed: 1 0;
             align: 1.0 0.5;
          }
       }
-      spacer { "padding10";
+      spacer { "padding11";
          scale: 1;
          desc { "default";
             rel1.to_x: "elm.swallow.status";
@@ -3261,16 +3286,16 @@ group { "text_editor_tools_layout";
       swallow { "elm.swallow.edc_navigator";
          scale: 1;
          desc { "default";
-            rel1.to_x: "padding10";
+            rel1.to_x: "padding11";
             rel2 {
-               to_x: "padding10";
+               to_x: "padding11";
                relative: 0.0 1.0;
             }
             fixed: 1 0;
             align: 1.0 0.5;
          }
       }
-      spacer { "padding11";
+      spacer { "padding12";
          scale: 1;
          desc { "default";
             rel1.to_x: "elm.swallow.edc_navigator";
@@ -3286,16 +3311,16 @@ group { "text_editor_tools_layout";
       swallow { "elm.swallow.file_browser";
          scale: 1;
          desc { "default";
-            rel1.to_x: "padding11";
+            rel1.to_x: "padding12";
             rel2 {
-               to_x: "padding11";
+               to_x: "padding12";
                relative: 0.0 1.0;
             }
             fixed: 1 0;
             align: 1.0 0.5;
          }
       }
-      spacer { "padding12";
+      spacer { "padding13";
          scale: 1;
          desc { "default";
             rel1.to_x: "elm.swallow.file_browser";
@@ -3311,9 +3336,9 @@ group { "text_editor_tools_layout";
       swallow { "elm.swallow.console";
          scale: 1;
          desc { "default";
-            rel1.to_x: "padding12";
+            rel1.to_x: "padding13";
             rel2 {
-               to_x: "padding12";
+               to_x: "padding13";
                relative: 0.0 1.0;
             }
             fixed: 1 0;

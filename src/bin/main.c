@@ -574,33 +574,6 @@ enventor_setup(app_data *ad)
    base_live_view_set(enventor_object_live_view_get(enventor));
 }
 
-static void
-default_template_insert(void)
-{
-   if (live_edit_get())
-     {
-        stats_info_msg_update(_("Insertion of template code is disabled while in Live Edit mode"));
-        return;
-     }
-
-   char syntax[12];
-   if (enventor_object_template_insert(base_enventor_get(),
-                                       ENVENTOR_TEMPLATE_INSERT_DEFAULT,
-                                       syntax, sizeof(syntax)))
-     {
-        char msg[64];
-        snprintf(msg, sizeof(msg), _("Template code inserted, (%s)"), syntax);
-        stats_info_msg_update(msg);
-        enventor_object_save(base_enventor_get(), config_input_path_get());
-     }
-   else
-     {
-        stats_info_msg_update(_("Can't insert template code here. Move the "
-                              "cursor inside the \"Collections,Images,Parts,"
-                              "Part,Programs\" scope."));
-     }
-}
-
 static Eina_Bool
 alt_func(Evas_Event_Key_Down *event)
 {
@@ -690,7 +663,7 @@ ctrl_func(Evas_Event_Key_Down *event)
    //Template Code
    if (!strcmp(event->key, "t") || !strcmp(event->key, "T"))
      {
-        default_template_insert();
+        tools_template_insert();
         return EINA_TRUE;
      }
    //Auto Indentation

@@ -11,6 +11,7 @@ typedef struct tools_s
    Evas_Object *file_browser_btn;
    Evas_Object *edc_navigator_btn;
    Evas_Object *lines_btn;
+   Evas_Object *template_btn;
    Evas_Object *highlight_btn;
    Evas_Object *mirror_btn;
    Evas_Object *goto_btn;
@@ -60,6 +61,13 @@ lines_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
          void *event_info EINA_UNUSED)
 {
    tools_lines_update(EINA_TRUE);
+}
+
+static void
+template_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+            void *event_info EINA_UNUSED)
+{
+   tools_template_insert();
 }
 
 static void
@@ -277,6 +285,13 @@ tools_init(Evas_Object *parent)
    evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_part_content_set(text_editor_ly, "elm.swallow.lines", btn);
    td->lines_btn = btn;
+
+   btn = tools_btn_create(text_editor_ly, "template",
+                          _("Insert Template (Ctrl + T)"), template_cb);
+   evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_object_part_content_set(text_editor_ly, "elm.swallow.template", btn);
+   td->template_btn = btn;
 
    btn = tools_btn_create(text_editor_ly, "console",
                           _("Console Box (Alt + Down)"), console_cb);
@@ -513,6 +528,33 @@ tools_search_update(void)
      elm_object_signal_emit(td->find_btn, "icon,highlight,enabled", "");
    else
      elm_object_signal_emit(td->find_btn, "icon,highlight,disabled", "");
+}
+
+void
+tools_template_insert(void)
+{
+   if (live_edit_get())
+     {
+        stats_info_msg_update(_("Insertion of template code is disabled while in Live Edit mode"));
+        return;
+     }
+
+   char syntax[12];
+   if (enventor_object_template_insert(base_enventor_get(),
+                                       ENVENTOR_TEMPLATE_INSERT_DEFAULT,
+                                       syntax, sizeof(syntax)))
+     {
+        char msg[64];
+        snprintf(msg, sizeof(msg), _("Template code inserted, (%s)"), syntax);
+        stats_info_msg_update(msg);
+        enventor_object_save(base_enventor_get(), config_input_path_get());
+     }
+   else
+     {
+        stats_info_msg_update(_("Can't insert template code here. Move the "
+                              "cursor inside the \"Collections,Images,Parts,"
+                              "Part,Programs\" scope."));
+     }
 }
 
 void

@@ -93,4 +93,5 @@ EXTRA_DIST = \
    brows_logo.png \
    brows_image.png \
    brows_sound.png \
-   brows_font.png
+   brows_font.png \
+   template.png

@@ -9,6 +9,7 @@ void tools_file_browser_update(Eina_Bool toggle);
 void tools_edc_navigator_update(Eina_Bool toggle);
 void tools_goto_update(void);
 void tools_search_update(void);
+void tools_template_insert(void);
 void tools_live_update(Eina_Bool on);
 void tools_console_update(Eina_Bool on);
 void tools_menu_update(Eina_Bool on);

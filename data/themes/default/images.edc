@@ -45,6 +45,7 @@ images {
    image: "brows_image.png" COMP;
    image: "brows_sound.png" COMP;
    image: "brows_font.png" COMP;
+   image: "template.png" COMP;
 }
 
 #define ICON_GROUP(_group_name, _image_path) \
@@ -103,5 +104,6 @@ ICON_GROUP("brows_logo", "brows_logo.png")
 ICON_GROUP("brows_image", "brows_image.png")
 ICON_GROUP("brows_sound", "brows_sound.png")
 ICON_GROUP("brows_font", "brows_font.png")
+ICON_GROUP("template", "template.png")
 
 #undef ICON_GROUP
