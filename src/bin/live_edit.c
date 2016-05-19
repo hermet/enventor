@@ -1486,13 +1486,14 @@ live_view_geom_cb(void *data, Evas *e EINA_UNUSED,
    live_edit_update_internal(ld);
 }
 
-static void
+// This function cacluates the position of layout to the closest part edge
+static int
 calc_layout_auto_align_pos(Evas_Object *layout, live_data *ld, int x, int y,
                            int layout_dir_x, int layout_dir_y, int *ret_x,
                            int *ret_y)
 {
-   // This function cacluates the position of layout to the closest part edge
-   static int pre_layout_dir_x, pre_layout_dir_y;
+   static int pre_layout_dir_x = 0;
+   static int pre_layout_dir_y = 0;
 
    Eina_Bool is_up, is_down, is_left, is_right;
    is_up = is_down = is_left = is_right = EINA_FALSE;
@@ -1519,32 +1520,28 @@ calc_layout_auto_align_pos(Evas_Object *layout, live_data *ld, int x, int y,
    else
      {
         pre_layout_dir_x = layout_dir_x;
-        if (layout_dir_x < 0)
-          is_left = EINA_TRUE;
-        else if (layout_dir_x > 0)
-          is_right = EINA_TRUE;
+        if (layout_dir_x < 0) is_left = EINA_TRUE;
+        else if (layout_dir_x > 0) is_right = EINA_TRUE;
      }
 
    if (layout_dir_y == 0)
      {
-       if (pre_layout_dir_y < 0)
-         {
-            is_up = EINA_TRUE;
-            pre_layout_dir_y = -1;
-         }
-     else
-       {
-          is_down = EINA_TRUE;
-          pre_layout_dir_y = 1;
-       }
+        if (pre_layout_dir_y < 0)
+          {
+             is_up = EINA_TRUE;
+             pre_layout_dir_y = -1;
+          }
+        else
+          {
+             is_down = EINA_TRUE;
+             pre_layout_dir_y = 1;
+          }
      }
    else
      {
         pre_layout_dir_y = layout_dir_y;
-        if (layout_dir_y < 0)
-          is_up = EINA_TRUE;
-        else if (layout_dir_y > 0)
-          is_down = EINA_TRUE;
+        if (layout_dir_y < 0) is_up = EINA_TRUE;
+        else if (layout_dir_y > 0) is_down = EINA_TRUE;
      }
 
    int res_x1, res_y1, res_x2, res_y2;
