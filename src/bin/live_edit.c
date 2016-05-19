@@ -120,7 +120,7 @@ static const liveedit_item LIVEEDIT_ITEMS[] =
      {"Image", EDJE_PART_TYPE_IMAGE},
      {"Swallow", EDJE_PART_TYPE_SWALLOW},
      {"Textblock", EDJE_PART_TYPE_TEXTBLOCK},
-     {"Spacer", EDJE_PART_TYPE_SPACER}
+     {"Spacer", EDJE_PART_TYPE_SPACER} //Please leave spacer at last
 };
 
 static Evas_Object *
@@ -2005,12 +2005,18 @@ live_edit_tools_create(Evas_Object *parent)
    Evas_Object *btn;
    int i;
 
-   for (i = 0; i < LIVEEDIT_ITEMS_NUM; i++)
+   for (i = 0; i < (LIVEEDIT_ITEMS_NUM - 1); i++)
      {
         btn = live_btn_create(parent, LIVEEDIT_ITEMS[i].name,
                               (void *)(uintptr_t) i);
         btn_list = eina_list_append(btn_list, btn);
      }
+
+   //Just for spacer. Because we'd like to avoid margin in the icon image,
+   //We use 2 images - button icon's and live edit object's.
+   btn = live_btn_create(parent, "Spacer_Icon",
+                         (void *)(uintptr_t) i);
+   btn_list = eina_list_append(btn_list, btn);
 
    return btn_list;
 }

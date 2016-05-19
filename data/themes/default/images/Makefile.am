@@ -56,6 +56,7 @@ EXTRA_DIST = \
    live_rectangle.png \
    live_swallow.png \
    live_spacer.png \
+   live_spacer_icon.png \
    live_text.png \
    live_textblock.png \
    new.png \
