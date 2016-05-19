@@ -1498,9 +1498,14 @@ group { name: "viewer_layout";
 
 group { "preview_layout";
    parts {
-      rect { "bg";
-         desc {
+      image { "bg";
+         desc { "default";
             min: 120 120;
+            image.normal: "bg_demo.png";
+            fill {
+               size.relative: 0 0;
+               size.offset: 16 16;
+            }
             rel1.offset: 2 2;
             rel2.offset: -3 -3;
          }
