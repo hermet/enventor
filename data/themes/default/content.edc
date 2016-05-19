@@ -63,64 +63,87 @@ group { name: "part_highlight";
    }
 }
 
-group { name: "ctrl_pt";
+group { "ctrl_pt";
    parts {
-      part { name: "clipper";
-         type: RECT;
-         description { state: "default" 0.0;
+      rect { "clipper";
+         desc { "default";
          }
-         description { state: "hide" 0.0;
-            inherit: "default" 0.0;
+         desc { "hide";
+            inherit: "default";
             color: 255 255 255 0;
          }
       }
-      part { name: "base";
-         type: RECT;
+      rect { "base";
          clip_to: "clipper";
-         description { state: "default" 0.0;
+         desc { "default";
          }
-         description { state: "anim" 0.0;
-            inherit: "default" 0.0;
+         desc { "anim";
+            inherit: "default";
             color: COL_HI_S;
+         }
+      }
+      rect { "highlight";
+         clip_to: "clipper";
+         desc { "default";
+            color: 225 0 0 255;
+            visible: 0;
+         }
+         desc { "show";
+            inherit: "default";
+            visible: 1;
          }
       }
    }
    programs {
-      program { name: "load";
+      program { "load";
          signal: "load";
          after: "anim";
       }
-      program { name: "anim";
-         action: STATE_SET "anim" 0.0;
+      program { "anim";
+         action: STATE_SET "anim";
          target: "base";
          transition: LINEAR 0.5;
          after: "anim2";
       }
-      program { name: "anim2";
-         action: STATE_SET "default" 0.0;
+      program { "anim2";
+         action: STATE_SET "default";
          target: "base";
          transition: LINEAR 0.5;
          after: "anim";
       }
-      program { name: "show";
+      program { "show";
          signal: "elm,state,show";
          source: "";
-         action: STATE_SET "default" 0.0;
+         action: STATE_SET "default";
          target: "clipper";
          transition: LINEAR 0.125;
       }
-      program { name: "hide";
+      program { "hide";
          signal: "elm,state,hide";
          source: "";
-         action: STATE_SET "hide" 0.0;
+         action: STATE_SET "hide";
          target: "clipper";
          transition: LINEAR 0.125;
       }
-      program { name: "hide,instance";
+      program { "hide,instance";
          signal: "elm,state,hide,instance";
          source: "";
-         action: STATE_SET "hide" 0.0;
+         action: STATE_SET "hide";
          target: "clipper";
+      }
+      program { "show_highlight";
+         signal: "elm,state,show,highlight";
+         source: "";
+         action: STATE_SET "show";
+         target: "highlight";
+         transition: LINEAR 0.125;
+      }
+      program { "hide_highlight";
+         signal: "elm,state,hide,highlight";
+         source: "";
+         action: STATE_SET "default";
+         target: "highlight";
+         transition: LINEAR 0.125;
       }
    }
 }

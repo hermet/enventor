@@ -8,6 +8,10 @@
 #define CTRL_PT_LAYER 3
 #define INFO_TEXT_LAYER (CTRL_PT_LAYER+1)
 #define PART_NAME_MAX 1024
+#define ALIGN_LINE_LEFT 0x0001
+#define ALIGN_LINE_RIGHT 0x0010
+#define ALIGN_LINE_TOP 0x0100
+#define ALIGN_LINE_BOTTOM 0x1000
 
 typedef struct livedit_item_s
 {
@@ -38,7 +42,7 @@ typedef enum
 
 typedef enum
 {
-   Align_Line_Top = 0,
+   Align_Line_Top,
    Align_Line_Bottom,
    Align_Line_Left,
    Align_Line_Right,
@@ -89,6 +93,11 @@ typedef struct live_editor_s
    Eina_Bool fixed_h : 1;
 
    Eina_Bool on : 1;
+   Eina_Bool align_left : 1;
+   Eina_Bool align_right : 1;
+   Eina_Bool align_top : 1;
+   Eina_Bool align_bottom : 1;
+
 } live_data;
 
 typedef struct auto_align_data_s
@@ -122,6 +131,87 @@ static const liveedit_item LIVEEDIT_ITEMS[] =
      {"Textblock", EDJE_PART_TYPE_TEXTBLOCK},
      {"Spacer", EDJE_PART_TYPE_SPACER} //Please leave spacer at last
 };
+
+static void
+update_line_attach_effect(live_data *ld, int align_line)
+{
+   //Left
+   if ((align_line & ALIGN_LINE_LEFT))
+     {
+        if (!ld->align_left)
+          {
+             ld->align_left = EINA_TRUE;
+             elm_object_signal_emit(ld->align_line[Align_Line_Left],
+                                    "elm,state,show,highlight", "");
+          }
+     }
+   else
+     {
+        if (ld->align_left)
+          {
+             ld->align_left = EINA_FALSE;
+             elm_object_signal_emit(ld->align_line[Align_Line_Left],
+                                    "elm,state,hide,highlight", "");
+          }
+     }
+   //Right
+   if ((align_line & ALIGN_LINE_RIGHT))
+     {
+        if (!ld->align_right)
+          {
+             ld->align_right = EINA_TRUE;
+             elm_object_signal_emit(ld->align_line[Align_Line_Right],
+                                    "elm,state,show,highlight", "");
+          }
+     }
+   else
+     {
+        if (ld->align_right)
+          {
+             ld->align_right = EINA_FALSE;
+             elm_object_signal_emit(ld->align_line[Align_Line_Right],
+                                    "elm,state,hide,highlight", "");
+          }
+     }
+   //Top
+   if ((align_line & ALIGN_LINE_TOP))
+     {
+        if (!ld->align_top)
+          {
+             ld->align_top = EINA_TRUE;
+             elm_object_signal_emit(ld->align_line[Align_Line_Top],
+                                    "elm,state,show,highlight", "");
+          }
+     }
+   else
+     {
+        if (ld->align_top)
+          {
+             ld->align_top = EINA_FALSE;
+             elm_object_signal_emit(ld->align_line[Align_Line_Top],
+                                    "elm,state,hide,highlight", "");
+          }
+     }
+   //Bottom
+   if ((align_line & ALIGN_LINE_BOTTOM))
+     {
+        if (!ld->align_bottom)
+          {
+             ld->align_bottom = EINA_TRUE;
+             elm_object_signal_emit(ld->align_line[Align_Line_Bottom],
+                                    "elm,state,show,highlight", "");
+          }
+     }
+   else
+     {
+        if (ld->align_bottom)
+          {
+             ld->align_bottom = EINA_FALSE;
+             elm_object_signal_emit(ld->align_line[Align_Line_Bottom],
+                                    "elm,state,hide,highlight", "");
+          }
+     }
+}
 
 static Evas_Object *
 view_scroller_get(live_data *ld)
@@ -315,7 +405,8 @@ keygrabber_key_down_cb(void *data, Evas *e EINA_UNUSED,
 }
 
 Evas_Coord_Point
-calc_ctrl_pt_auto_align_pos(live_data *ld, int cursor_x, int cursor_y)
+calc_ctrl_pt_auto_align_pos(live_data *ld, int cursor_x, int cursor_y,
+                            int align_in, int *align_out)
 {
    int res_x, res_y;
    unsigned int nx, ny;
@@ -368,14 +459,36 @@ calc_ctrl_pt_auto_align_pos(live_data *ld, int cursor_x, int cursor_y)
    Evas_Coord_Point pt;
 
    if (res_x != -1)
-     pt.x = res_x;
+     {
+        pt.x = res_x;
+        if (align_out)
+          {
+             if (align_in & ALIGN_LINE_LEFT)
+               *align_out |= ALIGN_LINE_LEFT;
+             else if (align_in & ALIGN_LINE_RIGHT)
+               *align_out |= ALIGN_LINE_RIGHT;
+          }
+     }
    else
-     pt.x = cursor_x;
+     {
+        pt.x = cursor_x;
+     }
 
    if (res_y != -1)
-     pt.y = res_y;
+     {
+        pt.y = res_y;
+        if (align_out)
+          {
+             if (align_in & ALIGN_LINE_TOP)
+               *align_out |= ALIGN_LINE_TOP;
+             else if (align_in & ALIGN_LINE_BOTTOM)
+               *align_out |= ALIGN_LINE_BOTTOM;
+          }
+     }
    else
-     pt.y = cursor_y;
+     {
+        pt.y = cursor_y;
+     }
 
    return pt;
 }
@@ -456,7 +569,10 @@ cp_top_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
                             NULL, NULL);
 
 
-   Evas_Coord_Point pt = calc_ctrl_pt_auto_align_pos(ld, x, y);
+   int align_line = 0;
+   Evas_Coord_Point pt = calc_ctrl_pt_auto_align_pos(ld, x, y,
+                                                     ALIGN_LINE_TOP,
+                                                     &align_line);
    y = pt.y;
 
    if (vy > y) y = vy;
@@ -465,6 +581,8 @@ cp_top_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
    ld->rel_info.rel1_y = ROUNDING(((double) (y - vy) / (double) vh), 2);
 
    elm_object_signal_emit(ld->align_line[Align_Line_Top], "elm,state,show", "");
+
+   update_line_attach_effect(ld, align_line);
 }
 
 static void
@@ -487,7 +605,10 @@ cp_bottom_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
    evas_object_geometry_get(ld->ctrl_pt[Ctrl_Pt_Rel1], NULL, &rel1_y,
                             NULL, NULL);
 
-   Evas_Coord_Point pt = calc_ctrl_pt_auto_align_pos(ld, x, y);
+   int align_line = 0;
+   Evas_Coord_Point pt = calc_ctrl_pt_auto_align_pos(ld, x, y,
+                                                     ALIGN_LINE_BOTTOM,
+                                                     &align_line);
    y = pt.y;
 
 
@@ -498,6 +619,8 @@ cp_bottom_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
 
    elm_object_signal_emit(ld->align_line[Align_Line_Bottom], "elm,state,show",
                           "");
+
+   update_line_attach_effect(ld, align_line);
 }
 
 static void
@@ -611,11 +734,12 @@ cp_rel1_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
    Evas_Coord rel2_x, rel2_y;
    evas_object_geometry_get(ld->ctrl_pt[Ctrl_Pt_Rel2], &rel2_x, &rel2_y,
                             NULL, NULL);
-
-   Evas_Coord_Point pt = calc_ctrl_pt_auto_align_pos(ld, x, y);
+   int align_line = 0;
+   Evas_Coord_Point pt =
+      calc_ctrl_pt_auto_align_pos(ld, x, y, (ALIGN_LINE_TOP | ALIGN_LINE_LEFT),
+                                  &align_line);
    x = pt.x;
    y = pt.y;
-
 
    if (vx > x) x = vx;
    if (vy > y) y = vy;
@@ -628,6 +752,8 @@ cp_rel1_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
    elm_object_signal_emit(ld->align_line[Align_Line_Left], "elm,state,show",
                           "");
    elm_object_signal_emit(ld->align_line[Align_Line_Top], "elm,state,show", "");
+
+   update_line_attach_effect(ld, align_line);
 }
 
 static void
@@ -649,7 +775,11 @@ cp_rel2_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
    evas_object_geometry_get(ld->ctrl_pt[Ctrl_Pt_Rel1], &rel1_x, &rel1_y,
                             NULL, NULL);
 
-   Evas_Coord_Point pt = calc_ctrl_pt_auto_align_pos(ld, x, y);
+   int align_line = 0;
+   Evas_Coord_Point pt =
+      calc_ctrl_pt_auto_align_pos(ld, x, y,
+                                  (ALIGN_LINE_RIGHT | ALIGN_LINE_BOTTOM),
+                                  &align_line);
    x = pt.x;
    y = pt.y;
 
@@ -665,6 +795,8 @@ cp_rel2_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
                           "");
    elm_object_signal_emit(ld->align_line[Align_Line_Bottom], "elm,state,show",
                           "");
+
+   update_line_attach_effect(ld, align_line);
 }
 
 static void
@@ -686,7 +818,11 @@ cp_rel3_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
    evas_object_geometry_get(ld->ctrl_pt[Ctrl_Pt_Rel1], &rel1_x, NULL,
                             NULL, NULL);
 
-   Evas_Coord_Point pt = calc_ctrl_pt_auto_align_pos(ld, x, y);
+   int align_line = 0;
+   Evas_Coord_Point pt =
+      calc_ctrl_pt_auto_align_pos(ld, x, y,
+                                  (ALIGN_LINE_TOP | ALIGN_LINE_RIGHT),
+                                  &align_line);
    x = pt.x;
    y = pt.y;
 
@@ -705,6 +841,8 @@ cp_rel3_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
    elm_object_signal_emit(ld->align_line[Align_Line_Right], "elm,state,show",
                           "");
    elm_object_signal_emit(ld->align_line[Align_Line_Top], "elm,state,show", "");
+
+   update_line_attach_effect(ld, align_line);
 }
 
 static void
@@ -726,7 +864,11 @@ cp_rel4_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
    evas_object_geometry_get(ld->ctrl_pt[Ctrl_Pt_Rel2], &rel2_x, NULL,
                             NULL, NULL);
 
-   Evas_Coord_Point pt = calc_ctrl_pt_auto_align_pos(ld, x, y);
+   int align_line = 0;
+   Evas_Coord_Point pt =
+      calc_ctrl_pt_auto_align_pos(ld, x, y,
+                                  (ALIGN_LINE_LEFT | ALIGN_LINE_BOTTOM),
+                                  &align_line);
    x = pt.x;
    y = pt.y;
 
@@ -746,6 +888,8 @@ cp_rel4_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
                           "");
    elm_object_signal_emit(ld->align_line[Align_Line_Bottom], "elm,state,show",
                           "");
+
+   update_line_attach_effect(ld, align_line);
 }
 
 static void
@@ -767,9 +911,11 @@ cp_left_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
    evas_object_geometry_get(ld->ctrl_pt[Ctrl_Pt_Rel2], &rel2_x, NULL,
                             NULL, NULL);
 
-   Evas_Coord_Point pt = calc_ctrl_pt_auto_align_pos(ld, x, y);
+   int align_line = 0;
+   Evas_Coord_Point pt = calc_ctrl_pt_auto_align_pos(ld, x, y,
+                                                     ALIGN_LINE_LEFT,
+                                                     &align_line);
    x = pt.x;
-
 
    if (vx > x) x = vx;
    if ((x - ld->half_ctrl_size) > rel2_x) x = (rel2_x + ld->half_ctrl_size);
@@ -778,6 +924,7 @@ cp_left_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
 
    elm_object_signal_emit(ld->align_line[Align_Line_Left], "elm,state,show",
                           "");
+   update_line_attach_effect(ld, align_line);
 }
 
 static void
@@ -799,8 +946,10 @@ cp_right_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
    evas_object_geometry_get(ld->ctrl_pt[Ctrl_Pt_Rel1], &rel1_x, NULL,
                             NULL, NULL);
 
-
-   Evas_Coord_Point pt = calc_ctrl_pt_auto_align_pos(ld, x, y);
+   int align_line = 0;
+   Evas_Coord_Point pt = calc_ctrl_pt_auto_align_pos(ld, x, y,
+                                                     ALIGN_LINE_RIGHT,
+                                                     &align_line);
    x = pt.x;
 
 
@@ -811,6 +960,8 @@ cp_right_mouse_move_cb(void *data, Evas *e EINA_UNUSED,
 
    elm_object_signal_emit(ld->align_line[Align_Line_Right], "elm,state,show",
                           "");
+
+   update_line_attach_effect(ld, align_line);
 }
 
 static void
@@ -1230,7 +1381,8 @@ show_relative_to_list(live_data *ld, int x, int y)
    Eina_Array_Iterator iter;
    auto_align_data *al_pos;
 
-   Evas_Coord_Point cur_ctrl_pt = calc_ctrl_pt_auto_align_pos(ld, x, y);
+   Evas_Coord_Point cur_ctrl_pt = calc_ctrl_pt_auto_align_pos(ld, x, y,
+                                                              0, NULL);
 
    if (ld->rel_to_ctxpopup)
      return;
@@ -1633,16 +1785,32 @@ calc_layout_auto_align_pos(Evas_Object *layout, live_data *ld, int x, int y,
         }
    }
 
+   int align_line = 0;
+
    // If we find the closest position and return it
    if (is_left && (res_x1 != -1))
-     *ret_x = res_x1;
+     {
+        *ret_x = res_x1;
+        align_line |= ALIGN_LINE_LEFT;
+     }
    else if (is_right && (res_x2 != -1))
-     *ret_x = res_x2 - w;
+     {
+        *ret_x = res_x2 - w;
+        align_line |= ALIGN_LINE_RIGHT;
+     }
 
    if (is_up && (res_y1 != -1))
-     *ret_y = res_y1;
+     {
+        *ret_y = res_y1;
+        align_line |= ALIGN_LINE_TOP;
+     }
    else if (is_down && (res_y2 != -1))
-     *ret_y = res_y2 - h;
+     {
+        *ret_y = res_y2 - h;
+        align_line |= ALIGN_LINE_BOTTOM;
+     }
+
+   return align_line;
 }
 
 static void
@@ -1679,7 +1847,8 @@ layout_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
    ret_y = y;
 
    // This function set the position of layout to the closest part edge
-   calc_layout_auto_align_pos(obj, ld, x, y, dir_x, dir_y, &ret_x, &ret_y);
+   int align_line =
+      calc_layout_auto_align_pos(obj, ld, x, y, dir_x, dir_y, &ret_x, &ret_y);
 
    x = ret_x;
    y = ret_y;
@@ -1710,6 +1879,7 @@ layout_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
    ctrl_pt_update(ld);
    info_text_update(ld);
    align_line_update(ld);
+   update_line_attach_effect(ld, align_line);
 }
 
 static void
@@ -2057,6 +2227,10 @@ live_edit_cancel(void)
      }
 
    ld->on = EINA_FALSE;
+   ld->align_left = EINA_FALSE;
+   ld->align_right = EINA_FALSE;
+   ld->align_top = EINA_FALSE;
+   ld->align_bottom = EINA_FALSE;
 
    return EINA_TRUE;
 }
