@@ -41,6 +41,7 @@ typedef struct config_s
    Eina_Bool auto_complete;
    Eina_Bool smart_undo_redo;
    Eina_Bool file_browser;
+   Eina_Bool file_browser_loaded;
    Eina_Bool edc_navigator;
 } config_data;
 
@@ -113,6 +114,9 @@ config_save(config_data *cd)
         EINA_LOG_ERR(_("Cannot save a config file \"%s\""), buf);
         return;
      }
+
+   //Restore loaded file browser config.
+   cd->file_browser = cd->file_browser_loaded;
 
    eet_data_write(ef, edd_base, "config", cd, 1);
    eet_close(ef);
@@ -244,6 +248,9 @@ config_load(void)
    if (!cd->font_style)
      eina_stringshare_replace(&cd->font_style, "Regular");
 
+   //Store loaded file browser config.
+   cd->file_browser_loaded = cd->file_browser;
+
    return cd;
 }
 
@@ -334,8 +341,11 @@ config_init(const char *input_path, const char *output_path,
 
    if (input_path[0]) config_input_path_set(input_path);
    if (output_path[0]) eina_stringshare_replace(&cd->output_path, output_path);
+
    if (workspace_path[0])
      eina_stringshare_replace(&cd->workspace_path, workspace_path);
+   else
+     g_cd->file_browser = EINA_FALSE;
 
    if (img_path)
      g_cd->img_path_list = img_path;
@@ -932,6 +942,7 @@ config_file_browser_set(Eina_Bool enabled)
 {
    config_data *cd = g_cd;
    cd->file_browser = enabled;
+   cd->file_browser_loaded = enabled;
 }
 
 Eina_Bool
