@@ -69,9 +69,11 @@ output file = EDJ file to store compiled file. If output file is skipped, Envent
 </br>
 Examples of Enventor command line usage:</br>
 $ enventor</br>
+$ enventor input.edc -i ./images</br>
+$ enventor input.edc output.edj -i ./images</br>
 $ enventor -t</br>
 $ enventor newfile.edc -t</br>
-$ enventor sample.edc output.edj -i ./images -s ./sounds -w ./workspace</br>
+$ enventor input.edc output.edj -i ./images -s ./sounds -w ./workspace</br>
 </br>
 </br>
 <font_size=11><b>[Developers]</b></font_size></br>

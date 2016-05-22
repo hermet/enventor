@@ -4,9 +4,11 @@
 #define ENVENTOR_HELP_EXAMPLES \
 "Examples of Enventor command line usage:\n \
 $ enventor\n \
+$ enventor input.edc -i ./images\n \
+$ enventor input.edc output.edj -i ./images\n \
 $ enventor -t\n \
 $ enventor newfile.edc -t\n \
-$ enventor sample.edc output.edj -i ./images -s ./sounds -w ./workspace\n"
+$ enventor input.edc output.edj -i ./images -s ./sounds -w ./workspace\n"
 
 #define ENVENTOR_USAGE \
 "%prog [input file] [output file] [-t] [-i image path] [-s sound path] [-f font path] [-d data path] [-w workspace]"
