@@ -51,7 +51,6 @@ typedef enum
 
 typedef struct live_editor_s
 {
-   Evas_Object *toolbox;
    Evas_Object *layout;
    Evas_Object *live_view;
    Evas_Object *ctrl_pt[Ctrl_Pt_Cnt];
@@ -2276,7 +2275,6 @@ void
 live_edit_term(void)
 {
    live_data *ld = g_ld;
-   evas_object_del(ld->toolbox);
    live_edit_cancel();
 
    free_auto_align_data(ld->auto_align_array);
