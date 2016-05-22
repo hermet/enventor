@@ -3010,7 +3010,7 @@ group { "text_editor_tools_layout";
       spacer { "base";
          scale: 1;
          desc { "default";
-            min: 300 0;
+            min: 334 0;
             fixed: 1 0;
             align: 0.0 0.5;
          }
@@ -3018,11 +3018,8 @@ group { "text_editor_tools_layout";
       spacer { "padding1";
          scale: 1;
          desc { "default";
-            rel1.to_x: "base";
-            rel2 {
-               to_x: "base";
-               relative: 0.0 1.0;
-            }
+            rel.to: "base";
+            rel2.relative: 0.0 1.0;
             min: 14 0;
             fixed: 1 0;
             align: 0.0 0.5;
@@ -3031,11 +3028,8 @@ group { "text_editor_tools_layout";
       swallow { "elm.swallow.save";
          scale: 1;
          desc { "default";
-            rel1 {
-               to_x: "padding1";
-               relative: 1.0 0.0;
-            }
-            rel2.to_x: "padding1";
+            rel.to: "padding1";
+            rel1.relative: 1.0 0.0;
             fixed: 1 0;
             align: 0.0 0.5;
          }
@@ -3043,11 +3037,8 @@ group { "text_editor_tools_layout";
       spacer { "padding2";
          scale: 1;
          desc { "default";
-            rel1 {
-               to_x: "elm.swallow.save";
-               relative: 1.0 0.0;
-            }
-            rel2.to_x: "elm.swallow.save";
+            rel.to: "elm.swallow.save";
+            rel1.relative: 1.0 0.0;
             min: 8 0;
             fixed: 1 0;
             align: 0.0 0.5;
@@ -3056,11 +3047,8 @@ group { "text_editor_tools_layout";
       swallow { "elm.swallow.undo";
          scale: 1;
          desc { "default";
-            rel1 {
-               to_x: "padding2";
-               relative: 1.0 0.0;
-            }
-            rel2.to_x: "padding2";
+            rel.to: "padding2";
+            rel1.relative: 1.0 0.0;
             fixed: 1 0;
             align: 0.0 0.5;
          }
@@ -3068,11 +3056,8 @@ group { "text_editor_tools_layout";
       spacer { "padding3";
          scale: 1;
          desc { "default";
-            rel1 {
-               to_x: "elm.swallow.undo";
-               relative: 1.0 0.0;
-            }
-            rel2.to_x: "elm.swallow.undo";
+            rel.to: "elm.swallow.undo";
+            rel1.relative: 1.0 0.0;
             min: 8 0;
             fixed: 1 0;
             align: 0.0 0.5;
@@ -3081,11 +3066,8 @@ group { "text_editor_tools_layout";
       swallow { "elm.swallow.redo";
          scale: 1;
          desc { "default";
-            rel1 {
-               to_x: "padding3";
-               relative: 1.0 0.0;
-            }
-            rel2.to_x: "padding3";
+            rel.to: "padding3";
+            rel1.relative: 1.0 0.0;
             fixed: 1 0;
             align: 0.0 0.5;
          }
@@ -3093,11 +3075,8 @@ group { "text_editor_tools_layout";
       spacer { "padding4";
          scale: 1;
          desc { "default";
-            rel1 {
-               to_x: "elm.swallow.redo";
-               relative: 1.0 0.0;
-            }
-            rel2.to_x: "elm.swallow.redo";
+            rel.to: "elm.swallow.redo";
+            rel1.relative: 1.0 0.0;
             min: 8 0;
             fixed: 1 0;
             align: 0.0 0.5;
@@ -3106,11 +3085,8 @@ group { "text_editor_tools_layout";
       swallow { "elm.swallow.find";
          scale: 1;
          desc { "default";
-            rel1 {
-               to_x: "padding4";
-               relative: 1.0 0.0;
-            }
-            rel2.to_x: "padding4";
+            rel.to: "padding4";
+            rel1.relative: 1.0 0.0;
             fixed: 1 0;
             align: 0.0 0.5;
          }
@@ -3118,11 +3094,8 @@ group { "text_editor_tools_layout";
       spacer { "padding5";
          scale: 1;
          desc { "default";
-            rel1 {
-               to_x: "elm.swallow.find";
-               relative: 1.0 0.0;
-            }
-            rel2.to_x: "elm.swallow.find";
+            rel.to: "elm.swallow.find";
+            rel1.relative: 1.0 0.0;
             min: 8 0;
             fixed: 1 0;
             align: 0.0 0.5;
@@ -3131,10 +3104,8 @@ group { "text_editor_tools_layout";
       swallow { "elm.swallow.goto";
          scale: 1;
          desc { "default";
-            rel1 {
-               to_x: "padding5";
-               relative: 1.0 0.0;
-            }
+            rel.to: "padding5";
+            rel1.relative: 1.0 0.0;
             rel2.to_x: "padding5";
             fixed: 1 0;
             align: 0.0 0.5;
@@ -3143,11 +3114,8 @@ group { "text_editor_tools_layout";
       spacer { "padding6";
          scale: 1;
          desc { "default";
-            rel1 {
-               to_x: "elm.swallow.goto";
-               relative: 1.0 0.0;
-            }
-            rel2.to_x: "elm.swallow.goto";
+            rel.to: "elm.swallow.goto";
+            rel1.relative: 1.0 0.0;
             min: 8 0;
             fixed: 1 0;
             align: 0.0 0.5;
@@ -3156,11 +3124,8 @@ group { "text_editor_tools_layout";
       swallow { "elm.swallow.lines";
          scale: 1;
          desc { "default";
-            rel1 {
-               to_x: "padding6";
-               relative: 1.0 0.0;
-            }
-            rel2.to_x: "padding6";
+            rel.to: "padding6";
+            rel1.relative: 1.0 0.0;
             fixed: 1 0;
             align: 0.0 0.5;
          }
@@ -3168,11 +3133,8 @@ group { "text_editor_tools_layout";
       spacer { "padding7";
          scale: 1;
          desc { "default";
-            rel1 {
-               to_x: "elm.swallow.lines";
-               relative: 1.0 0.0;
-            }
-            rel2.to_x: "elm.swallow.lines";
+            rel.to: "elm.swallow.lines";
+            rel1.relative: 1.0 0.0;
             min: 8 0;
             fixed: 1 0;
             align: 0.0 0.5;
@@ -3181,11 +3143,8 @@ group { "text_editor_tools_layout";
       swallow { "elm.swallow.template";
          scale: 1;
          desc { "default";
-            rel1 {
-               to_x: "padding7";
-               relative: 1.0 0.0;
-            }
-            rel2.to_x: "padding7";
+            rel.to: "padding7";
+            rel1.relative: 1.0 0.0;
             fixed: 1 0;
             align: 0.0 0.5;
          }
@@ -3193,11 +3152,8 @@ group { "text_editor_tools_layout";
       spacer { "padding8";
          scale: 1;
          desc { "default";
-            rel1 {
-               to_x: "base";
-               relative: 1.0 0.0;
-            }
-            rel2.to_x: "base";
+            rel.to: "base";
+            rel1.relative: 1.0 0.0;
             min: 14 0;
             fixed: 1 0;
             align: 1.0 0.5;
@@ -3206,11 +3162,8 @@ group { "text_editor_tools_layout";
       swallow { "elm.swallow.menu";
          scale: 1;
          desc { "default";
-            rel1.to_x: "padding8";
-            rel2 {
-               to_x: "padding8";
-               relative: 0.0 1.0;
-            }
+            rel.to: "padding8";
+            rel2.relative: 0.0 1.0;
             fixed: 1 0;
             align: 1.0 0.5;
          }
@@ -3218,11 +3171,8 @@ group { "text_editor_tools_layout";
       spacer { "padding9";
          scale: 1;
          desc { "default";
-            rel1.to_x: "elm.swallow.menu";
-            rel2 {
-               to_x: "elm.swallow.menu";
-               relative: 0.0 1.0;
-            }
+            rel.to: "elm.swallow.menu";
+            rel2.relative: 0.0 1.0;
             min: 14 0;
             fixed: 1 0;
             align: 1.0 0.5;
@@ -3231,14 +3181,9 @@ group { "text_editor_tools_layout";
       rect { "separator";
          scale: 1;
          desc { "default";
-            rel1 {
-               to_x: "padding9";
-               relative: 0.0 0.5;
-            }
-            rel2 {
-               to_x: "padding9";
-               relative: 0.0 0.5;
-            }
+            rel.to: "padding9";
+            rel1.relative: 0.0 0.5;
+            rel2.relative: 0.0 0.5;
             min: 1 18;
             fixed: 1 1;
             align: 1.0 0.5;
@@ -3248,11 +3193,8 @@ group { "text_editor_tools_layout";
       spacer { "padding10";
          scale: 1;
          desc { "default";
-            rel1.to_x: "separator";
-            rel2 {
-               to_x: "separator";
-               relative: 0.0 1.0;
-            }
+            rel.to: "separator";
+            rel2.relative: 0.0 1.0;
             min: 8 0;
             fixed: 1 0;
             align: 1.0 0.5;
@@ -3261,11 +3203,8 @@ group { "text_editor_tools_layout";
       swallow { "elm.swallow.status";
          scale: 1;
          desc { "default";
-            rel1.to_x: "padding10";
-            rel2 {
-               to_x: "padding10";
-               relative: 0.0 1.0;
-            }
+            rel.to: "padding10";
+            rel2.relative: 0.0 1.0;
             fixed: 1 0;
             align: 1.0 0.5;
          }
@@ -3273,11 +3212,8 @@ group { "text_editor_tools_layout";
       spacer { "padding11";
          scale: 1;
          desc { "default";
-            rel1.to_x: "elm.swallow.status";
-            rel2 {
-               to_x: "elm.swallow.status";
-               relative: 0.0 1.0;
-            }
+            rel.to: "elm.swallow.status";
+            rel2.relative: 0.0 1.0;
             min: 8 0;
             fixed: 1 0;
             align: 1.0 0.5;
@@ -3286,11 +3222,8 @@ group { "text_editor_tools_layout";
       swallow { "elm.swallow.edc_navigator";
          scale: 1;
          desc { "default";
-            rel1.to_x: "padding11";
-            rel2 {
-               to_x: "padding11";
-               relative: 0.0 1.0;
-            }
+            rel.to: "padding11";
+            rel2.relative: 0.0 1.0;
             fixed: 1 0;
             align: 1.0 0.5;
          }
@@ -3298,11 +3231,8 @@ group { "text_editor_tools_layout";
       spacer { "padding12";
          scale: 1;
          desc { "default";
-            rel1.to_x: "elm.swallow.edc_navigator";
-            rel2 {
-               to_x: "elm.swallow.edc_navigator";
-               relative: 0.0 1.0;
-            }
+            rel.to: "elm.swallow.edc_navigator";
+            rel2.relative: 0.0 1.0;
             min: 8 0;
             fixed: 1 0;
             align: 1.0 0.5;
@@ -3311,11 +3241,8 @@ group { "text_editor_tools_layout";
       swallow { "elm.swallow.file_browser";
          scale: 1;
          desc { "default";
-            rel1.to_x: "padding12";
-            rel2 {
-               to_x: "padding12";
-               relative: 0.0 1.0;
-            }
+            rel.to_x: "padding12";
+            rel2.relative: 0.0 1.0;
             fixed: 1 0;
             align: 1.0 0.5;
          }
@@ -3323,11 +3250,8 @@ group { "text_editor_tools_layout";
       spacer { "padding13";
          scale: 1;
          desc { "default";
-            rel1.to_x: "elm.swallow.file_browser";
-            rel2 {
-               to_x: "elm.swallow.file_browser";
-               relative: 0.0 1.0;
-            }
+            rel.to: "elm.swallow.file_browser";
+            rel2.relative: 0.0 1.0;
             min: 8 0;
             fixed: 1 0;
             align: 1.0 0.5;
@@ -3336,15 +3260,35 @@ group { "text_editor_tools_layout";
       swallow { "elm.swallow.console";
          scale: 1;
          desc { "default";
-            rel1.to_x: "padding13";
-            rel2 {
-               to_x: "padding13";
-               relative: 0.0 1.0;
-            }
+            rel.to: "padding13";
+            rel2.relative: 0.0 1.0;
             fixed: 1 0;
             align: 1.0 0.5;
          }
       }
+      spacer { "padding14";
+         scale: 1;
+         desc { "default";
+            rel.to: "elm.swallow.console";
+            rel2.relative: 0.0 1.0;
+            min: 8 0;
+            fixed: 1 0;
+            align: 1.0 0.5;
+         }
+      }
+      rect { "separator2";
+         scale: 1;
+         desc { "default";
+            rel.to: "padding14";
+            rel1.relative: 0.0 0.5;
+            rel2.relative: 0.0 0.5;
+            min: 1 18;
+            fixed: 1 1;
+            align: 1.0 0.5;
+            color: 48 48 48 255;
+         }
+      }
+
    }
 }
 
