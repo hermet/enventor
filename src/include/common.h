@@ -6,10 +6,10 @@
 $ enventor\n \
 $ enventor -t\n \
 $ enventor newfile.edc -t\n \
-$ enventor sample.edc output.edj -i ./images -s ./sounds\n"
+$ enventor sample.edc output.edj -i ./images -s ./sounds -w ./workspace\n"
 
 #define ENVENTOR_USAGE \
-"%prog [input file] [output file] [-t] [-i image path] [-s sound path] [-f font path] [-d data path]"
+"%prog [input file] [output file] [-t] [-i image path] [-s sound path] [-f font path] [-d data path] [-w workspace]"
 
 #define ENVENTOR_INFO \
 "This is an EDC editor with some convenient functions.\n \
