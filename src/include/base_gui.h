@@ -13,7 +13,7 @@ void base_win_resize_object_add(Evas_Object *resize_obj);
 void base_title_set(const char *path);
 void base_statusbar_toggle(Eina_Bool config);
 void base_tools_toggle(Eina_Bool config);
-void base_tools_set(Evas_Object *live_view_tools, Evas_Object *text_editor_tools);
+void base_tools_set(Evas_Object *live_view_tools, Evas_Object *text_editor_tools, Evas_Object *live_edit_fixed_bar);
 void base_enventor_full_view(void);
 void base_live_view_full_view(void);
 void base_editors_full_view(void);

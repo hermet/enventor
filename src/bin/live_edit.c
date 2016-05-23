@@ -1971,11 +1971,24 @@ key_grab_add(Evas_Object *keygrabber, const char *key)
 }
 
 static void
+rel_to_values_reset(live_data *ld)
+{
+   //Reset state about relative_to
+   ld->rel_to_info.align_x = 0.5;
+   ld->rel_to_info.align_y = 0.5;
+   ld->rel_to_info.rel1_x_to = NULL;
+   ld->rel_to_info.rel1_y_to = NULL;
+   ld->rel_to_info.rel2_x_to = NULL;
+   ld->rel_to_info.rel2_y_to = NULL;
+}
+
+static void
 fixed_w_check_changed_cb(void *data, Evas_Object *obj,
                          void *event_info EINA_UNUSED)
 {
    live_data *ld = data;
    ld->fixed_w = elm_check_state_get(obj);
+   rel_to_values_reset(ld);
 }
 
 static void
@@ -1983,56 +1996,7 @@ fixed_h_check_changed_cb(void *data, Evas_Object *obj, void *event_info EINA_UNU
 {
    live_data *ld = data;
    ld->fixed_h = elm_check_state_get(obj);
-}
-
-static void
-show_fixed_check_list(live_data *ld)
-{
-   if (ld->fixed_ctxpopup)
-     return;
-
-   ld->fixed_ctxpopup = elm_ctxpopup_add(ld->live_view);
-   //FIXME: because the focus highlighting is floated after ctxpopup is
-   //dismissed, i disable the focus here
-   elm_object_tree_focus_allow_set(ld->fixed_ctxpopup, EINA_FALSE);
-   evas_object_smart_callback_add(ld->fixed_ctxpopup, "dismissed",
-                                  fixed_ctxpopup_dismissed_cb, ld);
-
-   Evas_Object *view_obj = view_obj_get(ld);
-   Evas_Coord vx, vy, vw, vh;
-   evas_object_geometry_get(view_obj, &vx, &vy, &vw, &vh);
-
-   evas_object_move(ld->fixed_ctxpopup, vx + (vw / 2), vy + (vh / 2));
-   elm_object_scale_set(ld->fixed_ctxpopup, 1.2);
-
-   Evas_Object *fixed_box = elm_box_add(ld->fixed_ctxpopup);
-   elm_box_horizontal_set(fixed_box, EINA_TRUE);
-   evas_object_show(fixed_box);
-
-   Evas_Object *label = elm_label_add(fixed_box);
-   elm_object_text_set(label, "Set Fixed Properties: ");
-   evas_object_show(label);
-   elm_box_pack_end(fixed_box, label);
-
-   Evas_Object *fixed_w_check = elm_check_add(fixed_box);
-   Evas_Object *fixed_h_check = elm_check_add(fixed_box);
-
-   elm_check_state_set(fixed_w_check, ld->fixed_w);
-   elm_check_state_set(fixed_h_check, ld->fixed_h);
-   elm_object_text_set(fixed_w_check, "width");
-   elm_object_text_set(fixed_h_check, "height");
-   elm_box_pack_end(fixed_box, fixed_w_check);
-   elm_box_pack_end(fixed_box, fixed_h_check);
-   evas_object_show(fixed_w_check);
-   evas_object_show(fixed_h_check);
-
-   evas_object_smart_callback_add(fixed_w_check, "changed",
-                                  fixed_w_check_changed_cb, ld);
-   evas_object_smart_callback_add(fixed_h_check, "changed",
-                                  fixed_h_check_changed_cb, ld);
-
-   elm_object_content_set(ld->fixed_ctxpopup, fixed_box);
-   evas_object_show(ld->fixed_ctxpopup);
+   rel_to_values_reset(ld);
 }
 
 static void
@@ -2092,8 +2056,9 @@ live_edit_layer_set(live_data *ld)
    live_edit_update_internal(ld);
    info_text_init(ld);
    live_edit_auto_align_target_parts_init(ld, EINA_FALSE);
-   show_fixed_check_list(ld);
    ld->last_cp = Ctrl_Pt_Cnt;
+
+   panes_live_view_fixed_bar_visible_set(EINA_TRUE);
 }
 
 static void
@@ -2220,6 +2185,8 @@ live_edit_cancel(void)
    ld->align_top = EINA_FALSE;
    ld->align_bottom = EINA_FALSE;
 
+   panes_live_view_fixed_bar_visible_set(EINA_FALSE);
+
    return EINA_TRUE;
 }
 
@@ -2269,4 +2236,39 @@ live_edit_term(void)
    free_auto_align_data(ld->auto_align_array);
    free(ld);
    g_ld = NULL;
+}
+
+Evas_Object *
+live_edit_fixed_bar_get()
+{
+   live_data *ld = g_ld;
+
+   if (!ld)
+     {
+        EINA_LOG_ERR(_("Failed to load live edit data!"));
+        return NULL;
+     }
+
+   //Create fixed bar for setting fixed option
+   Evas_Object *fixed_box = elm_box_add(base_layout_get());
+   elm_box_padding_set(fixed_box, 50, 0);
+   elm_box_horizontal_set(fixed_box, EINA_TRUE);
+   evas_object_show(fixed_box);
+
+   Evas_Object *fixed_w_check = elm_check_add(fixed_box);
+   Evas_Object *fixed_h_check = elm_check_add(fixed_box);
+
+   elm_check_state_set(fixed_w_check, EINA_FALSE);
+   elm_check_state_set(fixed_h_check, EINA_FALSE);
+   elm_object_text_set(fixed_w_check, "Fixed Width");
+   elm_object_text_set(fixed_h_check, "Fixed Height");
+   elm_box_pack_end(fixed_box, fixed_w_check);
+   elm_box_pack_end(fixed_box, fixed_h_check);
+   evas_object_show(fixed_w_check);
+   evas_object_show(fixed_h_check);
+
+   evas_object_smart_callback_add(fixed_w_check, "changed", fixed_w_check_changed_cb, ld);
+   evas_object_smart_callback_add(fixed_h_check, "changed", fixed_h_check_changed_cb, ld);
+
+   return fixed_box;
 }

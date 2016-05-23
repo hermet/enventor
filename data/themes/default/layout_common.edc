@@ -2730,6 +2730,24 @@ group { "tools_layout";
                relative: 0.0 1.0;
                to_y: "elm.swallow.tools";
             }
+            rel2.to_y: "elm.swallow.fixed_bar";
+            rel2.relative: 1.0 0.0;
+         }
+      }
+      swallow { "elm.swallow.fixed_bar";
+         desc { "default";
+            min: 0 35;
+            align: 0.5 0.0;
+            fixed: 1 1;
+            rel1.relative: 0.0 1.0;
+            rel2.relative: 1.0 1.0;
+         }
+         desc { "visible";
+            inherit: "default";
+            align: 0.5 1.0;
+            fixed: 1 1;
+            rel1.relative: 0.0 1.0;
+            rel2.relative: 1.0 1.0;
          }
       }
    }
@@ -2745,6 +2763,18 @@ group { "tools_layout";
          action: STATE_SET "default" 0.0;
          target: "tools_base";
          transition: DECELERATE 0.25;
+      }
+      program { name: "fixed_bar_show";
+         signal: "elm,state,fixed_bar,show";
+         action: STATE_SET "visible" 0.0;
+         target: "elm.swallow.fixed_bar";
+         transition: DECELERATE 0.25 CURRENT;
+      }
+      program { name: "fixed_bar_hide";
+         signal: "elm,state,fixed_bar,hide";
+         action: STATE_SET "default" 0.0;
+         target: "elm.swallow.fixed_bar";
+         transition: DECELERATE 0.25 CURRENT;
       }
    }
 }
