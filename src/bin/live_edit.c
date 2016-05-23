@@ -81,15 +81,15 @@ typedef struct live_editor_s
    Evas_Object *keygrabber;
    Eina_Array *auto_align_array;
    Ctrl_Pt last_cp;
-   unsigned int auto_align_dist;
 
    //Relative setting properties
    Evas_Object *fixed_ctxpopup;
    Evas_Object *rel_to_ctxpopup;
    float rel1_x, rel1_y;
    float rel2_x, rel2_y;
-   Eina_Bool fixed_w : 1;
-   Eina_Bool fixed_h : 1;
+
+   Evas_Object *fixed_w_check;
+   Evas_Object *fixed_h_check;
 
    Eina_Bool on : 1;
    Eina_Bool align_left : 1;
@@ -115,8 +115,6 @@ typedef struct rel_to_data_s
   live_data *ld;
 } rel_to_data;
 
-static void live_edit_update_internal(live_data *ld);
-
 #define LIVEEDIT_ITEMS_NUM 6
 
 static live_data *g_ld = NULL;
@@ -130,6 +128,12 @@ static const liveedit_item LIVEEDIT_ITEMS[] =
      {"Textblock", EDJE_PART_TYPE_TEXTBLOCK},
      {"Spacer", EDJE_PART_TYPE_SPACER} //Please leave spacer at last
 };
+
+/*****************************************************************************/
+/* Internal method implementation                                            */
+/*****************************************************************************/
+
+static void live_edit_update_internal(live_data *ld);
 
 static void
 update_line_attach_effect(live_data *ld, int align_line)
@@ -362,8 +366,8 @@ live_edit_insert(live_data *ld)
    enventor_object_template_part_insert(base_enventor_get(),
                                         type,
                                         ENVENTOR_TEMPLATE_INSERT_LIVE_EDIT,
-                                        ld->fixed_w,
-                                        ld->fixed_h,
+                                        elm_check_state_get(ld->fixed_w_check),
+                                        elm_check_state_get(ld->fixed_h_check),
                                         ld->rel_to_info.rel1_x_to,
                                         ld->rel_to_info.rel1_y_to,
                                         ld->rel_to_info.rel2_x_to,
@@ -411,7 +415,7 @@ calc_ctrl_pt_auto_align_pos(live_data *ld, int cursor_x, int cursor_y,
    unsigned int nx, ny;
    res_x = res_y = -1;
    nx = ny = LIVE_EDIT_MAX_DIST;
-   unsigned int dist = ld->auto_align_dist;
+   unsigned int dist = LIVE_EDIT_AUTO_ALIGN_DIST;
 
    // This loop finds the closest position of part to control point
    // And then return the position
@@ -1018,9 +1022,12 @@ rel_to_ctxpopup_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
    Evas_Coord lx, ly, lw, lh;
    evas_object_geometry_get(ld->layout, &lx, &ly, &lw, &lh);
 
+   Eina_Bool fixed_w = elm_check_state_get(ld->fixed_w_check);
+   Eina_Bool fixed_h = elm_check_state_get(ld->fixed_h_check);
+
    //Set relative_to properties according to the user input value
    //Case 1: width and height are relative
-   if (!ld->fixed_w && !ld->fixed_h)
+   if (!fixed_w && !fixed_h)
      {
         if (rel_data->is_rel_to_x)
           {
@@ -1080,7 +1087,7 @@ rel_to_ctxpopup_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
           }
      }
    //Case 2: width is fixed
-   else if(ld->fixed_w && !ld->fixed_h)
+   else if(fixed_w && !fixed_h)
      {
         if (rel_data->is_rel_to_x)
           {
@@ -1151,7 +1158,7 @@ rel_to_ctxpopup_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
           }
      }
    //Case 3: height is fixed
-   else if(!ld->fixed_w && ld->fixed_h)
+   else if(!fixed_w && fixed_h)
      {
         if (rel_data->is_rel_to_y)
           {
@@ -1220,7 +1227,7 @@ rel_to_ctxpopup_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
           }
      }
    //Case 4: width and height are fixed
-   else if(ld->fixed_w && ld->fixed_h)
+   else if(fixed_w && fixed_h)
      {
         double x_add, y_add;
         x_add = y_add = 0;
@@ -1688,7 +1695,7 @@ calc_layout_auto_align_pos(Evas_Object *layout, live_data *ld, int x, int y,
    unsigned int nx, ny, nx2, ny2;
    res_x1 = res_y1 = res_x2 = res_y2 = -1;
    nx = ny = nx2 = ny2 = LIVE_EDIT_MAX_DIST;
-   unsigned int dist = ld->auto_align_dist;
+   unsigned int dist = LIVE_EDIT_AUTO_ALIGN_DIST;
 
    // This loop finds the closest part to the layout
    unsigned int i;
@@ -1983,19 +1990,10 @@ rel_to_values_reset(live_data *ld)
 }
 
 static void
-fixed_w_check_changed_cb(void *data, Evas_Object *obj,
+fixed_check_changed_cb(void *data, Evas_Object *obj EINA_UNUSED,
                          void *event_info EINA_UNUSED)
 {
    live_data *ld = data;
-   ld->fixed_w = elm_check_state_get(obj);
-   rel_to_values_reset(ld);
-}
-
-static void
-fixed_h_check_changed_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
-{
-   live_data *ld = data;
-   ld->fixed_h = elm_check_state_get(obj);
    rel_to_values_reset(ld);
 }
 
@@ -2058,7 +2056,7 @@ live_edit_layer_set(live_data *ld)
    live_edit_auto_align_target_parts_init(ld, EINA_FALSE);
    ld->last_cp = Ctrl_Pt_Cnt;
 
-   panes_live_view_fixed_bar_visible_set(EINA_TRUE);
+   panes_live_edit_fixed_bar_visible_set(EINA_TRUE);
 }
 
 static void
@@ -2103,6 +2101,10 @@ live_btn_create(Evas_Object *parent, const char *name, void * data)
 
    return btn;
 }
+
+/*****************************************************************************/
+/* Externally accessible calls                                               */
+/*****************************************************************************/
 
 void
 live_edit_update(void)
@@ -2185,7 +2187,9 @@ live_edit_cancel(void)
    ld->align_top = EINA_FALSE;
    ld->align_bottom = EINA_FALSE;
 
-   panes_live_view_fixed_bar_visible_set(EINA_FALSE);
+   elm_check_state_set(ld->fixed_w_check, EINA_FALSE);
+   elm_check_state_set(ld->fixed_h_check, EINA_FALSE);
+   panes_live_edit_fixed_bar_visible_set(EINA_FALSE);
 
    return EINA_TRUE;
 }
@@ -2214,8 +2218,8 @@ live_edit_tools_create(Evas_Object *parent)
    return btn_list;
 }
 
-void
-live_edit_init(void)
+Evas_Object *
+live_edit_init(Evas_Object *parent)
 {
    live_data *ld = calloc(1, sizeof(live_data));
    if (!ld)
@@ -2224,7 +2228,35 @@ live_edit_init(void)
         return;
      }
    g_ld = ld;
-   ld->auto_align_dist = LIVE_EDIT_AUTO_ALIGN_DIST;
+
+   //Create fixed bar for setting fixed option
+   Evas_Object *fixed_box = elm_box_add(parent);
+   elm_box_padding_set(fixed_box, ELM_SCALE_SIZE(50), 0);
+   elm_box_horizontal_set(fixed_box, EINA_TRUE);
+   evas_object_show(fixed_box);
+
+   //Fixed Width Check
+   Evas_Object *fixed_w_check = elm_check_add(fixed_box);
+   elm_object_focus_allow_set(fixed_w_check, EINA_FALSE);
+   elm_object_text_set(fixed_w_check, "Fixed Width");
+   evas_object_smart_callback_add(fixed_w_check, "changed",
+                                  fixed_check_changed_cb, ld);
+   evas_object_show(fixed_w_check);
+   elm_box_pack_end(fixed_box, fixed_w_check);
+
+   //Fixed Height Check
+   Evas_Object *fixed_h_check = elm_check_add(fixed_box);
+   elm_object_focus_allow_set(fixed_h_check, EINA_FALSE);
+   elm_object_text_set(fixed_h_check, "Fixed Height");
+   evas_object_smart_callback_add(fixed_h_check, "changed",
+                                  fixed_check_changed_cb, ld);
+   evas_object_show(fixed_h_check);
+   elm_box_pack_end(fixed_box, fixed_h_check);
+
+   ld->fixed_w_check = fixed_w_check;
+   ld->fixed_h_check = fixed_h_check;
+
+   return fixed_box;
 }
 
 void
@@ -2238,37 +2270,4 @@ live_edit_term(void)
    g_ld = NULL;
 }
 
-Evas_Object *
-live_edit_fixed_bar_get()
-{
-   live_data *ld = g_ld;
 
-   if (!ld)
-     {
-        EINA_LOG_ERR(_("Failed to load live edit data!"));
-        return NULL;
-     }
-
-   //Create fixed bar for setting fixed option
-   Evas_Object *fixed_box = elm_box_add(base_layout_get());
-   elm_box_padding_set(fixed_box, 50, 0);
-   elm_box_horizontal_set(fixed_box, EINA_TRUE);
-   evas_object_show(fixed_box);
-
-   Evas_Object *fixed_w_check = elm_check_add(fixed_box);
-   Evas_Object *fixed_h_check = elm_check_add(fixed_box);
-
-   elm_check_state_set(fixed_w_check, EINA_FALSE);
-   elm_check_state_set(fixed_h_check, EINA_FALSE);
-   elm_object_text_set(fixed_w_check, "Fixed Width");
-   elm_object_text_set(fixed_h_check, "Fixed Height");
-   elm_box_pack_end(fixed_box, fixed_w_check);
-   elm_box_pack_end(fixed_box, fixed_h_check);
-   evas_object_show(fixed_w_check);
-   evas_object_show(fixed_h_check);
-
-   evas_object_smart_callback_add(fixed_w_check, "changed", fixed_w_check_changed_cb, ld);
-   evas_object_smart_callback_add(fixed_h_check, "changed", fixed_h_check_changed_cb, ld);
-
-   return fixed_box;
-}

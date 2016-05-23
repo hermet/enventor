@@ -219,9 +219,15 @@ tools_set(void)
 {
    tools_init(base_layout_get());
    base_tools_set(tools_live_view_get(),
-                  tools_text_editor_get(),
-                  live_edit_fixed_bar_get());
+                  tools_text_editor_get());
    tools_update();
+}
+
+static void
+live_edit_set(void)
+{
+   Evas_Object *fixed_bar = live_edit_init(base_layout_get());
+   base_live_edit_fixed_bar_set(fixed_bar);
 }
 
 static void
@@ -901,12 +907,12 @@ init(app_data *ad, int argc, char **argv)
    if (!config_data_set(argc, argv, &default_edc, &template))
      return EINA_FALSE;
    newfile_default_set(default_edc);
-   live_edit_init();
    base_gui_init();
    statusbar_set();
    enventor_setup(ad);
    file_mgr_init();
    tools_set();
+   live_edit_set();
 
    base_gui_show();
 

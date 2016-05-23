@@ -394,15 +394,14 @@ panes_live_view_tools_set(Evas_Object *tools)
 }
 
 void
-panes_live_view_fixed_bar_set(Evas_Object *live_view_fixed_bar)
+panes_live_edit_fixed_bar_set(Evas_Object *fixed_bar)
 {
    panes_data *pd = g_pd;
    if (!pd) return;
 
    Evas_Object *live_view = elm_object_part_content_get(pd->horiz.obj, "left");
-   elm_object_part_content_set(live_view, "elm.swallow.fixed_bar", live_view_fixed_bar);
+   elm_object_part_content_set(live_view, "elm.swallow.fixed_bar", fixed_bar);
 }
-
 
 void
 panes_text_editor_tools_set(Evas_Object *tools)
@@ -430,7 +429,7 @@ panes_live_view_tools_visible_set(Eina_Bool visible)
 }
 
 void
-panes_live_view_fixed_bar_visible_set(Eina_Bool visible)
+panes_live_edit_fixed_bar_visible_set(Eina_Bool visible)
 {
    panes_data *pd = g_pd;
    if (!pd) return;

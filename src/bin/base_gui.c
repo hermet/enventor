@@ -156,13 +156,16 @@ base_win_resize_object_add(Evas_Object *resize_obj)
    elm_win_resize_object_add(bd->win, resize_obj);
 }
 
+void base_live_edit_fixed_bar_set(Evas_Object *fixed_bar)
+{
+   panes_live_edit_fixed_bar_set(fixed_bar);
+}
+
 void base_tools_set(Evas_Object *live_view_tools,
-                    Evas_Object *text_editor_tools,
-                    Evas_Object *live_view_fixed_bar)
+                    Evas_Object *text_editor_tools)
 {
    panes_live_view_tools_set(live_view_tools);
    panes_text_editor_tools_set(text_editor_tools);
-   panes_live_view_fixed_bar_set(live_view_fixed_bar);
    file_browser_tools_set();
    edc_navigator_tools_set();
 

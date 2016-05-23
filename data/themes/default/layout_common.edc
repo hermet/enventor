@@ -2734,45 +2734,50 @@ group { "tools_layout";
             rel2.relative: 1.0 0.0;
          }
       }
-      swallow { "elm.swallow.fixed_bar";
+      rect { "fixed_bar_bg";
          desc { "default";
-            min: 0 35;
-            align: 0.5 0.0;
+            color: 175 175 175 175;
+            rel.to: "elm.swallow.fixed_bar";
+         }
+      }
+      swallow { "elm.swallow.fixed_bar";
+         scale: 1;
+         desc { "default";
+            min: 0 0;
+            align: 0.5 0;
             fixed: 1 1;
             rel1.relative: 0.0 1.0;
             rel2.relative: 1.0 1.0;
          }
          desc { "visible";
             inherit: "default";
-            align: 0.5 1.0;
-            fixed: 1 1;
-            rel1.relative: 0.0 1.0;
-            rel2.relative: 1.0 1.0;
+            min: 0 20;
+            align: 0.5 1;
          }
       }
    }
    programs {
-      program { name: "tools_show";
+      program { "tools_show";
          signal: "elm,state,tools,show";
-         action: STATE_SET "visible" 0.0;
+         action: STATE_SET "visible";
          target: "tools_base";
-         transition: DECELERATE 0.25;
+         transition: DECELERATE 0.25 CURRENT;
       }
-      program { name: "tools_hide";
+      program { "tools_hide";
          signal: "elm,state,tools,hide";
-         action: STATE_SET "default" 0.0;
+         action: STATE_SET "default";
          target: "tools_base";
-         transition: DECELERATE 0.25;
+         transition: DECELERATE 0.25 CURRENT;
       }
-      program { name: "fixed_bar_show";
+      program { "fixed_bar_show";
          signal: "elm,state,fixed_bar,show";
-         action: STATE_SET "visible" 0.0;
+         action: STATE_SET "visible";
          target: "elm.swallow.fixed_bar";
          transition: DECELERATE 0.25 CURRENT;
       }
-      program { name: "fixed_bar_hide";
+      program { "fixed_bar_hide";
          signal: "elm,state,fixed_bar,hide";
-         action: STATE_SET "default" 0.0;
+         action: STATE_SET "default";
          target: "elm.swallow.fixed_bar";
          transition: DECELERATE 0.25 CURRENT;
       }
