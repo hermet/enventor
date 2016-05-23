@@ -9,6 +9,7 @@
 typedef struct app_s
 {
    Evas_Object *keygrabber;
+   Enventor_Item *main_it;
    Eina_Bool on_saving : 1;
    Eina_Bool lazy_save : 1;
 } app_data;
@@ -143,8 +144,9 @@ config_update_cb(void *data EINA_UNUSED)
 }
 
 static Eina_Bool
-main_mouse_wheel_cb(void *data EINA_UNUSED, int type EINA_UNUSED, void *ev)
+main_mouse_wheel_cb(void *data, int type EINA_UNUSED, void *ev)
 {
+   app_data *ad = data;
    Ecore_Event_Mouse_Wheel *event = ev;
    Evas_Coord x, y, w, h;
 
@@ -180,7 +182,10 @@ main_mouse_wheel_cb(void *data EINA_UNUSED, int type EINA_UNUSED, void *ev)
      }
 
    //Font Size
-   evas_object_geometry_get(base_enventor_get(), &x, &y, &w, &h);
+   //FIXME: probably here main_it could be changeable. we need to figure out
+   //which item is currently set up.
+   evas_object_geometry_get(enventor_item_editor_get(ad->main_it),
+                            &x, &y, &w, &h);
 
    if ((event->x >= x) && (event->x <= (x + w)) &&
        (event->y >= y) && (event->y <= (y + h)))
@@ -565,11 +570,11 @@ enventor_setup(app_data *ad)
 
    enventor_common_setup(enventor);
 
-   Enventor_Item *it =
+   ad->main_it =
       enventor_object_main_file_set(enventor, config_input_path_get());
 
    base_enventor_set(enventor);
-   base_text_editor_set(it);
+   base_text_editor_set(ad->main_it);
    base_title_set(config_input_path_get());
    base_live_view_set(enventor_object_live_view_get(enventor));
 }
@@ -916,7 +921,7 @@ init(app_data *ad, int argc, char **argv)
 
    keygrabber_init(ad);
 
-   ecore_event_handler_add(ECORE_EVENT_MOUSE_WHEEL, main_mouse_wheel_cb, NULL);
+   ecore_event_handler_add(ECORE_EVENT_MOUSE_WHEEL, main_mouse_wheel_cb, ad);
 
    return EINA_TRUE;
 }
