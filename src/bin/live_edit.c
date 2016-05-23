@@ -247,40 +247,40 @@ info_text_update(live_data *ld)
    Evas_Coord lx, ly, lw, lh;
    evas_object_geometry_get(ld->live_view, &lx, &ly, &lw, &lh);
 
+   Evas_Coord vw, vh;
+   config_view_size_get(&vw, &vh);
+
    Enventor_Object *enventor = base_enventor_get();
 
    //reverse coordinates if mirror mode is enabled.
    double ox = ld->rel_info.rel1_x;
    double ox2 = ld->rel_info.rel2_x;
-   double ow = (ld->rel_info.rel1_x * (double) lw);
-   double ow2 = (ld->rel_info.rel2_x * (double) lw);
+   double ow = (ld->rel_info.rel1_x * (double) vw);
+   double ow2 = (ld->rel_info.rel2_x * (double) vw);
 
    if (enventor_object_mirror_mode_get(enventor))
      {
         ox = 1 - ox;
         ox2 = 1 - ox2;
-        ow = lw - ow;
-        ow2 = lw - ow2;
+        ow = vw - ow;
+        ow2 = vw - ow2;
      }
 
    //Rel1
    snprintf(buf, sizeof(buf), "%.2f %.2f (%d, %d)",
             ox, ld->rel_info.rel1_y,
             (int) round(ow),
-            (int) round(ld->rel_info.rel1_y * (double) lh));
+            (int) round(ld->rel_info.rel1_y * (double) vh));
    evas_object_text_text_set(ld->info_text[Info_Text_Rel1], buf);
 
    //Rel2
    snprintf(buf, sizeof(buf), "%.2f %.2f (%d, %d)",
             ox2, ld->rel_info.rel2_y,
             (int) round(ow2),
-            (int) round(ld->rel_info.rel2_y * (double) lh));
+            (int) round(ld->rel_info.rel2_y * (double) vh));
    evas_object_text_text_set(ld->info_text[Info_Text_Rel2], buf);
 
    //Size
-   Evas_Coord vw, vh;
-   config_view_size_get(&vw, &vh);
-
    vw = (Evas_Coord) (((double) vw) *
                       (ld->rel_info.rel2_x - ld->rel_info.rel1_x));
    vh = (Evas_Coord) (((double) vh) *
