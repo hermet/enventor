@@ -119,26 +119,26 @@ class Enventor.Object (Elm.Widget, Efl.File) {
          return: bool;
          params {
             @in type: Enventor_Path_Type;
-            @in pathes: own(const(list<Eina_Stringshare *>)*);
+            @in pathes: own(const(list<own(Eina_Stringshare *)>));
          }
       }
       path_get {
-         return: const(list<Eina_Stringshare *>) *;
+         return: const(list<own(Eina_Stringshare *)>);
          params {
             @in type: Enventor_Path_Type;
          }
       }
       programs_list_get {
-         return: list<char *> *;
+         return: list<char *>;
       }
       part_states_list_get {
-         return: list<char *> *;
+         return: list<char *>;
          params {
             @in type: const(char) *;
          }
       }
       parts_list_get {
-         return: list<char *> *;
+         return: list<char *>;
       }
       max_line_get {
          return: int;
@@ -179,7 +179,7 @@ class Enventor.Object (Elm.Widget, Efl.File) {
          }
       }
       live_view_get {
-         return: Evas.Object*;
+         return: Evas.Object;
       }
       line_goto {
          params {
