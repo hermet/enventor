@@ -932,12 +932,13 @@ autocomp_enabled_get(void)
 }
 
 const char **
-autocomp_current_context_get(void)
+autocomp_current_context_get(int *name_count)
 {
    autocomp_data *ad = g_ad;
 
    if (!ad->lexem_ptr || !ad->lexem_ptr->name)
      return NULL;
 
+   *name_count = ad->lexem_ptr->name_count;
    return (const char **)ad->lexem_ptr->name;
 }

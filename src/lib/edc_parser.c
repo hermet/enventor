@@ -1547,8 +1547,9 @@ parser_attribute_get(parser_data *pd, const char *text, const char *cur,
      }
    if (instring) return NULL;
 
-   const char **cur_context = autocomp_current_context_get();
-   int i = 0;
+   int name_count;
+   const char **cur_context = autocomp_current_context_get(&name_count);
+   int i;
 
    EINA_INARRAY_FOREACH(pd->attrs, attr)
      {
@@ -1557,11 +1558,13 @@ parser_attribute_get(parser_data *pd, const char *text, const char *cur,
              if (!attr->context)
                return &attr->value;
 
-             while (cur_context && (cur_context[i] != NULL))
+             if (cur_context)
                {
-                  if (!strcmp(cur_context[i], attr->context))
-                    return &attr->value;
-                  i++;
+                 for (i = 0; i < name_count; i++)
+                   {
+                      if (!strcmp(cur_context[i], attr->context))
+                        return &attr->value;
+                   }
                }
           }
      }
