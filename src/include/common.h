@@ -15,10 +15,11 @@ $ enventor input.edc output.edj -i ./images -s ./sounds -w ./workspace\n"
 
 #define ENVENTOR_INFO \
 "This is an EDC editor with some convenient functions.\n \
-It's brand new and was only started near the begining of June 2013,\n \
-so expecting it to do everything a mature script editor does \n \
-is a bit premature, but considering it's young age, it does a lot. \n \
-\nPlease see next sites for more information on these.\n \
+Enventor supports text edit and preview function for EDC source code.\n \
+You can edit EDC source code to create complex application layout\n \
+using Enventor. This was started near the begining of June 2013,\n \
+so expecting it to do everything a mature script editor does is\n \
+a bit premature. However, considering its young age, it does a lot.\n \
 \n http://www.enlightenment.org \n \
 https://phab.enlightenment.org/w/projects/enventor/ \n \
 http://www.openhub.net/p/enventor\n"
