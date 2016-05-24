@@ -1553,19 +1553,13 @@ parser_attribute_get(parser_data *pd, const char *text, const char *cur,
 
    EINA_INARRAY_FOREACH(pd->attrs, attr)
      {
-        if (!strcmp(selected, attr->keyword))
+        if (strcmp(selected, attr->keyword)) continue;
+        if (!attr->context) return &attr->value;
+        if (!cur_context) continue;
+        for (i = 0; i < name_count; i++)
           {
-             if (!attr->context)
+             if (!strcmp(cur_context[i], attr->context))
                return &attr->value;
-
-             if (cur_context)
-               {
-                 for (i = 0; i < name_count; i++)
-                   {
-                      if (!strcmp(cur_context[i], attr->context))
-                        return &attr->value;
-                   }
-               }
           }
      }
 
