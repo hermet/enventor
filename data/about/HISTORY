@@ -1,0 +1,61 @@
+<b>Changes since Enventor 0.7.0</b><br>
+<br>
+<b>Additions:</b><br>
+   * Editor: Open/Close Bracket Highlighting.<br>
+   * Statusbar: Support view inverting function (for simulating device rotation)<br>
+   * Introduce a edc navigator.<br>
+   * Support a color selector for "color" keywords in edc to change color.<br>
+   * Add Enventor APis.<br>
+     - enventor_object_part_states_list_get()<br>
+     - enventor_object_parts_list_get()<br>
+     - enventor_object_part_type_get()<br>
+     - enventor_object_programs_list_get()<br>
+     - ctxpopup,activated signal.<br>
+<br>
+<b>Removes:</b><br>
+   * Remove fixed size option in setting.<br>
+   * Remove minimum new template code.<br>
+   * Remove Enventr_Max_Line data type.<br>
+<br>
+<b>Improvements:</b><br>
+   * Editor: Support group name macros and preview those group macros.<br>
+   * Improve Dummy Spacer UI.<br>
+   * Statusbar supports live view zooming.<br>
+   * Statusbar supports view size setting.<br>
+   * View Scale slider in setting works on step size for mouse wheel.<br>
+   * Improve the usage of the live view zooming with mouse wheel.<br>
+   * Template code: fixed weird code insertion inside LazyEDC block.<br>
+   * Support more autocomplete keywords.<br>
+   * New design of Enventor logo.<br>
+   * Improve tools ui.<br>
+   * Simpilier editor ctxpopup ui.<br>
+   * Console Box: Clicking Error log redirects editor cursor to the error code.<br>
+   * Auto Indentation: Apply auto indentation for a edc file which is newly loaded.<br>
+   * Auto Indentation: Improve logics for better smart results.<br>
+   * Auto-select error code when error is occured.<br>
+   * Auto completion: improve logic to guide better smart candidates lists.<br>
+   * Live Edit: Select a name text in edc for a newly inserted part.<br>
+   * Part Selection: Select a name in edc for a current selected part.<br>
+   * RedoUndo: Support real-time preview when we undo/redo the code.<br>
+   * Set a default font as Monospace type.<br>
+   * Support monospace font types in the setting fonts list.<br>
+   * In default, Select a current font type in the text setting.<br>
+   * Editor Ctxpopup: Support Back key to reset the modification.<br>
+<br>
+<b>Fixes:</b><br>
+   * Fix incorrect tools' tooltip position.<br>
+   * Remove some unsupported edc keyowrds.<br>
+   * Fix some memory leak issues.<br>
+   * Fix ridiculous editor cursor jumping issue.<br>
+   * Fix to paste markup symbols correctly.<br>
+   * Fix editor to work with Copy and Paste Plain Text mode.<br>
+   * Fix crash issues.<br>
+   * Fix a bug that dummy swallow is invisible.<br>
+   * Fix a bug that part selection in live view doesn't work.<br>
+   * Fix not to insert an empty line at the end of file.<br>
+   * Fix to keep the edc changed status correctly. This brought enventor save edc files multiple times unnecessarily.<br>
+   * Fix initial line max is 0 issue.<br>
+   * Reset cursor position to 0 when edc file is loaded.<br>
+   * Fix to update images properly even if very large size of image were updated by other process.<br>
+<br>
+Please see NEWS for more information.

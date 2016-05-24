@@ -10,7 +10,6 @@ struct menu_s
    Evas_Object *newfile_layout;
    Evas_Object *warning_layout;
    Evas_Object *fileselector_layout;
-   Evas_Object *about_layout;
 
    const char *last_accessed_path;
 
@@ -41,12 +40,6 @@ static void
 newfile_close(menu_data *md)
 {
    elm_object_signal_emit(md->newfile_layout, "elm,state,dismiss", "");
-}
-
-static void
-about_close(menu_data *md)
-{
-   elm_object_signal_emit(md->about_layout, "elm,state,dismiss", "");
 }
 
 static void
@@ -83,17 +76,6 @@ fileselector_dismiss_done(void *data, Evas_Object *obj EINA_UNUSED,
    menu_data *md = data;
    evas_object_del(md->fileselector_layout);
    md->fileselector_layout = NULL;
-   menu_deactivate_request();
-}
-
-static void
-about_dismiss_done(void *data, Evas_Object *obj EINA_UNUSED,
-                  const char *emission EINA_UNUSED,
-                  const char *source EINA_UNUSED)
-{
-   menu_data *md = data;
-   evas_object_del(md->about_layout);
-   md->about_layout = NULL;
    menu_deactivate_request();
 }
 
@@ -135,14 +117,6 @@ newfile_cancel_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
 {
    menu_data *md = data;
    newfile_close(md);
-}
-
-static void
-about_back_btn_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
-               void *envent_info EINA_UNUSED)
-{
-   menu_data *md = data;
-   about_close(md);
 }
 
 static void
@@ -234,60 +208,10 @@ warning_open(menu_data *md, Evas_Smart_Cb yes_cb, Evas_Smart_Cb save_cb)
 }
 
 static void
-about_open(menu_data *md)
-{
-   //Layout
-   Evas_Object *layout = elm_layout_add(base_win_get());
-   elm_layout_file_set(layout, EDJE_PATH, "about_layout");
-   elm_object_signal_callback_add(layout, "elm,state,dismiss,done", "",
-                                  about_dismiss_done, md);
-   evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_show(layout);
-   base_win_resize_object_add(layout);
-
-   //Back Button
-   Evas_Object *back_button = elm_button_add(layout);
-   elm_object_style_set(back_button, ENVENTOR_NAME);
-   elm_object_scale_set(back_button, 1.15);
-   elm_object_focus_allow_set(back_button, EINA_FALSE);
-   evas_object_show(back_button);
-   evas_object_smart_callback_add(back_button, "clicked",
-                                  about_back_btn_clicked_cb, md);
-
-   //Back Button Icon
-   Evas_Object *back_img = elm_image_add(back_button);
-   elm_image_file_set(back_img, EDJE_PATH, "close");
-   elm_object_content_set(back_button, back_img);
-
-   elm_object_part_content_set(layout, "elm.swallow.back_button", back_button);
-
-   //Entry
-   Evas_Object *entry = elm_entry_add(layout);
-   elm_object_style_set(entry, "about");
-   elm_entry_scrollable_set(entry, EINA_TRUE);
-   elm_entry_line_wrap_set(entry, EINA_TRUE);
-   elm_entry_editable_set(entry, EINA_FALSE);
-   elm_entry_line_wrap_set(entry, ELM_WRAP_MIXED);
-   evas_object_show(entry);
-   elm_object_focus_set(entry, EINA_TRUE);
-   elm_object_part_content_set(layout, "elm.swallow.entry", entry);
-
-   //Read README
-   char buf[PATH_MAX];
-   snprintf(buf, sizeof(buf), "%s/about/ABOUT", elm_app_data_dir_get());
-   elm_entry_autosave_set(entry, EINA_FALSE);
-   elm_entry_file_set(entry, buf, ELM_TEXT_FORMAT_MARKUP_UTF8);
-
-   md->about_layout = layout;
-   menu_activate_request();
-}
-
-static void
-about_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
+about_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
             void *event_info EINA_UNUSED)
 {
-   menu_data *md = data;
-   about_open(md);
+   about_open();
 }
 
 static void
@@ -700,13 +624,6 @@ menu_term(void)
 }
 
 void
-menu_about(void)
-{
-   menu_data *md = g_md;
-   about_open(md);
-}
-
-void
 menu_setting(void)
 {
    setting_open();
@@ -763,11 +680,6 @@ menu_toggle(void)
    if (md->fileselector_layout)
      {
         fileselector_close(md);
-        return;
-     }
-   if (md->about_layout)
-     {
-        about_close(md);
         return;
      }
 

@@ -32,7 +32,8 @@ enventor_SOURCES = \
 	edc_navigator.c \
 	file_browser.c \
 	build_setting.c \
-	preference_setting.c
+	preference_setting.c \
+	about.c
 
 enventor_LDADD = \
 	$(top_builddir)/src/lib/libenventor.la \

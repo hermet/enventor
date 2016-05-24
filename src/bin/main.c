@@ -746,7 +746,7 @@ keygrabber_key_down_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
      {
         enventor_object_ctxpopup_dismiss(base_enventor_get());
         live_edit_cancel();
-        menu_about();
+        about_open();
         return;
      }
    //New

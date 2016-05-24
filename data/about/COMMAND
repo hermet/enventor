@@ -1,0 +1,19 @@
+enventor --help</br>
+enventor [input file] [output file] [-t] [-i image path] [-s sound path] [-f font path] [-d data path] [-w workspace path]</br>
+</br>
+input file = EDC file to open. If input file is skipped, Enventor will open a default template code with a temporary file.</br>
+output file = EDJ file to store compiled file. If output file is skipped, Enventor will store the binary file to the temporary directory.</br>
+-t = Open template menu when you launch Enventor</br>
+-i = path to image resources that the edc includes</br>
+-s = path to sound resources that the edc includes</br>
+-f = path to font resources that the edc includes</br>
+-d = path to data resources that the edc includes</br>
+-w = workspace directory path that contains group edc files</br>
+</br>
+Examples of Enventor command line usage:</br>
+$ enventor</br>
+$ enventor input.edc -i ./images</br>
+$ enventor input.edc output.edj -i ./images</br>
+$ enventor -t</br>
+$ enventor newfile.edc -t</br>
+$ enventor input.edc output.edj -i ./images -s ./sounds -w ./workspace
