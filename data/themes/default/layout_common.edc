@@ -2425,7 +2425,7 @@ group { name: "main_layout";
          type: SPACER;
          scale: 1;
          description {
-            min: 640 440;
+            min: 810 440;
          }
       }
       swallow { "elm.swallow.panes";
