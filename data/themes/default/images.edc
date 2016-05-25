@@ -20,7 +20,6 @@ images {
    image: "live_image.png" COMP;
    image: "live_rectangle.png" COMP;
    image: "live_swallow.png" COMP;
-   image: "live_spacer.png" COMP;
    image: "live_spacer_icon.png" COMP;
    image: "live_text.png" COMP;
    image: "live_textblock.png" COMP;
@@ -76,7 +75,6 @@ ICON_GROUP("expand", "expand.png")
 ICON_GROUP("invert", "invert.png")
 ICON_GROUP("Image", "live_image.png")
 ICON_GROUP("Rect", "live_rectangle.png")
-ICON_GROUP("Spacer", "live_spacer.png")
 ICON_GROUP("Spacer_Icon", "live_spacer_icon.png")
 ICON_GROUP("Swallow", "live_swallow.png")
 ICON_GROUP("Text", "live_text.png")
