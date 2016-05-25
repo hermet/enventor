@@ -1,7 +1,7 @@
 images {
    image: "live_spacer.png" COMP;
    image: "swallow.png" COMP;
-   image: "logo.png" COMP;
+   image: "image.png" COMP;
 
 }
 
@@ -15,7 +15,7 @@ group { "Image_bg";
    parts {
       image { name: "img";
          desc {
-            image.normal: "logo.png";
+            image.normal: "image.png";
          }
       }
    }

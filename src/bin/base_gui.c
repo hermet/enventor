@@ -304,7 +304,7 @@ base_gui_init(void)
 
    //Window icon
    Evas_Object *icon = evas_object_image_add(evas_object_evas_get(win));
-   snprintf(buf, sizeof(buf), "%s/images/ENVENTOR_EMBEDDED_LOGO.png",
+   snprintf(buf, sizeof(buf), "%s/images/enventor_logo.png",
             elm_app_data_dir_get());
    evas_object_image_file_set(icon, buf, NULL);
    elm_win_icon_object_set(win, icon);

@@ -3,7 +3,7 @@ collections {
    group { "main";
       /* TODO: Please replace embedded image files to your application image files. */
       images {
-         image: "ENVENTOR_EMBEDDED_LOGO.png" COMP;
+         image: "ENVENTOR_EMBEDDED_IMAGE.png" COMP;
       }
       parts {
          rect { "clipper";
@@ -19,7 +19,7 @@ collections {
                rel1.relative: 0.0 0.0;
                rel2.relative: 1.0 1.0;
                /* TODO: Please replace embedded image files to your application image files. */
-               image.normal: "ENVENTOR_EMBEDDED_LOGO.png";
+               image.normal: "ENVENTOR_EMBEDDED_IMAGE.png";
                aspect: 1 1;
                aspect_preference: BOTH;
             }

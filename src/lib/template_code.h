@@ -4,7 +4,7 @@ const char *TEMPLATE_GROUP[TEMPLATE_GROUP_LINE_CNT] =
 {
    "   /* TODO: Please replace embedded image files to your application image files. */<br/>",
    "   images {<br/>",
-   "      image: \"ENVENTOR_EMBEDDED_LOGO.png\" COMP;<br/>",
+   "      image: \"ENVENTOR_EMBEDDED_IMAGE.png\" COMP;<br/>",
    "   }<br/>",
    "   parts {<br/>",
    "      image { \"XXX\";<br/>",
@@ -17,7 +17,7 @@ const char *TEMPLATE_GROUP[TEMPLATE_GROUP_LINE_CNT] =
    "            min: 0 0;<br/>",
    "            visible: 1;<br/>",
    "            /* TODO: Please replace embedded image files to your application image files. */<br/>",
-   "            image.normal: \"ENVENTOR_EMBEDDED_LOGO.png\";<br/>",
+   "            image.normal: \"ENVENTOR_EMBEDDED_IMAGE.png\";<br/>",
    "            //aspect: 1 1;<br/>",
    "         }<br/>",
    "      }<br/>",
@@ -50,7 +50,7 @@ const char *TEMPLATE_PART_IMAGE[TEMPLATE_PART_IMAGE_LINE_CNT] =
    "   desc { \"default\";<br/>",
    "      visible: 1;<br/>",
    "      /* TODO: Please replace embedded image files to your application image files. */<br/>",
-   "      image.normal: \"ENVENTOR_EMBEDDED_LOGO.png\";<br/>",
+   "      image.normal: \"ENVENTOR_EMBEDDED_IMAGE.png\";<br/>",
    "      //aspect: 1 1;<br/>"
 };
 
@@ -154,7 +154,7 @@ const char *TEMPLATE_PROG[TEMPLATE_PROG_LINE_CNT] =
 
 const char *TEMPLATE_IMG[TEMPLATE_IMG_LINE_CNT] =
 {
-   "image: \"ENVENTOR_EMBEDDED_LOGO.png\" COMP;<br/>"
+   "image: \"ENVENTOR_EMBEDDED_IMAGE.png\" COMP;<br/>"
 };
 
 #define TEMPLATE_IMG_BLOCK_LINE_CNT 4
@@ -163,7 +163,7 @@ const char *TEMPLATE_IMG_BLOCK[TEMPLATE_IMG_BLOCK_LINE_CNT] =
 {
    "/* TODO: Please replace embedded image files to your application image files. */<br/>",
    "images {<br/>",
-   "   image: \"ENVENTOR_EMBEDDED_LOGO.png\" COMP;<br/>",
+   "   image: \"ENVENTOR_EMBEDDED_IMAGE.png\" COMP;<br/>",
    "}<br/>"
 };
 

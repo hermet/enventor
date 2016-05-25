@@ -1,7 +1,7 @@
 MAINTAINERCLEANFILES = Makefile.in
 
 filesdir = $(datadir)/$(PACKAGE)/images
-files_DATA = ENVENTOR_EMBEDDED_LOGO.png \
+files_DATA = ENVENTOR_EMBEDDED_IMAGE.png \
              ENVENTOR_EMBEDDED_TRIAB-01.png \
              ENVENTOR_EMBEDDED_TRIAB-02.png \
              ENVENTOR_EMBEDDED_TRIAB-03.png \
@@ -13,6 +13,7 @@ files_DATA = ENVENTOR_EMBEDDED_LOGO.png \
              ENVENTOR_EMBEDDED_TRIAB-09.png \
              ENVENTOR_EMBEDDED_TRIAB-10.png \
              ENVENTOR_EMBEDDED_TRIAB-11.png \
-             ENVENTOR_EMBEDDED_TRIAB-12.png
+             ENVENTOR_EMBEDDED_TRIAB-12.png \
+				 enventor_logo.png
 
 EXTRA_DIST = $(files_DATA)
