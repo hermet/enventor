@@ -781,17 +781,13 @@ text_setting_content_get(text_setting_data *tsd, Evas_Object *parent)
    elm_object_focus_set(entry, EINA_TRUE);
    elm_object_part_content_set(layout, "elm.swallow.text_setting", entry);
 
-   //Preference
-   Evas_Object *scroller = elm_scroller_add(layout);
-   elm_object_part_content_set(layout, "elm.swallow.preference", scroller);
-
    //Box
-   Evas_Object *box = elm_box_add(scroller);
+   Evas_Object *box = elm_box_add(layout);
    evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, 0);
    evas_object_size_hint_align_set(box, EVAS_HINT_FILL, 0);
    evas_object_show(box);
 
-   elm_object_content_set(scroller, box);
+   elm_object_part_content_set(layout, "elm.swallow.font_size", box);
 
    //Font Size (Box)
    Evas_Object *box2 = elm_box_add(box);
@@ -821,7 +817,7 @@ text_setting_content_get(text_setting_data *tsd, Evas_Object *parent)
 
    //Font Name and Style (Box)
    box = elm_box_add(layout);
-   elm_box_padding_set(box, 0, 10);
+   elm_box_padding_set(box, 0, ELM_SCALE_SIZE(5));
    evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    elm_object_part_content_set(layout, "elm.swallow.font", box);
 

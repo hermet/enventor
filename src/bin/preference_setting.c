@@ -5,7 +5,7 @@
 
 typedef struct preference_setting_s
 {
-   Evas_Object *scroller;
+   Evas_Object *box;
    Evas_Object *view_size_w_entry;
    Evas_Object *view_size_h_entry;
    Evas_Object *toggle_tools;
@@ -113,19 +113,24 @@ preference_setting_content_get(preference_setting_data *psd,
    static Elm_Entry_Filter_Limit_Size limit_filter_data;
 
    if (!psd) return NULL;
-   if (psd->scroller) return psd->scroller;
+   if (psd->box) return psd->box;
 
    //Preference
-   Evas_Object *scroller = elm_scroller_add(parent);
 
    //Box
-   Evas_Object *box = elm_box_add(scroller);
-   elm_box_padding_set(box, 0, 10);
+   Evas_Object *box = elm_box_add(parent);
+   elm_box_padding_set(box, 0, ELM_SCALE_SIZE(5));
    evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(box, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_show(box);
 
-   elm_object_content_set(scroller, box);
+   Evas_Object *rect;
+
+   //Spacer
+   rect = evas_object_rectangle_add(evas_object_evas_get(box));
+   evas_object_size_hint_weight_set(rect, EVAS_HINT_EXPAND, 0);
+   evas_object_size_hint_min_set(rect, 0, ELM_SCALE_SIZE(1));
+   elm_box_pack_end(box, rect);
 
    Evas_Object *box2;
    Evas_Object *layout_padding3;
@@ -135,7 +140,7 @@ preference_setting_content_get(preference_setting_data *psd,
    //Box for View Size
    box2 = elm_box_add(box);
    elm_box_horizontal_set(box2, EINA_TRUE);
-   elm_box_padding_set(box2, 5 * elm_config_scale_get(), 0);
+   elm_box_padding_set(box2, ELM_SCALE_SIZE(5), 0);
    evas_object_size_hint_weight_set(box2, EVAS_HINT_EXPAND, 0);
    evas_object_size_hint_align_set(box2, EVAS_HINT_FILL, 0);
    evas_object_show(box2);
@@ -158,7 +163,7 @@ preference_setting_content_get(preference_setting_data *psd,
                                label_view_size);
 
    //Spacer
-   Evas_Object *rect = evas_object_rectangle_add(evas_object_evas_get(box2));
+   rect = evas_object_rectangle_add(evas_object_evas_get(box2));
    evas_object_size_hint_weight_set(rect, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(rect, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_box_pack_end(box2, rect);
@@ -235,7 +240,7 @@ preference_setting_content_get(preference_setting_data *psd,
    evas_object_size_hint_align_set(toggle_smart_undo_redo, EVAS_HINT_FILL, 0);
    elm_box_pack_end(box, toggle_smart_undo_redo);
 
-   psd->scroller = scroller;
+   psd->box = box;
    psd->view_size_w_entry = entry_view_size_w;
    psd->view_size_h_entry = entry_view_size_h;
    psd->toggle_tools = toggle_tools;
@@ -244,7 +249,7 @@ preference_setting_content_get(preference_setting_data *psd,
    psd->toggle_autocomp = toggle_autocomp;
    psd->toggle_smart_undo_redo = toggle_smart_undo_redo;
 
-   return scroller;
+   return box;
 }
 
 preference_setting_data *
@@ -263,6 +268,6 @@ void
 preference_setting_term(preference_setting_data *psd)
 {
    if (!psd) return;
-   evas_object_del(psd->scroller);
+   evas_object_del(psd->box);
    free(psd);
 }
