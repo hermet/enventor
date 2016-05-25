@@ -36,8 +36,8 @@ group { name: "fileselector_layout";
          scale: 1;
          clip_to: "clipper";
          description {
-            min: 600 380;
-            max: 600 380;
+            min: 600 435;
+            max: 600 435;
             fixed: 1 1;
             image.normal: "frame_bg.png";
             image.border: 10 10 10 10;
@@ -236,8 +236,8 @@ group { name: "newfile_layout";
          scale: 1;
          clip_to: "clipper";
          description {
-            min: 600 380;
-            max: 600 380;
+            min: 600 435;
+            max: 600 435;
             fixed: 1 1;
             image.normal: "frame_bg.png";
             image.border: 10 10 10 10;

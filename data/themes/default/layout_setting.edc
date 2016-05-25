@@ -27,8 +27,8 @@ group { name: "setting_layout";
          scale: 1;
          clip_to: "clipper";
          description {
-            min: 600 380;
-            max: 600 380;
+            min: 600 435;
+            max: 600 435;
             fixed: 1 1;
             image.normal: "frame_bg.png";
             image.border: 10 10 10 10;
@@ -452,13 +452,32 @@ group { "build_setting_layout";
 
 group { name: "text_setting_layout";
    parts {
-      part { name: "base_frame";
+      part { name: "preference_frame";
          type: SPACER;
          scale: 1;
          description {
-            min: 580 265;
-            max: 580 265;
-            fixed: 1 1;
+            rel1.relative: 0 0;
+            rel2.relative: 1 0;
+            align: 0.5 0;
+            min: 0 24;
+            fixed: 0 1;
+         }
+      }
+      part { name: "elm.swallow.preference";
+         type: SWALLOW;
+         scale: 1;
+         description {
+            rel1.to: "preference_frame";
+            rel2.to: "preference_frame";
+         }
+      }
+      spacer { "padding1";
+         desc {
+            rel1 { to_y: "preference_frame"; relative: 0 1; }
+            rel2 { to_y: "preference_frame"; }
+            align: 0.5 0;
+            min: 0 10;
+            fixed: 0 1;
          }
       }
       part { name: "text_setting_guide";
@@ -466,11 +485,11 @@ group { name: "text_setting_layout";
          scale: 1;
          effect: SHADOW BOTTOM;
          description {
-            rel1 {to: "base_frame"; relative: 0 0; offset: 5 0;}
-            rel2 {to: "base_frame"; relative: 0.5 0;}
+            rel1 { to: "padding1"; relative: 0 1; offset: 5 0; }
+            rel2 { to: "padding1"; relative: 0.65 1; }
             color: COL_NM;
             min: 0 20;
-            align: 0 0;
+            align: 0.5 0;
             fixed: 0 1;
             text {
                font: FN;
@@ -486,11 +505,8 @@ group { name: "text_setting_layout";
          type: SPACER;
          scale: 1;
          description {
-            rel1 {to_x: "base_frame"; to_y: "text_setting_guide"; relative: 0 1;}
-            rel2 {to: "base_frame"; relative: 0.5 0;}
-            align: 0.5 0;
-            min: 0 245;
-            fixed: 0 1;
+            rel1 { to_y: "text_setting_guide"; relative: 0 1; }
+            rel2 { to_x: "text_setting_guide"; }
          }
       }
       part { name: "elm.swallow.text_setting";
@@ -502,31 +518,20 @@ group { name: "text_setting_layout";
             rel2.to: "text_setting_frame";
          }
       }
-      part { name: "preference_frame";
-         type: SPACER;
-         scale: 1;
-         description {
-            rel1 {to: "base_frame"; relative: 0.5 0; offset: 5 0;}
-            rel2 {to: "base_frame"; relative: 1 0;}
-            align: 0.5 0;
-            min: 0 120;
-            fixed: 0 1;
-         }
-      }
-      part { name: "elm.swallow.preference";
-         type: SWALLOW;
-         scale: 1;
-         description {
-            rel1.to: "preference_frame";
-            rel2.to: "preference_frame";
+      spacer { "padding2";
+         desc {
+            rel1 { to: "text_setting_guide"; relative: 1 0; }
+            rel2 { to: "text_setting_frame"; }
+            align: 0 0.5;
+            min: 10 0;
+            fixed: 1 0;
          }
       }
       part { name: "font_frame";
          type: SPACER;
          scale: 1;
          description {
-            rel1 {to: "preference_frame"; relative: 0 1; offset: 0 5;}
-            rel2 {to: "base_frame";}
+            rel1 {to: "padding2"; relative: 1 0;}
          }
       }
       part { name: "elm.swallow.font";

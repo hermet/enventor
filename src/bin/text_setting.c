@@ -24,10 +24,6 @@ typedef struct text_setting_s
    Evas_Object *color_ctxpopup;
 
    Evas_Object *slider_font;
-   Evas_Object *toggle_linenum;
-   Evas_Object *toggle_indent;
-   Evas_Object *toggle_autocomp;
-   Evas_Object *toggle_smart_undo_redo;
    Evas_Object *list_font_name;
    Evas_Object *list_font_style;
 
@@ -823,29 +819,9 @@ text_setting_content_get(text_setting_data *tsd, Evas_Object *parent)
 
    elm_box_pack_end(box2, slider_font);
 
-   //Toggle (Line Number)
-   Evas_Object *toggle_linenum = toggle_create(box, _("Line Number"),
-                                               config_linenumber_get());
-   elm_box_pack_end(box, toggle_linenum);
-
-   //Toggle (Auto Indentation)
-   Evas_Object *toggle_indent = toggle_create(box, _("Auto Indentation"),
-                                              config_auto_indent_get());
-   elm_box_pack_end(box, toggle_indent);
-
-   //Toggle (Auto Completion)
-   Evas_Object *toggle_autocomp = toggle_create(box, _("Auto Completion"),
-                                                config_auto_complete_get());
-   elm_box_pack_end(box, toggle_autocomp);
-
-   //Toggle (Smart Undo/Redo)
-   Evas_Object *toggle_smart_undo_redo = toggle_create(box, _("Smart Undo/Redo"),
-                                                config_smart_undo_redo_get());
-   elm_box_pack_end(box, toggle_smart_undo_redo);
-
    //Font Name and Style (Box)
    box = elm_box_add(layout);
-   elm_box_horizontal_set(box, EINA_TRUE);
+   elm_box_padding_set(box, 0, 10);
    evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    elm_object_part_content_set(layout, "elm.swallow.font", box);
 
@@ -863,6 +839,7 @@ text_setting_content_get(text_setting_data *tsd, Evas_Object *parent)
       far from 3 pixels. */
    Evas_Object *layout_padding3 = elm_layout_add(box2);
    elm_layout_file_set(layout_padding3, EDJE_PATH, "padding3_layout");
+   evas_object_size_hint_align_set(layout_padding3, 0.0, EVAS_HINT_FILL);
    evas_object_show(layout_padding3);
 
    elm_box_pack_end(box2, layout_padding3);
@@ -877,7 +854,7 @@ text_setting_content_get(text_setting_data *tsd, Evas_Object *parent)
 
    //Font Style (Box)
    box2 = elm_box_add(box);
-   evas_object_size_hint_weight_set(box2, 0.4, EVAS_HINT_EXPAND);
+   evas_object_size_hint_weight_set(box2, EVAS_HINT_EXPAND, 0.6);
    evas_object_size_hint_align_set(box2, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_show(box2);
 
@@ -889,6 +866,7 @@ text_setting_content_get(text_setting_data *tsd, Evas_Object *parent)
       far from 3 pixels. */
    layout_padding3 = elm_layout_add(box2);
    elm_layout_file_set(layout_padding3, EDJE_PATH, "padding3_layout");
+   evas_object_size_hint_align_set(layout_padding3, 0.0, EVAS_HINT_FILL);
    evas_object_show(layout_padding3);
 
    elm_box_pack_end(box2, layout_padding3);
@@ -942,10 +920,6 @@ text_setting_content_get(text_setting_data *tsd, Evas_Object *parent)
    tsd->layout = layout;
    tsd->text_edit_entry = entry;
    tsd->slider_font = slider_font;
-   tsd->toggle_linenum = toggle_linenum;
-   tsd->toggle_indent = toggle_indent;
-   tsd->toggle_autocomp = toggle_autocomp;
-   tsd->toggle_smart_undo_redo = toggle_smart_undo_redo;
    tsd->list_font_name = list_font_name;
 
    return layout;
@@ -966,10 +940,6 @@ text_setting_config_set(text_setting_data *tsd)
 
    config_font_set(tsd->font_name, tsd->font_style);
    config_font_scale_set((float) elm_slider_value_get(tsd->slider_font));
-   config_linenumber_set(elm_check_state_get(tsd->toggle_linenum));
-   config_auto_indent_set(elm_check_state_get(tsd->toggle_indent));
-   config_auto_complete_set(elm_check_state_get(tsd->toggle_autocomp));
-   config_smart_undo_redo_set(elm_check_state_get(tsd->toggle_smart_undo_redo));
 
    text_setting_syntax_color_save();
 }
@@ -982,12 +952,6 @@ text_setting_reset(text_setting_data *tsd)
    //font scale
    tsd->font_scale = (double) config_font_scale_get();
    elm_slider_value_set(tsd->slider_font, tsd->font_scale);
-
-   elm_check_state_set(tsd->toggle_linenum, config_linenumber_get());
-   elm_check_state_set(tsd->toggle_indent, config_auto_indent_get());
-   elm_check_state_set(tsd->toggle_autocomp, config_auto_complete_get());
-   elm_check_state_set(tsd->toggle_smart_undo_redo,
-                       config_smart_undo_redo_get());
 
    //font reset
    const char *font_name, *font_style;
