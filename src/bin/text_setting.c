@@ -915,7 +915,11 @@ text_setting_content_get(text_setting_data *tsd, Evas_Object *parent)
           }
      }
    elm_list_go(list_font_name);
-   if (font_name_it) elm_list_item_selected_set(font_name_it, EINA_TRUE);
+   if (font_name_it)
+     {
+        elm_list_item_selected_set(font_name_it, EINA_TRUE);
+        elm_list_item_show(font_name_it);
+     }
 
    tsd->layout = layout;
    tsd->text_edit_entry = entry;
