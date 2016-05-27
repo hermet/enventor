@@ -30,7 +30,7 @@ collections {
             desc { "default";
                /* TODO: Please replace embedded image files to your application image files. */
                image.normal: "ENVENTOR_EMBEDDED_CALENDAR_UNIT.png";
-               min: 220 220;
+               min: 200 200;
                rel1.relative: 0.5 0.5;
                rel2.relative: 0.5 0.5;
                fixed: 1 1;
@@ -57,7 +57,7 @@ collections {
             desc { "default";
                /* TODO: Please replace embedded image files to your application image files. */
                image.normal: "ENVENTOR_EMBEDDED_MOONPHASE_COVER.png";
-               min: 130 130;
+               min: 109 109;
                align: 0.5 1.0;
                rel1.to: "bg";
                rel2.to: "bg";
@@ -126,13 +126,13 @@ collections {
             desc { "default";
                /* TODO: Please replace embedded image files to your application image files. */
                image.normal: "ENVENTOR_EMBEDDED_DATE_BG.png";
-               min: 30 30;
+               min: 25 25;
                align: 0.5 1.0;
                fixed: 1 1;
                rel1.to: "bg";
                rel2.to: "bg";
-               rel1.relative: 0.9 0.55;
-               rel2.relative: 0.9 0.55;
+               rel1.relative: 0.92 0.55;
+               rel2.relative: 0.92 0.55;
             }
          }
          text { "date";
