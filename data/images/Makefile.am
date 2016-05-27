@@ -14,6 +14,15 @@ files_DATA = ENVENTOR_EMBEDDED_IMAGE.png \
              ENVENTOR_EMBEDDED_TRIAB-10.png \
              ENVENTOR_EMBEDDED_TRIAB-11.png \
              ENVENTOR_EMBEDDED_TRIAB-12.png \
-				 enventor_logo.png
+             ENVENTOR_EMBEDDED_CALENDAR_UNIT.png \
+             ENVENTOR_EMBEDDED_DATE_BG.png \
+             ENVENTOR_EMBEDDED_MONTH_STROKE.png \
+             ENVENTOR_EMBEDDED_MOONPHASE_COVER.png \
+             ENVENTOR_EMBEDDED_MOONPHASE_MOON.png \
+             ENVENTOR_EMBEDDED_NEEDLE_HOUR.png \
+             ENVENTOR_EMBEDDED_NEEDLE_MINUTE.png \
+             ENVENTOR_EMBEDDED_NEEDLE_SECOND.png \
+             ENVENTOR_EMBEDDED_WATCHFACE.png \
+             enventor_logo.png
 
 EXTRA_DIST = $(files_DATA)

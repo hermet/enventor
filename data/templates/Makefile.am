@@ -33,7 +33,9 @@ files_DATA = basic.edc \
              transition.edc \
              transition.edj \
              tween.edc \
-             tween.edj
+             tween.edj \
+             watchface.edc \
+             watchface.edj
 
 EXTRA_DIST = $(files_DATA)
 
@@ -84,6 +86,9 @@ spacer.edj: Makefile spacer.edc
 
 sound.edj: Makefile sound.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/sound.edc $(builddir)/sound.edj
+
+watchface.edj: Makefile watchface.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/watchface.edc $(builddir)/watchface.edj
 
 clean-local:
 	rm -f *.edj
