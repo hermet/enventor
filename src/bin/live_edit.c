@@ -355,6 +355,26 @@ live_edit_insert(live_data *ld)
    if (!ld->rel_to_info.rel2_y_to)
      ld->rel_to_info.rel2_to_y = ld->rel_info.rel2_y;
 
+
+   //Calculate relative_to values to fix its size
+   //in case of width and height are fixed
+   Eina_Bool fixed_w = elm_check_state_get(ld->fixed_w_check);
+   Eina_Bool fixed_h = elm_check_state_get(ld->fixed_h_check);
+
+   if (!ld->rel_to_info.rel1_x_to && !ld->rel_to_info.rel1_y_to &&
+       !ld->rel_to_info.rel2_x_to && !ld->rel_to_info.rel2_y_to &&
+       fixed_w && fixed_h)
+     {
+        float rel_x = (ld->rel_to_info.rel1_to_x +
+                             ld->rel_to_info.rel2_to_x) / 2;
+        float rel_y = (ld->rel_to_info.rel1_to_y +
+                             ld->rel_to_info.rel2_to_y) / 2;
+        ld->rel_to_info.rel1_to_x = rel_x;
+        ld->rel_to_info.rel1_to_y = rel_y;
+        ld->rel_to_info.rel2_to_x = rel_x;
+        ld->rel_to_info.rel2_to_y = rel_y;
+     }
+
    //Calculate min size
    Evas_Coord vw, vh;
    config_view_size_get(&vw, &vh);
