@@ -355,39 +355,41 @@ live_edit_insert(live_data *ld)
    if (!ld->rel_to_info.rel2_y_to)
      ld->rel_to_info.rel2_to_y = ld->rel_info.rel2_y;
 
+   //For Calculating min size
+   Evas_Coord vw, vh;
+   config_view_size_get(&vw, &vh);
 
    //Calculate relative_to values to fix its size
    //in case of width and height are fixed
    Eina_Bool fixed_w = elm_check_state_get(ld->fixed_w_check);
+   Evas_Coord min_w = 0;
 
-   if (!ld->rel_to_info.rel1_x_to && !ld->rel_to_info.rel1_y_to &&
+   if (!ld->rel_to_info.rel1_x_to && !ld->rel_to_info.rel2_x_to &&
        elm_check_state_get(ld->fixed_w_check))
      {
         float rel_x = (ld->rel_to_info.rel1_to_x +
-                             ld->rel_to_info.rel2_to_x) / 2;
+                       ld->rel_to_info.rel2_to_x) / 2;
         ld->rel_to_info.rel1_to_x = rel_x;
         ld->rel_to_info.rel2_to_x = rel_x;
+        min_w = (Evas_Coord) (((double) vw) *
+                              (ld->rel_info.rel2_x - ld->rel_info.rel1_x));
+
      }
 
    Eina_Bool fixed_h = elm_check_state_get(ld->fixed_h_check);
+   Evas_Coord min_h = 0;
 
-   if (ld->rel_to_info.rel2_x_to && !ld->rel_to_info.rel2_y_to &&
+   if (!ld->rel_to_info.rel1_y_to && !ld->rel_to_info.rel2_y_to &&
        elm_check_state_get(ld->fixed_h_check))
      {
         float rel_y = (ld->rel_to_info.rel1_to_y +
-                             ld->rel_to_info.rel2_to_y) / 2;
+                       ld->rel_to_info.rel2_to_y) / 2;
         ld->rel_to_info.rel1_to_y = rel_y;
         ld->rel_to_info.rel2_to_y = rel_y;
+
+        min_h = (Evas_Coord) (((double) vh) *
+                              (ld->rel_info.rel2_y - ld->rel_info.rel1_y));
      }
-
-   //Calculate min size
-   Evas_Coord vw, vh;
-   config_view_size_get(&vw, &vh);
-
-   Evas_Coord min_w = (Evas_Coord) (((double) vw) *
-                      (ld->rel_info.rel2_x - ld->rel_info.rel1_x));
-   Evas_Coord min_h = (Evas_Coord) (((double) vh) *
-                      (ld->rel_info.rel2_y - ld->rel_info.rel1_y));
 
    enventor_object_template_part_insert(base_enventor_get(),
                                         type,
@@ -409,14 +411,10 @@ live_edit_insert(live_data *ld)
                                         NULL, 0);
    enventor_object_save(base_enventor_get(), config_input_path_get());
 
-   if (ld->rel_to_info.rel1_x_to)
-     free(ld->rel_to_info.rel1_x_to);
-   if (ld->rel_to_info.rel1_y_to)
-     free(ld->rel_to_info.rel1_y_to);
-   if (ld->rel_to_info.rel2_x_to)
-     free(ld->rel_to_info.rel2_x_to);
-   if (ld->rel_to_info.rel2_y_to)
-     free(ld->rel_to_info.rel2_y_to);
+   free(ld->rel_to_info.rel1_x_to);
+   free(ld->rel_to_info.rel1_y_to);
+   free(ld->rel_to_info.rel2_x_to);
+   free(ld->rel_to_info.rel2_y_to);
 }
 
 static void

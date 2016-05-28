@@ -295,34 +295,10 @@ template_part_insert(edit_data *ed, Edje_Part_Type part_type,
    line_cnt++;
 
    //Width is fixed or Height is fixed
-   if ((fixed_w && !fixed_h) || (!fixed_w && fixed_h))
-     {
-        if (align_x != 0.5)
-          {
-             elm_entry_entry_insert(edit_entry, p);
-             snprintf(buf, sizeof(buf), "      fixed: %d %d;<br/>", 1, 0);
-             elm_entry_entry_insert(edit_entry, buf);
-             elm_entry_entry_insert(edit_entry, p);
-             snprintf(buf, sizeof(buf), "      min: %d %d;<br/>", min_w, 0);
-             elm_entry_entry_insert(edit_entry, buf);
-             line_cnt += 2;
-          }
-        else if (align_y != 0.5)
-         {
-            elm_entry_entry_insert(edit_entry, p);
-            snprintf(buf, sizeof(buf), "      fixed: %d %d;<br/>", 0, 1);
-            elm_entry_entry_insert(edit_entry, buf);
-            elm_entry_entry_insert(edit_entry, p);
-            snprintf(buf, sizeof(buf), "      min: %d %d;<br/>", 0, min_h);
-            elm_entry_entry_insert(edit_entry, buf);
-            line_cnt += 2;
-         }
-     }
-   //Width and Height are fixed
-   else if(fixed_w && fixed_h)
+   if (fixed_w || fixed_h)
      {
         elm_entry_entry_insert(edit_entry, p);
-        snprintf(buf, sizeof(buf), "      fixed: %d %d;<br/>", 1, 1);
+        snprintf(buf, sizeof(buf), "      fixed: %d %d;<br/>", fixed_w, fixed_h);
         elm_entry_entry_insert(edit_entry, buf);
         elm_entry_entry_insert(edit_entry, p);
         snprintf(buf, sizeof(buf), "      min: %d %d;<br/>", min_w, min_h);
