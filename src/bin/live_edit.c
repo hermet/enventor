@@ -97,6 +97,7 @@ typedef struct live_editor_s
    Eina_Bool align_top : 1;
    Eina_Bool align_bottom : 1;
 
+   Eina_Bool ctrl_pressed : 1;
 } live_data;
 
 typedef struct auto_align_data_s
@@ -400,11 +401,25 @@ keygrabber_key_down_cb(void *data, Evas *e EINA_UNUSED,
    live_data *ld = data;
    Evas_Event_Key_Down *ev = event_info;
 
+   if (!strcmp(ev->key, "Control_L"))
+     ld->ctrl_pressed = EINA_TRUE;
+
    if (!strcmp(ev->key, "Return")) live_edit_insert(ld);
    else if (strcmp(ev->key, "Delete") &&
             strcmp(ev->key, "BackSpace")) return;
 
    live_edit_cancel();
+}
+
+static void
+keygrabber_key_up_cb(void *data, Evas *e EINA_UNUSED,
+                       Evas_Object *obj EINA_UNUSED, void *event_info)
+{
+   live_data *ld = data;
+   Evas_Event_Key_Up *ev = event_info;
+
+   if (!strcmp(ev->key, "Control_L"))
+     ld->ctrl_pressed = EINA_FALSE;
 }
 
 Evas_Coord_Point
@@ -413,6 +428,15 @@ calc_ctrl_pt_auto_align_pos(live_data *ld, int cursor_x, int cursor_y,
 {
    int res_x, res_y;
    unsigned int nx, ny;
+   Evas_Coord_Point pt;
+
+   // if control key is pressed, auto align is not applied
+   if (ld->ctrl_pressed)
+     {
+        pt.x = cursor_x;
+        pt.y = cursor_y;
+        return pt;
+     }
    res_x = res_y = -1;
    nx = ny = LIVE_EDIT_MAX_DIST;
    unsigned int dist = LIVE_EDIT_AUTO_ALIGN_DIST;
@@ -459,7 +483,6 @@ calc_ctrl_pt_auto_align_pos(live_data *ld, int cursor_x, int cursor_y,
           }
      }
 
-   Evas_Coord_Point pt;
 
    if (res_x != -1)
      {
@@ -1642,6 +1665,14 @@ calc_layout_auto_align_pos(Evas_Object *layout, live_data *ld, int x, int y,
    static int pre_layout_dir_x = 0;
    static int pre_layout_dir_y = 0;
 
+   // if control key is pressed, auto align is not applied
+   if (ld->ctrl_pressed)
+     {
+        *ret_x = x;
+        *ret_y = y;
+        return;
+     }
+
    Eina_Bool is_up, is_down, is_left, is_right;
    is_up = is_down = is_left = is_right = EINA_FALSE;
 
@@ -2005,12 +2036,23 @@ live_edit_layer_set(live_data *ld)
       evas_object_rectangle_add(evas_object_evas_get(ld->live_view));
    evas_object_event_callback_add(ld->keygrabber, EVAS_CALLBACK_KEY_DOWN,
                                   keygrabber_key_down_cb, ld);
+   evas_object_event_callback_add(ld->keygrabber, EVAS_CALLBACK_KEY_UP,
+                                  keygrabber_key_up_cb, ld);
    evas_object_event_callback_add(ld->keygrabber, EVAS_CALLBACK_KEY_DOWN,
                                   keygrabber_direction_key_down_cb, ld);
    evas_object_event_callback_add(ld->live_view, EVAS_CALLBACK_RESIZE,
                                   live_view_geom_cb, ld);
    evas_object_event_callback_add(ld->live_view, EVAS_CALLBACK_MOVE,
                                   live_view_geom_cb, ld);
+
+   // Add keygrab for Control_L, To receive key_up_callback we need to use mask
+   Evas_Modifier_Mask mask = evas_key_modifier_mask_get(
+                             evas_object_evas_get(ld->keygrabber), "Control");
+   if (!evas_object_key_grab(ld->keygrabber, "Control_L", mask, 0, EINA_FALSE))
+     EINA_LOG_ERR(_("Failed to grab key - %s"), "Control_L");
+   if (!evas_object_key_grab(ld->keygrabber, "Control_L", 0, 0, EINA_FALSE))
+     EINA_LOG_ERR(_("Failed to grab key - %s"), "Control_L");
+
    key_grab_add(ld->keygrabber, "Return");
    key_grab_add(ld->keygrabber, "Delete");
    key_grab_add(ld->keygrabber, "BackSpace");
