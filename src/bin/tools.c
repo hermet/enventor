@@ -236,6 +236,7 @@ tools_init(Evas_Object *parent)
         elm_object_part_content_set(live_view_ly, swallow_part, btn);
         i++;
      }
+   eina_list_free(btn_list);
 
    td->live_view_ly = live_view_ly;
 
