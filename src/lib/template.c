@@ -131,7 +131,7 @@ textblock_style_add(edit_data *ed, const char *style_name)
      }
 
    int line_inc = TEMPLATE_TEXTBLOCK_STYLE_LINE_CNT;
-   if (!styles_block) line_inc += 2;
+   if (styles_block) line_inc -= 2;
    edit_line_increase(ed, line_inc);
 
    int cursor_pos2 = elm_entry_cursor_pos_get(edit_entry);
@@ -286,6 +286,7 @@ template_part_insert(edit_data *ed, Edje_Part_Type part_type,
         snprintf(buf, sizeof(buf), "      text.style: \"%s\";<br/>",
                  random_name);
         elm_entry_entry_insert(edit_entry, buf);
+        line_cnt++;
      }
 
    //Apply align values
