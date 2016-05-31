@@ -4,11 +4,9 @@ collections {
       /* TODO: Please replace embedded image files to your application image files. */
       images {
          image: "ENVENTOR_EMBEDDED_WATCHFACE.png" COMP;
-         image: "ENVENTOR_EMBEDDED_CALENDAR_UNIT.png" COMP;
          image: "ENVENTOR_EMBEDDED_MOONPHASE_COVER.png" COMP;
          image: "ENVENTOR_EMBEDDED_MOONPHASE_MOON.png" COMP;
          image: "ENVENTOR_EMBEDDED_MONTH_STROKE.png" COMP;
-         image: "ENVENTOR_EMBEDDED_DATE_BG.png" COMP;
          image: "ENVENTOR_EMBEDDED_NEEDLE_HOUR.png" COMP;
          image: "ENVENTOR_EMBEDDED_NEEDLE_MINUTE.png" COMP;
          image: "ENVENTOR_EMBEDDED_NEEDLE_SECOND.png" COMP;
@@ -19,18 +17,7 @@ collections {
             desc { "default";
                /* TODO: Please replace embedded image files to your application image files. */
                image.normal: "ENVENTOR_EMBEDDED_WATCHFACE.png";
-               min: 250 250;
-               rel1.relative: 0.5 0.5;
-               rel2.relative: 0.5 0.5;
-               fixed: 1 1;
-            }
-         }
-         image { "calendar";
-            scale: 1;
-            desc { "default";
-               /* TODO: Please replace embedded image files to your application image files. */
-               image.normal: "ENVENTOR_EMBEDDED_CALENDAR_UNIT.png";
-               min: 200 200;
+               min: 300 300;
                rel1.relative: 0.5 0.5;
                rel2.relative: 0.5 0.5;
                fixed: 1 1;
@@ -57,7 +44,7 @@ collections {
             desc { "default";
                /* TODO: Please replace embedded image files to your application image files. */
                image.normal: "ENVENTOR_EMBEDDED_MOONPHASE_COVER.png";
-               min: 109 109;
+               min: 130 130;
                align: 0.5 1.0;
                rel1.to: "bg";
                rel2.to: "bg";
@@ -71,9 +58,10 @@ collections {
             desc { "default";
                /* TODO: Please replace embedded image files to your application image files. */
                image.normal: "ENVENTOR_EMBEDDED_MONTH_STROKE.png";
-               rel1.to: "calendar";
-               rel2.to: "calendar";
-               fixed: 1 1;
+               rel1.to: "bg";
+               rel2.to: "bg";
+               rel1.relative: 0.15 0.15;
+               rel2.relative: 0.85 0.85;
                map.on: 1;
             }
             desc { "feb";
@@ -121,34 +109,25 @@ collections {
                map.rotation.z: 220;
             }
          }
-         image { "date_bg";
-            scale: 1;
-            desc { "default";
-               /* TODO: Please replace embedded image files to your application image files. */
-               image.normal: "ENVENTOR_EMBEDDED_DATE_BG.png";
-               min: 25 25;
-               align: 0.5 1.0;
-               fixed: 1 1;
-               rel1.to: "bg";
-               rel2.to: "bg";
-               rel1.relative: 0.92 0.55;
-               rel2.relative: 0.92 0.55;
-            }
-         }
          text { "date";
             scale: 1;
             desc { "default";
                color: 0 0 0 255;
                fixed: 1 1;
                text {
-                  size: 10;
+                  size: 11;
                   font: "Sans";
                   text: "18";
                   align: 0.5 0.5;
                   min: 0 0;
                }
-               rel1.to: "date_bg";
-               rel2.to: "date_bg";
+               min: 30 30;
+               align: 0.5 1.0;
+               fixed: 1 1;
+               rel1.to: "bg";
+               rel2.to: "bg";
+               rel1.relative: 0.922 0.545;
+               rel2.relative: 0.922 0.545;
             }
          }
          image { "hour";
@@ -157,6 +136,10 @@ collections {
             desc { "default";
                rel1.to: "bg";
                rel2.to: "bg";
+               rel1.relative: 0.5 0.0;
+               rel2.relative: 0.5 1.0;
+               min: 35 0;
+               fixed: 1 0;
                /* TODO: Please replace embedded image files to your application image files. */
                image.normal: "ENVENTOR_EMBEDDED_NEEDLE_HOUR.png";
                map.on: 1;
@@ -173,6 +156,10 @@ collections {
             desc { "default";
                rel1.to: "bg";
                rel2.to: "bg";
+               rel1.relative: 0.5 0.0;
+               rel2.relative: 0.5 1.0;
+               min: 35 0;
+               fixed: 1 0;               
                /* TODO: Please replace embedded image files to your application image files. */
                image.normal: "ENVENTOR_EMBEDDED_NEEDLE_MINUTE.png";
                map.on: 1;
@@ -189,6 +176,10 @@ collections {
             desc { "default";
                rel1.to: "bg";
                rel2.to: "bg";
+               rel1.relative: 0.5 0.0;
+               rel2.relative: 0.5 1.0;
+               min: 25 0;
+               fixed: 1 0;                 
                /* TODO: Please replace embedded image files to your application image files. */
                image.normal: "ENVENTOR_EMBEDDED_NEEDLE_SECOND.png";
                map.on: 1;
@@ -197,18 +188,6 @@ collections {
             desc { "rotated";
                inherit: "default";
                map.rotation.z: 360;
-            }
-         }
-         image { "roatry";
-            scale: 1;
-            desc { "default";
-               /* TODO: Please replace embedded image files to your application image files. */
-               image.normal: "ENVENTOR_EMBEDDED_DATE_BG.png";
-               min: 15 15;
-               align: 0.5 0.5;
-               rel1.relative: 0.5 0.5;
-               rel2.relative: 0.5 0.5;
-               fixed: 1 1;
             }
          }
       }
