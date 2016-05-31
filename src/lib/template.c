@@ -376,15 +376,11 @@ template_part_insert(edit_data *ed, Edje_Part_Type part_type,
         elm_entry_entry_insert(edit_entry, t[i]);
      }
 
-   //add new line only in live edit mode
-   if (insert_type == ENVENTOR_TEMPLATE_INSERT_LIVE_EDIT)
-     elm_entry_entry_insert(edit_entry, "<br/>");
+   //Add a new line in the end of inserted template
+   elm_entry_entry_insert(edit_entry, "<br/>");
 
-   /* Increase (part name + body + relatives + tail) line. But line increase
-      count should be -1 in entry template insertion because the
-      cursor position would be taken one line additionally. */
+   //Increase (part name + body + relatives + tail) line
    int line_inc = 1 + line_cnt + 2 + TEMPLATE_PART_TALE_LINE_CNT;
-   if (insert_type == ENVENTOR_TEMPLATE_INSERT_DEFAULT) line_inc--;
    edit_line_increase(ed, line_inc);
 
    int cursor_pos2 = elm_entry_cursor_pos_get(edit_entry);
@@ -410,7 +406,7 @@ template_part_insert(edit_data *ed, Edje_Part_Type part_type,
 
 Eina_Bool
 template_insert(edit_data *ed,
-                Enventor_Template_Insert_Type insert_type EINA_UNUSED,
+                Enventor_Template_Insert_Type insert_type,
                 char *syntax, size_t n)
 {
    Evas_Object *entry = edit_entry_get(ed);
@@ -418,6 +414,11 @@ template_insert(edit_data *ed,
 
    Eina_Bool ret = EINA_FALSE;
    if (!paragh) return EINA_FALSE;
+
+   //Move cursor position to the beginning of the next line to apply indentation
+   elm_entry_cursor_line_end_set(entry);
+   int cursor_line_end_pos = elm_entry_cursor_pos_get(entry);
+   elm_entry_cursor_pos_set(entry, cursor_line_end_pos + 1);
 
    if (!strcmp(paragh, "parts"))
      {
@@ -502,7 +503,11 @@ template_insert(edit_data *ed,
    elm_entry_entry_insert(entry, p);
    elm_entry_entry_insert(entry, t[i]);
 
-   edit_line_increase(ed, line_cnt);
+   //Add a new line in the end of inserted template
+   elm_entry_entry_insert(entry, "<br/>");
+
+   //Increase (template + last new line) line
+   edit_line_increase(ed, line_cnt + 1);
 
    int cursor_pos2 = elm_entry_cursor_pos_get(entry);
    edit_redoundo_region_push(ed, cursor_pos1, cursor_pos2);
