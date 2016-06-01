@@ -43,6 +43,7 @@ typedef struct config_s
    Eina_Bool file_browser;
    Eina_Bool file_browser_loaded;
    Eina_Bool edc_navigator;
+   Eina_Bool red_alert;
 } config_data;
 
 static config_data *g_cd = NULL;
@@ -193,6 +194,7 @@ config_load(void)
         cd->smart_undo_redo = EINA_FALSE;
         cd->file_browser = EINA_TRUE;
         cd->edc_navigator = EINA_TRUE;
+        cd->red_alert = EINA_TRUE;
      }
 
    g_cd = cd;
@@ -317,6 +319,8 @@ eddc_init(void)
                                     file_browser, EET_T_UCHAR);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "edc_navigator",
                                     edc_navigator, EET_T_UCHAR);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "red_alert",
+                                    red_alert, EET_T_UCHAR);
 }
 
 void
@@ -935,6 +939,20 @@ config_tools_set(Eina_Bool enabled)
 {
    config_data *cd = g_cd;
    cd->tools = enabled;
+}
+
+void
+config_red_alert_set(Eina_Bool enabled)
+{
+   config_data *cd = g_cd;
+   cd->red_alert = enabled;
+}
+
+Eina_Bool
+config_red_alert_get(void)
+{
+   config_data *cd = g_cd;
+   return cd->red_alert;
 }
 
 void

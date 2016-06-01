@@ -13,6 +13,7 @@ typedef struct preference_setting_s
    Evas_Object *toggle_indent;
    Evas_Object *toggle_autocomp;
    Evas_Object *toggle_smart_undo_redo;
+   Evas_Object *toggle_red_alert;
 } preference_setting_data;
 
 /*****************************************************************************/
@@ -73,6 +74,7 @@ preference_setting_config_set(preference_setting_data *psd)
    config_auto_indent_set(elm_check_state_get(psd->toggle_indent));
    config_auto_complete_set(elm_check_state_get(psd->toggle_autocomp));
    config_smart_undo_redo_set(elm_check_state_get(psd->toggle_smart_undo_redo));
+   config_red_alert_set(elm_check_state_get(psd->toggle_red_alert));
 
    Evas_Coord w = 0;
    Evas_Coord h = 0;
@@ -94,6 +96,7 @@ preference_setting_reset(preference_setting_data *psd)
    elm_check_state_set(psd->toggle_autocomp, config_auto_complete_get());
    elm_check_state_set(psd->toggle_smart_undo_redo,
                        config_smart_undo_redo_get());
+   elm_check_state_set(psd->toggle_red_alert, config_red_alert_get());
 
    //Reset view scale
    int view_size_w, view_size_h;
@@ -235,10 +238,15 @@ preference_setting_content_get(preference_setting_data *psd,
    //Toggle (Smart Undo/Redo)
    Evas_Object *toggle_smart_undo_redo = toggle_create(box, _("Smart Undo/Redo"),
                                                 config_smart_undo_redo_get());
-   evas_object_size_hint_weight_set(toggle_smart_undo_redo, EVAS_HINT_EXPAND,
-                                    EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(toggle_smart_undo_redo, EVAS_HINT_FILL, 0);
    elm_box_pack_end(box, toggle_smart_undo_redo);
+
+   //Toggle (Red Alert)
+   Evas_Object *toggle_red_alert = toggle_create(box, _("Error Message Red Alert"),
+                                                 config_red_alert_get());
+   evas_object_size_hint_weight_set(toggle_red_alert, EVAS_HINT_EXPAND,
+                                    EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(toggle_red_alert, EVAS_HINT_FILL, 0);
+   elm_box_pack_end(box, toggle_red_alert);
 
    psd->box = box;
    psd->view_size_w_entry = entry_view_size_w;
@@ -248,6 +256,7 @@ preference_setting_content_get(preference_setting_data *psd,
    psd->toggle_indent = toggle_indent;
    psd->toggle_autocomp = toggle_autocomp;
    psd->toggle_smart_undo_redo = toggle_smart_undo_redo;
+   psd->toggle_red_alert = toggle_red_alert;
 
    return box;
 }

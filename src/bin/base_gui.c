@@ -51,7 +51,8 @@ base_error_msg_set(const char *msg)
 {
    base_data *bd = g_bd;
    assert(bd);
-   elm_object_signal_emit(bd->layout, "elm,state,alert,show", "");
+   if (config_red_alert_get())
+     elm_object_signal_emit(bd->layout, "elm,state,alert,show", "");
    console_text_set(bd->console, msg);
    panes_editors_full_view(EINA_FALSE);
    bd->console_msg = EINA_TRUE;
