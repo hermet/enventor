@@ -330,8 +330,8 @@ defaults:
         //Do not overwrite existing EDC file with template code.
         if (*template && ecore_file_exists(edc_path))
           {
-             EINA_LOG_ERR("\"%s\" already exists! Please input another file "
-                          "name with \"-t\" option.\n", edc_path);
+             fprintf(stdout, "\"%s\" already exists! Please input another file "
+                     "name with \"-t\" option.\n", edc_path);
              exit(0);
           }
      }
