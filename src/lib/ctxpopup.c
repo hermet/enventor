@@ -787,7 +787,8 @@ ctxpopup_img_preview_create(edit_data *ed,
                             Evas_Smart_Cb ctxpopup_relay_cb)
 {
    //create ctxpopup
-   Evas_Object *ctxpopup = elm_ctxpopup_add(edit_obj_get(ed));
+   Evas_Object *win = elm_object_top_widget_get(edit_obj_get(ed));
+   Evas_Object *ctxpopup = elm_ctxpopup_add(win);
    if (!ctxpopup) return NULL;
 
    elm_config_focus_autoscroll_mode_set(ELM_FOCUS_AUTOSCROLL_MODE_NONE);
@@ -861,7 +862,8 @@ ctxpopup_candidate_list_create(edit_data *ed, attr_value *attr,
                                Enventor_Ctxpopup_Type *type)
 {
    //create ctxpopup
-   Evas_Object *ctxpopup = elm_ctxpopup_add(edit_obj_get(ed));
+   Evas_Object *win = elm_object_top_widget_get(edit_obj_get(ed));
+   Evas_Object *ctxpopup = elm_ctxpopup_add(win);
    if (!ctxpopup) return NULL;
 
    elm_config_focus_autoscroll_mode_set(ELM_FOCUS_AUTOSCROLL_MODE_NONE);
