@@ -6,6 +6,18 @@
 #define IDX_MAX 999999
 #define PROGRAM_IDX (IDX_MAX - 1)
 
+#define ESCAPE_GOTO_END() \
+   p = strstr(++p, "\""); \
+   if (!p) goto end; \
+   p++; \
+   continue
+
+#define ESCAPE_RET_NULL() \
+   p = strstr(++p, "\""); \
+   if (!p) return NULL; \
+   p++; \
+   continue
+
 typedef struct group_it_s group_it;
 typedef struct part_it_s part_it;
 typedef struct state_it_s state_it;
@@ -278,10 +290,7 @@ find_group_proc_internal(char *utf8, char *utf8_end, const char *group_name)
         //Skip " ~ " Section
         if (*p == '\"')
           {
-             p = strstr(++p, "\"");
-             if (!p) return NULL;
-             p++;
-             continue;
+             ESCAPE_RET_NULL();
           }
 
         if (!strncmp("group", p, strlen("group")))
@@ -289,17 +298,24 @@ find_group_proc_internal(char *utf8, char *utf8_end, const char *group_name)
              p = strstr((p + 5), "\"");
              if (!p) return NULL;
              p++;
-             if (!strncmp(group_name, p, strlen(group_name)))
+             int group_name_len = strlen(group_name);
+             if (!strncmp(group_name, p, group_name_len))
                {
-                  result = p;
-                  break;
+                  //Compare Elaborately 
+                  char *next_quote = strstr(p, "\"");
+                  if (group_name_len == (next_quote - p))
+                    {
+                       result = p;
+                       break;
+                    }
+                  else
+                    {
+                       ESCAPE_RET_NULL();
+                    }
                }
              else
                {
-                  p = strstr(p, "\"");
-                  if (!p) return NULL;
-                  p++;
-                  continue;
+                  ESCAPE_RET_NULL();
                }
           }
         p++;
@@ -353,10 +369,7 @@ find_part_proc_internal(char *utf8, char *utf8_end, const char* group_name,
         //Skip " ~ " Section
         if (*p == '\"')
           {
-             p = strstr(++p, "\"");
-             if (!p) return NULL;
-             p++;
-             continue;
+             ESCAPE_RET_NULL();
           }
 
         if (!strncmp(part_type, p, strlen(part_type)))
@@ -364,17 +377,24 @@ find_part_proc_internal(char *utf8, char *utf8_end, const char* group_name,
              p = strstr((p + strlen(part_type)), "\"");
              if (!p) return NULL;
              p++;
-             if (!strncmp(part_name, p, strlen(part_name)))
+             int part_name_len = strlen(part_name);
+             if (!strncmp(part_name, p, part_name_len))
                {
-                  result = p;
-                  break;
+                  //Compare Elaborately 
+                  char *next_quote = strstr(p, "\"");
+                  if (part_name_len == (next_quote - p))
+                    {
+                       result = p;
+                       break;
+                    }
+                  else
+                    {
+                       ESCAPE_RET_NULL();
+                    }
                }
              else
                {
-                  p = strstr(p, "\"");
-                  if (!p) return NULL;
-                  p++;
-                  continue;
+                  ESCAPE_RET_NULL();
                }
           }
 
@@ -391,10 +411,7 @@ find_part_proc_internal(char *utf8, char *utf8_end, const char* group_name,
                }
              else
                {
-                  p = strstr(p, "\"");
-                  if (!p) return NULL;
-                  p++;
-                  continue;
+                  ESCAPE_RET_NULL();
                }
           }
 
@@ -459,10 +476,7 @@ find_state_proc(const char *group_name, const char *part_name,
         //Skip " ~ " Section
         if (*p == '\"')
           {
-             p = strstr(++p, "\"");
-             if (!p) goto end;
-             p++;
-             continue;
+             ESCAPE_GOTO_END();
           }
 
         if (!strncmp("desc", p, strlen("desc")))
@@ -470,17 +484,24 @@ find_state_proc(const char *group_name, const char *part_name,
              p = strstr((p + 4), "\"");
              if (!p) goto end;
              p++;
-             if (!strncmp(state_name, p, strlen(state_name)))
+             int state_name_len = strlen(state_name);
+             if (!strncmp(state_name, p, state_name_len))
                {
-                  result = p;
-                  break;
+                  //Compare Elaborately
+                  char *next_quote = strstr(p, "\"");
+                  if (state_name_len == (next_quote - p))
+                    {
+                       result = p;
+                       break;
+                    }
+                  else
+                    {
+                       ESCAPE_GOTO_END();
+                    }
                }
              else
                {
-                  p = strstr(p, "\"");
-                  if (!p) goto end;
-                  p++;
-                  continue;
+                  ESCAPE_GOTO_END();
                }
           }
         p++;
@@ -513,10 +534,7 @@ find_programs_proc_internal(char *utf8, char *utf8_end, const char *group_name)
         //Skip " ~ " Section
         if (*p == '\"')
           {
-             p = strstr(++p, "\"");
-             if (!p) return NULL;
-             p++;
-             continue;
+             ESCAPE_RET_NULL();
           }
 
         if (!strncmp("programs", p, strlen("programs")))
@@ -580,10 +598,7 @@ find_program_proc(const char *group_name, const char *program_name)
         //Skip " ~ " Section
         if (*p == '\"')
           {
-             p = strstr(++p, "\"");
-             if (!p) goto end;
-             p++;
-             continue;
+             ESCAPE_GOTO_END();
           }
 
         if (!strncmp("program", p, strlen("program")))
@@ -591,17 +606,24 @@ find_program_proc(const char *group_name, const char *program_name)
              p = strstr((p + 6), "\"");
              if (!p) goto end;
              p++;
-             if (!strncmp(program_name, p, strlen(program_name)))
+             int program_name_len = strlen(program_name);
+             if (!strncmp(program_name, p, program_name_len))
                {
-                  result = p;
-                  break;
+                  //Compare Elaborately 
+                  char *next_quote = strstr(p, "\"");
+                  if (program_name_len == (next_quote - p))
+                    {
+                       result = p;
+                       break;
+                    }
+                  else
+                    {
+                       ESCAPE_GOTO_END();
+                    }
                }
              else
                {
-                  p = strstr(p, "\"");
-                  if (!p) goto end;
-                  p++;
-                  continue;
+                  ESCAPE_GOTO_END();
                }
           }
         p++;
