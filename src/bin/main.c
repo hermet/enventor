@@ -325,6 +325,16 @@ defaults:
         snprintf(edc_path, path_size, "%s", (const char *)tmp_path);
         eina_tmpstr_del(tmp_path);
      }
+   else
+     {
+        //Do not overwrite existing EDC file with template code.
+        if (*template && ecore_file_exists(edc_path))
+          {
+             EINA_LOG_ERR("\"%s\" already exists! Please input another file "
+                          "name with \"-t\" option.\n", edc_path);
+             exit(0);
+          }
+     }
 
      char *s = NULL;
      EINA_LIST_FREE(id, s)
