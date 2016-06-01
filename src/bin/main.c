@@ -313,7 +313,7 @@ args_dispatch(int argc, char **argv,
         exit(0);
    if (help)
      {
-        fprintf(stderr, ENVENTOR_HELP_EXAMPLES);
+        fprintf(stdout, ENVENTOR_HELP_EXAMPLES);
         exit(0);
      }
 
