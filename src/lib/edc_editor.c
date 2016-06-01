@@ -736,9 +736,11 @@ edit_cursor_double_clicked_cb(void *data, Evas_Object *obj,
    * Because right now any text inside quotes that placed after selection is
    * recognized as name.
    */
-   if ((!strncmp(selected, "image", 5)) ||  //5: sizeof("image")
-       (!strcmp(selected, "normal")) ||
-       (!strcmp(selected, "tween")))
+   if ((!strcmp(selected, "image") && (strlen(selected) == 5)) ||
+       (!strcmp(selected, "normal") && (strlen(selected) == 6)) ||
+       (!strcmp(selected, "tween") && (strlen(selected) == 5)) ||
+       (!strcmp(selected, "image.normal") && (strlen(selected) == 12)) ||
+       (!strcmp(selected, "image.tween") && (strlen(selected) == 11)))
      {
         int x, y;
         evas_pointer_output_xy_get(evas_object_evas_get(ed->en_edit), &x, &y);
