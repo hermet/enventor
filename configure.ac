@@ -129,7 +129,7 @@ data/templates/Makefile
 data/color/Makefile
 data/autocomp/Makefile
 data/sounds/Makefile
-data/about/Makefile
+data/help/Makefile
 pc/enventor.pc
 ])
 

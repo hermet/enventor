@@ -208,10 +208,10 @@ warning_open(menu_data *md, Evas_Smart_Cb yes_cb, Evas_Smart_Cb save_cb)
 }
 
 static void
-about_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+help_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
             void *event_info EINA_UNUSED)
 {
-   about_open();
+   help_open();
 }
 
 static void
@@ -590,9 +590,9 @@ menu_open(menu_data *md)
    btn = btn_create(layout, _("Settings"), setting_btn_cb, md);
    elm_object_part_content_set(layout, "elm.swallow.setting_btn", btn);
 
-   //Button(About)
-   btn = btn_create(layout, _("About"), about_btn_cb, md);
-   elm_object_part_content_set(layout, "elm.swallow.about_btn", btn);
+   //Button(Help)
+   btn = btn_create(layout, _("Help"), help_btn_cb, md);
+   elm_object_part_content_set(layout, "elm.swallow.help_btn", btn);
 
    //Button(Exit)
    btn = btn_create(layout, _("Exit"), exit_btn_cb, md);

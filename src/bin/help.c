@@ -6,8 +6,8 @@
 
 static Evas_Coord win_x = -1;
 static Evas_Coord win_y = -1;
-static Evas_Coord win_w = DEFAULT_ABOUT_WIN_W;
-static Evas_Coord win_h = DEFAULT_ABOUT_WIN_H;
+static Evas_Coord win_w = DEFAULT_HELP_WIN_W;
+static Evas_Coord win_h = DEFAULT_HELP_WIN_H;
 static Evas_Object *g_win = NULL;
 
 static void
@@ -15,14 +15,14 @@ keygrabber_key_down_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
                        Evas_Object *obj  EINA_UNUSED,
                        void *event_info EINA_UNUSED)
 {
-   about_close();
+   help_close();
 }
 
 static void
 win_delete_request_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
                       void *event_info EINA_UNUSED)
 {
-   about_close();
+   help_close();
 }
 
 static void
@@ -36,7 +36,7 @@ win_moved_cb(void *data EINA_UNUSED, Evas_Object *obj,
 }
 
 void
-about_open(void)
+help_open(void)
 {
    Evas_Object *win = g_win;
    if (win)
@@ -49,9 +49,9 @@ about_open(void)
    char buf[PATH_MAX];
 
    //Win
-   win = elm_win_add(base_win_get(), _("Enventor About"), ELM_WIN_BASIC);
+   win = elm_win_add(base_win_get(), _("Enventor Help"), ELM_WIN_BASIC);
    elm_win_focus_highlight_enabled_set(win, EINA_TRUE);
-   elm_win_title_set(win, _("About"));
+   elm_win_title_set(win, _("Help"));
    evas_object_smart_callback_add(win, "delete,request", win_delete_request_cb,
                                   NULL);
    evas_object_smart_callback_add(win, "moved", win_moved_cb, NULL);
@@ -76,7 +76,7 @@ about_open(void)
    //Frame1: Introduction
    Evas_Object *intro_frame = elm_frame_add(box);
    elm_frame_autocollapse_set(intro_frame, EINA_TRUE);
-   elm_object_text_set(intro_frame, "Introduction");
+   elm_object_text_set(intro_frame, "About");
    evas_object_size_hint_weight_set(intro_frame, EVAS_HINT_EXPAND, 0);
    evas_object_size_hint_align_set(intro_frame, EVAS_HINT_FILL, 0);
    evas_object_show(intro_frame);
@@ -91,7 +91,7 @@ about_open(void)
    elm_object_content_set(intro_frame, entry);
 
    //Read File
-   snprintf(buf, sizeof(buf), "%s/about/INTRO", elm_app_data_dir_get());
+   snprintf(buf, sizeof(buf), "%s/help/INTRO", elm_app_data_dir_get());
    elm_entry_autosave_set(entry, EINA_FALSE);
    elm_entry_file_set(entry, buf, ELM_TEXT_FORMAT_MARKUP_UTF8);
 
@@ -116,7 +116,7 @@ about_open(void)
    elm_object_content_set(version_frame, entry);
 
    //Read File
-   snprintf(buf, sizeof(buf), "%s/about/HISTORY", elm_app_data_dir_get());
+   snprintf(buf, sizeof(buf), "%s/help/HISTORY", elm_app_data_dir_get());
    elm_entry_autosave_set(entry, EINA_FALSE);
    elm_entry_file_set(entry, buf, ELM_TEXT_FORMAT_MARKUP_UTF8);
 
@@ -140,7 +140,7 @@ about_open(void)
    elm_object_content_set(key_frame, entry);
 
    //Read File
-   snprintf(buf, sizeof(buf), "%s/about/SHORTCUT", elm_app_data_dir_get());
+   snprintf(buf, sizeof(buf), "%s/help/SHORTCUT", elm_app_data_dir_get());
    elm_entry_autosave_set(entry, EINA_FALSE);
    elm_entry_file_set(entry, buf, ELM_TEXT_FORMAT_MARKUP_UTF8);
 
@@ -164,7 +164,7 @@ about_open(void)
    elm_object_content_set(command_frame, entry);
 
    //Read File
-   snprintf(buf, sizeof(buf), "%s/about/COMMAND", elm_app_data_dir_get());
+   snprintf(buf, sizeof(buf), "%s/help/COMMAND", elm_app_data_dir_get());
    elm_entry_autosave_set(entry, EINA_FALSE);
    elm_entry_file_set(entry, buf, ELM_TEXT_FORMAT_MARKUP_UTF8);
 
@@ -197,7 +197,7 @@ about_open(void)
    elm_object_content_set(devel_frame, entry);
 
    //Read File
-   snprintf(buf, sizeof(buf), "%s/about/DEVEL", elm_app_data_dir_get());
+   snprintf(buf, sizeof(buf), "%s/help/DEVEL", elm_app_data_dir_get());
    elm_entry_autosave_set(entry, EINA_FALSE);
    elm_entry_file_set(entry, buf, ELM_TEXT_FORMAT_MARKUP_UTF8);
 
@@ -219,7 +219,7 @@ about_open(void)
 }
 
 void
-about_close(void)
+help_close(void)
 {
    Evas_Object *win = g_win;
    if (!win) return;

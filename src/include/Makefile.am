@@ -20,4 +20,4 @@ EXTRA_DIST = common.h \
 	file_browser.h \
 	build_setting.h \
 	preference_setting.h \
-	about.h
+	help.h

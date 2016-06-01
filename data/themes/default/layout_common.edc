@@ -794,7 +794,7 @@ group { name: "menu_layout";
             align: 0 0.5;
          }
       }
-      part { name: "elm.swallow.about_btn";
+      part { name: "elm.swallow.help_btn";
          type: SWALLOW;
          scale: 1;
          clip_to: "clipper";
@@ -811,8 +811,8 @@ group { name: "menu_layout";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            rel1.to: "elm.swallow.about_btn";
-            rel2.to: "elm.swallow.about_btn";
+            rel1.to: "elm.swallow.help_btn";
+            rel2.to: "elm.swallow.help_btn";
             rel1.relative: 1 0;
             min: 23 50;
             fixed: 1 1;

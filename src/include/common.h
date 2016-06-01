@@ -84,7 +84,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n"
 #include "file_mgr.h"
 #include "build_setting.h"
 #include "preference_setting.h"
-#include "about.h"
+#include "help.h"
 
 /* localization */
 #ifdef HAVE_GETTEXT

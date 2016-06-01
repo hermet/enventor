@@ -1,5 +1,5 @@
 MAINTAINERCLEANFILES = Makefile.in
-filesdir = $(datadir)/$(PACKAGE)/about
+filesdir = $(datadir)/$(PACKAGE)/help
 files_DATA = \
 INTRO \
 HISTORY \
