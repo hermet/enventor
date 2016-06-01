@@ -1693,7 +1693,7 @@ calc_layout_auto_align_pos(Evas_Object *layout, live_data *ld, int x, int y,
      {
         *ret_x = x;
         *ret_y = y;
-        return;
+        return 0;
      }
 
    Eina_Bool is_up, is_down, is_left, is_right;
