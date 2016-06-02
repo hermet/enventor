@@ -1157,7 +1157,6 @@ rel_to_ctxpopup_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
                              strlen(rel_data->part_name));
                }
              if ((ld->last_cp == Ctrl_Pt_Rel2) ||
-                 (ld->last_cp == Ctrl_Pt_Rel2) ||
                  (ld->last_cp == Ctrl_Pt_Right))
                {
                   ld->rel_to_info.align_x = 1.0;
