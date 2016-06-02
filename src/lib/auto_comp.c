@@ -32,6 +32,7 @@ typedef struct autocomp_s
    edit_data *ed;
    Evas_Object *anchor;
    Evas_Object *list;
+   Evas_Object *event_rect;
    Ecore_Thread *init_thread;
    Eina_Bool anchor_visible : 1;
    Eina_Bool initialized : 1;
@@ -744,6 +745,16 @@ entry_move_cb(void *data, Evas *e EINA_UNUSED,
 }
 
 static void
+event_rect_mouse_down_cb(void *data, Evas *e EINA_UNUSED,
+                         Evas_Object *obj EINA_UNUSED,
+                         void *event_info EINA_UNUSED)
+{
+   autocomp_data *ad = data;
+   if (!ad) return;
+   if (ad->anchor_visible) entry_anchor_off(ad);
+}
+
+static void
 list_item_move(autocomp_data *ad, Eina_Bool up)
 {
    Evas_Object *entry = edit_entry_get(ad->ed);
@@ -864,6 +875,26 @@ autocomp_target_set(edit_data *ed)
    ad->anchor = elm_button_add(edit_obj_get(ed));
    evas_object_event_callback_add(ad->anchor, EVAS_CALLBACK_KEY_DOWN,
                                   anchor_key_down_cb, ad);
+
+   //event_rect catches mouse down event, which makes anchor off.
+   if (!ad->event_rect)
+     {
+        Evas_Object *win = elm_object_top_widget_get(edit_obj_get(ed));
+        Evas *e = evas_object_evas_get(win);
+        Evas_Object *rect = evas_object_rectangle_add(e);
+        evas_object_repeat_events_set(rect, EINA_TRUE);
+        evas_object_color_set(rect, 0, 0, 0, 0);
+
+        evas_object_event_callback_add(rect, EVAS_CALLBACK_MOUSE_DOWN,
+                                       event_rect_mouse_down_cb, ad);
+        evas_object_size_hint_weight_set(rect, EVAS_HINT_EXPAND,
+                                         EVAS_HINT_EXPAND);
+        elm_win_resize_object_add(win, rect);
+        evas_object_show(rect);
+
+        ad->event_rect = rect;
+     }
+
    ad->ed = ed;
 }
 
@@ -904,6 +935,7 @@ autocomp_term(void)
    autocomp_data *ad = g_ad;
    autocomp_target_set(NULL);
 
+   evas_object_del(ad->event_rect);
    evas_object_del(ad->anchor);
    ecore_thread_cancel(ad->init_thread);
 
