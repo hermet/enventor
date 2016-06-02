@@ -59,7 +59,8 @@ static void
 goto_line(goto_data *gd)
 {
   const char *txt = elm_entry_entry_get(gd->entry);
-  int line = atoi(txt);
+  int line = 0;
+  if (txt) line = atoi(txt);
   enventor_object_line_goto(base_enventor_get(), line);
   goto_close();
 }
