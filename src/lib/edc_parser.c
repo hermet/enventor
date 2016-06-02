@@ -1354,6 +1354,7 @@ parser_collections_block_pos_get(const Evas_Object *entry,
                     }
                   block++;
                }
+             free(utf8);
              return EINA_FALSE;
           }
         int group_pos = strncmp(GROUP_SYNTAX_NAME, pos, 5);
