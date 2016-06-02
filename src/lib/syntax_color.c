@@ -416,8 +416,8 @@ string_apply(Eina_Strbuf *strbuf, char **cur, char **prev,
           snprintf(buf, sizeof(buf), "<color=#%s>%s", col, QUOT);
         else
           snprintf(buf, sizeof(buf), "%s</color>", QUOT);
-          eina_strbuf_append(strbuf, buf);
-          *cur += QUOT_LEN;
+        eina_strbuf_append(strbuf, buf);
+        *cur += QUOT_LEN;
      }
 
    *prev = *cur;
