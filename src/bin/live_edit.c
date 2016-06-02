@@ -1303,26 +1303,26 @@ rel_to_ctxpopup_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
          }
        else if (ld->last_cp == Ctrl_Pt_Left)
          {
-            y_add = lh / 2;
+            y_add = (double)lh / 2;
             ld->rel_to_info.align_x = 0.0;
             ld->rel_to_info.align_y = 0.5;
          }
        else if (ld->last_cp == Ctrl_Pt_Right)
          {
             x_add = lw;
-            y_add = lh / 2;
+            y_add = (double)lh / 2;
             ld->rel_to_info.align_x = 1.0;
             ld->rel_to_info.align_y = 0.5;
          }
        else if (ld->last_cp == Ctrl_Pt_Top)
          {
-            x_add = lw / 2;
+            x_add = (double)lw / 2;
             ld->rel_to_info.align_x = 0.5;
             ld->rel_to_info.align_y = 0.0;
          }
        else if (ld->last_cp == Ctrl_Pt_Bottom)
          {
-            x_add = lw / 2;
+            x_add = (double)lw / 2;
             y_add = lh;
             ld->rel_to_info.align_x = 0.5;
             ld->rel_to_info.align_y = 1.0;
@@ -1342,9 +1342,9 @@ rel_to_ctxpopup_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
            strndup(rel_data->part_name, strlen(rel_data->part_name));
 
         //Calculate part relative which is matched to base relative
-        double part_rel_x = (double)abs(((lx + x_add) - rel_data->pt1.x)) /
+        double part_rel_x = (double)fabs(((lx + x_add) - rel_data->pt1.x)) /
                             (rel_data->pt2.x - rel_data->pt1.x);
-        double part_rel_y = (double)abs(((ly + y_add) - rel_data->pt1.y)) /
+        double part_rel_y = (double)fabs(((ly + y_add) - rel_data->pt1.y)) /
                             (rel_data->pt2.y - rel_data->pt1.y);
 
         if (rel_data->is_rel_to_x)
