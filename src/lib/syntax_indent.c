@@ -621,7 +621,8 @@ indent_delete_apply(indent_data *id, const char *del, int cur_line)
 
    int rd_cur_pos = evas_textblock_cursor_pos_get(cur);
 
-   int len = strlen(utf8);
+   int len = 0;
+   if (utf8) len = strlen(utf8);
    if (len <= 0) goto end;
 
    evas_textblock_cursor_paragraph_char_last(cur);
