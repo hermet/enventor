@@ -213,7 +213,7 @@ template_part_insert(edit_data *ed, Edje_Part_Type part_type,
    int line_cnt = 0;
    char **t = NULL;
    char buf[64];
-   char type_name[20];
+   char type_name[20] = {0, };
 
    switch(part_type)
      {
@@ -434,7 +434,7 @@ template_insert(edit_data *ed,
 
    int line_cnt;
    char **t = NULL;
-   char first_line[40];
+   char first_line[40] = {0, };
    char random_name[9];
    int space = edit_cur_indent_depth_get(ed);
 
