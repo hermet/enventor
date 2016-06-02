@@ -2290,7 +2290,7 @@ live_edit_init(Evas_Object *parent)
    if (!ld)
      {
         EINA_LOG_ERR(_("Faild to allocate Memory!"));
-        return;
+        return NULL;
      }
    g_ld = ld;
 
