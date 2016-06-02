@@ -1528,7 +1528,7 @@ parser_name_get(parser_data *pd EINA_UNUSED, const char *cur)
 
    //Don't find if the name is in the next lines.
    char *eol = strstr(cur, "\n");
-   if (eol < p) return NULL;
+   if (eol && (eol < p)) return NULL;
 
    return strndup(p, (end - p));
 }
