@@ -7,13 +7,15 @@
 #define PROGRAM_IDX (IDX_MAX - 1)
 
 #define ESCAPE_GOTO_END() \
-   p = strstr(++p, "\""); \
+   p++; \
+   p = strstr(p, "\""); \
    if (!p) goto end; \
    p++; \
    continue
 
 #define ESCAPE_RET_NULL() \
-   p = strstr(++p, "\""); \
+   p++; \
+   p = strstr(p, "\""); \
    if (!p) return NULL; \
    p++; \
    continue
