@@ -134,7 +134,7 @@ edit_view_sync_cb(void *data, Eina_Stringshare *state_name, double state_value,
         evas_object_smart_callback_call(pd->obj, SIG_CURSOR_GROUP_CHANGED,
                                         (void *) group_name);
      }
-   if (pd->part_highlight)
+   if (pd->part_highlight && !pd->disabled)
      view_part_highlight_set(VIEW_DATA, part_name);
    else
      view_part_highlight_set(VIEW_DATA, NULL);
