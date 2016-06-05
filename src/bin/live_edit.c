@@ -361,7 +361,6 @@ live_edit_insert(live_data *ld)
 
    //Calculate relative_to values to fix its size
    //in case of width and height are fixed
-   Eina_Bool fixed_w = elm_check_state_get(ld->fixed_w_check);
    Evas_Coord min_w = 0;
 
    if (!ld->rel_to_info.rel1_x_to && !ld->rel_to_info.rel2_x_to &&
@@ -376,7 +375,6 @@ live_edit_insert(live_data *ld)
 
      }
 
-   Eina_Bool fixed_h = elm_check_state_get(ld->fixed_h_check);
    Evas_Coord min_h = 0;
 
    if (!ld->rel_to_info.rel1_y_to && !ld->rel_to_info.rel2_y_to &&
@@ -1365,15 +1363,6 @@ rel_to_ctxpopup_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
      }
 
    elm_ctxpopup_dismiss(obj);
-}
-
-static void
-fixed_ctxpopup_dismissed_cb(void *data, Evas_Object *obj,
-                            void *event_info EINA_UNUSED)
-{
-   live_data *ld = data;
-   ld->fixed_ctxpopup = NULL;
-   evas_object_del(obj);
 }
 
 static void

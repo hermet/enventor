@@ -826,10 +826,9 @@ _enventor_object_live_view_get(Eo *obj EINA_UNUSED,
 
 EOLIAN static Eina_Bool
 _enventor_object_template_insert(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd,
-                                 Enventor_Template_Insert_Type insert_type,
                                  char *syntax, size_t n)
 {
-   return template_insert(pd->main_it.ed, insert_type, syntax, n);
+   return template_insert(pd->main_it.ed, syntax, n);
 }
 
 EOLIAN static Eina_Bool

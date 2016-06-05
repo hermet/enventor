@@ -541,9 +541,8 @@ tools_template_insert(void)
      }
 
    char syntax[12];
-   if (enventor_object_template_insert(base_enventor_get(),
-                                       ENVENTOR_TEMPLATE_INSERT_DEFAULT,
-                                       syntax, sizeof(syntax)))
+   if (enventor_object_template_insert(base_enventor_get(), syntax,
+                                       sizeof(syntax)))
      {
         char msg[64];
         snprintf(msg, sizeof(msg), _("Template code inserted, (%s)"), syntax);

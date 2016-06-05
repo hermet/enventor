@@ -589,20 +589,6 @@ list_create(Evas_Object *parent)
    return list;
 }
 
-static Evas_Object *
-toggle_create(Evas_Object *parent, const char *text, Eina_Bool state)
-{
-   Evas_Object *toggle = elm_check_add(parent);
-   elm_object_style_set(toggle, "toggle");
-   elm_check_state_set(toggle, state);
-   evas_object_size_hint_weight_set(toggle, EVAS_HINT_EXPAND, 0);
-   evas_object_size_hint_align_set(toggle, EVAS_HINT_FILL, 0);
-   elm_object_text_set(toggle, text);
-   evas_object_show(toggle);
-
-   return toggle;
-}
-
 static void
 font_scale_slider_changed_cb(void *data, Evas_Object *obj,
                              void *event_info EINA_UNUSED)

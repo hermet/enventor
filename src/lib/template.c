@@ -55,7 +55,7 @@ image_description_add(edit_data *ed)
           cursor_pos2 = cursor_pos1;
         else
           {
-             template_insert(ed, ENVENTOR_TEMPLATE_INSERT_LIVE_EDIT, NULL, 0);
+             template_insert(ed, NULL, 0);
              cursor_pos2 = elm_entry_cursor_pos_get(edit_entry);
           }
      }
@@ -405,9 +405,7 @@ template_part_insert(edit_data *ed, Edje_Part_Type part_type,
 }
 
 Eina_Bool
-template_insert(edit_data *ed,
-                Enventor_Template_Insert_Type insert_type,
-                char *syntax, size_t n)
+template_insert(edit_data *ed, char *syntax, size_t n)
 {
    Evas_Object *entry = edit_entry_get(ed);
    Eina_Stringshare *paragh = edit_cur_paragh_get(ed);
