@@ -1342,57 +1342,62 @@ ctxpopup_it_selected_cb(void *data, Evas_Object *obj,
 }
 
 static void
-ctxpopup_dismissed_cb(void *data, Evas_Object *obj,
-                             void *event_info EINA_UNUSED)
+ctxpopup_dismissed_rel_data_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                               void *event_info EINA_UNUSED)
 {
    rel_to_data *rel_data = data;
-   live_data *ld = rel_data->ld;
-   ld->rel_to_info.ctxpopup = NULL;
    free(rel_data);
-   evas_object_del(obj);
 }
 
 static void
-make_rel_data(live_data *ld, auto_align_data *al_pos, int is_rel_to_x,
-              int is_rel_to_y, float rel_x, float rel_y, char *rel_dir)
+ctxpopup_dismissed_cb(void *data, Evas_Object *obj,
+                      void *event_info EINA_UNUSED)
 {
-   char rel_part_name[PART_NAME_MAX];
+   live_data *ld = data;
+   evas_object_del(obj);
+   ld->rel_to_info.ctxpopup = NULL;
+}
+
+static void
+make_rel_data(Evas_Object *ctxpopup, live_data *ld, auto_align_data *al_pos,
+              int is_rel_to_x, int is_rel_to_y, float rel_x, float rel_y,
+              char *rel_dir)
+{
    rel_to_data *rel_data = calloc(1, sizeof(rel_to_data));
-   int part_name_length = strlen(al_pos->part_name);
-   strncpy(rel_data->part_name, al_pos->part_name, part_name_length);
+   strncpy(rel_data->part_name, al_pos->part_name, strlen(al_pos->part_name));
    rel_data->is_rel_to_x = is_rel_to_x;
    rel_data->is_rel_to_y = is_rel_to_y;
    rel_data->rel_x = rel_x;
    rel_data->rel_y = rel_y;
-   rel_data->ld = ld;
-   snprintf(rel_part_name, PART_NAME_MAX, "%s: %s", al_pos->part_name, rel_dir);
    rel_data->pt1.x = al_pos->pt1.x;
    rel_data->pt1.y = al_pos->pt1.y;
    rel_data->pt2.x = al_pos->pt2.x;
    rel_data->pt2.y = al_pos->pt2.y;
-   elm_ctxpopup_item_append(ld->rel_to_info.ctxpopup, rel_part_name, NULL,
+   rel_data->ld = ld;
+
+   char rel_part_name[PART_NAME_MAX];
+   snprintf(rel_part_name, PART_NAME_MAX, "%s: %s", al_pos->part_name, rel_dir);
+
+   elm_ctxpopup_item_append(ctxpopup, rel_part_name, NULL,
                             ctxpopup_it_selected_cb, rel_data);
-   evas_object_smart_callback_add(ld->rel_to_info.ctxpopup, "dismissed",
-                                  ctxpopup_dismissed_cb, rel_data);
+   evas_object_smart_callback_add(ctxpopup, "dismissed",
+                                  ctxpopup_dismissed_rel_data_cb, rel_data);
 }
 
 static void
 show_relative_to_list(live_data *ld, int x, int y)
 {
+   if (ld->rel_to_info.ctxpopup) return;
+
    unsigned int i;
    Eina_Array_Iterator iter;
    auto_align_data *al_pos;
-
    Evas_Coord_Point cur_ctrl_pt = calc_ctrl_pt_auto_align_pos(ld, x, y,
                                                               0, NULL);
-
-   if (ld->rel_to_info.ctxpopup)
-     return;
-
-   ld->rel_to_info.ctxpopup = elm_ctxpopup_add(ld->live_view);
+   Evas_Object *ctxpopup = elm_ctxpopup_add(ld->live_view);
    //FIXME: because the focus highlighting is floated after ctxpopup is
    //dismissed, i disable the focus here
-   elm_object_tree_focus_allow_set(ld->rel_to_info.ctxpopup, EINA_FALSE);
+   elm_object_tree_focus_allow_set(ctxpopup, EINA_FALSE);
 
    Eina_Bool is_rel_to = EINA_FALSE;
 
@@ -1405,12 +1410,12 @@ show_relative_to_list(live_data *ld, int x, int y)
            if (al_pos->pt1.x == cur_ctrl_pt.x)
              {
                 is_rel_to = EINA_TRUE;
-                make_rel_data(ld, al_pos, 1, 0, 0.0, 0.0, "to_x");
+                make_rel_data(ctxpopup, ld, al_pos, 1, 0, 0.0, 0.0, "to_x");
              }
            if (al_pos->pt2.x == cur_ctrl_pt.x)
              {
                 is_rel_to = EINA_TRUE;
-                make_rel_data(ld, al_pos, 1, 0, 1.0, 0.0, "to_x");
+                make_rel_data(ctxpopup, ld, al_pos, 1, 0, 1.0, 0.0, "to_x");
              }
         }
       //Case 2: Find relative_to y
@@ -1419,25 +1424,27 @@ show_relative_to_list(live_data *ld, int x, int y)
            if (al_pos->pt1.y == cur_ctrl_pt.y)
              {
                 is_rel_to = EINA_TRUE;
-                make_rel_data(ld, al_pos, 0, 1, 0.0, 0.0, "to_y");
+                make_rel_data(ctxpopup, ld, al_pos, 0, 1, 0.0, 0.0, "to_y");
              }
            if (al_pos->pt2.y == cur_ctrl_pt.y)
              {
                 is_rel_to = EINA_TRUE;
-                make_rel_data(ld, al_pos, 0, 1, 0.0, 1.0, "to_y");
+                make_rel_data(ctxpopup, ld, al_pos, 0, 1, 0.0, 1.0, "to_y");
              }
         }
    }
 
-   if (is_rel_to == EINA_FALSE)
+   if (is_rel_to)
      {
-        evas_object_del(ld->rel_to_info.ctxpopup);
-        ld->rel_to_info.ctxpopup = NULL;
+        ld->rel_to_info.ctxpopup = ctxpopup;
+        evas_object_smart_callback_add(ctxpopup, "dismissed",
+                                       ctxpopup_dismissed_cb, ld);
+        evas_object_move(ctxpopup, x, y);
+        evas_object_show(ctxpopup);
      }
    else
      {
-        evas_object_move(ld->rel_to_info.ctxpopup, x, y);
-        evas_object_show(ld->rel_to_info.ctxpopup);
+        evas_object_del(ctxpopup);
      }
 }
 
@@ -1995,7 +2002,6 @@ key_grab_add(Evas_Object *keygrabber, const char *key)
 static void
 rel_to_values_reset(live_data *ld)
 {
-   //Reset state about relative_to
    ld->rel_to_info.align_x = 0.5;
    ld->rel_to_info.align_y = 0.5;
    ld->rel_to_info.rel1_x_part = NULL;
