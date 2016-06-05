@@ -24,9 +24,9 @@ src/lib/edj_mgr.c
 src/lib/edj_viewer.c
 src/lib/enventor_main.c
 src/lib/enventor_smart.c
-src/lib/indent.c
 src/lib/redoundo.c
 src/lib/syntax_color.c
 src/lib/syntax_helper.c
+src/lib/syntax_indent.c
 src/lib/template.c
 

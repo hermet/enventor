@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enventor 0.6.0\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2016-01-02 22:29+0900\n"
+"POT-Creation-Date: 2016-06-05 13:38+0900\n"
 "PO-Revision-Date: 2015-11-17 17:37+0000\n"
 "Last-Translator: nikawhite belyavskijnb@gmail.com \n"
 "Language-Team: \n"
@@ -16,55 +16,55 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/bin/base_gui.c:61
+#: src/bin/base_gui.c:67
 #, c-format
 msgid "%s - Enventor"
 msgstr ""
 
-#: src/bin/config_data.c:67
+#: src/bin/config_data.c:72
 msgid "Failed to generate tmp folder!"
 msgstr ""
 
-#: src/bin/config_data.c:86 src/bin/config_data.c:99
+#: src/bin/config_data.c:91 src/bin/config_data.c:104
 #, c-format
 msgid "Cannot create a config folder \"%s\""
 msgstr ""
 
-#: src/bin/config_data.c:110
+#: src/bin/config_data.c:115
 #, c-format
 msgid "Cannot save a config file \"%s\""
 msgstr ""
 
-#: src/bin/config_data.c:149
+#: src/bin/config_data.c:157
 #, c-format
 msgid "Cannot load a config file \"%s\""
 msgstr ""
 
-#: src/bin/config_data.c:157 src/bin/file_mgr.c:193 src/bin/goto.c:132
-#: src/bin/menu.c:688 src/bin/newfile.c:141 src/bin/panes.c:281
-#: src/bin/search.c:332 src/bin/setting.c:476 src/bin/statusbar.c:42
-#: src/bin/text_setting.c:490 src/bin/text_setting.c:543
-#: src/bin/text_setting.c:574 src/bin/text_setting.c:1087 src/bin/tools.c:170
+#: src/bin/config_data.c:165 src/bin/file_mgr.c:193 src/bin/goto.c:136
+#: src/bin/menu.c:613 src/bin/newfile.c:144 src/bin/panes.c:321
+#: src/bin/search.c:337 src/bin/setting.c:187 src/bin/statusbar.c:312
+#: src/bin/text_setting.c:405 src/bin/text_setting.c:456
+#: src/bin/text_setting.c:487 src/bin/text_setting.c:956 src/bin/tools.c:186
 msgid "Failed to allocate Memory!"
 msgstr ""
 
-#: src/bin/file_mgr.c:70
+#: src/bin/file_mgr.c:71
 msgid "EDC has been changed on the file system."
 msgstr ""
 
-#: src/bin/file_mgr.c:72
+#: src/bin/file_mgr.c:73
 msgid "Do you want to replace the contents?"
 msgstr ""
 
-#: src/bin/file_mgr.c:83
+#: src/bin/file_mgr.c:84
 msgid "Save As"
 msgstr ""
 
-#: src/bin/file_mgr.c:91 src/bin/search.c:402
+#: src/bin/file_mgr.c:92 src/bin/search.c:407
 msgid "Replace"
 msgstr ""
 
-#: src/bin/file_mgr.c:97
+#: src/bin/file_mgr.c:98
 msgid "Ignore"
 msgstr ""
 
@@ -78,40 +78,44 @@ msgstr ""
 msgid "Already saved. \"%s\""
 msgstr ""
 
-#: src/bin/goto.c:89
+#: src/bin/goto.c:93
 msgid "Invalid line number"
 msgstr ""
 
-#: src/bin/goto.c:138
+#: src/bin/goto.c:142
 msgid "Enventor Goto Line"
 msgstr ""
 
-#: src/bin/goto.c:142
+#: src/bin/goto.c:146
 msgid "Go to Line"
 msgstr ""
 
-#: src/bin/goto.c:164
+#: src/bin/goto.c:168
 #, c-format
 msgid "Enter line number [1..%d]:"
 msgstr ""
 
-#: src/bin/goto.c:188 src/bin/menu.c:162
+#: src/bin/goto.c:192 src/bin/menu.c:150
 msgid "Ok"
 msgstr ""
 
-#: src/bin/goto.c:200 src/bin/search.c:424
+#: src/bin/goto.c:204 src/bin/search.c:429
 msgid "Failed to grab key - Escape"
 msgstr ""
 
-#: src/bin/live_edit.c:925
-msgid "Double click the part to confirm."
+#: src/bin/live_edit.c:2019 src/bin/live_edit.c:2063 src/bin/live_edit.c:2065
+#: src/bin/main.c:850 src/lib/auto_comp.c:369 src/lib/ctxpopup.c:766
+#, c-format
+msgid "Failed to grab key - %s"
 msgstr ""
 
-#: src/bin/live_edit.c:995
-msgid "Select a part to add in Live View."
+#: src/bin/live_edit.c:2132
+msgid ""
+"Double click part to confirm. (Esc = cancel, Direction Key = move item per "
+"pixel, Ctrl = disable auto-aligning)"
 msgstr ""
 
-#: src/bin/live_edit.c:1070
+#: src/bin/live_edit.c:2280
 msgid "Faild to allocate Memory!"
 msgstr ""
 
@@ -131,344 +135,281 @@ msgstr ""
 msgid "Auto Indentation Disabled."
 msgstr ""
 
-#: src/bin/main.c:180
-#, c-format
-msgid "Live View Scale: %2.2fx"
-msgstr ""
-
-#: src/bin/main.c:206
+#: src/bin/main.c:207
 #, c-format
 msgid "Font Size: %1.1fx"
 msgstr ""
 
-#: src/bin/main.c:459
-#, c-format
-msgid "Program Run: \"%s\""
-msgstr ""
-
-#: src/bin/main.c:558
-msgid "Insertion of template code is disabled while in Live Edit mode"
-msgstr ""
-
-#: src/bin/main.c:566
-#, c-format
-msgid "Template code inserted, (%s)"
-msgstr ""
-
-#: src/bin/main.c:572
-msgid ""
-"Can't insert template code here. Move the cursor inside the \"Collections,"
-"Images,Parts,Part,Programs\" scope."
-msgstr ""
-
-#: src/bin/main.c:825
-#, c-format
-msgid "Failed to grab key - %s"
-msgstr ""
-
-#: src/bin/menu.c:149
+#: src/bin/menu.c:137
 msgid "New File: Choose a template"
 msgstr ""
 
-#: src/bin/menu.c:168 src/bin/menu.c:212 src/bin/setting.c:532
+#: src/bin/menu.c:156 src/bin/menu.c:202 src/bin/setting.c:245
 msgid "Cancel"
 msgstr ""
 
-#: src/bin/menu.c:185
+#: src/bin/menu.c:175
 msgid "Without save, you will lose last changes!"
 msgstr ""
 
-#: src/bin/menu.c:187
+#: src/bin/menu.c:177
 msgid "Will you save changes?"
 msgstr ""
 
-#: src/bin/menu.c:198 src/bin/menu.c:549 src/bin/menu.c:649
+#: src/bin/menu.c:188 src/bin/menu.c:466 src/bin/menu.c:582
 msgid "Save"
 msgstr ""
 
-#: src/bin/menu.c:206
+#: src/bin/menu.c:196
 msgid "Discard"
 msgstr ""
 
-#: src/bin/menu.c:412
+#: src/bin/menu.c:324
 msgid "Choose a file to save"
 msgstr ""
 
-#: src/bin/menu.c:436
+#: src/bin/menu.c:351
 #, c-format
 msgid "Failed to save: %s."
 msgstr ""
 
-#: src/bin/menu.c:491
+#: src/bin/menu.c:406
 msgid "Support only .edc file."
 msgstr ""
 
-#: src/bin/menu.c:501
+#: src/bin/menu.c:416
 msgid "Choose a file to load."
 msgstr ""
 
-#: src/bin/menu.c:512
+#: src/bin/menu.c:427
 #, c-format
 msgid "Failed to load: %s."
 msgstr ""
 
-#: src/bin/menu.c:541
+#: src/bin/menu.c:458
 msgid "Save File: Choose a EDC"
 msgstr ""
 
-#: src/bin/menu.c:550 src/bin/menu.c:585
+#: src/bin/menu.c:467 src/bin/menu.c:502
 msgid "Close"
 msgstr ""
 
-#: src/bin/menu.c:575
+#: src/bin/menu.c:492
 msgid "Load File: Choose a EDC"
 msgstr ""
 
-#: src/bin/menu.c:584 src/bin/menu.c:653
+#: src/bin/menu.c:501 src/bin/menu.c:586
 msgid "Load"
 msgstr ""
 
-#: src/bin/menu.c:644
+#: src/bin/menu.c:577
 msgid "New"
 msgstr ""
 
-#: src/bin/menu.c:657 src/bin/setting.c:492
+#: src/bin/menu.c:590 src/bin/setting.c:201
 msgid "Settings"
 msgstr ""
 
-#: src/bin/menu.c:661
-msgid "About"
+#: src/bin/menu.c:594
+msgid "Help"
 msgstr ""
 
-#: src/bin/menu.c:665
+#: src/bin/menu.c:598
 msgid "Exit"
 msgstr ""
 
-#: src/bin/menu.c:672
-msgid "Close Enventor Menu (Esc)"
-msgstr ""
-
-#: src/bin/menu.c:673
-msgid "Back"
-msgstr ""
-
-#: src/bin/newfile.c:56 src/bin/newfile.c:79
+#: src/bin/newfile.c:57 src/bin/newfile.c:82
 #, c-format
 msgid "Cannot find file! \"%s\""
 msgstr ""
 
-#: src/bin/newfile.c:125
+#: src/bin/newfile.c:128
 #, c-format
 msgid "Cannot find templates folder! \"%s\""
 msgstr ""
 
-#: src/bin/search.c:81
+#: src/bin/search.c:82
 #, c-format
 msgid "%d matches replaced"
 msgstr ""
 
-#: src/bin/search.c:130 src/bin/search.c:190
+#: src/bin/search.c:132 src/bin/search.c:194
 #, c-format
 msgid "No \"%s\" in the text"
 msgstr ""
 
-#: src/bin/search.c:228 src/bin/search.c:394
+#: src/bin/search.c:233 src/bin/search.c:399
 msgid "Backward"
 msgstr ""
 
-#: src/bin/search.c:260 src/bin/search.c:387
+#: src/bin/search.c:265 src/bin/search.c:392
 msgid "Forward"
 msgstr ""
 
-#: src/bin/search.c:338
+#: src/bin/search.c:343
 msgid "Enventor Search"
 msgstr ""
 
-#: src/bin/search.c:341
+#: src/bin/search.c:346
 msgid "Find/Replace"
 msgstr ""
 
-#: src/bin/search.c:409
+#: src/bin/search.c:414
 msgid "Replace All"
 msgstr ""
 
-#: src/bin/setting.c:249
-msgid "Image Paths:"
+#: src/bin/setting.c:213
+msgid "Preferences"
 msgstr ""
 
-#: src/bin/setting.c:257
-msgid "Sound Paths:"
-msgstr ""
-
-#: src/bin/setting.c:265
-msgid "Font Paths:"
-msgstr ""
-
-#: src/bin/setting.c:273
-msgid "Data Paths:"
-msgstr ""
-
-#: src/bin/setting.c:278
-msgid "Preferences:"
-msgstr ""
-
-#: src/bin/setting.c:297
-msgid "Live View Scale"
-msgstr ""
-
-#: src/bin/setting.c:324
-msgid "Live View Size"
-msgstr ""
-
-#: src/bin/setting.c:385
-msgid "Part Highlighting"
-msgstr ""
-
-#: src/bin/setting.c:390
-msgid "Dummy Parts"
-msgstr ""
-
-#: src/bin/setting.c:395
-msgid "Status"
-msgstr ""
-
-#: src/bin/setting.c:400
-msgid "Tools"
-msgstr ""
-
-#: src/bin/setting.c:405
-msgid "Auto Hiding Console"
-msgstr ""
-
-#: src/bin/setting.c:502
-msgid "General"
-msgstr ""
-
-#: src/bin/setting.c:503
+#: src/bin/setting.c:215
 msgid "Text Editor"
 msgstr ""
 
-#: src/bin/setting.c:518
+#: src/bin/setting.c:217
+msgid "EDC Build"
+msgstr ""
+
+#: src/bin/setting.c:231
 msgid "Apply"
 msgstr ""
 
-#: src/bin/setting.c:525
+#: src/bin/setting.c:238
 msgid "Reset"
 msgstr ""
 
-#: src/bin/text_setting.c:525
+#: src/bin/text_setting.c:438
 #, c-format
 msgid "Failed to open file \"%s\""
 msgstr ""
 
-#: src/bin/text_setting.c:802
+#: src/bin/text_setting.c:759
 msgid "Double click a keyword to change its color :"
 msgstr ""
 
-#: src/bin/text_setting.c:848
+#: src/bin/text_setting.c:796
 msgid "Font Size "
 msgstr ""
 
-#: src/bin/text_setting.c:857
-msgid "Line Number"
-msgstr ""
-
-#: src/bin/text_setting.c:862
-msgid "Auto Indentation"
-msgstr ""
-
-#: src/bin/text_setting.c:867
-msgid "Auto Completion"
-msgstr ""
-
-#: src/bin/text_setting.c:872
-msgid "Smart Undo/Redo"
-msgstr ""
-
-#: src/bin/text_setting.c:900
+#: src/bin/text_setting.c:829
 msgid "Font Name"
 msgstr ""
 
-#: src/bin/text_setting.c:926
+#: src/bin/text_setting.c:856
 msgid "Font Style"
 msgstr ""
 
-#: src/bin/tools.c:117
+#: src/bin/tools.c:134
 msgid "Redo text."
 msgstr ""
 
-#: src/bin/tools.c:119
+#: src/bin/tools.c:136
 msgid "No text to be redo."
 msgstr ""
 
-#: src/bin/tools.c:128
+#: src/bin/tools.c:144
 msgid "Undo text."
 msgstr ""
 
-#: src/bin/tools.c:130
+#: src/bin/tools.c:146
 msgid "No text to be undo."
 msgstr ""
 
-#: src/bin/tools.c:183
-msgid "Enventor Menu (Esc)"
-msgstr ""
-
-#: src/bin/tools.c:196
-msgid "Save File (Ctrl + S)"
-msgstr ""
-
-#: src/bin/tools.c:202
-msgid "Undo Text (Ctrl + Z)"
-msgstr ""
-
-#: src/bin/tools.c:208
-msgid "Redo Text (Ctrl + R)"
-msgstr ""
-
-#: src/bin/tools.c:214
-msgid "Find/Replace (Ctrl + F)"
-msgstr ""
-
-#: src/bin/tools.c:221
-msgid "Goto Lines (Ctrl + L)"
-msgstr ""
-
-#: src/bin/tools.c:228
-msgid "Line Numbers (F5)"
-msgstr ""
-
-#: src/bin/tools.c:239
+#: src/bin/tools.c:201
 msgid "Part Highlighting (Ctrl + H)"
 msgstr ""
 
-#: src/bin/tools.c:246
+#: src/bin/tools.c:208
 msgid "Dummy Parts (Ctrl + W)"
 msgstr ""
 
-#: src/bin/tools.c:253
-msgid "Live View Edit (Ctrl + E)"
+#: src/bin/tools.c:217
+msgid "Mirror Mode (Ctrl + M)"
 msgstr ""
 
-#: src/bin/tools.c:265
+#: src/bin/tools.c:251
+msgid "Save File (Ctrl + S)"
+msgstr ""
+
+#: src/bin/tools.c:257
+msgid "Undo Text (Ctrl + Z)"
+msgstr ""
+
+#: src/bin/tools.c:263
+msgid "Redo Text (Ctrl + R)"
+msgstr ""
+
+#: src/bin/tools.c:269
+msgid "Find/Replace (Ctrl + F)"
+msgstr ""
+
+#: src/bin/tools.c:276
+msgid "Goto Lines (Ctrl + L)"
+msgstr ""
+
+#: src/bin/tools.c:283
+msgid "Line Numbers (F5)"
+msgstr ""
+
+#: src/bin/tools.c:291
+msgid "Insert Template (Ctrl + T)"
+msgstr ""
+
+#: src/bin/tools.c:298
 msgid "Console Box (Alt + Down)"
 msgstr ""
 
-#: src/bin/tools.c:273
+#: src/bin/tools.c:305
+msgid "File Browser (F9)"
+msgstr ""
+
+#: src/bin/tools.c:312
+msgid "EDC Navigator (F10)"
+msgstr ""
+
+#: src/bin/tools.c:319
 msgid "Status (F11)"
 msgstr ""
 
-#: src/bin/tools.c:309
+#: src/bin/tools.c:326
+msgid "Enventor Menu (Esc)"
+msgstr ""
+
+#: src/bin/tools.c:371
 msgid "Part Highlighting Enabled."
 msgstr ""
 
-#: src/bin/tools.c:311
+#: src/bin/tools.c:373
 msgid "Part Highlighting Disabled."
 msgstr ""
 
-#: src/bin/tools.c:349
+#: src/bin/tools.c:458
 msgid "Dummy Parts Enabled."
 msgstr ""
 
-#: src/bin/tools.c:351
+#: src/bin/tools.c:460
 msgid "Dummy Parts Disabled."
+msgstr ""
+
+#: src/bin/tools.c:483
+msgid "Mirror Mode Enabled."
+msgstr ""
+
+#: src/bin/tools.c:485
+msgid "Mirror Mode Disabled."
+msgstr ""
+
+#: src/bin/tools.c:539
+msgid "Insertion of template code is disabled while in Live Edit mode"
+msgstr ""
+
+#: src/bin/tools.c:548
+#, c-format
+msgid "Template code inserted, (%s)"
+msgstr ""
+
+#: src/bin/tools.c:554
+msgid ""
+"Can't insert template code here. Move the cursor inside the \"Collections,"
+"Images,Parts,Part,Programs\" scope."
 msgstr ""
