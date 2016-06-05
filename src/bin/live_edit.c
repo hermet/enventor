@@ -1417,8 +1417,6 @@ relative_to_apply(rel_to_data *rel_data)
      }
 }
 
-
-
 static void
 rel_to_btn_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
                       void *event_info EINA_UNUSED)
@@ -1494,7 +1492,7 @@ make_rel_data(Evas_Object *list, live_data *ld,
 }
 
 static void
-show_relative_to_list(live_data *ld, int x, int y)
+show_relative_to_list(live_data *ld, int x, int y, Ctrl_Pt cp)
 {
    if (ld->rel_to_info.ctxpopup) return;
 
@@ -1543,7 +1541,8 @@ show_relative_to_list(live_data *ld, int x, int y)
    EINA_ARRAY_ITER_NEXT(ld->auto_align_array, i, al_pos, iter)
    {
       //Case 1: Find relative_to x
-      if ((cur_ctrl_pt.y >= al_pos->pt1.y) && (cur_ctrl_pt.y <= al_pos->pt2.y))
+      if (((cp != Ctrl_Pt_Top) && (cp != Ctrl_Pt_Bottom)) &&
+         (cur_ctrl_pt.y >= al_pos->pt1.y) && (cur_ctrl_pt.y <= al_pos->pt2.y))
         {
            if (al_pos->pt1.x == cur_ctrl_pt.x)
              {
@@ -1557,7 +1556,8 @@ show_relative_to_list(live_data *ld, int x, int y)
              }
         }
       //Case 2: Find relative_to y
-      if ((cur_ctrl_pt.x >= al_pos->pt1.x) && (cur_ctrl_pt.x <= al_pos->pt2.x))
+      if (((cp != Ctrl_Pt_Left) && (cp != Ctrl_Pt_Right)) &&
+          (cur_ctrl_pt.x >= al_pos->pt1.x) && (cur_ctrl_pt.x <= al_pos->pt2.x))
         {
            if (al_pos->pt1.y == cur_ctrl_pt.y)
              {
@@ -1607,7 +1607,8 @@ cp_mouse_up_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
    Evas_Coord x = ev->canvas.x;
    Evas_Coord y = ev->canvas.y;
 
-   show_relative_to_list(ld, x, y);
+   Ctrl_Pt cp = (Ctrl_Pt) evas_object_data_get(obj, "index");
+   show_relative_to_list(ld, x, y, cp);
 
    //Show All Control Points
    int i;
