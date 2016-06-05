@@ -1,14 +1,14 @@
-[Enventor v0.8.0]
+[Enventor v0.9.0]
 
 This is an EDC editor with some convenient functions. Enventor supports text edit and preview function for EDC source code. You can edit EDC source code to create complex application layout using Enventor. This was started near the begining of June 2013, so expecting it to do everything a mature script editor does is a bit premature. However, considering its young age, it does a lot.
 
 
 [Requirements]
 
-  efl (>= 1.16.0)
-  elementary (>= 1.16.0)
+  efl (>= 1.17.0)
+  elementary (>= 1.17.0)
 
-Please note that some features may not quite function correctly or completely prior to EFL 1.16. Newer would be better.
+Please note that some features may not quite function correctly or completely prior to EFL 1.17. Newer would be better.
 
 Please see the following sites for more information.
 
