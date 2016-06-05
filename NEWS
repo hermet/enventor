@@ -39,7 +39,7 @@ Fixes:
    * EDC Navigator: Fix the editor cursor jumping issue.
    * EDC Navigator: Compare name elaborately to search the part correctly.
    * Statusbar: Fix view sizing issue when an invert button is clicked repeatedly.
-   * Indentation: Check '\r' when indented code line is created on Windows.i
+   * Indentation: Check '\r' when indented code line is created on Windows.
    * Indentation: Fix to calculate indent depth after multi line comment.
    * Indentation: Fix to paste a word at correct position.
    * EDC Editor: Fix a crash issue on Windows when preview part on live view is clicked.
