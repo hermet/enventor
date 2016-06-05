@@ -408,6 +408,7 @@ elm_setup()
    if (engine && !strncmp(engine, "hw", strlen("hw")))
      elm_config_accel_preference_set("hw");
 
+   elm_config_tooltip_delay_set(0.5);
    elm_config_focus_highlight_clip_disabled_set(EINA_FALSE);
    elm_config_scroll_bounce_enabled_set(EINA_FALSE);
    elm_policy_set(ELM_POLICY_QUIT, ELM_POLICY_QUIT_LAST_WINDOW_CLOSED);
