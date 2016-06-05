@@ -58,10 +58,9 @@ typedef struct live_editor_s
    Evas_Object *info_text[Info_Text_Cnt];
    Evas_Coord_Point move_delta;
    double half_ctrl_size;
-
    unsigned int type;
 
-   //Live edit item information
+   //Relative setting properties
    struct {
       float rel1_x, rel1_y;
       float rel2_x, rel2_y;
@@ -69,21 +68,17 @@ typedef struct live_editor_s
 
    //Relative to information for live edit item
    struct {
-      char *rel1_x_to;
-      char *rel1_y_to;
-      char *rel2_x_to;
-      char *rel2_y_to;
+      char *rel1_x_part, *rel1_y_part;
+      char *rel2_x_part, *rel2_y_part;
+      float rel1_x, rel1_y;
+      float rel2_x, rel2_y;
       float align_x, align_y;
-      float rel1_to_x, rel1_to_y;
-      float rel2_to_x, rel2_to_y;
+      Evas_Object *ctxpopup;
    } rel_to_info;
 
    Evas_Object *keygrabber;
    Eina_Array *auto_align_array;
    Ctrl_Pt last_cp;
-
-   //Relative setting properties
-   Evas_Object *rel_to_ctxpopup;
 
    Evas_Object *fixed_w_check;
    Evas_Object *fixed_h_check;
@@ -93,7 +88,6 @@ typedef struct live_editor_s
    Eina_Bool align_right : 1;
    Eina_Bool align_top : 1;
    Eina_Bool align_bottom : 1;
-
    Eina_Bool ctrl_pressed : 1;
 } live_data;
 
@@ -343,14 +337,14 @@ live_edit_insert(live_data *ld)
    int type = LIVEEDIT_ITEMS[ld->type].type;
 
    //Set relative_to values
-   if (!ld->rel_to_info.rel1_x_to)
-     ld->rel_to_info.rel1_to_x = ld->rel_info.rel1_x;
-   if (!ld->rel_to_info.rel1_y_to)
-     ld->rel_to_info.rel1_to_y = ld->rel_info.rel1_y;
-   if (!ld->rel_to_info.rel2_x_to)
-     ld->rel_to_info.rel2_to_x = ld->rel_info.rel2_x;
-   if (!ld->rel_to_info.rel2_y_to)
-     ld->rel_to_info.rel2_to_y = ld->rel_info.rel2_y;
+   if (!ld->rel_to_info.rel1_x_part)
+     ld->rel_to_info.rel1_x = ld->rel_info.rel1_x;
+   if (!ld->rel_to_info.rel1_y_part)
+     ld->rel_to_info.rel1_y = ld->rel_info.rel1_y;
+   if (!ld->rel_to_info.rel2_x_part)
+     ld->rel_to_info.rel2_x = ld->rel_info.rel2_x;
+   if (!ld->rel_to_info.rel2_y_part)
+     ld->rel_to_info.rel2_y = ld->rel_info.rel2_y;
 
    //For Calculating min size
    Evas_Coord vw, vh;
@@ -360,13 +354,13 @@ live_edit_insert(live_data *ld)
    //in case of width and height are fixed
    Evas_Coord min_w = 0;
 
-   if (!ld->rel_to_info.rel1_x_to && !ld->rel_to_info.rel2_x_to &&
+   if (!ld->rel_to_info.rel1_x_part && !ld->rel_to_info.rel2_x_part &&
        elm_check_state_get(ld->fixed_w_check))
      {
-        float rel_x = (ld->rel_to_info.rel1_to_x +
-                       ld->rel_to_info.rel2_to_x) / 2;
-        ld->rel_to_info.rel1_to_x = rel_x;
-        ld->rel_to_info.rel2_to_x = rel_x;
+        float rel_x = (ld->rel_to_info.rel1_x +
+                       ld->rel_to_info.rel2_x) / 2;
+        ld->rel_to_info.rel1_x = rel_x;
+        ld->rel_to_info.rel2_x = rel_x;
         min_w = (Evas_Coord) (((double) vw) *
                               (ld->rel_info.rel2_x - ld->rel_info.rel1_x));
 
@@ -374,13 +368,13 @@ live_edit_insert(live_data *ld)
 
    Evas_Coord min_h = 0;
 
-   if (!ld->rel_to_info.rel1_y_to && !ld->rel_to_info.rel2_y_to &&
+   if (!ld->rel_to_info.rel1_y_part && !ld->rel_to_info.rel2_y_part &&
        elm_check_state_get(ld->fixed_h_check))
      {
-        float rel_y = (ld->rel_to_info.rel1_to_y +
-                       ld->rel_to_info.rel2_to_y) / 2;
-        ld->rel_to_info.rel1_to_y = rel_y;
-        ld->rel_to_info.rel2_to_y = rel_y;
+        float rel_y = (ld->rel_to_info.rel1_y +
+                       ld->rel_to_info.rel2_y) / 2;
+        ld->rel_to_info.rel1_y = rel_y;
+        ld->rel_to_info.rel2_y = rel_y;
 
         min_h = (Evas_Coord) (((double) vh) *
                               (ld->rel_info.rel2_y - ld->rel_info.rel1_y));
@@ -391,25 +385,25 @@ live_edit_insert(live_data *ld)
                                         ENVENTOR_TEMPLATE_INSERT_LIVE_EDIT,
                                         elm_check_state_get(ld->fixed_w_check),
                                         elm_check_state_get(ld->fixed_h_check),
-                                        ld->rel_to_info.rel1_x_to,
-                                        ld->rel_to_info.rel1_y_to,
-                                        ld->rel_to_info.rel2_x_to,
-                                        ld->rel_to_info.rel2_y_to,
+                                        ld->rel_to_info.rel1_x_part,
+                                        ld->rel_to_info.rel1_y_part,
+                                        ld->rel_to_info.rel2_x_part,
+                                        ld->rel_to_info.rel2_y_part,
                                         ld->rel_to_info.align_x,
                                         ld->rel_to_info.align_y,
                                         min_w,
                                         min_h,
-                                        ld->rel_to_info.rel1_to_x,
-                                        ld->rel_to_info.rel1_to_y,
-                                        ld->rel_to_info.rel2_to_x,
-                                        ld->rel_to_info.rel2_to_y,
+                                        ld->rel_to_info.rel1_x,
+                                        ld->rel_to_info.rel1_y,
+                                        ld->rel_to_info.rel2_x,
+                                        ld->rel_to_info.rel2_y,
                                         NULL, 0);
    enventor_object_save(base_enventor_get(), config_input_path_get());
 
-   free(ld->rel_to_info.rel1_x_to);
-   free(ld->rel_to_info.rel1_y_to);
-   free(ld->rel_to_info.rel2_x_to);
-   free(ld->rel_to_info.rel2_y_to);
+   free(ld->rel_to_info.rel1_x_part);
+   free(ld->rel_to_info.rel1_y_part);
+   free(ld->rel_to_info.rel2_x_part);
+   free(ld->rel_to_info.rel2_y_part);
 }
 
 static void
@@ -1055,7 +1049,8 @@ align_lines_hide(live_data *ld)
 }
 
 static void
-rel_to_ctxpopup_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
+ctxpopup_it_selected_cb(void *data, Evas_Object *obj,
+                        void *event_info EINA_UNUSED)
 {
    rel_to_data *rel_data = data;
    live_data *ld = rel_data->ld;
@@ -1078,9 +1073,9 @@ rel_to_ctxpopup_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
                       (ld->last_cp == Ctrl_Pt_Rel4) ||
                       (ld->last_cp == Ctrl_Pt_Left))
                     {
-                       ld->rel_to_info.rel1_to_x = rel_data->rel_x;
-                       free(ld->rel_to_info.rel1_x_to);
-                       ld->rel_to_info.rel1_x_to =
+                       ld->rel_to_info.rel1_x = rel_data->rel_x;
+                       free(ld->rel_to_info.rel1_x_part);
+                       ld->rel_to_info.rel1_x_part =
                           strndup(rel_data->part_name,
                                   strlen(rel_data->part_name));
                     }
@@ -1088,9 +1083,9 @@ rel_to_ctxpopup_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
                            (ld->last_cp == Ctrl_Pt_Rel3) ||
                            (ld->last_cp == Ctrl_Pt_Right))
                     {
-                       ld->rel_to_info.rel2_to_x = rel_data->rel_x;
-                       free(ld->rel_to_info.rel2_x_to);
-                       ld->rel_to_info.rel2_x_to =
+                       ld->rel_to_info.rel2_x = rel_data->rel_x;
+                       free(ld->rel_to_info.rel2_x_part);
+                       ld->rel_to_info.rel2_x_part =
                           strndup(rel_data->part_name,
                                   strlen(rel_data->part_name));
                     }
@@ -1104,9 +1099,9 @@ rel_to_ctxpopup_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
                       (ld->last_cp == Ctrl_Pt_Rel3) ||
                       (ld->last_cp == Ctrl_Pt_Top))
                     {
-                       ld->rel_to_info.rel1_to_y = rel_data->rel_y;
-                       free(ld->rel_to_info.rel1_y_to);
-                       ld->rel_to_info.rel1_y_to =
+                       ld->rel_to_info.rel1_y = rel_data->rel_y;
+                       free(ld->rel_to_info.rel1_y_part);
+                       ld->rel_to_info.rel1_y_part =
                           strndup(rel_data->part_name,
                                   strlen(rel_data->part_name));
                     }
@@ -1114,9 +1109,9 @@ rel_to_ctxpopup_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
                            (ld->last_cp == Ctrl_Pt_Rel4) ||
                            (ld->last_cp == Ctrl_Pt_Bottom))
                     {
-                       ld->rel_to_info.rel2_to_y = rel_data->rel_y;
-                       free(ld->rel_to_info.rel2_y_to);
-                       ld->rel_to_info.rel2_y_to =
+                       ld->rel_to_info.rel2_y = rel_data->rel_y;
+                       free(ld->rel_to_info.rel2_y_part);
+                       ld->rel_to_info.rel2_y_part =
                           strndup(rel_data->part_name,
                                   strlen(rel_data->part_name));
                     }
@@ -1134,14 +1129,14 @@ rel_to_ctxpopup_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
                {
                   ld->rel_to_info.align_x = 0.0;
                   ld->rel_to_info.align_y = 0.5;
-                  ld->rel_to_info.rel1_to_x = rel_data->rel_x;
-                  ld->rel_to_info.rel2_to_x = rel_data->rel_x;
-                  free(ld->rel_to_info.rel1_x_to);
-                  free(ld->rel_to_info.rel2_x_to);
-                  ld->rel_to_info.rel1_x_to =
+                  ld->rel_to_info.rel1_x = rel_data->rel_x;
+                  ld->rel_to_info.rel2_x = rel_data->rel_x;
+                  free(ld->rel_to_info.rel1_x_part);
+                  free(ld->rel_to_info.rel2_x_part);
+                  ld->rel_to_info.rel1_x_part =
                      strndup(rel_data->part_name,
                              strlen(rel_data->part_name));
-                  ld->rel_to_info.rel2_x_to =
+                  ld->rel_to_info.rel2_x_part =
                      strndup(rel_data->part_name,
                              strlen(rel_data->part_name));
                }
@@ -1150,13 +1145,13 @@ rel_to_ctxpopup_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
                {
                   ld->rel_to_info.align_x = 1.0;
                   ld->rel_to_info.align_y = 0.5;
-                  ld->rel_to_info.rel1_to_x = rel_data->rel_x;
-                  ld->rel_to_info.rel2_to_x = rel_data->rel_x;
-                  free(ld->rel_to_info.rel1_x_to);
-                  free(ld->rel_to_info.rel2_x_to);
-                  ld->rel_to_info.rel1_x_to =
+                  ld->rel_to_info.rel1_x = rel_data->rel_x;
+                  ld->rel_to_info.rel2_x = rel_data->rel_x;
+                  free(ld->rel_to_info.rel1_x_part);
+                  free(ld->rel_to_info.rel2_x_part);
+                  ld->rel_to_info.rel1_x_part =
                      strndup(rel_data->part_name, strlen(rel_data->part_name));
-                  ld->rel_to_info.rel2_x_to =
+                  ld->rel_to_info.rel2_x_part =
                      strndup(rel_data->part_name, strlen(rel_data->part_name));
                }
           }
@@ -1168,9 +1163,9 @@ rel_to_ctxpopup_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
                       ld->last_cp == Ctrl_Pt_Rel3 ||
                       ld->last_cp == Ctrl_Pt_Top)
                     {
-                       ld->rel_to_info.rel1_to_y = rel_data->rel_y;
-                       free(ld->rel_to_info.rel1_y_to);
-                       ld->rel_to_info.rel1_y_to =
+                       ld->rel_to_info.rel1_y = rel_data->rel_y;
+                       free(ld->rel_to_info.rel1_y_part);
+                       ld->rel_to_info.rel1_y_part =
                           strndup(rel_data->part_name,
                                   strlen(rel_data->part_name));
                     }
@@ -1178,9 +1173,9 @@ rel_to_ctxpopup_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
                            (ld->last_cp == Ctrl_Pt_Rel4) ||
                            (ld->last_cp == Ctrl_Pt_Bottom))
                     {
-                       ld->rel_to_info.rel2_to_y = rel_data->rel_y;
-                       free(ld->rel_to_info.rel2_y_to);
-                       ld->rel_to_info.rel2_y_to =
+                       ld->rel_to_info.rel2_y = rel_data->rel_y;
+                       free(ld->rel_to_info.rel2_y_part);
+                       ld->rel_to_info.rel2_y_part =
                           strndup(rel_data->part_name,
                                   strlen(rel_data->part_name));
                     }
@@ -1198,13 +1193,13 @@ rel_to_ctxpopup_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
                {
                   ld->rel_to_info.align_x = 0.5;
                   ld->rel_to_info.align_y = 0.0;
-                  ld->rel_to_info.rel1_to_y = rel_data->rel_y;
-                  ld->rel_to_info.rel2_to_y = rel_data->rel_y;
-                  free(ld->rel_to_info.rel1_y_to);
-                  free(ld->rel_to_info.rel2_y_to);
-                  ld->rel_to_info.rel1_y_to =
+                  ld->rel_to_info.rel1_y = rel_data->rel_y;
+                  ld->rel_to_info.rel2_y = rel_data->rel_y;
+                  free(ld->rel_to_info.rel1_y_part);
+                  free(ld->rel_to_info.rel2_y_part);
+                  ld->rel_to_info.rel1_y_part =
                      strndup(rel_data->part_name, strlen(rel_data->part_name));
-                  ld->rel_to_info.rel2_y_to =
+                  ld->rel_to_info.rel2_y_part =
                      strndup(rel_data->part_name, strlen(rel_data->part_name));
                }
              if ((ld->last_cp == Ctrl_Pt_Rel2) ||
@@ -1213,13 +1208,13 @@ rel_to_ctxpopup_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
                {
                   ld->rel_to_info.align_x = 0.5;
                   ld->rel_to_info.align_y = 1.0;
-                  ld->rel_to_info.rel1_to_y = rel_data->rel_y;
-                  ld->rel_to_info.rel2_to_y = rel_data->rel_y;
-                  free(ld->rel_to_info.rel1_y_to);
-                  free(ld->rel_to_info.rel2_y_to);
-                  ld->rel_to_info.rel1_y_to =
+                  ld->rel_to_info.rel1_y = rel_data->rel_y;
+                  ld->rel_to_info.rel2_y = rel_data->rel_y;
+                  free(ld->rel_to_info.rel1_y_part);
+                  free(ld->rel_to_info.rel2_y_part);
+                  ld->rel_to_info.rel1_y_part =
                      strndup(rel_data->part_name, strlen(rel_data->part_name));
-                  ld->rel_to_info.rel2_y_to =
+                  ld->rel_to_info.rel2_y_part =
                      strndup(rel_data->part_name, strlen(rel_data->part_name));
                }
           }
@@ -1231,9 +1226,9 @@ rel_to_ctxpopup_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
                       (ld->last_cp == Ctrl_Pt_Rel4) ||
                       (ld->last_cp == Ctrl_Pt_Left))
                     {
-                       ld->rel_to_info.rel1_to_x = rel_data->rel_x;
-                       free(ld->rel_to_info.rel1_x_to);
-                       ld->rel_to_info.rel1_x_to =
+                       ld->rel_to_info.rel1_x = rel_data->rel_x;
+                       free(ld->rel_to_info.rel1_x_part);
+                       ld->rel_to_info.rel1_x_part =
                           strndup(rel_data->part_name,
                                   strlen(rel_data->part_name));
                     }
@@ -1241,9 +1236,9 @@ rel_to_ctxpopup_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
                            (ld->last_cp == Ctrl_Pt_Rel3) ||
                            (ld->last_cp == Ctrl_Pt_Right))
                     {
-                       ld->rel_to_info.rel2_to_x = rel_data->rel_x;
-                       free(ld->rel_to_info.rel2_x_to);
-                       ld->rel_to_info.rel2_x_to =
+                       ld->rel_to_info.rel2_x = rel_data->rel_x;
+                       free(ld->rel_to_info.rel2_x_part);
+                       ld->rel_to_info.rel2_x_part =
                           strndup(rel_data->part_name,
                                   strlen(rel_data->part_name));
                     }
@@ -1307,17 +1302,17 @@ rel_to_ctxpopup_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
             ld->rel_to_info.align_y = 1.0;
          }
 
-        free(ld->rel_to_info.rel1_x_to);
-        free(ld->rel_to_info.rel1_y_to);
-        free(ld->rel_to_info.rel2_x_to);
-        free(ld->rel_to_info.rel2_y_to);
-        ld->rel_to_info.rel1_x_to =
+        free(ld->rel_to_info.rel1_x_part);
+        free(ld->rel_to_info.rel1_y_part);
+        free(ld->rel_to_info.rel2_x_part);
+        free(ld->rel_to_info.rel2_y_part);
+        ld->rel_to_info.rel1_x_part =
            strndup(rel_data->part_name, strlen(rel_data->part_name));
-        ld->rel_to_info.rel1_y_to =
+        ld->rel_to_info.rel1_y_part =
            strndup(rel_data->part_name, strlen(rel_data->part_name));
-        ld->rel_to_info.rel2_x_to =
+        ld->rel_to_info.rel2_x_part =
            strndup(rel_data->part_name, strlen(rel_data->part_name));
-        ld->rel_to_info.rel2_y_to =
+        ld->rel_to_info.rel2_y_part =
            strndup(rel_data->part_name, strlen(rel_data->part_name));
 
         //Calculate part relative which is matched to base relative
@@ -1328,18 +1323,18 @@ rel_to_ctxpopup_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
 
         if (rel_data->is_rel_to_x)
           {
-             ld->rel_to_info.rel1_to_x = rel_data->rel_x;
-             ld->rel_to_info.rel2_to_x = rel_data->rel_x;
-             ld->rel_to_info.rel1_to_y = part_rel_y;
-             ld->rel_to_info.rel2_to_y = part_rel_y;
+             ld->rel_to_info.rel1_x = rel_data->rel_x;
+             ld->rel_to_info.rel2_x = rel_data->rel_x;
+             ld->rel_to_info.rel1_y = part_rel_y;
+             ld->rel_to_info.rel2_y = part_rel_y;
           }
 
         if (rel_data->is_rel_to_y)
           {
-             ld->rel_to_info.rel1_to_y = rel_data->rel_y;
-             ld->rel_to_info.rel2_to_y = rel_data->rel_y;
-             ld->rel_to_info.rel1_to_x = part_rel_x;
-             ld->rel_to_info.rel2_to_x = part_rel_x;
+             ld->rel_to_info.rel1_y = rel_data->rel_y;
+             ld->rel_to_info.rel2_y = rel_data->rel_y;
+             ld->rel_to_info.rel1_x = part_rel_x;
+             ld->rel_to_info.rel2_x = part_rel_x;
           }
      }
 
@@ -1347,19 +1342,19 @@ rel_to_ctxpopup_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
 }
 
 static void
-rel_to_ctxpopup_dismissed_cb(void *data, Evas_Object *obj,
+ctxpopup_dismissed_cb(void *data, Evas_Object *obj,
                              void *event_info EINA_UNUSED)
 {
    rel_to_data *rel_data = data;
    live_data *ld = rel_data->ld;
-   ld->rel_to_ctxpopup = NULL;
+   ld->rel_to_info.ctxpopup = NULL;
    free(rel_data);
    evas_object_del(obj);
 }
 
-rel_to_data*
-make_rel_data(live_data *ld, auto_align_data *al_pos, int is_rel_to_x, int is_rel_to_y,
-              float rel_x, float rel_y, char *rel_dir)
+static void
+make_rel_data(live_data *ld, auto_align_data *al_pos, int is_rel_to_x,
+              int is_rel_to_y, float rel_x, float rel_y, char *rel_dir)
 {
    char rel_part_name[PART_NAME_MAX];
    rel_to_data *rel_data = calloc(1, sizeof(rel_to_data));
@@ -1375,13 +1370,10 @@ make_rel_data(live_data *ld, auto_align_data *al_pos, int is_rel_to_x, int is_re
    rel_data->pt1.y = al_pos->pt1.y;
    rel_data->pt2.x = al_pos->pt2.x;
    rel_data->pt2.y = al_pos->pt2.y;
-   elm_ctxpopup_item_append(ld->rel_to_ctxpopup, rel_part_name, NULL,
-                            rel_to_ctxpopup_cb, rel_data);
-   evas_object_smart_callback_add(ld->rel_to_ctxpopup, "dismissed",
-                                  rel_to_ctxpopup_dismissed_cb, rel_data);
-
-   return rel_data;
-
+   elm_ctxpopup_item_append(ld->rel_to_info.ctxpopup, rel_part_name, NULL,
+                            ctxpopup_it_selected_cb, rel_data);
+   evas_object_smart_callback_add(ld->rel_to_info.ctxpopup, "dismissed",
+                                  ctxpopup_dismissed_cb, rel_data);
 }
 
 static void
@@ -1394,13 +1386,13 @@ show_relative_to_list(live_data *ld, int x, int y)
    Evas_Coord_Point cur_ctrl_pt = calc_ctrl_pt_auto_align_pos(ld, x, y,
                                                               0, NULL);
 
-   if (ld->rel_to_ctxpopup)
+   if (ld->rel_to_info.ctxpopup)
      return;
 
-   ld->rel_to_ctxpopup = elm_ctxpopup_add(ld->live_view);
+   ld->rel_to_info.ctxpopup = elm_ctxpopup_add(ld->live_view);
    //FIXME: because the focus highlighting is floated after ctxpopup is
    //dismissed, i disable the focus here
-   elm_object_tree_focus_allow_set(ld->rel_to_ctxpopup, EINA_FALSE);
+   elm_object_tree_focus_allow_set(ld->rel_to_info.ctxpopup, EINA_FALSE);
 
    Eina_Bool is_rel_to = EINA_FALSE;
 
@@ -1439,13 +1431,13 @@ show_relative_to_list(live_data *ld, int x, int y)
 
    if (is_rel_to == EINA_FALSE)
      {
-        evas_object_del(ld->rel_to_ctxpopup);
-        ld->rel_to_ctxpopup = NULL;
+        evas_object_del(ld->rel_to_info.ctxpopup);
+        ld->rel_to_info.ctxpopup = NULL;
      }
    else
      {
-        evas_object_move(ld->rel_to_ctxpopup, x, y);
-        evas_object_show(ld->rel_to_ctxpopup);
+        evas_object_move(ld->rel_to_info.ctxpopup, x, y);
+        evas_object_show(ld->rel_to_info.ctxpopup);
      }
 }
 
@@ -2006,10 +1998,10 @@ rel_to_values_reset(live_data *ld)
    //Reset state about relative_to
    ld->rel_to_info.align_x = 0.5;
    ld->rel_to_info.align_y = 0.5;
-   ld->rel_to_info.rel1_x_to = NULL;
-   ld->rel_to_info.rel1_y_to = NULL;
-   ld->rel_to_info.rel2_x_to = NULL;
-   ld->rel_to_info.rel2_y_to = NULL;
+   ld->rel_to_info.rel1_x_part = NULL;
+   ld->rel_to_info.rel1_y_part = NULL;
+   ld->rel_to_info.rel2_x_part = NULL;
+   ld->rel_to_info.rel2_y_part = NULL;
 }
 
 static void
@@ -2164,8 +2156,8 @@ live_edit_cancel(void)
    live_data *ld = g_ld;
    if (!ld->on) return EINA_FALSE;
 
-   evas_object_del(ld->rel_to_ctxpopup);
-   ld->rel_to_ctxpopup = NULL;
+   evas_object_del(ld->rel_to_info.ctxpopup);
+   ld->rel_to_info.ctxpopup = NULL;
 
    enventor_object_disabled_set(base_enventor_get(), EINA_FALSE);
 
