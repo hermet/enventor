@@ -3213,6 +3213,164 @@ group { "text_editor_tools_layout";
    }
 }
 
+group { name: "rel_to_layout";
+   parts {
+      spacer { "base";
+         scale: 1;
+         desc { "default";
+            min: 230 155;
+         }
+         desc { "single";
+            min: 115 155;
+         }
+      }
+      spacer { "base_x";
+         scale: 1;
+         desc { "default";
+            rel1.relative: 0 0;
+            rel2.relative: 0 0;
+            rel2.to: "button_area";
+            min: 115 125;
+            fixed: 1 0;
+            align: 0 0.5;
+         }
+         desc { "single";
+            inherit: "default";
+            min: 0 125;
+         }
+      }
+      spacer { "base_y";
+         scale: 1;
+         desc { "default";
+            rel1.relative: 1 0;
+            rel2.relative: 1 0;
+            rel2.to: "button_area";
+            min: 115 125;
+            fixed: 1 0;
+            align: 1 0.5;
+         }
+         desc { "single";
+            inherit: "default";
+            min: 0 125;
+         }
+      }
+      text { "guide_x";
+         scale: 1;
+         effect: SHADOW BOTTOM;
+         desc { "default";
+            rel.to: "base_x";
+            rel2.relative: 1 0;
+            align: 0 0;
+            min: 0 20;
+            fixed: 0 1;
+            text {
+               font: FN;
+               size: 10;
+               align: 0.1 0.5;
+               min: 1 0;
+               ellipsis: -1;
+               text: "Relative to X:";
+            }
+            color: COL_NM;
+         }
+         desc { "single";
+            inherit: "default";
+            visible: 0;
+         }
+      }
+      text { "guide_y";
+         scale: 1;
+         effect: SHADOW BOTTOM;
+         desc { "default";
+            rel.to: "base_y";
+            rel2.relative: 1 0;
+            align: 0 0;
+            min: 0 20;
+            fixed: 0 1;
+            text {
+               font: FN;
+               size: 10;
+               align: 0.1 0.5;
+               min: 1 0;
+               ellipsis: -1;
+               text: "Relative to Y:";
+            }
+            color: COL_NM;
+         }
+         desc { "single";
+            inherit: "default";
+            visible: 0;
+         }
+      }
+      swallow { "elm.swallow.x";
+         scale: 1;
+         desc { "default";
+            rel1.to: "guide_x";
+            rel1.relative: 0 1;
+            rel2.to_x: "guide_x";
+            rel2.to_y: "base_y";
+            rel2.offset: -3 -1;
+         }
+         desc { "single";
+            inherit: "default";
+            visible: 0;
+         }
+      }
+      swallow { "elm.swallow.y";
+         scale: 1;
+         desc { "default";
+            rel1.to: "guide_y";
+            rel1.relative: 0 1;
+            rel2.to: "base_y";
+            rel1.offset: 2 0;
+         }
+         desc { "single";
+            inherit: "default";
+            visible: 0;
+         }
+      }
+      spacer { "button_area";
+         scale: 1;
+         desc { "default";
+            min: 0 30;
+            align: 0.5 1;
+            fixed: 0 1;
+            rel1.relative: 0 1;
+            rel2.relative: 1 1;
+         }
+      }
+      swallow { "elm.swallow.ok_btn";
+         scale: 1;
+         desc { "default";
+            rel.to: "button_area";
+            rel1.relative: 0.5 1;
+            rel2.relative: 0.5 1;
+            align: 0.5 1;
+            fixed: 1 1;
+            min: 50 25;
+         }
+      }
+   }
+   programs {
+      program { "show_x";
+         signal: "elm,state,show,x";
+         action: STATE_SET "single" 0.0;
+         target: "elm.swallow.y";
+         target: "guide_y";
+         target: "base_y";
+         target: "base";
+      }
+      program { "show_y";
+         signal: "elm,state,show,y";
+         action: STATE_SET "single" 0.0;
+         target: "elm.swallow.x";
+         target: "guide_x";
+         target: "base_x";
+         target: "base";
+      }
+   }
+}
+
 group { name: "padding3_layout";
    parts {
       part { name: "elm.swallow.content";
