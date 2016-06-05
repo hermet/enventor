@@ -2075,13 +2075,7 @@ live_edit_layer_set(live_data *ld)
    ld->rel_info.rel1_y = LIVE_EDIT_REL1;
    ld->rel_info.rel2_x = LIVE_EDIT_REL2;
    ld->rel_info.rel2_y = LIVE_EDIT_REL2;
-   ld->rel_to_info.align_x = 0.5;
-   ld->rel_to_info.align_y = 0.5;
-   ld->rel_to_info.rel1_x_to = NULL;
-   ld->rel_to_info.rel1_y_to = NULL;
-   ld->rel_to_info.rel2_x_to = NULL;
-   ld->rel_to_info.rel2_y_to = NULL;
-
+   rel_to_values_reset(ld);
    live_edit_symbol_set(ld);
    ctrl_pt_init(ld);
    align_line_init(ld);
