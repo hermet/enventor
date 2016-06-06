@@ -1524,12 +1524,16 @@ show_relative_to_list(live_data *ld, int x, int y, Ctrl_Pt cp)
 
    //List for relative X
    Evas_Object *list_x = elm_list_add(layout);
+   elm_list_mode_set(list_x, ELM_LIST_EXPAND);
+   evas_object_size_hint_max_set(list_x, 0, ELM_SCALE_SIZE(200));
    it = elm_list_item_append(list_x, "(none)", NULL, NULL, NULL, NULL);
    elm_list_item_selected_set(it, EINA_TRUE);
    elm_object_part_content_set(layout, "elm.swallow.x", list_x);
 
    //List for relative Y
    Evas_Object *list_y = elm_list_add(layout);
+   elm_list_mode_set(list_y, ELM_LIST_EXPAND);
+   evas_object_size_hint_max_set(list_y, 0, ELM_SCALE_SIZE(200));
    it = elm_list_item_append(list_y, "(none)", NULL, NULL, NULL, NULL);
    elm_list_item_selected_set(it, EINA_TRUE);
    elm_object_part_content_set(layout, "elm.swallow.y", list_y);
@@ -1574,6 +1578,9 @@ show_relative_to_list(live_data *ld, int x, int y, Ctrl_Pt cp)
 
    if (is_rel_to_x || is_rel_to_y)
      {
+        elm_list_go(list_x);
+        elm_list_go(list_y);
+
         //Control Layout
         if (is_rel_to_x && !is_rel_to_y)
           elm_object_signal_emit(layout, "elm,state,show,x", "");

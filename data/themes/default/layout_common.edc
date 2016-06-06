@@ -3218,51 +3218,21 @@ group { name: "rel_to_layout";
       spacer { "base";
          scale: 1;
          desc { "default";
-            min: 230 155;
+            min: 230 95;
          }
          desc { "single";
-            min: 115 155;
-         }
-      }
-      spacer { "base_x";
-         scale: 1;
-         desc { "default";
-            rel1.relative: 0 0;
-            rel2.relative: 0 0;
-            rel2.to: "button_area";
-            min: 115 125;
-            fixed: 1 0;
-            align: 0 0.5;
-         }
-         desc { "single";
-            inherit: "default";
-            min: 0 125;
-         }
-      }
-      spacer { "base_y";
-         scale: 1;
-         desc { "default";
-            rel1.relative: 1 0;
-            rel2.relative: 1 0;
-            rel2.to: "button_area";
-            min: 115 125;
-            fixed: 1 0;
-            align: 1 0.5;
-         }
-         desc { "single";
-            inherit: "default";
-            min: 0 125;
+            min: 115 95;
          }
       }
       text { "guide_x";
          scale: 1;
          effect: SHADOW BOTTOM;
          desc { "default";
-            rel.to: "base_x";
-            rel2.relative: 1 0;
+            rel1.relative: 0 0;
+            rel2.relative: 0 0;
             align: 0 0;
-            min: 0 20;
-            fixed: 0 1;
+            min: 115 20;
+            fixed: 1 1;
             text {
                font: FN;
                size: 10;
@@ -3274,7 +3244,7 @@ group { name: "rel_to_layout";
             color: COL_NM;
          }
          desc { "single";
-            inherit: "default";
+            rel.to: "guide_y";
             visible: 0;
          }
       }
@@ -3282,11 +3252,11 @@ group { name: "rel_to_layout";
          scale: 1;
          effect: SHADOW BOTTOM;
          desc { "default";
-            rel.to: "base_y";
+            rel1.relative: 1 0;
             rel2.relative: 1 0;
-            align: 0 0;
-            min: 0 20;
-            fixed: 0 1;
+            align: 1 0;
+            min: 115 20;
+            fixed: 1 1;
             text {
                font: FN;
                size: 10;
@@ -3298,7 +3268,7 @@ group { name: "rel_to_layout";
             color: COL_NM;
          }
          desc { "single";
-            inherit: "default";
+            rel.to: "guide_x";
             visible: 0;
          }
       }
@@ -3308,11 +3278,13 @@ group { name: "rel_to_layout";
             rel1.to: "guide_x";
             rel1.relative: 0 1;
             rel2.to_x: "guide_x";
-            rel2.to_y: "base_y";
+            rel2.to_y: "button_area";
+            rel2.relative: 1 0;
             rel2.offset: -3 -1;
+            align: 0.5 0;
          }
          desc { "single";
-            inherit: "default";
+            rel.to: "elm.swallow.y";
             visible: 0;
          }
       }
@@ -3321,11 +3293,14 @@ group { name: "rel_to_layout";
          desc { "default";
             rel1.to: "guide_y";
             rel1.relative: 0 1;
-            rel2.to: "base_y";
+            rel2.to_x: "guide_y";
+            rel2.to_y: "button_area";
+            rel2.relative: 1 0;
             rel1.offset: 2 0;
+            align: 0.5 0;
          }
          desc { "single";
-            inherit: "default";
+            rel.to: "elm.swallow.x";
             visible: 0;
          }
       }
@@ -3334,7 +3309,7 @@ group { name: "rel_to_layout";
          desc { "default";
             min: 0 30;
             align: 0.5 1;
-            fixed: 0 1;
+            fixed: 1 1;
             rel1.relative: 0 1;
             rel2.relative: 1 1;
          }
@@ -3357,7 +3332,6 @@ group { name: "rel_to_layout";
          action: STATE_SET "single" 0.0;
          target: "elm.swallow.y";
          target: "guide_y";
-         target: "base_y";
          target: "base";
       }
       program { "show_y";
@@ -3365,7 +3339,6 @@ group { name: "rel_to_layout";
          action: STATE_SET "single" 0.0;
          target: "elm.swallow.x";
          target: "guide_x";
-         target: "base_x";
          target: "base";
       }
    }
