@@ -1,8 +1,3 @@
-type Enventor_Path_Type: __undefined_type;
-type Enventor_Syntax_Color_Type: __undefined_type;
-type Enventor_Template_Insert_Type: __undefined_type;
-type Edje_Part_Type: __undefined_type;
-
 class Enventor.Object (Elm.Widget, Efl.File) {
    legacy_prefix: enventor_object;
    eo_prefix: enventor_obj;
@@ -116,29 +111,29 @@ class Enventor.Object (Elm.Widget, Efl.File) {
          }
       }
       path_set {
-         return: bool;
+         return: Eina_Bool;
          params {
             @in type: Enventor_Path_Type;
-            @in pathes: own(const(list<own(Eina_Stringshare *)>));
+            @in pathes: const(Eina_List) *;
          }
       }
       path_get {
-         return: const(list<own(Eina_Stringshare *)>);
+         return: const(Eina_List) *;
          params {
             @in type: Enventor_Path_Type;
          }
       }
       programs_list_get {
-         return: list<char *>;
+         return: Eina_List *;
       }
       part_states_list_get {
-         return: list<char *>;
+         return: Eina_List *;
          params {
             @in type: const(char) *;
          }
       }
       parts_list_get {
-         return: list<char *>;
+         return: Eina_List *;
       }
       max_line_get {
          return: int;
@@ -179,7 +174,7 @@ class Enventor.Object (Elm.Widget, Efl.File) {
          }
       }
       live_view_get {
-         return: Evas.Object;
+         return: Eo *;
       }
       line_goto {
          params {
@@ -216,14 +211,14 @@ class Enventor.Object (Elm.Widget, Efl.File) {
          }
       }
       template_insert {
-         return: bool;
+         return: Eina_Bool;
          params {
             @in syntax: char *;
-            @in n: size;
+            @in n: size_t;
          }
       }
       template_part_insert {
-         return: bool;
+         return: Eina_Bool;
          params {
             @in type: Edje_Part_Type;
             @in insert_type: Enventor_Template_Insert_Type;
@@ -242,7 +237,7 @@ class Enventor.Object (Elm.Widget, Efl.File) {
             @in rel2_x: float;
             @in rel2_y: float;
             @in syntax: char *;
-            @in n: size;
+            @in n: size_t;
          }
       }
       ctxpopup_visible_get {
@@ -257,14 +252,14 @@ class Enventor.Object (Elm.Widget, Efl.File) {
       }
       live_view_size_set {
          params {
-            @in w: Evas.Coord;
-            @in h: Evas.Coord;
+            @in w: Evas_Coord;
+            @in h: Evas_Coord;
          }
       }
       live_view_size_get {
          params {
-            @in w: Evas.Coord *;
-            @in h: Evas.Coord *;
+            @in w: Evas_Coord *;
+            @in h: Evas_Coord *;
          }
       }
       part_type_get {
@@ -297,15 +292,15 @@ class Enventor.Object (Elm.Widget, Efl.File) {
    implements {
       class.constructor;
       Eo.Base.constructor;
-      Evas.Object.Smart.add;
-      Evas.Object.Smart.del;
-      Evas.Object.Smart.move;
-      Evas.Object.Smart.resize;
-      Evas.Object.Smart.show;
-      Evas.Object.Smart.hide;
-      Evas.Object.Smart.clip.set;
-      Evas.Object.Smart.clip_unset;
-      Evas.Object.Smart.member_add;
+      Evas.Object_Smart.add;
+      Evas.Object_Smart.del;
+      Evas.Object_Smart.move;
+      Evas.Object_Smart.resize;
+      Evas.Object_Smart.show;
+      Evas.Object_Smart.hide;
+      Evas.Object_Smart.clip.set;
+      Evas.Object_Smart.clip_unset;
+      Evas.Object_Smart.member_add;
       Efl.File.file.set;
    }
    events {

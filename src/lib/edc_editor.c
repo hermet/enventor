@@ -423,7 +423,8 @@ edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
                 parser_line_cnt_get(ed->pd, info->change.insert.content);
           }
 
-        if (enventor_obj_auto_indent_get(ed->enventor))
+        int ret;
+        if (eo_do_ret(ed->enventor, ret, enventor_obj_auto_indent_get()))
           {
              increase =
                 indent_insert_apply(syntax_indent_data_get(ed->sh),
@@ -434,7 +435,8 @@ edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
      }
    else
      {
-        if (enventor_obj_auto_indent_get(ed->enventor))
+        int ret;
+        if (eo_do_ret(ed->enventor, ret, enventor_obj_auto_indent_get()))
           {
              indent_delete_apply(syntax_indent_data_get(ed->sh),
                                  info->change.del.content, ed->cur_line);
@@ -715,7 +717,8 @@ edit_cursor_double_clicked_cb(void *data, Evas_Object *obj,
    edit_data *ed = data;
 
    if (ed->ctrl_pressed) return;
-   if (!enventor_obj_ctxpopup_get(ed->enventor)) return;
+   int ret;
+   if (!eo_do_ret(ed->enventor, ret, enventor_obj_ctxpopup_get())) return;
 
    char *selected = (char *) elm_entry_selection_get(obj);
    if (!selected) return;
@@ -960,7 +963,8 @@ edit_edc_load(edit_data *ed, const char *file_path)
       = indent_text_check(id, (const char *)utf8_edit);
 
    //Set edc text to entry.
-   if (enventor_obj_auto_indent_get(ed->enventor) && !indent_correct)
+   int ret2;
+   if (eo_do_ret(ed->enventor, ret2, enventor_obj_auto_indent_get()) && !indent_correct)
      //Create indented markup text from utf8 text of EDC file.
      markup_edit = indent_text_create(id, (const char *)utf8_edit,
                                       &line_num);
@@ -968,13 +972,15 @@ edit_edc_load(edit_data *ed, const char *file_path)
      markup_edit = elm_entry_utf8_to_markup(utf8_edit);
    if (!markup_edit) goto err;
    elm_entry_entry_set(ed->en_edit, markup_edit);
-   if (enventor_obj_auto_indent_get(ed->enventor) && !indent_correct)
+   int ret3;
+   if (eo_do_ret(ed->enventor, ret3, enventor_obj_auto_indent_get()) && !indent_correct)
      edit_changed_set(ed, EINA_TRUE);
    free(markup_edit);
 
    //Append line numbers.
    if (!eina_strbuf_append_char(strbuf_line, '1')) goto err;
-   if (enventor_obj_auto_indent_get(ed->enventor) && !indent_correct)
+   int ret4;
+   if (eo_do_ret(ed->enventor, ret4, enventor_obj_auto_indent_get()) && !indent_correct)
      {
         int num = 2;
         //Use line_num given by indent_text_create().
@@ -1664,7 +1670,12 @@ edit_disabled_set(edit_data *ed, Eina_Bool disabled)
 
    //Turn off the part highlight in case of disable.
    if (disabled) view_part_highlight_set(VIEW_DATA, NULL);
-   else if (enventor_obj_part_highlight_get(ed->enventor)) edit_view_sync(ed);
+   else
+     {
+        Eina_Bool ret;
+        if (eo_do_ret(ed->enventor, ret, enventor_obj_part_highlight_get()))
+          edit_view_sync(ed);
+     }
 }
 
 void
