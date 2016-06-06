@@ -73,6 +73,7 @@ typedef struct live_editor_s
       float rel1_x, rel1_y;
       float rel2_x, rel2_y;
       float align_x, align_y;
+      int min_w, min_h;
       Evas_Object *ctxpopup;
    } rel_to_info;
 
@@ -352,7 +353,7 @@ live_edit_insert(live_data *ld)
 
    //Calculate relative_to values to fix its size
    //in case of width and height are fixed
-   Evas_Coord min_w = 0;
+   Evas_Coord min_w = ld->rel_to_info.min_w;
 
    if (!ld->rel_to_info.rel1_x_part && !ld->rel_to_info.rel2_x_part &&
        elm_check_state_get(ld->fixed_w_check))
@@ -366,7 +367,7 @@ live_edit_insert(live_data *ld)
 
      }
 
-   Evas_Coord min_h = 0;
+   Evas_Coord min_h = ld->rel_to_info.min_h;
 
    if (!ld->rel_to_info.rel1_y_part && !ld->rel_to_info.rel2_y_part &&
        elm_check_state_get(ld->fixed_h_check))
@@ -379,7 +380,6 @@ live_edit_insert(live_data *ld)
         min_h = (Evas_Coord) (((double) vh) *
                               (ld->rel_info.rel2_y - ld->rel_info.rel1_y));
      }
-
    enventor_object_template_part_insert(base_enventor_get(),
                                         type,
                                         ENVENTOR_TEMPLATE_INSERT_LIVE_EDIT,
@@ -1140,279 +1140,111 @@ relative_to_apply(rel_to_data *rel_data)
    Eina_Bool fixed_h = elm_check_state_get(ld->fixed_h_check);
 
    //Set relative_to properties according to the user input value
-   //Case 1: width and height are relative
-   if (!fixed_w && !fixed_h)
+
+   //x-axis
+   if (rel_data->is_rel_to_x)
      {
-        if (rel_data->is_rel_to_x)
-          {
-             if ((rel_data->rel_x == 0.0) || (rel_data->rel_x == 1.0))
-               {
-                  if ((ld->last_cp == Ctrl_Pt_Rel1) ||
-                      (ld->last_cp == Ctrl_Pt_Rel4) ||
-                      (ld->last_cp == Ctrl_Pt_Left))
-                    {
-                       ld->rel_to_info.rel1_x = rel_data->rel_x;
-                       free(ld->rel_to_info.rel1_x_part);
-                       ld->rel_to_info.rel1_x_part =
-                          strndup(rel_data->part_name,
-                                  strlen(rel_data->part_name));
-                    }
-                  else if ((ld->last_cp == Ctrl_Pt_Rel2) ||
-                           (ld->last_cp == Ctrl_Pt_Rel3) ||
-                           (ld->last_cp == Ctrl_Pt_Right))
-                    {
-                       ld->rel_to_info.rel2_x = rel_data->rel_x;
-                       free(ld->rel_to_info.rel2_x_part);
-                       ld->rel_to_info.rel2_x_part =
-                          strndup(rel_data->part_name,
-                                  strlen(rel_data->part_name));
-                    }
-                }
-          }
-        if (rel_data->is_rel_to_y)
-          {
-             if ((rel_data->rel_y == 0.0) || (rel_data->rel_y == 1.0))
-               {
-                  if ((ld->last_cp == Ctrl_Pt_Rel1) ||
-                      (ld->last_cp == Ctrl_Pt_Rel3) ||
-                      (ld->last_cp == Ctrl_Pt_Top))
-                    {
-                       ld->rel_to_info.rel1_y = rel_data->rel_y;
-                       free(ld->rel_to_info.rel1_y_part);
-                       ld->rel_to_info.rel1_y_part =
-                          strndup(rel_data->part_name,
-                                  strlen(rel_data->part_name));
-                    }
-                  else if ((ld->last_cp == Ctrl_Pt_Rel2) ||
-                           (ld->last_cp == Ctrl_Pt_Rel4) ||
-                           (ld->last_cp == Ctrl_Pt_Bottom))
-                    {
-                       ld->rel_to_info.rel2_y = rel_data->rel_y;
-                       free(ld->rel_to_info.rel2_y_part);
-                       ld->rel_to_info.rel2_y_part =
-                          strndup(rel_data->part_name,
-                                  strlen(rel_data->part_name));
-                    }
-               }
-          }
-     }
-   //Case 2: width is fixed
-   else if(fixed_w && !fixed_h)
-     {
-        if (rel_data->is_rel_to_x)
+        //fixed case
+        if (fixed_w)
           {
              if ((ld->last_cp == Ctrl_Pt_Rel1) ||
                  (ld->last_cp == Ctrl_Pt_Rel4) ||
                  (ld->last_cp == Ctrl_Pt_Left))
-               {
-                  ld->rel_to_info.align_x = 0.0;
-                  ld->rel_to_info.align_y = 0.5;
-                  ld->rel_to_info.rel1_x = rel_data->rel_x;
-                  ld->rel_to_info.rel2_x = rel_data->rel_x;
-                  free(ld->rel_to_info.rel1_x_part);
-                  free(ld->rel_to_info.rel2_x_part);
-                  ld->rel_to_info.rel1_x_part =
-                     strndup(rel_data->part_name,
-                             strlen(rel_data->part_name));
-                  ld->rel_to_info.rel2_x_part =
-                     strndup(rel_data->part_name,
-                             strlen(rel_data->part_name));
-               }
-             if ((ld->last_cp == Ctrl_Pt_Rel2) ||
-                 (ld->last_cp == Ctrl_Pt_Right))
-               {
-                  ld->rel_to_info.align_x = 1.0;
-                  ld->rel_to_info.align_y = 0.5;
-                  ld->rel_to_info.rel1_x = rel_data->rel_x;
-                  ld->rel_to_info.rel2_x = rel_data->rel_x;
-                  free(ld->rel_to_info.rel1_x_part);
-                  free(ld->rel_to_info.rel2_x_part);
-                  ld->rel_to_info.rel1_x_part =
-                     strndup(rel_data->part_name, strlen(rel_data->part_name));
-                  ld->rel_to_info.rel2_x_part =
-                     strndup(rel_data->part_name, strlen(rel_data->part_name));
-               }
+               ld->rel_to_info.align_x = 0.0;
+             else if ((ld->last_cp == Ctrl_Pt_Rel2) ||
+                      (ld->last_cp == Ctrl_Pt_Rel3) ||
+                      (ld->last_cp == Ctrl_Pt_Right))
+               ld->rel_to_info.align_x = 1.0;
+
+             ld->rel_to_info.rel1_x = rel_data->rel_x;
+             ld->rel_to_info.rel2_x = rel_data->rel_x;
+             free(ld->rel_to_info.rel1_x_part);
+             free(ld->rel_to_info.rel2_x_part);
+             ld->rel_to_info.rel1_x_part = strndup(rel_data->part_name,
+                                                   strlen(rel_data->part_name));
+             ld->rel_to_info.rel2_x_part = strndup(rel_data->part_name,
+                                                   strlen(rel_data->part_name));
+             ld->rel_to_info.min_w = lw;
           }
-        if (rel_data->is_rel_to_y)
+        //non-fixed case
+        else if ((rel_data->rel_x == 0.0) || (rel_data->rel_x == 1.0))
           {
-             if ((rel_data->rel_y == 0.0) || (rel_data->rel_y == 1.0))
+             ld->rel_to_info.align_x = 0.5;
+             ld->rel_to_info.min_w = 0;
+
+             if ((ld->last_cp == Ctrl_Pt_Rel1) ||
+                 (ld->last_cp == Ctrl_Pt_Rel4) ||
+                 (ld->last_cp == Ctrl_Pt_Left))
                {
-                  if (ld->last_cp == Ctrl_Pt_Rel1 ||
-                      ld->last_cp == Ctrl_Pt_Rel3 ||
-                      ld->last_cp == Ctrl_Pt_Top)
-                    {
-                       ld->rel_to_info.rel1_y = rel_data->rel_y;
-                       free(ld->rel_to_info.rel1_y_part);
-                       ld->rel_to_info.rel1_y_part =
-                          strndup(rel_data->part_name,
-                                  strlen(rel_data->part_name));
-                    }
-                  else if ((ld->last_cp == Ctrl_Pt_Rel2) ||
-                           (ld->last_cp == Ctrl_Pt_Rel4) ||
-                           (ld->last_cp == Ctrl_Pt_Bottom))
-                    {
-                       ld->rel_to_info.rel2_y = rel_data->rel_y;
-                       free(ld->rel_to_info.rel2_y_part);
-                       ld->rel_to_info.rel2_y_part =
-                          strndup(rel_data->part_name,
-                                  strlen(rel_data->part_name));
-                    }
+                  ld->rel_to_info.rel1_x = rel_data->rel_x;
+                  free(ld->rel_to_info.rel1_x_part);
+                  ld->rel_to_info.rel1_x_part =
+                     strndup(rel_data->part_name, strlen(rel_data->part_name));
+               }
+             else if ((ld->last_cp == Ctrl_Pt_Rel2) ||
+                      (ld->last_cp == Ctrl_Pt_Rel3) ||
+                      (ld->last_cp == Ctrl_Pt_Right))
+               {
+                  ld->rel_to_info.rel2_x = rel_data->rel_x;
+                  free(ld->rel_to_info.rel2_x_part);
+                  ld->rel_to_info.rel2_x_part =
+                     strndup(rel_data->part_name, strlen(rel_data->part_name));
                }
           }
      }
-   //Case 3: height is fixed
-   else if(!fixed_w && fixed_h)
+
+   //y-axis
+   if (rel_data->is_rel_to_y)
      {
-        if (rel_data->is_rel_to_y)
+        //fixed case
+        if (fixed_h)
           {
              if ((ld->last_cp == Ctrl_Pt_Rel1) ||
                  (ld->last_cp == Ctrl_Pt_Rel3) ||
                  (ld->last_cp == Ctrl_Pt_Top))
                {
-                  ld->rel_to_info.align_x = 0.5;
                   ld->rel_to_info.align_y = 0.0;
-                  ld->rel_to_info.rel1_y = rel_data->rel_y;
-                  ld->rel_to_info.rel2_y = rel_data->rel_y;
-                  free(ld->rel_to_info.rel1_y_part);
-                  free(ld->rel_to_info.rel2_y_part);
-                  ld->rel_to_info.rel1_y_part =
-                     strndup(rel_data->part_name, strlen(rel_data->part_name));
-                  ld->rel_to_info.rel2_y_part =
-                     strndup(rel_data->part_name, strlen(rel_data->part_name));
                }
-             if ((ld->last_cp == Ctrl_Pt_Rel2) ||
-                 (ld->last_cp == Ctrl_Pt_Rel4) ||
-                 (ld->last_cp == Ctrl_Pt_Bottom))
-               {
-                  ld->rel_to_info.align_x = 0.5;
-                  ld->rel_to_info.align_y = 1.0;
-                  ld->rel_to_info.rel1_y = rel_data->rel_y;
-                  ld->rel_to_info.rel2_y = rel_data->rel_y;
-                  free(ld->rel_to_info.rel1_y_part);
-                  free(ld->rel_to_info.rel2_y_part);
-                  ld->rel_to_info.rel1_y_part =
-                     strndup(rel_data->part_name, strlen(rel_data->part_name));
-                  ld->rel_to_info.rel2_y_part =
-                     strndup(rel_data->part_name, strlen(rel_data->part_name));
-               }
-          }
-        if (rel_data->is_rel_to_x)
-          {
-             if ((rel_data->rel_x == 0.0) || (rel_data->rel_x == 1.0))
-               {
-                  if ((ld->last_cp == Ctrl_Pt_Rel1) ||
+             else if ((ld->last_cp == Ctrl_Pt_Rel2) ||
                       (ld->last_cp == Ctrl_Pt_Rel4) ||
-                      (ld->last_cp == Ctrl_Pt_Left))
-                    {
-                       ld->rel_to_info.rel1_x = rel_data->rel_x;
-                       free(ld->rel_to_info.rel1_x_part);
-                       ld->rel_to_info.rel1_x_part =
-                          strndup(rel_data->part_name,
-                                  strlen(rel_data->part_name));
-                    }
-                  else if ((ld->last_cp == Ctrl_Pt_Rel2) ||
-                           (ld->last_cp == Ctrl_Pt_Rel3) ||
-                           (ld->last_cp == Ctrl_Pt_Right))
-                    {
-                       ld->rel_to_info.rel2_x = rel_data->rel_x;
-                       free(ld->rel_to_info.rel2_x_part);
-                       ld->rel_to_info.rel2_x_part =
-                          strndup(rel_data->part_name,
-                                  strlen(rel_data->part_name));
-                    }
+                      (ld->last_cp == Ctrl_Pt_Bottom))
+               {
+                  ld->rel_to_info.align_y = 1.0;
                }
-          }
-     }
-   //Case 4: width and height are fixed
-   else if(fixed_w && fixed_h)
-     {
-        double x_add, y_add;
-        x_add = y_add = 0;
-
-       if (ld->last_cp == Ctrl_Pt_Rel1)
-         {
-            ld->rel_to_info.align_x = 0.0;
-            ld->rel_to_info.align_y = 0.0;
-         }
-       else if (ld->last_cp == Ctrl_Pt_Rel2)
-         {
-            x_add = lw;
-            y_add = lh;
-            ld->rel_to_info.align_x = 1.0;
-            ld->rel_to_info.align_y = 1.0;
-         }
-       else if (ld->last_cp == Ctrl_Pt_Rel3)
-         {
-            x_add = lw;
-            ld->rel_to_info.align_x = 1.0;
-            ld->rel_to_info.align_y = 0.0;
-         }
-       else if (ld->last_cp == Ctrl_Pt_Rel4)
-         {
-            y_add = lh;
-            ld->rel_to_info.align_x = 0.0;
-            ld->rel_to_info.align_y = 1.0;
-         }
-       else if (ld->last_cp == Ctrl_Pt_Left)
-         {
-            y_add = (double)lh / 2;
-            ld->rel_to_info.align_x = 0.0;
-            ld->rel_to_info.align_y = 0.5;
-         }
-       else if (ld->last_cp == Ctrl_Pt_Right)
-         {
-            x_add = lw;
-            y_add = (double)lh / 2;
-            ld->rel_to_info.align_x = 1.0;
-            ld->rel_to_info.align_y = 0.5;
-         }
-       else if (ld->last_cp == Ctrl_Pt_Top)
-         {
-            x_add = (double)lw / 2;
-            ld->rel_to_info.align_x = 0.5;
-            ld->rel_to_info.align_y = 0.0;
-         }
-       else if (ld->last_cp == Ctrl_Pt_Bottom)
-         {
-            x_add = (double)lw / 2;
-            y_add = lh;
-            ld->rel_to_info.align_x = 0.5;
-            ld->rel_to_info.align_y = 1.0;
-         }
-
-        free(ld->rel_to_info.rel1_x_part);
-        free(ld->rel_to_info.rel1_y_part);
-        free(ld->rel_to_info.rel2_x_part);
-        free(ld->rel_to_info.rel2_y_part);
-        ld->rel_to_info.rel1_x_part =
-           strndup(rel_data->part_name, strlen(rel_data->part_name));
-        ld->rel_to_info.rel1_y_part =
-           strndup(rel_data->part_name, strlen(rel_data->part_name));
-        ld->rel_to_info.rel2_x_part =
-           strndup(rel_data->part_name, strlen(rel_data->part_name));
-        ld->rel_to_info.rel2_y_part =
-           strndup(rel_data->part_name, strlen(rel_data->part_name));
-
-        //Calculate part relative which is matched to base relative
-        double part_rel_x = (double)fabs(((lx + x_add) - rel_data->pt1.x)) /
-                            (rel_data->pt2.x - rel_data->pt1.x);
-        double part_rel_y = (double)fabs(((ly + y_add) - rel_data->pt1.y)) /
-                            (rel_data->pt2.y - rel_data->pt1.y);
-
-        if (rel_data->is_rel_to_x)
-          {
-             ld->rel_to_info.rel1_x = rel_data->rel_x;
-             ld->rel_to_info.rel2_x = rel_data->rel_x;
-             ld->rel_to_info.rel1_y = part_rel_y;
-             ld->rel_to_info.rel2_y = part_rel_y;
-          }
-
-        if (rel_data->is_rel_to_y)
-          {
              ld->rel_to_info.rel1_y = rel_data->rel_y;
              ld->rel_to_info.rel2_y = rel_data->rel_y;
-             ld->rel_to_info.rel1_x = part_rel_x;
-             ld->rel_to_info.rel2_x = part_rel_x;
+             free(ld->rel_to_info.rel1_y_part);
+             free(ld->rel_to_info.rel2_y_part);
+             ld->rel_to_info.rel1_y_part = strndup(rel_data->part_name,
+                                                   strlen(rel_data->part_name));
+             ld->rel_to_info.rel2_y_part = strndup(rel_data->part_name,
+                                                   strlen(rel_data->part_name));
+             ld->rel_to_info.min_h = lh;
+          }
+        //non-fixed case
+        else if ((rel_data->rel_y == 0.0) || (rel_data->rel_y == 1.0))
+          {
+             ld->rel_to_info.align_y = 0.5;
+             ld->rel_to_info.min_h = 0;
+
+             if ((ld->last_cp == Ctrl_Pt_Rel1) ||
+                 (ld->last_cp == Ctrl_Pt_Rel3) ||
+                 (ld->last_cp == Ctrl_Pt_Top))
+               {
+                  ld->rel_to_info.rel1_y = rel_data->rel_y;
+                  free(ld->rel_to_info.rel1_y_part);
+                  ld->rel_to_info.rel1_y_part =
+                     strndup(rel_data->part_name, strlen(rel_data->part_name));
+               }
+             else if ((ld->last_cp == Ctrl_Pt_Rel2) ||
+                      (ld->last_cp == Ctrl_Pt_Rel4) ||
+                      (ld->last_cp == Ctrl_Pt_Bottom))
+               {
+                  ld->rel_to_info.rel2_y = rel_data->rel_y;
+                  free(ld->rel_to_info.rel2_y_part);
+                  ld->rel_to_info.rel2_y_part =
+                     strndup(rel_data->part_name, strlen(rel_data->part_name));
+               }
           }
      }
 }
@@ -2160,6 +1992,8 @@ rel_to_values_reset(live_data *ld)
    ld->rel_to_info.rel1_y_part = NULL;
    ld->rel_to_info.rel2_x_part = NULL;
    ld->rel_to_info.rel2_y_part = NULL;
+   ld->rel_to_info.min_w = 0;
+   ld->rel_to_info.min_h = 0;
 }
 
 static void
