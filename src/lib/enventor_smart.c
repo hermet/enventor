@@ -228,7 +228,7 @@ _enventor_object_evas_object_smart_add(Eo *obj, Enventor_Object_Data *pd)
    pd->obj = obj;
 
    elm_widget_sub_object_parent_add(obj);
-   eo_do_super(obj, MY_CLASS, evas_obj_smart_add());
+   evas_obj_smart_add(eo_super(obj, MY_CLASS));
 
    build_init();
    autocomp_init();
@@ -258,7 +258,7 @@ _enventor_object_evas_object_smart_del(Evas_Object *obj EINA_UNUSED,
                                        Enventor_Object_Data *pd)
 {
    eina_stringshare_del(pd->font_name);
-   eina_stringshare_del(pd->font_style);
+   eina_stringshare_del(pd->font_style);   
    eina_stringshare_del(pd->group_name);
    autocomp_term();
    ecore_event_handler_del(pd->key_down_handler);
@@ -272,7 +272,7 @@ _enventor_object_evas_object_smart_del(Evas_Object *obj EINA_UNUSED,
 EOLIAN static void
 _enventor_object_evas_object_smart_member_add(Eo *obj, Enventor_Object_Data *pd EINA_UNUSED, Evas_Object *child)
 {
-   eo_do_super(obj, MY_CLASS, evas_obj_smart_member_add(child));
+   evas_obj_smart_member_add(eo_super(obj, MY_CLASS), child);
 
    if (evas_object_visible_get(obj)) evas_object_show(child);
    else evas_object_hide(child);
@@ -337,10 +337,9 @@ EOLIAN static Eo *
 _enventor_object_eo_base_constructor(Eo *obj,
                                      Enventor_Object_Data *pd EINA_UNUSED)
 {
-   obj = eo_do_super_ret(obj, MY_CLASS, obj, eo_constructor());
-   eo_do(obj,
-         evas_obj_type_set(MY_CLASS_NAME_LEGACY),
-         evas_obj_smart_callbacks_descriptions_set(_smart_callbacks));
+   obj = eo_constructor(eo_super(obj, MY_CLASS));
+   evas_obj_type_set(obj, MY_CLASS_NAME_LEGACY);
+   evas_obj_smart_callbacks_descriptions_set(obj, _smart_callbacks);
 
    return obj;
 }
@@ -944,8 +943,8 @@ enventor_object_main_file_set(Enventor_Object *obj, const char *file)
    pd->main_it.ed = edit_init(obj);
    edit_view_sync_cb_set(pd->main_it.ed, edit_view_sync_cb, pd);
 
-   Eina_Bool ret;
-   if (!eo_do_ret(obj, ret, efl_file_set(file, NULL))) return NULL;
+   Eina_Bool ret = efl_file_set(obj, file, NULL);
+   if (!ret) return NULL;
 
    //Update Editor State
    if (pd->linenumber != DEFAULT_LINENUMBER)

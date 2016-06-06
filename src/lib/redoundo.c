@@ -61,8 +61,7 @@ _input_timer_cb(void *data)
 static diff_data *
 smart_analyser(redoundo_data *rd, diff_data *diff)
 {
-   int ret;
-   if (!eo_do_ret(rd->enventor, ret, enventor_obj_smart_undo_redo_get())) return diff;
+   if (!enventor_obj_smart_undo_redo_get(rd->enventor)) return diff;
 
    if (rd->smart.timer)
      {
@@ -72,8 +71,7 @@ smart_analyser(redoundo_data *rd, diff_data *diff)
 
    if (!diff) return diff;
 
-   int ret2;
-   if (diff->length == 1 && eo_do_ret(rd->enventor, ret2, enventor_obj_auto_indent_get()))
+   if (diff->length == 1 && enventor_obj_auto_indent_get(rd->enventor))
      {
        if (strstr(diff->text, "<br/>")) diff->relative = EINA_TRUE;
          else diff->relative = EINA_FALSE;
