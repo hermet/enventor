@@ -655,14 +655,14 @@ ctrl_func(Evas_Event_Key_Down *event)
    //Find/Replace
    if (!strcmp(event->key, "f") || !strcmp(event->key, "F"))
      {
-        live_edit_cancel();
+        live_edit_cancel(EINA_FALSE);
         search_open();
         return EINA_TRUE;
      }
    //Goto Line
    if (!strcmp(event->key, "l") || !strcmp(event->key, "L"))
      {
-        live_edit_cancel();
+        live_edit_cancel(EINA_FALSE);
         goto_open();
         return EINA_TRUE;
      }
@@ -723,7 +723,7 @@ keygrabber_key_down_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
      {
         if (stats_ctxpopup_dismiss()) return;
 
-        if (live_edit_cancel())
+        if (live_edit_cancel(EINA_TRUE))
           {
              enventor_object_focus_set(base_enventor_get(), EINA_TRUE);
              return;
@@ -756,7 +756,7 @@ keygrabber_key_down_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
    if (!strcmp(ev->key, "F1"))
      {
         enventor_object_ctxpopup_dismiss(base_enventor_get());
-        live_edit_cancel();
+        live_edit_cancel(EINA_FALSE);
         help_open();
         return;
      }
@@ -764,7 +764,7 @@ keygrabber_key_down_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
    if (!strcmp(ev->key, "F2"))
      {
         enventor_object_ctxpopup_dismiss(base_enventor_get());
-        live_edit_cancel();
+        live_edit_cancel(EINA_FALSE);
         menu_edc_new(EINA_FALSE);
         return;
      }
@@ -772,7 +772,7 @@ keygrabber_key_down_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
    if (!strcmp(ev->key, "F3"))
      {
         enventor_object_ctxpopup_dismiss(base_enventor_get());
-        live_edit_cancel();
+        live_edit_cancel(EINA_FALSE);
         menu_edc_save();
         return;
      }
@@ -780,7 +780,7 @@ keygrabber_key_down_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
    if (!strcmp(ev->key, "F4"))
      {
         enventor_object_ctxpopup_dismiss(base_enventor_get());
-        live_edit_cancel();
+        live_edit_cancel(EINA_FALSE);
         menu_edc_load();
         return;
      }
@@ -822,7 +822,7 @@ keygrabber_key_down_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
    //Setting
    if (!strcmp(ev->key, "F12"))
      {
-        live_edit_cancel();
+        live_edit_cancel(EINA_FALSE);
         enventor_object_ctxpopup_dismiss(base_enventor_get());
         menu_setting();
         return;

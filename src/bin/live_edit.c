@@ -420,7 +420,7 @@ keygrabber_key_down_cb(void *data, Evas *e EINA_UNUSED,
    else if (strcmp(ev->key, "Delete") &&
             strcmp(ev->key, "BackSpace")) return;
 
-   live_edit_cancel();
+   live_edit_cancel(EINA_TRUE);
 }
 
 static void
@@ -2076,7 +2076,7 @@ layout_mouse_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
    if (ev->flags & EVAS_BUTTON_DOUBLE_CLICK)
      {
         live_edit_insert(ld);
-        live_edit_cancel();
+        live_edit_cancel(EINA_FALSE);
         return;
      }
 
@@ -2234,7 +2234,7 @@ static void
 live_btn_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
                     void *event_info EINA_UNUSED)
 {
-   live_edit_cancel();
+   live_edit_cancel(EINA_FALSE);
    goto_close();
    search_close();
 
@@ -2302,13 +2302,23 @@ live_edit_get(void)
 }
 
 Eina_Bool
-live_edit_cancel(void)
+live_edit_cancel(Eina_Bool phase_in)
 {
    live_data *ld = g_ld;
    if (!ld->on) return EINA_FALSE;
 
-   evas_object_del(ld->rel_to_info.ctxpopup);
-   ld->rel_to_info.ctxpopup = NULL;
+   //Dismiss Relative To Ctxpopup firstly.
+   if (phase_in && ld->rel_to_info.ctxpopup)
+     {
+        evas_object_del(ld->rel_to_info.ctxpopup);
+        ld->rel_to_info.ctxpopup = NULL;
+        return EINA_TRUE;
+     }
+   else
+     {
+        evas_object_del(ld->rel_to_info.ctxpopup);
+        ld->rel_to_info.ctxpopup = NULL;
+     }
 
    enventor_object_disabled_set(base_enventor_get(), EINA_FALSE);
 
@@ -2432,7 +2442,7 @@ void
 live_edit_term(void)
 {
    live_data *ld = g_ld;
-   live_edit_cancel();
+   live_edit_cancel(EINA_FALSE);
 
    free_auto_align_data(ld->auto_align_array);
    free(ld);

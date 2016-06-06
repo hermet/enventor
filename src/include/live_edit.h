@@ -7,7 +7,7 @@
 
 Evas_Object *live_edit_init(Evas_Object *parent);
 void live_edit_term(void);
-Eina_Bool live_edit_cancel(void);
+Eina_Bool live_edit_cancel(Eina_Bool phase_in);
 Eina_Bool live_edit_get(void);
 void live_edit_update(void);
 Eina_List *live_edit_tools_create(Evas_Object *parent);
