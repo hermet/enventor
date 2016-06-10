@@ -2044,6 +2044,14 @@ group { name: "statusbar_layout";
             image.normal: "cursor_arrow.png";
          }
       }
+      part { "elm.swallow.cursor_arrow.tooltip";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+           fixed: 1 1;
+           rel1.to: "cursor_arrow";
+           rel2.to: "cursor_arrow";
+         }
+      }
       part { name: "elm.text.cursor_pxx";
          type: TEXT;
          clip_to: "base_clip";
@@ -2235,6 +2243,14 @@ group { name: "statusbar_layout";
             image.normal: "navi_group.png";
          }
       }
+      part { "elm.swallow.group_icon.tooltip";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+           fixed: 1 1;
+           rel1.to: "group_icon";
+           rel2.to: "group_icon";
+         }
+      }
       part { name: "elm.text.group_name";
          type: TEXT;
          clip_to: "base_clip";
@@ -2299,6 +2315,14 @@ group { name: "statusbar_layout";
                max: 1 0;
                ellipsis: -1;
             }
+         }
+      }
+      part { "elm.swallow.line.tooltip";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+           fixed: 1 1;
+           rel1.to: "elm.text.line_[";
+           rel2.to: "elm.text.line_[";
          }
       }
       part { name: "elm.text.line_cur";
