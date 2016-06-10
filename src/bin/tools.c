@@ -309,7 +309,7 @@ tools_init(Evas_Object *parent)
    td->lines_btn = btn;
 
    btn = tools_btn_create(text_editor_ly, "template",
-                          _("Insert Template Code Snippet (Ctrl + T)<br>"
+                          _("Insert Code Snippet (Ctrl + T)<br>"
                             "Enventor decides best template code with<br>"
                             "regards to the current editing context. For<br>"
                             "instance, if the cursor is inside of part <br>"
@@ -322,7 +322,10 @@ tools_init(Evas_Object *parent)
 
    btn = tools_btn_create(text_editor_ly, "console",
                           _("Console Box (Alt + Down)<br>"
-                            "Show Console box which displays build logs."),
+                            "Display Console box. Console box displays<br>"
+                            "edc build logs such as error messages. It pops<br>"
+                            "up automatically when compliation errors are<br>"
+                            "occurred."),
                           console_cb);
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -331,7 +334,8 @@ tools_init(Evas_Object *parent)
 
    btn = tools_btn_create(text_editor_ly, "file_browser",
                           _("File Browser (F9)<br>"
-                            "Show File Browser wihch displays list of files."),
+                           "Display File Browser which displays a file list<br>"
+                            "in current workspace."),
                           file_browser_cb);
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -340,8 +344,9 @@ tools_init(Evas_Object *parent)
 
    btn = tools_btn_create(text_editor_ly, "edc_navigator",
                           _("EDC Navigator (F10)<br>"
-                            "Show EDC Navigator which displays current parts<br>"
-                            "hierarchically."),
+                            "Display EDC Navigator. EDC Navigator displays<br>"
+                            "a current group hierarchy tree that contains<br>"
+                            "parts, descriptions, programs lists"),
                           edc_navigator_cb);
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -351,7 +356,9 @@ tools_init(Evas_Object *parent)
 
    btn = tools_btn_create(text_editor_ly, "status",
                           _("Status (F11)<br>"
-                            "Show Status bar which displays live view informations."),
+                            "Display Status bar on the bottom area.<br>"
+                            "Status bar displays subsidiary information for<br>"
+                            "editing."),
                           status_cb);
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -360,7 +367,7 @@ tools_init(Evas_Object *parent)
 
    btn = tools_btn_create(text_editor_ly, "menu",
                           _("Enventor Menu (Esc)<br>"
-                          "Show Menu for setting enventor."),
+                          "Open Enventor Main Menu."),
                           menu_cb);
    elm_object_tooltip_orient_set(btn, ELM_TOOLTIP_ORIENT_BOTTOM_LEFT);
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
