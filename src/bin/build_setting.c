@@ -148,7 +148,8 @@ build_setting_content_get(build_setting_data *bsd, Evas_Object *parent)
    elm_object_part_content_set(layout, "img_path_tooltip", img_path_tooltip);
 
    elm_object_tooltip_text_set(img_path_tooltip,
-                               _("Image path used for EDC editing."));
+                               _("Image resource path used for<br>"
+                                 "a current project."));
    elm_object_focus_allow_set(img_path_tooltip, EINA_FALSE);
 
    //Sound Path Entry
@@ -165,7 +166,8 @@ build_setting_content_get(build_setting_data *bsd, Evas_Object *parent)
    elm_object_part_content_set(layout, "snd_path_tooltip", snd_path_tooltip);
 
    elm_object_tooltip_text_set(snd_path_tooltip,
-                               _("Sound path used for EDC editing."));
+                               _("Sound resource path used for<br>"
+                                 "a current project."));
    elm_object_focus_allow_set(snd_path_tooltip, EINA_FALSE);
 
    //Font Path Entry
@@ -182,7 +184,8 @@ build_setting_content_get(build_setting_data *bsd, Evas_Object *parent)
    elm_object_part_content_set(layout, "fnt_path_tooltip", font_path_tooltip);
 
    elm_object_tooltip_text_set(font_path_tooltip,
-                               _("Font path used for EDC editing."));
+                               _("Font resource path used for<br>"
+                                 "a current project."));
    elm_object_focus_allow_set(font_path_tooltip, EINA_FALSE);
 
    //Data Path Entry
@@ -199,7 +202,8 @@ build_setting_content_get(build_setting_data *bsd, Evas_Object *parent)
    elm_object_part_content_set(layout, "data_path_tooltip", data_path_tooltip);
 
    elm_object_tooltip_text_set(data_path_tooltip,
-                               _("Data path used for EDC editing."));
+                        _("Data resource path used for<br>"
+                         "a current project."));
    elm_object_focus_allow_set(data_path_tooltip, EINA_FALSE);
 
    bsd->layout = layout;
