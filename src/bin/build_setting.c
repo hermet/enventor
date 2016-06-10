@@ -142,6 +142,15 @@ build_setting_content_get(build_setting_data *bsd, Evas_Object *parent)
                                img_path_entry);
    elm_layout_text_set(layout, "img_path_guide", _("Image Paths:"));
 
+   //Image Path Tooltip
+   Evas_Object *img_path_tooltip = elm_button_add(layout);
+   elm_object_style_set(img_path_tooltip, ENVENTOR_NAME);
+   elm_object_part_content_set(layout, "img_path_tooltip", img_path_tooltip);
+
+   elm_object_tooltip_text_set(img_path_tooltip,
+                               _("Image path used for EDC editing."));
+   elm_object_focus_allow_set(img_path_tooltip, EINA_FALSE);
+
    //Sound Path Entry
    Evas_Object *snd_path_entry = entry_create(layout);
    snd_path_entry_update(snd_path_entry,
@@ -149,6 +158,15 @@ build_setting_content_get(build_setting_data *bsd, Evas_Object *parent)
    elm_object_part_content_set(layout, "elm.swallow.snd_path_entry",
                                snd_path_entry);
    elm_layout_text_set(layout, "snd_path_guide", _("Sound Paths:"));
+
+   //Sound Path Tooltip
+   Evas_Object *snd_path_tooltip = elm_button_add(layout);
+   elm_object_style_set(snd_path_tooltip, ENVENTOR_NAME);
+   elm_object_part_content_set(layout, "snd_path_tooltip", snd_path_tooltip);
+
+   elm_object_tooltip_text_set(snd_path_tooltip,
+                               _("Sound path used for EDC editing."));
+   elm_object_focus_allow_set(snd_path_tooltip, EINA_FALSE);
 
    //Font Path Entry
    Evas_Object *fnt_path_entry = entry_create(layout);
@@ -158,6 +176,15 @@ build_setting_content_get(build_setting_data *bsd, Evas_Object *parent)
                                fnt_path_entry);
    elm_layout_text_set(layout, "fnt_path_guide", _("Font Paths:"));
 
+   //Font Path Tooltip
+   Evas_Object *font_path_tooltip = elm_button_add(layout);
+   elm_object_style_set(font_path_tooltip, ENVENTOR_NAME);
+   elm_object_part_content_set(layout, "fnt_path_tooltip", font_path_tooltip);
+
+   elm_object_tooltip_text_set(font_path_tooltip,
+                               _("Font path used for EDC editing."));
+   elm_object_focus_allow_set(font_path_tooltip, EINA_FALSE);
+
    //Data Path Entry
    Evas_Object *dat_path_entry = entry_create(layout);
    dat_path_entry_update(dat_path_entry,
@@ -165,6 +192,15 @@ build_setting_content_get(build_setting_data *bsd, Evas_Object *parent)
    elm_object_part_content_set(layout, "elm.swallow.dat_path_entry",
                                dat_path_entry);
    elm_layout_text_set(layout, "dat_path_guide", _("Data Paths:"));
+
+   //Data Path Tooltip
+   Evas_Object *data_path_tooltip = elm_button_add(layout);
+   elm_object_style_set(data_path_tooltip, ENVENTOR_NAME);
+   elm_object_part_content_set(layout, "data_path_tooltip", data_path_tooltip);
+
+   elm_object_tooltip_text_set(data_path_tooltip,
+                               _("Data path used for EDC editing."));
+   elm_object_focus_allow_set(data_path_tooltip, EINA_FALSE);
 
    bsd->layout = layout;
    bsd->img_path_entry = img_path_entry;

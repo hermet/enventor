@@ -318,6 +318,14 @@ group { "build_setting_layout";
             rel2.to: "img_path_frame";
          }
       }
+      swallow { "img_path_tooltip";
+         repeat_events: 1;
+         desc {
+            rel1.to: "img_path_frame";
+            rel2.to: "img_path_frame";
+            fixed: 1 1;
+         }
+      }
       image { "snd_path_icon";
          scale: 1;
          desc {
@@ -359,6 +367,14 @@ group { "build_setting_layout";
             rel1.offset: 5 0;
             rel1.relative: 1 0;
             rel2.to: "snd_path_frame";
+         }
+      }
+      swallow { "snd_path_tooltip";
+         repeat_events: 1;
+         desc {
+            rel1.to: "snd_path_frame";
+            rel2.to: "snd_path_frame";
+            fixed: 1 1;
          }
       }
       image { "fnt_path_icon";
@@ -404,6 +420,14 @@ group { "build_setting_layout";
             rel2.to: "fnt_path_frame";
          }
       }
+      swallow { "fnt_path_tooltip";
+         repeat_events: 1;
+         desc {
+            rel1.to: "fnt_path_frame";
+            rel2.to: "fnt_path_frame";
+            fixed: 1 1;
+         }
+      }
       image { "dat_path_icon";
          scale: 1;
          desc {
@@ -445,6 +469,14 @@ group { "build_setting_layout";
             rel1.offset: 14 0;
             rel1.relative: 1 0;
             rel2.to: "dat_path_frame";
+         }
+      }
+      swallow { "data_path_tooltip";
+         repeat_events: 1;
+         desc {
+            rel1.to: "dat_path_frame";
+            rel2.to: "dat_path_frame";
+            fixed: 1 1;
          }
       }
    }
