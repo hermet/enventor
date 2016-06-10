@@ -258,39 +258,51 @@ tools_init(Evas_Object *parent)
    evas_object_size_hint_align_set(text_editor_ly, EVAS_HINT_FILL,
                                    EVAS_HINT_FILL);
 
-   btn = tools_btn_create(text_editor_ly, "save",_("Save File (Ctrl + S)"),
+   btn = tools_btn_create(text_editor_ly, "save",
+                          _("Save File (Ctrl + S)<br>"
+                            "Save current script to build."),
                           save_cb);
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_part_content_set(text_editor_ly, "elm.swallow.save", btn);
 
-   btn = tools_btn_create(text_editor_ly, "undo", _("Undo Text (Ctrl + Z)"),
+   btn = tools_btn_create(text_editor_ly, "undo",
+                          _("Undo Text (Ctrl + Z)<br>"
+                            "Back to previous script step by step."),
                           undo_cb);
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_part_content_set(text_editor_ly, "elm.swallow.undo", btn);
 
-   btn = tools_btn_create(text_editor_ly, "redo", _("Redo Text (Ctrl + R)"),
+   btn = tools_btn_create(text_editor_ly, "redo",
+                          _("Redo Text (Ctrl + R)<br>"
+                            "Go to latest script step by step."),
                           redo_cb);
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_part_content_set(text_editor_ly, "elm.swallow.redo", btn);
 
-   btn = tools_btn_create(text_editor_ly, "find", _("Find/Replace (Ctrl + F)"),
+   btn = tools_btn_create(text_editor_ly, "find",
+                          _("Find/Replace (Ctrl + F)<br>"
+                            "Show Find/Replace window to find and replace input text."),
                           find_cb);
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_part_content_set(text_editor_ly, "elm.swallow.find", btn);
    td->find_btn = btn;
 
-   btn = tools_btn_create(text_editor_ly, "goto", _("Goto Lines (Ctrl + L)"),
+   btn = tools_btn_create(text_editor_ly, "goto",
+                          _("Goto Lines (Ctrl + L)<br>"
+                            "Show Goto Window to move current line."),
                           goto_cb);
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_part_content_set(text_editor_ly, "elm.swallow.goto", btn);
    td->goto_btn = btn;
 
-   btn = tools_btn_create(text_editor_ly, "lines", _("Line Numbers (F5)"),
+   btn = tools_btn_create(text_editor_ly, "lines",
+                          _("Line Numbers (F5)<br>"
+                            "Show and hide line number of script."),
                           lines_cb);
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -298,7 +310,10 @@ tools_init(Evas_Object *parent)
    td->lines_btn = btn;
 
    btn = tools_btn_create(text_editor_ly, "template",
-                          _("Insert Template (Ctrl + T)"), template_cb);
+                          _("Insert Template (Ctrl + T)<br>"
+                            "Insert template code automatically,<br>"
+                            "It is appropriate to current context."),
+                          template_cb);
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_part_content_set(text_editor_ly, "elm.swallow.template", btn);
