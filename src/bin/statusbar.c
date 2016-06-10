@@ -319,44 +319,49 @@ stats_init(Evas_Object *parent)
 
    //View Scale button
    create_statusbar_btn(layout, "expand", "scale_btn",
-                        _("View Scale (Ctrl + Mouse Wheel)<br>"
-                          "Set live view scale from 0.10 to 5.00"),
+                        _("View Zoom Level (Ctrl + Mouse Wheel)<br>"
+                          "Zooming live view in or out."),
                         ELM_TOOLTIP_ORIENT_TOP_RIGHT,
                         view_scale_btn_cb, sd);
    //View Resize Button
    create_statusbar_btn(layout, "expand", "resize_btn",
-                        _("Resize View Size<br>"
-                          "Resize live View width and height."),
+                        _("Resize live view width and height."),
                         ELM_TOOLTIP_ORIENT_TOP,
                         view_resize_btn_cb, sd);
    //View Invert Button
    create_statusbar_btn(layout, "invert", "invert_btn",
-                        _("Invert View Size<br>"
-                          "Change aspect ratio between width and height."),
+                        _("Swap the live view width and height."),
                         ELM_TOOLTIP_ORIENT_TOP,
                         view_invert_btn_cb, sd);
 
+   //Arrow Tooltip
    Evas_Object *arrow_tooltip = elm_button_add(layout);
    elm_object_style_set(arrow_tooltip, ENVENTOR_NAME);
    elm_object_part_content_set(layout, "elm.swallow.cursor_arrow.tooltip",
                                arrow_tooltip);
-   elm_object_tooltip_text_set(arrow_tooltip, _("Current mouse position in live view."));
+   elm_object_tooltip_text_set(arrow_tooltip,
+                                _("Mouse cursor position in live view.<br>"
+                                  "Absolute Coordinate | Relative Coordinate"));
    elm_object_tooltip_orient_set(arrow_tooltip, ELM_TOOLTIP_ORIENT_TOP);
    elm_object_focus_allow_set(arrow_tooltip, EINA_FALSE);
 
+   //Group Tooltip
    Evas_Object *group_tooltip = elm_button_add(layout);
    elm_object_style_set(group_tooltip, ENVENTOR_NAME);
    elm_object_part_content_set(layout, "elm.swallow.group_icon.tooltip",
                                group_tooltip);
-   elm_object_tooltip_text_set(group_tooltip, _("Current group in live view."));
+   elm_object_tooltip_text_set(group_tooltip,
+                               _("Current editing group name."));
    elm_object_tooltip_orient_set(group_tooltip, ELM_TOOLTIP_ORIENT_TOP);
    elm_object_focus_allow_set(group_tooltip, EINA_FALSE);
 
+   //Line Tooltip
    Evas_Object *line_tooltip = elm_button_add(layout);
    elm_object_style_set(line_tooltip, ENVENTOR_NAME);
    elm_object_part_content_set(layout, "elm.swallow.line.tooltip",
                                line_tooltip);
-   elm_object_tooltip_text_set(line_tooltip, _("Line information (current:max)."));
+   elm_object_tooltip_text_set(line_tooltip,
+                               _("Cursor line number : Max line number"));
    elm_object_tooltip_orient_set(line_tooltip, ELM_TOOLTIP_ORIENT_TOP_LEFT);
    elm_object_focus_allow_set(line_tooltip, EINA_FALSE);
 
