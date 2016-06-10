@@ -219,7 +219,6 @@ tools_init(Evas_Object *parent)
    elm_object_part_content_set(live_view_ly, "elm.swallow.dummy", btn);
    td->swallow_btn = btn;
 
-   //icon image is temporary, it should be changed to its own icon.
    btn = tools_btn_create(live_view_ly, "mirror",
                           _("Mirror Mode (Ctrl + M)<br>"
                             "Invert layout horizontally. This previews <br>"
@@ -282,8 +281,8 @@ tools_init(Evas_Object *parent)
 
    btn = tools_btn_create(text_editor_ly, "find",
                           _("Find/Replace (Ctrl + F)<br>"
-                            "Open Find/Replace window to find or replace "
-                            "text."),
+                            "Open Find/Replace window to find or<br>"
+                            "replace text."),
                           find_cb);
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -292,7 +291,8 @@ tools_init(Evas_Object *parent)
 
    btn = tools_btn_create(text_editor_ly, "goto",
                           _("Goto Lines (Ctrl + L)<br>"
-                            "Open Goto window to move the cursor line position."),
+                            "Open Goto window to move the cursor<br>"
+                            "line position."),
                           goto_cb);
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
