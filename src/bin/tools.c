@@ -321,35 +321,46 @@ tools_init(Evas_Object *parent)
    td->template_btn = btn;
 
    btn = tools_btn_create(text_editor_ly, "console",
-                          _("Console Box (Alt + Down)"), console_cb);
+                          _("Console Box (Alt + Down)<br>"
+                            "Show Console box which displays build logs."),
+                          console_cb);
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_part_content_set(text_editor_ly, "elm.swallow.console", btn);
    td->console_btn = btn;
 
    btn = tools_btn_create(text_editor_ly, "file_browser",
-                          _("File Browser (F9)"), file_browser_cb);
+                          _("File Browser (F9)<br>"
+                            "Show File Browser wihch displays list of files."),
+                          file_browser_cb);
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_part_content_set(text_editor_ly, "elm.swallow.file_browser", btn);
    td->file_browser_btn = btn;
 
    btn = tools_btn_create(text_editor_ly, "edc_navigator",
-                          _("EDC Navigator (F10)"), edc_navigator_cb);
+                          _("EDC Navigator (F10)<br>"
+                            "Show EDC Navigator which displays current parts<br>"
+                            "hierarchically."),
+                          edc_navigator_cb);
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_part_content_set(text_editor_ly, "elm.swallow.edc_navigator",
                                btn);
    td->edc_navigator_btn = btn;
 
-   btn = tools_btn_create(text_editor_ly, "status", _("Status (F11)"),
+   btn = tools_btn_create(text_editor_ly, "status",
+                          _("Status (F11)<br>"
+                            "Show Status bar which displays live view informations."),
                           status_cb);
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_part_content_set(text_editor_ly, "elm.swallow.status", btn);
    td->status_btn = btn;
 
-   btn = tools_btn_create(text_editor_ly, "menu", _("Enventor Menu (Esc)"),
+   btn = tools_btn_create(text_editor_ly, "menu",
+                          _("Enventor Menu (Esc)<br>"
+                          "Show Menu for setting enventor."),
                           menu_cb);
    elm_object_tooltip_orient_set(btn, ELM_TOOLTIP_ORIENT_BOTTOM_LEFT);
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
