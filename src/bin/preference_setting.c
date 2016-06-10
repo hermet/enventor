@@ -30,7 +30,8 @@ label_create(Evas_Object *parent, const char *text)
 }
 
 static Evas_Object *
-toggle_create(Evas_Object *parent, const char *text, Eina_Bool state)
+toggle_create(Evas_Object *parent, const char *text, Eina_Bool state,
+              const char *tooltip_msg)
 {
    Evas_Object *toggle = elm_check_add(parent);
    elm_object_style_set(toggle, "toggle");
@@ -38,6 +39,8 @@ toggle_create(Evas_Object *parent, const char *text, Eina_Bool state)
    evas_object_size_hint_weight_set(toggle, EVAS_HINT_EXPAND, 0);
    evas_object_size_hint_align_set(toggle, EVAS_HINT_FILL, 0);
    elm_object_text_set(toggle, text);
+   elm_object_tooltip_text_set(toggle, tooltip_msg);
+   elm_object_tooltip_orient_set(toggle, ELM_TOOLTIP_ORIENT_TOP_LEFT);
    evas_object_show(toggle);
 
    return toggle;
@@ -150,6 +153,9 @@ preference_setting_content_get(preference_setting_data *psd,
 
    elm_box_pack_end(box, box2);
 
+   elm_object_tooltip_text_set(box2,
+                               _("Set current live view size."));
+   elm_object_tooltip_orient_set(box2, ELM_TOOLTIP_ORIENT_TOP_LEFT);
    //Label (View Size)
 
    /* This layout is intended to put the label aligned to left side
@@ -217,32 +223,39 @@ preference_setting_content_get(preference_setting_data *psd,
 
    //Toggle (Tools)
    Evas_Object *toggle_tools = toggle_create(box, _("Tools"),
-                                             config_tools_get());
+                                             config_tools_get(),
+                                             _("Show and hide Toolbar."));
    elm_box_pack_end(box, toggle_tools);
 
    //Toggle (Console)
    Evas_Object *toggle_console = toggle_create(box, _("Auto Hiding Console"),
-                                               config_console_get());
+                                               config_console_get(),
+                            _("Show console box when it need to be shown."));
    elm_box_pack_end(box, toggle_console);
 
    //Toggle (Auto Indentation)
    Evas_Object *toggle_indent = toggle_create(box, _("Auto Indentation"),
-                                              config_auto_indent_get());
+                                              config_auto_indent_get(),
+                                              _("Apply auto indentation"
+                                                "when inserting script."));
    elm_box_pack_end(box, toggle_indent);
 
    //Toggle (Auto Completion)
    Evas_Object *toggle_autocomp = toggle_create(box, _("Auto Completion"),
-                                                config_auto_complete_get());
+                                                config_auto_complete_get(),
+                          _("Enable and disable keyword auto completion."));
    elm_box_pack_end(box, toggle_autocomp);
 
    //Toggle (Smart Undo/Redo)
    Evas_Object *toggle_smart_undo_redo = toggle_create(box, _("Smart Undo/Redo"),
-                                                config_smart_undo_redo_get());
+                                                config_smart_undo_redo_get(),
+                                              _("Redo and Undo script by word."));
    elm_box_pack_end(box, toggle_smart_undo_redo);
 
    //Toggle (Red Alert)
    Evas_Object *toggle_red_alert = toggle_create(box, _("Error Message Red Alert"),
-                                                 config_red_alert_get());
+                                                 config_red_alert_get(),
+                          _("When error is occured, show alert with red lights."));
    evas_object_size_hint_weight_set(toggle_red_alert, EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(toggle_red_alert, EVAS_HINT_FILL, 0);
