@@ -40,7 +40,6 @@ toggle_create(Evas_Object *parent, const char *text, Eina_Bool state,
    evas_object_size_hint_align_set(toggle, EVAS_HINT_FILL, 0);
    elm_object_text_set(toggle, text);
    elm_object_tooltip_text_set(toggle, tooltip_msg);
-   elm_object_tooltip_orient_set(toggle, ELM_TOOLTIP_ORIENT_TOP_LEFT);
    evas_object_show(toggle);
 
    return toggle;
@@ -155,7 +154,6 @@ preference_setting_content_get(preference_setting_data *psd,
 
    elm_object_tooltip_text_set(box2,
                                _("Set current live view size."));
-   elm_object_tooltip_orient_set(box2, ELM_TOOLTIP_ORIENT_TOP_LEFT);
    //Label (View Size)
 
    /* This layout is intended to put the label aligned to left side
@@ -224,38 +222,56 @@ preference_setting_content_get(preference_setting_data *psd,
    //Toggle (Tools)
    Evas_Object *toggle_tools = toggle_create(box, _("Tools"),
                                              config_tools_get(),
-                                             _("Show and hide Toolbar."));
+                                             _("Tools (F8)<br>"
+                                             "Display Tools"));
    elm_box_pack_end(box, toggle_tools);
 
    //Toggle (Console)
-   Evas_Object *toggle_console = toggle_create(box, _("Auto Hiding Console"),
-                                               config_console_get(),
-                            _("Show console box when it need to be shown."));
+   Evas_Object *toggle_console =
+      toggle_create(box, _("Auto Hiding Console"), config_console_get(),
+                    _("Hide Console box automatically<br>"
+                      "when no messages. If you fixed<br>"
+                      "all grammatic edc errors so the error<br>"
+                      "messages has gone, Console box will<br>"
+                      "be disappeared automatically."));
    elm_box_pack_end(box, toggle_console);
 
    //Toggle (Auto Indentation)
-   Evas_Object *toggle_indent = toggle_create(box, _("Auto Indentation"),
-                                              config_auto_indent_get(),
-                                              _("Apply auto indentation"
-                                                "when inserting script."));
+   Evas_Object *toggle_indent =
+      toggle_create(box, _("Auto Indentation"), config_auto_indent_get(),
+                    _("Auto Indentation (Ctrl + I)<br>"
+                      "Apply auto indentation for text editing.<br>"
+                      "When wrapping the text around,<br>"
+                      "Enventor inserts spaces automatically<br>"
+                      "for the line indentation"));
    elm_box_pack_end(box, toggle_indent);
 
    //Toggle (Auto Completion)
-   Evas_Object *toggle_autocomp = toggle_create(box, _("Auto Completion"),
-                                                config_auto_complete_get(),
-                          _("Enable and disable keyword auto completion."));
+   Evas_Object *toggle_autocomp =
+      toggle_create(box, _("Auto Completion"), config_auto_complete_get(),
+                    _("Auto Completion (Ctrl + O)<br>"
+                      "Display candidate keywords popup with<br>"
+                      "regards to the current editing contxt.<br>"
+                      "When you type texts in editor, candidate<br>"
+                      "popup will be popped. Once you choose one<br>"
+                      "of items in it, template code with regards<br>"
+                      "to the item will be inserted."));
    elm_box_pack_end(box, toggle_autocomp);
 
    //Toggle (Smart Undo/Redo)
-   Evas_Object *toggle_smart_undo_redo = toggle_create(box, _("Smart Undo/Redo"),
-                                                config_smart_undo_redo_get(),
-                                              _("Redo and Undo script by word."));
+   Evas_Object *toggle_smart_undo_redo =
+      toggle_create(box, _("Smart Undo/Redo"), config_smart_undo_redo_get(),
+                    _("Redo/Undo text by word. Otherwise, it<br>"
+                      "works by character"));
    elm_box_pack_end(box, toggle_smart_undo_redo);
 
    //Toggle (Red Alert)
-   Evas_Object *toggle_red_alert = toggle_create(box, _("Error Message Red Alert"),
-                                                 config_red_alert_get(),
-                          _("When error is occured, show alert with red lights."));
+   Evas_Object *toggle_red_alert =
+      toggle_create(box, _("Error Message Red Alert"), config_red_alert_get(),
+                    _("Enable Error Message Red Alert Effect.<br>"
+                      "When edc compilation is failed because<br>"
+                      "of a sort of grammartic error, Enventor<br>"
+                      "alerts you with screen fading effect."));
    evas_object_size_hint_weight_set(toggle_red_alert, EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(toggle_red_alert, EVAS_HINT_FILL, 0);
