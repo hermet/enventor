@@ -2092,16 +2092,61 @@ live_btn_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
 }
 
 static Evas_Object *
-live_btn_create(Evas_Object *parent, const char *name, void * data)
+live_btn_create(Evas_Object *parent, const char *name, void * data,
+                Edje_Part_Type type)
 {
    Evas_Object *btn = elm_button_add(parent);
    elm_object_style_set(btn, ENVENTOR_NAME);
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_focus_allow_set(btn, EINA_FALSE);
-   char buf[128];
-   snprintf(buf, sizeof(buf), "Add %s", name);
-   elm_object_tooltip_text_set(btn, buf);
+
+   switch (type)
+     {
+      case EDJE_PART_TYPE_RECTANGLE:
+         elm_object_tooltip_text_set(btn,
+                                     _("Add a Rect to the live view.<br>"
+                                       "Rect is used for a solid color<br>"
+                                       "component or clipping other<br>"
+                                       "components."));
+         break;
+      case EDJE_PART_TYPE_TEXT:
+         elm_object_tooltip_text_set(btn,
+                                     _("Add a Text to the live view.<br>"
+                                       "Text is used for a plain text"));
+         break;
+      case EDJE_PART_TYPE_IMAGE:
+         elm_object_tooltip_text_set(btn,
+                                     _("Add an Image to the live view.<br>"
+                                       "Image is used for an image part<br>"
+                                       "which contains a single image<br>"
+                                       "resource. Normally, an image file."));
+         break;
+      case EDJE_PART_TYPE_SWALLOW:
+         elm_object_tooltip_text_set(btn,
+                                     _("Add a Swallow to the live view.<br>"
+                                       "Swallow is a place holder for<br>"
+                                       "objects that one may want to<br>"
+                                       "include in the layout later."));
+         break;
+      case EDJE_PART_TYPE_TEXTBLOCK:
+         elm_object_tooltip_text_set(btn,
+                                     _("Add a Textblock to the live view.<br>"
+                                       "Textblock represents a rich-text<br>"
+                                       "part that can show big chunks of<br>"
+                                       "text."));
+         break;
+      case EDJE_PART_TYPE_SPACER:
+         elm_object_tooltip_text_set(btn,
+                                     _("Add a Spacer to the live view.<br>"
+                                       "Spacer is an anchor to locate <br>"
+                                       "other parts. It's invisible so<br>"
+                                       "normally used for a padding."));
+         break;
+      default:
+         break;
+     }
+
    elm_object_tooltip_orient_set(btn, ELM_TOOLTIP_ORIENT_BOTTOM);
 
    Evas_Object *img = elm_image_add(btn);
@@ -2225,14 +2270,15 @@ live_edit_tools_create(Evas_Object *parent)
    for (i = 0; i < (LIVEEDIT_ITEMS_NUM - 1); i++)
      {
         btn = live_btn_create(parent, LIVEEDIT_ITEMS[i].name,
-                              (void *)(uintptr_t) i);
+                              (void *)(uintptr_t) i,
+                              LIVEEDIT_ITEMS[i].type);
         btn_list = eina_list_append(btn_list, btn);
      }
 
    //Just for spacer. Because we'd like to avoid margin in the icon image,
    //We use 2 images - button icon's and live edit object's.
    btn = live_btn_create(parent, "Spacer_Icon",
-                         (void *)(uintptr_t) i);
+                         (void *)(uintptr_t) i, EDJE_PART_TYPE_SPACER);
    btn_list = eina_list_append(btn_list, btn);
 
    return btn_list;
