@@ -359,12 +359,8 @@ defaults:
           *dat_path = eina_list_append(*dat_path, eina_stringshare_add(s));
           free(s);
        }
+     dd = NULL;
      if (wd) sprintf(workspace_path, "%s", wd);
-
-   ecore_getopt_list_free(id);
-   ecore_getopt_list_free(fd);
-   ecore_getopt_list_free(sd);
-   ecore_getopt_list_free(dd);
 }
 
 static Eina_Bool
