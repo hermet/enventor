@@ -243,8 +243,7 @@ args_dispatch(int argc, char **argv,
    Eina_List *fd = NULL;
    Eina_List *sd = NULL;
    Eina_List *dd = NULL;
-
-   char *wd = NULL;
+   Eina_List *wd = NULL;
 
    Eina_Bool quit = EINA_FALSE;
    Eina_Bool help = EINA_FALSE;
@@ -270,7 +269,8 @@ args_dispatch(int argc, char **argv,
                                       "path", ECORE_GETOPT_TYPE_STR),
           ECORE_GETOPT_APPEND_METAVAR('d', "dd", "Data path",
                                       "path", ECORE_GETOPT_TYPE_STR),
-          ECORE_GETOPT_STORE_METAVAR_STR('w', "wd", "Workspace path", "path"),
+          ECORE_GETOPT_APPEND_METAVAR('w', "wd", "Workspace path",
+                                      "path", ECORE_GETOPT_TYPE_STR),
           ECORE_GETOPT_VERSION('v', "version"),
           ECORE_GETOPT_COPYRIGHT('c', "copyright"),
           ECORE_GETOPT_LICENSE('l', "license"),
@@ -285,7 +285,7 @@ args_dispatch(int argc, char **argv,
       ECORE_GETOPT_VALUE_LIST(sd),
       ECORE_GETOPT_VALUE_LIST(fd),
       ECORE_GETOPT_VALUE_LIST(dd),
-      ECORE_GETOPT_VALUE_STR(wd),
+      ECORE_GETOPT_VALUE_LIST(wd),
       ECORE_GETOPT_VALUE_BOOL(quit),
       ECORE_GETOPT_VALUE_BOOL(quit),
       ECORE_GETOPT_VALUE_BOOL(quit),
@@ -360,7 +360,14 @@ defaults:
           free(s);
        }
      dd = NULL;
-     if (wd) sprintf(workspace_path, "%s", wd);
+     if (wd)
+       {
+          sprintf(workspace_path, "%s", (char *)eina_list_data_get(wd));
+
+          EINA_LIST_FREE(wd, s)
+            free(s);
+          wd = NULL;
+       }
 }
 
 static Eina_Bool
