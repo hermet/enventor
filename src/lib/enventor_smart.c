@@ -223,12 +223,12 @@ _enventor_object_class_constructor(Eo_Class *klass)
 }
 
 EOLIAN static void
-_enventor_object_evas_object_smart_add(Eo *obj, Enventor_Object_Data *pd)
+_enventor_object_efl_canvas_group_group_add(Eo *obj, Enventor_Object_Data *pd)
 {
    pd->obj = obj;
 
    elm_widget_sub_object_parent_add(obj);
-   evas_obj_smart_add(eo_super(obj, MY_CLASS));
+   efl_canvas_group_add(eo_super(obj, MY_CLASS));
 
    build_init();
    autocomp_init();
@@ -254,8 +254,7 @@ _enventor_object_evas_object_smart_add(Eo *obj, Enventor_Object_Data *pd)
 }
 
 EOLIAN static void
-_enventor_object_evas_object_smart_del(Evas_Object *obj EINA_UNUSED,
-                                       Enventor_Object_Data *pd)
+_enventor_object_efl_canvas_group_group_del(Evas_Object *obj EINA_UNUSED, Enventor_Object_Data *pd)
 {
    eina_stringshare_del(pd->font_name);
    eina_stringshare_del(pd->font_style);   
@@ -270,9 +269,9 @@ _enventor_object_evas_object_smart_del(Evas_Object *obj EINA_UNUSED,
 }
 
 EOLIAN static void
-_enventor_object_evas_object_smart_member_add(Eo *obj, Enventor_Object_Data *pd EINA_UNUSED, Evas_Object *child)
+_enventor_object_efl_canvas_group_group_member_add(Eo *obj, Enventor_Object_Data *pd EINA_UNUSED, Evas_Object *child)
 {
-   evas_obj_smart_member_add(eo_super(obj, MY_CLASS), child);
+   efl_canvas_group_member_add(eo_super(obj, MY_CLASS), child);
 
    if (evas_object_visible_get(obj)) evas_object_show(child);
    else evas_object_hide(child);
@@ -286,7 +285,7 @@ _enventor_object_evas_object_smart_member_add(Eo *obj, Enventor_Object_Data *pd 
 }
 
 EOLIAN static void
-_enventor_object_evas_object_smart_move(Evas_Object *obj EINA_UNUSED, Enventor_Object_Data *pd, Evas_Coord x, Evas_Coord y)
+_enventor_object_efl_canvas_group_group_move(Evas_Object *obj EINA_UNUSED, Enventor_Object_Data *pd, Evas_Coord x, Evas_Coord y)
 {
    //Main Item
    Evas_Object *o = edit_obj_get(pd->main_it.ed);
@@ -294,7 +293,7 @@ _enventor_object_evas_object_smart_move(Evas_Object *obj EINA_UNUSED, Enventor_O
 }
 
 EOLIAN static void
-_enventor_object_evas_object_smart_resize(Evas_Object *obj EINA_UNUSED, Enventor_Object_Data *pd, Evas_Coord w, Evas_Coord h)
+_enventor_object_efl_canvas_group_group_resize(Evas_Object *obj EINA_UNUSED, Enventor_Object_Data *pd, Evas_Coord w, Evas_Coord h)
 {
    //Main Item
    Evas_Object *o = edit_obj_get(pd->main_it.ed);
@@ -302,7 +301,7 @@ _enventor_object_evas_object_smart_resize(Evas_Object *obj EINA_UNUSED, Enventor
 }
 
 EOLIAN static void
-_enventor_object_evas_object_smart_show(Evas_Object *obj EINA_UNUSED, Enventor_Object_Data *pd)
+_enventor_object_efl_canvas_group_group_show(Evas_Object *obj EINA_UNUSED, Enventor_Object_Data *pd)
 {
    //Main Item
    Evas_Object *o = edit_obj_get(pd->main_it.ed);
@@ -310,7 +309,7 @@ _enventor_object_evas_object_smart_show(Evas_Object *obj EINA_UNUSED, Enventor_O
 }
 
 EOLIAN static void
-_enventor_object_evas_object_smart_hide(Evas_Object *obj EINA_UNUSED, Enventor_Object_Data *pd)
+_enventor_object_efl_canvas_group_group_hide(Evas_Object *obj EINA_UNUSED, Enventor_Object_Data *pd)
 {
    //Main Item
    Evas_Object *o = edit_obj_get(pd->main_it.ed);
@@ -318,7 +317,7 @@ _enventor_object_evas_object_smart_hide(Evas_Object *obj EINA_UNUSED, Enventor_O
 }
 
 EOLIAN static void
-_enventor_object_evas_object_smart_clip_set(Evas_Object *obj EINA_UNUSED, Enventor_Object_Data *pd, Evas_Object *clip)
+_enventor_object_efl_canvas_group_group_clip_set(Evas_Object *obj EINA_UNUSED, Enventor_Object_Data *pd, Evas_Object *clip)
 {
    //Main Item
    Evas_Object *o = edit_obj_get(pd->main_it.ed);
@@ -326,7 +325,7 @@ _enventor_object_evas_object_smart_clip_set(Evas_Object *obj EINA_UNUSED, Envent
 }
 
 EOLIAN static void
-_enventor_object_evas_object_smart_clip_unset(Evas_Object *obj EINA_UNUSED, Enventor_Object_Data *pd)
+_enventor_object_efl_canvas_group_group_clip_unset(Evas_Object *obj EINA_UNUSED, Enventor_Object_Data *pd)
 {
    //Main Item
    Evas_Object *o = edit_obj_get(pd->main_it.ed);
@@ -339,7 +338,7 @@ _enventor_object_eo_base_constructor(Eo *obj,
 {
    obj = eo_constructor(eo_super(obj, MY_CLASS));
    evas_obj_type_set(obj, MY_CLASS_NAME_LEGACY);
-   evas_obj_smart_callbacks_descriptions_set(obj, _smart_callbacks);
+   evas_object_smart_callbacks_descriptions_set(obj, _smart_callbacks);
 
    return obj;
 }

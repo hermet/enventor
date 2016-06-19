@@ -297,15 +297,15 @@ class Enventor.Object (Elm.Widget, Efl.File) {
    implements {
       class.constructor;
       Eo.Base.constructor;
-      Evas.Object.Smart.add;
-      Evas.Object.Smart.del;
-      Evas.Object.Smart.move;
-      Evas.Object.Smart.resize;
-      Evas.Object.Smart.show;
-      Evas.Object.Smart.hide;
-      Evas.Object.Smart.clip.set;
-      Evas.Object.Smart.clip_unset;
-      Evas.Object.Smart.member_add;
+      Efl.Canvas.Group.group_add;
+      Efl.Canvas.Group.group_del;
+      Efl.Canvas.Group.group_move;
+      Efl.Canvas.Group.group_resize;
+      Efl.Canvas.Group.group_show;
+      Efl.Canvas.Group.group_hide;
+      Efl.Canvas.Group.group_clip.set;
+      Efl.Canvas.Group.group_clip_unset;
+      Efl.Canvas.Group.group_member_add;
       Efl.File.file.set;
    }
    events {
