@@ -250,16 +250,15 @@ template_part_insert(edit_data *ed, Edje_Part_Type part_type,
         case EDJE_PART_TYPE_TABLE:
         case EDJE_PART_TYPE_EXTERNAL:
         case EDJE_PART_TYPE_PROXY:
-        case EDJE_PART_TYPE_LAST:
-           line_cnt = TEMPLATE_PART_IMAGE_LINE_CNT;
-           t = (char **) &TEMPLATE_PART_IMAGE;
-           strncpy(type_name, "image\0", 6);
-           break;
-        //for avoiding compiler warning.
         case EDJE_PART_TYPE_MESH_NODE:
         case EDJE_PART_TYPE_LIGHT:
         case EDJE_PART_TYPE_CAMERA:
         case EDJE_PART_TYPE_SNAPSHOT:
+        case EDJE_PART_TYPE_VECTOR:
+        case EDJE_PART_TYPE_LAST:
+           line_cnt = TEMPLATE_PART_IMAGE_LINE_CNT;
+           t = (char **) &TEMPLATE_PART_IMAGE;
+           strncpy(type_name, "image\0", 6);
            break;
      }
 

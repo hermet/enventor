@@ -1581,7 +1581,7 @@ group "lexem" struct {
                             value "cursor_offset" int: 4;
                             value "line_back" int: 1;
                             group "name" var_array {
-                               count 12;
+                               count 13;
                                value "string" string: "image";
                                value "string" string: "group";
                                value "string" string: "swallow";
@@ -1594,6 +1594,7 @@ group "lexem" struct {
                                value "string" string: "text";
                                value "string" string: "textblock";
                                value "string" string: "part";
+                               value "string" string: "vector";
                             }
                          }
                      }

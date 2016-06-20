@@ -72,6 +72,7 @@ group "syntax_color_group" struct {
             value "key" string: "text ";
             value "key" string: "text.";
             value "key" string: "textblock";
+            value "key" string: "vector";
             value "key" string: "zoom";
          }
       }
