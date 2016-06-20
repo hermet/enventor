@@ -695,8 +695,7 @@ _enventor_object_select_region_set(Eo *obj EINA_UNUSED,
                                    Enventor_Object_Data *pd, int start, int end)
 {
    edit_selection_clear(pd->main_it.ed);
-   elm_entry_cursor_pos_set(edit_entry_get(pd->main_it.ed), start);
-   elm_entry_select_region_set(edit_entry_get(pd->main_it.ed), start, end);
+   edit_selection_region_center_set(pd->main_it.ed, start, end);
 }
 
 EOLIAN static void

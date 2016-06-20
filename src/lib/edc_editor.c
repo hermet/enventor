@@ -1154,7 +1154,7 @@ finish:
      {
         int cur_pos = part_pos - utf8 + 1;
         elm_entry_select_none(ed->en_edit);
-        elm_entry_select_region_set(ed->en_edit, cur_pos, cur_pos + strlen(part_name));
+        edit_selection_region_center_set(ed, cur_pos, cur_pos + strlen(part_name));
      }
 
    free(utf8);
@@ -1744,4 +1744,42 @@ edit_key_up_event_dispatch(edit_data *ed, const char *key)
    return EINA_FALSE;
 }
 
+void
+edit_selection_region_center_set(edit_data *ed, int start, int end)
+{
+   Evas_Coord region_y, region_h;
+   Evas_Coord cursor_y, cursor_h;
 
+   //Calculate line of selection region
+   elm_entry_cursor_pos_set(ed->en_edit, start);
+   elm_entry_cursor_geometry_get(ed->en_edit, NULL, &cursor_y, NULL, &cursor_h);
+   int cur_line = (cursor_y / cursor_h) + 1;
+
+   //Calculate current region of scroller
+   elm_scroller_region_get(ed->scroller, NULL, &region_y, NULL, &region_h);
+
+
+   int line;
+   //Case 1: selection region is above the centor of scroller region
+   if (((region_y + (region_h / 2))) > cursor_y)
+     {
+        line = cur_line - (int)((region_h / cursor_h) / 2);
+        if (line < 1) line = 1;
+     }
+   //Case 2: selection region is below the center of scroller region
+   else
+     {
+        line = cur_line + 2 + (int)((region_h / cursor_h) / 2);
+        if (line > ed->line_max) line = ed->line_max;
+     }
+
+   //Move the scroller for selection align
+   Evas_Object *tb = elm_entry_textblock_get(ed->en_edit);
+   Evas_Textblock_Cursor *cur = evas_object_textblock_cursor_get(tb);
+   evas_textblock_cursor_line_set(cur, (line - 1));
+   elm_entry_cursor_geometry_get(ed->en_edit, NULL, &region_y, NULL, NULL);
+   elm_scroller_region_show(ed->scroller, 0, region_y, 0, 0);
+
+   //Select region
+   elm_entry_select_region_set(ed->en_edit, start, end);
+}
