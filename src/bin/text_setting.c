@@ -615,32 +615,6 @@ font_scale_spinner_changed_cb(void *data, Evas_Object *obj,
 }
 
 static void
-font_scale_button_dec_cb(void *data, Evas_Object *obj,
-                         void *event_info EINA_UNUSED)
-{
-   text_setting_data *tsd = data;
-   tsd->font_scale -= 0.5;
-   if (tsd->font_scale < 0.5) tsd->font_scale = 0.5;
-   syntax_template_apply(tsd);
-
-   elm_slider_value_set(tsd->slider_font, tsd->font_scale);
-   elm_spinner_value_set(tsd->spinner_font, tsd->font_scale);
-}
-
-static void
-font_scale_button_inc_cb(void *data, Evas_Object *obj,
-                         void *event_info EINA_UNUSED)
-{
-   text_setting_data *tsd = data;
-   tsd->font_scale += 0.5;
-   if (tsd->font_scale > 5) tsd->font_scale = 5;
-   syntax_template_apply(tsd);
-
-   elm_slider_value_set(tsd->slider_font, tsd->font_scale);
-   elm_spinner_value_set(tsd->spinner_font, tsd->font_scale);
-}
-
-static void
 text_setting_font_apply(text_setting_data *tsd)
 {
    char text_class_name[32];
@@ -824,26 +798,16 @@ text_setting_content_get(text_setting_data *tsd, Evas_Object *parent)
 
    elm_box_pack_end(box, box2);
 
-   // decrease button (spinner_font)
-   Evas_Object *button_dec = elm_button_add(box2);
-   elm_object_text_set(button_dec, "-");
-   evas_object_size_hint_weight_set(button_dec, 0, 0);
-   evas_object_size_hint_align_set(button_dec, 0.5, 0.5);
-   evas_object_size_hint_min_set(button_dec, 20, 20);
-   evas_object_smart_callback_add(button_dec, "clicked",
-                                  font_scale_button_dec_cb, tsd);
-   evas_object_show(button_dec);
-
-   elm_box_pack_end(box2, button_dec);
-
    //Font Size (Slider)
    Evas_Object *slider_font = elm_slider_add(box2);
    evas_object_size_hint_weight_set(slider_font, 0, 0);
    evas_object_size_hint_align_set(slider_font, EVAS_HINT_FILL, 0.5);
-   elm_slider_span_size_set(slider_font, 400);
+   elm_slider_span_size_set(slider_font, 450);
    elm_slider_indicator_show_set(slider_font, EINA_FALSE);
    elm_slider_min_max_set(slider_font, MIN_FONT_SCALE, MAX_FONT_SCALE);
    elm_slider_value_set(slider_font, tsd->font_scale);
+   double step = 0.01 / (double) (MAX_FONT_SCALE - MIN_FONT_SCALE);
+   elm_slider_step_set(slider_font, step);
    evas_object_smart_callback_add(slider_font, "changed",
                                   font_scale_slider_changed_cb, tsd);
    evas_object_show(slider_font);
@@ -851,20 +815,8 @@ text_setting_content_get(text_setting_data *tsd, Evas_Object *parent)
 
    elm_box_pack_end(box2, slider_font);
 
-   // increase button (spinner_font)
-   Evas_Object *button_inc = elm_button_add(box2);
-   elm_object_text_set(button_inc, "+");
-   evas_object_size_hint_weight_set(button_inc, 0, 0);
-   evas_object_size_hint_align_set(button_inc, 0.5, 0.5);
-   evas_object_size_hint_min_set(button_inc, 20, 20);
-   evas_object_smart_callback_add(button_inc, "clicked",
-                                  font_scale_button_inc_cb, tsd);
-   evas_object_show(button_inc);
-
-   elm_box_pack_end(box2, button_inc);
-
    Evas_Object *padding = elm_box_add(box2);
-   evas_object_size_hint_min_set(padding, 15, 20);
+   evas_object_size_hint_min_set(padding, 5, 20);
    elm_box_pack_end(box2, padding);
 
    // Spinner font
