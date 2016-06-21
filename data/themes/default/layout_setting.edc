@@ -496,12 +496,32 @@ group { name: "text_setting_layout";
             fixed: 0 1;
          }
       }
+      part { name: text_font_size;
+         type: TEXT;
+         scale: 1;
+         description {
+            rel1.to: "preference_frame";
+            rel2 { to: "preference_frame"; relative: 0.0 1.0; }
+            rel1.offset: 2 0;
+            min: 50 20;
+            fixed: 1 1;
+            align: 0.0 0.5;
+            color: COL_NM;
+            text {
+               text: "Font Size";
+               size: 10;
+               font: FN;
+               align: 0.0 0.5;
+            }
+         }
+      }
       part { name: "elm.swallow.font_size";
          type: SWALLOW;
          scale: 1;
          description {
-            rel1.to: "preference_frame";
-            rel2.to: "preference_frame";
+            align: 0.0 0.5;
+            rel1 { to: "text_font_size"; relative: 1.0 0.0; }
+            rel2 { to_x: "preference_frame"; to_y: "text_font_size"; }
          }
       }
       spacer { "padding1";
