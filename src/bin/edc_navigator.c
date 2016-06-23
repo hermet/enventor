@@ -399,24 +399,6 @@ find_part_proc_internal(char *utf8, char *utf8_end, const char* group_name,
                   ESCAPE_RET_NULL();
                }
           }
-
-        //compatibility: "part"
-        if (!strncmp("part", p, strlen("part")))
-          {
-             p = strstr((p + 4), "\"");
-             if (!p) return NULL;
-             p++;
-             if (!strncmp(part_name, p, strlen(part_name)))
-               {
-                  result = p;
-                  break;
-               }
-             else
-               {
-                  ESCAPE_RET_NULL();
-               }
-          }
-
         p++;
      }
 
