@@ -99,7 +99,7 @@ build_cmd_set(build_data *bd)
      }
 
    eina_strbuf_append_printf(strbuf,
-      "edje_cc -fastcomp %s %s -id %s/images -sd %s/sounds -fd %s/fonts -dd %s/data %s %s %s %s",
+      "edje_cc -fastcomp %s %s -id %s/images -sd %s/sounds -fd %s/fonts -dd %s/data %s %s %s %s -beta",
       bd->edc_path,
       (char *) eina_list_data_get(bd->pathes_list[ENVENTOR_PATH_TYPE_EDJ]),
       elm_app_data_dir_get(),
