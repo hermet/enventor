@@ -179,7 +179,7 @@ class Enventor.Object (Elm.Widget, Efl.File) {
          }
       }
       live_view_get {
-         return: Evas.Object;
+         return: Efl.Canvas.Object;
       }
       line_goto {
          params {
