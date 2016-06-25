@@ -2048,7 +2048,10 @@ live_btn_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
 
    live_edit_layer_set(ld);
 
-   stats_info_msg_update(_("Double click part to confirm. (Esc = cancel, Direction Key = move item per pixel, Ctrl = disable auto-aligning)"));
+   stats_info_msg_update(_("Double click part to confirm."
+                           "(Esc = cancel, Direction Key ="
+                           " move item per pixel,"
+                           "Ctrl = disable auto-aligning)"));
 }
 
 static Evas_Object *
