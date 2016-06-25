@@ -1077,7 +1077,7 @@ group { name: "search_layout";
                font: FN;
                size: 10;
                align: 0 0.5;
-               text: "Forward";
+               text: "Next";
             }
             color: COL_HI;
             min: 80 30;

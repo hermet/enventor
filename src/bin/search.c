@@ -230,7 +230,7 @@ backward_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
    search_data *sd = data;
    find_backward_proc(sd);
    sd->forward = EINA_FALSE;
-   elm_object_part_text_set(sd->layout, "elm.text.dir", _("Backward"));
+   elm_object_part_text_set(sd->layout, "elm.text.dir", _("Previous"));
 }
 
 static void
@@ -262,7 +262,7 @@ forward_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
    search_data *sd = data;
    find_forward_proc(sd);
    sd->forward = EINA_TRUE;
-   elm_object_part_text_set(sd->layout, "elm.text.dir", _("Forward"));
+   elm_object_part_text_set(sd->layout, "elm.text.dir", _("Next"));
 }
 
 static void
@@ -389,14 +389,14 @@ search_open(void)
                                entry_replace);
    //Button (forward)
    Evas_Object *btn_forward = elm_button_add(layout);
-   elm_object_text_set(btn_forward, _("Forward"));
+   elm_object_text_set(btn_forward, _("Next"));
    evas_object_smart_callback_add(btn_forward, "clicked", forward_clicked_cb,
                                   sd);
    elm_object_part_content_set(layout, "elm.swallow.forward", btn_forward);
 
    //Button (backward)
    Evas_Object *btn_backward = elm_button_add(layout);
-   elm_object_text_set(btn_backward, _("Backward"));
+   elm_object_text_set(btn_backward, _("Previous"));
    evas_object_smart_callback_add(btn_backward, "clicked",
                                   backward_clicked_cb, sd);
    elm_object_part_content_set(layout, "elm.swallow.backward",
