@@ -4,10 +4,9 @@ images {
    image: "live_spacer.png" COMP;
 }
 
-group { name: "swallow";
+group { "swallow";
    parts {
       image { "img";
-         repeat_events: 1;
          desc { "default";
             image.normal: "swallow.png";
             aspect: 1 1;
@@ -19,8 +18,7 @@ group { name: "swallow";
 
 group { "spacer";
    parts {
-      image { name: "img";
-         repeat_events: 1;
+      image { "img";
          desc {
             image.normal: "live_spacer.png";
             image.border: 3 3 2 4;
