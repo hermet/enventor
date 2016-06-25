@@ -2162,19 +2162,6 @@ group { "statusbar_layout";
             fixed: 1 0;
          }
       }
-      swallow { "line_btn";
-         clip_to: "base_clip";
-         scale: 1;
-         desc { "default";
-            rel1.to: "elm.text.line_[";
-            rel2.to: "elm.text.line_[";
-            rel1.relative: 0.0 0.0;
-            rel2.relative: 0.0 1.0;
-            align: 1 0.5;
-            min: 18 18;
-            fixed: 1 0;
-         }
-      }
       text { "elm.text.line_[";
          clip_to: "base_clip";
          scale: 1;
