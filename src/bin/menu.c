@@ -172,9 +172,9 @@ warning_open(menu_data *md, Evas_Smart_Cb yes_cb, Evas_Smart_Cb save_cb)
    Evas_Object *layout = elm_layout_add(base_win_get());
    elm_layout_file_set(layout, EDJE_PATH, "warning_layout");
    elm_object_part_text_set(layout, "elm.text.desc",
-                            _("Without save, you will lose last changes!"));
+                            _("You have unsaved changes."));
    elm_object_part_text_set(layout, "elm.text.question",
-                            _("Will you save changes?"));
+                            _("Do you want to save the changes?"));
    elm_object_signal_callback_add(layout, "elm,state,dismiss,done", "",
                                   warning_dismiss_done, md);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
