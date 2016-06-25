@@ -13,29 +13,26 @@ images {
    image: "bg_demo.png" COMP;
 }
 
-group { name: "fileselector_layout";
+group { "fileselector_layout";
    parts {
-      part { name: "clipper";
-         type: RECT;
-         description { state: "default" 0.0;
+      rect { "clipper";
+         desc { "default";
             color: 127 127 127 127;
          }
-         description { state: "show" 0.0;
+         desc { "show";
             color: 255 255 255 255;
          }
       }
-      part { name: "bg";
-         type: RECT;
+      rect { "bg";
          clip_to: "clipper";
-         description { state: "default" 0.0;
+         desc { "default";
             color: 0 0 0 175;
          }
       }
-      part { name: "base_frame_img";
-         type: IMAGE;
+      image { "base_frame_img";
          scale: 1;
          clip_to: "clipper";
-         description {
+         desc {
             min: 600 435;
             max: 600 435;
             fixed: 1 1;
@@ -44,11 +41,10 @@ group { name: "fileselector_layout";
             image.border_scale: 1;
          }
       }
-      part { name: "shine_img";
-         type: IMAGE;
+      image { "shine_img";
          scale: 1;
          clip_to: "clipper";
-         description {
+         desc {
             rel1 { to: "base_frame_img"; relative: 0 0; }
             rel2 { to: "base_frame_img"; relative: 1 0; }
             align: 0.5 0;
@@ -57,18 +53,16 @@ group { name: "fileselector_layout";
             image.normal: "shine.png";
          }
       }
-      part { name: "base_frame";
-         type: SPACER;
-         description {
+      spacer { "base_frame";
+         desc {
             rel1 { to: "base_frame_img"; offset: 10 10; }
             rel2 { to: "base_frame_img"; offset: -11 -11; }
          }
       }
-      part { name: "title_frame";
-         type: RECT;
+      rect { "title_frame";
          scale: 1;
          clip_to: "clipper";
-         description {
+         desc {
             rel1 { to: "base_frame"; }
             rel2 { to: "base_frame"; relative: 1 0; }
             align: 0.5 0;
@@ -77,11 +71,10 @@ group { name: "fileselector_layout";
             color: 0 0 0 255;
          }
       }
-      part { name: "title_icon";
-         type: IMAGE;
+      image { "title_icon";
          scale: 1;
          clip_to: "clipper";
-         description {
+         desc {
             align: 0 0.5;
             min: 20 20;
             max: 20 20;
@@ -91,12 +84,11 @@ group { name: "fileselector_layout";
             image.normal: "folder.png";
          }
       }
-      part { name: "elm.text.title";
-         type: TEXT;
+      text { "elm.text.title";
          scale: 1;
          clip_to: "clipper";
          effect: GLOW;
-         description {
+         desc {
             rel1.to: "title_frame";
             rel2.to: "title_frame";
             align: 0.5 0.5;
@@ -111,20 +103,18 @@ group { name: "fileselector_layout";
             color: COL_HI;
          }
       }
-      part { name: "elm.swallow.fileselector";
-         type: SWALLOW;
+      swallow { "elm.swallow.fileselector";
          clip_to: "clipper";
-         description {
+         desc {
             rel1 { to: "title_frame"; relative: 0 1; }
             rel2 { to: "base_frame"; }
          }
       }
-      part { name: "elm.text.msg";
-         type: TEXT;
+      text { "elm.text.msg";
          effect: SHADOW BOTTOM;
          scale: 1;
          clip_to: "clipper";
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.relative: 0 1;
             rel1.to: "elm.swallow.fileselector";
             rel2.relative: 1 1;
@@ -137,28 +127,26 @@ group { name: "fileselector_layout";
             color: COL_NM_TRANS;
             fixed: 0 1;
          }
-         description { state: "show" 0.0;
-            inherit: "default" 0.0;
+         desc { "show";
+            inherit: "default";
             color: COL_NM;
          }
       }
-      part { name: "event_blocker";
-         type: RECT;
-         description { state: "default" 0.0;
+      rect { "event_blocker";
+         desc { "default";
             color: 0 0 0 0;
             visible: 1;
          }
-         description { state: "hide" 0.0;
-            inherit: "default" 0.0;
+         desc { "hide";
+            inherit: "default";
             visible: 0;
          }
       }
-      part { name: "over_img";
-         type: IMAGE;
+      image { "over_img";
          scale: 1;
          clip_to: "clipper";
-         mouse_events: 0;
-         description {
+         nomouse;
+         desc {
             rel1 { to: "base_frame_img"; relative: 0 0; }
             rel2 { to: "base_frame_img"; relative: 1 1; }
             image.normal: "bub_over_bot.png";
@@ -166,76 +154,73 @@ group { name: "fileselector_layout";
       }
    }
    programs {
-      program { name: "load";
+      program { "load";
          signal: "load";
-         action: STATE_SET "show" 0.0;
+         action: STATE_SET "show";
          transition: "DECELERATE" 0.5;
          target: "clipper";
          after: "event_blocker_hide";
       }
-      program { name: "dismiss";
+      program { "dismiss";
          signal: "elm,state,dismiss";
          source: "";
-         action: STATE_SET "default" 0.0;
+         action: STATE_SET "default";
 //         transition: "DECELERATE" 0.125;
          target: "clipper";
          target: "event_blocker";
          after: "dismiss_done";
       }
-      program { name: "event_blocker_hide";
+      program { "event_blocker_hide";
          signal: "elm,state,event_blocker,hide";
          source: "";
-         action: STATE_SET "hide" 0.0;
+         action: STATE_SET "hide";
          target: "event_blocker";
       }
-      program { name: "dismiss_done";
+      program { "dismiss_done";
          action: SIGNAL_EMIT "elm,state,dismiss,done" "";
       }
-      program { name: "msg_show";
+      program { "msg_show";
          signal: "elm,action,msg,show";
          source: "";
-         action: STATE_SET "show" 0.0;
+         action: STATE_SET "show";
          target: "elm.text.msg";
          transition: DECELERATE 0.3;
          after: "msg_idle";
       }
-      program { name: "msg_idle";
-         action: STATE_SET "show" 0.0;
+      program { "msg_idle";
+         action: STATE_SET "show";
          target: "elm.text.msg";
          transition: LINEAR 1;
          after: "msg_hide";
       }
-      program { name: "msg_hide";
-         action: STATE_SET "default" 0.0;
+      program { "msg_hide";
+         action: STATE_SET "default";
          target: "elm.text.msg";
          transition: DECELERATE 0.3;
       }
    }
 }
 
-group { name: "newfile_layout";
+group { "newfile_layout";
    parts {
-      part { name: "clipper";
-         type: RECT;
-         description { state: "default" 0.0;
+      rect { "clipper";
+         desc { "default";
             color: 127 127 127 127;
          }
-         description { state: "show" 0.0;
+         desc { "show";
             color: 255 255 255 255;
          }
       }
-      part { name: "bg";
-         type: RECT;
+      rect { "bg";
          clip_to: "clipper";
-         description { state: "default" 0.0;
+         desc { "default";
             color: 0 0 0 175;
          }
       }
-      part { name: "base_frame_img";
-         type: IMAGE;
+      image { "base_frame_img";
          scale: 1;
          clip_to: "clipper";
-         description {
+         desc {
             min: 600 435;
             max: 600 435;
             fixed: 1 1;
@@ -244,11 +229,10 @@ group { name: "newfile_layout";
             image.border_scale: 1;
          }
       }
-      part { name: "shine_img";
-         type: IMAGE;
+      image { "shine_img";
          scale: 1;
          clip_to: "clipper";
-         description {
+         desc {
             rel1 { to: "base_frame_img"; relative: 0 0; }
             rel2 { to: "base_frame_img"; relative: 1 0; }
             align: 0.5 0;
@@ -257,18 +241,16 @@ group { name: "newfile_layout";
             image.normal: "shine.png";
          }
       }
-      part { name: "base_frame";
-         type: SPACER;
-         description {
+      spacer { "base_frame";
+         desc {
             rel1 { to: "base_frame_img"; offset: 10 10; }
             rel2 { to: "base_frame_img"; offset: -11 -11; }
          }
       }
-      part { name: "title_frame";
-         type: RECT;
+      rect { "title_frame";
          scale: 1;
          clip_to: "clipper";
-         description {
+         desc {
             rel1 { to: "base_frame"; }
             rel2 { to: "base_frame"; relative: 1 0; }
             align: 0.5 0;
@@ -277,11 +259,10 @@ group { name: "newfile_layout";
             color: 0 0 0 255;
          }
       }
-      part { name: "title_icon";
-         type: IMAGE;
+      image { "title_icon";
          scale: 1;
          clip_to: "clipper";
-         description {
+         desc {
             align: 0 0.5;
             min: 20 20;
             max: 20 20;
@@ -291,12 +272,11 @@ group { name: "newfile_layout";
             image.normal: "new.png";
          }
       }
-      part { name: "elm.text.title";
-         type: TEXT;
+      text { "elm.text.title";
          scale: 1;
          clip_to: "clipper";
          effect: GLOW;
-         description {
+         desc {
             rel1.to: "title_frame";
             rel2.to: "title_frame";
             align: 0.5 0.5;
@@ -311,19 +291,17 @@ group { name: "newfile_layout";
             color: COL_HI;
          }
       }
-      part { name: "elm.swallow.content";
-         type: SWALLOW;
+      swallow { "elm.swallow.content";
          clip_to: "clipper";
-         description {
+         desc {
             rel1 { to: "title_frame"; relative: 0 1; offset: 0 5; }
             rel2 { to: "base_frame"; relative: 1 0.91; }
          }
       }
-      part { name: "elm.swallow.ok_btn";
-         type: SWALLOW;
+      swallow { "elm.swallow.ok_btn";
          scale: 1;
          clip_to: "clipper";
-         description {
+         desc {
             align: 1 1;
             min: 50 25;
             fixed: 1 1;
@@ -334,11 +312,10 @@ group { name: "newfile_layout";
             rel2.offset: -2 -1;
          }
       }
-      part { name: "elm.swallow.cancel_btn";
-         type: SWALLOW;
+      swallow { "elm.swallow.cancel_btn";
          scale: 1;
          clip_to: "clipper";
-         description {
+         desc {
             align: 0 1;
             min: 50 25;
             fixed: 1 1;
@@ -349,23 +326,21 @@ group { name: "newfile_layout";
             rel2.relative: 0.5 1;
          }
       }
-      part { name: "event_blocker";
-         type: RECT;
-         description { state: "default" 0.0;
+      rect { "event_blocker";
+         desc { "default";
             color: 0 0 0 0;
             visible: 1;
          }
-         description { state: "hide" 0.0;
-            inherit: "default" 0.0;
+         desc { "hide";
+            inherit: "default";
             visible: 0;
          }
       }
-      part { name: "over_img";
-         type: IMAGE;
+      image { "over_img";
          scale: 1;
          clip_to: "clipper";
-         mouse_events: 0;
-         description {
+         nomouse;
+         desc {
             rel1 { to: "base_frame_img"; relative: 0 0; }
             rel2 { to: "base_frame_img"; relative: 1 1; }
             image.normal: "bub_over_bot.png";
@@ -373,56 +348,53 @@ group { name: "newfile_layout";
       }
    }
    programs {
-      program { name: "load";
+      program { "load";
          signal: "load";
-         action: STATE_SET "show" 0.0;
+         action: STATE_SET "show";
          transition: "DECELERATE" 0.5;
          target: "clipper";
          after: "event_blocker_hide";
       }
-      program { name: "dismiss";
+      program { "dismiss";
          signal: "elm,state,dismiss";
          source: "";
-         action: STATE_SET "default" 0.0;
+         action: STATE_SET "default";
          target: "clipper";
          target: "event_blocker";
          after: "dismiss_done";
       }
-      program { name: "event_blocker_hide";
+      program { "event_blocker_hide";
          signal: "elm,state,event_blocker,hide";
          source: "";
-         action: STATE_SET "hide" 0.0;
+         action: STATE_SET "hide";
          target: "event_blocker";
       }
-      program { name: "dismiss_done";
+      program { "dismiss_done";
          action: SIGNAL_EMIT "elm,state,dismiss,done" "";
       }
    }
 }
 
-group { name: "warning_layout";
+group { "warning_layout";
    parts {
-      part { name: "clipper";
-         type: RECT;
-         description { state: "default" 0.0;
+      rect { "clipper";
+         desc { "default";
             color: 127 127 127 127;
          }
-         description {state: "show" 0.0;
+         desc {state: "show";
             color: 255 255 255 255;
          }
       }
-      part { name: "bg";
-         type: RECT;
+      rect { "bg";
          clip_to: "clipper";
-         description { state: "default" 0.0;
+         desc { "default";
             color: 0 0 0 175;
          }
       }
-      part { name: "base_frame_img";
-         type: IMAGE;
+      image { "base_frame_img";
          scale: 1;
          clip_to: "clipper";
-         description {
+         desc {
             min: 300 135;
             max: 300 135;
             fixed: 1 1;
@@ -431,11 +403,10 @@ group { name: "warning_layout";
             image.border_scale: 1;
          }
       }
-      part { name: "shine_img";
-         type: IMAGE;
+      image { "shine_img";
          scale: 1;
          clip_to: "clipper";
-         description {
+         desc {
             rel1 { to: "base_frame_img"; relative: 0 0; }
             rel2 { to: "base_frame_img"; relative: 1 0; }
             align: 0.5 0;
@@ -444,17 +415,15 @@ group { name: "warning_layout";
             image.normal: "shine.png";
          }
       }
-      part { name: "base_frame";
-         type: SPACER;
-         description {
+      spacer { "base_frame";
+         desc {
             rel1 { to: "base_frame_img"; offset: 10 10; }
             rel2 { to: "base_frame_img"; offset: -11 -11; }
          }
       }
-      part { name: "title_bg";
-         type: RECT;
+      rect { "title_bg";
          scale: 1;
-         description {
+         desc {
             rel1.to: "base_frame";
             rel2.to: "base_frame";
             rel2.relative: 1 0;
@@ -464,10 +433,9 @@ group { name: "warning_layout";
             color: 0 0 0 255;
          }
       }
-      part { name: "warning_img";
-         type: IMAGE;
+      image { "warning_img";
          clip_to: "clipper";
-         description {
+         desc {
             min: 20 20;
             max: 20 20;
             fixed: 1 1;
@@ -478,12 +446,11 @@ group { name: "warning_layout";
             image.normal: "warning.png";
          }
       }
-      part { name: "elm.text.title";
-         type: TEXT;
+      text { "elm.text.title";
          clip_to: "clipper";
          scale: 1;
          effect: GLOW;
-         description {
+         desc {
             rel1.to: "title_bg";
             rel2.to: "title_bg";
             text.text: "EDC has been changed";
@@ -499,11 +466,10 @@ group { name: "warning_layout";
             color: COL_HI;
          }
       }
-      part { name: "elm.text.desc";
-         type: TEXT;
+      text { "elm.text.desc";
          clip_to: "clipper";
          scale: 1;
-         description {
+         desc {
             rel1 { to: "elm.text.title"; relative: 0.5 1; offset: 0 10; }
             rel2 { to: "elm.text.title"; relative: 0.5 1; }
             text {
@@ -517,11 +483,10 @@ group { name: "warning_layout";
             fixed: 1 1;
          }
       }
-      part { name: "elm.text.question";
-         type: TEXT;
+      text { "elm.text.question";
          clip_to: "clipper";
          scale: 1;
-         description {
+         desc {
             rel1 { to: "elm.text.desc"; relative: 0.5 1; }
             rel2 { to: "elm.text.desc"; relative: 0.5 1; }
             text {
@@ -535,11 +500,10 @@ group { name: "warning_layout";
             fixed: 1 1;
          }
       }
-      part { name: "elm.swallow.btn1";
-         type: SWALLOW;
+      swallow { "elm.swallow.btn1";
          clip_to: "clipper";
          scale: 1;
-         description {
+         desc {
             rel1.to: "elm.swallow.btn2";
             rel2.to: "elm.swallow.btn2";
             rel1.relative: 0 0;
@@ -550,11 +514,10 @@ group { name: "warning_layout";
             fixed: 1 1;
          }
       }
-      part { name: "elm.swallow.btn2";
-         type: SWALLOW;
+      swallow { "elm.swallow.btn2";
          clip_to: "clipper";
          scale: 1;
-         description {
+         desc {
             rel1.to: "base_frame";
             rel2.to: "base_frame";
             rel1.relative: 0.5 1;
@@ -564,11 +527,10 @@ group { name: "warning_layout";
             fixed: 1 1;
          }
       }
-      part { name: "elm.swallow.btn3";
-         type: SWALLOW;
+      swallow { "elm.swallow.btn3";
          clip_to: "clipper";
          scale: 1;
-         description {
+         desc {
             rel1.to: "elm.swallow.btn2";
             rel2.to: "elm.swallow.btn2";
             rel1.relative: 1 0;
@@ -580,23 +542,21 @@ group { name: "warning_layout";
             color: 0 0 0 255;
          }
       }
-      part { name: "event_blocker";
-         type: RECT;
-         description { state: "default" 0.0;
+      rect { "event_blocker";
+         desc { "default";
             color: 0 0 0 0;
             visible: 1;
          }
-         description { state: "hide" 0.0;
-            inherit: "default" 0.0;
+         desc { "hide";
+            inherit: "default";
             visible: 0;
          }
       }
-      part { name: "over_img";
-         type: IMAGE;
+      image { "over_img";
          scale: 1;
          clip_to: "clipper";
-         mouse_events: 0;
-         description {
+         nomouse;
+         desc {
             rel1 { to: "base_frame_img"; relative: 0 0; }
             rel2 { to: "base_frame_img"; relative: 1 1; }
             image.normal: "bub_over_bot.png";
@@ -604,61 +564,58 @@ group { name: "warning_layout";
       }
    }
    programs {
-      program { name: "load";
+      program { "load";
          signal: "load";
-         action: STATE_SET "show" 0.0;
+         action: STATE_SET "show";
          transition: "DECELERATE" 0.25;
          target: "clipper";
          after: "event_blocker_hide";
       }
-      program { name: "dismiss";
+      program { "dismiss";
          signal: "elm,state,dismiss";
          source: "";
-         action: STATE_SET "default" 0.0;
+         action: STATE_SET "default";
          transition: "DECELERATE" 0.125;
          target: "clipper";
          target: "event_blocker";
          after: "dismiss_done";
       }
-      program { name: "event_blocker_hide";
+      program { "event_blocker_hide";
          signal: "elm,state,event_blocker,hide";
          source: "";
-         action: STATE_SET "hide" 0.0;
+         action: STATE_SET "hide";
          target: "event_blocker";
       }
-      program { name: "dismiss_done";
+      program { "dismiss_done";
          action: SIGNAL_EMIT "elm,state,dismiss,done" "";
       }
    }
 }
 
-group { name: "menu_layout";
+group { "menu_layout";
    parts {
-      part { name: "clipper";
-         type: RECT;
-         description { state: "default" 0.0;
+      rect { "clipper";
+         desc { "default";
             color: 255 255 255 0;
          }
-         description { state: "show" 0.0;
+         desc { "show";
             color: 255 255 255 255;
          }
       }
-      part { name: "bg";
-         type: RECT;
-         description { state: "default" 0.0;
+      rect { "bg";
+         desc { "default";
             color: 0 0 0 0;
          }
-         description { state: "show" 0.0;
+         desc { "show";
             color: 0 0 0 175;
          }
-         description { state: "anim" 0.0;
+         desc { "anim";
             color: 0 0 0 200;
          }
       }
-      part { name: "base_frame";
-         type: SPACER;
+      spacer { "base_frame";
          scale: 1;
-         description {
+         desc {
             align: 0.5 0.5;
             min: 640 0;
             fixed: 1 0;
@@ -680,10 +637,9 @@ group { name: "menu_layout";
             image.normal: "full_logo.png";
          }
       }
-      part { name: "padding1";
-         type: SPACER;
+      spacer { "padding1";
          scale: 1;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.relative: 0 0.5;
             rel2.relative: 0 0.5;
             rel1.to: "base_frame";
@@ -693,11 +649,10 @@ group { name: "menu_layout";
             align: 0 0.5;
          }
       }
-      part { name: "elm.swallow.new_btn";
-         type: SWALLOW;
+      swallow { "elm.swallow.new_btn";
          scale: 1;
          clip_to: "clipper";
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.to: "padding1";
             rel2.to: "padding1";
             rel1.relative: 1 0.2;
@@ -707,10 +662,9 @@ group { name: "menu_layout";
             fixed: 1 1;
          }
       }
-      part { name: "padding2";
-         type: SPACER;
+      spacer { "padding2";
          scale: 1;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.to: "elm.swallow.new_btn";
             rel2.to: "elm.swallow.new_btn";
             rel1.relative: 1 0;
@@ -719,11 +673,10 @@ group { name: "menu_layout";
             align: 0 0.5;
          }
       }
-      part { name: "elm.swallow.save_btn";
-         type: SWALLOW;
+      swallow { "elm.swallow.save_btn";
          scale: 1;
          clip_to: "clipper";
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.to: "padding2";
             rel2.to: "padding2";
             rel1.relative: 1 0;
@@ -732,10 +685,9 @@ group { name: "menu_layout";
             fixed: 1 1;
          }
       }
-      part { name: "padding3";
-         type: SPACER;
+      spacer { "padding3";
          scale: 1;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.to: "elm.swallow.save_btn";
             rel2.to: "elm.swallow.save_btn";
             rel1.relative: 1 0;
@@ -744,11 +696,10 @@ group { name: "menu_layout";
             align: 0 0.5;
          }
       }
-      part { name: "elm.swallow.load_btn";
-         type: SWALLOW;
+      swallow { "elm.swallow.load_btn";
          scale: 1;
          clip_to: "clipper";
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.to: "padding3";
             rel2.to: "padding3";
             rel1.relative: 1 0;
@@ -757,10 +708,9 @@ group { name: "menu_layout";
             fixed: 1 1;
          }
       }
-      part { name: "padding4";
-         type: SPACER;
+      spacer { "padding4";
          scale: 1;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.to: "elm.swallow.load_btn";
             rel2.to: "elm.swallow.load_btn";
             rel1.relative: 1 0;
@@ -769,11 +719,10 @@ group { name: "menu_layout";
             align: 0 0.5;
          }
       }
-      part { name: "elm.swallow.setting_btn";
-         type: SWALLOW;
+      swallow { "elm.swallow.setting_btn";
          scale: 1;
          clip_to: "clipper";
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.to: "padding4";
             rel2.to: "padding4";
             rel1.relative: 1 0;
@@ -782,10 +731,9 @@ group { name: "menu_layout";
             fixed: 1 1;
          }
       }
-      part { name: "padding5";
-         type: SPACER;
+      spacer { "padding5";
          scale: 1;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.to: "elm.swallow.setting_btn";
             rel2.to: "elm.swallow.setting_btn";
             rel1.relative: 1 0;
@@ -794,11 +742,10 @@ group { name: "menu_layout";
             align: 0 0.5;
          }
       }
-      part { name: "elm.swallow.help_btn";
-         type: SWALLOW;
+      swallow { "elm.swallow.help_btn";
          scale: 1;
          clip_to: "clipper";
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.to: "padding5";
             rel2.to: "padding5";
             rel1.relative: 1 0;
@@ -807,10 +754,9 @@ group { name: "menu_layout";
             fixed: 1 1;
          }
       }
-      part { name: "padding6";
-         type: SPACER;
+      spacer { "padding6";
          scale: 1;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.to: "elm.swallow.help_btn";
             rel2.to: "elm.swallow.help_btn";
             rel1.relative: 1 0;
@@ -819,11 +765,10 @@ group { name: "menu_layout";
             align: 0 0.5;
          }
       }
-      part { name: "elm.swallow.exit_btn";
-         type: SWALLOW;
+      swallow { "elm.swallow.exit_btn";
          scale: 1;
          clip_to: "clipper";
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.to: "padding6";
             rel2.to: "padding6";
             rel1.relative: 1 0;
@@ -832,10 +777,9 @@ group { name: "menu_layout";
             fixed: 1 1;
          }
       }
-      part { name: "padding7";
-         type: SPACER;
+      spacer { "padding7";
          scale: 1;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.relative: 1 1;
             rel2.offset: -10 -1;
             min: 20 20;
@@ -853,75 +797,72 @@ group { name: "menu_layout";
             align: 1 0.0;
          }
       }
-      part { name: "event_blocker";
-         type: RECT;
-         description { state: "default" 0.0;
+      rect { "event_blocker";
+         desc { "default";
             color: 0 0 0 0;
             visible: 1;
          }
-         description { state: "hide" 0.0;
-            inherit: "default" 0.0;
+         desc { "hide";
+            inherit: "default";
             visible: 0;
          }
       }
    }
    programs {
-      program { name: "load";
+      program { "load";
          signal: "load";
-         action: STATE_SET "show" 0.0;
+         action: STATE_SET "show";
          transition: "DECELERATE" 0.25;
          target: "bg";
          target: "clipper";
          after: "event_blocker_hide";
       }
-      program { name: "event_blocker_hide";
+      program { "event_blocker_hide";
          signal: "elm,state,event_blocker,hide";
          source: "";
-         action: STATE_SET "hide" 0.0;
+         action: STATE_SET "hide";
          target: "event_blocker";
          after: "bg_anim";
       }
-      program { name: "bg_anim";
-         action: STATE_SET "anim" 0.0;
+      program { "bg_anim";
+         action: STATE_SET "anim";
          transition: "DECELERATE" 2;
          target: "bg";
          after: "bg_anim2";
       }
-      program { name: "bg_anim2";
-         action: STATE_SET "show" 0.0;
+      program { "bg_anim2";
+         action: STATE_SET "show";
          transition: "DECELERATE" 2;
          target: "bg";
          after: "bg_anim";
       }
-      program { name: "dismiss";
+      program { "dismiss";
          signal: "elm,state,dismiss";
          source: "";
-         action: STATE_SET "default" 0.0;
+         action: STATE_SET "default";
          transition: "DECELERATE" 0.125;
          target: "bg";
          target: "event_blocker";
          target: "clipper";
          after: "dismiss_done";
       }
-      program { name: "dismiss_done";
+      program { "dismiss_done";
          action: SIGNAL_EMIT "elm,state,dismiss,done" "";
       }
    }
 }
 
-group { name: "goto_layout";
+group { "goto_layout";
    parts {
-      part { name: "base";
-         type: SPACER;
+      spacer { "base";
          scale: 1;
-         description { state: "default" 0.0;
+         desc { "default";
             min: 300 67;
          }
       }
-      part { name: "left_top_padding";
-         type: SPACER;
+      spacer { "left_top_padding";
          scale: 1;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.relative: 0 0;
             rel2.relative: 0 0;
             fixed: 1 1;
@@ -929,11 +870,10 @@ group { name: "goto_layout";
             min: 5 5;
          }
       }
-      part { name: "elm.text.goto";
-         type: TEXT;
+      text { "elm.text.goto";
          scale: 1;
          effect: SHADOW BOTTOM;
-         description { state: "default" 0.0;
+         desc { "default";
             align: 0 0;
             rel1.to: "left_top_padding";
             rel2.to: "left_top_padding";
@@ -949,10 +889,9 @@ group { name: "goto_layout";
             fixed: 1 1;
          }
       }
-      part { name: "elm.swallow.entry";
-         type: SWALLOW;
+      swallow { "elm.swallow.entry";
          scale: 1;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.relative: 1 0;
             rel2.relative: 1 1;
             rel1.to: "elm.text.goto";
@@ -961,11 +900,10 @@ group { name: "goto_layout";
             fixed: 1 1;
          }
       }
-      part { name: "elm.text.msg";
-         type: TEXT;
+      text { "elm.text.msg";
          scale: 1;
          effect: GLOW;
-         description { state: "default" 0.0;
+         desc { "default";
             align: 0 0;
             rel1.to: "elm.text.goto";
             rel2.to: "elm.text.goto";
@@ -982,10 +920,9 @@ group { name: "goto_layout";
             fixed: 1 1;
          }
       }
-      part { name: "elm.swallow.btn";
-         type: SWALLOW;
+      swallow { "elm.swallow.btn";
          scale: 1;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.relative: 1 0;
             rel2.relative: 1 0;
             rel1.to_y: "elm.text.msg";
@@ -999,19 +936,17 @@ group { name: "goto_layout";
       }
    }
 }
-group { name: "search_layout";
+group { "search_layout";
    parts {
-      part { name: "base";
-         type: SPACER;
+      spacer { "base";
          scale: 1;
-         description { state: "default" 0.0;
+         desc { "default";
             min: 330 90;
          }
       }
-      part { name: "left_top_padding";
-         type: SPACER;
+      spacer { "left_top_padding";
          scale: 1;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.relative: 0 0;
             rel2.relative: 0 0;
             fixed: 1 1;
@@ -1019,11 +954,10 @@ group { name: "search_layout";
             min: 5 5;
          }
       }
-      part { name: "elm.text.find";
-         type: TEXT;
+      text { "elm.text.find";
          scale: 1;
          effect: SHADOW BOTTOM;
-         description { state: "default" 0.0;
+         desc { "default";
             align: 0 0;
             rel1.to: "left_top_padding";
             rel2.to: "left_top_padding";
@@ -1040,11 +974,10 @@ group { name: "search_layout";
             fixed: 1 1;
          }
       }
-      part { name: "elm.text.replace";
-         type: TEXT;
+      text { "elm.text.replace";
          scale: 1;
          effect: SHADOW BOTTOM;
-         description { state: "default" 0.0;
+         desc { "default";
             align: 0 0;
             rel1.to: "elm.text.find";
             rel2.to: "elm.text.find";
@@ -1062,11 +995,10 @@ group { name: "search_layout";
             fixed: 1 1;
          }
       }
-      part { name: "elm.text.dir";
-         type: TEXT;
+      text { "elm.text.dir";
          scale: 1;
          effect: GLOW;
-         description { state: "default" 0.0;
+         desc { "default";
             align: 0 0;
             rel1.to: "elm.text.replace";
             rel2.to: "elm.text.replace";
@@ -1084,10 +1016,9 @@ group { name: "search_layout";
             fixed: 1 1;
          }
       }
-      part { name: "elm.swallow.find_entry";
-         type: SWALLOW;
+      swallow { "elm.swallow.find_entry";
          scale: 1;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.relative: 1 0;
             rel2.relative: 1 1;
             rel1.to: "elm.text.find";
@@ -1096,10 +1027,9 @@ group { name: "search_layout";
             fixed: 1 1;
          }
       }
-      part { name: "elm.swallow.replace_entry";
-         type: SWALLOW;
+      swallow { "elm.swallow.replace_entry";
          scale: 1;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.relative: 1 0;
             rel2.relative: 1 1;
             rel1.to: "elm.text.replace";
@@ -1108,10 +1038,9 @@ group { name: "search_layout";
             fixed: 1 1;
          }
       }
-      part { name: "elm.swallow.forward";
-         type: SWALLOW;
+      swallow { "elm.swallow.forward";
          scale: 1;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.relative: 0 1;
             rel2.relative: 0 1;
             rel1.to_x: "elm.swallow.replace_entry";
@@ -1124,10 +1053,9 @@ group { name: "search_layout";
             fixed: 1 1;
          }
       }
-      part { name: "elm.swallow.backward";
-         type: SWALLOW;
+      swallow { "elm.swallow.backward";
          scale: 1;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.relative: 1 0;
             rel2.relative: 1 1;
             rel1.to: "elm.swallow.forward";
@@ -1138,10 +1066,9 @@ group { name: "search_layout";
             fixed: 1 1;
          }
       }
-      part { name: "elm.swallow.replace";
-         type: SWALLOW;
+      swallow { "elm.swallow.replace";
          scale: 1;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.relative: 1 0;
             rel2.relative: 1 1;
             rel1.to: "elm.swallow.backward";
@@ -1152,10 +1079,9 @@ group { name: "search_layout";
             fixed: 1 1;
          }
       }
-      part { name: "elm.swallow.replace_all";
-         type: SWALLOW;
+      swallow { "elm.swallow.replace_all";
          scale: 1;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.relative: 1 0;
             rel2.relative: 1 1;
             rel1.to: "elm.swallow.replace";
@@ -1169,116 +1095,109 @@ group { name: "search_layout";
    }
 }
 
-group { name: "live_edit_layout";
+group { "live_edit_layout";
    data.item: "ctrl_size" "8";
    parts {
-      part { name: "clipper";
-         type: RECT;
-         description { state: "default" 0.0;
+      rect { "clipper";
+         desc { "default";
             color: 0 0 0 0;
          }
-         description { state: "show" 0.0;
+         desc { "show";
             color: 255 255 255 255;
          }
       }
-      part { name: "elm.swallow.symbol";
-         type: SWALLOW;
+      swallow { "elm.swallow.symbol";
          scale: 1;
          clip_to: "clipper";
-         description { state: "default" 0.0;
+         desc { "default";
          }
       }
-      part { name: "cursor_body";
-         type: RECT;
+      rect { "cursor_body";
          repeat_events: 1;
-         description { state: "default" 0.0;
+         desc { "default";
             color: 0 0 0 0;
          }
       }
-      part { name: "frame_l";
-         type: RECT;
-         mouse_events: 0;
+      rect { "frame_l";
+         nomouse;
          clip_to: "clipper";
          scale: 1;
-         description { state: "default" 0.0;
+         desc { "default";
             align: 0 0.5;
             rel1.relative: 0 0;
             rel2.relative: 0 1;
             min: 1 0;
             fixed: 1 0;
          }
-         description { state: "anim" 0.0;
-            inherit: "default" 0.0;
+         desc { "anim";
+            inherit: "default";
             color: 51 153 255 127;
          }
       }
-      part { name: "frame_r";
-         type: RECT;
-         mouse_events: 0;
+      rect { "frame_r";
+         nomouse;
          clip_to: "clipper";
          scale: 1;
-         description { state: "default" 0.0;
+         desc { "default";
             align: 1 0.5;
             rel1.relative: 1 0;
             rel2.relative: 1 1;
             min: 1 0;
             fixed: 1 0;
          }
-         description { state: "anim" 0.0;
-            inherit: "default" 0.0;
+         desc { "anim";
+            inherit: "default";
             color: 51 153 255 127;
          }
       }
-      part { name: "frame_t";
-         type: RECT;
-         mouse_events: 0;
+      rect { "frame_t";
+         nomouse;
          clip_to: "clipper";
          scale: 1;
-         description { state: "default" 0.0;
+         desc { "default";
             align: 0.5 0;
             rel1.relative: 0 0;
             rel2.relative: 1 0;
             min: 0 1;
             fixed: 0 1;
          }
-         description { state: "anim" 0.0;
-            inherit: "default" 0.0;
+         desc { "anim";
+            inherit: "default";
             color: 51 153 255 127;
          }
       }
-      part { name: "frame_b";
-         type: RECT;
-         mouse_events: 0;
+      rect { "frame_b";
+         nomouse;
          clip_to: "clipper";
          scale: 1;
-         description { state: "default" 0.0;
+         desc { "default";
             align: 0.5 1;
             rel1.relative: 0 1;
             rel2.relative: 1 1;
             min: 0 1;
             fixed: 0 1;
          }
-         description { state: "anim" 0.0;
-            inherit: "default" 0.0;
+         desc { "anim";
+            inherit: "default";
             color: 51 153 255 127;
          }
       }
    }
    programs {
-      program { name: "on_load";
+      program { "on_load";
          signal: "load";
-         action: STATE_SET "show" 0.0;
+         action: STATE_SET "show";
          target: "clipper";
          after: "anim";
          after: "clip_init";
       }
-      program { name: "clip_init";
-         action: STATE_SET "show" 0.0;
+      program { "clip_init";
+         action: STATE_SET "show";
          target: "clipper";
          transition: DECELERATE 0.25;
       }
-      program { name: "anim";
-         action: STATE_SET "anim" 0.0;
+      program { "anim";
+         action: STATE_SET "anim";
          target: "frame_l";
          target: "frame_r";
          target: "frame_t";
@@ -1286,8 +1205,8 @@ group { name: "live_edit_layout";
          transition: LINEAR 0.5;
          after: "anim2";
       }
-      program { name: "anim2";
-         action: STATE_SET "default" 0.0;
+      program { "anim2";
+         action: STATE_SET "default";
          target: "frame_l";
          target: "frame_r";
          target: "frame_t";
@@ -1298,7 +1217,7 @@ group { name: "live_edit_layout";
    }
 }
 
-group { name: "viewer_layout_bg";
+group { "viewer_layout_bg";
    parts {
       image { "bg"; nomouse;
          desc { "default";
@@ -1311,70 +1230,65 @@ group { name: "viewer_layout_bg";
             rel2.to: "elm.swallow.content";
          }
       }
-      part { name: "elm.swallow.content";
-         type: SWALLOW;
-         description { state: "default" 0.0;
+      swallow { "elm.swallow.content";
+         desc { "default";
          }
       }
    }
 }
 
-group { name: "viewer_layout";
+group { "viewer_layout";
    parts {
-      part { name: "prev_clipper";
-         type: RECT;
-         description { state: "default" 0.0;
+      rect { "prev_clipper";
+         desc { "default";
          }
-         description { state: "switched" 0.0;
+         desc { "switched";
             color: 255 255 255 0;
          }
       }
-      part { name: "cur_clipper";
-         type: RECT;
-         description { state: "default" 0.0;
+      rect { "cur_clipper";
+         desc { "default";
             rel1.relative: -1 0;
             rel2.relative: 0 1;
             color: 255 255 255 0;
          }
-         description { state: "switched" 0.0;
+         desc { "switched";
             rel1.relative: 0 0;
             rel2.relative: 1 1;
             color: 255 255 255 255;
          }
       }
-      part { name: "elm.swallow.prev";
-         type: SWALLOW;
+      swallow { "elm.swallow.prev";
          clip_to: "prev_clipper";
-         description { state: "default" 0.0;
+         desc { "default";
          }
       }
-      part { name: "elm.swallow.content";
-         type: SWALLOW;
+      swallow { "elm.swallow.content";
          clip_to: "cur_clipper";
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.to: "cur_clipper";
             rel2.to: "cur_clipper";
          }
       }
    }
    programs {
-      program { name: "switch_instant";
+      program { "switch_instant";
          signal: "elm,view,switch,instant";
          source: "";
-         action: STATE_SET "switched" 0.0;
+         action: STATE_SET "switched";
          target: "prev_clipper";
          target: "cur_clipper";
       }
-      program { name: "switch";
+      program { "switch";
          signal: "elm,view,switch";
          source: "";
-         action: STATE_SET "default" 0.0;
+         action: STATE_SET "default";
          target: "prev_clipper";
          target: "cur_clipper";
          after: "switched";
       }
-      program { name: "switched";
-         action: STATE_SET "switched" 0.0;
+      program { "switched";
+         action: STATE_SET "switched";
          target: "prev_clipper";
          target: "cur_clipper";
          transition: DECELERATE 0.25;
@@ -1405,23 +1319,21 @@ group { "preview_layout";
    }
 }
 
-group { name: "toggle_layout";
+group { "toggle_layout";
    parts {
-      part { name: "base";
-         type: RECT;
+      rect { "base";
          scale: 1;
-         description { state: "default" 0.0;
+         desc { "default";
             min: 150 1;
             color: 56 56 56 255;
          }
-         description { state: "odd" 0.0;
-            inherit: "default" 0.0;
+         desc { "odd";
+            inherit: "default";
             color: 64 64 64 255;
          }
       }
-      part { name: "text_base";
-         type: SPACER;
-         description { state: "default" 0.0;
+      spacer { "text_base";
+         desc { "default";
             rel1.to: "base";
             rel2.to: "base";
             rel2.relative: 0.0 1.0;
@@ -1430,9 +1342,8 @@ group { name: "toggle_layout";
             fixed: 1 0;
          }
       }
-      part { name: "elm.text.type";
-         type: TEXT;
-         description { state: "default" 0.0;
+      text { "elm.text.type";
+         desc { "default";
             rel1.to: "text_base";
             rel1.offset: 5 0;
             rel2.to: "text_base";
@@ -1448,9 +1359,8 @@ group { name: "toggle_layout";
             color: COL_NM;
          }
       }
-      part { name: "padding1";
-         type: SPACER;
-         description { state: "default" 0.0;
+      spacer { "padding1";
+         desc { "default";
             rel1.to: "text_base";
             rel1.relative: 1.0 0.0;
             rel2.to: "text_base";
@@ -1459,18 +1369,16 @@ group { name: "toggle_layout";
             fixed: 1 0;
          }
       }
-      part { name: "elm.swallow.toggle";
-         type: SWALLOW;
-         description { state: "default" 0.0;
+      swallow { "elm.swallow.toggle";
+         desc { "default";
             rel1.to: "padding1";
             rel1.relative: 1.0 0.0;
             rel2.to: "padding2";
             rel2.relative: 0.0 1.0;
          }
       }
-      part { name: "padding2";
-         type: SPACER;
-         description { state: "default" 0.0;
+      spacer { "padding2";
+         desc { "default";
             rel1.to: "base";
             rel1.relative: 1.0 0.0;
             rel2.to: "base";
@@ -1481,33 +1389,31 @@ group { name: "toggle_layout";
       }
    }
    programs {
-      program { name: "odd_item_set";
+      program { "odd_item_set";
          signal: "odd,item,set";
          source: "";
-         action: STATE_SET "odd" 0.0;
+         action: STATE_SET "odd";
          target: "base";
       }
    }
 }
 
-group { name: "slider_layout";
+group { "slider_layout";
    parts {
-      part { name: "base";
-         type: RECT;
+      rect { "base";
          scale: 1;
-         description { state: "default" 0.0;
+         desc { "default";
             min: 235 1;
             color: 56 56 56 255;
          }
-         description { state: "odd" 0.0;
-            inherit: "default" 0.0;
+         desc { "odd";
+            inherit: "default";
             color: 64 64 64 255;
          }
       }
-      part { name: "text_base";
-         type: SPACER;
+      spacer { "text_base";
          scale: 1;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.to: "base";
             rel2.to: "base";
             rel2.relative: 0.0 1.0;
@@ -1516,10 +1422,9 @@ group { name: "slider_layout";
             fixed: 1 0;
          }
       }
-      part { name: "elm.text.type";
-         type: TEXT;
+      text { "elm.text.type";
          scale: 1;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.to: "text_base";
             rel1.offset: 5 0;
             rel2.to: "text_base";
@@ -1535,10 +1440,9 @@ group { name: "slider_layout";
             color: COL_NM;
          }
       }
-      part { name: "padding1";
-         type: SPACER;
+      spacer { "padding1";
          scale: 1;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.to: "text_base";
             rel1.relative: 1.0 0.0;
             rel2.to: "text_base";
@@ -1547,10 +1451,9 @@ group { name: "slider_layout";
             fixed: 1 0;
          }
       }
-      part { name: "elm.text.slider_min";
-         type: TEXT;
+      text { "elm.text.slider_min";
          scale: 1;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.to: "padding1";
             rel1.relative: 1.0 0.0;
             rel2.to: "padding1";
@@ -1567,10 +1470,9 @@ group { name: "slider_layout";
             color: COL_NM;
          }
       }
-      part { name: "elm.text.slider_max";
-         type: TEXT;
+      text { "elm.text.slider_max";
          scale: 1;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.to: "padding2";
             rel1.relative: 0.0 0.0;
             rel2.to: "padding2";
@@ -1587,10 +1489,9 @@ group { name: "slider_layout";
             color: COL_NM;
          }
       }
-      part { name: "elm.swallow.slider";
-         type: SWALLOW;
+      swallow { "elm.swallow.slider";
          scale: 1;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.to_x: "padding1";
             rel1.to_y: "elm.text.slider_min";
             rel1.relative: 1.0 1.0;
@@ -1601,10 +1502,9 @@ group { name: "slider_layout";
             fixed: 1 0;
          }
       }
-      part { name: "padding2";
-         type: SPACER;
+      spacer { "padding2";
          scale: 1;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.to_x: "elm.swallow.slider";
             rel2.to_x: "elm.swallow.slider";
             rel1.relative: 1.0 0.0;
@@ -1616,16 +1516,16 @@ group { name: "slider_layout";
       }
    }
    programs {
-      program { name: "odd_item_set";
+      program { "odd_item_set";
          signal: "odd,item,set";
          source: "";
-         action: STATE_SET "odd" 0.0;
+         action: STATE_SET "odd";
          target: "base";
       }
    }
 }
 
-group { name: "colorselector_layout";
+group { "colorselector_layout";
    parts {
       spacer { "base";
          scale: 1;
@@ -1870,21 +1770,19 @@ group { name: "colorselector_layout";
    }
 }
 
-group { name: "statusbar_layout";
+group { "statusbar_layout";
    parts {
-      part { name: "base_clip";
-         type: RECT;
-         description { state: "default" 0.0;
+      rect { "base_clip";
+         desc { "default";
             color: 255 255 255 255;
          }
-         description { state: "hide" 0.0;
+         desc { "hide";
             color: 0 0 0 0;
          }
       }
-      part { name: "scale_spacer";
-         type: SPACER;
+      spacer { "scale_spacer";
          scale: 1;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.relative: 0 0;
             rel2.relative: 0 1;
             min: 120 0;
@@ -1894,7 +1792,7 @@ group { name: "statusbar_layout";
       swallow { "scale_btn";
          clip_to: "base_clip";
          scale: 1;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.relative: 0.0 0.0;
             rel2.relative: 0.0 1.0;
             rel1.offset: 3 -3;
@@ -1903,12 +1801,11 @@ group { name: "statusbar_layout";
             fixed: 1 0;
          }
       }
-      part { name: "elm.text.scale";
-         type: TEXT;
+      text { "elm.text.scale";
          clip_to: "base_clip";
          scale: 1;
          effect: GLOW;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.to_x: "scale_btn";
             rel2.to_x: "scale_btn";
             rel1.relative: 1.0 0.0;
@@ -1925,10 +1822,9 @@ group { name: "statusbar_layout";
             }
          }
       }
-      part { name: "size_spacer";
-         type: SPACER;
+      spacer { "size_spacer";
          scale: 1;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.relative: 1 0;
             rel2.relative: 1 1;
             rel1.to: "scale_spacer";
@@ -1965,12 +1861,11 @@ group { name: "statusbar_layout";
             min: 15 15;
          }
       }
-      part { name: "elm.text.size_w";
-         type: TEXT;
+      text { "elm.text.size_w";
          clip_to: "base_clip";
          scale: 1;
          effect: GLOW;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.to_x: "invert_btn";
             rel2.to_x: "invert_btn";
             rel1.relative: 1.0 0.0;
@@ -1986,12 +1881,11 @@ group { name: "statusbar_layout";
             }
          }
       }
-      part { name: "elm.text.size_x";
-         type: TEXT;
+      text { "elm.text.size_x";
          clip_to: "base_clip";
          scale: 1;
          effect: SHADOW BOTTOM;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.to_x: "elm.text.size_w";
             rel2.to_x: "elm.text.size_w";
             rel1.relative: 1.0 0.0;
@@ -2008,12 +1902,11 @@ group { name: "statusbar_layout";
             }
          }
       }
-      part { name: "elm.text.size_h";
-         type: TEXT;
+      text { "elm.text.size_h";
          clip_to: "base_clip";
          scale: 1;
          effect: GLOW;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.to_x: "elm.text.size_x";
             rel2.to_x: "elm.text.size_x";
             rel1.relative: 1.0 0.0;
@@ -2044,20 +1937,18 @@ group { name: "statusbar_layout";
             image.normal: "cursor_arrow.png";
          }
       }
-      part { "elm.swallow.cursor_arrow.tooltip";
-         type: SWALLOW;
-         description { state: "default" 0.0;
+      swallow { "elm.swallow.cursor_arrow.tooltip";
+         desc { "default";
            fixed: 1 1;
            rel1.to: "cursor_arrow";
            rel2.to: "cursor_arrow";
          }
       }
-      part { name: "elm.text.cursor_pxx";
-         type: TEXT;
+      text { "elm.text.cursor_pxx";
          clip_to: "base_clip";
          scale: 1;
          effect: GLOW;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.to_x: "cursor_arrow";
             rel2.to_x: "cursor_arrow";
             rel1.relative: 1.0 0.0;
@@ -2073,12 +1964,11 @@ group { name: "statusbar_layout";
             }
          }
       }
-      part { name: "elm.text.cursor_px.";
-         type: TEXT;
+      text { "elm.text.cursor_px.";
          clip_to: "base_clip";
          scale: 1;
          effect: SHADOW BOTTOM;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.to_x: "elm.text.cursor_pxx";
             rel2.to_x: "elm.text.cursor_pxx";
             rel1.relative: 1.0 0.0;
@@ -2095,12 +1985,11 @@ group { name: "statusbar_layout";
             }
          }
       }
-      part { name: "elm.text.cursor_pxy";
-         type: TEXT;
+      text { "elm.text.cursor_pxy";
          clip_to: "base_clip";
          scale: 1;
          effect: GLOW;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.to_x: "elm.text.cursor_px.";
             rel2.to_x: "elm.text.cursor_px.";
             rel1.relative: 1.0 0.0;
@@ -2116,12 +2005,11 @@ group { name: "statusbar_layout";
             }
          }
       }
-      part { name: "elm.text.cursor_sep";
-         type: TEXT;
+      text { "elm.text.cursor_sep";
          clip_to: "base_clip";
          scale: 1;
          effect: SHADOW BOTTOM;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.to_x: "elm.text.cursor_pxy";
             rel2.to_x: "elm.text.cursor_pxy";
             rel1.relative: 1.0 0.0;
@@ -2138,12 +2026,11 @@ group { name: "statusbar_layout";
             }
          }
       }
-      part { name: "elm.text.cursor_relx";
-         type: TEXT;
+      text { "elm.text.cursor_relx";
          clip_to: "base_clip";
          scale: 1;
          effect: GLOW;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.to_x: "elm.text.cursor_sep";
             rel2.to_x: "elm.text.cursor_sep";
             rel1.relative: 1.0 0.0;
@@ -2159,12 +2046,11 @@ group { name: "statusbar_layout";
             }
          }
       }
-      part { name: "elm.text.cursor_rel.";
-         type: TEXT;
+      text { "elm.text.cursor_rel.";
          clip_to: "base_clip";
          scale: 1;
          effect: SHADOW BOTTOM;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.to_x: "elm.text.cursor_relx";
             rel2.to_x: "elm.text.cursor_relx";
             rel1.relative: 1.0 0.0;
@@ -2181,12 +2067,11 @@ group { name: "statusbar_layout";
             }
          }
       }
-      part { name: "elm.text.cursor_rely";
-         type: TEXT;
+      text { "elm.text.cursor_rely";
          clip_to: "base_clip";
          scale: 1;
          effect: GLOW;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.to_x: "elm.text.cursor_rel.";
             rel2.to_x: "elm.text.cursor_rel.";
             rel1.relative: 1.0 0.0;
@@ -2202,10 +2087,9 @@ group { name: "statusbar_layout";
             }
          }
       }
-      part { name: "cursor_spacer";
-         type: SPACER;
+      spacer { "cursor_spacer";
          scale: 1;
-         description {
+         desc {
             rel1.to: "size_spacer";
             rel1.relative: 1.0 0.0;
             rel2.to: "size_spacer";
@@ -2215,10 +2099,9 @@ group { name: "statusbar_layout";
             align: 0 0.5;
          }
       }
-      part { name: "group_spacer";
-         type: SPACER;
+      spacer { "group_spacer";
          scale: 1;
-         description {
+         desc {
             rel1.to: "line_spacer";
             rel1.relative: 0.0 0.0;
             rel2.to: "line_spacer";
@@ -2243,20 +2126,18 @@ group { name: "statusbar_layout";
             image.normal: "navi_group.png";
          }
       }
-      part { "elm.swallow.group_icon.tooltip";
-         type: SWALLOW;
-         description { state: "default" 0.0;
+      swallow { "elm.swallow.group_icon.tooltip";
+         desc { "default";
            fixed: 1 1;
            rel1.to: "group_icon";
            rel2.to: "group_icon";
          }
       }
-      part { name: "elm.text.group_name";
-         type: TEXT;
+      text { "elm.text.group_name";
          clip_to: "base_clip";
          scale: 1;
          effect: GLOW;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.to_x: "group_spacer";
             rel2.to_x: "line_spacer";
             rel1.relative: 0.0 0.0;
@@ -2272,10 +2153,9 @@ group { name: "statusbar_layout";
             }
          }
       }
-      part { name: "line_spacer";
-         type: SPACER;
+      spacer { "line_spacer";
          scale: 1;
-         description {
+         desc {
             rel1.relative: 1 0;
             align: 1 0.5;
             min: 100 0;
@@ -2285,7 +2165,7 @@ group { name: "statusbar_layout";
       swallow { "line_btn";
          clip_to: "base_clip";
          scale: 1;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.to: "elm.text.line_[";
             rel2.to: "elm.text.line_[";
             rel1.relative: 0.0 0.0;
@@ -2295,12 +2175,11 @@ group { name: "statusbar_layout";
             fixed: 1 0;
          }
       }
-      part { name: "elm.text.line_[";
-         type: TEXT;
+      text { "elm.text.line_[";
          clip_to: "base_clip";
          scale: 1;
          effect: SHADOW BOTTOM;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.to: "elm.text.line_cur";
             rel2.to: "elm.text.line_cur";
             rel2.relative: 0 1.0;
@@ -2317,20 +2196,18 @@ group { name: "statusbar_layout";
             }
          }
       }
-      part { "elm.swallow.line.tooltip";
-         type: SWALLOW;
-         description { state: "default" 0.0;
+      swallow { "elm.swallow.line.tooltip";
+         desc { "default";
            fixed: 1 1;
            rel1.to: "elm.text.line_[";
            rel2.to: "elm.text.line_[";
          }
       }
-      part { name: "elm.text.line_cur";
-         type: TEXT;
+      text { "elm.text.line_cur";
          clip_to: "base_clip";
          scale: 1;
          effect: GLOW;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.to: "elm.text.line_c";
             rel2.to: "elm.text.line_c";
             rel1.relative: 0.0 0.0;
@@ -2346,12 +2223,11 @@ group { name: "statusbar_layout";
             }
          }
       }
-      part { name: "elm.text.line_c";
-         type: TEXT;
+      text { "elm.text.line_c";
          clip_to: "base_clip";
          scale: 1;
          effect: SHADOW BOTTOM;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.to: "elm.text.line_max";
             rel2.to: "elm.text.line_max";
             rel2.relative: 0 1.0;
@@ -2367,12 +2243,11 @@ group { name: "statusbar_layout";
             }
          }
       }
-      part { name: "elm.text.line_max";
-         type: TEXT;
+      text { "elm.text.line_max";
          clip_to: "base_clip";
          scale: 1;
          effect: GLOW;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.relative: 1.0 0.0;
             rel2.relative: 1.0 1.0;
             align: 1 0.5;
@@ -2386,12 +2261,11 @@ group { name: "statusbar_layout";
             }
          }
       }
-      part { name: "elm.text.info_msg";
-         type: TEXT;
+      text { "elm.text.info_msg";
          scale: 1;
          effect: SHADOW BOTTOM;
          nomouse;
-         description { state: "default" 0.0;
+         desc { "default";
             align: 0 0.5;
             rel1.offset: 0 -1;
             rel2.offset: -1 -2;
@@ -2402,53 +2276,52 @@ group { name: "statusbar_layout";
             }
             color: COL_NM_TRANS;
          }
-         description { state: "show" 0.0;
-            inherit: "default" 0.0;
+         desc { "show";
+            inherit: "default";
             color: COL_NM;
          }
       }
-      program { name: "info_msg_show";
+      program { "info_msg_show";
          signal: "elm,action,info_msg,show";
          source: "";
-         action: STATE_SET "hide" 0.0;
+         action: STATE_SET "hide";
          target: "base_clip";
          transition: DECELERATE 0.15;
          after: "info_msg_show2";
       }
-      program { name: "info_msg_show2";
-         action: STATE_SET "show" 0.0;
+      program { "info_msg_show2";
+         action: STATE_SET "show";
          target: "elm.text.info_msg";
          transition: DECELERATE 0.3;
          after: "info_msg_idle";
       }
-      program { name: "info_msg_idle";
-         action: STATE_SET "show" 0.0;
+      program { "info_msg_idle";
+         action: STATE_SET "show";
          target: "elm.text.info_msg";
          transition: LINEAR 3.5;
          after: "info_msg_hide";
       }
-      program { name: "info_msg_hide";
+      program { "info_msg_hide";
          signal: "elm,action,info_msg,hide";
          source: "";
-         action: STATE_SET "default" 0.0;
+         action: STATE_SET "default";
          target: "elm.text.info_msg";
          transition: DECELERATE 0.3;
          after: "info_msg_hide2";
       }
-      program { name: "info_msg_hide2";
-         action: STATE_SET "default" 0.0;
+      program { "info_msg_hide2";
+         action: STATE_SET "default";
          target: "base_clip";
          transition: DECELERATE 0.3;
       }
    }
 }
 
-group { name: "main_layout";
+group { "main_layout";
    parts {
-      part { name: "base";
-         type: SPACER;
+      spacer { "base";
          scale: 1;
-         description {
+         desc {
             min: 810 440;
          }
       }
@@ -2466,31 +2339,29 @@ group { name: "main_layout";
             }
          }
       }
-      part { name: "error_alert";
-         type: RECT;
-         mouse_events: 0;
-         description { state: "default" 0.0;
+      rect { "error_alert";
+         nomouse;
+         desc { "default";
             rel1.to_y: "elm.swallow.panes";
             rel2.to_y: "elm.swallow.panes";
             color: 0 0 0 0;
          }
-         description { state: "visible" 0.0;
-            inherit: "default" 0.0;
+         desc { "visible";
+            inherit: "default";
             color: 200 0 0 175;
          }
       }
-      part { name: "elm.swallow.statusbar";
-         type: SWALLOW;
+      swallow { "elm.swallow.statusbar";
          scale: 1;
-         description { state: "default" 0.0;
+         desc { "default";
             rel1.relative: 0 1;
             rel2.relative: 1 1;
             align: 0.5 0;
             min: 0 18;
             fixed: 0 1;
          }
-         description { state: "visible" 0.0;
-            inherit: "default" 0.0;
+         desc { "visible";
+            inherit: "default";
             align: 0.5 1;
          }
       }
@@ -2548,48 +2419,48 @@ group { name: "main_layout";
    programs {
       program { "file_browser_show";
          signal: "elm,state,file_browser,show";
-         action: STATE_SET "visible" 0.0;
+         action: STATE_SET "visible";
          target: "elm.swallow.file_browser";
          transition: DECELERATE 0.25;
       }
       program { "file_browser_hide";
          signal: "elm,state,file_browser,hide";
-         action: STATE_SET "default" 0.0;
+         action: STATE_SET "default";
          target: "elm.swallow.file_browser";
          transition: DECELERATE 0.25;
       }
       program { "edc_navigator_show";
          signal: "elm,state,edc_navigator,show";
-         action: STATE_SET "visible" 0.0;
+         action: STATE_SET "visible";
          target: "elm.swallow.edc_navigator";
          transition: DECELERATE 0.25;
       }
       program { "edc_navigator_hide";
          signal: "elm,state,edc_navigator,hide";
-         action: STATE_SET "default" 0.0;
+         action: STATE_SET "default";
          target: "elm.swallow.edc_navigator";
          transition: DECELERATE 0.25;
       }
-      program { name: "statusbar_show";
+      program { "statusbar_show";
          signal: "elm,state,statusbar,show";
-         action: STATE_SET "visible" 0.0;
+         action: STATE_SET "visible";
          target: "elm.swallow.statusbar";
          transition: DECELERATE 0.25;
       }
-      program { name: "statusbar_hide";
+      program { "statusbar_hide";
          signal: "elm,state,statusbar,hide";
-         action: STATE_SET "default" 0.0;
+         action: STATE_SET "default";
          target: "elm.swallow.statusbar";
          transition: DECELERATE 0.25;
       }
-      program { name: "alert_show";
+      program { "alert_show";
          signal: "elm,state,alert,show";
-         action: STATE_SET "visible" 0.0;
+         action: STATE_SET "visible";
          target: "error_alert";
          after: "alert_show2";
       }
-      program { name: "alert_show2";
-         action: STATE_SET "default" 0.0;
+      program { "alert_show2";
+         action: STATE_SET "default";
          target: "error_alert";
          transition: DECELERATE 1;
       }
@@ -2624,7 +2495,7 @@ group { "tools_layout";
       }
       image { "tools_overlay";
          scale: 1;
-         mouse_events: 0;
+         nomouse;
          desc { "default";
             rel1 { to: "tools_base"; }
             rel2 { to: "tools_base"; }
@@ -3237,7 +3108,7 @@ group { "text_editor_tools_layout";
    }
 }
 
-group { name: "rel_to_layout";
+group { "rel_to_layout";
    parts {
       spacer { "base";
          scale: 1;
@@ -3353,14 +3224,14 @@ group { name: "rel_to_layout";
    programs {
       program { "show_x";
          signal: "elm,state,show,x";
-         action: STATE_SET "single" 0.0;
+         action: STATE_SET "single";
          target: "elm.swallow.y";
          target: "guide_y";
          target: "base";
       }
       program { "show_y";
          signal: "elm,state,show,y";
-         action: STATE_SET "single" 0.0;
+         action: STATE_SET "single";
          target: "elm.swallow.x";
          target: "guide_x";
          target: "base";
@@ -3368,38 +3239,35 @@ group { name: "rel_to_layout";
    }
 }
 
-group { name: "padding3_layout";
+group { "padding3_layout";
    parts {
-      part { name: "elm.swallow.content";
-         type: SWALLOW;
-         description { state: "default" 0.0;
+      swallow { "elm.swallow.content";
+         desc { "default";
             rel1.offset: 3 0;
          }
       }
    }
 }
 
-group { name: "edit_layout";
+group { "edit_layout";
    parts {
-      part { name: "base_clip";
-         type: RECT;
-         description { state: "default" 0.0;
+      rect { "base_clip";
+         desc { "default";
             rel1.to: "elm.swallow.linenumber";
             rel2.to: "elm.swallow.linenumber";
             rel2.relative: 1 1;
             fixed: 1 0;
          }
-         description { state: "hide" 0.0;
+         desc { "hide";
             inherit: "default";
             rel2.relative: 0 1;
          }
       }
-      part { name: "elm.swallow.linenumber";
-         type: SWALLOW;
+      swallow { "elm.swallow.linenumber";
          scale: 1;
          clip_to: "base_clip";
-         mouse_events: 0;
-         description {
+         nomouse;
+         desc {
             fixed: 1 0;
             align: 0 0.5;
             min: 15 0;
@@ -3408,54 +3276,53 @@ group { name: "edit_layout";
             rel2.relative: 0 1;
          }
       }
-      part { name: "elm.swallow.edit";
-         type: SWALLOW;
+      swallow { "elm.swallow.edit";
          scale: 1;
-         description {
+         desc {
             align: 0 0.5;
             rel1.relative: 1 0;
             rel1.to: "base_clip";
             fixed: 0 1;
          }
       }
-      part { name: "disabler";
-         description { state: "default" 0.0;
+      part { "disabler";
+         desc { "default";
             image.normal: "disabler.png";
             fill.type: TILE;
             color: 255 255 255 0;
             visible: 0;
          }
-         description { state: "disabled" 0.0;
-            inherit: "default" 0.0;
+         desc { "disabled";
+            inherit: "default";
             color: 255 255 255 255;
             visible: 1;
          }
       }
    }
    programs {
-      program { name: "linenumber_show";
+      program { "linenumber_show";
          signal: "elm,state,linenumber,show";
-         action: STATE_SET "default" 0.0;
+         action: STATE_SET "default";
          target: "base_clip";
          transition: DECELERATE 0.35;
       }
-      program { name: "linenumber_hide";
+      program { "linenumber_hide";
          signal: "elm,state,linenumber,hide";
-         action: STATE_SET "hide" 0.0;
+         action: STATE_SET "hide";
          target: "base_clip";
          transition: DECELERATE 0.35;
       }
    }
    programs {
-      program { name: "layout_disable";
+      program { "layout_disable";
          signal: "elm,state,disabled";
-         action: STATE_SET "disabled" 0.0;
+         action: STATE_SET "disabled";
          target: "disabler";
          transition: DECELERATE 0.125;
       }
-      program { name: "layout_enable";
+      program { "layout_enable";
          signal: "elm,state,enabled";
-         action: STATE_SET "default" 0.0;
+         action: STATE_SET "default";
          target: "disabler";
          transition: DECELERATE 0.125;
       }
