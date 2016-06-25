@@ -121,7 +121,7 @@ newfile_cancel_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
 
 static void
 menu_back_btn_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
-                     void *envent_info EINA_UNUSED)
+                         void *envent_info EINA_UNUSED)
 {
    menu_data *md = data;
    menu_close(md);
