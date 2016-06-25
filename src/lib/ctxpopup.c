@@ -361,7 +361,8 @@ colorselector_changed_cb(void *data, Evas_Object *obj EINA_UNUSED,
    elm_spinner_value_set(ctxdata->input_colors[2], b);
    elm_spinner_value_set(ctxdata->input_colors[3], a);
 
-   evas_object_color_set(ctxdata->color_view, (r * a) / 255 , (g * a) / 255, (b * a) / 255, a);
+   evas_object_color_set(ctxdata->color_view, (r * a) / 255 ,
+                         (g * a) / 255, (b * a) / 255, a);
 
    ecore_animator_del(ctxdata->animator);
    snprintf(ctxdata->candidate, sizeof(ctxdata->candidate), ": %d %d %d %d;",
@@ -388,7 +389,8 @@ colorselector_inputs_changed_cb(void *data, Evas_Object *obj EINA_UNUSED,
    b = elm_spinner_value_get(ctxdata->input_colors[2]);
    a = elm_spinner_value_get(ctxdata->input_colors[3]);
 
-   evas_object_color_set(ctxdata->color_view, (r * a) /255 , (g * a)/255, (b * a)/255, a);
+   evas_object_color_set(ctxdata->color_view, (r * a) /255 , (g * a)/255,
+                         (b * a)/255, a);
    elm_colorselector_color_set(ctxdata->colorselector, r, g, b, a);
 
    ecore_animator_del(ctxdata->animator);
@@ -418,7 +420,8 @@ colorselector_preset_clicked_cb(void *data,  Evas *e EINA_UNUSED, Evas_Object *o
    b = preset_colors.rgba[index].b;
    a = preset_colors.rgba[index].a;
 
-   evas_object_color_set(ctxdata->color_view, (r * a)/255 , (g * a)/255, (b * a)/255, a);
+   evas_object_color_set(ctxdata->color_view, (r * a)/255 , (g * a)/255,
+                         (b * a)/255, a);
    elm_colorselector_color_set(ctxdata->colorselector, r, g, b, a);
 
    elm_spinner_value_set(ctxdata->input_colors[0], r);
@@ -460,15 +463,21 @@ colorselector_layout_create(Evas_Object *ctxpopup, ctxpopup_data *ctxdata)
    //Colorselector
    ctxdata->colorselector = elm_colorselector_add(layout);
    elm_colorselector_color_set(ctxdata->colorselector, r, g, b, a);
-   elm_colorselector_mode_set(ctxdata->colorselector, ELM_COLORSELECTOR_COMPONENTS);
-   evas_object_size_hint_weight_set(ctxdata->colorselector, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(ctxdata->colorselector, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_object_part_content_set(layout, "elm.swallow.colorselector", ctxdata->colorselector);
-   evas_object_smart_callback_add(ctxdata->colorselector, "changed", colorselector_changed_cb, ctxdata);
+   elm_colorselector_mode_set(ctxdata->colorselector,
+                              ELM_COLORSELECTOR_COMPONENTS);
+   evas_object_size_hint_weight_set(ctxdata->colorselector,
+                                    EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(ctxdata->colorselector,
+                                   EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_object_part_content_set(layout, "elm.swallow.colorselector",
+                               ctxdata->colorselector);
+   evas_object_smart_callback_add(ctxdata->colorselector, "changed",
+                                  colorselector_changed_cb, ctxdata);
 
    //Color View
    ctxdata->color_view = evas_object_rectangle_add(evas_object_evas_get(layout));
-   evas_object_color_set(ctxdata->color_view, (r * a) / 255 , (g * a) / 255, (b * a) / 255, a);
+   evas_object_color_set(ctxdata->color_view, (r * a) / 255 , (g * a) / 255,
+                         (b * a) / 255, a);
    evas_object_show(ctxdata->color_view);
    elm_object_part_content_set(layout, "elm.swallow.color_view", ctxdata->color_view);
 
@@ -490,10 +499,13 @@ colorselector_layout_create(Evas_Object *ctxpopup, ctxpopup_data *ctxdata)
         elm_spinner_step_set(ctxdata->input_colors[i], 1.0);
         elm_spinner_min_max_set(ctxdata->input_colors[i], 0, 255);
         elm_spinner_value_set(ctxdata->input_colors[i], ctxdata->attr->val[i]);
-        evas_object_size_hint_align_set(ctxdata->input_colors[i], EVAS_HINT_FILL, 0.5);
-        evas_object_size_hint_weight_set(ctxdata->input_colors[i], EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+        evas_object_size_hint_align_set(ctxdata->input_colors[i],
+                                        EVAS_HINT_FILL, 0.5);
+        evas_object_size_hint_weight_set(ctxdata->input_colors[i],
+                                         EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
         evas_object_show(ctxdata->input_colors[i]);
-        evas_object_smart_callback_add(ctxdata->input_colors[i], "changed", colorselector_inputs_changed_cb, ctxdata);
+        evas_object_smart_callback_add(ctxdata->input_colors[i], "changed",
+                                       colorselector_inputs_changed_cb, ctxdata);
      }
 
    elm_object_part_content_set(layout, "elm.swallow.input_red", ctxdata->input_colors[0]);
@@ -521,7 +533,8 @@ colorselector_layout_create(Evas_Object *ctxpopup, ctxpopup_data *ctxdata)
         evas_object_size_hint_min_set(rect, ELM_SCALE_SIZE(20), ELM_SCALE_SIZE(20));
         evas_object_show(rect);
         elm_box_pack_end(colors_box, rect);
-        evas_object_event_callback_add(rect, EVAS_CALLBACK_MOUSE_DOWN , colorselector_preset_clicked_cb, ctxdata);
+        evas_object_event_callback_add(rect, EVAS_CALLBACK_MOUSE_DOWN ,
+                                       colorselector_preset_clicked_cb, ctxdata);
      }
    elm_object_part_content_set(layout, "elm.swallow.preset_colors", colors_box);
 
