@@ -235,7 +235,7 @@ preference_setting_content_get(preference_setting_data *psd,
    //Toggle (Status)
    Evas_Object *toggle_status =
       toggle_create(box, _("Status"), config_stats_bar_get(),
-                    _("Status (F7)<br>"
+                    _("Status (F8)<br>"
                       "Display Status bar on the bottom area.<br>"
                       "Status bar displays subsidiary information for<br>"
                       "editing."));
