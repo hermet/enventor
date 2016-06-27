@@ -223,10 +223,13 @@ preference_setting_content_get(preference_setting_data *psd,
    elm_box_pack_end(box2, entry_view_size_h);
 
    //Toggle (Tools)
-   Evas_Object *toggle_tools = toggle_create(box, _("Tools"),
-                                             config_tools_get(),
-                                             _("Tools (F8)<br>"
-                                             "Display Tools"));
+   Evas_Object *toggle_tools =
+      toggle_create(box, _("Tools"),
+                    config_tools_get(),
+                    _("Tools (F7)<br>"
+                      "Display Tools on the top area.<br>"
+                      "Tools displays the essential function <br>"
+                      "toggles to edit the layout."));
    elm_box_pack_end(box, toggle_tools);
 
    //Toggle (Status)
