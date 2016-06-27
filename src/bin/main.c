@@ -794,10 +794,17 @@ keygrabber_key_down_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
         return;
      }
    //Tools
-   if (!strcmp(ev->key, "F8"))
+   if (!strcmp(ev->key, "F7"))
      {
         enventor_object_ctxpopup_dismiss(base_enventor_get());
         base_tools_toggle(EINA_TRUE);
+        return;
+     }
+   //Status Bar
+   if (!strcmp(ev->key, "F8"))
+     {
+        enventor_object_ctxpopup_dismiss(base_enventor_get());
+        base_statusbar_toggle(EINA_TRUE);
         return;
      }
    //File Browser
@@ -812,13 +819,6 @@ keygrabber_key_down_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
      {
         enventor_object_ctxpopup_dismiss(base_enventor_get());
         tools_edc_navigator_update(EINA_TRUE);
-        return;
-     }
-   //Statusbar
-   if (!strcmp(ev->key, "F11"))
-     {
-        enventor_object_ctxpopup_dismiss(base_enventor_get());
-        tools_status_update(EINA_TRUE);
         return;
      }
    //Setting
@@ -836,8 +836,7 @@ statusbar_set()
 {
    Evas_Object *obj = stats_init(base_layout_get());
    elm_object_part_content_set(base_layout_get(), "elm.swallow.statusbar", obj);
-   tools_status_update(EINA_FALSE);
-
+   base_statusbar_toggle(EINA_FALSE);
    stats_view_scale_update(config_view_scale_get());
 }
 

@@ -9,6 +9,7 @@ typedef struct preference_setting_s
    Evas_Object *view_size_w_entry;
    Evas_Object *view_size_h_entry;
    Evas_Object *toggle_tools;
+   Evas_Object *toggle_status;
    Evas_Object *toggle_console;
    Evas_Object *toggle_indent;
    Evas_Object *toggle_autocomp;
@@ -72,6 +73,7 @@ preference_setting_config_set(preference_setting_data *psd)
    if (!psd) return;
 
    config_tools_set(elm_check_state_get(psd->toggle_tools));
+   config_stats_bar_set(elm_check_state_get(psd->toggle_status));
    config_console_set(elm_check_state_get(psd->toggle_console));
    config_auto_indent_set(elm_check_state_get(psd->toggle_indent));
    config_auto_complete_set(elm_check_state_get(psd->toggle_autocomp));
@@ -93,6 +95,7 @@ preference_setting_reset(preference_setting_data *psd)
    if (!psd) return;
 
    elm_check_state_set(psd->toggle_tools, config_tools_get());
+   elm_check_state_set(psd->toggle_status, config_stats_bar_get());
    elm_check_state_set(psd->toggle_console, config_console_get());
    elm_check_state_set(psd->toggle_indent, config_auto_indent_get());
    elm_check_state_set(psd->toggle_autocomp, config_auto_complete_get());
@@ -226,6 +229,15 @@ preference_setting_content_get(preference_setting_data *psd,
                                              "Display Tools"));
    elm_box_pack_end(box, toggle_tools);
 
+   //Toggle (Status)
+   Evas_Object *toggle_status =
+      toggle_create(box, _("Status"), config_stats_bar_get(),
+                    _("Status (F7)<br>"
+                      "Display Status bar on the bottom area.<br>"
+                      "Status bar displays subsidiary information for<br>"
+                      "editing."));
+   elm_box_pack_end(box, toggle_status);
+
    //Toggle (Console)
    Evas_Object *toggle_console =
       toggle_create(box, _("Auto Hiding Console"), config_console_get(),
@@ -281,6 +293,7 @@ preference_setting_content_get(preference_setting_data *psd,
    psd->view_size_w_entry = entry_view_size_w;
    psd->view_size_h_entry = entry_view_size_h;
    psd->toggle_tools = toggle_tools;
+   psd->toggle_status = toggle_status;
    psd->toggle_console = toggle_console;
    psd->toggle_indent = toggle_indent;
    psd->toggle_autocomp = toggle_autocomp;

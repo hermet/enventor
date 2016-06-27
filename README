@@ -35,10 +35,10 @@ F2 - New
 F3 - Save
 F4 - Load
 F5 - Toggle Line Number
-F8 - Toggle Tools
+F7 - Toggle Tools
+F8 - Toggle Status
 F9 - Toggle File Browser
 F10 - Toggle EDC Navigator
-F11 - Toggle Status
 F12 - Settings
 
 Ctrl+S - Quick Save + Update Live View
