@@ -130,7 +130,6 @@ config_update_cb(void *data EINA_UNUSED)
    Enventor_Object *enventor = base_enventor_get();
 
    enventor_common_setup(enventor);
-   tools_update();
 
    syntax_color_update(enventor);
 
@@ -140,6 +139,7 @@ config_update_cb(void *data EINA_UNUSED)
    enventor_object_live_view_size_set(enventor, w, h);
    stats_view_scale_update(config_view_scale_get());
    base_tools_toggle(EINA_FALSE);
+   base_statusbar_toggle(EINA_FALSE);
    base_console_auto_hide();
 }
 
