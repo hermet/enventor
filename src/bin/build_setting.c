@@ -140,7 +140,7 @@ build_setting_content_get(build_setting_data *bsd, Evas_Object *parent)
    elm_object_focus_set(img_path_entry, EINA_TRUE);
    elm_object_part_content_set(layout, "elm.swallow.img_path_entry",
                                img_path_entry);
-   elm_layout_text_set(layout, "img_path_guide", _("Image Paths:"));
+   elm_layout_text_set(layout, "img_path_guide", _("Image paths:"));
 
    //Image Path Tooltip
    Evas_Object *img_path_tooltip = elm_button_add(layout);
@@ -158,7 +158,7 @@ build_setting_content_get(build_setting_data *bsd, Evas_Object *parent)
                          (Eina_List *)config_snd_path_list_get());
    elm_object_part_content_set(layout, "elm.swallow.snd_path_entry",
                                snd_path_entry);
-   elm_layout_text_set(layout, "snd_path_guide", _("Sound Paths:"));
+   elm_layout_text_set(layout, "snd_path_guide", _("Sound paths:"));
 
    //Sound Path Tooltip
    Evas_Object *snd_path_tooltip = elm_button_add(layout);
@@ -176,7 +176,7 @@ build_setting_content_get(build_setting_data *bsd, Evas_Object *parent)
                          (Eina_List *)config_fnt_path_list_get());
    elm_object_part_content_set(layout, "elm.swallow.fnt_path_entry",
                                fnt_path_entry);
-   elm_layout_text_set(layout, "fnt_path_guide", _("Font Paths:"));
+   elm_layout_text_set(layout, "fnt_path_guide", _("Font paths:"));
 
    //Font Path Tooltip
    Evas_Object *font_path_tooltip = elm_button_add(layout);
@@ -194,7 +194,7 @@ build_setting_content_get(build_setting_data *bsd, Evas_Object *parent)
                          (Eina_List *)config_dat_path_list_get());
    elm_object_part_content_set(layout, "elm.swallow.dat_path_entry",
                                dat_path_entry);
-   elm_layout_text_set(layout, "dat_path_guide", _("Data Paths:"));
+   elm_layout_text_set(layout, "dat_path_guide", _("Data paths:"));
 
    //Data Path Tooltip
    Evas_Object *data_path_tooltip = elm_button_add(layout);
