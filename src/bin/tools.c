@@ -412,9 +412,9 @@ tools_highlight_update(Eina_Bool toggle)
    if (toggle)
      {
         if (config_part_highlight_get())
-          stats_info_msg_update(_("Part Highlighting Enabled."));
+          stats_info_msg_update(_("Part highlighting enabled."));
         else
-          stats_info_msg_update(_("Part Highlighting Disabled."));
+          stats_info_msg_update(_("Part highlighting disabled."));
      }
 
    //Toggle on/off
@@ -499,9 +499,9 @@ tools_dummy_update(Eina_Bool toggle)
    if (toggle)
      {
         if (config_dummy_parts_get())
-          stats_info_msg_update(_("Dummy Parts Enabled."));
+          stats_info_msg_update(_("Dummy parts enabled."));
         else
-          stats_info_msg_update(_("Dummy Parts Disabled."));
+          stats_info_msg_update(_("Dummy parts disabled."));
      }
    //Toggle on/off
    if (config_dummy_parts_get())
@@ -524,9 +524,9 @@ tools_mirror_mode_update(Eina_Bool toggle)
    if (toggle)
      {
         if (config_mirror_mode_get())
-          stats_info_msg_update(_("Mirror Mode Enabled."));
+          stats_info_msg_update(_("Mirror mode enabled."));
         else
-          stats_info_msg_update(_("Mirror Mode Disabled."));
+          stats_info_msg_update(_("Mirror mode disabled."));
      }
 
    //Toggle on/off
