@@ -2264,7 +2264,7 @@ live_edit_init(Evas_Object *parent)
    //Fixed Width Check
    Evas_Object *fixed_w_check = elm_check_add(fixed_box);
    elm_object_focus_allow_set(fixed_w_check, EINA_FALSE);
-   elm_object_text_set(fixed_w_check, "Fixed Width");
+   elm_object_text_set(fixed_w_check, "Fixed width");
    evas_object_smart_callback_add(fixed_w_check, "changed",
                                   fixed_check_changed_cb, ld);
    evas_object_show(fixed_w_check);
@@ -2273,7 +2273,7 @@ live_edit_init(Evas_Object *parent)
    //Fixed Height Check
    Evas_Object *fixed_h_check = elm_check_add(fixed_box);
    elm_object_focus_allow_set(fixed_h_check, EINA_FALSE);
-   elm_object_text_set(fixed_h_check, "Fixed Height");
+   elm_object_text_set(fixed_h_check, "Fixed height");
    evas_object_smart_callback_add(fixed_h_check, "changed",
                                   fixed_check_changed_cb, ld);
    evas_object_show(fixed_h_check);
