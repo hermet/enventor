@@ -258,22 +258,22 @@ tools_init(Evas_Object *parent)
                                    EVAS_HINT_FILL);
 
    btn = tools_btn_create(text_editor_ly, "save",
-                          _("Save File (Ctrl + S)<br>"
-                            "Save current script to file."),
+                          _("Save the file (Ctrl + S)<br>"
+                            "Save the current script to a file."),
                           save_cb);
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_part_content_set(text_editor_ly, "elm.swallow.save", btn);
 
    btn = tools_btn_create(text_editor_ly, "undo",
-                          _("Undo Text (Ctrl + Z)"),
+                          _("Undo text (Ctrl + Z)"),
                           undo_cb);
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_part_content_set(text_editor_ly, "elm.swallow.undo", btn);
 
    btn = tools_btn_create(text_editor_ly, "redo",
-                          _("Redo Text (Ctrl + R)"),
+                          _("Redo text (Ctrl + R)"),
                           redo_cb);
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -281,8 +281,7 @@ tools_init(Evas_Object *parent)
 
    btn = tools_btn_create(text_editor_ly, "find",
                           _("Find/Replace (Ctrl + F)<br>"
-                            "Open Find/Replace window to find or<br>"
-                            "replace text."),
+                            "Find or replace text."),
                           find_cb);
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -290,8 +289,8 @@ tools_init(Evas_Object *parent)
    td->find_btn = btn;
 
    btn = tools_btn_create(text_editor_ly, "goto",
-                          _("Goto Lines (Ctrl + L)<br>"
-                            "Open Goto window to move the cursor<br>"
+                          _("Go to line (Ctrl + L)<br>"
+                            "Open the Go to window to move the cursor<br>"
                             "line position."),
                           goto_cb);
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -300,8 +299,8 @@ tools_init(Evas_Object *parent)
    td->goto_btn = btn;
 
    btn = tools_btn_create(text_editor_ly, "lines",
-                          _("Line Numbers (F5)<br>"
-                            "Display script line number."),
+                          _("Line numbers (F5)<br>"
+                            "Display the script line numbers."),
                           lines_cb);
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -309,11 +308,11 @@ tools_init(Evas_Object *parent)
    td->lines_btn = btn;
 
    btn = tools_btn_create(text_editor_ly, "template",
-                          _("Insert Code Snippet (Ctrl + T)<br>"
-                            "Enventor decides best template code with<br>"
-                            "regards to the current editing context. For<br>"
-                            "instance, if the cursor is inside of part <br>"
-                            "section, description code will be generated."),
+                          _("Insert a code snippet (Ctrl + T)<br>"
+                            "Enventor chooses the best code with regards<br>"
+                            "to the current editing context. For instance,<br>"
+                            "if the cursor is inside a part section,<br>"
+                            "description code is generated."),
                           template_cb);
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
