@@ -319,18 +319,18 @@ stats_init(Evas_Object *parent)
 
    //View Scale button
    create_statusbar_btn(layout, "expand", "scale_btn",
-                        _("View Zoom Level (Ctrl + Mouse Wheel)<br>"
-                          "Zooming live view in or out."),
+                        _("View zoom level (Ctrl + Mouse Wheel)<br>"
+                          "Zoom the live view in or out."),
                         ELM_TOOLTIP_ORIENT_TOP_RIGHT,
                         view_scale_btn_cb, sd);
    //View Resize Button
    create_statusbar_btn(layout, "expand", "resize_btn",
-                        _("Resize live view width and height."),
+                        _("Resize the width and height of the live view."),
                         ELM_TOOLTIP_ORIENT_TOP,
                         view_resize_btn_cb, sd);
    //View Invert Button
    create_statusbar_btn(layout, "invert", "invert_btn",
-                        _("Swap the live view width and height."),
+                        _("Swap the width and height of the live view."),
                         ELM_TOOLTIP_ORIENT_TOP,
                         view_invert_btn_cb, sd);
 
@@ -341,7 +341,7 @@ stats_init(Evas_Object *parent)
                                arrow_tooltip);
    elm_object_tooltip_text_set(arrow_tooltip,
                                 _("Mouse cursor position in live view.<br>"
-                                  "Absolute Coordinate | Relative Coordinate"));
+                                  "Absolute coordinate | Relative coordinate."));
    elm_object_tooltip_orient_set(arrow_tooltip, ELM_TOOLTIP_ORIENT_TOP);
    elm_object_focus_allow_set(arrow_tooltip, EINA_FALSE);
 
@@ -351,7 +351,7 @@ stats_init(Evas_Object *parent)
    elm_object_part_content_set(layout, "elm.swallow.group_icon.tooltip",
                                group_tooltip);
    elm_object_tooltip_text_set(group_tooltip,
-                               _("Current editing group name."));
+                               _("Name of the current editing group."));
    elm_object_tooltip_orient_set(group_tooltip, ELM_TOOLTIP_ORIENT_TOP);
    elm_object_focus_allow_set(group_tooltip, EINA_FALSE);
 
