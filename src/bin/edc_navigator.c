@@ -817,7 +817,7 @@ gl_program_content_get_cb(void *data EINA_UNUSED, Evas_Object *obj,
 
    //Box
    Evas_Object *box = elm_box_add(obj);
-   elm_object_tooltip_text_set(box, "Play Program");
+   elm_object_tooltip_text_set(box, "Play the program.");
 
    //Button
    Evas_Object *btn = elm_button_add(box);
@@ -1059,7 +1059,7 @@ gl_programs_content_get_cb(void *data EINA_UNUSED, Evas_Object *obj,
    //2. Stop All Button
    //Box
    Evas_Object *box = elm_box_add(obj);
-   elm_object_tooltip_text_set(box, "Stop All Programs");
+   elm_object_tooltip_text_set(box, "Stop all programs.");
 
    //Button
    Evas_Object *btn = elm_button_add(box);
