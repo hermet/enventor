@@ -249,6 +249,7 @@ _enventor_object_efl_canvas_group_group_add(Eo *obj, Enventor_Object_Data *pd)
 
    build_init();
    autocomp_init();
+   ref_init();
    edj_mgr_init(obj);
    build_err_noti_cb_set(build_err_noti_cb, pd);
 
@@ -277,6 +278,7 @@ _enventor_object_efl_canvas_group_group_del(Eo *obj EINA_UNUSED, Enventor_Object
    eina_stringshare_del(pd->font_style);
    eina_stringshare_del(pd->group_name);
    autocomp_term();
+   ref_term();
    ecore_event_handler_del(pd->key_down_handler);
    ecore_event_handler_del(pd->key_up_handler);
    edj_mgr_term();
@@ -774,6 +776,12 @@ _enventor_object_programs_stop(Eo *obj EINA_UNUSED,
    view_programs_stop(VIEW_DATA);
 }
 
+EOLIAN static void
+_enventor_object_keyword_reference_show(Eo *obj EINA_UNUSED,
+                                        Enventor_Object_Data *pd)
+{
+   ref_show(pd->main_it->ed);
+}
 
 /*****************************************************************************/
 /* Externally accessible calls                                               */

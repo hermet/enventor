@@ -289,4 +289,10 @@ void edit_focus_set(edit_data *ed, Eina_Bool focus);
 /* util */
 void mem_fail_msg(void);
 
+
+/* reference */
+void ref_init(void);
+void ref_term(void);
+void ref_show(edit_data *ed);
+
 #endif

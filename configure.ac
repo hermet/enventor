@@ -130,6 +130,7 @@ data/color/Makefile
 data/autocomp/Makefile
 data/sounds/Makefile
 data/help/Makefile
+data/reference/Makefile
 pc/enventor.pc
 ])
 

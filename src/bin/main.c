@@ -773,8 +773,15 @@ keygrabber_key_down_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
         menu_edc_load();
         return;
      }
-   //Line Number
+   //Keyword Reference
    if (!strcmp(ev->key, "F5"))
+     {
+        enventor_object_ctxpopup_dismiss(base_enventor_get());
+        enventor_object_keyword_reference_show(base_enventor_get());
+        return;
+     }
+   //Line Number
+   if (!strcmp(ev->key, "F6"))
      {
         enventor_object_ctxpopup_dismiss(base_enventor_get());
         tools_lines_update(EINA_TRUE);

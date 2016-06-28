@@ -3371,3 +3371,36 @@ group { "edit_layout";
       }
    }
 }
+
+#define REFERENCE_LAYOUT_WIDTH 300
+#define REFERENCE_LAYOUT_HEIGHT 100
+group { "reference_layout";
+   data.item: "width" REFERENCE_LAYOUT_WIDTH;
+   data.item: "height" REFERENCE_LAYOUT_HEIGHT;
+   parts {
+      spacer { "base";
+         scale: 1;
+         desc { "default";
+         }
+      }
+      rect { "bg";
+         scale: 1;
+         desc { "default";
+            min: REFERENCE_LAYOUT_WIDTH REFERENCE_LAYOUT_HEIGHT;
+            max: REFERENCE_LAYOUT_WIDTH REFERENCE_LAYOUT_HEIGHT;
+            fixed: 1 1;
+            align: 0.0 0.0;
+            rel1.to: "base";
+            rel2.to: "base";
+            color: 128 128 128 255;
+         }
+      }
+      swallow { "elm.swallow.content";
+         scale: 1;
+         desc { "default";
+            rel1.to: "bg";
+            rel2.to: "bg";
+         }
+      }
+   }
+}
