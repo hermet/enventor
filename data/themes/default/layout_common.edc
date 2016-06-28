@@ -2613,7 +2613,7 @@ group { "live_view_tools_layout";
             align: 0.0 0.5;
          }
       }
-      swallow { "elm.swallow.mirror";
+      swallow { "elm.swallow.outline";
          scale: 1;
          desc { "default";
             rel1 {
@@ -2621,6 +2621,31 @@ group { "live_view_tools_layout";
                relative: 1.0 0.0;
             }
             rel2.to_x: "padding3";
+            fixed: 1 0;
+            align: 0.0 0.5;
+         }
+      }
+      spacer { "padding_outline";
+         scale: 1;
+         desc { "default";
+            rel1 {
+               to_x: "elm.swallow.outline";
+               relative: 1.0 0.0;
+            }
+            rel2.to_x: "elm.swallow.outline";
+            min: 8 0;
+            fixed: 1 0;
+            align: 0.0 0.5;
+         }
+      }
+      swallow { "elm.swallow.mirror";
+         scale: 1;
+         desc { "default";
+            rel1 {
+               to_x: "padding_outline";
+               relative: 1.0 0.0;
+            }
+            rel2.to_x: "padding_outline";
             fixed: 1 0;
             align: 0.0 0.5;
          }

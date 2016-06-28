@@ -35,6 +35,8 @@ Eina_Bool config_part_highlight_get(void);
 void config_part_highlight_set(Eina_Bool highlight);
 Eina_Bool config_dummy_parts_get(void);
 void config_dummy_parts_set(Eina_Bool dummy_parts);
+Eina_Bool config_parts_outline_get(void);
+void config_parts_outline_set(Eina_Bool outline);
 void config_auto_indent_set(Eina_Bool auto_indent);
 Eina_Bool config_auto_indent_get(void);
 void config_auto_complete_set(Eina_Bool auto_complete);

@@ -3,6 +3,7 @@ void tools_term(void);
 void tools_highlight_update(Eina_Bool toggle);
 void tools_lines_update(Eina_Bool toggle);
 void tools_dummy_update(Eina_Bool toggle);
+void tools_outline_update(Eina_Bool toggle);
 void tools_mirror_mode_update(Eina_Bool toggle);
 void tools_status_update(Eina_Bool toggle);
 void tools_file_browser_update(Eina_Bool toggle);

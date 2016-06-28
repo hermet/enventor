@@ -169,6 +169,9 @@ view_obj_create_post_job(view_data *vd)
    if (enventor_obj_dummy_parts_get(vd->enventor))
      dummy_obj_new(vd->layout);
 
+   if (enventor_obj_parts_outline_get(vd->enventor))
+     outline_obj_new(vd->layout);
+
    view_mirror_mode_update(vd);
 
    if (vd->changed_part.part)
@@ -369,6 +372,7 @@ update_edj_file_internal(view_data *vd)
    view_obj_min_update(vd);
    view_part_highlight_set(vd, vd->part_name);
    dummy_obj_update(vd->layout);
+   outline_obj_update(vd->layout);
    view_mirror_mode_update(vd);
    if (vd->changed_part.part)
    edje_edit_part_selected_state_set(vd->layout, vd->changed_part.part,
@@ -420,6 +424,7 @@ exe_del_event_cb(void *data, int type EINA_UNUSED, void *event EINA_UNUSED)
    if (!edje_object_file_set(vd->layout, build_edj_path_get(), vd->group_name))
      {
         dummy_obj_update(vd->layout);
+        outline_obj_update(vd->layout);
         ecore_timer_del(vd->update_edj_timer);
         vd->file_set_finished = EINA_FALSE;
         vd->update_edj_timer = ecore_timer_add(0.25, update_edj_file, vd);
@@ -588,6 +593,14 @@ view_dummy_set(view_data *vd, Eina_Bool dummy_parts)
    //Does view have dummy object?
    if (dummy_parts) dummy_obj_new(vd->layout);
    else dummy_obj_del(vd->layout);
+}
+
+void
+view_outline_set(view_data *vd, Eina_Bool outline)
+{
+   if (!vd) return;
+   if (outline) outline_obj_new(vd->layout);
+   else outline_obj_del(vd->layout);
 }
 
 view_data *
@@ -900,5 +913,6 @@ view_mirror_mode_update(view_data *vd)
    edje_object_mirrored_set(vd->layout,
                             enventor_obj_mirror_mode_get(vd->enventor));
    dummy_obj_update(vd->layout);
+   outline_obj_update(vd->layout);
    part_obj_geom_cb(vd, evas_object_evas_get(vd->layout), vd->part_obj, NULL);
 }

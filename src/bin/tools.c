@@ -7,6 +7,7 @@
 typedef struct tools_s
 {
    Evas_Object *swallow_btn;
+   Evas_Object *outline_btn;
    Evas_Object *status_btn;
    Evas_Object *file_browser_btn;
    Evas_Object *edc_navigator_btn;
@@ -47,6 +48,13 @@ dummy_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
          void *event_info EINA_UNUSED)
 {
    tools_dummy_update(EINA_TRUE);
+}
+
+static void
+part_outline_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+                void *event_info EINA_UNUSED)
+{
+   tools_outline_update(EINA_TRUE);
 }
 
 static void
@@ -218,6 +226,16 @@ tools_init(Evas_Object *parent)
    evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_part_content_set(live_view_ly, "elm.swallow.dummy", btn);
    td->swallow_btn = btn;
+
+   btn = tools_btn_create(live_view_ly, "part_outline",
+                          _("Parts Outline (Ctrl + P)<br>"
+                            "Display parts outline"),
+                          part_outline_cb);
+   elm_object_tooltip_orient_set(btn, ELM_TOOLTIP_ORIENT_BOTTOM_RIGHT);
+   evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_object_part_content_set(live_view_ly, "elm.swallow.outline", btn);
+   td->outline_btn = btn;
 
    btn = tools_btn_create(live_view_ly, "mirror",
                           _("Mirror mode (Ctrl + M)<br>"
@@ -505,6 +523,30 @@ tools_dummy_update(Eina_Bool toggle)
      elm_object_signal_emit(td->swallow_btn, "icon,highlight,enabled", "");
    else
      elm_object_signal_emit(td->swallow_btn, "icon,highlight,disabled", "");
+}
+
+void
+tools_outline_update(Eina_Bool toggle)
+{
+   tools_data *td = g_td;
+   if (!td) return;
+
+   if (toggle) config_parts_outline_set(!config_parts_outline_get());
+   enventor_object_parts_outline_set(base_enventor_get(),
+                                     config_parts_outline_get());
+
+   if (toggle)
+     {
+        if (config_parts_outline_get())
+          stats_info_msg_update(_("Parts Outline Enabled."));
+        else
+          stats_info_msg_update(_("Parts Outline Disabled."));
+     }
+   //Toggle on/off
+   if (config_parts_outline_get())
+     elm_object_signal_emit(td->outline_btn, "icon,highlight,enabled", "");
+   else
+     elm_object_signal_emit(td->outline_btn, "icon,highlight,disabled", "");
 }
 
 void

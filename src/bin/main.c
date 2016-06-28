@@ -42,6 +42,7 @@ tools_update(void)
    tools_lines_update(EINA_FALSE);
    tools_highlight_update(EINA_FALSE);
    tools_dummy_update(EINA_FALSE);
+   tools_outline_update(EINA_FALSE);
    tools_mirror_mode_update(EINA_FALSE);
    tools_status_update(EINA_FALSE);
    tools_file_browser_update(EINA_FALSE);
@@ -680,6 +681,12 @@ ctrl_func(Evas_Event_Key_Down *event)
         tools_dummy_update(EINA_TRUE);
         return EINA_TRUE;
      }
+   //Parts Outline
+   if (!strcmp(event->key, "p") || !strcmp(event->key, "P"))
+     {
+        tools_outline_update(EINA_TRUE);
+        return EINA_TRUE;
+     }
    //Mirror Mode
    if (!strcmp(event->key, "m") || !strcmp(event->key, "M"))
      {
@@ -889,6 +896,8 @@ keygrabber_init(app_data *ad)
    GRAB_ADD("I", modifier);
    GRAB_ADD("o", modifier);
    GRAB_ADD("O", modifier);
+   GRAB_ADD("p", modifier);
+   GRAB_ADD("P", modifier);
    GRAB_ADD("e", modifier);
    GRAB_ADD("E", modifier);
    GRAB_ADD("space", modifier);

@@ -48,6 +48,7 @@ struct _Enventor_Object_Data
    Eina_Stringshare *font_style;
 
    Eina_Bool dummy_parts : 1;
+   Eina_Bool outline : 1;
    Eina_Bool disabled : 1;
    Eina_Bool mirror_mode : 1;
    Eina_Bool linenumber : 1;
@@ -592,6 +593,25 @@ _enventor_object_dummy_parts_get(Eo *obj EINA_UNUSED,
 {
    return pd->dummy_parts;
 }
+
+EOLIAN static void
+_enventor_object_parts_outline_set(Eo *obj EINA_UNUSED,
+                                   Enventor_Object_Data *pd,
+                                   Eina_Bool outline)
+{
+   outline = !!outline;
+
+   view_outline_set(VIEW_DATA, outline);
+   pd->outline = outline;
+}
+
+EOLIAN static Eina_Bool
+_enventor_object_parts_outline_get(Eo *obj EINA_UNUSED,
+                                   Enventor_Object_Data *pd)
+{
+   return pd->outline;
+}
+
 
 EOLIAN static void
 _enventor_object_part_highlight_set(Eo *obj EINA_UNUSED,

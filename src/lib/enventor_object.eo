@@ -34,6 +34,15 @@ class Enventor.Object (Elm.Widget, Efl.File) {
             dummy_parts: bool;
          }
       }
+      @property parts_outline {
+         set {
+         }
+         get {
+         }
+         values {
+            outline: bool;
+         }
+      }
       @property mirror_mode {
          set {
          }
