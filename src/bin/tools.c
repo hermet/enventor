@@ -198,9 +198,9 @@ tools_init(Evas_Object *parent)
 
    Evas_Object *btn;
    btn = tools_btn_create(live_view_ly, "highlight",
-                          _("Part Highlighting (Ctrl + H)<br>"
-                            "Highlight effect on the selected part in the<br>"
-                            "live view."),
+                          _("Part highlighting (Ctrl + H)<br>"
+                            "Show a highlight effect on the selected part<br>"
+                            "in the live view."),
                           highlight_cb);
    elm_object_tooltip_orient_set(btn, ELM_TOOLTIP_ORIENT_BOTTOM_RIGHT);
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -209,7 +209,7 @@ tools_init(Evas_Object *parent)
    td->highlight_btn = btn;
 
    btn = tools_btn_create(live_view_ly, "dummy",
-                          _("Dummy Parts (Ctrl + W)<br>"
+                          _("Dummy parts (Ctrl + W)<br>"
                             "Display virtual images for the swallow and<br>"
                             "spacer parts."),
                           dummy_cb);
@@ -220,10 +220,10 @@ tools_init(Evas_Object *parent)
    td->swallow_btn = btn;
 
    btn = tools_btn_create(live_view_ly, "mirror",
-                          _("Mirror Mode (Ctrl + M)<br>"
-                            "Invert layout horizontally. This previews <br>"
-                            "design layout for the environemnt, RTL(Right<br>"
-                            "to Left)/LTR(Left to Right) setting."),
+                          _("Mirror mode (Ctrl + M)<br>"
+                            "Invert the layout horizontally and review<br>"
+                            "the designed layout in RTL(right-to-left)<br>"
+                            "LTR(left-to-right) settings."),
                           mirror_cb);
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
