@@ -2069,42 +2069,39 @@ live_btn_create(Evas_Object *parent, const char *name, void * data,
       case EDJE_PART_TYPE_RECTANGLE:
          elm_object_tooltip_text_set(btn,
                                      _("Add a Rect to the live view.<br>"
-                                       "Rect is used for a solid color<br>"
-                                       "component or clipping other<br>"
-                                       "components."));
+                                       "A Rect part is used as a solid color<br>"
+                                       "component or clipping other components."));
          break;
       case EDJE_PART_TYPE_TEXT:
          elm_object_tooltip_text_set(btn,
-                                     _("Add a Text to the live view.<br>"
-                                       "Text is used for a plain text"));
+                                     _("Add a Text part to the live view.<br>"
+                                       "A Text part is used for plain text."));
          break;
       case EDJE_PART_TYPE_IMAGE:
          elm_object_tooltip_text_set(btn,
-                                     _("Add an Image to the live view.<br>"
-                                       "Image is used for an image part<br>"
-                                       "which contains a single image<br>"
-                                       "resource. Normally, an image file."));
+                                     _("Add an Image part to the live view.<br>"
+                                       "An Image part contains a single image<br>"
+                                       "resource, usually an image file."));
          break;
       case EDJE_PART_TYPE_SWALLOW:
          elm_object_tooltip_text_set(btn,
-                                     _("Add a Swallow to the live view.<br>"
-                                       "Swallow is a place holder for<br>"
-                                       "objects that one may want to<br>"
+                                     _("Add a Swallow part to the live view.<br>"
+                                       "A Swallow part is a placeholder for<br>"
+                                       "objects that you may want to<br>"
                                        "include in the layout later."));
          break;
       case EDJE_PART_TYPE_TEXTBLOCK:
          elm_object_tooltip_text_set(btn,
-                                     _("Add a Textblock to the live view.<br>"
-                                       "Textblock represents a rich-text<br>"
-                                       "part that can show big chunks of<br>"
-                                       "text."));
+                                     _("Add a Textblock part to the live view.<br>"
+                                       "A Textblock part is a rich-text part<br>"
+                                       "that can show big chunks of text."));
          break;
       case EDJE_PART_TYPE_SPACER:
          elm_object_tooltip_text_set(btn,
-                                     _("Add a Spacer to the live view.<br>"
-                                       "Spacer is an anchor to locate <br>"
-                                       "other parts. It's invisible so<br>"
-                                       "normally used for a padding."));
+                                     _("Add a Spacer part to the live view.<br>"
+                                       "A Spacer part is an anchor to locate <br>"
+                                       "other parts. It is invisible and<br>"
+                                       "normally used for padding."));
          break;
       default:
          break;
