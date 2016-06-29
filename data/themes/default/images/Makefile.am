@@ -96,4 +96,7 @@ EXTRA_DIST = \
    template.png \
    left.png \
    right.png \
-   filetab.png
+   filetab.png \
+   bevel_curved_vert_out.png \
+   vgrad_med_dark.png \
+   shadow_rounded_vert.png

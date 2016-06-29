@@ -2,8 +2,7 @@
 
 typedef struct file_tab_s
 {
-   Evas_Object *in_box;
-   Evas_Object *scroller;
+   Evas_Object *list;
    Evas_Object *out_box;
 } file_data;
 
@@ -19,10 +18,55 @@ file_data *g_fd = NULL;
 /*****************************************************************************/
 /* Internal method implementation                                            */
 /*****************************************************************************/
+static void
+left_btn_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                    void *event_info EINA_UNUSED)
+{
+   file_data *fd = data;
+
+   Elm_Object_Item *it = elm_list_selected_item_get(fd->list);
+   //just in case
+   if (!it) it = elm_list_last_item_get(fd->list);
+   if (!it) return;
+   it = elm_list_item_prev(it);
+   if (!it) return;
+   elm_list_item_selected_set(it, EINA_TRUE);
+}
+
+static void
+right_btn_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                     void *event_info EINA_UNUSED)
+{
+   file_data *fd = data;
+
+   Elm_Object_Item *it = elm_list_selected_item_get(fd->list);
+   //just in case
+   if (!it) it = elm_list_first_item_get(fd->list);
+   if (!it) return;
+   it = elm_list_item_next(it);
+   if (!it) return;
+   elm_list_item_selected_set(it, EINA_TRUE);
+}
 
 /*****************************************************************************/
 /* Externally accessible calls                                               */
 /*****************************************************************************/
+Eina_Bool file_tab_it_selected_set(Enventor_Item *enventor_it)
+{
+   file_data *fd = g_fd;
+   if (!fd) return EINA_FALSE;
+
+   Eina_List *list = (Eina_List*) elm_list_items_get(fd->list);
+   Eina_List *l;
+   Elm_Object_Item *it;
+
+   EINA_LIST_FOREACH(list, l, it)
+     {
+        file_tab_it *fti = elm_object_item_data_get(it);
+        if (fti->it != enventor_it) continue;
+        elm_list_item_selected_set(it, EINA_TRUE);
+     }
+}
 
 Eina_Bool file_tab_it_add(Enventor_Item *enventor_it)
 {
@@ -58,14 +102,10 @@ Eina_Bool file_tab_it_add(Enventor_Item *enventor_it)
         goto err;
      }
 
-   Evas_Object *btn = elm_button_add(fd->in_box);
-   elm_object_text_set(btn, filename);
-   elm_object_style_set(btn, "enventor");
-   evas_object_size_hint_weight_set(btn, 0, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(btn, 0, 0.5);
-   evas_object_show(btn);
+   fti->it = enventor_it;
 
-   elm_box_pack_end(fd->in_box, btn);
+   elm_list_item_append(fd->list, filename, NULL, NULL, NULL, fti);
+   elm_list_go(fd->list);
 
    free(filename);
 
@@ -89,14 +129,16 @@ file_tab_init(Evas_Object *parent)
 
    //Outer Box
    Evas_Object *out_box = elm_box_add(parent);
-   elm_box_padding_set(out_box, ELM_SCALE_SIZE(5), 0);
+   elm_box_padding_set(out_box, ELM_SCALE_SIZE(3), 0);
    elm_box_horizontal_set(out_box, EINA_TRUE);
 
    //Left Button
    Evas_Object *left_btn = elm_button_add(out_box);
    elm_object_style_set(left_btn, ENVENTOR_NAME);
+   elm_object_focus_allow_set(left_btn, EINA_FALSE);
    evas_object_size_hint_weight_set(left_btn, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(left_btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_smart_callback_add(left_btn, "clicked", left_btn_clicked_cb, fd);
    evas_object_show(left_btn);
    elm_box_pack_end(out_box, left_btn);
 
@@ -107,9 +149,12 @@ file_tab_init(Evas_Object *parent)
 
    //Right Button
    Evas_Object *right_btn = elm_button_add(out_box);
+   elm_object_style_set(right_btn, ENVENTOR_NAME);
+   elm_object_focus_allow_set(left_btn, EINA_FALSE);
    evas_object_size_hint_weight_set(right_btn, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(right_btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_object_style_set(right_btn, ENVENTOR_NAME);
+   evas_object_smart_callback_add(right_btn, "clicked",
+                                  right_btn_clicked_cb, fd);
    evas_object_show(right_btn);
    elm_box_pack_end(out_box, right_btn);
 
@@ -118,27 +163,20 @@ file_tab_init(Evas_Object *parent)
    elm_image_file_set(img2, EDJE_PATH, "right_arrow");
    elm_object_content_set(right_btn, img2);
 
-   //Scroller
-   Evas_Object *scroller = elm_scroller_add(out_box);
-   elm_object_style_set(scroller, ENVENTOR_NAME);
-   elm_scroller_policy_set(scroller, ELM_SCROLLER_POLICY_OFF,
+   //List
+   Evas_Object *list = elm_list_add(out_box);
+   elm_object_style_set(list, ENVENTOR_NAME);
+   elm_list_horizontal_set(list, EINA_TRUE);
+   elm_scroller_policy_set(list, ELM_SCROLLER_POLICY_OFF,
                            ELM_SCROLLER_POLICY_OFF);
-   evas_object_size_hint_weight_set(scroller, EVAS_HINT_EXPAND,
+   evas_object_size_hint_weight_set(list, EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(scroller, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_show(scroller);
-   elm_box_pack_end(out_box, scroller);
-
-   //Inner Box
-   Evas_Object *in_box = elm_box_add(scroller);
-   elm_box_horizontal_set(in_box, EINA_TRUE);
-   evas_object_size_hint_weight_set(in_box, 0, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(in_box, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_object_content_set(scroller, in_box);
+   evas_object_size_hint_align_set(list, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_show(list);
+   elm_box_pack_end(out_box, list);
 
    fd->out_box = out_box;
-   fd->in_box = in_box;
-   fd->scroller = scroller;
+   fd->list = list;
 
    return out_box;
 }

@@ -595,6 +595,7 @@ enventor_setup(app_data *ad)
    ad->main_it =
       enventor_object_main_file_set(enventor, config_input_path_get());
    file_tab_it_add(ad->main_it);
+   file_tab_it_selected_set(ad->main_it);
 
    base_enventor_set(enventor);
    base_text_editor_set(ad->main_it);
