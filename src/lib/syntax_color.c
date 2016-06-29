@@ -696,7 +696,7 @@ color_init(Eina_Strbuf *strbuf)
    color_data *cd = calloc(1, sizeof(color_data));
    if (!cd)
      {
-        EINA_LOG_ERR("Failed to allocate Memory!");
+        mem_fail_msg();
         return NULL;
      }
 

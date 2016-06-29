@@ -40,7 +40,7 @@ syntax_init(edit_data *ed)
    syntax_helper *sh = malloc(sizeof(syntax_helper));
    if (!sh)
      {
-        EINA_LOG_ERR("Failed to allocate Memory!");
+        mem_fail_msg();
         return NULL;
      }
    sh->strbuf = eina_strbuf_new();

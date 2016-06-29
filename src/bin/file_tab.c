@@ -39,7 +39,7 @@ Eina_Bool file_tab_it_add(Enventor_Item *enventor_it)
    fti = calloc(1, sizeof(file_tab_it));
    if (!fti)
      {
-        EINA_LOG_ERR("Failed to allocate Memory!");
+        mem_fail_msg();
         return EINA_FALSE;
      }
 
@@ -82,7 +82,7 @@ file_tab_init(Evas_Object *parent)
    file_data *fd = calloc(1, sizeof(file_data));
    if (!fd)
      {
-        EINA_LOG_ERR("Failed to allocate Memory!");
+        mem_fail_msg();
         return NULL;
      }
    g_fd = fd;

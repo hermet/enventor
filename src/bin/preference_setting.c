@@ -309,7 +309,7 @@ preference_setting_init(void)
    preference_setting_data *psd = calloc(1, sizeof(preference_setting_data));
    if (!psd)
      {
-        EINA_LOG_ERR(_("Failed to allocate Memory!"));
+        mem_fail_msg();
         return NULL;
      }
    return psd;

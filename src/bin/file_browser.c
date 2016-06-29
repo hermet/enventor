@@ -316,7 +316,7 @@ brows_file_create(const char *file_path, Eina_Bool create_sub_file_list)
    brows_file *file = calloc(1, sizeof(brows_file));
    if (!file)
      {
-        EINA_LOG_ERR("Failed to allocate Memory!");
+        mem_fail_msg();
         return NULL;
      }
 
@@ -599,7 +599,7 @@ file_browser_init(Evas_Object *parent)
    bd = calloc(1, sizeof(brows_data));
    if (!bd)
      {
-        EINA_LOG_ERR("Failed to allocate Memory!");
+        mem_fail_msg();
         return NULL;
      }
    g_bd = bd;

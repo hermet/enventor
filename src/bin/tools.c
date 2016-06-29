@@ -191,7 +191,7 @@ tools_init(Evas_Object *parent)
    td = calloc(1, sizeof(tools_data));
    if (!td)
      {
-        EINA_LOG_ERR(_("Failed to allocate Memory!"));
+        mem_fail_msg();
         return;
      }
    g_td = td;

@@ -318,7 +318,7 @@ panes_init(Evas_Object *parent)
    panes_data *pd = malloc(sizeof(panes_data));
    if (!pd)
      {
-        EINA_LOG_ERR(_("Failed to allocate Memory!"));
+        mem_fail_msg();
         return NULL;
      }
    g_pd = pd;

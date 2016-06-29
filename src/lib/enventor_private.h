@@ -277,4 +277,8 @@ redoundo_data *edit_redoundo_get(edit_data *ed);
 void edit_selection_region_center_set(edit_data *ed, int start, int end);
 const char *edit_file_get(edit_data *ed);
 
+
+/* util */
+void mem_fail_msg(void);
+
 #endif

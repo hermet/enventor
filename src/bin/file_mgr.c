@@ -190,7 +190,7 @@ file_mgr_init(void)
    file_mgr_data *fmd = calloc(1, sizeof(file_mgr_data));
    if (!fmd)
      {
-        EINA_LOG_ERR(_("Failed to allocate Memory!"));
+        mem_fail_msg();
         return;
      }
    g_fmd = fmd;

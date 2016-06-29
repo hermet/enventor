@@ -184,7 +184,7 @@ setting_open(void)
    sd = calloc(1, sizeof(setting_data));
    if (!sd)
      {
-        EINA_LOG_ERR(_("Failed to allocate Memory!"));
+        mem_fail_msg();
         return;
      }
    g_sd = sd;

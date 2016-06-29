@@ -610,7 +610,7 @@ menu_init(void)
    menu_data *md = calloc(1, sizeof(menu_data));
    if (!md)
      {
-        EINA_LOG_ERR(_("Failed to allocate Memory!"));
+        mem_fail_msg();
         return;
      }
    g_md = md;

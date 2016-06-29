@@ -137,7 +137,7 @@ entry_changed_user_cb(void *data, Evas_Object *obj EINA_UNUSED,
    diff_data *diff = calloc(1, sizeof(diff_data));
    if (!diff)
      {
-        EINA_LOG_ERR("Failed to allocate Memory!");
+        mem_fail_msg();
         return;
      }
 
@@ -357,7 +357,7 @@ redoundo_text_push(redoundo_data *rd, const char *text, int pos, int length,
    diff_data *diff = calloc(1, sizeof(diff_data));
    if (!diff)
      {
-        EINA_LOG_ERR("Failed to allocate Memory!");
+        mem_fail_msg();
         return;
      }
 
@@ -401,7 +401,7 @@ redoundo_init(edit_data *ed, Enventor_Object *enventor)
    redoundo_data *rd = calloc(1, sizeof(redoundo_data));
    if (!rd)
      {
-        EINA_LOG_ERR("Failed to allocate Memory!");
+        mem_fail_msg();
         return NULL;
      }
 
@@ -461,7 +461,7 @@ redoundo_text_relative_push(redoundo_data *rd, const char *text)
    diff_data *diff = malloc(sizeof(diff_data));
    if (!diff)
      {
-        EINA_LOG_ERR("Failed to allocate Memory!");
+        mem_fail_msg();
         return;
      }
 

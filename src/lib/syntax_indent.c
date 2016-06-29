@@ -572,7 +572,7 @@ indent_init(Eina_Strbuf *strbuf, edit_data *ed)
    indent_data *id = malloc(sizeof(indent_data));
    if (!id)
      {
-        EINA_LOG_ERR("Failed to allocate Memory!");
+        mem_fail_msg();
         return NULL;
      }
    id->strbuf = strbuf;

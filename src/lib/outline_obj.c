@@ -183,7 +183,7 @@ outline_obj_new(Evas_Object *layout)
    outline = calloc(1, sizeof(outline_obj));
    if (!outline)
      {
-        EINA_LOG_ERR("Failed to allocate Memory!");
+        mem_fail_msg();
         return;
      }
 

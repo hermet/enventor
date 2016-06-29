@@ -133,7 +133,7 @@ goto_open(void)
    gd = calloc(1, sizeof(goto_data));
    if (!gd)
      {
-        EINA_LOG_ERR(_("Failed to allocate Memory!"));
+        mem_fail_msg();
         return;
      }
    g_gd = gd;

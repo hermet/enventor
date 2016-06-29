@@ -403,7 +403,7 @@ color_keyword_list_create(char *syntax_template_str)
                                               sizeof(color_keyword));
    if (!color_keyword_list)
      {
-        EINA_LOG_ERR(_("Failed to allocate Memory!"));
+        mem_fail_msg();
         return NULL;
      }
 
@@ -454,7 +454,7 @@ syntax_template_format_create(text_setting_data *tsd)
    return tsd->syntax_template_format;
 
 err:
-   EINA_LOG_ERR(_("Failed to allocate Memory!"));
+   mem_fail_msg();
    if (utf8) free(utf8);
 
    eina_file_close(file);
@@ -485,7 +485,8 @@ syntax_template_create(text_setting_data *tsd)
    return tsd->syntax_template_str;
 
 err:
-   EINA_LOG_ERR(_("Failed to allocate Memory!"));
+   mem_fail_msg();
+
    if (syntax_template_format)
      {
         free(syntax_template_format);
@@ -994,7 +995,7 @@ text_setting_init(void)
    text_setting_data *tsd = calloc(1, sizeof(text_setting_data));
    if (!tsd)
      {
-        EINA_LOG_ERR(_("Failed to allocate Memory!"));
+        mem_fail_msg();
         return NULL;
      }
    return tsd;

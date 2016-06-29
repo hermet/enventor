@@ -141,7 +141,7 @@ newfile_create(Evas_Object *parent, Evas_Smart_Cb selected_cb, void *data)
         nd = calloc(1, sizeof(new_data));
         if (!nd)
           {
-             EINA_LOG_ERR(_("Failed to allocate Memory!"));
+             mem_fail_msg();
              return NULL;
           }
         g_nd = nd;

@@ -3,3 +3,8 @@
 const char *DEFAULT_EDC_FORMAT = "enventor_XXXXXX.edc";
 char EDJE_PATH[PATH_MAX];
 const char *ENVENTOR_NAME = "enventor";
+
+void mem_fail_msg(void)
+{
+   EINA_LOG_ERR("Failed to allocate Memory!");
+}
