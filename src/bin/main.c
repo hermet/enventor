@@ -592,14 +592,8 @@ enventor_setup(app_data *ad)
 
    enventor_common_setup(enventor);
 
-   ad->main_it =
-      enventor_object_main_file_set(enventor, config_input_path_get());
-   file_tab_it_add(ad->main_it);
-   file_tab_it_selected_set(ad->main_it);
-
    base_enventor_set(enventor);
-   base_text_editor_set(ad->main_it);
-   base_title_set(config_input_path_get());
+   ad->main_it = facade_main_file_set(config_input_path_get());
    base_live_view_set(enventor_object_live_view_get(enventor));
 }
 

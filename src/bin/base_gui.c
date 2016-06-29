@@ -91,9 +91,15 @@ base_file_tab_toggle(Eina_Bool toggle)
    if (toggle) config_file_tab_set(!config_file_tab_get());
 
    if (config_file_tab_get())
-     elm_object_signal_emit(bd->layout, "elm,state,file_tab,show", "");
+     {
+        file_tab_disabled_set(EINA_FALSE);
+        elm_object_signal_emit(bd->layout, "elm,state,file_tab,show", "");
+     }
    else
-     elm_object_signal_emit(bd->layout, "elm,state,file_tab,hide", "");
+     {
+        file_tab_disabled_set(EINA_TRUE);
+        elm_object_signal_emit(bd->layout, "elm,state,file_tab,hide", "");
+     }
 }
 
 void base_file_browser_toggle(Eina_Bool toggle)

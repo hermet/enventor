@@ -53,9 +53,7 @@ warning_replace_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
                        void *event_info EINA_UNUSED)
 {
    file_mgr_data *fmd = data;
-   Enventor_Item *it = enventor_object_main_file_set(base_enventor_get(),
-                                                     config_input_path_get());
-   base_text_editor_set(it);
+   facade_main_file_set(config_input_path_get());
    warning_close(fmd);
 }
 
