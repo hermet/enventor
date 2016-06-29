@@ -44,7 +44,7 @@ tools_update(void)
    tools_dummy_update(EINA_FALSE);
    tools_outline_update(EINA_FALSE);
    tools_mirror_mode_update(EINA_FALSE);
-   tools_status_update(EINA_FALSE);
+   tools_file_tab_update(EINA_FALSE);
    tools_file_browser_update(EINA_FALSE);
    tools_edc_navigator_update(EINA_FALSE);
 }
@@ -594,6 +594,7 @@ enventor_setup(app_data *ad)
 
    ad->main_it =
       enventor_object_main_file_set(enventor, config_input_path_get());
+   file_tab_it_add(ad->main_it);
 
    base_enventor_set(enventor);
    base_text_editor_set(ad->main_it);
@@ -826,6 +827,13 @@ keygrabber_key_down_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
      {
         enventor_object_ctxpopup_dismiss(base_enventor_get());
         tools_edc_navigator_update(EINA_TRUE);
+        return;
+     }
+   //File Tab
+   if (!strcmp(ev->key, "F11"))
+     {
+        enventor_object_ctxpopup_dismiss(base_enventor_get());
+        tools_file_tab_update(EINA_TRUE);
         return;
      }
    //Setting

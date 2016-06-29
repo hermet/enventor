@@ -29,6 +29,7 @@ struct editor_s
    Evas_Object *layout;
    Evas_Object *ctxpopup;
    Enventor_Object *enventor;
+   Eina_Stringshare *filepath;
 
    syntax_helper *sh;
    parser_data *pd;
@@ -1012,6 +1013,9 @@ edit_edc_load(edit_data *ed, const char *file_path)
 
    ret = EINA_TRUE;
 
+   eina_stringshare_del(ed->filepath);
+   ed->filepath = eina_stringshare_add(file_path);
+
 err:
    //Even any text is not inserted, line number should start with 1
    if (ed->line_max == 0) line_init(ed);
@@ -1444,6 +1448,7 @@ edit_term(edit_data *ed)
    ecore_thread_cancel(ed->syntax_color_thread);
    ecore_timer_del(ed->syntax_color_timer);
    evas_object_del(ed->scroller);
+   eina_stringshare_del(ed->filepath);
 
    free(ed);
 
@@ -1742,6 +1747,13 @@ edit_key_up_event_dispatch(edit_data *ed, const char *key)
      ed->ctrl_pressed = EINA_FALSE;
 
    return EINA_FALSE;
+}
+
+
+const char *
+edit_file_get(edit_data *ed)
+{
+   return ed->filepath;
 }
 
 void

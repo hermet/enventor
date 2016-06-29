@@ -10,7 +10,6 @@ images {
    image: "highlight.png" COMP;
    image: "lines.png" COMP;
    image: "console.png" COMP;
-   image: "status.png" COMP;
    image: "dummy.png" COMP;
    image: "mirror.png" COMP;
    image: "goto.png" COMP;
@@ -46,6 +45,9 @@ images {
    image: "brows_font.png" COMP;
    image: "template.png" COMP;
    image: "part_outline.png" COMP;
+   image: "left.png" COMP;
+   image: "right.png" COMP;
+   image: "filetab.png" COMP;
 }
 
 #define ICON_GROUP(_group_name, _image_path) \
@@ -64,7 +66,6 @@ ICON_GROUP("find", "find.png")
 ICON_GROUP("highlight", "highlight.png")
 ICON_GROUP("lines", "lines.png")
 ICON_GROUP("console", "console.png")
-ICON_GROUP("status", "status.png")
 ICON_GROUP("dummy", "dummy.png")
 ICON_GROUP("mirror", "mirror.png")
 ICON_GROUP("up", "slider_up.png")
@@ -105,5 +106,8 @@ ICON_GROUP("brows_sound", "brows_sound.png")
 ICON_GROUP("brows_font", "brows_font.png")
 ICON_GROUP("template", "template.png")
 ICON_GROUP("part_outline", "part_outline.png")
+ICON_GROUP("left_arrow", "left.png")
+ICON_GROUP("right_arrow", "right.png")
+ICON_GROUP("filetab", "filetab.png")
 
 #undef ICON_GROUP

@@ -33,7 +33,8 @@ enventor_SOURCES = \
 	file_browser.c \
 	build_setting.c \
 	preference_setting.c \
-	help.c
+	help.c \
+	file_tab.c
 
 enventor_LDADD = \
 	$(top_builddir)/src/lib/libenventor.la \

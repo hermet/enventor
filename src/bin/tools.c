@@ -8,7 +8,7 @@ typedef struct tools_s
 {
    Evas_Object *swallow_btn;
    Evas_Object *outline_btn;
-   Evas_Object *status_btn;
+   Evas_Object *file_tab;
    Evas_Object *file_browser_btn;
    Evas_Object *edc_navigator_btn;
    Evas_Object *lines_btn;
@@ -93,10 +93,10 @@ edc_navigator_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 }
 
 static void
-status_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
-          void *event_info EINA_UNUSED)
+file_tab_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+           void *event_info EINA_UNUSED)
 {
-   tools_status_update(EINA_TRUE);
+   tools_file_tab_update(EINA_TRUE);
 }
 
 static void
@@ -370,15 +370,16 @@ tools_init(Evas_Object *parent)
                                btn);
    td->edc_navigator_btn = btn;
 
-   btn = tools_btn_create(text_editor_ly, "status",
-                          _("Status (F11)<br>"
-                            "Display the status bar, which shows subsidiary<br>"
-                            "information for editing in the bottom area."),
-                          status_cb);
+   btn = tools_btn_create(text_editor_ly, "filetab",
+                          _("File Tab (F11)<br>"
+                            "Display the file tab in the bottom area<br>"
+                             "It shows an opened file list to switch<br>"
+                             "files quickly. to switch files quickly."),
+                          file_tab_cb);
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_object_part_content_set(text_editor_ly, "elm.swallow.status", btn);
-   td->status_btn = btn;
+   elm_object_part_content_set(text_editor_ly, "elm.swallow.file_tab", btn);
+   td->file_tab = btn;
 
    btn = tools_btn_create(text_editor_ly, "menu",
                           _("Enventor menu (Esc)<br>"
@@ -576,18 +577,18 @@ tools_mirror_mode_update(Eina_Bool toggle)
 }
 
 void
-tools_status_update(Eina_Bool toggle)
+tools_file_tab_update(Eina_Bool toggle)
 {
    tools_data *td = g_td;
    if (!td) return;
 
-   base_statusbar_toggle(toggle);
+   base_file_tab_toggle(toggle);
 
    //Toggle on/off
-   if (config_stats_bar_get())
-     elm_object_signal_emit(td->status_btn, "icon,highlight,enabled", "");
+   if (config_file_tab_get())
+     elm_object_signal_emit(td->file_tab, "icon,highlight,enabled", "");
    else
-     elm_object_signal_emit(td->status_btn, "icon,highlight,disabled", "");
+     elm_object_signal_emit(td->file_tab, "icon,highlight,disabled", "");
 }
 
 void

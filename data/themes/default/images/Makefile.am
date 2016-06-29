@@ -45,7 +45,6 @@ EXTRA_DIST = \
    lines.png \
    setting_icon.png \
    console.png \
-   status.png \
    dummy.png \
    mirror.png \
    goto.png \
@@ -94,4 +93,7 @@ EXTRA_DIST = \
    brows_image.png \
    brows_sound.png \
    brows_font.png \
-   template.png
+   template.png \
+   left.png \
+   right.png \
+   filetab.png

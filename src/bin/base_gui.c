@@ -82,6 +82,20 @@ base_statusbar_toggle(Eina_Bool toggle)
      elm_object_signal_emit(bd->layout, "elm,state,statusbar,hide", "");
 }
 
+void
+base_file_tab_toggle(Eina_Bool toggle)
+{
+   base_data *bd = g_bd;
+   assert(bd);
+
+   if (toggle) config_file_tab_set(!config_file_tab_get());
+
+   if (config_file_tab_get())
+     elm_object_signal_emit(bd->layout, "elm,state,file_tab,show", "");
+   else
+     elm_object_signal_emit(bd->layout, "elm,state,file_tab,hide", "");
+}
+
 void base_file_browser_toggle(Eina_Bool toggle)
 {
    base_data *bd = g_bd;
@@ -245,6 +259,7 @@ base_gui_term(void)
    ecore_timer_del(bd->edc_navi_update_timer);
    file_browser_term();
    edc_navigator_term();
+   file_tab_term();
    panes_term();
 
    free(bd);
@@ -338,6 +353,10 @@ base_gui_init(void)
    Evas_Object *edc_navigator = edc_navigator_init(layout);
    elm_object_part_content_set(layout, "elm.swallow.edc_navigator",
                                edc_navigator);
+   //File Tab
+   Evas_Object *file_tab = file_tab_init(layout);
+   elm_object_part_content_set(layout, "elm.swallow.file_tab", file_tab);
+
    bd->win = win;
    bd->layout = layout;
    bd->console = console;

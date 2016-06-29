@@ -975,6 +975,9 @@ enventor_object_main_file_set(Enventor_Object *obj, const char *file)
    return &pd->main_it;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+/* Enventor_Item Functions.                                                  */
+///////////////////////////////////////////////////////////////////////////////
 Evas_Object *
 enventor_item_editor_get(const Enventor_Item *it)
 {
@@ -984,5 +987,16 @@ enventor_item_editor_get(const Enventor_Item *it)
 
    return edit_obj_get(it->ed);
 }
+
+const char *
+enventor_item_file_get(const Enventor_Item *it)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(it, NULL);
+
+   if (!it->ed) return NULL;
+
+   return edit_file_get(it->ed);
+}
+
 
 #include "enventor_object.eo.c"

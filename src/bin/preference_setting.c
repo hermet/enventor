@@ -227,7 +227,7 @@ preference_setting_content_get(preference_setting_data *psd,
       toggle_create(box, _("Tools"),
                     config_tools_get(),
                     _("Tools (F7)<br>"
-                      "Display the tools on the top area.<br>"
+                      "Display Tools on the top area.<br>"
                       "Tools displays the essential function <br>"
                       "toggles to edit the layout."));
    elm_box_pack_end(box, toggle_tools);
@@ -236,8 +236,8 @@ preference_setting_content_get(preference_setting_data *psd,
    Evas_Object *toggle_status =
       toggle_create(box, _("Status"), config_stats_bar_get(),
                     _("Status (F8)<br>"
-                      "Display Status bar on the bottom area.<br>"
-                      "Status bar displays subsidiary information for<br>"
+                      "Display Status bar, which shows subsidiary<br>"
+                      "information  for editing in the bottom area."
                       "editing."));
    elm_box_pack_end(box, toggle_status);
 

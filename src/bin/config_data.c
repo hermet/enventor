@@ -45,6 +45,7 @@ typedef struct config_s
    Eina_Bool file_browser_loaded;
    Eina_Bool edc_navigator;
    Eina_Bool red_alert;
+   Eina_Bool file_tab;
 } config_data;
 
 static config_data *g_cd = NULL;
@@ -194,9 +195,10 @@ config_load(void)
         cd->auto_complete = EINA_TRUE;
         cd->version = ENVENTOR_CONFIG_VERSION;
         cd->smart_undo_redo = EINA_FALSE;
-        cd->file_browser = EINA_TRUE;
+        cd->file_browser = EINA_FALSE;
         cd->edc_navigator = EINA_TRUE;
         cd->red_alert = EINA_TRUE;
+        cd->file_tab = EINA_FALSE;
      }
 
    g_cd = cd;
@@ -325,6 +327,8 @@ eddc_init(void)
                                     edc_navigator, EET_T_UCHAR);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "red_alert",
                                     red_alert, EET_T_UCHAR);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "file_tab", file_tab,
+                                 EET_T_UCHAR);
 }
 
 void
@@ -683,18 +687,32 @@ config_linenumber_get(void)
    return cd->linenumber;
 }
 
-Eina_Bool
-config_stats_bar_get(void)
-{
-   config_data *cd = g_cd;
-   return cd->stats_bar;
-}
-
 void
 config_linenumber_set(Eina_Bool enabled)
 {
    config_data *cd = g_cd;
    cd->linenumber = enabled;
+}
+
+Eina_Bool
+config_file_tab_get(void)
+{
+   config_data *cd = g_cd;
+   return cd->file_tab;
+}
+
+void
+config_file_tab_set(Eina_Bool enabled)
+{
+   config_data *cd = g_cd;
+   cd->file_tab = enabled;
+}
+
+Eina_Bool
+config_stats_bar_get(void)
+{
+   config_data *cd = g_cd;
+   return cd->stats_bar;
 }
 
 void
