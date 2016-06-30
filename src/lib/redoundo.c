@@ -193,8 +193,8 @@ redoundo_undo(redoundo_data *rd, Eina_Bool *changed)
 
    if (!rd->last_diff)
      {
-        edit_save(rd->ed, build_edc_path_get());
-        build_edc();
+        Eina_Bool saved = edit_save(rd->ed, build_edc_path_get());
+        if (saved) build_edc();
         return 0;
      }
 
