@@ -55,11 +55,6 @@ static Eina_List *sub_brows_file_list_create(brows_file *file);
 static void brows_file_list_free(Eina_List *file_list);
 static void refresh_btn_clicked_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED);
 
-static void
-gl_file_selected_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
-{
-}
-
 static Elm_Object_Item *
 file_genlist_item_append(brows_file *file, Elm_Object_Item *parent_it,
                          Elm_Genlist_Item_Type it_type)
@@ -80,7 +75,7 @@ file_genlist_item_append(brows_file *file, Elm_Object_Item *parent_it,
                               file,                /* item data */
                               parent_it,           /* parent */
                               it_type,             /* item type */
-                              gl_file_selected_cb, /* select cb */
+                              NULL,                /* select cb */
                               file);               /* select cb data */
 
    char it_str[EINA_PATH_MAX];
@@ -182,7 +177,8 @@ gl_search_content_get_cb(void *data, Evas_Object *obj, const char *part)
 }
 
 static void
-gl_exp_req(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
+gl_expanded_request_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+                       void *event_info)
 {
    brows_data *bd = g_bd;
    if (!bd) return;
@@ -193,7 +189,7 @@ gl_exp_req(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_inf
 }
 
 static void
-gl_con_req(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
+gl_contract_request_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    brows_data *bd = g_bd;
    if (!bd) return;
@@ -204,7 +200,7 @@ gl_con_req(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_inf
 }
 
 static void
-gl_exp(void *data EINA_UNUSED, Evas_Object *obj, void *event_info)
+gl_expanded_cb(void *data EINA_UNUSED, Evas_Object *obj, void *event_info)
 {
    brows_data *bd = g_bd;
    if (!bd) return;
@@ -241,7 +237,7 @@ gl_exp(void *data EINA_UNUSED, Evas_Object *obj, void *event_info)
 }
 
 static void
-gl_con(void *data EINA_UNUSED, Evas_Object *obj, void *event_info)
+gl_contracted_cb(void *data EINA_UNUSED, Evas_Object *obj, void *event_info)
 {
    brows_data *bd = g_bd;
    if (!bd) return;
@@ -587,7 +583,7 @@ file_browser_workspace_set(const char *workspace_path)
    Elm_Object_Item *it = file_genlist_item_append(workspace, NULL, it_type);
 
    if (workspace->sub_file_list)
-     gl_exp_req(NULL, NULL, it);
+     gl_expanded_request_cb(NULL, NULL, it);
 }
 
 Evas_Object *
@@ -660,11 +656,13 @@ file_browser_init(Evas_Object *parent)
    evas_object_size_hint_weight_set(genlist, EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
 
-   evas_object_smart_callback_add(genlist, "expand,request", gl_exp_req, NULL);
-   evas_object_smart_callback_add(genlist, "contract,request", gl_con_req,
+   evas_object_smart_callback_add(genlist, "expand,request",
+                                  gl_expanded_request_cb, NULL);
+   evas_object_smart_callback_add(genlist, "contract,request",
+                                  gl_contract_request_cb, NULL);
+   evas_object_smart_callback_add(genlist, "expanded", gl_expanded_cb, NULL);
+   evas_object_smart_callback_add(genlist, "contracted", gl_contracted_cb,
                                   NULL);
-   evas_object_smart_callback_add(genlist, "expanded", gl_exp, NULL);
-   evas_object_smart_callback_add(genlist, "contracted", gl_con, NULL);
    evas_object_show(genlist);
    elm_box_pack_end(main_box, genlist);
 
