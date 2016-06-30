@@ -144,7 +144,7 @@ file_tab_disabled_set(Eina_Bool disabled)
 {
    file_data *fd = g_fd;
    if (!fd) return;
-   elm_object_disabled_set(fd->box, disabled);
+   elm_object_disabled_set(fd->list, disabled);
 
    if (disabled) return;
 

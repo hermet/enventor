@@ -55,6 +55,51 @@ static Eina_List *sub_brows_file_list_create(brows_file *file);
 static void brows_file_list_free(Eina_List *file_list);
 static void refresh_btn_clicked_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED);
 
+static void
+gl_clicked_double_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+                     void *event_info)
+{
+   Elm_Object_Item *it = event_info;
+   brows_file *file = elm_object_item_data_get(it);
+   if (!file)
+     {
+        EINA_LOG_ERR("No item data??");
+        return;
+     }
+
+   if (!file->path)
+     {
+        EINA_LOG_ERR("No item file path??");
+        return;
+     }
+
+   // Open a double clicked edc file.
+   if (!eina_str_has_extension(file->path, "edc")) return;
+   int selected_file_len = strlen(file->path);
+
+   //Let's check if the file is already opened or not.
+   Eina_List *sub_items =
+      (Eina_List *)enventor_object_sub_items_get(base_enventor_get());
+   Eina_List *l;
+   Enventor_Item *eit;
+   EINA_LIST_FOREACH(sub_items, l, eit)
+     {
+        const char *it_file_path = enventor_item_file_get(eit);
+        if (!it_file_path) continue;
+        if (selected_file_len != strlen(it_file_path)) continue;
+
+        //Ok, This selected file is already openend, let's activte the item.
+        if (!strcmp(file->path, it_file_path))
+          {
+             //TODO:
+             return;
+          }
+     }
+
+   //This selected file hasn't been opened yet, so let's open this file newly.
+   facade_sub_file_set(file->path);
+}
+
 static Elm_Object_Item *
 file_genlist_item_append(brows_file *file, Elm_Object_Item *parent_it,
                          Elm_Genlist_Item_Type it_type)
@@ -663,6 +708,8 @@ file_browser_init(Evas_Object *parent)
    evas_object_smart_callback_add(genlist, "expanded", gl_expanded_cb, NULL);
    evas_object_smart_callback_add(genlist, "contracted", gl_contracted_cb,
                                   NULL);
+   evas_object_smart_callback_add(genlist, "clicked,double",
+                                  gl_clicked_double_cb, NULL);
    evas_object_show(genlist);
    elm_box_pack_end(main_box, genlist);
 

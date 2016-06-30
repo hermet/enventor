@@ -37,6 +37,7 @@ struct _Enventor_Object_Data
 {
    Enventor_Object *obj;
    Enventor_Item_Data main_it;
+   Eina_List *sub_its;
 
    Eina_Stringshare *group_name;
 
@@ -948,6 +949,43 @@ enventor_object_add(Enventor_Object *parent)
 }
 
 EAPI Enventor_Item *
+enventor_object_sub_file_add(Enventor_Object *obj, const char *file)
+{
+   Enventor_Object_Data *pd = eo_data_scope_get(obj, ENVENTOR_OBJECT_CLASS);
+
+   if (!file)
+     {
+        EINA_LOG_ERR("No file path!!");
+        return NULL;
+     }
+
+   Enventor_Item_Data *it = calloc(1, sizeof(Enventor_Item_Data));
+   if (!it)
+     {
+        mem_fail_msg();
+        return NULL;
+     }
+
+   pd->sub_its = eina_list_append(pd->sub_its, it);
+
+   it->enventor = obj;
+   it->ed = edit_init(obj);
+
+   autocomp_target_set(it->ed);
+   edit_load(it->ed, file);
+   edit_changed_set(it->ed, EINA_FALSE);
+
+   //Update Editor State
+   if (pd->linenumber != DEFAULT_LINENUMBER)
+     edit_linenumber_set(it->ed, pd->linenumber);
+   if (pd->font_scale != DEFAULT_FONT_SCALE)
+     edit_font_scale_set(it->ed, pd->font_scale);
+   if (pd->disabled) edit_disabled_set(it->ed, EINA_TRUE);
+
+   return it;
+}
+
+EAPI Enventor_Item *
 enventor_object_main_file_set(Enventor_Object *obj, const char *file)
 {
    Enventor_Object_Data *pd = eo_data_scope_get(obj, ENVENTOR_OBJECT_CLASS);
@@ -973,6 +1011,13 @@ enventor_object_main_file_set(Enventor_Object *obj, const char *file)
      edit_disabled_set(pd->main_it.ed, EINA_TRUE);
 
    return &pd->main_it;
+}
+
+EAPI const Eina_List *
+enventor_object_sub_items_get(const Enventor_Object *obj)
+{
+   Enventor_Object_Data *pd = eo_data_scope_get(obj, ENVENTOR_OBJECT_CLASS);
+   return pd->sub_its;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
