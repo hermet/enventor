@@ -12,6 +12,10 @@ typedef struct file_mgr_s {
 
 static file_mgr_data *g_fmd = NULL;
 
+/*****************************************************************************/
+/* Internal method implementation                                            */
+/*****************************************************************************/
+
 static void
 warning_dismiss_done(void *data, Evas_Object *obj EINA_UNUSED,
                      const char *emission EINA_UNUSED,
@@ -127,10 +131,16 @@ enventor_edc_modified_cb(void *data, Evas_Object *obj EINA_UNUSED,
    warning_open(fmd);
 }
 
+/*****************************************************************************/
+/* Externally accessible calls                                               */
+/*****************************************************************************/
+
 void
 file_mgr_reset(void)
 {
    file_mgr_data *fmd = g_fmd;
+   EINA_SAFETY_ON_NULL_RETURN(fmd);
+
    fmd->edc_modified = EINA_FALSE;
 }
 
@@ -138,6 +148,8 @@ int
 file_mgr_edc_modified_get(void)
 {
    file_mgr_data *fmd = g_fmd;
+   EINA_SAFETY_ON_NULL_RETURN(fmd);
+
    return fmd->edc_modified;
 }
 
@@ -163,13 +175,17 @@ Eina_Bool
 file_mgr_warning_is_opened(void)
 {
    file_mgr_data *fmd = g_fmd;
-   return ((fmd && fmd->warning_layout) ? EINA_TRUE : EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(fmd, EINA_FALSE);
+
+   return (fmd->warning_layout ? EINA_TRUE : EINA_FALSE);
 }
 
 void
 file_mgr_warning_open(void)
 {
    file_mgr_data *fmd = g_fmd;
+   EINA_SAFETY_ON_NULL_RETURN(fmd);
+
    warning_open(fmd);
 }
 
@@ -177,6 +193,7 @@ void
 file_mgr_warning_close(void)
 {
    file_mgr_data *fmd = g_fmd;
+   EINA_SAFETY_ON_NULL_RETURN(fmd);
 
    if (fmd->warning_layout)
      warning_close(fmd);
@@ -201,5 +218,7 @@ void
 file_mgr_term(void)
 {
    file_mgr_data *fmd = g_fmd;
+   EINA_SAFETY_ON_NULL_RETURN(fmd);
+
    free(fmd);
 }

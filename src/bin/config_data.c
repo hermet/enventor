@@ -51,6 +51,10 @@ typedef struct config_s
 static config_data *g_cd = NULL;
 static Eet_Data_Descriptor *edd_base = NULL;
 
+/*****************************************************************************/
+/* Internal method implementation                                            */
+/*****************************************************************************/
+
 static void
 config_edj_path_update(config_data *cd)
 {
@@ -680,10 +684,16 @@ config_syntax_color_get(Enventor_Syntax_Color_Type color_type)
    return (const char *) eina_list_nth(cd->syntax_color_list, color_type);
 }
 
+/*****************************************************************************/
+/* Externally accessible calls                                               */
+/*****************************************************************************/
+
 Eina_Bool
 config_linenumber_get(void)
 {
    config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN_VAL(cd, EINA_FALSE);
+
    return cd->linenumber;
 }
 
@@ -691,6 +701,8 @@ void
 config_linenumber_set(Eina_Bool enabled)
 {
    config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN(cd);
+
    cd->linenumber = enabled;
 }
 
@@ -698,6 +710,8 @@ Eina_Bool
 config_file_tab_get(void)
 {
    config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN_VAL(cd, EINA_FALSE);
+
    return cd->file_tab;
 }
 
@@ -705,6 +719,8 @@ void
 config_file_tab_set(Eina_Bool enabled)
 {
    config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN(cd);
+
    cd->file_tab = enabled;
 }
 
@@ -712,6 +728,8 @@ Eina_Bool
 config_stats_bar_get(void)
 {
    config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN_VAL(cd, EINA_FALSE);
+
    return cd->stats_bar;
 }
 
@@ -719,6 +737,8 @@ void
 config_stats_bar_set(Eina_Bool enabled)
 {
    config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN(cd);
+
    cd->stats_bar = enabled;
 }
 
@@ -726,6 +746,8 @@ void
 config_update_cb_set(void (*cb)(void *data), void *data)
 {
    config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN(cd);
+
    cd->update_cb = cb;
    cd->update_cb_data = data;
 }
@@ -734,6 +756,8 @@ Eina_Bool
 config_part_highlight_get(void)
 {
    config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN_VAL(cd, EINA_FALSE);
+
    return cd->part_highlight;
 }
 
@@ -741,6 +765,8 @@ void
 config_part_highlight_set(Eina_Bool highlight)
 {
    config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN(cd);
+
    cd->part_highlight = highlight;
 }
 
@@ -748,6 +774,8 @@ Eina_Bool
 config_dummy_parts_get(void)
 {
    config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN_VAL(cd, EINA_FALSE);
+
    return cd->dummy_parts;
 }
 
@@ -755,6 +783,8 @@ void
 config_dummy_parts_set(Eina_Bool dummy_parts)
 {
    config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN(cd);
+
    cd->dummy_parts = dummy_parts;
 }
 
@@ -762,6 +792,8 @@ Eina_Bool
 config_parts_outline_get(void)
 {
    config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN_VAL(cd, EINA_FALSE);
+
    return cd->outline;
 }
 
@@ -769,6 +801,8 @@ void
 config_parts_outline_set(Eina_Bool outline)
 {
    config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN(cd);
+
    cd->outline = outline;
 }
 
@@ -776,6 +810,8 @@ Eina_Bool
 config_mirror_mode_get(void)
 {
    config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN_VAL(cd, EINA_FALSE);
+
    return cd->mirror_mode;
 }
 
@@ -783,6 +819,8 @@ void
 config_mirror_mode_set(Eina_Bool mirror_mode)
 {
    config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN(cd);
+
    cd->mirror_mode = mirror_mode;
 }
 
@@ -790,6 +828,8 @@ Eina_Bool
 config_auto_indent_get(void)
 {
    config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN_VAL(cd, EINA_FALSE);
+
    return cd->auto_indent;
 }
 
@@ -797,6 +837,8 @@ Eina_Bool
 config_auto_complete_get(void)
 {
    config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN_VAL(cd, EINA_FALSE);
+
    return cd->auto_complete;
 }
 
@@ -804,6 +846,7 @@ void
 config_font_set(const char *font_name, const char *font_style)
 {
    config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN(cd);
 
    eina_stringshare_replace(&cd->font_name, font_name);
    eina_stringshare_replace(&cd->font_style, font_style);
@@ -813,6 +856,7 @@ void
 config_font_get(const char **font_name, const char **font_style)
 {
    config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN(cd);
 
    if (font_name) *font_name = cd->font_name;
    if (font_style) *font_style = cd->font_style;
@@ -822,6 +866,7 @@ void
 config_font_scale_set(float font_scale)
 {
    config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN(cd);
 
    if (font_scale > MAX_FONT_SCALE)
      font_scale = MAX_FONT_SCALE;
@@ -835,6 +880,8 @@ float
 config_font_scale_get(void)
 {
    config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN_VAL(cd, 0);
+
    return cd->font_scale;
 }
 
@@ -842,6 +889,8 @@ Eina_Bool
 config_smart_undo_redo_get(void)
 {
    config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN_VAL(cd, EINA_FALSE);
+
    return cd->smart_undo_redo;
 }
 
@@ -849,6 +898,8 @@ void
 config_smart_undo_redo_set(Eina_Bool smart_undo_redo)
 {
    config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN(cd);
+
    cd->smart_undo_redo = smart_undo_redo;
 }
 
@@ -856,6 +907,8 @@ void
 config_auto_complete_set(Eina_Bool auto_complete)
 {
    config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN(cd);
+
    cd->auto_complete = auto_complete;
 }
 
@@ -863,6 +916,8 @@ void
 config_auto_indent_set(Eina_Bool auto_indent)
 {
    config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN(cd);
+
    cd->auto_indent = auto_indent;
 }
 
@@ -870,6 +925,7 @@ void
 config_view_scale_set(double view_scale)
 {
    config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN(cd);
 
    if (view_scale > MAX_VIEW_SCALE)
      view_scale = MAX_VIEW_SCALE;
@@ -882,6 +938,8 @@ double
 config_view_scale_get(void)
 {
    config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN_VAL(cd, 0);
+
    return cd->view_scale;
 }
 
@@ -889,6 +947,7 @@ void
 config_view_size_set(Evas_Coord w, Evas_Coord h)
 {
    config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN(cd);
 
    cd->view_size_w = w;
    cd->view_size_h = h;
@@ -898,6 +957,7 @@ void
 config_view_size_get(Evas_Coord *w, Evas_Coord *h)
 {
    config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN(cd);
 
    if (w) *w = cd->view_size_w;
    if (h) *h = cd->view_size_h;
@@ -907,6 +967,8 @@ double
 config_editor_size_get(void)
 {
    config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN(cd);
+
    return cd->editor_size;
 }
 
@@ -914,6 +976,8 @@ void
 config_editor_size_set(double size)
 {
    config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN(cd);
+
    cd->editor_size = size;
 }
 
@@ -921,6 +985,8 @@ double
 config_console_size_get(void)
 {
    config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN_VAL(cd, 0);
+
    return cd->console_size;
 }
 
@@ -928,6 +994,8 @@ void
 config_console_size_set(double size)
 {
    config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN(cd);
+
    cd->console_size = size;
 }
 
@@ -935,6 +1003,7 @@ void
 config_win_size_set(Evas_Coord w, Evas_Coord h)
 {
    config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN(cd);
 
    cd->win_size_w = w;
    cd->win_size_h = h;
@@ -944,6 +1013,7 @@ void
 config_win_size_get(Evas_Coord *w, Evas_Coord *h)
 {
    config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN(cd);
 
    if (w) *w = cd->win_size_w;
    if (h) *h = cd->win_size_h;
@@ -953,6 +1023,8 @@ Eina_Bool
 config_console_get(void)
 {
    config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN_VAL(cd, EINA_FALSE);
+
    return cd->console;
 }
 
@@ -960,6 +1032,8 @@ void
 config_console_set(Eina_Bool enabled)
 {
    config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN(cd);
+
    cd->console = enabled;
 }
 
@@ -967,6 +1041,8 @@ Eina_Bool
 config_tools_get(void)
 {
    config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN_VAL(cd, EINA_FALSE);
+
    return cd->tools;
 }
 
@@ -974,6 +1050,8 @@ void
 config_tools_set(Eina_Bool enabled)
 {
    config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN(cd);
+
    cd->tools = enabled;
 }
 
@@ -981,6 +1059,8 @@ void
 config_red_alert_set(Eina_Bool enabled)
 {
    config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN(cd);
+
    cd->red_alert = enabled;
 }
 
@@ -988,6 +1068,8 @@ Eina_Bool
 config_red_alert_get(void)
 {
    config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN_VAL(cd, EINA_FALSE);
+
    return cd->red_alert;
 }
 
@@ -995,6 +1077,8 @@ void
 config_file_browser_set(Eina_Bool enabled)
 {
    config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN(cd);
+
    cd->file_browser = enabled;
    cd->file_browser_loaded = enabled;
 }
@@ -1003,6 +1087,8 @@ Eina_Bool
 config_file_browser_get(void)
 {
    config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN_VAL(cd, EINA_FALSE);
+
    return cd->file_browser;
 }
 
@@ -1010,6 +1096,8 @@ void
 config_edc_navigator_set(Eina_Bool enabled)
 {
    config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN(cd);
+
    cd->edc_navigator = enabled;
 }
 
@@ -1017,5 +1105,7 @@ Eina_Bool
 config_edc_navigator_get(void)
 {
    config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN_VAL(cd, EINA_FALSE);
+
    return cd->edc_navigator;
 }

@@ -576,7 +576,7 @@ show_all_check_changed_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
                           void *event_info EINA_UNUSED)
 {
    brows_data *bd = g_bd;
-   if (!bd) return;
+   EINA_SAFETY_ON_NULL_RETURN(bd);
 
    if (bd->mode == FILE_BROWSER_MODE_DEFAULT)
      file_browser_workspace_reset();
@@ -600,7 +600,7 @@ void
 file_browser_workspace_set(const char *workspace_path)
 {
    brows_data *bd = g_bd;
-   if (!bd) return;
+   EINA_SAFETY_ON_NULL_RETURN(bd);
 
    if (!workspace_path) return;
    if (!ecore_file_exists(workspace_path)) return;
@@ -617,7 +617,7 @@ file_browser_workspace_set(const char *workspace_path)
 
    //Create file with creating its sub file list.
    brows_file *workspace = brows_file_create(workspace_path, EINA_TRUE);
-   if (!workspace) return;
+   EINA_SAFETY_ON_NULL_RETURN(workspace);
    bd->workspace = workspace;
 
    elm_object_disabled_set(bd->base_layout, EINA_FALSE);
@@ -753,7 +753,7 @@ void
 file_browser_term(void)
 {
    brows_data *bd = g_bd;
-   if (!bd) return;
+   EINA_SAFETY_ON_NULL_RETURN(bd);
 
    if (bd->workspace) brows_file_free(bd->workspace);
    if (bd->search_file_list) brows_file_list_free(bd->search_file_list);
@@ -771,7 +771,7 @@ void
 file_browser_tools_set(void)
 {
    brows_data *bd = g_bd;
-   if (!bd) return;
+   EINA_SAFETY_ON_NULL_RETURN(bd);
 
    Evas_Object *rect =
       evas_object_rectangle_add(evas_object_evas_get(bd->base_layout));
@@ -783,7 +783,7 @@ void
 file_browser_tools_visible_set(Eina_Bool visible)
 {
    brows_data *bd = g_bd;
-   if (!bd) return;
+   EINA_SAFETY_ON_NULL_RETURN(bd);
 
    if (visible)
      elm_object_signal_emit(bd->base_layout, "elm,state,tools,show", "");

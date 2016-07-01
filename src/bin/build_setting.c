@@ -91,14 +91,15 @@ snd_path_entry_update(Evas_Object *entry, Eina_List *edc_snd_paths)
 void
 build_setting_focus_set(build_setting_data *bsd)
 {
-   if (!bsd) return;
+   EINA_SAFETY_ON_NULL_RETURN(bsd);
+
    elm_object_focus_set(bsd->img_path_entry, EINA_TRUE);
 }
 
 void
 build_setting_config_set(build_setting_data *bsd)
 {
-   if (!bsd) return;
+   EINA_SAFETY_ON_NULL_RETURN(bsd);
 
    config_img_path_set(elm_object_text_get(bsd->img_path_entry));
    config_snd_path_set(elm_object_text_get(bsd->snd_path_entry));
@@ -109,7 +110,7 @@ build_setting_config_set(build_setting_data *bsd)
 void
 build_setting_reset(build_setting_data *bsd)
 {
-   if (!bsd) return;
+   EINA_SAFETY_ON_NULL_RETURN(bsd);
 
    img_path_entry_update(bsd->img_path_entry,
                          (Eina_List *)config_img_path_list_get());
@@ -124,7 +125,8 @@ build_setting_reset(build_setting_data *bsd)
 Evas_Object *
 build_setting_content_get(build_setting_data *bsd, Evas_Object *parent)
 {
-   if (!bsd) return NULL;
+   EINA_SAFETY_ON_NULL_RETURN_VAL(bsd, NULL);
+
    if (bsd->layout) return bsd->layout;
 
    //Layout
@@ -230,7 +232,8 @@ build_setting_init(void)
 void
 build_setting_term(build_setting_data *bsd)
 {
-   if (!bsd) return;
+   EINA_SAFETY_ON_NULL_RETURN(bsd);
+
    evas_object_del(bsd->layout);
    free(bsd);
 }

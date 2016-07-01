@@ -1356,7 +1356,9 @@ void
 edc_navigator_deselect(void)
 {
    navi_data *nd = g_nd;
-   if (!nd || !nd->selected) return;
+   EINA_SAFETY_ON_NULL_RETURN(nd);
+
+   if (!nd->selected) return;
    navigator_item_deselect(nd);
 }
 
@@ -1364,7 +1366,7 @@ void
 edc_navigator_group_update(const char *cur_group)
 {
    navi_data *nd = g_nd;
-   if (!nd) return;
+   EINA_SAFETY_ON_NULL_RETURN(nd);
 
    //FIXME: This function is unnecessarily called... why?
 
@@ -1541,7 +1543,7 @@ void
 edc_navigator_term(void)
 {
    navi_data *nd = g_nd;
-   if (!nd) return;
+   EINA_SAFETY_ON_NULL_RETURN(nd);
 
    navigator_groups_clear(nd);
 
@@ -1561,7 +1563,7 @@ void
 edc_navigator_tools_set(void)
 {
    navi_data *nd = g_nd;
-   if (!nd) return;
+   EINA_SAFETY_ON_NULL_RETURN(nd);
 
    Evas_Object *rect =
       evas_object_rectangle_add(evas_object_evas_get(nd->base_layout));
@@ -1573,7 +1575,7 @@ void
 edc_navigator_tools_visible_set(Eina_Bool visible)
 {
    navi_data *nd = g_nd;
-   if (!nd) return;
+   EINA_SAFETY_ON_NULL_RETURN(nd);
 
    if (visible)
      elm_object_signal_emit(nd->base_layout, "elm,state,tools,show", "");

@@ -11,6 +11,10 @@ typedef struct new_data_s {
 
 static new_data *g_nd = NULL;
 
+/*****************************************************************************/
+/* Internal method implementation                                            */
+/*****************************************************************************/
+
 static void
 list_del_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
             void *event_info EINA_UNUSED)
@@ -20,14 +24,66 @@ list_del_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
    g_nd = NULL;
 }
 
+static void
+file_dir_list_cb(const char *name, const char *path EINA_UNUSED, void *data)
+{
+   new_data *nd = data;
+
+   char *ext = strrchr(name, '.');
+   if (!ext || strcmp(ext, ".edc")) return;
+
+   char *file_name = ecore_file_strip_ext(name);
+   nd->templates = eina_list_append(nd->templates,
+                                    eina_stringshare_add(file_name));
+   free(file_name);
+}
+
+static void
+list_item_selected_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                      void *event_info)
+{
+   Evas_Object *layout = data;
+   Elm_Object_Item *it = event_info;
+   char *name = (char *)elm_object_item_text_get(it);
+
+   /* empty is real empty. cannot load the edj. so replace the empty to minimum
+      to show the preview layout. */
+   if (!strcmp("empty", name)) name = "minimum";
+
+   char buf[PATH_MAX];
+   snprintf(buf, sizeof(buf), "%s/templates/%s.edj", elm_app_data_dir_get(),
+            name);
+
+   elm_layout_file_set(layout, buf, "main");
+}
+
+static void
+templates_get(new_data *nd)
+{
+   char buf[PATH_MAX];
+   snprintf(buf, sizeof(buf), "%s/templates", elm_app_data_dir_get());
+
+   if (!ecore_file_path_dir_exists(buf))
+     {
+        EINA_LOG_ERR(_("Cannot find templates folder! \"%s\""), buf);
+        return;
+     }
+
+   eina_file_dir_list(buf, EINA_FALSE, file_dir_list_cb, nd);
+}
+
+/*****************************************************************************/
+/* Externally accessible calls                                               */
+/*****************************************************************************/
+
 void
 newfile_set(Eina_Bool template_new)
 {
    new_data *nd = g_nd;
-   if (!nd) return;
+   EINA_SAFETY_ON_NULL_RETURN(nd);
 
    Elm_Object_Item *it = elm_list_selected_item_get(nd->list);
-   if (!it) return;
+   EINA_SAFETY_ON_NULL_RETURN(it);
 
    Eina_Bool success = EINA_TRUE;
    char buf[PATH_MAX];
@@ -78,54 +134,6 @@ newfile_default_set(Eina_Bool default_edc)
         EINA_LOG_ERR(_("Cannot find file! \"%s\""), buf);
         return;
      }
-}
-
-static void
-file_dir_list_cb(const char *name, const char *path EINA_UNUSED, void *data)
-{
-   new_data *nd = data;
-
-   char *ext = strrchr(name, '.');
-   if (!ext || strcmp(ext, ".edc")) return;
-
-   char *file_name = ecore_file_strip_ext(name);
-   nd->templates = eina_list_append(nd->templates,
-                                    eina_stringshare_add(file_name));
-   free(file_name);
-}
-
-static void
-list_item_selected_cb(void *data, Evas_Object *obj EINA_UNUSED,
-                      void *event_info)
-{
-   Evas_Object *layout = data;
-   Elm_Object_Item *it = event_info;
-   char *name = (char *)elm_object_item_text_get(it);
-
-   /* empty is real empty. cannot load the edj. so replace the empty to minimum
-      to show the preview layout. */
-   if (!strcmp("empty", name)) name = "minimum";
-
-   char buf[PATH_MAX];
-   snprintf(buf, sizeof(buf), "%s/templates/%s.edj", elm_app_data_dir_get(),
-            name);
-
-   elm_layout_file_set(layout, buf, "main");
-}
-
-static void
-templates_get(new_data *nd)
-{
-   char buf[PATH_MAX];
-   snprintf(buf, sizeof(buf), "%s/templates", elm_app_data_dir_get());
-
-   if (!ecore_file_path_dir_exists(buf))
-     {
-        EINA_LOG_ERR(_("Cannot find templates folder! \"%s\""), buf);
-        return;
-     }
-
-   eina_file_dir_list(buf, EINA_FALSE, file_dir_list_cb, nd);
 }
 
 Evas_Object *

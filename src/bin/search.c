@@ -22,6 +22,10 @@ static Evas_Coord win_y = -1;
 static Evas_Coord win_w = DEFAULT_SEARCH_WIN_W;
 static Evas_Coord win_h = DEFAULT_SEARCH_WIN_H;
 
+/*****************************************************************************/
+/* Internal method implementation                                            */
+/*****************************************************************************/
+
 static void
 win_delete_request_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
                       void *event_info EINA_UNUSED)
@@ -318,6 +322,10 @@ keygrabber_key_down_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
    search_close();
 }
 
+/*****************************************************************************/
+/* Externally accessible calls                                               */
+/*****************************************************************************/
+
 void
 search_open(void)
 {
@@ -447,7 +455,7 @@ Eina_Bool
 search_close(void)
 {
    search_data *sd = g_sd;
-   if (!sd) return EINA_FALSE;
+   EINA_SAFETY_ON_NULL_RETURN_VAL(sd, EINA_FALSE);
 
    Enventor_Object *enventor = base_enventor_get();
 

@@ -29,6 +29,10 @@ typedef struct _panes_data
 
 static panes_data *g_pd = NULL;
 
+/*****************************************************************************/
+/* Internal method implementation                                            */
+/*****************************************************************************/
+
 static void
 transit_op_v(void *data, Elm_Transit *transit EINA_UNUSED, double progress)
 {
@@ -150,10 +154,15 @@ panes_v_full_view_cancel(panes_data *pd)
    pd->vert.state = PANES_SPLIT_VIEW;
 }
 
+/*****************************************************************************/
+/* Externally accessible calls                                               */
+/*****************************************************************************/
+
 void
 panes_text_editor_full_view(void)
 {
    panes_data *pd = g_pd;
+   EINA_SAFETY_ON_NULL_RETURN(pd);
 
    //Revert state if the current state is full view right already.
    if (pd->horiz.state == PANES_TEXT_EDITOR_EXPAND)
@@ -185,6 +194,7 @@ void
 panes_live_view_full_view(void)
 {
    panes_data *pd = g_pd;
+   EINA_SAFETY_ON_NULL_RETURN(pd);
 
    //Revert state if the current state is full view left already.
    if (pd->horiz.state == PANES_LIVE_VIEW_EXPAND)
@@ -216,6 +226,8 @@ Eina_Bool
 panes_editors_full_view_get(void)
 {
    panes_data *pd = g_pd;
+   EINA_SAFETY_ON_NULL_RETURN_VAL(pd, EINA_FALSE);
+
    if (pd->vert.state == PANES_EDITORS_EXPAND) return EINA_TRUE;
    else return EINA_FALSE;
 }
@@ -224,6 +236,7 @@ void
 panes_editors_full_view(Eina_Bool full_view)
 {
    panes_data *pd = g_pd;
+   EINA_SAFETY_ON_NULL_RETURN(pd);
 
    if (full_view)
      {
@@ -254,6 +267,7 @@ void
 panes_console_full_view(void)
 {
    panes_data *pd = g_pd;
+   EINA_SAFETY_ON_NULL_RETURN(pd);
 
    //Revert state if the current state is full view top already.
    if (pd->vert.state == PANES_CONSOLE_EXPAND)
@@ -285,6 +299,8 @@ void
 panes_text_editor_set(Evas_Object *text_editor)
 {
    panes_data *pd = g_pd;
+   EINA_SAFETY_ON_NULL_RETURN(pd);
+
    Evas_Object *prev = elm_object_content_unset(pd->text_tool_layout);
    evas_object_hide(prev);
    elm_object_content_set(pd->text_tool_layout, text_editor);
@@ -294,6 +310,8 @@ void
 panes_live_view_set(Evas_Object *live_view)
 {
    panes_data *pd = g_pd;
+   EINA_SAFETY_ON_NULL_RETURN(pd);
+
    elm_object_content_set(pd->live_tool_layout, live_view);
 }
 
@@ -301,6 +319,8 @@ void
 panes_console_set(Evas_Object *console)
 {
    panes_data *pd = g_pd;
+   EINA_SAFETY_ON_NULL_RETURN(pd);
+
    elm_object_part_content_set(pd->vert.obj, "bottom", console);
 }
 
@@ -308,6 +328,8 @@ void
 panes_term(void)
 {
    panes_data *pd = g_pd;
+   EINA_SAFETY_ON_NULL_RETURN(pd);
+
    evas_object_del(pd->vert.obj);
    elm_transit_del(pd->vert.transit);
    elm_transit_del(pd->horiz.transit);
@@ -389,7 +411,7 @@ void
 panes_live_view_tools_set(Evas_Object *tools)
 {
    panes_data *pd = g_pd;
-   if (!pd) return;
+   EINA_SAFETY_ON_NULL_RETURN(pd);
 
    Evas_Object *live_view = elm_object_part_content_get(pd->horiz.obj, "left");
    elm_object_part_content_set(live_view, "elm.swallow.tools", tools);
@@ -399,7 +421,7 @@ void
 panes_live_edit_fixed_bar_set(Evas_Object *fixed_bar)
 {
    panes_data *pd = g_pd;
-   if (!pd) return;
+   EINA_SAFETY_ON_NULL_RETURN(pd);
 
    Evas_Object *live_view = elm_object_part_content_get(pd->horiz.obj, "left");
    elm_object_part_content_set(live_view, "elm.swallow.fixed_bar", fixed_bar);
@@ -409,7 +431,7 @@ void
 panes_text_editor_tools_set(Evas_Object *tools)
 {
    panes_data *pd = g_pd;
-   if (!pd) return;
+   EINA_SAFETY_ON_NULL_RETURN(pd);
 
    Evas_Object *text_editor = elm_object_part_content_get(pd->horiz.obj,
                                                           "right");
@@ -420,7 +442,7 @@ void
 panes_live_view_tools_visible_set(Eina_Bool visible)
 {
    panes_data *pd = g_pd;
-   if (!pd) return;
+   EINA_SAFETY_ON_NULL_RETURN(pd);
 
    Evas_Object *live_view = elm_object_part_content_get(pd->horiz.obj, "left");
 
@@ -434,7 +456,7 @@ void
 panes_live_edit_fixed_bar_visible_set(Eina_Bool visible)
 {
    panes_data *pd = g_pd;
-   if (!pd) return;
+   EINA_SAFETY_ON_NULL_RETURN(pd);
 
    Evas_Object *live_view = elm_object_part_content_get(pd->horiz.obj, "left");
 
@@ -449,7 +471,7 @@ void
 panes_text_editor_tools_visible_set(Eina_Bool visible)
 {
    panes_data *pd = g_pd;
-   if (!pd) return;
+   EINA_SAFETY_ON_NULL_RETURN(pd);
 
    Evas_Object *text_editor = elm_object_part_content_get(pd->horiz.obj,
                                                           "right");

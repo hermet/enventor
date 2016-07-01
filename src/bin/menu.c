@@ -30,6 +30,10 @@ static void edc_file_save(menu_data *md);
 static void new_yes_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
                            void *event_info EINA_UNUSED);
 
+/*****************************************************************************/
+/* Internal method implementation                                            */
+/*****************************************************************************/
+
 static void
 fileselector_close(menu_data *md)
 {
@@ -598,6 +602,10 @@ menu_open(menu_data *md)
    md->active_request++;
 }
 
+/*****************************************************************************/
+/* Externally accessible calls                                               */
+/*****************************************************************************/
+
 void
 menu_init(void)
 {
@@ -638,6 +646,7 @@ void
 menu_edc_save(void)
 {
    menu_data *md = g_md;
+   EINA_SAFETY_ON_NULL_RETURN(md);
    edc_file_save(md);
 }
 
@@ -645,6 +654,8 @@ void
 menu_edc_load(void)
 {
    menu_data *md = g_md;
+   EINA_SAFETY_ON_NULL_RETURN(md);
+
    if (enventor_object_modified_get(base_enventor_get()))
      warning_open(md, load_yes_btn_cb, load_save_btn_cb);
    else
@@ -655,6 +666,7 @@ void
 menu_toggle(void)
 {
    menu_data *md = g_md;
+   EINA_SAFETY_ON_NULL_RETURN(md);
 
    if (setting_is_opened())
      {
@@ -698,6 +710,8 @@ enventor_ctxpopup_dismissed_cb(void *data, Evas_Object *obj EINA_UNUSED,
                                void *event_info EINA_UNUSED)
 {
    menu_data *md = data;
+   EINA_SAFETY_ON_NULL_RETURN(md);
+
    warning_open(md, exit_yes_btn_cb, exit_save_btn_cb);
 }
 
@@ -705,6 +719,8 @@ void
 menu_exit(void)
 {
    menu_data *md = g_md;
+   EINA_SAFETY_ON_NULL_RETURN(md);
+
    Enventor_Object *enventor = base_enventor_get();
    if (enventor_object_modified_get(enventor))
      {
@@ -730,6 +746,8 @@ void
 menu_deactivate_request(void)
 {
    menu_data *md = g_md;
+   EINA_SAFETY_ON_NULL_RETURN(md);
+
    md->active_request--;
 
    if (md->active_request == 0)
@@ -745,6 +763,8 @@ void
 menu_activate_request(void)
 {
    menu_data *md = g_md;
+   EINA_SAFETY_ON_NULL_RETURN(md);
+
    if (md->menu_layout) elm_object_disabled_set(md->menu_layout, EINA_TRUE);
    md->active_request++;
 }

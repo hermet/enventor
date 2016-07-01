@@ -64,7 +64,7 @@ list_item_selected_cb(void *data, Evas_Object *obj EINA_UNUSED,
 Eina_Bool file_tab_it_select(Enventor_Item *enventor_it)
 {
    file_data *fd = g_fd;
-   if (!fd) return EINA_FALSE;
+   EINA_SAFETY_ON_NULL_RETURN_VAL(fd, EINA_FALSE);
 
    Eina_List *list = (Eina_List*) elm_list_items_get(fd->list);
    Eina_List *l;
@@ -86,7 +86,7 @@ Eina_Bool file_tab_it_select(Enventor_Item *enventor_it)
 void file_tab_clear(void)
 {
    file_data *fd = g_fd;
-   if (!fd) return;
+   EINA_SAFETY_ON_NULL_RETURN(fd);
 
    Eina_List *list = (Eina_List*) elm_list_items_get(fd->list);
    Eina_List *l;
@@ -153,7 +153,7 @@ void
 file_tab_disabled_set(Eina_Bool disabled)
 {
    file_data *fd = g_fd;
-   if (!fd) return;
+   EINA_SAFETY_ON_NULL_RETURN(fd);
    elm_object_disabled_set(fd->list, disabled);
 
    if (disabled) return;
@@ -236,7 +236,7 @@ void
 file_tab_term(void)
 {
    file_data *fd = g_fd;
-   if (!fd) return;
+   EINA_SAFETY_ON_NULL_RETURN(fd);
 
    evas_object_del(fd->box);
 

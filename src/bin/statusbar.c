@@ -284,6 +284,7 @@ void
 stats_line_num_update(int cur_line, int max_line)
 {
    stats_data *sd = g_sd;
+   EINA_SAFETY_ON_NULL_RETURN(sd);
 
    char buf[20];
    snprintf(buf, sizeof(buf), "%d", cur_line);
@@ -299,6 +300,8 @@ void
 stats_edc_group_update(Eina_Stringshare *group_name)
 {
    stats_data *sd = g_sd;
+   EINA_SAFETY_ON_NULL_RETURN(sd);
+
    elm_object_part_text_set(sd->layout, "elm.text.group_name", group_name);
    sd->group_name = eina_stringshare_add(group_name);
 }
@@ -376,6 +379,8 @@ stats_init(Evas_Object *parent)
 Eina_Stringshare *stats_group_name_get(void)
 {
    stats_data *sd = g_sd;
+   EINA_SAFETY_ON_NULL_RETURN(sd);
+
    return sd->group_name;
 }
 
@@ -383,6 +388,8 @@ void
 stats_term(void)
 {
    stats_data *sd = g_sd;
+   EINA_SAFETY_ON_NULL_RETURN(sd);
+
    eina_stringshare_del(sd->group_name);
    free(sd);
 }
@@ -393,6 +400,8 @@ stats_info_msg_update(const char *msg)
    if (!config_stats_bar_get()) return;
 
    stats_data *sd = g_sd;
+   EINA_SAFETY_ON_NULL_RETURN(sd);
+
    elm_object_part_text_set(sd->layout, "elm.text.info_msg", msg);
    elm_object_signal_emit(sd->layout, "elm,action,info_msg,show", "");
 }
@@ -401,6 +410,7 @@ void
 stats_view_scale_update(double scale)
 {
    stats_data *sd = g_sd;
+   EINA_SAFETY_ON_NULL_RETURN(sd);
 
    char buf[10];
    snprintf(buf, sizeof(buf), "%0.2fx", scale);
@@ -411,6 +421,7 @@ void
 stats_view_size_update(Evas_Coord w, Evas_Coord h)
 {
    stats_data *sd = g_sd;
+   EINA_SAFETY_ON_NULL_RETURN(sd);
 
    char buf[10];
    snprintf(buf, sizeof(buf), "%d", w);
@@ -423,6 +434,7 @@ void
 stats_cursor_pos_update(Evas_Coord x, Evas_Coord y, float rel_x, float rel_y)
 {
    stats_data *sd = g_sd;
+   EINA_SAFETY_ON_NULL_RETURN(sd);
 
    char buf[10];
    snprintf(buf, sizeof(buf), "%d", x);
@@ -440,6 +452,8 @@ Eina_Bool
 stats_ctxpopup_dismiss(void)
 {
    stats_data *sd = g_sd;
+   EINA_SAFETY_ON_NULL_RETURN(sd);
+
    if (sd->ctxpopup)
      {
         elm_ctxpopup_dismiss(sd->ctxpopup);

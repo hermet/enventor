@@ -122,7 +122,7 @@ console_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
            void *event_info EINA_UNUSED)
 {
    tools_data *td = g_td;
-   if (!td) return;
+   EINA_SAFETY_ON_NULL_RETURN(td);
 
    base_console_toggle();
 }
@@ -420,7 +420,7 @@ void
 tools_highlight_update(Eina_Bool toggle)
 {
    tools_data *td = g_td;
-   if (!td) return;
+   EINA_SAFETY_ON_NULL_RETURN(td);
 
    if (toggle) config_part_highlight_set(!config_part_highlight_get());
    enventor_object_part_highlight_set(base_enventor_get(),
@@ -444,7 +444,7 @@ void
 tools_file_browser_update(Eina_Bool toggle)
 {
    tools_data *td = g_td;
-   if (!td) return;
+   EINA_SAFETY_ON_NULL_RETURN(td);
 
    if (toggle) config_file_browser_set(!config_file_browser_get());
 
@@ -467,7 +467,7 @@ void
 tools_edc_navigator_update(Eina_Bool toggle)
 {
    tools_data *td = g_td;
-   if (!td) return;
+   EINA_SAFETY_ON_NULL_RETURN(td);
 
    if (toggle) config_edc_navigator_set(!config_edc_navigator_get());
 
@@ -490,7 +490,7 @@ void
 tools_lines_update(Eina_Bool toggle)
 {
    tools_data *td = g_td;
-   if (!td) return;
+   EINA_SAFETY_ON_NULL_RETURN(td);
 
    if (toggle) config_linenumber_set(!config_linenumber_get());
    enventor_object_linenumber_set(base_enventor_get(), config_linenumber_get());
@@ -506,7 +506,7 @@ void
 tools_dummy_update(Eina_Bool toggle)
 {
    tools_data *td = g_td;
-   if (!td) return;
+   EINA_SAFETY_ON_NULL_RETURN(td);
 
    if (toggle) config_dummy_parts_set(!config_dummy_parts_get());
    enventor_object_dummy_parts_set(base_enventor_get(),
@@ -530,7 +530,7 @@ void
 tools_outline_update(Eina_Bool toggle)
 {
    tools_data *td = g_td;
-   if (!td) return;
+   EINA_SAFETY_ON_NULL_RETURN(td);
 
    if (toggle) config_parts_outline_set(!config_parts_outline_get());
    enventor_object_parts_outline_set(base_enventor_get(),
@@ -554,7 +554,7 @@ void
 tools_mirror_mode_update(Eina_Bool toggle)
 {
    tools_data *td = g_td;
-   if (!td) return;
+   EINA_SAFETY_ON_NULL_RETURN(td);
 
    if (toggle) config_mirror_mode_set(!config_mirror_mode_get());
    enventor_object_mirror_mode_set(base_enventor_get(),
@@ -580,7 +580,7 @@ void
 tools_file_tab_update(Eina_Bool toggle)
 {
    tools_data *td = g_td;
-   if (!td) return;
+   EINA_SAFETY_ON_NULL_RETURN(td);
 
    base_file_tab_toggle(toggle);
 
@@ -595,7 +595,7 @@ void
 tools_goto_update(void)
 {
    tools_data *td = g_td;
-   if (!td) return;
+   EINA_SAFETY_ON_NULL_RETURN(td);
 
    if (goto_is_opened())
      elm_object_signal_emit(td->goto_btn, "icon,highlight,enabled", "");
@@ -607,7 +607,7 @@ void
 tools_search_update(void)
 {
    tools_data *td = g_td;
-   if (!td) return;
+   EINA_SAFETY_ON_NULL_RETURN(td);
 
    if (search_is_opened())
      elm_object_signal_emit(td->find_btn, "icon,highlight,enabled", "");
@@ -645,7 +645,7 @@ void
 tools_console_update(Eina_Bool on)
 {
    tools_data *td = g_td;
-   if (!td) return;
+   EINA_SAFETY_ON_NULL_RETURN(td);
 
    if (on)
      elm_object_signal_emit(td->console_btn, "icon,highlight,enabled", "");
@@ -657,7 +657,7 @@ void
 tools_menu_update(Eina_Bool on)
 {
    tools_data *td = g_td;
-   if (!td) return;
+   EINA_SAFETY_ON_NULL_RETURN(td);
 
    if (on)
      elm_object_signal_emit(td->menu_btn, "icon,highlight,enabled", "");

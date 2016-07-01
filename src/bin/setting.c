@@ -1,6 +1,3 @@
-/*****************************************************************************/
-/* Externally accessible calls                                               */
-/*****************************************************************************/
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -260,7 +257,7 @@ void
 setting_close()
 {
    setting_data *sd = g_sd;
-   if (!sd) return;
+   EINA_SAFETY_ON_NULL_RETURN(sd);
    elm_object_signal_emit(sd->layout, "elm,state,dismiss", "");
 }
 
@@ -268,6 +265,7 @@ Eina_Bool
 setting_is_opened(void)
 {
    setting_data *sd = g_sd;
-   if (!sd) return EINA_FALSE;
+   EINA_SAFETY_ON_NULL_RETURN_VAL(sd, EINA_FALSE);
+
    return EINA_TRUE;
 }

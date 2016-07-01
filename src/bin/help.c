@@ -10,6 +10,10 @@ static Evas_Coord win_w = DEFAULT_HELP_WIN_W;
 static Evas_Coord win_h = DEFAULT_HELP_WIN_H;
 static Evas_Object *g_win = NULL;
 
+/*****************************************************************************/
+/* Internal method implementation                                            */
+/*****************************************************************************/
+
 static void
 keygrabber_key_down_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
                        Evas_Object *obj  EINA_UNUSED,
@@ -34,6 +38,10 @@ win_moved_cb(void *data EINA_UNUSED, Evas_Object *obj,
    if ((win_x != -1) || (win_y != -1)) evas_object_move(obj, win_x, win_y);
    evas_object_smart_callback_del(obj, "moved", win_moved_cb);
 }
+
+/*****************************************************************************/
+/* Externally accessible calls                                               */
+/*****************************************************************************/
 
 void
 help_open(void)

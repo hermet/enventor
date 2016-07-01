@@ -21,6 +21,10 @@ static Evas_Coord win_y = -1;
 static Evas_Coord win_w = DEFAULT_GOTO_WIN_W;
 static Evas_Coord win_h = DEFAULT_GOTO_WIN_H;
 
+/*****************************************************************************/
+/* Internal method implementation                                            */
+/*****************************************************************************/
+
 static void
 win_delete_request_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
                       void *event_info EINA_UNUSED)
@@ -115,6 +119,10 @@ keygrabber_key_down_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
 {
    goto_close();
 }
+
+/*****************************************************************************/
+/* Externally accessible calls                                               */
+/*****************************************************************************/
 
 void
 goto_open(void)
@@ -222,7 +230,7 @@ Eina_Bool
 goto_close(void)
 {
    goto_data *gd = g_gd;
-   if (!gd) return EINA_FALSE;
+   EINA_SAFETY_ON_NULL_RETURN_VAL(gd, EINA_FALSE);
 
    //Save last state
    evas_object_geometry_get(gd->win, NULL, NULL, &win_w, &win_h);

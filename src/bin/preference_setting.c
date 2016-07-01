@@ -63,14 +63,14 @@ entry_create(Evas_Object *parent)
 void
 preference_setting_focus_set(preference_setting_data *psd)
 {
-   if (!psd) return;
+   EINA_SAFETY_ON_NULL_RETURN(psd);
    elm_object_focus_set(psd->view_size_w_entry, EINA_TRUE);
 }
 
 void
 preference_setting_config_set(preference_setting_data *psd)
 {
-   if (!psd) return;
+   EINA_SAFETY_ON_NULL_RETURN(psd);
 
    config_tools_set(elm_check_state_get(psd->toggle_tools));
    config_stats_bar_set(elm_check_state_get(psd->toggle_status));
@@ -92,7 +92,7 @@ preference_setting_config_set(preference_setting_data *psd)
 void
 preference_setting_reset(preference_setting_data *psd)
 {
-   if (!psd) return;
+   EINA_SAFETY_ON_NULL_RETURN(psd);
 
    elm_check_state_set(psd->toggle_tools, config_tools_get());
    elm_check_state_set(psd->toggle_status, config_stats_bar_get());
@@ -120,7 +120,7 @@ preference_setting_content_get(preference_setting_data *psd,
    static Elm_Entry_Filter_Accept_Set digits_filter_data;
    static Elm_Entry_Filter_Limit_Size limit_filter_data;
 
-   if (!psd) return NULL;
+   EINA_SAFETY_ON_NULL_RETURN_VAL(psd, NULL);
    if (psd->box) return psd->box;
 
    //Preference
@@ -318,7 +318,8 @@ preference_setting_init(void)
 void
 preference_setting_term(preference_setting_data *psd)
 {
-   if (!psd) return;
+   EINA_SAFETY_ON_NULL_RETURN(psd);
+
    evas_object_del(psd->box);
    free(psd);
 }

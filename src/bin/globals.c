@@ -16,6 +16,8 @@ void mem_fail_msg(void)
 
 void facade_it_select(Enventor_Item *it)
 {
+   EINA_SAFETY_ON_NULL_RETURN(it);
+
    file_tab_it_select(it);
    enventor_item_focus_set(it);
    base_text_editor_set(it);
@@ -25,7 +27,7 @@ void facade_it_select(Enventor_Item *it)
 Enventor_Item *facade_sub_file_add(const char *path)
 {
    Enventor_Item *it = enventor_object_sub_file_add(base_enventor_get(), path);
-   if (!it) return NULL;
+   EINA_SAFETY_ON_NULL_RETURN_VAL(it, NULL);
 
    file_tab_it_add(it);
    file_tab_it_select(it);
@@ -38,7 +40,7 @@ Enventor_Item *facade_sub_file_add(const char *path)
 Enventor_Item *facade_main_file_set(const char *path)
 {
    Enventor_Item *it = enventor_object_main_file_set(base_enventor_get(), path);
-   if (!it) return NULL;
+   EINA_SAFETY_ON_NULL_RETURN_VAL(it, NULL);
 
    file_tab_clear();
    file_tab_it_add(it);

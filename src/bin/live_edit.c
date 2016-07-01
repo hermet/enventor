@@ -2129,6 +2129,7 @@ live_edit_update(void)
    if (!live_edit_get()) return;
 
    live_data *ld = g_ld;
+   EINA_SAFETY_ON_NULL_RETURN(ld);
 
    //Scale up/down of the symbol object.
    Evas_Object *layout_symbol =
@@ -2151,6 +2152,8 @@ Eina_Bool
 live_edit_cancel(Eina_Bool phase_in)
 {
    live_data *ld = g_ld;
+   EINA_SAFETY_ON_NULL_RETURN_VAL(ld, EINA_FALSE);
+
    if (!ld->on) return EINA_FALSE;
 
    //Dismiss Relative To Ctxpopup firstly.
@@ -2289,6 +2292,8 @@ void
 live_edit_term(void)
 {
    live_data *ld = g_ld;
+   EINA_SAFETY_ON_NULL_RETURN(ld);
+
    live_edit_cancel(EINA_FALSE);
 
    free_auto_align_data(ld->auto_align_array);

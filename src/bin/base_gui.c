@@ -12,6 +12,8 @@ typedef struct base_s
 
 static base_data *g_bd = NULL;
 
+
+
 /*****************************************************************************/
 /* Internal method implementation                                            */
 /*****************************************************************************/
@@ -50,7 +52,8 @@ void
 base_error_msg_set(const char *msg)
 {
    base_data *bd = g_bd;
-   assert(bd);
+   EINA_SAFETY_ON_NULL_RETURN(bd);
+
    if (config_red_alert_get())
      elm_object_signal_emit(bd->layout, "elm,state,alert,show", "");
    console_text_set(bd->console, msg);
@@ -62,7 +65,7 @@ void
 base_title_set(const char *path)
 {
    base_data *bd = g_bd;
-   assert(bd);
+   EINA_SAFETY_ON_NULL_RETURN(bd);
    char buf[PATH_MAX];
    snprintf(buf, sizeof(buf), _("%s - Enventor"), path);
    elm_win_title_set(bd->win, buf);
@@ -72,7 +75,7 @@ void
 base_statusbar_toggle(Eina_Bool toggle)
 {
    base_data *bd = g_bd;
-   assert(bd);
+   EINA_SAFETY_ON_NULL_RETURN(bd);
 
    if (toggle) config_stats_bar_set(!config_stats_bar_get());
 
@@ -86,7 +89,7 @@ void
 base_file_tab_toggle(Eina_Bool toggle)
 {
    base_data *bd = g_bd;
-   assert(bd);
+   EINA_SAFETY_ON_NULL_RETURN(bd);
 
    if (toggle) config_file_tab_set(!config_file_tab_get());
 
@@ -105,7 +108,7 @@ base_file_tab_toggle(Eina_Bool toggle)
 void base_file_browser_toggle(Eina_Bool toggle)
 {
    base_data *bd = g_bd;
-   assert(bd);
+   EINA_SAFETY_ON_NULL_RETURN(bd);
 
    if (toggle) config_file_browser_set(!config_file_browser_get());
 
@@ -124,7 +127,7 @@ void base_edc_navigator_deselect(void)
 void base_edc_navigator_toggle(Eina_Bool toggle)
 {
    base_data *bd = g_bd;
-   assert(bd);
+   EINA_SAFETY_ON_NULL_RETURN(bd);
 
    if (toggle) config_edc_navigator_set(!config_edc_navigator_get());
 
@@ -157,7 +160,8 @@ Evas_Object *
 base_win_get(void)
 {
    base_data *bd = g_bd;
-   assert(bd && bd->win);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(bd, NULL);
+
    return bd->win;
 }
 
@@ -165,7 +169,8 @@ Evas_Object *
 base_layout_get(void)
 {
    base_data *bd = g_bd;
-   assert(bd && bd->layout);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(bd, NULL);
+
    return bd->layout;
 }
 
@@ -173,7 +178,8 @@ void
 base_win_resize_object_add(Evas_Object *resize_obj)
 {
    base_data *bd = g_bd;
-   assert(bd);
+   EINA_SAFETY_ON_NULL_RETURN(bd);
+
    elm_win_resize_object_add(bd->win, resize_obj);
 }
 
@@ -233,7 +239,7 @@ void
 base_console_auto_hide(void)
 {
    base_data *bd = g_bd;
-   assert(bd);
+   EINA_SAFETY_ON_NULL_RETURN(bd);;
 
    if (!config_console_get()) return;
    if (bd->console_msg) return;
@@ -260,7 +266,7 @@ void
 base_gui_term(void)
 {
    base_data *bd = g_bd;
-   if (!bd) return;
+   EINA_SAFETY_ON_NULL_RETURN(bd);
 
    ecore_timer_del(bd->edc_navi_update_timer);
    file_browser_term();
@@ -278,7 +284,7 @@ base_edc_navigator_group_update(void)
    if (!config_edc_navigator_get()) return;
 
    base_data *bd = g_bd;
-   if (!bd) return;
+   EINA_SAFETY_ON_NULL_RETURN(bd);
 
    ecore_timer_del(bd->edc_navi_update_timer);
    bd->edc_navi_update_timer = ecore_timer_add(EDC_NAVIGATOR_UPDATE_TIME,
@@ -290,7 +296,7 @@ void
 base_console_reset(void)
 {
    base_data *bd = g_bd;
-   if (!bd) return;
+   EINA_SAFETY_ON_NULL_RETURN(bd);
 
    console_text_set(bd->console, "");
    bd->console_msg = EINA_FALSE;
@@ -373,14 +379,18 @@ base_gui_init(void)
 void
 base_gui_show(void)
 {
-   evas_object_show(g_bd->win);
+   base_data *bd = g_bd;
+   EINA_SAFETY_ON_NULL_RETURN(bd);
+
+   evas_object_show(bd->win);
 }
 
 Enventor_Object *
 base_enventor_get(void)
 {
    base_data *bd = g_bd;
-   assert(bd);
+   EINA_SAFETY_ON_NULL_RETURN(bd);
+
    return bd->enventor;
 }
 
@@ -388,7 +398,8 @@ void
 base_enventor_set(Enventor_Object *enventor)
 {
    base_data *bd = g_bd;
-   assert(bd);
+   EINA_SAFETY_ON_NULL_RETURN(bd);
+
    bd->enventor = enventor;
 }
 
@@ -396,6 +407,7 @@ void
 base_text_editor_set(Enventor_Item *it)
 {
    base_data *bd = g_bd;
-   assert(bd);
+   EINA_SAFETY_ON_NULL_RETURN(bd);
+
    panes_text_editor_set(enventor_item_editor_get(it));
 }

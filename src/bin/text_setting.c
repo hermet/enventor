@@ -955,7 +955,7 @@ text_setting_content_get(text_setting_data *tsd, Evas_Object *parent)
 void
 text_setting_focus_set(text_setting_data *tsd)
 {
-   if (!tsd) return;
+   EINA_SAFETY_ON_NULL_RETURN(tsd);
 
    elm_object_focus_set(tsd->slider_font, EINA_TRUE);
 }
@@ -963,7 +963,7 @@ text_setting_focus_set(text_setting_data *tsd)
 void
 text_setting_config_set(text_setting_data *tsd)
 {
-   if (!tsd) return;
+   EINA_SAFETY_ON_NULL_RETURN(tsd);
 
    config_font_set(tsd->font_name, tsd->font_style);
    config_font_scale_set((float) elm_slider_value_get(tsd->slider_font));
@@ -974,7 +974,7 @@ text_setting_config_set(text_setting_data *tsd)
 void
 text_setting_reset(text_setting_data *tsd)
 {
-   if (!tsd) return;
+   EINA_SAFETY_ON_NULL_RETURN(tsd);
 
    //font scale
    tsd->font_scale = (double) config_font_scale_get();
@@ -1004,7 +1004,7 @@ text_setting_init(void)
 void
 text_setting_term(text_setting_data *tsd)
 {
-   if (!tsd) return;
+   EINA_SAFETY_ON_NULL_RETURN(tsd);
 
    evas_object_del(tsd->color_ctxpopup);
    free(tsd->color_keyword_list);
