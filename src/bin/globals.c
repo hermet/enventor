@@ -26,7 +26,7 @@ void facade_it_select(Enventor_Item *it)
 
 Enventor_Item *facade_sub_file_add(const char *path)
 {
-   Enventor_Item *it = enventor_object_sub_file_add(base_enventor_get(), path);
+   Enventor_Item *it = enventor_object_sub_item_add(base_enventor_get(), path);
    EINA_SAFETY_ON_NULL_RETURN_VAL(it, NULL);
 
    file_tab_it_add(it);
@@ -39,7 +39,7 @@ Enventor_Item *facade_sub_file_add(const char *path)
 
 Enventor_Item *facade_main_file_set(const char *path)
 {
-   Enventor_Item *it = enventor_object_main_file_set(base_enventor_get(), path);
+   Enventor_Item *it = enventor_object_main_item_set(base_enventor_get(), path);
    EINA_SAFETY_ON_NULL_RETURN_VAL(it, NULL);
 
    file_tab_clear();

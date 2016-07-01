@@ -123,6 +123,7 @@ edit_view_sync_cb(void *data, Eina_Stringshare *state_name, double state_value,
 
    edj_mgr_all_views_reload();
 
+   //Switch group!
    if (pd->group_name != group_name)
      {
         view_data *vd = edj_mgr_view_get(group_name);
@@ -132,6 +133,8 @@ edit_view_sync_cb(void *data, Eina_Stringshare *state_name, double state_value,
              vd = edj_mgr_view_new(group_name);
              if (!vd) return;
           }
+        view_dummy_set(vd, pd->dummy_parts);
+        view_outline_set(vd, pd->outline);
         eina_stringshare_del(pd->group_name);
         pd->group_name = eina_stringshare_add(group_name);
         evas_object_smart_callback_call(pd->obj, SIG_CURSOR_GROUP_CHANGED,
@@ -260,7 +263,7 @@ EOLIAN static void
 _enventor_object_efl_canvas_group_group_del(Evas_Object *obj EINA_UNUSED, Enventor_Object_Data *pd)
 {
    eina_stringshare_del(pd->font_name);
-   eina_stringshare_del(pd->font_style);   
+   eina_stringshare_del(pd->font_style);
    eina_stringshare_del(pd->group_name);
    autocomp_term();
    ecore_event_handler_del(pd->key_down_handler);
@@ -413,7 +416,7 @@ _enventor_object_linenumber_set(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd,
    if (pd->linenumber == linenumber) return;
 
    //Main Item
-   edit_linenumber_set(pd->main_it.ed, linenumber);
+   edit_linenumber_set(pd->focused_it->ed, linenumber);
 
    pd->linenumber = linenumber;
 }
@@ -950,7 +953,7 @@ enventor_object_add(Enventor_Object *parent)
 }
 
 EAPI Enventor_Item *
-enventor_object_sub_file_add(Enventor_Object *obj, const char *file)
+enventor_object_sub_item_add(Enventor_Object *obj, const char *file)
 {
    Enventor_Object_Data *pd = eo_data_scope_get(obj, ENVENTOR_OBJECT_CLASS);
 
@@ -970,24 +973,17 @@ enventor_object_sub_file_add(Enventor_Object *obj, const char *file)
    pd->sub_its = eina_list_append(pd->sub_its, it);
 
    it->enventor = obj;
-   it->ed = edit_init(obj);
+   it->ed = edit_init(obj, EINA_FALSE);
 
    autocomp_target_set(it->ed);
    edit_load(it->ed, file);
    edit_changed_set(it->ed, EINA_FALSE);
 
-   //Update Editor State
-   if (pd->linenumber != DEFAULT_LINENUMBER)
-     edit_linenumber_set(it->ed, pd->linenumber);
-   if (pd->font_scale != DEFAULT_FONT_SCALE)
-     edit_font_scale_set(it->ed, pd->font_scale);
-   if (pd->disabled) edit_disabled_set(it->ed, EINA_TRUE);
-
    return it;
 }
 
 EAPI Enventor_Item *
-enventor_object_main_file_set(Enventor_Object *obj, const char *file)
+enventor_object_main_item_set(Enventor_Object *obj, const char *file)
 {
    Enventor_Object_Data *pd = eo_data_scope_get(obj, ENVENTOR_OBJECT_CLASS);
 
@@ -997,21 +993,20 @@ enventor_object_main_file_set(Enventor_Object *obj, const char *file)
    _enventor_main_item_free(pd);
 
    pd->main_it.enventor = obj;
-   pd->main_it.ed = edit_init(obj);
+   pd->main_it.ed = edit_init(obj, EINA_TRUE);
    edit_view_sync_cb_set(pd->main_it.ed, edit_view_sync_cb, pd);
    pd->focused_it = &pd->main_it;
 
    Eina_Bool ret = efl_file_set(obj, file, NULL);
    if (!ret) return NULL;
 
-   //Update Editor State
-   if (pd->linenumber != DEFAULT_LINENUMBER)
-     edit_linenumber_set(pd->main_it.ed, pd->linenumber);
-   if (pd->font_scale != DEFAULT_FONT_SCALE)
-     edit_font_scale_set(pd->main_it.ed, pd->font_scale);
-   if (pd->disabled)
-     edit_disabled_set(pd->main_it.ed, EINA_TRUE);
+   return &pd->main_it;
+}
 
+EAPI Enventor_Item *
+enventor_object_main_item_get(const Enventor_Object *obj)
+{
+   Enventor_Object_Data *pd = eo_data_scope_get(obj, ENVENTOR_OBJECT_CLASS);
    return &pd->main_it;
 }
 
@@ -1043,6 +1038,11 @@ enventor_item_focus_set(Enventor_Item *it)
    edit_view_sync_cb_set(it->ed, edit_view_sync_cb, pd);
 
    pd->focused_it = it;
+
+   //Update Editor State
+   edit_linenumber_set(it->ed, pd->linenumber);
+   edit_font_scale_set(it->ed, pd->font_scale);
+   edit_disabled_set(it->ed, pd->disabled);
 
    return EINA_TRUE;
 }

@@ -230,7 +230,7 @@ Eina_Bool
 goto_close(void)
 {
    goto_data *gd = g_gd;
-   EINA_SAFETY_ON_NULL_RETURN_VAL(gd, EINA_FALSE);
+   if (!gd) return EINA_FALSE;
 
    //Save last state
    evas_object_geometry_get(gd->win, NULL, NULL, &win_w, &win_h);

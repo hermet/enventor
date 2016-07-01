@@ -705,7 +705,6 @@ view_part_highlight_set(view_data *vd, const char *part_name)
         if (vd->idler) vd->part_name = eina_stringshare_add(part_name);
         return;
      }
-
    if (!part_name)
      {
         if (vd->part_highlight)

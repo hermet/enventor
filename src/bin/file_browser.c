@@ -73,19 +73,51 @@ gl_clicked_double_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
         return;
      }
 
-   // Open a double clicked edc file.
+   /* Open a double clicked edc file. */
+
+   //skip non edc file.
    if (!eina_str_has_extension(file->path, "edc")) return;
+
    int selected_file_len = strlen(file->path);
 
-   //Let's check if the file is already opened or not.
+   Enventor_Item *eit;
+   const char *it_file_path;
+
+   //Case 1. main file.
+
+   //FIXME: Probably file browser item may have boolean info for a collection
+   //data. and just check it is enough.
+   eit = enventor_object_main_item_get(base_enventor_get());
+   if (!eit)
+     {
+        EINA_LOG_ERR("No main item??");
+        return;
+     }
+
+   it_file_path = enventor_item_file_get(eit);
+   if (!it_file_path)
+     {
+        EINA_LOG_ERR("No main item file path??");
+        return;
+     }
+   //Ok, This selected file is already openend, let's activate the item.
+   if (strlen(file->name) == strlen(it_file_path) &&
+       !strcmp(file->name, it_file_path))
+     {
+        facade_it_select(eit);
+        return;
+     }
+
+   //Case 2. sub files.
    Eina_List *sub_items =
       (Eina_List *)enventor_object_sub_items_get(base_enventor_get());
    Eina_List *l;
-   Enventor_Item *eit;
    EINA_LIST_FOREACH(sub_items, l, eit)
      {
         const char *it_file_path = enventor_item_file_get(eit);
         if (!it_file_path) continue;
+
+        //Let's check if the file is already opened.
         if (selected_file_len != strlen(it_file_path)) continue;
 
         //Ok, This selected file is already openend, let's activate the item.

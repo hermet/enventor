@@ -265,7 +265,6 @@ Eina_Bool
 setting_is_opened(void)
 {
    setting_data *sd = g_sd;
-   EINA_SAFETY_ON_NULL_RETURN_VAL(sd, EINA_FALSE);
-
+   if (!sd) return EINA_FALSE;
    return EINA_TRUE;
 }

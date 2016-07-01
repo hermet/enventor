@@ -455,7 +455,7 @@ Eina_Bool
 search_close(void)
 {
    search_data *sd = g_sd;
-   EINA_SAFETY_ON_NULL_RETURN_VAL(sd, EINA_FALSE);
+   if (!sd) return EINA_FALSE;
 
    Enventor_Object *enventor = base_enventor_get();
 

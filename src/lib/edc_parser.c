@@ -31,7 +31,7 @@ typedef struct parser_attr_s
    attr_value value;
 } parser_attr;
 
-typedef struct cur_name_thread_data_s
+typedef struct cur_context_thread_data_s
 {
    Ecore_Thread *thread;
    char *utf8;
@@ -44,7 +44,8 @@ typedef struct cur_name_thread_data_s
               Eina_Stringshare *part_name, Eina_Stringshare *group_name);
    void *cb_data;
    parser_data *pd;
-} cur_name_td;
+   Eina_Bool collections: 1;  //It contains collections?
+} cur_context_td;
 
 typedef struct type_init_thread_data_s
 {
@@ -69,7 +70,7 @@ typedef struct bracket_thread_data_s
 struct parser_s
 {
    Eina_Inarray *attrs;
-   cur_name_td *cntd;
+   cur_context_td *cntd;
    type_init_td *titd;
    bracket_td *btd;
    Eina_List *macro_list;
@@ -300,15 +301,20 @@ macro_list_free(Eina_List *macro_list)
 }
 
 static void
-cur_state_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
+cur_context_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
 #define PART_SYNTAX_CNT 14
 
    const char *GROUP = "group";
+   const int GROUP_LEN = 5;
    const char *PARTS = "parts";
+   const int PARTS_LEN = 5;
    const char *PART[PART_SYNTAX_CNT] = { "part", "image", "textblock",
         "swallow", "rect", "group", "spacer", "proxy", "text", "gradient",
         "box", "table", "external", "vector" };
+   const int PART_LEN[PART_SYNTAX_CNT] =
+     { 4, 5, 9, 6, 4, 5, 6, 5, 4, 8, 3, 5, 8, 6};
+
    const char *DESC[2] = { "desc", "description" };
    const int DESC_LEN[2] = { 4, 11 };
    const char *STATE = "state";
@@ -316,14 +322,14 @@ cur_state_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    const int DEF_STATE_LEN = 7;
 
 
-   cur_name_td *td = data;
+   cur_context_td *td = data;
    char *utf8 = td->utf8;
    int cur_pos = td->cur_pos;
    char *p = utf8;
    char *end = utf8 + cur_pos;
    int i;
    Eina_Bool inside_parts = EINA_FALSE;
-
+   Eina_Bool collections = td->collections;
 
    int bracket = 0;
    const char *group_name = NULL;
@@ -392,17 +398,29 @@ cur_state_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
              bracket--;
              p++;
 
-             if (bracket == 1) group_name = NULL;
-             else if (bracket == 2 && inside_parts == EINA_TRUE) inside_parts = EINA_FALSE;
-             else if (bracket == 3) part_name = NULL;
-             else if (bracket == 4) desc_name = NULL;
-
+             if (collections)
+               {
+                  if (bracket == 1) group_name = NULL;
+                  else if (bracket == 2 && inside_parts == EINA_TRUE)
+                    inside_parts = EINA_FALSE;
+                  else if (bracket == 3) part_name = NULL;
+                  else if (bracket == 4) desc_name = NULL;
+               }
+             else
+               {
+                  if (bracket == 0) group_name = NULL;
+                  else if (bracket == 1 && inside_parts == EINA_TRUE)
+                    inside_parts = EINA_FALSE;
+                  else if (bracket == 2) part_name = NULL;
+                  else if (bracket == 3) desc_name = NULL;
+               }
              continue;
           }
         //check block "Parts" in
-        if (bracket == 2)
+        if ((collections && (bracket == 2)) ||
+            (!collections && (bracket == 1)))
           {
-             if (!strncmp(p, PARTS, strlen(PARTS)))
+             if (!strncmp(p, PARTS, PARTS_LEN))
                {
                  inside_parts = EINA_TRUE;
                  p = strstr(p, "{");
@@ -411,16 +429,14 @@ cur_state_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
                }
          }
         //Check Part in
-        if (bracket == 3 && inside_parts == EINA_TRUE)
+        if ((collections && (bracket == 3)) ||
+             (!collections && (bracket == 2)))
           {
              int part_idx = -1;
-             int part_len;
-
               //part ? image ? swallow ? text ? rect ?
              for (i = 0; i < PART_SYNTAX_CNT; i++)
                 {
-                   part_len = strlen(PART[i]);
-                   if (!strncmp(p, PART[i], part_len))
+                   if (!strncmp(p, PART[i], PART_LEN[i]))
                      {
                         part_idx = i;
                         break;
@@ -430,7 +446,7 @@ cur_state_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
               //we got a part!
               if (part_idx != -1)
                 {
-                   p += part_len;
+                   p += PART_LEN[part_idx];
                    char *name_begin = strstr(p, QUOT_UTF8);
                    if (!name_begin) goto end;
                    name_begin += QUOT_UTF8_LEN;
@@ -445,7 +461,8 @@ cur_state_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
                 }
           }
         //Check Description in
-        if (bracket == 4)
+        if ((collections && (bracket == 4)) ||
+            (!collections && (bracket == 3)))
           {
              //description? or desc?
              int desc_idx = -1;
@@ -455,25 +472,37 @@ cur_state_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
              //we got a description!
              if (desc_idx != -1)
                {
-                  desc_name = DEF_STATE_NAME;           /* By default state will be */
-                  desc_name_len = DEF_STATE_LEN;        /* recognized as "default" 0.0*/
+                  /* By default state will be */
+                  desc_name = DEF_STATE_NAME;
+                  /* recognized as "default" 0.0*/
+                  desc_name_len = DEF_STATE_LEN;
                   value_convert = 0;
 
-                  p += DESC_LEN[desc_idx];              /* skip keyword */
+                  /* skip keyword */
+                  p += DESC_LEN[desc_idx];
                   p = strstr(p, "{");
                   if (!p) goto end;
-                  char *end_brace = strstr(p, "}");     /*Limit size of text for processing*/
+                  /*Limit size of text for processing*/
+                  char *end_brace = strstr(p, "}");
                   if (!end_brace)
                      goto end;
 
-                  /* proccessing for "description" keyword with "state" attribute */
+                  /* proccessing for "description" keyword with "state"
+                     attribute */
                   if (desc_idx == 1)
                     {
                        char *state = strstr(p, STATE);
-                       if (!state || state > end_brace) /* if name of state didn't find, */
-                          continue;                     /* description will recognized as default 0.0*/
+                       /* if name of state didn't find, */
+                       if (!state || state > end_brace)
+                         {
+                            /* description will recognized as default 0.0*/
+                            continue;
+                         }
                        else
-                          p += 5;                       /*5 is strlen("state");*/
+                         {
+                            /*5 is strlen("state");*/
+                            p += 5;
+                         }
                     }
 
                   char *name_begin = strstr(p, QUOT_UTF8);
@@ -482,15 +511,16 @@ cur_state_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
                   char *end_range = strstr(p, ";");
                   if (!end_range) goto end;
 
-                  if ((name_begin > end_brace) ||     /* if string placed outside desc block*/
-                      (name_begin > end_range) ||
+                  /* if string placed outside desc block*/
+                  if ((name_begin > end_brace) || (name_begin > end_range) ||
                       (end_range > end_brace))
-                        continue;
+                    continue;
 
                   /* Exception cases like: desc {image.normal: "img";} */
                   int alpha_present = 0;
                   char *string_itr;
-                  for (string_itr = name_begin; (string_itr > p) && (!alpha_present); string_itr--)
+                  for (string_itr = name_begin;
+                       (string_itr > p) && (!alpha_present); string_itr--)
                     alpha_present = isalpha((int)*string_itr);
 
                   if (alpha_present && desc_idx == 0)
@@ -529,11 +559,12 @@ cur_state_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
                }
           }
         //Check Group in. Probably inside of collections or the most outside.
-        if (bracket < 2)
+        if ((collections && (bracket == 1)) ||
+            (!collections && (bracket == 0)))
           {
-             if (!strncmp(p, GROUP, strlen(GROUP)))
+             if (!strncmp(p, GROUP, GROUP_LEN))
                {
-                  p += strlen(GROUP);
+                  p += GROUP_LEN;
 
                   char *name_end = strstr(p, SEMICOL_UTF8);
                   if (!name_end) goto end;
@@ -568,7 +599,6 @@ cur_state_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
           }
         p++;
      }
-
    if (part_name)
      part_name = eina_stringshare_add_length(part_name, part_name_len);
    if (desc_name)
@@ -598,9 +628,9 @@ end:
 }
 
 static void
-cur_name_thread_end(void *data, Ecore_Thread *thread EINA_UNUSED)
+cur_context_thread_end(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
-   cur_name_td *td = data;
+   cur_context_td *td = data;
    td->cb(td->cb_data, td->state_name, td->state_value,  td->part_name, td->group_name);
    td->pd->cntd = NULL;
    eina_stringshare_del(td->state_name);
@@ -610,9 +640,9 @@ cur_name_thread_end(void *data, Ecore_Thread *thread EINA_UNUSED)
 }
 
 static void
-cur_name_thread_cancel(void *data, Ecore_Thread *thread EINA_UNUSED)
+cur_context_thread_cancel(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
-   cur_name_td *td = data;
+   cur_context_td *td = data;
    if (td->pd) td->pd->cntd = NULL;
    eina_stringshare_del(td->state_name);
    eina_stringshare_del(td->part_name);
@@ -1290,7 +1320,7 @@ group_beginning_pos_get(const char* source, const char *group_name)
       name += quot_len;
       pos = strstr(name, quot);
       if (!pos) return NULL;
-      if (!strncmp(name, group_name, strlen(group_name)))
+      if (!strncmp(name, group_name, 5))
         return pos;
       pos = strstr(++pos,  GROUP_SYNTAX_NAME);
    }
@@ -1720,7 +1750,7 @@ parser_paragh_name_get(parser_data *pd EINA_UNUSED, Evas_Object *entry)
 }
 
 Eina_Stringshare*
-parser_cur_name_fast_get(Evas_Object *entry, const char *scope)
+parser_cur_context_fast_get(Evas_Object *entry, const char *scope)
 {
    const char *quot = QUOT_UTF8;
    const int quot_len = QUOT_UTF8_LEN;
@@ -1794,11 +1824,12 @@ end:
    return name;
 }
 
-
 void
-parser_cur_state_get(parser_data *pd, Evas_Object *entry,
-                     void (*cb)(void *data, Eina_Stringshare *state_name, double state_value,
-                     Eina_Stringshare *part_name, Eina_Stringshare *group_name), void *data)
+parser_cur_context_get(parser_data *pd, Evas_Object *entry,
+                       void (*cb)(void *data, Eina_Stringshare *state_name,
+                       double state_value, Eina_Stringshare *part_name,
+                       Eina_Stringshare *group_name), void *data,
+                       Eina_Bool collections)
 {
    if (pd->cntd) ecore_thread_cancel(pd->cntd->thread);
 
@@ -1808,7 +1839,7 @@ parser_cur_state_get(parser_data *pd, Evas_Object *entry,
    char *utf8 = elm_entry_markup_to_utf8(text);
    if (!utf8) return;
 
-   cur_name_td *td = calloc(1, sizeof(cur_name_td));
+   cur_context_td *td = calloc(1, sizeof(cur_context_td));
    if (!td)
      {
         free(utf8);
@@ -1822,10 +1853,11 @@ parser_cur_state_get(parser_data *pd, Evas_Object *entry,
    td->cur_pos = elm_entry_cursor_pos_get(entry);
    td->cb = cb;
    td->cb_data = data;
+   td->collections = collections;
 
-   td->thread = ecore_thread_run(cur_state_thread_blocking,
-                                 cur_name_thread_end,
-                                 cur_name_thread_cancel,
+   td->thread = ecore_thread_run(cur_context_thread_blocking,
+                                 cur_context_thread_end,
+                                 cur_context_thread_cancel,
                                  td);
 }
 

@@ -62,6 +62,7 @@ struct editor_s
    Eina_Bool ctrl_pressed : 1;
    Eina_Bool on_select_recover : 1;
    Eina_Bool on_save : 1;
+   Eina_Bool main : 1;
 };
 
 /*****************************************************************************/
@@ -755,8 +756,9 @@ edit_cursor_double_clicked_cb(void *data, Evas_Object *obj,
 }
 
 static void
-cur_name_get_cb(void *data, Eina_Stringshare *state_name, double state_value,
-                Eina_Stringshare *part_name, Eina_Stringshare *group_name)
+cur_context_name_get_cb(void *data, Eina_Stringshare *state_name,
+                        double state_value, Eina_Stringshare *part_name,
+                        Eina_Stringshare *group_name)
 {
    edit_data *ed = data;
 
@@ -1257,7 +1259,8 @@ edit_syntax_color_partial_apply(edit_data *ed, double interval)
 void
 edit_view_sync(edit_data *ed)
 {
-   parser_cur_state_get(ed->pd, ed->en_edit, cur_name_get_cb, ed);
+   parser_cur_context_get(ed->pd, ed->en_edit, cur_context_name_get_cb, ed,
+                          ed->main);
 }
 
 void
@@ -1333,7 +1336,7 @@ edit_cur_indent_depth_get(edit_data *ed)
 }
 
 edit_data *
-edit_init(Enventor_Object *enventor)
+edit_init(Enventor_Object *enventor, Eina_Bool main)
 {
    edit_data *ed = calloc(1, sizeof(edit_data));
    if (!ed)
@@ -1509,13 +1512,13 @@ edit_cur_paragh_get(edit_data *ed)
 Eina_Stringshare *
 edit_cur_prog_name_get(edit_data *ed)
 {
-   return parser_cur_name_fast_get(ed->en_edit, "program");
+   return parser_cur_context_fast_get(ed->en_edit, "program");
 }
 
 Eina_Stringshare *
 edit_cur_part_name_get(edit_data *ed)
 {
-   return parser_cur_name_fast_get(ed->en_edit, "part");
+   return parser_cur_context_fast_get(ed->en_edit, "part");
 }
 
 int
