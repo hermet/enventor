@@ -8,4 +8,7 @@ EAPI Enventor_Item *enventor_object_sub_file_add(Evas_Object *obj, const char *f
 EAPI const Eina_List *enventor_object_sub_items_get(const Evas_Object *obj);
 EAPI Evas_Object *enventor_item_editor_get(const Enventor_Item *it);
 EAPI const char *enventor_item_file_get(const Enventor_Item *it);
+EAPI Enventor_Item *enventor_object_focused_item_get(const Evas_Object *obj);
+EAPI Eina_Bool enventor_item_focus_set(Enventor_Item *it);
+
 #include "enventor_object.eo.legacy.h"

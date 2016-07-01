@@ -285,6 +285,8 @@ void
 panes_text_editor_set(Evas_Object *text_editor)
 {
    panes_data *pd = g_pd;
+   Evas_Object *prev = elm_object_content_unset(pd->text_tool_layout);
+   evas_object_hide(prev);
    elm_object_content_set(pd->text_tool_layout, text_editor);
 }
 

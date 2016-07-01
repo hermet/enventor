@@ -88,16 +88,16 @@ gl_clicked_double_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
         if (!it_file_path) continue;
         if (selected_file_len != strlen(it_file_path)) continue;
 
-        //Ok, This selected file is already openend, let's activte the item.
+        //Ok, This selected file is already openend, let's activate the item.
         if (!strcmp(file->path, it_file_path))
           {
-             //TODO:
+             facade_it_select(eit);
              return;
           }
      }
 
    //This selected file hasn't been opened yet, so let's open this file newly.
-   facade_sub_file_set(file->path);
+   facade_sub_file_add(file->path);
 }
 
 static Elm_Object_Item *

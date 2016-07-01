@@ -302,13 +302,13 @@ macro_list_free(Eina_List *macro_list)
 static void
 cur_state_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
-#define PART_SYNTAX_CNT 13
+#define PART_SYNTAX_CNT 14
 
    const char *GROUP = "group";
    const char *PARTS = "parts";
    const char *PART[PART_SYNTAX_CNT] = { "part", "image", "textblock",
         "swallow", "rect", "group", "spacer", "proxy", "text", "gradient",
-        "box", "table", "external" };
+        "box", "table", "external", "vector" };
    const char *DESC[2] = { "desc", "description" };
    const int DESC_LEN[2] = { 4, 11 };
    const char *STATE = "state";
@@ -528,8 +528,8 @@ cur_state_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
                   continue;
                }
           }
-        //Check Group in
-        if (bracket == 1)
+        //Check Group in. Probably inside of collections or the most outside.
+        if (bracket < 2)
           {
              if (!strncmp(p, GROUP, strlen(GROUP)))
                {

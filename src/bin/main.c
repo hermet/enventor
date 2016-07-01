@@ -9,7 +9,6 @@
 typedef struct app_s
 {
    Evas_Object *keygrabber;
-   Enventor_Item *main_it;
    Eina_Bool on_saving : 1;
    Eina_Bool lazy_save : 1;
 } app_data;
@@ -183,10 +182,14 @@ main_mouse_wheel_cb(void *data, int type EINA_UNUSED, void *ev)
      }
 
    //Font Size
-   //FIXME: probably here main_it could be changeable. we need to figure out
-   //which item is currently set up.
-   evas_object_geometry_get(enventor_item_editor_get(ad->main_it),
-                            &x, &y, &w, &h);
+   Enventor_Item *it = enventor_object_focused_item_get(base_enventor_get());
+   if (!it)
+     {
+        EINA_LOG_ERR("No focused enventor item??");
+        return ECORE_CALLBACK_PASS_ON;
+     }
+
+   evas_object_geometry_get(enventor_item_editor_get(it), &x, &y, &w, &h);
 
    if ((event->x >= x) && (event->x <= (x + w)) &&
        (event->y >= y) && (event->y <= (y + h)))
@@ -593,7 +596,7 @@ enventor_setup(app_data *ad)
    enventor_common_setup(enventor);
 
    base_enventor_set(enventor);
-   ad->main_it = facade_main_file_set(config_input_path_get());
+   facade_main_file_set(config_input_path_get());
    base_live_view_set(enventor_object_live_view_get(enventor));
 }
 

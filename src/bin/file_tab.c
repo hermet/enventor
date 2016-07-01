@@ -10,8 +10,6 @@ typedef struct file_tab_s
 typedef struct file_tab_it_s
 {
    Enventor_Item *enventor_it;
-   file_data *fd;
-
 } file_tab_it;
 
 file_data *g_fd = NULL;
@@ -49,10 +47,21 @@ right_btn_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
    elm_list_item_selected_set(it, EINA_TRUE);
 }
 
+static void
+list_item_selected_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                      void *event_info)
+{
+   file_data *fd = data;
+   Elm_Object_Item *it = event_info;
+   if (fd->selected_it == it) return;
+   file_tab_it *fti = elm_object_item_data_get(it);
+   facade_it_select(fti->enventor_it);
+}
+
 /*****************************************************************************/
 /* Externally accessible calls                                               */
 /*****************************************************************************/
-Eina_Bool file_tab_it_selected_set(Enventor_Item *enventor_it)
+Eina_Bool file_tab_it_select(Enventor_Item *enventor_it)
 {
    file_data *fd = g_fd;
    if (!fd) return EINA_FALSE;
@@ -65,8 +74,8 @@ Eina_Bool file_tab_it_selected_set(Enventor_Item *enventor_it)
      {
         file_tab_it *fti = elm_object_item_data_get(it);
         if (fti->enventor_it != enventor_it) continue;
-        elm_list_item_selected_set(it, EINA_TRUE);
         fd->selected_it = it;
+        elm_list_item_selected_set(it, EINA_TRUE);
         return EINA_TRUE;
      }
 
@@ -127,7 +136,8 @@ Eina_Bool file_tab_it_add(Enventor_Item *enventor_it)
 
    fti->enventor_it = enventor_it;
 
-   elm_list_item_append(fd->list, filename, NULL, NULL, NULL, fti);
+   elm_list_item_append(fd->list, filename, NULL, NULL, list_item_selected_cb,
+                        fti);
    elm_list_go(fd->list);
 
    free(filename);

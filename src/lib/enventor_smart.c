@@ -38,6 +38,7 @@ struct _Enventor_Object_Data
    Enventor_Object *obj;
    Enventor_Item_Data main_it;
    Eina_List *sub_its;
+   Enventor_Item *focused_it;
 
    Eina_Stringshare *group_name;
 
@@ -998,6 +999,7 @@ enventor_object_main_file_set(Enventor_Object *obj, const char *file)
    pd->main_it.enventor = obj;
    pd->main_it.ed = edit_init(obj);
    edit_view_sync_cb_set(pd->main_it.ed, edit_view_sync_cb, pd);
+   pd->focused_it = &pd->main_it;
 
    Eina_Bool ret = efl_file_set(obj, file, NULL);
    if (!ret) return NULL;
@@ -1020,9 +1022,31 @@ enventor_object_sub_items_get(const Enventor_Object *obj)
    return pd->sub_its;
 }
 
+EAPI Enventor_Item *
+enventor_object_focused_item_get(const Enventor_Object *obj)
+{
+   Enventor_Object_Data *pd = eo_data_scope_get(obj, ENVENTOR_OBJECT_CLASS);
+   return  pd->focused_it;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 /* Enventor_Item Functions.                                                  */
 ///////////////////////////////////////////////////////////////////////////////
+Eina_Bool
+enventor_item_focus_set(Enventor_Item *it)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(it, EINA_FALSE);
+
+   Enventor_Object *obj = it->enventor;
+   Enventor_Object_Data *pd = eo_data_scope_get(obj, ENVENTOR_OBJECT_CLASS);
+
+   edit_view_sync_cb_set(it->ed, edit_view_sync_cb, pd);
+
+   pd->focused_it = it;
+
+   return EINA_TRUE;
+}
+
 Evas_Object *
 enventor_item_editor_get(const Enventor_Item *it)
 {
