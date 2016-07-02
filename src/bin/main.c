@@ -651,7 +651,7 @@ ctrl_func(Evas_Event_Key_Down *event)
         tools_highlight_update(EINA_TRUE);
         return EINA_TRUE;
      }
-   //Swallow Dummy Object
+   //Dummy Object
    if (!strcmp(event->key, "u") || !strcmp(event->key, "U"))
      {
         tools_dummy_update(EINA_TRUE);
@@ -863,10 +863,8 @@ keygrabber_init(app_data *ad)
    GRAB_ADD("M", modifier);
    GRAB_ADD("t", modifier);
    GRAB_ADD("T", modifier);
-   GRAB_ADD("i", modifier);
-   GRAB_ADD("I", modifier);
-   GRAB_ADD("o", modifier);
-   GRAB_ADD("O", modifier);
+   GRAB_ADD("u", modifier);
+   GRAB_ADD("U", modifier);
    GRAB_ADD("p", modifier);
    GRAB_ADD("P", modifier);
    GRAB_ADD("e", modifier);

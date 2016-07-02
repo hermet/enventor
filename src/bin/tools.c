@@ -217,7 +217,7 @@ tools_init(Evas_Object *parent)
    td->highlight_btn = btn;
 
    btn = tools_btn_create(live_view_ly, "dummy",
-                          _("Dummy parts (Ctrl + W)<br>"
+                          _("Dummy parts (Ctrl + U)<br>"
                             "Display virtual images for the swallow and<br>"
                             "spacer parts."),
                           dummy_cb);
@@ -228,7 +228,7 @@ tools_init(Evas_Object *parent)
    td->swallow_btn = btn;
 
    btn = tools_btn_create(live_view_ly, "wireframes_icon",
-                          _("Wireframes (Ctrl + P)<br>"
+                          _("Wireframes (Ctrl + W)<br>"
                             "Display wireframes to identify the parts<br>"
                             "boundaries."),
                           wireframes_cb);
