@@ -2,7 +2,7 @@ images {
    image: "part_highlight.png" COMP;
    image: "swallow.png" COMP;
    image: "live_spacer.png" COMP;
-   image: "outline.png" COMP;
+   image: "wireframes.png" COMP;
 }
 
 group { "swallow";
@@ -62,12 +62,12 @@ group { name: "part_highlight";
    }
 }
 
-group { "outline";
+group { "wireframes";
    parts {
-      image { name: "img";
+      image { "img";
          repeat_events: 1;
          desc {
-            image.normal: "outline.png";
+            image.normal: "wireframes.png";
             image.border: 3 3 2 4;
             fill.smooth: 0;
          }

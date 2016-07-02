@@ -21,7 +21,7 @@ tools_update(void)
    tools_lines_update(EINA_FALSE);
    tools_highlight_update(EINA_FALSE);
    tools_dummy_update(EINA_FALSE);
-   tools_outline_update(EINA_FALSE);
+   tools_wireframes_update(EINA_FALSE);
    tools_mirror_mode_update(EINA_FALSE);
    tools_file_tab_update(EINA_FALSE);
    tools_file_browser_update(EINA_FALSE);
@@ -663,7 +663,7 @@ ctrl_func(Evas_Event_Key_Down *event)
    //Wireframes
    if (!strcmp(event->key, "w") || !strcmp(event->key, "W"))
      {
-        tools_outline_update(EINA_TRUE);
+        tools_wireframes_update(EINA_TRUE);
         return EINA_TRUE;
      }
    //Mirror Mode

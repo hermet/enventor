@@ -44,7 +44,7 @@ libenventor_la_SOURCES = \
    edj_mgr.c \
    edj_viewer.c \
    dummy_obj.c \
-   outline_obj.c \
+   wireframes_obj.c \
 	util.c
 
 libenventor_la_CFLAGS = @ENVENTOR_CFLAGS@

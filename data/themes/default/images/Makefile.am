@@ -72,6 +72,7 @@ EXTRA_DIST = \
    icon_file.png \
    icon_folder.png \
    icon_search.png \
+   icon_wireframes.png \
    file_browser.png \
    edc_navigator.png \
    cursor_arrow.png \
@@ -99,4 +100,5 @@ EXTRA_DIST = \
    filetab.png \
    bevel_curved_vert_out.png \
    vgrad_med_dark.png \
-   shadow_rounded_vert.png
+   shadow_rounded_vert.png \
+   wireframes.png

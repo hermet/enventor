@@ -50,7 +50,7 @@ struct _Enventor_Object_Data
    Eina_Stringshare *font_style;
 
    Eina_Bool dummy_parts : 1;
-   Eina_Bool outline : 1;
+   Eina_Bool wireframes : 1;
    Eina_Bool disabled : 1;
    Eina_Bool mirror_mode : 1;
    Eina_Bool linenumber : 1;
@@ -134,7 +134,7 @@ edit_view_sync_cb(void *data, Eina_Stringshare *state_name, double state_value,
              if (!vd) return;
           }
         view_dummy_set(vd, pd->dummy_parts);
-        view_outline_set(vd, pd->outline);
+        view_wireframes_set(vd, pd->wireframes);
         eina_stringshare_del(pd->group_name);
         pd->group_name = eina_stringshare_add(group_name);
         evas_object_smart_callback_call(pd->obj, SIG_CURSOR_GROUP_CHANGED,
@@ -600,21 +600,21 @@ _enventor_object_dummy_parts_get(Eo *obj EINA_UNUSED,
 }
 
 EOLIAN static void
-_enventor_object_parts_outline_set(Eo *obj EINA_UNUSED,
-                                   Enventor_Object_Data *pd,
-                                   Eina_Bool outline)
+_enventor_object_wireframes_set(Eo *obj EINA_UNUSED,
+                                Enventor_Object_Data *pd,
+                                Eina_Bool wireframes)
 {
-   outline = !!outline;
+   wireframes = !!wireframes;
 
-   view_outline_set(VIEW_DATA, outline);
-   pd->outline = outline;
+   view_wireframes_set(VIEW_DATA, wireframes);
+   pd->wireframes = wireframes;
 }
 
 EOLIAN static Eina_Bool
-_enventor_object_parts_outline_get(Eo *obj EINA_UNUSED,
-                                   Enventor_Object_Data *pd)
+_enventor_object_wireframes_get(Eo *obj EINA_UNUSED,
+                                Enventor_Object_Data *pd)
 {
-   return pd->outline;
+   return pd->wireframes;
 }
 
 

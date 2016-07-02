@@ -2644,7 +2644,7 @@ group { "live_view_tools_layout";
             align: 0.0 0.5;
          }
       }
-      swallow { "elm.swallow.outline";
+      swallow { "elm.swallow.wireframes";
          scale: 1;
          desc { "default";
             rel1 {
@@ -2660,10 +2660,10 @@ group { "live_view_tools_layout";
          scale: 1;
          desc { "default";
             rel1 {
-               to_x: "elm.swallow.outline";
+               to_x: "elm.swallow.wireframes";
                relative: 1.0 0.0;
             }
-            rel2.to_x: "elm.swallow.outline";
+            rel2.to_x: "elm.swallow.wireframes";
             min: 8 0;
             fixed: 1 0;
             align: 0.0 0.5;

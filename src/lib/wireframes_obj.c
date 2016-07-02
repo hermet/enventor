@@ -14,14 +14,14 @@ typedef struct part_obj_s
    Eina_Stringshare *name;
 } part_obj;
 
-typedef struct outline_obj_s
+typedef struct wireframes_obj_s
 {
    Evas_Object *layout;
    Eina_List *part_list;
    Ecore_Animator *animator;
-} outline_obj;
+} wireframes_obj;
 
-const char *OUTLINEOBJ = "outline_obj";
+const char *OUTLINEOBJ = "wireframes_obj";
 const char *OUTLINE_EDIT_LAYOUT_KEY = "edit_layout";
 
 /*****************************************************************************/
@@ -36,18 +36,18 @@ edje_part_clicked(void *data, Evas *e EINA_UNUSED,
 }
 
 static void
-outline_objs_update(outline_obj *outline)
+wireframes_objs_update(wireframes_obj *wireframes)
 {
-   Eina_List *parts = edje_edit_parts_list_get(outline->layout);
+   Eina_List *parts = edje_edit_parts_list_get(wireframes->layout);
    Eina_List *l, *l_next, *l2;
    char *part_name;
    Edje_Part_Type type = EDJE_PART_TYPE_NONE;
    part_obj *po;
-   Evas *evas = evas_object_evas_get(outline->layout);
+   Evas *evas = evas_object_evas_get(wireframes->layout);
    Eina_Bool removed;
 
-   //Remove the outline objects that parts are removed.
-   EINA_LIST_FOREACH_SAFE(outline->part_list, l, l_next, po)
+   //Remove the wireframes objects that parts are removed.
+   EINA_LIST_FOREACH_SAFE(wireframes->part_list, l, l_next, po)
      {
         removed = EINA_TRUE;
 
@@ -58,7 +58,7 @@ outline_objs_update(outline_obj *outline)
              if ((strlen(po->name) != strlen(part_name))) continue;
              if (!strcmp(po->name, part_name))
                {
-                  type = edje_edit_part_type_get(outline->layout, part_name);
+                  type = edje_edit_part_type_get(wireframes->layout, part_name);
                   removed = EINA_FALSE;
                   break;
                }
@@ -67,7 +67,7 @@ outline_objs_update(outline_obj *outline)
           {
              evas_object_del(po->obj);
              eina_stringshare_del(po->name);
-             outline->part_list = eina_list_remove_list(outline->part_list, l);
+             wireframes->part_list = eina_list_remove_list(wireframes->part_list, l);
              free(po);
           }
      }
@@ -75,13 +75,13 @@ outline_objs_update(outline_obj *outline)
    //Add new part object or Update changed part.
    EINA_LIST_FOREACH(parts, l, part_name)
      {
-        type = edje_edit_part_type_get(outline->layout, part_name);
+        type = edje_edit_part_type_get(wireframes->layout, part_name);
 
         Eina_List *part_l;
         Evas_Object *pobj = NULL;
         int part_x = 0, part_y = 0, part_w = 0, part_h = 0, part_lx = 0, part_ly = 0;
 
-        EINA_LIST_FOREACH(outline->part_list, part_l, po)
+        EINA_LIST_FOREACH(wireframes->part_list, part_l, po)
         {
            if (po->name == part_name)
              {
@@ -98,24 +98,24 @@ outline_objs_update(outline_obj *outline)
                                                            "clipper");
 
              pobj = elm_layout_add(scroller);
-             elm_layout_file_set(pobj, EDJE_PATH, "outline");
+             elm_layout_file_set(pobj, EDJE_PATH, "wireframes");
              evas_object_smart_member_add(pobj, scroller);
 
              po = malloc(sizeof(part_obj));
              po->obj = pobj;
              po->name = eina_stringshare_add(part_name);
-             outline->part_list = eina_list_append(outline->part_list, po);
+             wireframes->part_list = eina_list_append(wireframes->part_list, po);
              evas_object_show(pobj);
              evas_object_clip_set(pobj, clipper);
              evas_object_data_set(pobj, OUTLINE_EDIT_LAYOUT_KEY,
-                                  outline->layout);
+                                  wireframes->layout);
 
              evas_object_event_callback_add(pobj, EVAS_CALLBACK_MOUSE_DOWN,
                                             edje_part_clicked, po);
           }
-         evas_object_geometry_get(outline->layout, &part_lx, &part_ly,
+         evas_object_geometry_get(wireframes->layout, &part_lx, &part_ly,
                                   NULL, NULL);
-         edje_object_part_geometry_get(outline->layout, part_name,
+         edje_object_part_geometry_get(wireframes->layout, part_name,
                                        &part_x, &part_y, &part_w, &part_h);
          evas_object_resize(pobj, part_w, part_h);
          evas_object_move(pobj, part_lx + part_x, part_ly + part_y);
@@ -128,7 +128,7 @@ static void
 layout_geom_changed_cb(void *data, Evas *evas EINA_UNUSED,
                        Evas_Object *obj, void *ei EINA_UNUSED)
 {
-   outline_obj *outline = (outline_obj *)data;
+   wireframes_obj *wireframes = (wireframes_obj *)data;
 
    Eina_List *spacer_l;
    part_obj *po;
@@ -136,7 +136,7 @@ layout_geom_changed_cb(void *data, Evas *evas EINA_UNUSED,
 
    evas_object_geometry_get(obj, &lx, &ly, NULL, NULL);
 
-   EINA_LIST_FOREACH(outline->part_list, spacer_l, po)
+   EINA_LIST_FOREACH(wireframes->part_list, spacer_l, po)
      if (edje_object_part_exists(obj, po->name))
        {
           edje_object_part_geometry_get(obj, po->name, &x, &y, &w, &h);
@@ -147,9 +147,9 @@ layout_geom_changed_cb(void *data, Evas *evas EINA_UNUSED,
 static Eina_Bool
 animator_cb(void *data)
 {
-   outline_obj *outline = data;
-   outline_objs_update(outline);
-   outline->animator = NULL;
+   wireframes_obj *wireframes = data;
+   wireframes_objs_update(wireframes);
+   wireframes->animator = NULL;
    return ECORE_CALLBACK_CANCEL;
 }
 
@@ -157,7 +157,7 @@ static void
 layout_del_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED, Evas_Object *obj,
               void *event_info EINA_UNUSED)
 {
-   outline_obj_del(obj);
+   wireframes_obj_del(obj);
 }
 
 /*****************************************************************************/
@@ -165,63 +165,63 @@ layout_del_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED, Evas_Object *obj,
 /*****************************************************************************/
 
 void
-outline_obj_update(Evas_Object *layout)
+wireframes_obj_update(Evas_Object *layout)
 {
-   outline_obj *outline = evas_object_data_get(layout, OUTLINEOBJ);
-   if (!outline) return;
-   outline_objs_update(outline);
+   wireframes_obj *wireframes = evas_object_data_get(layout, OUTLINEOBJ);
+   if (!wireframes) return;
+   wireframes_objs_update(wireframes);
 }
 
 void
-outline_obj_new(Evas_Object *layout)
+wireframes_obj_new(Evas_Object *layout)
 {
    if (!layout) return;
 
-   outline_obj *outline = evas_object_data_get(layout, OUTLINEOBJ);
-   if (outline) return;
+   wireframes_obj *wireframes = evas_object_data_get(layout, OUTLINEOBJ);
+   if (wireframes) return;
 
-   outline = calloc(1, sizeof(outline_obj));
-   if (!outline)
+   wireframes = calloc(1, sizeof(wireframes_obj));
+   if (!wireframes)
      {
         mem_fail_msg();
         return;
      }
 
-   Ecore_Animator *animator = ecore_animator_add(animator_cb, outline);
-   evas_object_data_set(layout, OUTLINEOBJ, outline);
+   Ecore_Animator *animator = ecore_animator_add(animator_cb, wireframes);
+   evas_object_data_set(layout, OUTLINEOBJ, wireframes);
 
    evas_object_event_callback_add(layout, EVAS_CALLBACK_DEL, layout_del_cb,
-                                  outline);
+                                  wireframes);
 
    evas_object_event_callback_add(layout, EVAS_CALLBACK_RESIZE,
-                                  layout_geom_changed_cb, outline);
+                                  layout_geom_changed_cb, wireframes);
    evas_object_event_callback_add(layout, EVAS_CALLBACK_MOVE,
-                                  layout_geom_changed_cb, outline);
-   outline->layout = layout;
-   outline->animator = animator;
+                                  layout_geom_changed_cb, wireframes);
+   wireframes->layout = layout;
+   wireframes->animator = animator;
 }
 
 void
-outline_obj_del(Evas_Object *layout)
+wireframes_obj_del(Evas_Object *layout)
 {
-   outline_obj *outline = evas_object_data_get(layout, OUTLINEOBJ);
-   if (!outline) return;
+   wireframes_obj *wireframes = evas_object_data_get(layout, OUTLINEOBJ);
+   if (!wireframes) return;
 
    evas_object_event_callback_del_full(layout, EVAS_CALLBACK_RESIZE,
-                                       layout_geom_changed_cb, outline);
+                                       layout_geom_changed_cb, wireframes);
    evas_object_event_callback_del_full(layout, EVAS_CALLBACK_MOVE,
-                                       layout_geom_changed_cb, outline);
+                                       layout_geom_changed_cb, wireframes);
 
    part_obj *po;
-   EINA_LIST_FREE(outline->part_list, po)
+   EINA_LIST_FREE(wireframes->part_list, po)
      {
         evas_object_del(po->obj);
         eina_stringshare_del(po->name);
         free(po);
      }
 
-   ecore_animator_del(outline->animator);
-   free(outline);
+   ecore_animator_del(wireframes->animator);
+   free(wireframes);
 
    evas_object_data_set(layout, OUTLINEOBJ, NULL);
    evas_object_event_callback_del(layout, EVAS_CALLBACK_DEL, layout_del_cb);
