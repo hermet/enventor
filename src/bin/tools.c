@@ -228,8 +228,9 @@ tools_init(Evas_Object *parent)
    td->swallow_btn = btn;
 
    btn = tools_btn_create(live_view_ly, "part_outline",
-                          _("Parts Outline (Ctrl + P)<br>"
-                            "Display parts outline"),
+                          _("Wireframes (Ctrl + P)<br>"
+                            "Display wireframes to identify the parts<br>"
+                            "boundaries."),
                           part_outline_cb);
    elm_object_tooltip_orient_set(btn, ELM_TOOLTIP_ORIENT_BOTTOM_RIGHT);
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
