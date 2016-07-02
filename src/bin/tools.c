@@ -540,9 +540,9 @@ tools_outline_update(Eina_Bool toggle)
    if (toggle)
      {
         if (config_parts_outline_get())
-          stats_info_msg_update(_("Parts Outline Enabled."));
+          stats_info_msg_update(_("Wireframes enabled."));
         else
-          stats_info_msg_update(_("Parts Outline Disabled."));
+          stats_info_msg_update(_("Wireframes disabled."));
      }
    //Toggle on/off
    if (config_parts_outline_get())
