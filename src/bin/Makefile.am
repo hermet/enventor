@@ -25,7 +25,7 @@ enventor_SOURCES = \
 	newfile.c \
 	setting.c \
 	text_setting.c \
-	globals.c \
+	utils.c \
 	live_edit.c \
 	console.c \
 	file_mgr.c \
