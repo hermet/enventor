@@ -51,9 +51,9 @@ images {
 }
 
 #define ICON_GROUP(_group_name, _image_path) \
-   group { name: _group_name; \
+   group { _group_name; \
       parts { \
-         part { name: "img"; \
+         image { "img"; \
             desc { \
                image.normal: _image_path; \
             } \

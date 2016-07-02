@@ -29,32 +29,31 @@ group { "spacer";
    }
 }
 
-group { name: "part_highlight";
+group { "part_highlight";
    parts {
-      part { name: "base";
-         type: IMAGE;
-         mouse_events: 0;
-         description { state: "default" 0.0;
+      image { "base";
+         nomouse;
+         desc { "default";
             image.normal: "part_highlight.png";
             image.border: 2 2 2 2;
             image.border_scale: 1;
          }
-         description { state: "transparent" 0.0;
-            inherit: "default" 0.0;
+         desc { "transparent";
+            inherit: "default";
             color: 255 255 255 0;
          }
       }
    }
    programs {
-      program { name: "load";
+      program { "load";
          signal: "load";
-         action: STATE_SET "transparent" 0.0;
+         action: STATE_SET "transparent";
          target: "base";
          transition: LINEAR 0.65;
          after: "anim";
       }
-      program { name: "anim";
-         action: STATE_SET "default" 0.0;
+      program { "anim";
+         action: STATE_SET "default";
          target: "base";
          transition: LINEAR 0.65;
          after: "load";

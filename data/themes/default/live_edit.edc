@@ -2,18 +2,17 @@ images {
    image: "live_spacer.png" COMP;
    image: "swallow.png" COMP;
    image: "image.png" COMP;
-
 }
 
 styles {
-   style { name: "default_style";
+   style { "default_style";
       base: "font="Sans" font_size=30 text_class=entry color=#FFFFFF style=soft_outline outline_color=#0088AA64 valign=0.5 ellipsis=1.0 wrap=none align=center";
    }
 }
 
 group { "Image_bg";
    parts {
-      image { name: "img";
+      image { "img";
          desc {
             image.normal: "image.png";
          }
@@ -22,7 +21,7 @@ group { "Image_bg";
 }
 group { "Rect_bg";
    parts {
-      rect { name: "rect";
+      rect { "rect";
          desc {
             color: 0 136 170 255;
          }
@@ -31,7 +30,7 @@ group { "Rect_bg";
 }
 group { "Text_bg";
    parts {
-      text { name: "text";
+      text { "text";
          scale: 1;
          effect: SOFT_OUTLINE;
          desc {
@@ -48,7 +47,7 @@ group { "Text_bg";
 }
 group { "Textblock_bg";
    parts {
-      textblock { name: "textblock";
+      textblock { "textblock";
          scale: 1;
          desc {
             text {
@@ -61,7 +60,7 @@ group { "Textblock_bg";
       }
    }
 }
-group { name: "Swallow_bg";
+group { "Swallow_bg";
    parts {
       image { "img";
          repeat_events: 1;
@@ -75,7 +74,7 @@ group { name: "Swallow_bg";
 }
 group { "Spacer_bg";
    parts {
-      image { name: "img";
+      image { "img";
          desc {
             image.normal: "live_spacer.png";
             image.border: 3 3 2 4;
