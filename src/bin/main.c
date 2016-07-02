@@ -124,7 +124,7 @@ config_update_cb(void *data EINA_UNUSED)
 }
 
 static Eina_Bool
-main_mouse_wheel_cb(void *data, int type EINA_UNUSED, void *ev)
+main_mouse_wheel_cb(void *data EINA_UNUSED, int type EINA_UNUSED, void *ev)
 {
    Ecore_Event_Mouse_Wheel *event = ev;
    Evas_Coord x, y, w, h;
@@ -440,7 +440,6 @@ enventor_live_view_resized_cb(void *data EINA_UNUSED,
                               Enventor_Object *obj EINA_UNUSED,
                               void *event_info)
 {
-   if (!config_stats_bar_get()) return;
    Enventor_Live_View_Size *size = event_info;
    stats_view_size_update(size->w, size->h);
    config_view_size_set(size->w, size->h);
@@ -461,7 +460,6 @@ enventor_live_view_cursor_moved_cb(void *data EINA_UNUSED,
                                    Enventor_Object *obj EINA_UNUSED,
                                    void *event_info)
 {
-   if (!config_stats_bar_get()) return;
    Enventor_Live_View_Cursor *cursor = event_info;
    stats_cursor_pos_update(cursor->x, cursor->y, cursor->relx, cursor->rely);
    base_edc_navigator_deselect();
