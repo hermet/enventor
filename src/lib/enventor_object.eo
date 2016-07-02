@@ -149,33 +149,6 @@ class Enventor.Object (Elm.Widget, Efl.File) {
       parts_list_get {
          return: list<char *>;
       }
-      text_get {
-         return: const(char) *;
-      }
-      text_insert {
-         params {
-            @in text: const(char) *;
-         }
-      }
-      selection_get {
-         return: const(char) *;
-      }
-      cursor_pos_get {
-         return: int;
-      }
-      cursor_pos_set {
-         params {
-            @in position: int;
-         }
-      }
-      select_none {
-      }
-      select_region_set {
-         params {
-            @in start: int;
-            @in end: int;
-         }
-      }
       line_delete {
       }
       save {
@@ -204,16 +177,6 @@ class Enventor.Object (Elm.Widget, Efl.File) {
          return: const(char) *;
          params {
             @in color_type: Enventor_Syntax_Color_Type;
-         }
-      }
-      syntax_color_full_apply {
-         params {
-            @in force: bool;
-         }
-      }
-      syntax_color_partial_apply {
-         params {
-            @in interval: double;
          }
       }
       template_insert {

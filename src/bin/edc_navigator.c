@@ -332,8 +332,7 @@ find_group_proc(const char *group_name)
 {
    if (!group_name) return;
 
-   const char *text =
-      (const char *) enventor_object_text_get(base_enventor_get());
+   const char *text = enventor_item_text_get(file_mgr_focused_item_get());
 
    if (!text) return;
 
@@ -345,8 +344,9 @@ find_group_proc(const char *group_name)
    if (!result) goto end;
 
    //Got you!
-   enventor_object_select_region_set(base_enventor_get(), (result - utf8),
-                                     (result - utf8) + strlen(group_name));
+   enventor_item_select_region_set(file_mgr_focused_item_get(),
+                                   (result - utf8),
+                                   (result - utf8) + strlen(group_name));
 end:
    free(utf8);
 }
@@ -444,9 +444,7 @@ find_part_proc(const char *group_name, const char *part_name,
 {
    if (!group_name || !part_name) return;
 
-   const char *text =
-      (const char *) enventor_object_text_get(base_enventor_get());
-
+   const char *text = enventor_item_text_get(file_mgr_focused_item_get());
    if (!text) return;
 
    char *utf8 = elm_entry_markup_to_utf8(text);
@@ -457,8 +455,9 @@ find_part_proc(const char *group_name, const char *part_name,
    if (!result) goto end;
 
    //Got you!
-   enventor_object_select_region_set(base_enventor_get(), (result - utf8),
-                                     (result - utf8) + strlen(part_name));
+   enventor_item_select_region_set(file_mgr_focused_item_get(),
+                                   (result - utf8),
+                                   (result - utf8) + strlen(part_name));
 end:
    free(utf8);
 }
@@ -469,9 +468,7 @@ find_state_proc(const char *group_name, const char *part_name,
 {
    if (!group_name || !part_name) return;
 
-   const char *text =
-      (const char *) enventor_object_text_get(base_enventor_get());
-
+   const char *text = enventor_item_text_get(file_mgr_focused_item_get());
    if (!text) return;
 
    char *utf8 = elm_entry_markup_to_utf8(text);
@@ -528,8 +525,9 @@ find_state_proc(const char *group_name, const char *part_name,
    if (!result) goto end;
 
    //Got you!
-   enventor_object_select_region_set(base_enventor_get(), (result - utf8),
-                                     (result - utf8) + strlen(state_name));
+   enventor_item_select_region_set(file_mgr_focused_item_get(),
+                                   (result - utf8),
+                                   (result - utf8) + strlen(state_name));
 end:
    free(utf8);
 }
@@ -571,9 +569,7 @@ find_programs_proc(const char *group_name)
 {
    if (!group_name) return;
 
-   const char *text =
-      (const char *) enventor_object_text_get(base_enventor_get());
-
+   const char *text = enventor_item_text_get(file_mgr_focused_item_get());
    if (!text) return;
 
    char *utf8 = elm_entry_markup_to_utf8(text);
@@ -585,8 +581,9 @@ find_programs_proc(const char *group_name)
    if (!result) goto end;
 
    //Got you!
-   enventor_object_select_region_set(base_enventor_get(), (result - utf8),
-                                     (result - utf8) + strlen("programs"));
+   enventor_item_select_region_set(file_mgr_focused_item_get(),
+                                   (result - utf8),
+                                   (result - utf8) + strlen("programs"));
 end:
    free(utf8);
 }
@@ -596,9 +593,7 @@ find_program_proc(const char *group_name, const char *program_name)
 {
    if (!group_name || !program_name) return;
 
-   const char *text =
-      (const char *) enventor_object_text_get(base_enventor_get());
-
+   const char *text = enventor_item_text_get(file_mgr_focused_item_get());
    if (!text) return;
 
    char *utf8 = elm_entry_markup_to_utf8(text);
@@ -652,8 +647,9 @@ find_program_proc(const char *group_name, const char *program_name)
    if (!result) goto end;
 
    //Got you!
-   enventor_object_select_region_set(base_enventor_get(), (result - utf8),
-                                     (result - utf8) + strlen(program_name));
+   enventor_item_select_region_set(file_mgr_focused_item_get(),
+                                   (result - utf8),
+                                   (result - utf8) + strlen(program_name));
 end:
    free(utf8);
 }

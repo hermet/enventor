@@ -1799,3 +1799,33 @@ edit_selection_region_center_set(edit_data *ed, int start, int end)
    //Select region
    elm_entry_select_region_set(ed->en_edit, start, end);
 }
+
+void
+edit_select_none(edit_data *ed)
+{
+   elm_entry_select_none(ed->en_edit);
+}
+
+void
+edit_cursor_pos_set(edit_data *ed, int position)
+{
+   elm_entry_cursor_pos_set(ed->en_edit, position);
+}
+
+int
+edit_cursor_pos_get(edit_data *ed)
+{
+   return elm_entry_cursor_pos_get(ed->en_edit);
+}
+
+const char *
+edit_selection_get(edit_data *ed)
+{
+   return elm_entry_selection_get(ed->en_edit);
+}
+
+const char *
+edit_text_get(edit_data *ed)
+{
+   return elm_entry_entry_get(ed->en_edit);
+}

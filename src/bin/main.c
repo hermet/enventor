@@ -80,8 +80,18 @@ syntax_color_update(Enventor_Object *enventor)
           }
      }
 
-   if (color_changed)
-     enventor_object_syntax_color_full_apply(enventor, EINA_TRUE);
+   if (!color_changed) return;
+
+   Enventor_Item *it;
+
+   it = enventor_object_main_item_get(enventor);
+   enventor_item_syntax_color_full_apply(it, EINA_TRUE);
+
+   Eina_List *l;
+   Eina_List *sub_its = (Eina_List *)enventor_object_sub_items_get(enventor);
+   EINA_LIST_FOREACH(sub_its, l, it)
+     enventor_item_syntax_color_full_apply(it, EINA_TRUE);
+
 }
 
 static void
@@ -161,7 +171,7 @@ main_mouse_wheel_cb(void *data EINA_UNUSED, int type EINA_UNUSED, void *ev)
      }
 
    //Font Size
-   Enventor_Item *it = enventor_object_focused_item_get(base_enventor_get());
+   Enventor_Item *it = file_mgr_focused_item_get();
    if (!it)
      {
         EINA_LOG_ERR("No focused enventor item??");

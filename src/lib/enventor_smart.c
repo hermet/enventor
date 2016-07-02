@@ -669,60 +669,6 @@ _enventor_object_focus_get(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
    return elm_object_focus_get(edit_entry_get(pd->main_it.ed));
 }
 
-//TODO: Itemize
-EOLIAN static const char *
-_enventor_object_text_get(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
-{
-   return elm_entry_entry_get(edit_entry_get(pd->main_it.ed));
-}
-
-//TODO: Itemize
-EOLIAN static int
-_enventor_object_cursor_pos_get(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
-{
-   return elm_entry_cursor_pos_get(edit_entry_get(pd->main_it.ed));
-}
-
-//TODO: Itemize
-EOLIAN static void
-_enventor_object_cursor_pos_set(Eo *obj EINA_UNUSED,
-                                Enventor_Object_Data *pd,
-                                int position)
-{
-   elm_entry_cursor_pos_set(edit_entry_get(pd->main_it.ed), position);
-}
-
-//TODO: Itemize
-EOLIAN static const char *
-_enventor_object_selection_get(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
-{
-   return elm_entry_selection_get(edit_entry_get(pd->main_it.ed));
-}
-
-//TODO: Itemize
-EOLIAN static void
-_enventor_object_select_none(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
-{
-   elm_entry_select_none(edit_entry_get(pd->main_it.ed));
-}
-
-//TODO: Itemize
-EOLIAN static void
-_enventor_object_text_insert(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd,
-                             const char *text)
-{
-   edit_text_insert(pd->main_it.ed, text);
-}
-
-//TODO: Itemize
-EOLIAN static void
-_enventor_object_select_region_set(Eo *obj EINA_UNUSED,
-                                   Enventor_Object_Data *pd, int start, int end)
-{
-   edit_selection_clear(pd->main_it.ed);
-   edit_selection_region_center_set(pd->main_it.ed, start, end);
-}
-
 EOLIAN static void
 _enventor_object_font_scale_set(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd,
                                 double font_scale)
@@ -775,6 +721,7 @@ _enventor_object_syntax_color_set(Eo *obj EINA_UNUSED,
                                   Enventor_Syntax_Color_Type color_type,
                                   const char *val)
 {
+   //TODO: Might need for items
    edit_syntax_color_set(pd->main_it.ed, color_type, val);
 }
 
@@ -783,23 +730,8 @@ _enventor_object_syntax_color_get(Eo *obj EINA_UNUSED,
                                   Enventor_Object_Data *pd,
                                   Enventor_Syntax_Color_Type color_type)
 {
+   //TODO: Might need for items
    return edit_syntax_color_get(pd->main_it.ed, color_type);
-}
-
-EOLIAN static void
-_enventor_object_syntax_color_full_apply(Eo *obj EINA_UNUSED,
-                                         Enventor_Object_Data *pd,
-                                         Eina_Bool force)
-{
-   edit_syntax_color_full_apply(pd->main_it.ed, force);
-}
-
-EOLIAN static void
-_enventor_object_syntax_color_partial_apply(Eo *obj EINA_UNUSED,
-                                            Enventor_Object_Data *pd,
-                                            double interval)
-{
-   edit_syntax_color_partial_apply(pd->main_it.ed, interval);
 }
 
 //TODO: Might need for items
@@ -1068,5 +1000,76 @@ enventor_item_line_goto(Enventor_Item *it, int line)
    edit_goto(it->ed, line);
 }
 
+EAPI void
+enventor_item_syntax_color_full_apply(Enventor_Item *it, Eina_Bool force)
+{
+   EINA_SAFETY_ON_NULL_RETURN(it);
 
+   edit_syntax_color_full_apply(it->ed, force);
+}
+
+EAPI void
+enventor_item_syntax_color_partial_apply(Enventor_Item *it, double interval)
+{
+   EINA_SAFETY_ON_NULL_RETURN(it);
+
+   edit_syntax_color_partial_apply(it->ed, interval);
+}
+
+EAPI void
+enventor_item_select_region_set(Enventor_Item *it, int start, int end)
+{
+   EINA_SAFETY_ON_NULL_RETURN(it);
+
+   edit_selection_clear(it->ed);
+   edit_selection_region_center_set(it->ed, start, end);
+}
+
+EAPI void
+enventor_item_select_none(Enventor_Item *it)
+{
+   EINA_SAFETY_ON_NULL_RETURN(it);
+
+   edit_select_none(it->ed);
+}
+
+EAPI void
+enventor_item_cursor_pos_set(Enventor_Item *it, int position)
+{
+   EINA_SAFETY_ON_NULL_RETURN(it);
+
+   edit_cursor_pos_set(it->ed, position);
+}
+
+EAPI int
+enventor_item_cursor_pos_get(const Enventor_Item *it)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(it, 0);
+
+   return edit_cursor_pos_get(it->ed);
+}
+
+EAPI const char *
+enventor_item_selection_get(const Enventor_Item *it)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(it, NULL);
+
+   return edit_selection_get(it->ed);
+}
+
+EAPI void
+enventor_item_text_insert(Enventor_Item *it, const char *text)
+{
+   EINA_SAFETY_ON_NULL_RETURN(it);
+
+   edit_text_insert(it->ed, text);
+}
+
+EAPI const char *
+enventor_item_text_get(const Enventor_Item *it)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(it, NULL);
+
+   return edit_text_get(it->ed);
+}
 #include "enventor_object.eo.c"

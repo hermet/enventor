@@ -139,6 +139,9 @@ goto_open(void)
 
    search_close();
 
+   Enventor_Item *it = file_mgr_focused_item_get();
+   EINA_SAFETY_ON_NULL_RETURN(it);
+
    gd = calloc(1, sizeof(goto_data));
    if (!gd)
      {
@@ -146,9 +149,6 @@ goto_open(void)
         return;
      }
    g_gd = gd;
-
-   Enventor_Item *it = enventor_object_focused_item_get(base_enventor_get());
-   EINA_SAFETY_ON_NULL_RETURN(it);
 
    //Win
    Evas_Object *win = elm_win_add(base_win_get(), _("Enventor Goto Line"),

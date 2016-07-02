@@ -3,3 +3,4 @@
 void search_open(void);
 Eina_Bool search_close(void);
 Eina_Bool search_is_opened(void);
+void search_reset(void);

@@ -230,7 +230,6 @@ file_mgr_sub_file_add(const char *path)
 
    file_tab_it_add(it);
    file_tab_it_select(it);
-
    file_mgr_file_focus(it);
 
    return it;
@@ -244,9 +243,7 @@ file_mgr_main_file_set(const char *path)
 
    file_tab_clear();
    file_tab_it_add(it);
-
    file_mgr_file_focus(it);
-
    base_console_reset();
 
    return it;
@@ -261,4 +258,13 @@ file_mgr_file_focus(Enventor_Item *it)
    enventor_item_focus_set(it);
    base_text_editor_set(it);
    base_title_set(enventor_item_file_get(it));
+
+   //Reset context if the find/replace is working on.
+   search_reset();
+}
+
+Enventor_Item *
+file_mgr_focused_item_get(void)
+{
+   return enventor_object_focused_item_get(base_enventor_get());
 }

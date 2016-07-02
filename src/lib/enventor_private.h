@@ -269,6 +269,7 @@ Eina_Bool edit_ctxpopup_visible_get(edit_data *ed);
 void edit_ctxpopup_dismiss(edit_data *ed);
 Eina_Bool edit_load(edit_data *ed, const char *edc_path);
 void edit_selection_clear(edit_data *ed);
+const char *edit_text_get(edit_data *ed);
 Eina_Bool edit_redoundo(edit_data *ed, Eina_Bool undo);
 void edit_disabled_set(edit_data *ed, Eina_Bool disabled);
 void edit_error_set(edit_data *ed, int line, const char *target);
@@ -277,7 +278,10 @@ void edit_part_cursor_set(edit_data *ed, const char *group_name, const char *par
 redoundo_data *edit_redoundo_get(edit_data *ed);
 void edit_selection_region_center_set(edit_data *ed, int start, int end);
 const char *edit_file_get(edit_data *ed);
-
+void edit_select_none(edit_data *ed);
+void edit_cursor_pos_set(edit_data *ed, int position);
+int edit_cursor_pos_get(edit_data *ed);
+const char *edit_selection_get(edit_data *ed);
 
 /* util */
 void mem_fail_msg(void);

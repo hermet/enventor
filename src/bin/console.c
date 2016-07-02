@@ -37,17 +37,15 @@ error_word_select(Evas_Object *console)
      token_value_get(error_token, "name", '\0', 1, error_word);
    else return;
 
-    //find error word position
-    const char *entry_text = enventor_object_text_get(base_enventor_get());
-    char *utf8 = elm_entry_markup_to_utf8(entry_text);
-
     //FIXME: Need to get the file that contains errors.
-    Enventor_Item *it = enventor_object_focused_item_get(base_enventor_get());
+    Enventor_Item *it = file_mgr_focused_item_get();
     EINA_SAFETY_ON_NULL_RETURN(it);
 
+    //find error word position
     enventor_item_line_goto(it, atoi(error_line));
-    int pos = enventor_object_cursor_pos_get(base_enventor_get());
-
+    int pos = enventor_item_cursor_pos_get(it);
+    const char *entry_text = enventor_item_text_get(it);
+    char *utf8 = elm_entry_markup_to_utf8(entry_text);
     const char *search_line = utf8 + pos * sizeof(char);
     const char *matched = strstr(search_line, error_word);
 
@@ -64,7 +62,7 @@ error_word_select(Evas_Object *console)
     free(utf8);
 
     //select error word
-    enventor_object_select_region_set(base_enventor_get(), start, end);
+    enventor_item_select_region_set(it, start, end);
 }
 
 static void

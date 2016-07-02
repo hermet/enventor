@@ -13,6 +13,7 @@ typedef struct search_s
    int pos;
    int len;
    int syntax_color;
+   Enventor_Item *it;
    Eina_Bool forward : 1;
 } search_data;
 
@@ -25,6 +26,17 @@ static Evas_Coord win_h = DEFAULT_SEARCH_WIN_H;
 /*****************************************************************************/
 /* Internal method implementation                                            */
 /*****************************************************************************/
+
+static void
+syntax_color_context_clear(search_data *sd)
+{
+   enventor_item_select_none(sd->it);
+   while (sd->syntax_color > 0)
+     {
+        enventor_item_syntax_color_partial_apply(sd->it, -1);
+        sd->syntax_color--;
+     }
+}
 
 static void
 win_delete_request_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
@@ -63,10 +75,8 @@ replace_all_proc(search_data *sd)
 
    char buf[256];
    int replace_cnt = 0;
-   Enventor_Object *enventor = base_enventor_get();
 
-   const char *text =
-      (const char *) enventor_object_text_get(enventor);
+   const char *text = enventor_item_text_get(sd->it);
    char *utf8 = elm_entry_markup_to_utf8(text);
 
    char *s = utf8;
@@ -76,9 +86,9 @@ replace_all_proc(search_data *sd)
    while ((s = strstr(s, find)))
      {
         pos = s + (delta * replace_cnt) - utf8;
-        enventor_object_select_region_set(enventor, pos, (pos + find_len));
-        enventor_object_text_insert(enventor, replace);
-        enventor_object_select_none(enventor);
+        enventor_item_select_region_set(sd->it, pos, (pos + find_len));
+        enventor_item_text_insert(sd->it, replace);
+        enventor_item_select_none(sd->it);
         replace_cnt++;
         s++;
      }
@@ -95,8 +105,8 @@ static Eina_Bool
 selection_region_anim_cb(void *data)
 {
    search_data *sd = data;
-   enventor_object_select_region_set(base_enventor_get(), sd->pos,
-                                     (sd->pos + sd->len));
+   enventor_item_select_region_set(sd->it, sd->pos,
+                                   (sd->pos + sd->len));
    return ECORE_CALLBACK_CANCEL;
 }
 
@@ -108,14 +118,13 @@ find_forward_proc(search_data *sd)
 
    char buf[256];
    Eina_Bool need_iterate = EINA_TRUE;
-   Enventor_Object *enventor = base_enventor_get();
 
-   const char *text = (const char *) enventor_object_text_get(enventor);
+   const char *text = enventor_item_text_get(sd->it);
    if (!text) return;
    char *utf8 = elm_entry_markup_to_utf8(text);
 
    //get the character position begun with searching.
-   if (sd->pos == -1) sd->pos = enventor_object_cursor_pos_get(enventor);
+   if (sd->pos == -1) sd->pos = enventor_item_cursor_pos_get(sd->it);
    else if (sd->pos == 0) need_iterate = EINA_FALSE;
    else sd->pos++;
 
@@ -157,17 +166,15 @@ find_backward_proc(search_data *sd)
    char buf[256];
    Eina_Bool need_iterate = EINA_TRUE;
    int len = 0;
-   Enventor_Object *enventor = base_enventor_get();
 
-
-   const char *text = (const char *) enventor_object_text_get(enventor);
+   const char *text = enventor_item_text_get(sd->it);
    if (!text) return;
    char *utf8 = elm_entry_markup_to_utf8(text);
 
    //get the character position begun with searching.
    if (sd->pos == -1)
       {
-        sd->pos = enventor_object_cursor_pos_get(enventor);
+        sd->pos = enventor_item_cursor_pos_get(sd->it);
       }
    else
       {
@@ -215,14 +222,12 @@ static Eina_Bool
 replace_proc(search_data *sd)
 {
    const char *find = elm_entry_entry_get(sd->en_find);
-   Enventor_Object *enventor = base_enventor_get();
-   const char *selection =
-      (const char * ) enventor_object_selection_get(enventor);
+   const char *selection = enventor_item_selection_get(sd->it);
    if (!find || !selection) return EINA_FALSE;
    char *utf8 = elm_entry_markup_to_utf8(selection);
    if (strcmp(find, utf8)) return EINA_FALSE;
    const char *replace = elm_entry_entry_get(sd->en_replace);
-   enventor_object_text_insert(enventor, replace);
+   enventor_item_text_insert(sd->it, replace);
    free(utf8);
    return EINA_TRUE;
 }
@@ -244,7 +249,7 @@ replace_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
    search_data *sd = data;
    Eina_Bool next;
    next = replace_proc(sd);
-   enventor_object_syntax_color_full_apply(base_enventor_get(), EINA_TRUE);
+   enventor_item_syntax_color_full_apply(sd->it, EINA_TRUE);
    if (!next) return;
    if (sd->forward) find_forward_proc(sd);
    else find_backward_proc(sd);
@@ -256,7 +261,7 @@ replace_all_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
 {
    search_data *sd = data;
    replace_all_proc(sd);
-   enventor_object_syntax_color_full_apply(base_enventor_get(), EINA_TRUE);
+   enventor_item_syntax_color_full_apply(sd->it, EINA_TRUE);
 }
 
 static void
@@ -285,7 +290,7 @@ replace_activated_cb(void *data, Evas_Object *obj EINA_UNUSED,
    search_data *sd = data;
    Eina_Bool next;
    next = replace_proc(sd);
-   enventor_object_syntax_color_full_apply(base_enventor_get(), EINA_TRUE);
+   enventor_item_syntax_color_full_apply(sd->it, EINA_TRUE);
    if (!next) return;
    if (sd->forward) find_forward_proc(sd);
    else find_backward_proc(sd);
@@ -296,7 +301,7 @@ win_focused_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
                void *event_info EINA_UNUSED)
 {
    search_data *sd = g_sd;
-   enventor_object_syntax_color_full_apply(base_enventor_get(), EINA_FALSE);
+   enventor_item_syntax_color_full_apply(sd->it, EINA_FALSE);
    sd->syntax_color++;
    /* FIXME: reset position because search requests syntax color partial apply
       when it's window is unfocused. the selection region would be dismissed.
@@ -310,7 +315,7 @@ win_unfocused_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
                  void *event_info EINA_UNUSED)
 {
    search_data *sd = g_sd;
-   enventor_object_syntax_color_partial_apply(base_enventor_get(), -1);
+   enventor_item_syntax_color_partial_apply(sd->it, -1);
    sd->syntax_color--;
 }
 
@@ -338,6 +343,9 @@ search_open(void)
    }
 
    goto_close();
+
+   Enventor_Item *it = file_mgr_focused_item_get();
+   EINA_SAFETY_ON_NULL_RETURN(it);
 
    sd = calloc(1, sizeof(search_data));
    if (!sd)
@@ -442,6 +450,7 @@ search_open(void)
    sd->en_replace = entry_replace;
    sd->pos = -1;
    sd->forward = EINA_TRUE;
+   sd->it = it;
 }
 
 Eina_Bool
@@ -457,14 +466,7 @@ search_close(void)
    search_data *sd = g_sd;
    if (!sd) return EINA_FALSE;
 
-   Enventor_Object *enventor = base_enventor_get();
-
-   enventor_object_select_none(enventor);
-   while (sd->syntax_color > 0)
-     {
-        enventor_object_syntax_color_partial_apply(enventor, -1);
-        sd->syntax_color--;
-     }
+   syntax_color_context_clear(sd);
 
    //Save last state
    evas_object_geometry_get(sd->win, NULL, NULL, &win_w, &win_h);
@@ -476,4 +478,18 @@ search_close(void)
    tools_search_update();
 
    return EINA_TRUE;
+}
+
+void
+search_reset(void)
+{
+   search_data *sd = g_sd;
+   if (!sd) return;
+
+   syntax_color_context_clear(sd);
+
+   sd->it = file_mgr_focused_item_get();
+   sd->pos = -1;
+   sd->forward = EINA_TRUE;
+   sd->len = 0;
 }
