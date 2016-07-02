@@ -15,26 +15,6 @@ typedef struct app_s
 
 int main(int argc, char **argv);
 
-void
-auto_comp_toggle(void)
-{
-   Eina_Bool toggle = !config_auto_complete_get();
-   enventor_object_auto_complete_set(base_enventor_get(), toggle);
-   if (toggle) stats_info_msg_update(_("Auto Completion Enabled."));
-   else stats_info_msg_update(_("Auto Completion Disabled."));
-   config_auto_complete_set(toggle);
-}
-
-static void
-auto_indent_toggle(void)
-{
-   Eina_Bool toggle = !config_auto_indent_get();
-   enventor_object_auto_indent_set(base_enventor_get(), toggle);
-   if (toggle) stats_info_msg_update(_("Auto Indentation Enabled."));
-   else stats_info_msg_update(_("Auto Indentation Disabled."));
-   config_auto_indent_set(toggle);
-}
-
 static void
 tools_update(void)
 {
@@ -675,13 +655,13 @@ ctrl_func(Evas_Event_Key_Down *event)
         return EINA_TRUE;
      }
    //Swallow Dummy Object
-   if (!strcmp(event->key, "w") || !strcmp(event->key, "W"))
+   if (!strcmp(event->key, "u") || !strcmp(event->key, "U"))
      {
         tools_dummy_update(EINA_TRUE);
         return EINA_TRUE;
      }
-   //Parts Outline
-   if (!strcmp(event->key, "p") || !strcmp(event->key, "P"))
+   //Wireframes
+   if (!strcmp(event->key, "w") || !strcmp(event->key, "W"))
      {
         tools_outline_update(EINA_TRUE);
         return EINA_TRUE;
@@ -696,18 +676,6 @@ ctrl_func(Evas_Event_Key_Down *event)
    if (!strcmp(event->key, "t") || !strcmp(event->key, "T"))
      {
         tools_template_insert();
-        return EINA_TRUE;
-     }
-   //Auto Indentation
-   if (!strcmp(event->key, "i") || !strcmp(event->key, "I"))
-     {
-        auto_indent_toggle();
-        return EINA_TRUE;
-     }
-   //Auto Completion
-   if (!strcmp(event->key, "o") || !strcmp(event->key, "O"))
-     {
-        auto_comp_toggle();
         return EINA_TRUE;
      }
 

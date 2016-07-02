@@ -43,11 +43,10 @@ F11 - Toggle File Tab
 F12 - Settings
 
 Ctrl+S - Quick Save + Update Live View
-Ctrl+I - Toggle Auto Indentation
-Ctrl+O - Toggle Auto Completion
-Ctrl+W - Toggle Dummy Parts
+Ctrl+U - Toggle Dummy Parts
 Ctrl+H - Toggle Part Highlighting
 Ctrl+M - Toggle Mirror Mode
+Ctrl+W - Toggle Wireframes
 Ctrl+T - Insert Defaut Template Code
 Ctrl+Mouse Wheel Up - View Zoom In / Font Size Up
 Ctrl+Mouse Wheel Down - View Zoom Out / Font Size Down
