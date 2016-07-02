@@ -360,7 +360,7 @@ fileselector_save_done_cb(void *data, Evas_Object *obj, void *event_info)
              eina_stringshare_del(selected);
              return;
           }
-        facade_main_file_set(selected);
+        file_mgr_main_file_set(selected);
      }
    else if (is_edj)
      {
@@ -434,7 +434,7 @@ fileselector_load_done_cb(void *data, Evas_Object *obj, void *event_info)
         return;
      }
    config_input_path_set(selected);
-   facade_main_file_set(selected);
+   file_mgr_main_file_set(selected);
    fileselector_close(md);
    menu_close(md);
    file_mgr_reset();

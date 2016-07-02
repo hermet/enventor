@@ -57,7 +57,7 @@ warning_replace_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
                        void *event_info EINA_UNUSED)
 {
    file_mgr_data *fmd = data;
-   facade_main_file_set(config_input_path_get());
+   file_mgr_main_file_set(config_input_path_get());
    warning_close(fmd);
 }
 
@@ -160,7 +160,6 @@ file_mgr_edc_save(void)
 
    Eina_Bool save_success = enventor_object_save(base_enventor_get(),
                                                  config_input_path_get());
-
    if (!config_stats_bar_get()) return;
 
    if (save_success)
@@ -221,4 +220,45 @@ file_mgr_term(void)
    EINA_SAFETY_ON_NULL_RETURN(fmd);
 
    free(fmd);
+}
+
+Enventor_Item *
+file_mgr_sub_file_add(const char *path)
+{
+   Enventor_Item *it = enventor_object_sub_item_add(base_enventor_get(), path);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(it, NULL);
+
+   file_tab_it_add(it);
+   file_tab_it_select(it);
+
+   file_mgr_file_focus(it);
+
+   return it;
+}
+
+Enventor_Item *
+file_mgr_main_file_set(const char *path)
+{
+   Enventor_Item *it = enventor_object_main_item_set(base_enventor_get(), path);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(it, NULL);
+
+   file_tab_clear();
+   file_tab_it_add(it);
+
+   file_mgr_file_focus(it);
+
+   base_console_reset();
+
+   return it;
+}
+
+void
+file_mgr_file_focus(Enventor_Item *it)
+{
+   EINA_SAFETY_ON_NULL_RETURN(it);
+
+   file_tab_it_select(it);
+   enventor_item_focus_set(it);
+   base_text_editor_set(it);
+   base_title_set(enventor_item_file_get(it));
 }

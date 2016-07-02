@@ -113,7 +113,7 @@ newfile_set(Eina_Bool template_new)
         EINA_LOG_ERR(_("Cannot find file! \"%s\""), buf);
         return;
      }
-   facade_main_file_set(path);
+   file_mgr_main_file_set(path);
    file_mgr_reset();
 }
 

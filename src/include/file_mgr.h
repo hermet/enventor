@@ -6,3 +6,6 @@ void file_mgr_term(void);
 int file_mgr_edc_modified_get(void);
 void file_mgr_reset(void);
 void file_mgr_edc_save(void);
+Enventor_Item *file_mgr_main_file_set(const char *path);
+Enventor_Item *file_mgr_sub_file_add(const char *path);
+void file_mgr_file_focus(Enventor_Item *it);

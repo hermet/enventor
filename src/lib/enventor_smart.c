@@ -769,21 +769,6 @@ _enventor_object_font_get(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd,
    if (font_style) *font_style = pd->font_style;
 }
 
-//TODO: Itemize
-EOLIAN static int
-_enventor_object_max_line_get(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
-{
-   return edit_max_line_get(pd->main_it.ed);
-}
-
-//TODO: Itemize
-EOLIAN static void
-_enventor_object_line_goto(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd,
-                           int line)
-{
-   edit_goto(pd->main_it.ed, line);
-}
-
 EOLIAN static void
 _enventor_object_syntax_color_set(Eo *obj EINA_UNUSED,
                                   Enventor_Object_Data *pd,
@@ -1027,7 +1012,7 @@ enventor_object_focused_item_get(const Enventor_Object *obj)
 ///////////////////////////////////////////////////////////////////////////////
 /* Enventor_Item Functions.                                                  */
 ///////////////////////////////////////////////////////////////////////////////
-Eina_Bool
+EAPI Eina_Bool
 enventor_item_focus_set(Enventor_Item *it)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(it, EINA_FALSE);
@@ -1047,7 +1032,7 @@ enventor_item_focus_set(Enventor_Item *it)
    return EINA_TRUE;
 }
 
-Evas_Object *
+EAPI Evas_Object *
 enventor_item_editor_get(const Enventor_Item *it)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(it, NULL);
@@ -1057,7 +1042,7 @@ enventor_item_editor_get(const Enventor_Item *it)
    return edit_obj_get(it->ed);
 }
 
-const char *
+EAPI const char *
 enventor_item_file_get(const Enventor_Item *it)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(it, NULL);
@@ -1065,6 +1050,22 @@ enventor_item_file_get(const Enventor_Item *it)
    if (!it->ed) return NULL;
 
    return edit_file_get(it->ed);
+}
+
+EAPI int
+enventor_item_max_line_get(const Enventor_Item *it)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(it, 0);
+
+   return edit_max_line_get(it->ed);
+}
+
+EAPI void
+enventor_item_line_goto(Enventor_Item *it, int line)
+{
+   EINA_SAFETY_ON_NULL_RETURN(it);
+
+   edit_goto(it->ed, line);
 }
 
 

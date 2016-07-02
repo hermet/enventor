@@ -55,7 +55,7 @@ list_item_selected_cb(void *data, Evas_Object *obj EINA_UNUSED,
    Elm_Object_Item *it = event_info;
    if (fd->selected_it == it) return;
    file_tab_it *fti = elm_object_item_data_get(it);
-   facade_it_select(fti->enventor_it);
+   file_mgr_file_focus(fti->enventor_it);
 }
 
 /*****************************************************************************/

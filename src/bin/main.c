@@ -573,7 +573,7 @@ enventor_setup(app_data *ad)
    enventor_common_setup(enventor);
 
    base_enventor_set(enventor);
-   facade_main_file_set(config_input_path_get());
+   file_mgr_main_file_set(config_input_path_get());
    base_live_view_set(enventor_object_live_view_get(enventor));
 }
 

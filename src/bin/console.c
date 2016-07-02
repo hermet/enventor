@@ -41,7 +41,11 @@ error_word_select(Evas_Object *console)
     const char *entry_text = enventor_object_text_get(base_enventor_get());
     char *utf8 = elm_entry_markup_to_utf8(entry_text);
 
-    enventor_object_line_goto(base_enventor_get(), atoi(error_line));
+    //FIXME: Need to get the file that contains errors.
+    Enventor_Item *it = enventor_object_focused_item_get(base_enventor_get());
+    EINA_SAFETY_ON_NULL_RETURN(it);
+
+    enventor_item_line_goto(it, atoi(error_line));
     int pos = enventor_object_cursor_pos_get(base_enventor_get());
 
     const char *search_line = utf8 + pos * sizeof(char);

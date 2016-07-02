@@ -78,7 +78,7 @@ gl_clicked_double_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
    //skip non edc file.
    if (!eina_str_has_extension(file->path, "edc")) return;
 
-   int selected_file_len = strlen(file->path);
+   unsigned int selected_file_len = strlen(file->path);
 
    Enventor_Item *eit;
    const char *it_file_path;
@@ -104,7 +104,7 @@ gl_clicked_double_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
    if (strlen(file->name) == strlen(it_file_path) &&
        !strcmp(file->name, it_file_path))
      {
-        facade_it_select(eit);
+        file_mgr_file_focus(eit);
         return;
      }
 
@@ -123,13 +123,13 @@ gl_clicked_double_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
         //Ok, This selected file is already openend, let's activate the item.
         if (!strcmp(file->path, it_file_path))
           {
-             facade_it_select(eit);
+             file_mgr_file_focus(eit);
              return;
           }
      }
 
    //This selected file hasn't been opened yet, so let's open this file newly.
-   facade_sub_file_add(file->path);
+   file_mgr_sub_file_add(file->path);
 }
 
 static Elm_Object_Item *

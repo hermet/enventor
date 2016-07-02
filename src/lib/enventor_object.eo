@@ -149,9 +149,6 @@ class Enventor.Object (Elm.Widget, Efl.File) {
       parts_list_get {
          return: list<char *>;
       }
-      max_line_get {
-         return: int;
-      }
       text_get {
          return: const(char) *;
       }
@@ -189,11 +186,6 @@ class Enventor.Object (Elm.Widget, Efl.File) {
       }
       live_view_get {
          return: Efl.Canvas.Object;
-      }
-      line_goto {
-         params {
-            @in line: int;
-         }
       }
       programs_stop {
       }
