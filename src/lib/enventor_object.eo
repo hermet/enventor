@@ -149,14 +149,6 @@ class Enventor.Object (Elm.Widget, Efl.File) {
       parts_list_get {
          return: list<char *>;
       }
-      line_delete {
-      }
-      save {
-         return: bool;
-         params {
-            @in file: const(char) *;
-         }
-      }
       live_view_get {
          return: Efl.Canvas.Object;
       }

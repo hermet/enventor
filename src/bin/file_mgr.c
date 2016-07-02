@@ -158,8 +158,8 @@ file_mgr_edc_save(void)
 {
    char buf[PATH_MAX];
 
-   Eina_Bool save_success = enventor_object_save(base_enventor_get(),
-                                                 config_input_path_get());
+   Enventor_Item *it = file_mgr_focused_item_get();
+   Eina_Bool save_success = enventor_item_file_save(it, NULL);
    if (!config_stats_bar_get()) return;
 
    if (save_success)
@@ -267,4 +267,38 @@ Enventor_Item *
 file_mgr_focused_item_get(void)
 {
    return enventor_object_focused_item_get(base_enventor_get());
+}
+
+Eina_Bool
+file_mgr_save_all(void)
+{
+   file_mgr_data *fmd = g_fmd;
+   EINA_SAFETY_ON_NULL_RETURN_VAL(fmd, EINA_FALSE);
+
+   if (!fmd->edc_modified) return EINA_TRUE;
+
+   Enventor_Item *it;
+   Eina_Bool ret = EINA_TRUE;
+
+   //Main file.
+   it = file_mgr_main_item_get();
+   if (!enventor_item_file_save(it, NULL)) ret = EINA_FALSE;
+
+   Eina_List *l;
+   Eina_List *sub_its =
+      (Eina_List *) enventor_object_sub_items_get(base_enventor_get());
+   EINA_LIST_FOREACH(sub_its, l, it)
+     {
+        if (!enventor_item_file_save(it, NULL)) ret = EINA_FALSE;
+     }
+
+   fmd->edc_modified = EINA_FALSE;
+
+   return ret;
+}
+
+Enventor_Item *
+file_mgr_main_item_get(void)
+{
+   return enventor_object_main_item_get(base_enventor_get());
 }

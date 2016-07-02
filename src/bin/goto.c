@@ -140,7 +140,6 @@ goto_open(void)
    search_close();
 
    Enventor_Item *it = file_mgr_focused_item_get();
-   EINA_SAFETY_ON_NULL_RETURN(it);
 
    gd = calloc(1, sizeof(goto_data));
    if (!gd)

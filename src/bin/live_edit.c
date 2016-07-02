@@ -414,6 +414,8 @@ live_edit_insert(live_data *ld)
 
    calc_relative_info(ld);
 
+   Enventor_Item *it = file_mgr_focused_item_get();
+
    enventor_object_template_part_insert(base_enventor_get(),
                                         type,
                                         ENVENTOR_TEMPLATE_INSERT_LIVE_EDIT,
@@ -432,7 +434,7 @@ live_edit_insert(live_data *ld)
                                         ld->rel_to_info.rel2_x,
                                         ld->rel_to_info.rel2_y,
                                         NULL, 0);
-   enventor_object_save(base_enventor_get(), config_input_path_get());
+   enventor_item_file_save(it, NULL);
 
    free(ld->rel_to_info.rel1_x_part);
    free(ld->rel_to_info.rel1_y_part);

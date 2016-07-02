@@ -84,7 +84,7 @@ syntax_color_update(Enventor_Object *enventor)
 
    Enventor_Item *it;
 
-   it = enventor_object_main_item_get(enventor);
+   it = file_mgr_main_item_get();
    enventor_item_syntax_color_full_apply(it, EINA_TRUE);
 
    Eina_List *l;
@@ -172,12 +172,6 @@ main_mouse_wheel_cb(void *data EINA_UNUSED, int type EINA_UNUSED, void *ev)
 
    //Font Size
    Enventor_Item *it = file_mgr_focused_item_get();
-   if (!it)
-     {
-        EINA_LOG_ERR("No focused enventor item??");
-        return ECORE_CALLBACK_PASS_ON;
-     }
-
    evas_object_geometry_get(enventor_item_editor_get(it), &x, &y, &w, &h);
 
    if ((event->x >= x) && (event->x <= (x + w)) &&
@@ -494,6 +488,9 @@ enventor_ctxpopup_changed_cb(void *data, Enventor_Object *obj,
                              void *event_info EINA_UNUSED)
 {
    app_data *ad = data;
+
+   Enventor_Item *it = file_mgr_focused_item_get();
+
    if (!enventor_object_modified_get(obj)) return;
    if (ad->on_saving)
      {
@@ -501,7 +498,7 @@ enventor_ctxpopup_changed_cb(void *data, Enventor_Object *obj,
         return;
      }
    ad->on_saving = EINA_TRUE;
-   enventor_object_save(obj, config_input_path_get());
+   enventor_item_file_save(it, NULL);
 }
 
 static void
@@ -509,9 +506,11 @@ enventor_live_view_updated_cb(void *data, Enventor_Object *obj,
                               void *event_info EINA_UNUSED)
 {
    app_data *ad = data;
+
+   Enventor_Item *it = file_mgr_focused_item_get();
    if (ad->lazy_save && enventor_object_modified_get(obj))
      {
-        enventor_object_save(obj, config_input_path_get());
+        enventor_item_file_save(it, NULL);
         ad->lazy_save = EINA_FALSE;
      }
    else
@@ -638,7 +637,7 @@ ctrl_func(Evas_Event_Key_Down *event)
   //Delete Line
    if (!strcmp(event->key, "d") || !strcmp(event->key, "D"))
      {
-        enventor_object_line_delete(base_enventor_get());
+        enventor_item_line_delete(file_mgr_focused_item_get());
         return EINA_TRUE;
      }
    //Find/Replace

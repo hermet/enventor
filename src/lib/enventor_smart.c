@@ -30,7 +30,7 @@ typedef struct _Enventor_Item_Data Enventor_Item_Data;
 struct _Enventor_Item_Data
 {
    edit_data *ed;
-   Enventor_Object *enventor;
+   Enventor_Object_Data *pd;
 };
 
 struct _Enventor_Object_Data
@@ -734,29 +734,6 @@ _enventor_object_syntax_color_get(Eo *obj EINA_UNUSED,
    return edit_syntax_color_get(pd->main_it.ed, color_type);
 }
 
-//TODO: Might need for items
-EOLIAN static Eina_Bool
-_enventor_object_save(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd,
-                      const char *file)
-{
-   //Update edc file and try to save if the edc path is different.
-   if (build_edc_path_get() != file)
-     edit_changed_set(pd->main_it.ed, EINA_TRUE);
-
-   Eina_Bool saved = edit_save(pd->main_it.ed, file);
-   if (saved) build_edc();
-   return saved;
-}
-
-//TODO: Itemize
-EOLIAN static void
-_enventor_object_line_delete(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
-{
-   edit_line_delete(pd->main_it.ed);
-   //Close auto-completion popup if it's shown.
-   autocomp_reset();
-}
-
 EOLIAN static Eo *
 _enventor_object_live_view_get(Eo *obj EINA_UNUSED,
                                Enventor_Object_Data *pd EINA_UNUSED)
@@ -889,8 +866,8 @@ enventor_object_sub_item_add(Enventor_Object *obj, const char *file)
 
    pd->sub_its = eina_list_append(pd->sub_its, it);
 
-   it->enventor = obj;
    it->ed = edit_init(obj, EINA_FALSE);
+   it->pd = pd;
 
    autocomp_target_set(it->ed);
    edit_load(it->ed, file);
@@ -909,7 +886,7 @@ enventor_object_main_item_set(Enventor_Object *obj, const char *file)
 
    _enventor_main_item_free(pd);
 
-   pd->main_it.enventor = obj;
+   pd->main_it.pd = pd;
    pd->main_it.ed = edit_init(obj, EINA_TRUE);
    edit_view_sync_cb_set(pd->main_it.ed, edit_view_sync_cb, pd);
    pd->focused_it = &pd->main_it;
@@ -949,7 +926,7 @@ enventor_item_focus_set(Enventor_Item *it)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(it, EINA_FALSE);
 
-   Enventor_Object *obj = it->enventor;
+   Enventor_Object *obj = it->pd->obj;
    Enventor_Object_Data *pd = eo_data_scope_get(obj, ENVENTOR_OBJECT_CLASS);
 
    edit_view_sync_cb_set(it->ed, edit_view_sync_cb, pd);
@@ -992,53 +969,65 @@ enventor_item_max_line_get(const Enventor_Item *it)
    return edit_max_line_get(it->ed);
 }
 
-EAPI void
+EAPI Eina_Bool
 enventor_item_line_goto(Enventor_Item *it, int line)
 {
-   EINA_SAFETY_ON_NULL_RETURN(it);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(it, EINA_FALSE);
 
    edit_goto(it->ed, line);
+
+   return EINA_TRUE;
 }
 
-EAPI void
+EAPI Eina_Bool
 enventor_item_syntax_color_full_apply(Enventor_Item *it, Eina_Bool force)
 {
-   EINA_SAFETY_ON_NULL_RETURN(it);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(it, EINA_FALSE);
 
    edit_syntax_color_full_apply(it->ed, force);
+
+   return EINA_TRUE;
 }
 
-EAPI void
+EAPI Eina_Bool
 enventor_item_syntax_color_partial_apply(Enventor_Item *it, double interval)
 {
-   EINA_SAFETY_ON_NULL_RETURN(it);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(it, EINA_FALSE);
 
    edit_syntax_color_partial_apply(it->ed, interval);
+
+   return EINA_TRUE;
 }
 
-EAPI void
+EAPI Eina_Bool
 enventor_item_select_region_set(Enventor_Item *it, int start, int end)
 {
-   EINA_SAFETY_ON_NULL_RETURN(it);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(it, EINA_FALSE);
 
    edit_selection_clear(it->ed);
    edit_selection_region_center_set(it->ed, start, end);
+
+   return EINA_TRUE;
 }
 
-EAPI void
+EAPI Eina_Bool
 enventor_item_select_none(Enventor_Item *it)
 {
-   EINA_SAFETY_ON_NULL_RETURN(it);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(it, EINA_FALSE);
 
    edit_select_none(it->ed);
+
+   return EINA_TRUE;
 }
 
-EAPI void
+EAPI Eina_Bool
 enventor_item_cursor_pos_set(Enventor_Item *it, int position)
 {
-   EINA_SAFETY_ON_NULL_RETURN(it);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(it, EINA_FALSE);
 
    edit_cursor_pos_set(it->ed, position);
+
+   return EINA_TRUE;
 }
 
 EAPI int
@@ -1057,12 +1046,14 @@ enventor_item_selection_get(const Enventor_Item *it)
    return edit_selection_get(it->ed);
 }
 
-EAPI void
+EAPI Eina_Bool
 enventor_item_text_insert(Enventor_Item *it, const char *text)
 {
-   EINA_SAFETY_ON_NULL_RETURN(it);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(it, EINA_FALSE);
 
    edit_text_insert(it->ed, text);
+
+   return EINA_TRUE;
 }
 
 EAPI const char *
@@ -1072,4 +1063,36 @@ enventor_item_text_get(const Enventor_Item *it)
 
    return edit_text_get(it->ed);
 }
+
+EAPI Eina_Bool
+enventor_item_line_delete(Enventor_Item *it)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(it, EINA_FALSE);
+
+   edit_line_delete(it->ed);
+   //Close auto-completion popup if it's shown.
+   autocomp_reset();
+
+   return EINA_TRUE;
+}
+
+EAPI Eina_Bool
+enventor_item_file_save(Enventor_Item *it, const char *file)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(it, EINA_FALSE);
+
+   if (!file) file = edit_file_get(it->ed);
+
+   //Update edc file and try to save if the edc path is different.
+   if (&it->pd->main_it == it)
+     {
+        if (build_edc_path_get() != file)
+          edit_changed_set(it->ed, EINA_TRUE);
+     }
+
+   Eina_Bool saved = edit_save(it->ed, file);
+   if (saved) build_edc();
+   return saved;
+}
+
 #include "enventor_object.eo.c"

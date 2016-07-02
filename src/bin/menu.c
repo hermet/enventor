@@ -246,7 +246,7 @@ static void
 exit_save_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
                  void *event_info EINA_UNUSED)
 {
-   enventor_object_save(base_enventor_get(), config_input_path_get());
+   file_mgr_save_all();
    elm_exit();
 }
 
@@ -285,7 +285,7 @@ new_save_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
                 void *event_info EINA_UNUSED)
 {
    menu_data *md = data;
-   enventor_object_save(base_enventor_get(), config_input_path_get());
+   file_mgr_save_all();
    newfile_open(md);
    warning_close(md);
    menu_close(md);
@@ -341,15 +341,25 @@ fileselector_save_done_cb(void *data, Evas_Object *obj, void *event_info)
      }
 
    Enventor_Object *enventor = base_enventor_get();
+   Enventor_Item *it = file_mgr_focused_item_get();
 
    if (is_edc)
      {
-        config_input_path_set(selected);
-        Eina_List *list = eina_list_append(NULL, config_output_path_get());
-        enventor_object_path_set(enventor, ENVENTOR_PATH_TYPE_EDJ,
-                                 list);
-        eina_list_free(list);
-        if (!enventor_object_save(enventor, selected))
+        Eina_Bool main_file;
+        if (file_mgr_main_item_get() == it) main_file = EINA_TRUE;
+        else main_file = EINA_TRUE;
+
+        //Update config path if main file.
+        if (main_file)
+          {
+             config_input_path_set(selected);
+             Eina_List *list = eina_list_append(NULL, config_output_path_get());
+             enventor_object_path_set(enventor, ENVENTOR_PATH_TYPE_EDJ,
+                                      list);
+             eina_list_free(list);
+          }
+
+        if (!enventor_item_file_save(it, selected))
           {
              char buf[PATH_MAX];
              snprintf(buf, sizeof(buf), _("Failed to save: %s."), selected);
@@ -360,7 +370,8 @@ fileselector_save_done_cb(void *data, Evas_Object *obj, void *event_info)
              eina_stringshare_del(selected);
              return;
           }
-        file_mgr_main_file_set(selected);
+
+        if (main_file) file_mgr_main_file_set(selected);
      }
    else if (is_edj)
      {
@@ -369,7 +380,7 @@ fileselector_save_done_cb(void *data, Evas_Object *obj, void *event_info)
         enventor_object_path_set(enventor, ENVENTOR_PATH_TYPE_EDJ,
                                  edj_pathes);
         enventor_object_modified_set(enventor, EINA_TRUE);
-        enventor_object_save(enventor, config_input_path_get());
+        enventor_item_file_save(it, NULL);
         eina_list_free(edj_pathes);
      }
 
@@ -528,7 +539,7 @@ load_save_btn_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
                  void *event_info EINA_UNUSED)
 {
    menu_data *md = data;
-   enventor_object_save(base_enventor_get(), config_input_path_get());
+   file_mgr_save_all();
    edc_file_load(md);
    warning_close(md);
 }
@@ -636,7 +647,7 @@ menu_edc_new(Eina_Bool template_new)
 {
    menu_data *md = g_md;
    md->template_new = template_new;
-   if (enventor_object_modified_get(base_enventor_get()))
+   if (file_mgr_edc_modified_get())
      warning_open(md, new_yes_btn_cb, new_save_btn_cb);
    else
      newfile_open(md);
@@ -718,12 +729,15 @@ enventor_ctxpopup_dismissed_cb(void *data, Evas_Object *obj EINA_UNUSED,
 void
 menu_exit(void)
 {
+   //Quit Enventor Application.
+
    menu_data *md = g_md;
    EINA_SAFETY_ON_NULL_RETURN(md);
 
-   Enventor_Object *enventor = base_enventor_get();
-   if (enventor_object_modified_get(enventor))
+   if (file_mgr_edc_modified_get())
      {
+        Enventor_Object *enventor = base_enventor_get();
+
         search_close();
         if (enventor_object_ctxpopup_visible_get(enventor))
           {

@@ -625,6 +625,8 @@ tools_template_insert(void)
         return;
      }
 
+   Enventor_Item *it = file_mgr_focused_item_get();
+
    char syntax[12];
    if (enventor_object_template_insert(base_enventor_get(), syntax,
                                        sizeof(syntax)))
@@ -632,7 +634,7 @@ tools_template_insert(void)
         char msg[64];
         snprintf(msg, sizeof(msg), _("Template code inserted, (%s)"), syntax);
         stats_info_msg_update(msg);
-        enventor_object_save(base_enventor_get(), config_input_path_get());
+        enventor_item_file_save(it, NULL);
      }
    else
      {
