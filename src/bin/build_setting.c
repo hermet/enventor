@@ -99,7 +99,7 @@ build_setting_focus_set(build_setting_data *bsd)
 void
 build_setting_config_set(build_setting_data *bsd)
 {
-   EINA_SAFETY_ON_NULL_RETURN(bsd);
+   if (!bsd) return;
 
    config_img_path_set(elm_object_text_get(bsd->img_path_entry));
    config_snd_path_set(elm_object_text_get(bsd->snd_path_entry));
@@ -110,7 +110,7 @@ build_setting_config_set(build_setting_data *bsd)
 void
 build_setting_reset(build_setting_data *bsd)
 {
-   EINA_SAFETY_ON_NULL_RETURN(bsd);
+   if (!bsd) return;
 
    img_path_entry_update(bsd->img_path_entry,
                          (Eina_List *)config_img_path_list_get());
@@ -232,7 +232,7 @@ build_setting_init(void)
 void
 build_setting_term(build_setting_data *bsd)
 {
-   EINA_SAFETY_ON_NULL_RETURN(bsd);
+   if (!bsd) return;
 
    evas_object_del(bsd->layout);
    free(bsd);

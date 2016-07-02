@@ -963,7 +963,7 @@ text_setting_focus_set(text_setting_data *tsd)
 void
 text_setting_config_set(text_setting_data *tsd)
 {
-   EINA_SAFETY_ON_NULL_RETURN(tsd);
+   if (!tsd) return;
 
    config_font_set(tsd->font_name, tsd->font_style);
    config_font_scale_set((float) elm_slider_value_get(tsd->slider_font));
@@ -1004,7 +1004,7 @@ text_setting_init(void)
 void
 text_setting_term(text_setting_data *tsd)
 {
-   EINA_SAFETY_ON_NULL_RETURN(tsd);
+   if (!tsd) return;
 
    evas_object_del(tsd->color_ctxpopup);
    free(tsd->color_keyword_list);
