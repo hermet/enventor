@@ -1423,6 +1423,7 @@ edit_init(Enventor_Object *enventor, Eina_Bool main)
    ed->pd = parser_init();
    ed->rd = redoundo_init(ed, enventor);
    ed->sh = syntax_init(ed);
+   ed->main = main;
 
    return ed;
 }

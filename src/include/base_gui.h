@@ -31,3 +31,4 @@ void base_file_browser_toggle(Eina_Bool toggle);
 void base_edc_navigator_toggle(Eina_Bool toggle);
 void base_edc_navigator_group_update(void);
 void base_edc_navigator_deselect(void);
+void base_file_tab_toggle(Eina_Bool toggle);

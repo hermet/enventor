@@ -967,7 +967,7 @@ double
 config_editor_size_get(void)
 {
    config_data *cd = g_cd;
-   EINA_SAFETY_ON_NULL_RETURN(cd);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(cd, 0);
 
    return cd->editor_size;
 }

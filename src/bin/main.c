@@ -126,7 +126,6 @@ config_update_cb(void *data EINA_UNUSED)
 static Eina_Bool
 main_mouse_wheel_cb(void *data, int type EINA_UNUSED, void *ev)
 {
-   app_data *ad = data;
    Ecore_Event_Mouse_Wheel *event = ev;
    Evas_Coord x, y, w, h;
 

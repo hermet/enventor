@@ -148,7 +148,7 @@ int
 file_mgr_edc_modified_get(void)
 {
    file_mgr_data *fmd = g_fmd;
-   EINA_SAFETY_ON_NULL_RETURN(fmd);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(fmd, 0);
 
    return fmd->edc_modified;
 }

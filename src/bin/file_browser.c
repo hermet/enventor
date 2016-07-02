@@ -114,7 +114,7 @@ gl_clicked_double_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
    Eina_List *l;
    EINA_LIST_FOREACH(sub_items, l, eit)
      {
-        const char *it_file_path = enventor_item_file_get(eit);
+        it_file_path = enventor_item_file_get(eit);
         if (!it_file_path) continue;
 
         //Let's check if the file is already opened.

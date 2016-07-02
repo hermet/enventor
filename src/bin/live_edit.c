@@ -1958,13 +1958,6 @@ rel_to_values_reset(live_data *ld)
 }
 
 static void
-fixed_check_changed_cb(void *data, Evas_Object *obj EINA_UNUSED,
-                         void *event_info EINA_UNUSED)
-{
-   live_data *ld = data;
-}
-
-static void
 live_edit_layer_set(live_data *ld)
 {
    //Keygrabber
@@ -2268,8 +2261,6 @@ live_edit_init(Evas_Object *parent)
    Evas_Object *fixed_w_check = elm_check_add(fixed_box);
    elm_object_focus_allow_set(fixed_w_check, EINA_FALSE);
    elm_object_text_set(fixed_w_check, "Fixed width");
-   evas_object_smart_callback_add(fixed_w_check, "changed",
-                                  fixed_check_changed_cb, ld);
    evas_object_show(fixed_w_check);
    elm_box_pack_end(fixed_box, fixed_w_check);
 
@@ -2277,8 +2268,6 @@ live_edit_init(Evas_Object *parent)
    Evas_Object *fixed_h_check = elm_check_add(fixed_box);
    elm_object_focus_allow_set(fixed_h_check, EINA_FALSE);
    elm_object_text_set(fixed_h_check, "Fixed height");
-   evas_object_smart_callback_add(fixed_h_check, "changed",
-                                  fixed_check_changed_cb, ld);
    evas_object_show(fixed_h_check);
    elm_box_pack_end(fixed_box, fixed_h_check);
 

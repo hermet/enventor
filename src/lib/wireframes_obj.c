@@ -27,13 +27,6 @@ const char *OUTLINE_EDIT_LAYOUT_KEY = "edit_layout";
 /*****************************************************************************/
 /* Internal method implementation                                            */
 /*****************************************************************************/
-static void
-edje_part_clicked(void *data, Evas *e EINA_UNUSED,
-                  Evas_Object *obj, void *ei EINA_UNUSED)
-{
-   part_obj *po = (part_obj *)data;
-   Evas_Object *layout = evas_object_data_get(obj, OUTLINE_EDIT_LAYOUT_KEY);
-}
 
 static void
 wireframes_objs_update(wireframes_obj *wireframes)
@@ -41,9 +34,7 @@ wireframes_objs_update(wireframes_obj *wireframes)
    Eina_List *parts = edje_edit_parts_list_get(wireframes->layout);
    Eina_List *l, *l_next, *l2;
    char *part_name;
-   Edje_Part_Type type = EDJE_PART_TYPE_NONE;
    part_obj *po;
-   Evas *evas = evas_object_evas_get(wireframes->layout);
    Eina_Bool removed;
 
    //Remove the wireframes objects that parts are removed.
@@ -58,7 +49,6 @@ wireframes_objs_update(wireframes_obj *wireframes)
              if ((strlen(po->name) != strlen(part_name))) continue;
              if (!strcmp(po->name, part_name))
                {
-                  type = edje_edit_part_type_get(wireframes->layout, part_name);
                   removed = EINA_FALSE;
                   break;
                }
@@ -75,8 +65,6 @@ wireframes_objs_update(wireframes_obj *wireframes)
    //Add new part object or Update changed part.
    EINA_LIST_FOREACH(parts, l, part_name)
      {
-        type = edje_edit_part_type_get(wireframes->layout, part_name);
-
         Eina_List *part_l;
         Evas_Object *pobj = NULL;
         int part_x = 0, part_y = 0, part_w = 0, part_h = 0, part_lx = 0, part_ly = 0;
@@ -109,9 +97,6 @@ wireframes_objs_update(wireframes_obj *wireframes)
              evas_object_clip_set(pobj, clipper);
              evas_object_data_set(pobj, OUTLINE_EDIT_LAYOUT_KEY,
                                   wireframes->layout);
-
-             evas_object_event_callback_add(pobj, EVAS_CALLBACK_MOUSE_DOWN,
-                                            edje_part_clicked, po);
           }
          evas_object_geometry_get(wireframes->layout, &part_lx, &part_ly,
                                   NULL, NULL);

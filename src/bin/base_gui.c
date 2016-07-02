@@ -389,7 +389,7 @@ Enventor_Object *
 base_enventor_get(void)
 {
    base_data *bd = g_bd;
-   EINA_SAFETY_ON_NULL_RETURN(bd);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(bd, NULL);
 
    return bd->enventor;
 }

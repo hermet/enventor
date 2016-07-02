@@ -376,10 +376,11 @@ stats_init(Evas_Object *parent)
    return layout;
 }
 
-Eina_Stringshare *stats_group_name_get(void)
+Eina_Stringshare *
+stats_group_name_get(void)
 {
    stats_data *sd = g_sd;
-   EINA_SAFETY_ON_NULL_RETURN(sd);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(sd, NULL);
 
    return sd->group_name;
 }
@@ -452,7 +453,7 @@ Eina_Bool
 stats_ctxpopup_dismiss(void)
 {
    stats_data *sd = g_sd;
-   EINA_SAFETY_ON_NULL_RETURN(sd);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(sd, EINA_FALSE);
 
    if (sd->ctxpopup)
      {
