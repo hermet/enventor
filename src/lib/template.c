@@ -142,12 +142,11 @@ textblock_style_add(edit_data *ed, const char *style_name)
 }
 
 static int
-template_part_insert_cursor_pos_set(edit_data *ed,
+template_part_insert_cursor_pos_set(Evas_Object *edit_entry,
                                     Enventor_Template_Insert_Type insert_type,
                                     const Eina_Stringshare *group_name)
 {
    int cursor_pos = -1;
-   Evas_Object *edit_entry = edit_entry_get(ed);
    if (insert_type == ENVENTOR_TEMPLATE_INSERT_LIVE_EDIT)
      {
         cursor_pos = parser_end_of_parts_block_pos_get(edit_entry, group_name);
@@ -198,7 +197,7 @@ template_part_insert(edit_data *ed, Edje_Part_Type part_type,
    if (insert_type == ENVENTOR_TEMPLATE_INSERT_LIVE_EDIT)
      group_name = view_group_name_get(VIEW_DATA);
 
-   int cursor_pos = template_part_insert_cursor_pos_set(ed, insert_type,
+   int cursor_pos = template_part_insert_cursor_pos_set(edit_entry, insert_type,
                                                         group_name);
    if (cursor_pos == -1) return EINA_FALSE;
 
