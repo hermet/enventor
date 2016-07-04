@@ -15,10 +15,10 @@ struct file_browser_file_s
 {
    char *path;
    char *name;
-
    File_Browser_File_Type type;
-
    Eina_List *sub_file_list; //NULL if file type is not directory.
+
+   Eina_Bool main: 1;   //Is it main edc file?
 };
 
 typedef enum
@@ -162,11 +162,20 @@ file_genlist_item_append(brows_file *file, Elm_Object_Item *parent_it,
 }
 
 static char *
+main_file_text_get(brows_file *file)
+{
+   char path[PATH_MAX];
+   snprintf(path, sizeof(path), "%s [main]", file->name);
+   return  strdup(path);
+}
+
+static char *
 gl_file_text_get_cb(void *data, Evas_Object *obj EINA_UNUSED,
                     const char *part EINA_UNUSED)
 {
    brows_file *file = data;
-   return strdup(file->name);
+   if (!file->main) return strdup(file->name);
+   return main_file_text_get(file);
 }
 
 static Evas_Object *
@@ -395,6 +404,15 @@ brows_file_create(const char *file_path, Eina_Bool create_sub_file_list)
    file->path = file_abs_path;
    file->name = strdup(ecore_file_file_get(file_abs_path));
    file->type = brows_file_type_get(file_abs_path);
+
+   //Check whether this file is main file.
+   if (file->type == FILE_BROWSER_FILE_TYPE_EDC &&
+       config_input_path_get())
+     {
+        if (!strcmp(file->name, config_input_path_get()) &&
+            (strlen(file->name) == strlen(config_input_path_get())))
+          file->main = EINA_TRUE;
+     }
 
    if (create_sub_file_list)
      file->sub_file_list = sub_brows_file_list_create(file);
