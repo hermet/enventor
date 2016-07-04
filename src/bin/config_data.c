@@ -42,10 +42,18 @@ typedef struct config_s
    Eina_Bool auto_complete;
    Eina_Bool smart_undo_redo;
    Eina_Bool file_browser;
-   Eina_Bool file_browser_loaded;
    Eina_Bool edc_navigator;
    Eina_Bool red_alert;
    Eina_Bool file_tab;
+
+   /* These two loaded variables are used for value overriding.
+      file_browser and file_tab will be forcely disabled if the workspace were
+      not given by user. In that case, these variables would have false always.
+      So, store original setting values here to keep the Enventor config
+      properly. */
+   Eina_Bool file_browser_loaded;
+   Eina_Bool file_tab_loaded;
+
 } config_data;
 
 static config_data *g_cd = NULL;
@@ -122,8 +130,9 @@ config_save(config_data *cd)
         return;
      }
 
-   //Restore loaded file browser config.
+   //Restore loaded file browser & file tab config.
    cd->file_browser = cd->file_browser_loaded;
+   cd->file_tab = cd->file_tab_loaded;
 
    eet_data_write(ef, edd_base, "config", cd, 1);
    eet_close(ef);
@@ -260,6 +269,7 @@ config_load(void)
 
    //Store loaded file browser config.
    cd->file_browser_loaded = cd->file_browser;
+   cd->file_tab_loaded = cd->file_tab;
 
    return cd;
 }
@@ -361,19 +371,22 @@ config_init(const char *input_path, const char *output_path,
    if (workspace_path[0])
      eina_stringshare_replace(&cd->workspace_path, workspace_path);
    else
-     g_cd->file_browser = EINA_FALSE;
+     {
+        cd->file_browser = EINA_FALSE;
+        cd->file_tab = EINA_FALSE;
+     }
 
    if (img_path)
-     g_cd->img_path_list = img_path;
+     cd->img_path_list = img_path;
 
    if (snd_path)
-     g_cd->snd_path_list = snd_path;
+     cd->snd_path_list = snd_path;
 
    if (fnt_path)
-     g_cd->fnt_path_list = fnt_path;
+     cd->fnt_path_list = fnt_path;
 
    if (dat_path)
-     g_cd->dat_path_list = dat_path;
+     cd->dat_path_list = dat_path;
 
    return EINA_TRUE;
 }
@@ -722,6 +735,7 @@ config_file_tab_set(Eina_Bool enabled)
    EINA_SAFETY_ON_NULL_RETURN(cd);
 
    cd->file_tab = enabled;
+   cd->file_tab_loaded = enabled;
 }
 
 Eina_Bool
