@@ -351,15 +351,16 @@ group { name: "elm/list/h_item/enventor";
          target: "label2";
          target: "label3";
       }
-      rect {"elm.swallow.icon";
+      swallow {"elm.swallow.icon";
          scale: 1;
          desc { "default";
             fixed: 1 1;
             align: 0 0.5;
             rel1.relative: 0.0 0.5;
-            rel1.offset: 5 0;
+            rel1.offset: 5 -1;
             rel2.relative: 0.0 0.5;
-            min: 12 12;
+            rel2.offset: 5 -2;
+            min: 15 15;
          }
       }
       part { name: "sel_shine"; mouse_events: 0;

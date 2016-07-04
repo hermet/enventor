@@ -10,6 +10,7 @@ typedef struct file_tab_s
 typedef struct file_tab_it_s
 {
    Enventor_Item *enventor_it;
+   Elm_Object_Item *it;
 } file_tab_it;
 
 file_data *g_fd = NULL;
@@ -58,10 +59,51 @@ list_item_selected_cb(void *data, Evas_Object *obj EINA_UNUSED,
    file_mgr_file_focus(fti->enventor_it);
 }
 
+static void
+file_tab_it_del(file_tab_it *fti)
+{
+   Evas_Object *list = elm_object_item_widget_get(fti->it);
+
+   //FIXME: If this item is main, then it needs to close project.
+
+   //If the focused item is removed, then enable next item.
+   if (elm_list_selected_item_get(list) == fti->it)
+     {
+        //Next?
+        Elm_Object_Item *it;
+        it = elm_list_item_next(fti->it);
+
+        //Prev?
+        if (!it) it = elm_list_item_prev(fti->it);
+
+        if (it)
+          {
+             file_tab_it *next_fti = elm_object_item_data_get(it);
+             file_mgr_file_focus(next_fti->enventor_it);
+          }
+     }
+
+   //Remove item.
+   elm_object_item_del(fti->it);
+   enventor_item_del(fti->enventor_it);
+   free(fti);
+
+   elm_list_go(list);
+}
+
+static void
+close_btn_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                     void *event_info EINA_UNUSED)
+{
+   file_tab_it *fti = data;
+   file_tab_it_del(fti);
+}
+
 /*****************************************************************************/
 /* Externally accessible calls                                               */
 /*****************************************************************************/
-Eina_Bool file_tab_it_select(Enventor_Item *enventor_it)
+Eina_Bool
+file_tab_it_select(Enventor_Item *enventor_it)
 {
    file_data *fd = g_fd;
    EINA_SAFETY_ON_NULL_RETURN_VAL(fd, EINA_FALSE);
@@ -83,7 +125,8 @@ Eina_Bool file_tab_it_select(Enventor_Item *enventor_it)
    return EINA_FALSE;
 }
 
-void file_tab_clear(void)
+void
+file_tab_clear(void)
 {
    file_data *fd = g_fd;
    EINA_SAFETY_ON_NULL_RETURN(fd);
@@ -100,7 +143,8 @@ void file_tab_clear(void)
    elm_list_clear(fd->list);
 }
 
-Eina_Bool file_tab_it_add(Enventor_Item *enventor_it)
+Eina_Bool
+file_tab_it_add(Enventor_Item *enventor_it)
 {
    if (!enventor_it)
      {
@@ -136,9 +180,20 @@ Eina_Bool file_tab_it_add(Enventor_Item *enventor_it)
 
    fti->enventor_it = enventor_it;
 
-   elm_list_item_append(fd->list, filename, NULL, NULL, list_item_selected_cb,
-                        fti);
+   //Close Button
+   Evas_Object *btn = elm_button_add(fd->list);
+   elm_object_style_set(btn, ENVENTOR_NAME);
+   elm_object_focus_allow_set(btn, EINA_FALSE);
+
+   Evas_Object *img = elm_image_add(btn);
+   elm_image_file_set(img, EDJE_PATH, "close");
+   elm_object_content_set(btn, img);
+
+   fti->it = elm_list_item_append(fd->list, filename, btn, NULL,
+                                  list_item_selected_cb, fti);
    elm_list_go(fd->list);
+
+   evas_object_smart_callback_add(btn, "clicked", close_btn_clicked_cb, fti);
 
    free(filename);
 

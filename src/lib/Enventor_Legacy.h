@@ -26,5 +26,6 @@ EAPI Eina_Bool enventor_item_line_delete(Enventor_Item *it);
 EAPI Eina_Bool enventor_item_file_save(Enventor_Item *it, const char *file);
 EAPI Eina_Bool enventor_item_modified_get(const Enventor_Item *it);
 EAPI void enventor_item_modified_set(Enventor_Item *it, Eina_Bool modified);
+EAPI Eina_Bool enventor_item_del(Enventor_Item *it);
 
 #include "enventor_object.eo.legacy.h"

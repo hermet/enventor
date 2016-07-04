@@ -85,6 +85,16 @@ static void
 _enventor_main_item_free(Enventor_Object_Data *pd)
 {
    edit_term(pd->main_it.ed);
+   pd->main_it.ed = NULL;
+}
+
+static void
+_enventor_sub_items_free(Enventor_Object_Data *pd)
+{
+   Enventor_Item *it;
+   EINA_LIST_FREE(pd->sub_its, it)
+     enventor_item_del(it);
+   pd->sub_its = NULL;
 }
 
 static Eina_Bool
@@ -272,6 +282,7 @@ _enventor_object_efl_canvas_group_group_del(Evas_Object *obj EINA_UNUSED, Envent
    edj_mgr_term();
    build_term();
 
+   _enventor_sub_items_free(pd);
    _enventor_main_item_free(pd);
 }
 
@@ -1098,5 +1109,23 @@ enventor_item_modified_set(Enventor_Item *it, Eina_Bool modified)
    edit_changed_set(it->ed, modified);
 }
 
+EAPI Eina_Bool
+enventor_item_del(Enventor_Item *it)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(it, EINA_FALSE);
+
+   //Main Item?
+   if (it == &it->pd->main_it)
+     {
+        _enventor_main_item_free(it->pd);
+     }
+   //Sub Items
+   else
+     {
+        it->pd->sub_its = eina_list_remove(it->pd->sub_its, it);
+        edit_term(it->ed);
+        free(it);
+     }
+}
 
 #include "enventor_object.eo.c"
