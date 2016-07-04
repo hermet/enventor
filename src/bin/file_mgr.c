@@ -38,7 +38,11 @@ warning_ignore_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
                       void *event_info EINA_UNUSED)
 {
    file_mgr_data *fmd = data;
-   enventor_object_modified_set(base_enventor_get(), EINA_TRUE);
+
+   //FIXME: Specify which file has been changed?
+   Enventor_Item *it = enventor_object_focused_item_get(base_enventor_get());
+   enventor_item_modified_set(it, EINA_TRUE);
+
    warning_close(fmd);
 }
 
@@ -47,7 +51,11 @@ warning_save_as_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
                        void *event_info EINA_UNUSED)
 {
    file_mgr_data *fmd = data;
-   enventor_object_modified_set(base_enventor_get(), EINA_TRUE);
+
+   //FIXME: Sepcify which file has been changed?
+   Enventor_Item *it = enventor_object_focused_item_get(base_enventor_get());
+   enventor_item_modified_set(it, EINA_TRUE);
+
    menu_edc_save();
    warning_close(fmd);
 }
@@ -57,7 +65,10 @@ warning_replace_btn_cb(void *data, Evas_Object *obj EINA_UNUSED,
                        void *event_info EINA_UNUSED)
 {
    file_mgr_data *fmd = data;
+
+   //FIXME: Specify which file has been changed?
    file_mgr_main_file_set(config_input_path_get());
+
    warning_close(fmd);
 }
 
@@ -284,6 +295,7 @@ file_mgr_save_all(void)
    it = file_mgr_main_item_get();
    if (!enventor_item_file_save(it, NULL)) ret = EINA_FALSE;
 
+   //Sub files.
    Eina_List *l;
    Eina_List *sub_its =
       (Eina_List *) enventor_object_sub_items_get(base_enventor_get());
@@ -301,4 +313,28 @@ Enventor_Item *
 file_mgr_main_item_get(void)
 {
    return enventor_object_main_item_get(base_enventor_get());
+}
+
+Eina_Bool
+file_mgr_modified_get(void)
+{
+   file_mgr_data *fmd = g_fmd;
+   EINA_SAFETY_ON_NULL_RETURN_VAL(fmd, EINA_FALSE);
+
+   Enventor_Item *it;
+
+   //Main file.
+   it = file_mgr_main_item_get();
+   if (enventor_item_modified_get(it)) return EINA_TRUE;
+
+   //Sub files.
+   Eina_List *l;
+   Eina_List *sub_its =
+      (Eina_List *) enventor_object_sub_items_get(base_enventor_get());
+   EINA_LIST_FOREACH(sub_its, l, it)
+     {
+        if (enventor_item_modified_get(it)) return EINA_TRUE;
+     }
+
+   return EINA_FALSE;
 }

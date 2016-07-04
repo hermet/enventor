@@ -484,31 +484,37 @@ enventor_ctxpopup_activated_cb(void *data EINA_UNUSED,
 }
 
 static void
-enventor_ctxpopup_changed_cb(void *data, Enventor_Object *obj,
-                             void *event_info EINA_UNUSED)
+enventor_ctxpopup_changed_cb(void *data, Enventor_Object *obj EINA_UNUSED,
+                             void *event_info)
 {
    app_data *ad = data;
+   Enventor_Item *it = event_info;
 
-   Enventor_Item *it = file_mgr_focused_item_get();
+   if (!enventor_item_modified_get(it)) return;
 
-   if (!enventor_object_modified_get(obj)) return;
+   //FIXME: Probably, this lazy stuff is broken.
+   //These data should be up to items.
    if (ad->on_saving)
      {
         ad->lazy_save = EINA_TRUE;
         return;
      }
    ad->on_saving = EINA_TRUE;
+
    enventor_item_file_save(it, NULL);
 }
 
 static void
-enventor_live_view_updated_cb(void *data, Enventor_Object *obj,
-                              void *event_info EINA_UNUSED)
+enventor_live_view_updated_cb(void *data, Enventor_Object *obj EINA_UNUSED,
+                              void *event_info)
 {
    app_data *ad = data;
 
-   Enventor_Item *it = file_mgr_focused_item_get();
-   if (ad->lazy_save && enventor_object_modified_get(obj))
+   Enventor_Item *it = event_info;
+
+   //FIXME: Probably, this lazy stuff is broken.
+   //These data should be up to items.
+   if (ad->lazy_save && enventor_item_modified_get(it))
      {
         enventor_item_file_save(it, NULL);
         ad->lazy_save = EINA_FALSE;
@@ -533,6 +539,7 @@ static void
 enventor_focused_cb(void *data EINA_UNUSED, Enventor_Object *obj EINA_UNUSED,
                     void *event_info EINA_UNUSED)
 {
+   //FIXME: Get the all modified file list.
    if (file_mgr_edc_modified_get()) file_mgr_warning_open();
 }
 

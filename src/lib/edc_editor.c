@@ -29,6 +29,7 @@ struct editor_s
    Evas_Object *layout;
    Evas_Object *ctxpopup;
    Enventor_Object *enventor;
+   Enventor_Item *it;
    Eina_Stringshare *filepath;
 
    syntax_helper *sh;
@@ -63,6 +64,7 @@ struct editor_s
    Eina_Bool on_select_recover : 1;
    Eina_Bool on_save : 1;
    Eina_Bool main : 1;
+   Eina_Bool disabled : 1;
 };
 
 /*****************************************************************************/
@@ -524,7 +526,7 @@ ctxpopup_candidate_changed_cb(void *data, Evas_Object *obj EINA_UNUSED,
 
    edit_changed_set(ed, EINA_TRUE);
    evas_object_smart_callback_call(ed->enventor, SIG_CTXPOPUP_CHANGED,
-                                   (void *)text);
+                                   ed->it);
 }
 
 static void
@@ -536,7 +538,8 @@ ctxpopup_preview_dismiss_cb(void *data, Evas_Object *obj,
    //Since the ctxpopup will be shown again, Don't revert the focus.
    elm_object_tree_focus_allow_set(ed->layout, EINA_TRUE);
    elm_object_focus_set(ed->en_edit, EINA_TRUE);
-   evas_object_smart_callback_call(ed->enventor, SIG_CTXPOPUP_DISMISSED, NULL);
+   evas_object_smart_callback_call(ed->enventor, SIG_CTXPOPUP_DISMISSED,
+                                   ed->it);
    evas_object_del(obj);
 }
 
@@ -1336,7 +1339,7 @@ edit_cur_indent_depth_get(edit_data *ed)
 }
 
 edit_data *
-edit_init(Enventor_Object *enventor, Eina_Bool main)
+edit_init(Enventor_Object *enventor, Enventor_Item *it)
 {
    edit_data *ed = calloc(1, sizeof(edit_data));
    if (!ed)
@@ -1418,12 +1421,12 @@ edit_init(Enventor_Object *enventor, Eina_Bool main)
    ed->en_edit = en_edit;
    ed->layout = layout;
    ed->enventor = enventor;
+   ed->it = it;
    ed->cur_line = -1;
    ed->select_pos = -1;
    ed->pd = parser_init();
    ed->rd = redoundo_init(ed, enventor);
    ed->sh = syntax_init(ed);
-   ed->main = main;
 
    return ed;
 }
@@ -1674,6 +1677,10 @@ edit_disabled_set(edit_data *ed, Eina_Bool disabled)
    //Turn off the part highlight in case of disable.
    if (disabled) view_part_highlight_set(VIEW_DATA, NULL);
    else if (enventor_obj_part_highlight_get(ed->enventor)) edit_view_sync(ed);
+
+   //Reset whatever ctrl pressed is on.
+   ed->ctrl_pressed = EINA_FALSE;
+   ed->disabled = disabled;
 }
 
 void
@@ -1717,6 +1724,7 @@ edit_redoundo(edit_data *ed, Eina_Bool undo)
 Eina_Bool
 edit_key_down_event_dispatch(edit_data *ed, const char *key)
 {
+   if (ed->disabled) return EINA_FALSE;
    //Control Key
    if (!strcmp("Control_L", key))
      {
@@ -1746,6 +1754,8 @@ edit_key_down_event_dispatch(edit_data *ed, const char *key)
 Eina_Bool
 edit_key_up_event_dispatch(edit_data *ed, const char *key)
 {
+   if (ed->disabled) return EINA_FALSE;
+
    //Control Key
    if (!strcmp("Control_L", key))
      ed->ctrl_pressed = EINA_FALSE;
@@ -1833,5 +1843,11 @@ edit_text_get(edit_data *ed)
 Eina_Bool
 edit_is_main_file(edit_data *ed)
 {
-   return ed->main;
+   return (enventor_object_main_item_get(ed->enventor) == ed->it);
+}
+
+Eina_Bool
+edit_focus_get(edit_data *ed)
+{
+   return elm_object_focus_get(ed->en_edit);
 }

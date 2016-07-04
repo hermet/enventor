@@ -169,7 +169,7 @@ void wireframes_obj_update(Evas_Object *layout);
 /* edj_mgr */
 void edj_mgr_init(Enventor_Object *enventor);
 void edj_mgr_term(void);
-view_data * edj_mgr_view_new(const char *group);
+view_data * edj_mgr_view_new(Enventor_Item *it, const char *group);
 view_data *edj_mgr_view_get(Eina_Stringshare *group);
 Evas_Object * edj_mgr_obj_get(void);
 view_data *edj_mgr_view_switch_to(view_data *vd);
@@ -196,7 +196,7 @@ void redoundo_diff_buildable(redoundo_data *rd, Eina_Bool buildable);
 
 
 /* edj_viewer */
-view_data * view_init(Enventor_Object *enventor, const char *group, void (*del_cb)(void *data), void *data);
+view_data * view_init(Enventor_Object *enventor, Enventor_Item *it, const char *group, void (*del_cb)(void *data), void *data);
 void view_term(view_data *vd);
 Evas_Object *view_obj_get(view_data *vd);
 void view_new(view_data *vd, const char *group);
@@ -237,7 +237,7 @@ void ctxpopup_img_preview_reload(Evas_Object *ctxpopup, const char *imgpath);
 void edit_font_update(edit_data *ed);
 Eina_Bool edit_key_down_event_dispatch(edit_data *ed, const char *key);
 Eina_Bool edit_key_up_event_dispatch(edit_data *ed, const char *key);
-edit_data *edit_init(Enventor_Object *enventor, Eina_Bool main);
+edit_data *edit_init(Enventor_Object *enventor, Enventor_Item *it);
 void edit_term(edit_data *ed);
 Evas_Object *edit_obj_get(edit_data *ed);
 Eina_Bool edit_changed_get(edit_data *ed);
@@ -283,6 +283,7 @@ void edit_cursor_pos_set(edit_data *ed, int position);
 int edit_cursor_pos_get(edit_data *ed);
 const char *edit_selection_get(edit_data *ed);
 Eina_Bool edit_is_main_file(edit_data *ed);
+Eina_Bool edit_focus_get(edit_data *ed);
 
 /* util */
 void mem_fail_msg(void);

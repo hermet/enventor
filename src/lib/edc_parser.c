@@ -1306,13 +1306,11 @@ end_of_parts_block_find(const char *pos)
 static const char *
 group_beginning_pos_get(const char* source, const char *group_name)
 {
-   if (!group_name) return NULL;
-
    const char* GROUP_SYNTAX_NAME = "group";
    const char *quot = QUOT_UTF8;
    const int quot_len = QUOT_UTF8_LEN;
+
    const char *pos = strstr(source, GROUP_SYNTAX_NAME);
-   int group_name_len = strlen(group_name);
 
    //TODO: Process comments and quotes.
    while (pos)
@@ -1322,7 +1320,7 @@ group_beginning_pos_get(const char* source, const char *group_name)
       name += quot_len;
       pos = strstr(name, quot);
       if (!pos) return NULL;
-      if (!strncmp(name, group_name, group_name_len))
+      if (!strncmp(name, group_name, 5))
         return pos;
       pos = strstr(++pos,  GROUP_SYNTAX_NAME);
    }

@@ -12,3 +12,4 @@ Enventor_Item *file_mgr_focused_item_get(void);
 void file_mgr_file_focus(Enventor_Item *it);
 Eina_Bool file_mgr_save_all(void);
 Enventor_Item *file_mgr_main_item_get(void);
+Eina_Bool file_mgr_modified_get(void);

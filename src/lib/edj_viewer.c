@@ -16,6 +16,7 @@ struct viewer_s
    Evas_Object *scroller;
    Evas_Object *event_rect;
    Enventor_Object *enventor;
+   Enventor_Item *it;
 
    Evas_Object *part_obj;
    Evas_Object *part_highlight;
@@ -181,8 +182,7 @@ view_obj_create_post_job(view_data *vd)
 
    view_obj_parts_callbacks_set(vd);
 
-   evas_object_smart_callback_call(vd->enventor, SIG_LIVE_VIEW_LOADED,
-                                   (void*)edj_mgr_obj_get());
+   evas_object_smart_callback_call(vd->enventor, SIG_LIVE_VIEW_LOADED, vd->it);
    view_images_monitor_set(vd);
 }
 
@@ -383,8 +383,7 @@ update_edj_file_internal(view_data *vd)
    vd->edj_reload_need = EINA_FALSE;
    vd->file_set_finished = EINA_TRUE;
 
-   evas_object_smart_callback_call(vd->enventor, SIG_LIVE_VIEW_UPDATED,
-                                   edj_mgr_obj_get());
+   evas_object_smart_callback_call(vd->enventor, SIG_LIVE_VIEW_UPDATED, vd->it);
 }
 
 static Eina_Bool
@@ -604,7 +603,7 @@ view_wireframes_set(view_data *vd, Eina_Bool wireframes)
 }
 
 view_data *
-view_init(Enventor_Object *enventor, const char *group,
+view_init(Enventor_Object *enventor, Enventor_Item *it, const char *group,
           void (*del_cb)(void *data), void *data)
 {
    view_data *vd = calloc(1, sizeof(view_data));
@@ -614,6 +613,7 @@ view_init(Enventor_Object *enventor, const char *group,
         return NULL;
      }
    vd->enventor = enventor;
+   vd->it = it;
    vd->scroller = view_scroller_create(enventor);
 
    vd->group_name = eina_stringshare_add(group);

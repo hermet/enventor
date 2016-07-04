@@ -93,7 +93,7 @@ key_up_cb(void *data, int type EINA_UNUSED, void *ev)
    Enventor_Object_Data *pd = data;
    Ecore_Event_Key *event = ev;
 
-   edit_key_up_event_dispatch(pd->main_it.ed, event->key);
+   edit_key_up_event_dispatch(pd->focused_it->ed, event->key);
 
    return ECORE_CALLBACK_DONE;
 }
@@ -103,10 +103,10 @@ key_down_cb(void *data, int type EINA_UNUSED, void *ev)
 {
    Enventor_Object_Data *pd = data;
    Ecore_Event_Key *event = ev;
-   Eina_Bool ret = enventor_object_focus_get(pd->obj);
+   Eina_Bool ret = edit_focus_get(pd->focused_it->ed);
    if (!ret) return ECORE_CALLBACK_PASS_ON;
 
-   if (edit_key_down_event_dispatch(pd->main_it.ed, event->key))
+   if (edit_key_down_event_dispatch(pd->focused_it->ed, event->key))
      return ECORE_CALLBACK_DONE;
 
    if (autocomp_event_dispatch(event->key))
@@ -119,7 +119,8 @@ static void
 edit_view_sync_cb(void *data, Eina_Stringshare *state_name, double state_value,
                   Eina_Stringshare *part_name, Eina_Stringshare *group_name)
 {
-   Enventor_Object_Data *pd = data;
+   Enventor_Item *it = data;
+   Enventor_Object_Data *pd = it->pd;
 
    edj_mgr_all_views_reload();
 
@@ -130,7 +131,7 @@ edit_view_sync_cb(void *data, Eina_Stringshare *state_name, double state_value,
         if (vd) edj_mgr_view_switch_to(vd);
         else
           {
-             vd = edj_mgr_view_new(group_name);
+             vd = edj_mgr_view_new(it, group_name);
              if (!vd) return;
           }
         view_dummy_set(vd, pd->dummy_parts);
@@ -476,21 +477,6 @@ _enventor_object_auto_complete_list_show(Eo *obj EINA_UNUSED,
    autocomp_list_show();
 }
 
-EOLIAN static void
-_enventor_object_modified_set(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd,
-                                  Eina_Bool modified)
-{
-   //Main Item
-   edit_changed_set(pd->main_it.ed, modified);
-}
-
-EOLIAN static Eina_Bool
-_enventor_object_modified_get(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
-{
-   //Main Item
-   return edit_changed_get(pd->main_it.ed);
-}
-
 EOLIAN static Eina_Bool
 _enventor_object_path_set(Eo *obj EINA_UNUSED,
                           Enventor_Object_Data *pd EINA_UNUSED,
@@ -665,7 +651,7 @@ _enventor_object_focus_set(Eo *obj EINA_UNUSED,
 EOLIAN static Eina_Bool
 _enventor_object_focus_get(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
 {
-   return elm_object_focus_get(edit_entry_get(pd->main_it.ed));
+   return edit_focus_get(pd->focused_it->ed);
 }
 
 EOLIAN static void
@@ -865,11 +851,12 @@ enventor_object_sub_item_add(Enventor_Object *obj, const char *file)
 
    pd->sub_its = eina_list_append(pd->sub_its, it);
 
-   it->ed = edit_init(obj, EINA_FALSE);
+   it->ed = edit_init(obj, it);
    it->pd = pd;
 
    edit_load(it->ed, file);
    edit_changed_set(it->ed, EINA_FALSE);
+   edit_disabled_set(it->ed, EINA_TRUE);
 
    return it;
 }
@@ -885,8 +872,8 @@ enventor_object_main_item_set(Enventor_Object *obj, const char *file)
    _enventor_main_item_free(pd);
 
    pd->main_it.pd = pd;
-   pd->main_it.ed = edit_init(obj, EINA_TRUE);
-   edit_view_sync_cb_set(pd->main_it.ed, edit_view_sync_cb, pd);
+   pd->main_it.ed = edit_init(obj, &pd->main_it);
+   edit_view_sync_cb_set(pd->main_it.ed, edit_view_sync_cb, &pd->main_it);
    pd->focused_it = &pd->main_it;
 
    Eina_Bool ret = efl_file_set(obj, file, NULL);
@@ -927,7 +914,7 @@ enventor_item_focus_set(Enventor_Item *it)
    Enventor_Object *obj = it->pd->obj;
    Enventor_Object_Data *pd = eo_data_scope_get(obj, ENVENTOR_OBJECT_CLASS);
 
-   edit_view_sync_cb_set(it->ed, edit_view_sync_cb, pd);
+   edit_view_sync_cb_set(it->ed, edit_view_sync_cb, it);
 
    pd->focused_it = it;
 
@@ -1094,5 +1081,22 @@ enventor_item_file_save(Enventor_Item *it, const char *file)
    if (saved) build_edc();
    return saved;
 }
+
+EAPI Eina_Bool
+enventor_item_modified_get(const Enventor_Item *it)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(it, EINA_FALSE);
+
+   return edit_changed_get(it->ed);
+}
+
+EAPI void
+enventor_item_modified_set(Enventor_Item *it, Eina_Bool modified)
+{
+   EINA_SAFETY_ON_NULL_RETURN(it);
+
+   edit_changed_set(it->ed, modified);
+}
+
 
 #include "enventor_object.eo.c"

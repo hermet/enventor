@@ -193,7 +193,7 @@ redoundo_undo(redoundo_data *rd, Eina_Bool *changed)
 
    if (!rd->last_diff)
      {
-        Eina_Bool saved = edit_save(rd->ed, build_edc_path_get());
+        Eina_Bool saved = edit_save(rd->ed, edit_file_get(rd->ed));
         if (saved) build_edc();
         return 0;
      }
@@ -256,7 +256,7 @@ redoundo_undo(redoundo_data *rd, Eina_Bool *changed)
 
    if (rd->last_diff && rd->last_diff->buildable)
      {
-        edit_save(rd->ed, build_edc_path_get());
+        edit_save(rd->ed, edit_file_get(rd->ed));
         build_edc();
      }
 
@@ -341,7 +341,7 @@ redoundo_redo(redoundo_data *rd, Eina_Bool *changed)
 
    if (rd->last_diff && rd->last_diff->buildable)
      {
-        edit_save(rd->ed, build_edc_path_get());
+        edit_save(rd->ed, edit_file_get(rd->ed));
         build_edc();
      }
 

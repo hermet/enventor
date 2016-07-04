@@ -130,7 +130,7 @@ edj_mgr_view_del(view_data *vd)
 }
 
 view_data *
-edj_mgr_view_new(const char *group)
+edj_mgr_view_new(Enventor_Item *it, const char *group)
 {
    edj_mgr *em = g_em;
 
@@ -141,7 +141,7 @@ edj_mgr_view_new(const char *group)
         return NULL;
      }
 
-   view_data *vd = view_init(em->enventor, group, view_del_cb, edj);
+   view_data *vd = view_init(em->enventor, it, group, view_del_cb, edj);
    if (!vd)
      {
         free(edj);

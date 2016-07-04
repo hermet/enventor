@@ -379,7 +379,7 @@ fileselector_save_done_cb(void *data, Evas_Object *obj, void *event_info)
         edj_pathes = eina_list_append(edj_pathes, selected);
         enventor_object_path_set(enventor, ENVENTOR_PATH_TYPE_EDJ,
                                  edj_pathes);
-        enventor_object_modified_set(enventor, EINA_TRUE);
+        enventor_item_modified_set(it, EINA_TRUE);
         enventor_item_file_save(it, NULL);
         eina_list_free(edj_pathes);
      }
@@ -667,7 +667,7 @@ menu_edc_load(void)
    menu_data *md = g_md;
    EINA_SAFETY_ON_NULL_RETURN(md);
 
-   if (enventor_object_modified_get(base_enventor_get()))
+   if (file_mgr_modified_get())
      warning_open(md, load_yes_btn_cb, load_save_btn_cb);
    else
      edc_file_load(md);
