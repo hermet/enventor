@@ -8,7 +8,7 @@
 #define QUEUE_SIZE 20
 #define COMPSET_PAIR_MINIMUM 1
 #define MAX_CONTEXT_STACK 40
-#define MAX_KEYWORD_LENGHT 40
+#define MAX_KEYWORD_LENGTH 40
 
 typedef struct lexem_s
 {
@@ -127,48 +127,45 @@ lexem_tree_free(lexem **root)
 static void
 context_lexem_thread_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
-   ctx_lexem_td *td = (ctx_lexem_td *)data;
+   const int quot_len = QUOT_UTF8_LEN;
 
-   Eina_Bool find_flag = EINA_FALSE;
-   Eina_Bool dot_lex = EINA_FALSE;
-   Eina_List *l = NULL;
-   Eina_List *nodes = td->ad->lexem_root->nodes;
-   td->result = (lexem *)td->ad->lexem_root;
+   ctx_lexem_td *td = (ctx_lexem_td *)data;
+   if (!td->utf8) return;
+
    int cur_pos = td->cur_pos;
    if (cur_pos <= 1) return;
 
+   Eina_List *l = NULL;
+   Eina_List *nodes = td->ad->lexem_root->nodes;
+   td->result = (lexem *)td->ad->lexem_root;
    int i = 0;
-
-   if (!td->utf8) return;
-
+   int k = 0;
+   int depth = 0;
+   int context_len = 0;
+   char stack[MAX_CONTEXT_STACK][MAX_KEYWORD_LENGTH];
    char *utf8 = td->utf8;
    char *cur = utf8;
    char *end = cur + cur_pos;
-   char stack[MAX_CONTEXT_STACK][MAX_KEYWORD_LENGHT];
-   int depth = 0;
    char *help_ptr = NULL;
    char *help_end_ptr = NULL;
-
    const char *quot = QUOT_UTF8;
-   const int quot_len = QUOT_UTF8_LEN;
-   int quot_cnt = 0;
-   int context_len = 0;
+   Eina_Bool inside_quot = EINA_FALSE;
+   Eina_Bool find_flag = EINA_FALSE;
+   Eina_Bool dot_lex = EINA_FALSE;
 
    while (cur && cur <= end)
      {
+        //Check inside quote
         if ((cur != end) && (!strncmp(cur, quot, quot_len)))
           {
-             /*TODO: add exception for case '\"'*/
-            quot_cnt++;
-            cur++;
-            continue;
+             /* TODO: add exception for case '\"' */
+             inside_quot = !inside_quot;
           }
-        if (quot_cnt % 2)
+        if (inside_quot)
           {
              cur++;
              continue;
           }
-
 
         //Check inside comment
         if (*cur == '/')
@@ -185,75 +182,101 @@ context_lexem_thread_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
                }
           }
 
+        //Case 1. Find a context and store it.
         if (*cur == '{')
           {
-             for (help_end_ptr = cur;
-                  !isalnum(*help_end_ptr);
-                  help_end_ptr--);
-             for (help_ptr = help_end_ptr;
-                  ((help_ptr >= utf8) &&
-                   ((isalnum(*help_ptr )) || (*help_ptr == '_')));
-                  help_ptr--);
+             //Skip non-alpha numberics.
+             help_end_ptr = cur;
+             while (!isalnum(*help_end_ptr))
+               help_end_ptr--;
+
+             help_ptr = help_end_ptr;
+
+             //Figure out current context keyword
+             while ((help_ptr >= utf8) &&
+                    (isalnum(*help_ptr) || (*help_ptr == '_')))
+               {
+                  help_ptr--;
+               }
+
              if (help_ptr != utf8)
                help_ptr++;
 
+             //Exceptional case for size.
              context_len = help_end_ptr - help_ptr + 1;
-             if (context_len >= MAX_KEYWORD_LENGHT)
+             if (context_len >= MAX_KEYWORD_LENGTH)
                {
                   cur++;
                   continue;
                }
 
-             memset(stack[depth], 0x0, MAX_KEYWORD_LENGHT);
+             //Store this context.
              strncpy(stack[depth], help_ptr, context_len);
-             depth++;
-             if (depth == MAX_CONTEXT_STACK) break;
+             if ((++depth) == MAX_CONTEXT_STACK) break;
           }
+
+        //Case 2. Find a context and store it.
         if (*cur == '.')
           {
              Eina_Bool alpha_present = EINA_FALSE;
              help_end_ptr = cur - 1;
-             for (help_ptr = help_end_ptr; help_ptr && isalnum(*help_ptr); help_ptr--)
-                if (isalpha(*help_ptr)) alpha_present = EINA_TRUE;
+
+             //Backtrace to the beginning of a certain keyword.
+             for (help_ptr = help_end_ptr; help_ptr && isalnum(*help_ptr);
+                  help_ptr--)
+               {
+                  if (isalpha(*help_ptr)) alpha_present = EINA_TRUE;
+               }
+
+             //Hanlding Exception cases.
              if ((!alpha_present) || (!strncmp(help_ptr, quot, quot_len)))
                {
                   cur++;
                   continue;
                }
+
              if (help_ptr != utf8) help_ptr++;
+
              context_len = help_end_ptr - help_ptr + 1;
-             if (context_len >= MAX_KEYWORD_LENGHT)
+             if (context_len >= MAX_KEYWORD_LENGTH)
                {
                   cur++;
                   continue;
                }
-             memset(stack[depth], 0x0, MAX_KEYWORD_LENGHT);
+
+             //Store this context.
              strncpy(stack[depth], help_ptr, context_len);
-             depth++;
-             if (depth == MAX_CONTEXT_STACK) break;
+             strncpy(stack[depth], help_ptr, context_len);
+             if ((++depth) == MAX_CONTEXT_STACK) break;
+
              dot_lex = EINA_TRUE;
-         }
-        if ((*cur == ';') && dot_lex)
+          }
+
+        //End of a dot lex context.
+        //Reset the previous context if its out of scope.
+        if (dot_lex && (*cur == ';'))
           {
              dot_lex = EINA_FALSE;
-             memset(stack[depth], 0x0, MAX_KEYWORD_LENGHT);
+             memset(stack[depth], 0x0, MAX_KEYWORD_LENGTH);
              if (depth > 0) depth--;
           }
+
+        //End of a context. Reset the previous context if its out of scope.
         if (*cur == '}')
           {
-             memset(stack[depth], 0x0, MAX_KEYWORD_LENGHT);
+             memset(stack[depth], 0x0, MAX_KEYWORD_LENGTH);
              if (depth > 0) depth--;
           }
         cur++;
      }
 
-   if (quot_cnt % 2)
+   if (inside_quot)
      {
         td->result = NULL;
         return;
      }
 
-   int k = 0;
+   // Find current context where a cursor is inside of among the stack.
    for (i = 0; i < depth; i++)
      {
         find_flag = EINA_FALSE;
@@ -261,12 +284,15 @@ context_lexem_thread_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
           {
              for (k = 0; k < td->result->name_count; k++)
                {
-                 if (!strncmp(stack[i], td->result->name[k], strlen(td->result->name[k])))
-                   {
-                      nodes = td->result->nodes;
-                      find_flag = EINA_TRUE;
-                   }
-                 if (find_flag) break;
+                  //Ok, We go through this context.
+                  //FIXME: Need to compare elaborately?
+                  if (!strncmp(stack[i], td->result->name[k],
+                               strlen(td->result->name[k])))
+                    {
+                       nodes = td->result->nodes;
+                       find_flag = EINA_TRUE;
+                       break;
+                    }
                }
              if (find_flag) break;
           }
