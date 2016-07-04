@@ -321,7 +321,6 @@ cur_context_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    const char *DEF_STATE_NAME = "default";
    const int DEF_STATE_LEN = 7;
 
-
    cur_context_td *td = data;
    char *utf8 = td->utf8;
    int cur_pos = td->cur_pos;
@@ -345,6 +344,8 @@ cur_context_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
 
    int cur_line = 1;
    Eina_List *macro_list = NULL;
+
+   if (!collections) bracket = 1;
 
    if (td->pd->macro_update)
      {
@@ -397,28 +398,15 @@ cur_context_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
           {
              bracket--;
              p++;
-
-             if (collections)
-               {
-                  if (bracket == 1) group_name = NULL;
-                  else if (bracket == 2 && inside_parts == EINA_TRUE)
-                    inside_parts = EINA_FALSE;
-                  else if (bracket == 3) part_name = NULL;
-                  else if (bracket == 4) desc_name = NULL;
-               }
-             else
-               {
-                  if (bracket == 0) group_name = NULL;
-                  else if (bracket == 1 && inside_parts == EINA_TRUE)
-                    inside_parts = EINA_FALSE;
-                  else if (bracket == 2) part_name = NULL;
-                  else if (bracket == 3) desc_name = NULL;
-               }
+             if (bracket == 1) group_name = NULL;
+             else if (bracket == 2 && inside_parts == EINA_TRUE)
+               inside_parts = EINA_FALSE;
+             else if (bracket == 3) part_name = NULL;
+             else if (bracket == 4) desc_name = NULL;
              continue;
           }
         //check block "Parts" in
-        if ((collections && (bracket == 2)) ||
-            (!collections && (bracket == 1)))
+        if (bracket == 2)
           {
              if (!strncmp(p, PARTS, PARTS_LEN))
                {
@@ -429,8 +417,7 @@ cur_context_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
                }
          }
         //Check Part in
-        if ((collections && (bracket == 3)) ||
-             (!collections && (bracket == 2)))
+        if (bracket == 3)
           {
              int part_idx = -1;
               //part ? image ? swallow ? text ? rect ?
@@ -461,8 +448,7 @@ cur_context_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
                 }
           }
         //Check Description in
-        if ((collections && (bracket == 4)) ||
-            (!collections && (bracket == 3)))
+        if (bracket == 4)
           {
              //description? or desc?
              int desc_idx = -1;
@@ -559,8 +545,7 @@ cur_context_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
                }
           }
         //Check Group in. Probably inside of collections or the most outside.
-        if ((collections && (bracket == 1)) ||
-            (!collections && (bracket == 0)))
+        if (bracket == 1)
           {
              if (!strncmp(p, GROUP, GROUP_LEN))
                {

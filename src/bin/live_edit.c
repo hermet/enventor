@@ -222,7 +222,9 @@ view_obj_get(live_data *ld)
 {
    //This is a trick! we got the actual view object from the live edit.
    Evas_Object *o = view_scroller_get(ld);
+   if (!o) return NULL;
    Evas_Object *o2 = elm_object_content_get(o);
+   if (!o2) return NULL;
    return elm_object_part_content_get(o2, "elm.swallow.content");
 }
 
@@ -1959,7 +1961,7 @@ rel_to_values_reset(live_data *ld)
    ld->rel_to_info.min_h = 0;
 }
 
-static void
+static Eina_Bool
 live_edit_layer_set(live_data *ld)
 {
    //Keygrabber
@@ -1995,7 +1997,15 @@ live_edit_layer_set(live_data *ld)
    //Create Live View Layout
    Evas_Object *layout = elm_layout_add(ld->live_view);
    Evas_Object *view_obj = view_obj_get(ld);
+   if (!view_obj)
+     {
+        stats_info_msg_update("Live Edit is not avaiable here. A base group is required!");
+        live_edit_cancel(EINA_FALSE);
+        return EINA_FALSE;
+     }
    evas_object_smart_member_add(layout, view_obj);
+   //Live Edit layout should be more than spacer and dummies. 
+   evas_object_layer_set(layout, EVAS_LAYER_MAX);
    elm_layout_file_set(layout, EDJE_PATH,  "live_edit_layout");
    evas_object_event_callback_add(layout, EVAS_CALLBACK_MOUSE_DOWN,
                                   layout_mouse_down_cb, ld);
@@ -2024,6 +2034,8 @@ live_edit_layer_set(live_data *ld)
    ld->last_cp = Ctrl_Pt_Cnt;
 
    panes_live_edit_fixed_bar_visible_set(EINA_TRUE);
+
+   return EINA_TRUE;
 }
 
 static void
@@ -2041,7 +2053,7 @@ live_btn_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
    ld->live_view = enventor_object_live_view_get(base_enventor_get());
    ld->on = EINA_TRUE;
 
-   live_edit_layer_set(ld);
+   if (!live_edit_layer_set(ld)) return;
 
    stats_info_msg_update(_("Double click part to confirm."
                            "(Esc = cancel, Direction Key ="

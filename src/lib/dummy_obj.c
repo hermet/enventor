@@ -146,22 +146,25 @@ dummy_objs_update(dummy_obj *dummy)
                   }
              if (!obj)
                {
+                  //Trick!. set smart members of actual live view object.
                   Evas_Object *scroller = view_obj_get(VIEW_DATA);
-                  Evas_Object *scroller_edje = elm_layout_edje_get(scroller);
-                  Evas_Object *clipper =
-                     (Evas_Object *)edje_object_part_object_get(scroller_edje,
-                                                                "clipper");
-                  obj = elm_layout_add(scroller);
-                  elm_layout_file_set(obj, EDJE_PATH, "spacer");
-                  evas_object_smart_member_add(obj, scroller);
+                  if (!scroller) continue;
+                  Evas_Object *o = elm_object_content_get(scroller);
+                  if (!o) continue;
+                  Evas_Object *o2 =
+                     elm_object_part_content_get(o, "elm.swallow.content");
+                  if (!o2) continue;
 
+                  obj = edje_object_add(evas);
+                  edje_object_file_set(obj, EDJE_PATH, "spacer");
+                  evas_object_layer_set(obj, EVAS_LAYER_MAX - 1);
+                  evas_object_smart_member_add(obj, o2);
 
                   po = malloc(sizeof(part_obj));
                   po->obj = obj;
                   po->name = eina_stringshare_add(part_name);
                   dummy->spacers = eina_list_append(dummy->spacers, po);
                   evas_object_show(obj);
-                  evas_object_clip_set(obj, clipper);
                   evas_object_data_set(obj, EDIT_LAYOUT_KEY, dummy->layout);
 
                   evas_object_event_callback_add(obj, EVAS_CALLBACK_MOUSE_DOWN,

@@ -767,7 +767,7 @@ _enventor_object_template_part_insert(Eo *obj EINA_UNUSED,
        rel2_x_to =  buf;
      }
 
-   return template_part_insert(pd->main_it.ed, part, insert_type,
+   return template_part_insert(pd->focused_it->ed, part, insert_type,
                                fixed_w, fixed_h,
                                rel1_x_to, rel1_y_to,
                                rel2_x_to, rel2_y_to,

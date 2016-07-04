@@ -168,7 +168,6 @@ edj_mgr_view_switch_to(view_data *vd)
       elm_object_part_content_unset(em->layout, "elm.swallow.content");
    elm_object_part_content_set(em->layout, "elm.swallow.content",
                                view_obj_get(vd));
-
    view_scale_set(vd, em->view_scale);
 
    //Switching effect

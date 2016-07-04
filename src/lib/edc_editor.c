@@ -1427,6 +1427,7 @@ edit_init(Enventor_Object *enventor, Enventor_Item *it)
    ed->pd = parser_init();
    ed->rd = redoundo_init(ed, enventor);
    ed->sh = syntax_init(ed);
+   ed->main = (enventor_object_main_item_get(ed->enventor) == ed->it);
 
    return ed;
 }
@@ -1843,7 +1844,7 @@ edit_text_get(edit_data *ed)
 Eina_Bool
 edit_is_main_file(edit_data *ed)
 {
-   return (enventor_object_main_item_get(ed->enventor) == ed->it);
+   return ed->main;
 }
 
 Eina_Bool
