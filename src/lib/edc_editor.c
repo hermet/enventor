@@ -1829,3 +1829,9 @@ edit_text_get(edit_data *ed)
 {
    return elm_entry_entry_get(ed->en_edit);
 }
+
+Eina_Bool
+edit_is_main_file(edit_data *ed)
+{
+   return ed->main;
+}

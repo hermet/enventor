@@ -153,6 +153,14 @@ context_lexem_thread_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
    Eina_Bool find_flag = EINA_FALSE;
    Eina_Bool dot_lex = EINA_FALSE;
 
+   //In case of sub items, it won't contain "collections".
+   //We added it arbitrary.
+   if (!edit_is_main_file(td->ad->ed))
+     {
+        strcpy(stack[depth], "collections");
+        depth++;
+     }
+
    while (cur && cur <= end)
      {
         //Check inside quote

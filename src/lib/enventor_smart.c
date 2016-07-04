@@ -356,7 +356,6 @@ _enventor_object_efl_file_file_set(Eo *obj EINA_UNUSED,
                                    const char *group EINA_UNUSED)
 {
    build_edc_path_set(file);
-   autocomp_target_set(pd->main_it.ed);
    if (!file) goto err;
 
    /* Create empty file*/
@@ -869,7 +868,6 @@ enventor_object_sub_item_add(Enventor_Object *obj, const char *file)
    it->ed = edit_init(obj, EINA_FALSE);
    it->pd = pd;
 
-   autocomp_target_set(it->ed);
    edit_load(it->ed, file);
    edit_changed_set(it->ed, EINA_FALSE);
 
@@ -937,6 +935,8 @@ enventor_item_focus_set(Enventor_Item *it)
    edit_linenumber_set(it->ed, pd->linenumber);
    edit_font_scale_set(it->ed, pd->font_scale);
    edit_disabled_set(it->ed, pd->disabled);
+
+   autocomp_target_set(it->ed);
 
    return EINA_TRUE;
 }
