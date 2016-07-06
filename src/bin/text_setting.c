@@ -974,7 +974,7 @@ text_setting_config_set(text_setting_data *tsd)
 void
 text_setting_reset(text_setting_data *tsd)
 {
-   EINA_SAFETY_ON_NULL_RETURN(tsd);
+   if (!tsd) return;
 
    //font scale
    tsd->font_scale = (double) config_font_scale_get();
