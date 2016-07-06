@@ -85,8 +85,8 @@ wireframes_objs_update(wireframes_obj *wireframes)
                 (Evas_Object *)edje_object_part_object_get(scroller_edje,
                                                            "clipper");
 
-             pobj = elm_layout_add(scroller);
-             elm_layout_file_set(pobj, EDJE_PATH, "wireframes");
+             pobj = elm_image_add(scroller);
+             elm_image_file_set(pobj, EDJE_PATH, "wireframes");
              evas_object_smart_member_add(pobj, scroller);
 
              po = malloc(sizeof(part_obj));
