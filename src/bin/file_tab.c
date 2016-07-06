@@ -296,6 +296,16 @@ file_tab_term(void)
    file_data *fd = g_fd;
    EINA_SAFETY_ON_NULL_RETURN(fd);
 
+   file_tab_it *fti;
+   Eina_List *l;
+   Elm_Object_Item *it;
+   Eina_List *children = (Eina_List *)elm_list_items_get(fd->list);
+   EINA_LIST_FOREACH(children, l, it)
+     {
+        fti = elm_object_item_data_get(it);
+        free(fti);
+     }
+
    evas_object_del(fd->box);
 
    free(fd);
