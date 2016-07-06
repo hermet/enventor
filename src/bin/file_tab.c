@@ -52,10 +52,13 @@ static void
 list_item_selected_cb(void *data, Evas_Object *obj EINA_UNUSED,
                       void *event_info)
 {
-   file_data *fd = data;
+   file_data *fd = g_fd;
+   if (!fd) return;
+
    Elm_Object_Item *it = event_info;
+
    if (fd->selected_it == it) return;
-   file_tab_it *fti = elm_object_item_data_get(it);
+   file_tab_it *fti = data;
    file_mgr_file_focus(fti->enventor_it);
 }
 
