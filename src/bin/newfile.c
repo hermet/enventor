@@ -125,7 +125,7 @@ newfile_default_set(Eina_Bool default_edc)
    Eina_Bool success = EINA_TRUE;
    char buf[PATH_MAX];
 
-   snprintf(buf, sizeof(buf), "%s/templates/basic.edc",
+   snprintf(buf, sizeof(buf), "%s/templates/Basic.edc",
             elm_app_data_dir_get());
    success = eina_file_copy(buf,config_input_path_get(),
                             EINA_FILE_COPY_DATA, NULL, NULL);

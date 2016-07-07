@@ -138,7 +138,7 @@ newfile_open(menu_data *md)
 
    Evas_Object *layout = elm_layout_add(base_win_get());
    elm_layout_file_set(layout, EDJE_PATH, "newfile_layout");
-   elm_object_part_text_set(layout, "elm.text.title", _("New File: Choose a template"));
+   elm_object_part_text_set(layout, "elm.text.title", _("New File: Choose a Template"));
    elm_object_signal_callback_add(layout, "elm,state,dismiss,done", "",
                                   newfile_dismiss_done, md);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);

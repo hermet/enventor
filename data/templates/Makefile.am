@@ -4,96 +4,97 @@ EDJE_CC = @edje_cc@
 EDJE_FLAGS = -id $(top_srcdir)/data/images -sd $(top_srcdir)/data/sounds
 
 filesdir = $(datadir)/$(PACKAGE)/templates
-files_DATA = basic.edc \
-             basic.edj \
-             clip.edc \
-             clip.edj \
-             empty.edc \
-             empty.edj \
-             group.edc \
-             group.edj \
-             image.edc \
-             image.edj \
-             map.edc \
-             map.edj \
-             proxy.edc \
-             proxy.edj \
-             rect.edc \
-             rect.edj \
-             rotation+zoom.edc \
-             rotation+zoom.edj \
-             sound.edc \
-             sound.edj \
-             spacer.edc \
-             spacer.edj \
-             text.edc \
-             text.edj \
-             textblock.edc \
-             textblock.edj \
-             transition.edc \
-             transition.edj \
-             tween.edc \
-             tween.edj \
-             watchface.edc \
-             watchface.edj \
-             watchface2.edc \
-             watchface2.edj
+files_DATA = Basic.edc \
+             Basic.edj \
+             Clip.edc \
+             Clip.edj \
+             Empty.edc \
+             Empty.edj \
+             Group.edc \
+             Group.edj \
+             Image.edc \
+             Image.edj \
+             Map.edc \
+             Map.edj \
+             Proxy.edc \
+             Proxy.edj \
+             Rect.edc \
+             Rect.edj \
+             Rotation+Zoom.edc \
+             Rotation+Zoom.edj \
+             Sound.edc \
+             Sound.edj \
+             Spacer.edc \
+             Spacer.edj \
+             Text.edc \
+             Text.edj \
+             Textblock.edc \
+             Textblock.edj \
+             Transition.edc \
+             Transition.edj \
+             Tween.edc \
+             Tween.edj \
+             Watchface.edc \
+             Watchface.edj \
+             Watchface2.edc \
+             Watchface2.edj
 
 EXTRA_DIST = $(files_DATA)
 
 srcdir = $(top_srcdir)/data/templates
 builddir = $(top_builddir)/data/templates
 
-basic.edj: Makefile basic.edc
-	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/basic.edc $(builddir)/basic.edj
+Basic.edj: Makefile Basic.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/Basic.edc $(builddir)/Basic.edj
 
-empty.edj: Makefile empty.edc
-	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/empty.edc $(builddir)/empty.edj
+Empty.edj: Makefile Empty.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/Empty.edc $(builddir)/Empty.edj
 
-map.edj: Makefile map.edc
-	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/map.edc $(builddir)/map.edj
+Map.edj: Makefile Map.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/Map.edc $(builddir)/Map.edj
 
-textblock.edj: Makefile textblock.edc
-	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/textblock.edc $(builddir)/textblock.edj
+Textblock.edj: Makefile Textblock.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/Textblock.edc $(builddir)/Textblock.edj
 
-transition.edj: Makefile transition.edc
-	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/transition.edc $(builddir)/transition.edj
+Transition.edj: Makefile Transition.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/Transition.edc $(builddir)/Transition.edj
 
-tween.edj: Makefile tween.edc
-	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/tween.edc $(builddir)/tween.edj
+Tween.edj: Makefile Tween.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/Tween.edc $(builddir)/Tween.edj
 
-rect.edj: Makefile rect.edc
-	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/rect.edc $(builddir)/rect.edj
+Rect.edj: Makefile Rect.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/Rect.edc $(builddir)/Rect.edj
 
-rotation+zoom.edj: Makefile rotation+zoom.edc
-	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/rotation+zoom.edc $(builddir)/rotation+zoom.edj
+Rotation+Zoom.edj: Makefile Rotation+Zoom.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/Rotation+Zoom.edc $(builddir)/Rotation+Zoom.edj
 
-group.edj: Makefile group.edc
-	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/group.edc $(builddir)/group.edj
+Group.edj: Makefile Group.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/Group.edc $(builddir)/Group.edj
 
-image.edj: Makefile image.edc
-	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/image.edc $(builddir)/image.edj
+Image.edj: Makefile Image.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/Image.edc $(builddir)/Image.edj
 
-text.edj: Makefile text.edc
-	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/text.edc $(builddir)/text.edj
+Text.edj: Makefile Text.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/Text.edc $(builddir)/Text.edj
 
-proxy.edj: Makefile proxy.edc
-	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/proxy.edc $(builddir)/proxy.edj
+Proxy.edj: Makefile Proxy.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/Proxy.edc $(builddir)/Proxy.edj
 
-clip.edj: Makefile clip.edc
-	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/clip.edc $(builddir)/clip.edj
+Clip.edj: Makefile Clip.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/Clip.edc $(builddir)/Clip.edj
 
-spacer.edj: Makefile spacer.edc
-	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/spacer.edc $(builddir)/spacer.edj
+Spacer.edj: Makefile Spacer.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/Spacer.edc $(builddir)/Spacer.edj
 
-sound.edj: Makefile sound.edc
-	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/sound.edc $(builddir)/sound.edj
+Sound.edj: Makefile Sound.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/Sound.edc $(builddir)/Sound.edj
 
-watchface.edj: Makefile watchface.edc
-	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/watchface.edc $(builddir)/watchface.edj
+Watchface.edj: Makefile Watchface.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/Watchface.edc $(builddir)/Watchface.edj
 
-watchface2.edj: Makefile watchface2.edc
-	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/watchface2.edc $(builddir)/watchface2.edj
+Watchface2.edj: Makefile Watchface2.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/Watchface2.edc $(builddir)/Watchface2.edj
 
 clean-local:
 	rm -f *.edj
+	rm -f $(datadir)/$(PACKAGE)/templates/*edj
