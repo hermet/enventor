@@ -1012,8 +1012,6 @@ edit_edc_load(edit_data *ed, const char *file_path)
    ed->cur_line = 1;
    ed->line_max = line_num;
 
-   group_name = parser_first_group_name_get(ed->pd, ed->en_edit);
-
    ecore_animator_add(syntax_color_timer_cb, ed);
 
    ret = EINA_TRUE;
@@ -1033,11 +1031,6 @@ err:
    cursor_line.max_line = ed->line_max;
    evas_object_smart_callback_call(ed->enventor, SIG_MAX_LINE_CHANGED,
                                    &cursor_line);
-
-   if (ed->view_sync_cb)
-     ed->view_sync_cb(ed->view_sync_cb_data, NULL, 0.0, NULL, group_name);
-
-   eina_stringshare_del(group_name);
 
    elm_entry_cursor_pos_set(ed->en_edit, 0);
 
@@ -1178,6 +1171,14 @@ edit_view_sync_cb_set(edit_data *ed,
 {
    ed->view_sync_cb = cb;
    ed->view_sync_cb_data = data;
+
+   Eina_Stringshare *group_name =
+      parser_first_group_name_get(ed->pd, ed->en_edit);
+
+   if (ed->view_sync_cb)
+     ed->view_sync_cb(ed->view_sync_cb_data, NULL, 0.0, NULL, group_name);
+
+   eina_stringshare_del(group_name);
 }
 
 Eina_Bool
