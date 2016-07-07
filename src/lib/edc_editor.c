@@ -1443,6 +1443,7 @@ edit_redoundo_get(edit_data *ed)
 Evas_Object *
 edit_obj_get(edit_data *ed)
 {
+   if (!ed) return NULL;
    return ed->scroller;
 }
 

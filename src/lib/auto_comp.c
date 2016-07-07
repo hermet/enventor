@@ -872,6 +872,8 @@ void
 autocomp_target_set(edit_data *ed)
 {
    autocomp_data *ad = g_ad;
+   if (!ad) return;
+
    Evas_Object *entry;
 
    queue_reset(ad);
