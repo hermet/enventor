@@ -26,15 +26,16 @@ typedef struct indent_line_s
 static int
 indent_depth_get(indent_data *id EINA_UNUSED, char *src, int pos)
 {
+   const char *quot = "\"";
+   const int quot_len = 1;
+
    if (!src || (pos < 1)) return 0;
 
    int depth = 0;
-   const char *quot = "\"";
-   int quot_len = 1; // strlen("&quot;");
    char *cur = (char *) src;
    char *end = ((char *) src) + pos;
 
-   while (cur && (cur <= end))
+   while (cur && (cur < end))
      {
         //Skip "" range
         if (*cur == *quot)
