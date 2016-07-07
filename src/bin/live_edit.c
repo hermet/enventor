@@ -418,24 +418,24 @@ live_edit_insert(live_data *ld)
 
    Enventor_Item *it = file_mgr_focused_item_get();
 
-   enventor_object_template_part_insert(base_enventor_get(),
-                                        type,
-                                        ENVENTOR_TEMPLATE_INSERT_LIVE_EDIT,
-                                        elm_check_state_get(ld->fixed_w_check),
-                                        elm_check_state_get(ld->fixed_h_check),
-                                        ld->rel_to_info.rel1_x_part,
-                                        ld->rel_to_info.rel1_y_part,
-                                        ld->rel_to_info.rel2_x_part,
-                                        ld->rel_to_info.rel2_y_part,
-                                        ld->rel_to_info.align_x,
-                                        ld->rel_to_info.align_y,
-                                        ld->rel_to_info.min_w,
-                                        ld->rel_to_info.min_h,
-                                        ld->rel_to_info.rel1_x,
-                                        ld->rel_to_info.rel1_y,
-                                        ld->rel_to_info.rel2_x,
-                                        ld->rel_to_info.rel2_y,
-                                        NULL, 0);
+   enventor_item_template_part_insert(file_mgr_focused_item_get(),
+                                      type,
+                                      ENVENTOR_TEMPLATE_INSERT_LIVE_EDIT,
+                                      elm_check_state_get(ld->fixed_w_check),
+                                      elm_check_state_get(ld->fixed_h_check),
+                                      ld->rel_to_info.rel1_x_part,
+                                      ld->rel_to_info.rel1_y_part,
+                                      ld->rel_to_info.rel2_x_part,
+                                      ld->rel_to_info.rel2_y_part,
+                                      ld->rel_to_info.align_x,
+                                      ld->rel_to_info.align_y,
+                                      ld->rel_to_info.min_w,
+                                      ld->rel_to_info.min_h,
+                                      ld->rel_to_info.rel1_x,
+                                      ld->rel_to_info.rel1_y,
+                                      ld->rel_to_info.rel2_x,
+                                      ld->rel_to_info.rel2_y,
+                                      NULL, 0);
    enventor_item_file_save(it, NULL);
 
    free(ld->rel_to_info.rel1_x_part);

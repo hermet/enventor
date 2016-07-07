@@ -162,36 +162,6 @@ class Enventor.Object (Elm.Widget, Efl.File) {
             @in color_type: Enventor_Syntax_Color_Type;
          }
       }
-      template_insert {
-         return: bool;
-         params {
-            @in syntax: char *;
-            @in n: size;
-         }
-      }
-      template_part_insert {
-         return: bool;
-         params {
-            @in type: Edje_Part_Type;
-            @in insert_type: Enventor_Template_Insert_Type;
-            @in fixed_w: bool;
-            @in fixed_h: bool;
-            @in rel1_x_to: char *;
-            @in rel1_y_to: char *;
-            @in rel2_x_to: char *;
-            @in rel2_y_to: char *;
-            @in align_x: float;
-            @in align_y: float;
-            @in min_w: int;
-            @in min_h: int;
-            @in rel1_x: float;
-            @in rel1_y: float;
-            @in rel2_x: float;
-            @in rel2_y: float;
-            @in syntax: char *;
-            @in n: size;
-         }
-      }
       ctxpopup_visible_get {
          return: bool;
       }

@@ -735,55 +735,6 @@ _enventor_object_live_view_get(Eo *obj EINA_UNUSED,
    return edj_mgr_obj_get();
 }
 
-EOLIAN static Eina_Bool
-_enventor_object_template_insert(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd,
-                                 char *syntax, size_t n)
-{
-   return template_insert(pd->main_it.ed, syntax, n);
-}
-
-EOLIAN static Eina_Bool
-_enventor_object_template_part_insert(Eo *obj EINA_UNUSED,
-                                      Enventor_Object_Data *pd,
-                                      Edje_Part_Type part,
-                                      Enventor_Template_Insert_Type insert_type,
-                                      Eina_Bool fixed_w, Eina_Bool fixed_h,
-                                      char *rel1_x_to, char *rel1_y_to,
-                                      char *rel2_x_to, char *rel2_y_to,
-                                      float align_x, float align_y,
-                                      int min_w, int min_h,
-                                      float rel1_x, float rel1_y,
-                                      float rel2_x,float rel2_y,
-                                      char *syntax, size_t n)
-{
-   // if mirror mode, exchange properties about left and right
-   if (pd->mirror_mode)
-     {
-       float x1, x2;
-       x1 = 1.0 - rel2_x;
-       x2 = 1.0 - rel1_x;
-       rel1_x = x1;
-       rel2_x = x2;
-
-       if (align_x == 0.0)
-         align_x = 1.0;
-       else if (align_x == 1.0)
-         align_x = 0.0;
-
-       char *buf;
-       buf = rel1_x_to;
-       rel1_x_to = rel2_x_to;
-       rel2_x_to =  buf;
-     }
-
-   return template_part_insert(pd->focused_it->ed, part, insert_type,
-                               fixed_w, fixed_h,
-                               rel1_x_to, rel1_y_to,
-                               rel2_x_to, rel2_y_to,
-                               align_x, align_y, min_w, min_h,
-                               rel1_x, rel1_y, rel2_x, rel2_y,
-                               NULL, syntax, n);
-}
 
 //TODO: Might need for items
 EOLIAN static void
@@ -882,7 +833,6 @@ enventor_object_main_item_set(Enventor_Object *obj, const char *file)
 
    pd->main_it.pd = pd;
    pd->main_it.ed = edit_init(obj, &pd->main_it);
-   edit_view_sync_cb_set(pd->main_it.ed, edit_view_sync_cb, &pd->main_it);
    pd->focused_it = &pd->main_it;
 
    Eina_Bool ret = efl_file_set(obj, file, NULL);
@@ -920,9 +870,11 @@ enventor_item_focus_set(Enventor_Item *it)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(it, EINA_FALSE);
 
-   Enventor_Object *obj = it->pd->obj;
-   Enventor_Object_Data *pd = eo_data_scope_get(obj, ENVENTOR_OBJECT_CLASS);
+   Enventor_Object_Data *pd = it->pd;
 
+   if (pd->focused_it == it) return EINA_TRUE;
+
+   if (pd->focused_it) edit_view_sync_cb_set(pd->focused_it->ed, NULL, NULL);
    edit_view_sync_cb_set(it->ed, edit_view_sync_cb, it);
 
    pd->focused_it = it;
@@ -1125,5 +1077,60 @@ enventor_item_del(Enventor_Item *it)
         free(it);
      }
 }
+
+Eina_Bool
+enventor_item_template_insert(Enventor_Item *it, char *syntax, size_t n)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(it, EINA_FALSE);
+
+   return template_insert(it->ed, syntax, n);
+}
+
+Eina_Bool
+enventor_item_template_part_insert(Enventor_Item *it,
+                                   Edje_Part_Type part,
+                                   Enventor_Template_Insert_Type insert_type,
+                                   Eina_Bool fixed_w, Eina_Bool fixed_h,
+                                   char *rel1_x_to, char *rel1_y_to,
+                                   char *rel2_x_to, char *rel2_y_to,
+                                   float align_x, float align_y,
+                                   int min_w, int min_h,
+                                   float rel1_x, float rel1_y,
+                                   float rel2_x,float rel2_y,
+                                   char *syntax, size_t n)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(it, EINA_FALSE);
+
+   Enventor_Object_Data *pd = it->pd;
+
+   // if mirror mode, exchange properties about left and right
+   if (pd->mirror_mode)
+     {
+        float x1, x2;
+        x1 = 1.0 - rel2_x;
+       x2 = 1.0 - rel1_x;
+       rel1_x = x1;
+       rel2_x = x2;
+
+       if (align_x == 0.0)
+         align_x = 1.0;
+       else if (align_x == 1.0)
+         align_x = 0.0;
+
+       char *buf;
+       buf = rel1_x_to;
+       rel1_x_to = rel2_x_to;
+       rel2_x_to =  buf;
+     }
+
+   return template_part_insert(it->ed, part, insert_type,
+                               fixed_w, fixed_h,
+                               rel1_x_to, rel1_y_to,
+                               rel2_x_to, rel2_y_to,
+                               align_x, align_y, min_w, min_h,
+                               rel1_x, rel1_y, rel2_x, rel2_y,
+                               NULL, syntax, n);
+}
+
 
 #include "enventor_object.eo.c"
