@@ -266,8 +266,7 @@ file_mgr_file_focus(Enventor_Item *it)
    EINA_SAFETY_ON_NULL_RETURN(it);
 
    file_tab_it_select(it);
-   enventor_item_focus_set(it);
-   base_text_editor_set(it);
+   enventor_item_represent(it);
    base_title_set(enventor_item_file_get(it));
 
    //Reset context if the find/replace is working on.

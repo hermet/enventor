@@ -271,7 +271,7 @@ _enventor_object_efl_canvas_group_group_add(Eo *obj, Enventor_Object_Data *pd)
 }
 
 EOLIAN static void
-_enventor_object_efl_canvas_group_group_del(Evas_Object *obj EINA_UNUSED, Enventor_Object_Data *pd)
+_enventor_object_efl_canvas_group_group_del(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
 {
    eina_stringshare_del(pd->font_name);
    eina_stringshare_del(pd->font_style);
@@ -289,149 +289,72 @@ _enventor_object_efl_canvas_group_group_del(Evas_Object *obj EINA_UNUSED, Envent
 EOLIAN static void
 _enventor_object_efl_canvas_group_group_member_add(Eo *obj, Enventor_Object_Data *pd EINA_UNUSED, Evas_Object *child)
 {
-   efl_canvas_group_member_add(eo_super(obj, MY_CLASS), child);
+   //Don't go through elm_widget to avoid color set.
+   evas_object_data_set(child, "_elm_leaveme", (void*)1);
 
-   if (evas_object_visible_get(obj)) evas_object_show(child);
-   else evas_object_hide(child);
+   efl_canvas_group_member_add(eo_super(obj, MY_CLASS), child);
 
    Evas_Coord x, y, w, h;
    evas_object_geometry_get(obj, &x, &y, &w, &h);
    evas_object_move(child, x, y);
    evas_object_resize(child, w, h);
-
    evas_object_clip_set(child, evas_object_clip_get(obj));
 }
 
 EOLIAN static void
-_enventor_object_efl_canvas_group_group_move(Evas_Object *obj EINA_UNUSED, Enventor_Object_Data *pd, Evas_Coord x, Evas_Coord y)
+_enventor_object_efl_canvas_group_group_move(Eo *obj, Enventor_Object_Data *pd EINA_UNUSED, Evas_Coord x, Evas_Coord y)
 {
-   Enventor_Item *it;
-
-   //Main Item
-   it = pd->main_it;
-   if (it)
-     {
-        Evas_Object *o = edit_obj_get(it->ed);
-        evas_object_move(o, x, y);
-     }
-
-   //Sub Items
-   Eina_List *l;
-   EINA_LIST_FOREACH(pd->sub_its, l, it)
-     {
-        Evas_Object *o = edit_obj_get(it->ed);
-        evas_object_move(o, x, y);
-     }
+   Eina_Iterator *it = evas_object_smart_iterator_new(obj);
+   Evas_Object *o;
+   EINA_ITERATOR_FOREACH(it, o)
+     evas_object_move(o, x, y);
+   eina_iterator_free(it);
 }
 
 EOLIAN static void
-_enventor_object_efl_canvas_group_group_resize(Evas_Object *obj EINA_UNUSED, Enventor_Object_Data *pd, Evas_Coord w, Evas_Coord h)
+_enventor_object_efl_canvas_group_group_resize(Eo *obj, Enventor_Object_Data *pd EINA_UNUSED, Evas_Coord w, Evas_Coord h)
 {
-   Enventor_Item *it;
-
-   //Main Item
-   it = pd->main_it;
-   if (it)
-     {
-        Evas_Object *o = edit_obj_get(pd->main_it->ed);
-        evas_object_resize(o, w, h);
-     }
-
-   //Sub Items
-   Eina_List *l;
-   EINA_LIST_FOREACH(pd->sub_its, l, it)
-     {
-        Evas_Object *o = edit_obj_get(it->ed);
-        evas_object_resize(o, w, h);
-     }
+   Eina_Iterator *it = evas_object_smart_iterator_new(obj);
+   Evas_Object *o;
+   EINA_ITERATOR_FOREACH(it, o)
+     evas_object_resize(o, w, h);
+   eina_iterator_free(it);
 }
 
 EOLIAN static void
-_enventor_object_efl_canvas_group_group_show(Evas_Object *obj EINA_UNUSED, Enventor_Object_Data *pd)
+_enventor_object_efl_canvas_group_group_show(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
 {
-   Enventor_Item *it;
-
-   //Main Item
-   it = pd->main_it;
-   if (it)
-     {
-        Evas_Object *o = edit_obj_get(pd->main_it->ed);
-        evas_object_show(o);
-     }
-
-   //Sub Items
-   Eina_List *l;
-   EINA_LIST_FOREACH(pd->sub_its, l, it)
-     {
-        Evas_Object *o = edit_obj_get(it->ed);
-        evas_object_show(o);
-     }
+   if (!pd->focused_it) return;
+   Evas_Object *o = edit_obj_get(pd->focused_it->ed);
+   evas_object_show(o);
 }
 
 EOLIAN static void
-_enventor_object_efl_canvas_group_group_hide(Evas_Object *obj EINA_UNUSED, Enventor_Object_Data *pd)
+_enventor_object_efl_canvas_group_group_hide(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
 {
-   Enventor_Item *it;
-
-   //Main Item
-   it = pd->main_it;
-   if (it)
-     {
-        Evas_Object *o = edit_obj_get(pd->main_it->ed);
-        evas_object_hide(o);
-     }
-
-   //Sub Items
-   Eina_List *l;
-   EINA_LIST_FOREACH(pd->sub_its, l, it)
-     {
-        Evas_Object *o = edit_obj_get(it->ed);
-        evas_object_hide(o);
-     }
+   if (!pd->focused_it) return;
+   Evas_Object *o = edit_obj_get(pd->focused_it->ed);
+   evas_object_hide(o);
 }
 
 EOLIAN static void
-_enventor_object_efl_canvas_group_group_clip_set(Evas_Object *obj EINA_UNUSED, Enventor_Object_Data *pd, Evas_Object *clip)
+_enventor_object_efl_canvas_group_group_clip_set(Eo *obj, Enventor_Object_Data *pd EINA_UNUSED, Evas_Object *clip)
 {
-   Enventor_Item *it;
-
-   //Main Item
-   it = pd->main_it;
-   if (it)
-     {
-        Evas_Object *o = edit_obj_get(pd->main_it->ed);
-        evas_object_clip_set(o, clip);
-     }
-
-   //Sub Items
-   Eina_List *l;
-   EINA_LIST_FOREACH(pd->sub_its, l, it)
-     {
-        Evas_Object *o = edit_obj_get(it->ed);
-        evas_object_clip_set(o, clip);
-     }
+   Eina_Iterator *it = evas_object_smart_iterator_new(obj);
+   Evas_Object *o;
+   EINA_ITERATOR_FOREACH(it, o)
+     evas_object_clip_set(o, clip);
+   eina_iterator_free(it);
 }
 
 EOLIAN static void
-_enventor_object_efl_canvas_group_group_clip_unset(Evas_Object *obj EINA_UNUSED, Enventor_Object_Data *pd)
+_enventor_object_efl_canvas_group_group_clip_unset(Eo *obj, Enventor_Object_Data *pd EINA_UNUSED)
 {
-   Enventor_Item *it;
-
-   //Main Item
-   it = pd->main_it;
-   if (it)
-     {
-        Evas_Object *o = edit_obj_get(pd->main_it->ed);
-        evas_object_clip_unset(o);
-     }
-
-   //Sub Items
-   Eina_List *l;
-   EINA_LIST_FOREACH(pd->sub_its, l, it)
-     {
-        Evas_Object *o = edit_obj_get(it->ed);
-        evas_object_clip_unset(o);
-     }
+   Eina_Iterator *it = evas_object_smart_iterator_new(obj);
+   Evas_Object *o;
+   EINA_ITERATOR_FOREACH(it, o)
+     evas_object_clip_unset(o);
+   eina_iterator_free(it);
 }
 
 EOLIAN static Eo *
@@ -740,12 +663,14 @@ _enventor_object_focus_set(Eo *obj EINA_UNUSED,
                            Enventor_Object_Data *pd EINA_UNUSED,
                            Eina_Bool focus)
 {
-   elm_object_focus_set(edit_entry_get(pd->focused_it->ed), focus);
+   if (!pd->focused_it) return;
+   edit_focus_set(pd->focused_it->ed, focus);
 }
 
 EOLIAN static Eina_Bool
 _enventor_object_focus_get(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
 {
+   if (!pd->focused_it) return;
    return edit_focus_get(pd->focused_it->ed);
 }
 
@@ -941,7 +866,7 @@ enventor_object_focused_item_get(const Enventor_Object *obj)
 /* Enventor_Item Functions.                                                  */
 ///////////////////////////////////////////////////////////////////////////////
 EAPI Eina_Bool
-enventor_item_focus_set(Enventor_Item *it)
+enventor_item_represent(Enventor_Item *it)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(it, EINA_FALSE);
 
@@ -949,7 +874,11 @@ enventor_item_focus_set(Enventor_Item *it)
 
    if (pd->focused_it == it) return EINA_TRUE;
 
-   if (pd->focused_it) edit_view_sync_cb_set(pd->focused_it->ed, NULL, NULL);
+   if (pd->focused_it)
+     {
+        edit_view_sync_cb_set(pd->focused_it->ed, NULL, NULL);
+        evas_object_hide(edit_obj_get(pd->focused_it->ed));
+     }
    edit_view_sync_cb_set(it->ed, edit_view_sync_cb, it);
 
    pd->focused_it = it;
@@ -958,6 +887,9 @@ enventor_item_focus_set(Enventor_Item *it)
    edit_linenumber_set(it->ed, pd->linenumber);
    edit_font_scale_set(it->ed, pd->font_scale);
    edit_disabled_set(it->ed, pd->disabled);
+
+   if (evas_object_visible_get(it->pd->obj))
+     evas_object_show(edit_obj_get(it->ed));
 
    autocomp_target_set(it->ed);
 

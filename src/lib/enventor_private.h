@@ -284,6 +284,7 @@ int edit_cursor_pos_get(edit_data *ed);
 const char *edit_selection_get(edit_data *ed);
 Eina_Bool edit_is_main_file(edit_data *ed);
 Eina_Bool edit_focus_get(edit_data *ed);
+void edit_focus_set(edit_data *ed, Eina_Bool focus);
 
 /* util */
 void mem_fail_msg(void);

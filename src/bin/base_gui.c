@@ -401,13 +401,6 @@ base_enventor_set(Enventor_Object *enventor)
    EINA_SAFETY_ON_NULL_RETURN(bd);
 
    bd->enventor = enventor;
-}
 
-void
-base_text_editor_set(Enventor_Item *it)
-{
-   base_data *bd = g_bd;
-   EINA_SAFETY_ON_NULL_RETURN(bd);
-
-   panes_text_editor_set(enventor_item_editor_get(it));
+   panes_text_editor_set(enventor);
 }

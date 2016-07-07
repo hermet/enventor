@@ -1357,6 +1357,7 @@ edit_init(Enventor_Object *enventor, Enventor_Item *it)
 
    //Scroller
    Evas_Object *scroller = elm_scroller_add(enventor);
+   evas_object_smart_member_add(scroller, enventor);
    elm_scroller_policy_set(scroller, ELM_SCROLLER_POLICY_AUTO,
                            ELM_SCROLLER_POLICY_AUTO);
    elm_object_focus_allow_set(scroller, EINA_FALSE);
@@ -1848,6 +1849,12 @@ Eina_Bool
 edit_is_main_file(edit_data *ed)
 {
    return ed->main;
+}
+
+void
+edit_focus_set(edit_data *ed, Eina_Bool focus)
+{
+   elm_object_focus_set(ed->en_edit, focus);
 }
 
 Eina_Bool
