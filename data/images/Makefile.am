@@ -21,6 +21,10 @@ files_DATA = ENVENTOR_EMBEDDED_IMAGE.png \
              ENVENTOR_EMBEDDED_NEEDLE_MINUTE.png \
              ENVENTOR_EMBEDDED_NEEDLE_SECOND.png \
              ENVENTOR_EMBEDDED_WATCHFACE.png \
+             ENVENTOR_EMBEDDED_NEEDLE_HOUR_RECT.png \
+             ENVENTOR_EMBEDDED_NEEDLE_MINUTE_RECT.png \
+             ENVENTOR_EMBEDDED_NEEDLE_SECOND_RECT.png \
+             ENVENTOR_EMBEDDED_WATCHFACE_RECT.png \
              enventor_logo.png
 
 EXTRA_DIST = $(files_DATA)
