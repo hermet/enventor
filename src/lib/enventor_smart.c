@@ -223,9 +223,9 @@ static void
 _enventor_part_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED, void *ei)
 {
    Enventor_Object_Data *pd = (Enventor_Object_Data *)data;
-   if (pd->disabled) return;
+   if (pd->disabled || !pd->focused_it) return;
    const char *part_name = (const char *)ei;
-   edit_part_cursor_set(pd->main_it->ed, view_group_name_get(VIEW_DATA),
+   edit_part_cursor_set(pd->focused_it->ed, view_group_name_get(VIEW_DATA),
                         part_name);
 }
 
