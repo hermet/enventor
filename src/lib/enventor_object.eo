@@ -190,12 +190,6 @@ class Enventor.Object (Elm.Widget, Efl.File) {
             @in part_name: const(char) *;
          }
       }
-      redo {
-         return: bool;
-      }
-      undo {
-         return: bool;
-      }
       font_set {
          params {
             @in font_name: const(char) *;

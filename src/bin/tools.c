@@ -138,7 +138,7 @@ static void
 redo_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
         void *event_info EINA_UNUSED)
 {
-   if (enventor_object_redo(base_enventor_get()))
+   if (enventor_item_redo(file_mgr_focused_item_get()))
      stats_info_msg_update(_("Redo text."));
    else
      stats_info_msg_update(_("No text to be redo."));
@@ -148,7 +148,7 @@ static void
 undo_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
         void *event_info EINA_UNUSED)
 {
-   if (enventor_object_undo(base_enventor_get()))
+   if (enventor_item_undo(file_mgr_focused_item_get()))
      stats_info_msg_update(_("Undo text."));
    else
      stats_info_msg_update(_("No text to be undo."));

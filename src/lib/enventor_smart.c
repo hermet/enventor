@@ -834,20 +834,6 @@ _enventor_object_disabled_set(Eo *obj EINA_UNUSED,
    pd->disabled = !!disabled;
 }
 
-//TODO: Itemize
-EOLIAN static Eina_Bool
-_enventor_object_redo(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
-{
-   return edit_redoundo(pd->main_it->ed, EINA_FALSE);
-}
-
-//TODO: Itemize
-EOLIAN static Eina_Bool
-_enventor_object_undo(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
-{
-   return edit_redoundo(pd->main_it->ed, EINA_TRUE);
-}
-
 EOLIAN static void
 _enventor_object_program_run(Eo *obj EINA_UNUSED,
                              Enventor_Object_Data *pd EINA_UNUSED,
@@ -1229,6 +1215,22 @@ enventor_item_template_part_insert(Enventor_Item *it,
                                align_x, align_y, min_w, min_h,
                                rel1_x, rel1_y, rel2_x, rel2_y,
                                NULL, syntax, n);
+}
+
+EAPI Eina_Bool
+enventor_item_redo(Enventor_Item *it)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(it, EINA_FALSE);
+
+   return edit_redoundo(it->ed, EINA_FALSE);
+}
+
+EAPI Eina_Bool
+enventor_item_undo(Enventor_Item *it)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(it, EINA_FALSE);
+
+   return edit_redoundo(it->ed, EINA_TRUE);
 }
 
 
