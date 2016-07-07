@@ -833,7 +833,6 @@ enventor_object_main_item_set(Enventor_Object *obj, const char *file)
 
    pd->main_it.pd = pd;
    pd->main_it.ed = edit_init(obj, &pd->main_it);
-   pd->focused_it = &pd->main_it;
 
    Eina_Bool ret = efl_file_set(obj, file, NULL);
    if (!ret) return NULL;

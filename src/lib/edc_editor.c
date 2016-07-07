@@ -1177,7 +1177,7 @@ edit_view_sync_cb_set(edit_data *ed,
    Eina_Stringshare *group_name =
       parser_first_group_name_get(ed->pd, ed->en_edit);
 
-   cb(ed->view_sync_cb_data, NULL, 0.0, NULL, group_name);
+   cb(data, NULL, 0.0, NULL, group_name);
 
    eina_stringshare_del(group_name);
 }
