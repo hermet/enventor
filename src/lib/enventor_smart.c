@@ -687,6 +687,7 @@ _enventor_object_font_set(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd,
                           const char *font_name, const char *font_style)
 {
    if (!font_name) return;
+   if ((font_name == pd->font_name) && (font_style == pd->font_style)) return;
 
    eina_stringshare_replace(&pd->font_name, font_name);
    eina_stringshare_replace(&pd->font_style, font_style);
@@ -698,9 +699,6 @@ _enventor_object_font_set(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd,
    elm_config_save();
 
    elm_font_fontconfig_name_free(font);
-
-   //Main Item
-   edit_font_update(pd->main_it.ed);
 }
 
 EOLIAN static void
