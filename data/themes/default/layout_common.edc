@@ -33,7 +33,7 @@ group { "fileselector_layout";
          scale: 1;
          clip_to: "clipper";
          desc {
-            min: 600 435;
+            min: 650 435;
             max: 600 435;
             fixed: 1 1;
             image.normal: "frame_bg.png";
@@ -48,7 +48,7 @@ group { "fileselector_layout";
             rel1 { to: "base_frame_img"; relative: 0 0; }
             rel2 { to: "base_frame_img"; relative: 1 0; }
             align: 0.5 0;
-            min: 600 3;
+            min: 650 3;
             fixed: 1 1;
             image.normal: "shine.png";
          }
@@ -221,8 +221,8 @@ group { "newfile_layout";
          scale: 1;
          clip_to: "clipper";
          desc {
-            min: 600 435;
-            max: 600 435;
+            min: 650 435;
+            max: 650 435;
             fixed: 1 1;
             image.normal: "frame_bg.png";
             image.border: 10 10 10 10;
@@ -236,7 +236,7 @@ group { "newfile_layout";
             rel1 { to: "base_frame_img"; relative: 0 0; }
             rel2 { to: "base_frame_img"; relative: 1 0; }
             align: 0.5 0;
-            min: 600 3;
+            min: 650 3;
             fixed: 1 1;
             image.normal: "shine.png";
          }
