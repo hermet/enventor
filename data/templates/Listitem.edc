@@ -255,8 +255,7 @@ collections {
                fixed: 1 0;
             }
          }         
-      }      
-
+      }
       programs {
          program { "mouse_down_lock";
             signal: "mouse,down,1";
