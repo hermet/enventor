@@ -14,6 +14,8 @@ files_DATA = Basic.edc \
              Group.edj \
              Image.edc \
              Image.edj \
+             Listitem.edc \
+             Listitem.edj \
              Map.edc \
              Map.edj \
              Proxy.edc \
@@ -70,6 +72,9 @@ Rotation+Zoom.edj: Makefile Rotation+Zoom.edc
 
 Group.edj: Makefile Group.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/Group.edc $(builddir)/Group.edj
+
+Listitem.edj: Makefile Listitem.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/Listitem.edc $(builddir)/Listitem.edj
 
 Image.edj: Makefile Image.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/Image.edc $(builddir)/Image.edj

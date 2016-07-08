@@ -1,0 +1,311 @@
+collections {
+   base_scale: 1.0;
+   group { "main";
+      /* TODO: Please replace embedded image files to your application image files. */
+      images {
+         image: "ENVENTOR_EMBEDDED_IMAGE.png" COMP;
+         image: "ENVENTOR_EMBEDDED_ICON_ARROW.png" COMP;
+         image: "ENVENTOR_EMBEDDED_ICON_BADGE.png" COMP;
+         image: "ENVENTOR_EMBEDDED_ICON_BADGE_DOWN.png" COMP;
+         image: "ENVENTOR_EMBEDDED_ICON_CHECK.png" COMP;
+         image: "ENVENTOR_EMBEDDED_ICON_CHECK_DOWN.png" COMP;
+         image: "ENVENTOR_EMBEDDED_ICON_CLIP.png" COMP;
+         image: "ENVENTOR_EMBEDDED_ICON_CLIP_DOWN.png" COMP;
+         image: "ENVENTOR_EMBEDDED_ICON_LOCK.png" COMP;
+         image: "ENVENTOR_EMBEDDED_ICON_LOCK_DOWN.png" COMP;
+         image: "ENVENTOR_EMBEDDED_ICON_USER.png" COMP;
+      }
+      parts {
+         rect { "bg";
+            scale: 1;
+            desc { "default";
+               color: 233 242 242 255;
+               visible: 1;
+               align: 0.5 0.5;
+               rel1.relative: 0.0 0.0;
+               rel2.relative: 1.0 1.0;
+               min: 300 60;
+               max: 99999 60;
+               fixed: 1 1;
+            }
+         }
+         rect { "point_rect";
+            scale: 1;
+            desc { "default";
+               color: 0 176 137 255;
+               visible: 1;
+               align: 0.0 0.0;
+               rel1.to: "bg";
+               rel1.relative: 0.0 0.0;
+               rel2.to: "bg";
+               min: 5 0;
+               max: 5 99999;
+               fixed: 1 0;
+            }
+         }
+         spacer { "padding_left";
+            scale: 1;
+            desc { "default";
+               align: 0.0 0.5;
+               rel1.to: "point_rect";
+               rel1.relative: 1.0 0.0;
+               rel2.to: "point_rect";
+               min: 15 0;
+               fixed: 1 0;
+            }
+         }
+         image { "icon_status";
+            scale: 1;
+            desc { "default";
+               visible: 1;
+               /* TODO: Please replace embedded image files to your application image files. */
+               image.normal: "ENVENTOR_EMBEDDED_ICON_ARROW.png";
+               //aspect: 1 1;
+               align: 0.0 0.5;
+               rel1.to: "padding_left";
+               rel1.relative: 1.0 0.1;
+               rel2.to: "padding_left";
+               rel2.relative: 0.0 0.5;
+               min: 20 20;
+               max: 20 20;
+               fixed: 1 1;
+            }
+         }
+
+         image { "icon_user";
+            scale: 1;
+            desc { "default";
+               visible: 1;
+               /* TODO: Please replace embedded image files to your application image files. */
+               image.normal: "ENVENTOR_EMBEDDED_ICON_USER.png";
+               //aspect: 1 1;
+               align: 0.0 0.5;
+               rel1.to: "icon_status";
+               rel1.relative: 1.0 0.0;
+               rel2.to: "icon_status";
+               min: 20 0;
+               fixed: 1 0;
+            }
+         }
+         text { "user_name";
+            scale: 1;
+            desc { "default";
+               color: 130 130 130 255;
+               visible: 1;
+               text {
+                  size: 15;
+                  font: "Sans";
+                  text: "Bowon Ryu";
+                  align: 0.0 0.5;
+                  min: 0 0;
+               }
+               align: 0.0 0.5;
+               rel1.to: "icon_user";
+               rel1.relative: 1.0 0.0;
+               rel2.to: "icon_user";
+               min: 100 0;
+               fixed: 1 0;
+            }
+         }         
+         text { "message";
+            scale: 1;
+            desc { "default";
+               color: 145 145 145 255;
+               visible: 1;
+               text {
+                  size: 10;
+                  font: "Sans";
+                  text: "How are you? I'm fine, thank you, and you?";
+                  align: 0.0 0.5;
+                  min: 0 0;
+               }
+               align: 0.0 0.5;
+               rel1.to_x: "padding_left";
+               rel1.to_y: "padding_icon";
+               rel1.relative: 1.0 0.0;
+               rel2.to: "padding_icon";
+               rel2.relative: 0.0 1.0;
+               min: 200 0;
+               fixed: 1 0;
+            }
+         }         
+         spacer { "padding_right";
+            scale: 1;
+            desc { "default";
+               align: 1.0 0.5;
+               rel1.to: "bg";
+               rel1.relative: 1.0 0.0;
+               rel2.to: "bg";
+               min: 15 0;
+               fixed: 1 0;
+            }
+         } 
+         text { "date";
+            scale: 1;
+            desc { "default";
+               color: 135 135 135 255;
+               visible: 1;
+               text {
+                  size: 10;
+                  font: "Sans";
+                  text: "21 Mar.";
+                  align: 0.5 0.5;
+                  min: 0 0;
+               }
+               align: 1.0 0.5;
+               rel1.to: "padding_right";
+               rel1.relative: 1.0 0.1;
+               rel2.to: "padding_right";
+               rel2.relative: 0.0 0.5;
+               min: 40 20;
+               max: 40 20;
+               fixed: 1 1;
+            }
+         }
+         image { "icon_clip";
+            scale: 1;
+            desc { "default";
+               visible: 1;
+               /* TODO: Please replace embedded image files to your application image files. */
+               image.normal: "ENVENTOR_EMBEDDED_ICON_CLIP.png";
+               //aspect: 1 1;
+               align: 1.0 0.5;
+               rel1.to: "date";
+               rel1.relative: 1.0 0.0;
+               rel2.to: "date";
+               rel2.relative: 0.0 1.0;
+               min: 20 0;
+               fixed: 1 0;
+            }
+            desc { "clicked";
+               inherit: "default";
+               image.normal: "ENVENTOR_EMBEDDED_ICON_CLIP_DOWN.png";
+            }
+         }
+         image { "icon_badge";
+            scale: 1;
+            desc { "default";
+               visible: 1;
+               /* TODO: Please replace embedded image files to your application image files. */
+               image.normal: "ENVENTOR_EMBEDDED_ICON_BADGE.png";
+               //aspect: 1 1;
+               align: 1.0 0.5;
+               rel1.to: "icon_clip";
+               rel1.relative: 1.0 0.0;
+               rel2.to: "icon_clip";
+               rel2.relative: 0.0 1.0;
+               min: 20 0;
+               fixed: 1 0;
+            }
+            desc { "clicked";
+               inherit: "default";
+               image.normal: "ENVENTOR_EMBEDDED_ICON_BADGE_DOWN.png";
+            }
+         }
+         image { "icon_lock";
+            scale: 1;
+            desc { "default";
+               visible: 1;
+               /* TODO: Please replace embedded image files to your application image files. */
+               image.normal: "ENVENTOR_EMBEDDED_ICON_LOCK.png";
+               //aspect: 1 1;
+               align: 1.0 0.5;
+               rel1.to: "icon_badge";
+               rel1.relative: 1.0 0.0;
+               rel2.to: "icon_badge";
+               rel2.relative: 0.0 1.0;
+               min: 20 0;
+               fixed: 1 0;
+            }
+            desc { "clicked";
+               inherit: "default";
+               image.normal: "ENVENTOR_EMBEDDED_ICON_LOCK_DOWN.png";
+            }
+         }
+         image { "icon_check";
+            scale: 1;
+            desc { "default";
+               visible: 1;
+               /* TODO: Please replace embedded image files to your application image files. */
+               image.normal: "ENVENTOR_EMBEDDED_ICON_CHECK.png";
+               //aspect: 1 1;
+               align: 1.0 0.5;
+               rel1.to: "padding_right";
+               rel1.relative: 1.0 0.5;
+               rel2.to: "padding_right";
+               rel2.relative: 0.0 0.9;
+               min: 20 20;
+               max: 20 20;
+               fixed: 1 1;
+            }
+            desc { "clicked";
+               inherit: "default";
+               image.normal: "ENVENTOR_EMBEDDED_ICON_CHECK_DOWN.png";
+            }
+         }         
+         spacer { "padding_icon";
+            scale: 1;
+            desc { "default";
+               align: 1.0 0.5;
+               rel1.to: "icon_check";
+               rel1.relative: 1.0 0.0;
+               rel2.to: "icon_check";
+               rel2.relative: 0.0 1.0;
+               min: 20 0;
+               fixed: 1 0;
+            }
+         }         
+      }      
+
+      programs {
+         program { "mouse_down_lock";
+            signal: "mouse,down,1";
+            source: "icon_lock";
+            action: STATE_SET "clicked";
+            target: "icon_lock";            
+         }
+         program { "mouse_up_lock";
+            signal: "mouse,up,1";
+            source: "icon_lock";
+            action: STATE_SET "default";
+            target: "icon_lock";
+         }
+         program { "mouse_down_badge";
+            signal: "mouse,down,1";
+            source: "icon_badge";
+            action: STATE_SET "clicked";
+            target: "icon_badge";            
+         }
+         program { "mouse_up_badge";
+            signal: "mouse,up,1";
+            source: "icon_badge";
+            action: STATE_SET "default";
+            target: "icon_badge";
+         }
+         program { "mouse_down_clip";
+            signal: "mouse,down,1";
+            source: "icon_clip";
+            action: STATE_SET "clicked";
+            target: "icon_clip";            
+         }
+         program { "mouse_up_clip";
+            signal: "mouse,up,1";
+            source: "icon_clip";
+            action: STATE_SET "default";
+            target: "icon_clip";
+         }
+         program { "mouse_down_check";
+            signal: "mouse,down,1";
+            source: "icon_check";
+            action: STATE_SET "clicked";
+            target: "icon_check";            
+         }
+         program { "mouse_up_check";
+            signal: "mouse,up,1";
+            source: "icon_check";
+            action: STATE_SET "default";
+            target: "icon_check";
+         }
+      }
+   }
+}
