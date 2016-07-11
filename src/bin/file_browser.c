@@ -13,10 +13,13 @@ typedef enum
 typedef struct file_browser_file_s brows_file;
 struct file_browser_file_s
 {
+   Eina_List *sub_file_list; //NULL if file type is not directory.
+
    char *path;
    char *name;
    File_Browser_File_Type type;
-   Eina_List *sub_file_list; //NULL if file type is not directory.
+
+   Elm_Object_Item *it;
 
    Eina_Bool main: 1;   //Is it main edc file?
 };
@@ -51,8 +54,8 @@ static brows_data *g_bd = NULL;
 /*****************************************************************************/
 
 static void brows_file_free(brows_file *file);
-static Eina_List *sub_brows_file_list_create(brows_file *file);
 static void brows_file_list_free(Eina_List *file_list);
+static Eina_List *sub_brows_file_list_create(brows_file *file);
 static void refresh_btn_clicked_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED);
 
 static void
@@ -129,6 +132,17 @@ gl_clicked_double_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
    file_mgr_sub_file_add(file->path);
 }
 
+//Set file->it as NULL when genlist item is deleted.
+static void
+gl_item_del_cb(void *data, Evas_Object *obj EINA_UNUSED,
+               void *event_info EINA_UNUSED)
+{
+   brows_file *file = data;
+   if (!file) return;
+
+   file->it = NULL;
+}
+
 static Elm_Object_Item *
 file_genlist_item_append(brows_file *file, Elm_Object_Item *parent_it,
                          Elm_Genlist_Item_Type it_type)
@@ -143,22 +157,22 @@ file_genlist_item_append(brows_file *file, Elm_Object_Item *parent_it,
    if (bd->mode == FILE_BROWSER_MODE_SEARCH)
      itc = bd->search_itc;
 
-   Elm_Object_Item *it =
-      elm_genlist_item_append(bd->genlist,
-                              itc,                 /* item class */
-                              file,                /* item data */
-                              parent_it,           /* parent */
-                              it_type,             /* item type */
-                              NULL,                /* select cb */
-                              file);               /* select cb data */
+   if (file->it) elm_object_item_del(file->it);
 
-   char it_str[EINA_PATH_MAX];
-   snprintf(it_str, EINA_PATH_MAX, "%p", it);
-   evas_object_data_set(bd->genlist, it_str, file);
+   file->it = elm_genlist_item_append(bd->genlist,
+                                      itc,         /* item class */
+                                      file,        /* item data */
+                                      parent_it,   /* parent */
+                                      it_type,     /* item type */
+                                      NULL,        /* select cb */
+                                      file);       /* select cb data */
 
-   elm_genlist_item_expanded_set(it, EINA_FALSE);
+   //Set file->it as NULL when genlist item is deleted.
+   elm_object_item_del_cb_set(file->it, gl_item_del_cb);
 
-   return it;
+   elm_genlist_item_expanded_set(file->it, EINA_FALSE);
+
+   return file->it;
 }
 
 static char *
@@ -291,9 +305,7 @@ gl_expanded_cb(void *data EINA_UNUSED, Evas_Object *obj, void *event_info)
 
    Elm_Object_Item *it = event_info;
 
-   char it_str[EINA_PATH_MAX];
-   snprintf(it_str, EINA_PATH_MAX, "%p", it);
-   brows_file *file = evas_object_data_get(obj, it_str);
+   brows_file *file = elm_object_item_data_get(it);
    if (!file) return;
 
    /* Basically, sub file list is not created. So if sub file list has not been
@@ -329,9 +341,7 @@ gl_contracted_cb(void *data EINA_UNUSED, Evas_Object *obj, void *event_info)
    Elm_Object_Item *it = event_info;
    elm_genlist_item_subitems_clear(it);
 
-   char it_str[EINA_PATH_MAX];
-   snprintf(it_str, EINA_PATH_MAX, "%p", it);
-   brows_file *file = evas_object_data_get(obj, it_str);
+   brows_file *file = elm_object_item_data_get(it);
    if (file && file->sub_file_list)
      {
         brows_file_list_free(file->sub_file_list);
@@ -464,22 +474,14 @@ brows_file_free(brows_file *file)
 {
    if (!file) return;
 
-   if (file->path)
-     {
-        free(file->path);
-        file->path = NULL;
-     }
-   if (file->name)
-     {
-        free(file->name);
-        file->name = NULL;
-     }
+   if (file->path) free(file->path);
+   if (file->name) free(file->name);
+
+   if (file->it)
+     elm_object_item_del(file->it);
 
    if (file->sub_file_list)
-     {
-        brows_file_list_free(file->sub_file_list);
-        file->sub_file_list = NULL;
-     }
+     brows_file_list_free(file->sub_file_list);
 
    free(file);
 }
@@ -588,6 +590,8 @@ search_entry_changed_cb(void *data EINA_UNUSED, Evas_Object *obj,
      {
         //Change mode first because mode is used in following functions.
         bd->mode = FILE_BROWSER_MODE_SEARCH;
+
+        elm_genlist_clear(bd->genlist);
 
         if (bd->search_file_list)
           {
