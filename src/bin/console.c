@@ -80,7 +80,64 @@ set_console_error_msg(Evas_Object *console, const char *src)
    strncpy(single_error_msg, src, eol - src);
    single_error_msg[eol - src] = '\0';
 
-   elm_entry_entry_set(console, single_error_msg);
+   char *color_msg = error_msg_syntax_color_set(single_error_msg);
+   elm_entry_entry_set(console, color_msg);
+   free(color_msg);
+}
+
+static char*
+error_msg_syntax_color_set(char *text)
+{
+   char *color_error_msg;
+   const char color_end[] = "</color>";
+   const char color_red[] = "<color=#FF4848>";
+   const char color_green[] = "<color=#5CD1E5>";
+   const char color_yellow[] = "<color=#FFBB00>";
+
+   color_error_msg = (char *)calloc(1024, sizeof(char));
+   char *token = strtok(text, " ");
+   while (token != NULL)
+     {
+        if (strstr(token, "edje_cc:"))
+          {
+             strncat(color_error_msg, color_red, 15);
+             strncat(color_error_msg, token, strlen(token));
+             strncat(color_error_msg, color_end, 8);
+          }
+        else if (strstr(token, "Error"))
+          {
+             strncat(color_error_msg, color_red, 15);
+             strncat(color_error_msg, token, strlen(token));
+             strncat(color_error_msg, color_end, 8);
+          }
+        else if (strstr(token, ".edc"))
+          {
+             strncat(color_error_msg, color_yellow, 15);
+             if (strstr(strstr(token, ".edc"), ":"))
+               {
+                  char *number = strstr(strstr(token, ".edc"), ":");
+                  int len = strlen(token) - strlen(number);
+                  strncat(color_error_msg, token, len);
+                  strncat(color_error_msg, color_end, 8);
+                  strncat(color_error_msg, " : ", 3);
+                  strncat(color_error_msg, color_green, 15);
+                  strncat(color_error_msg, number + 1, strlen(number) - 1);
+                  strncat(color_error_msg, color_end, 8);
+               }
+             else
+               {
+                  strncat(color_error_msg, token, strlen(token));
+                  strncat(color_error_msg, color_end, 8);
+               }
+          }
+        else
+          {
+             strncat(color_error_msg, token, strlen(token));
+          }
+        strncat(color_error_msg, " ", 1);
+        token = strtok(NULL, " ");
+     }
+   return color_error_msg;
 }
 
 /*****************************************************************************/
