@@ -372,7 +372,7 @@ tools_init(Evas_Object *parent)
    td->edc_navigator_btn = btn;
 
    btn = tools_btn_create(text_editor_ly, "filetab",
-                          _("File Tab (F11)<br>"
+                          _("File tab (F11)<br>"
                             "Display the file tab in the bottom area<br>"
                              "It shows an opened file list to switch<br>"
                              "files quickly. to switch files quickly."),
