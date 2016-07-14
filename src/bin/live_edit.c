@@ -2083,7 +2083,7 @@ live_btn_create(Evas_Object *parent, const char *name, void * data,
      {
       case EDJE_PART_TYPE_RECTANGLE:
          elm_object_tooltip_text_set(btn,
-                                     _("Add a Rect to the live view.<br>"
+                                     _("Add a Rect part to the live view.<br>"
                                        "A Rect part is used as a solid color<br>"
                                        "component or clipping other components."));
          break;
