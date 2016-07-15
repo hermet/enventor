@@ -318,7 +318,7 @@ tools_init(Evas_Object *parent)
    td->goto_btn = btn;
 
    btn = tools_btn_create(text_editor_ly, "lines",
-                          _("Line numbers (F5)<br>"
+                          _("Line numbers<br>"
                             "Display the script line numbers."),
                           lines_cb);
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
