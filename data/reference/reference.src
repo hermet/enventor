@@ -1,5 +1,48 @@
 collections { "The <hilight>collections</hilight> represents a theme.</br>The <hilight>collections</hilight> block contains a list of groups that composes a theme.";
+   color_classes { "The <hilight>color_classes</hilight> block contains a list of one or more <hilight>color_class</hilight> blocks.</br>Each <hilight>color_class</hilight> allows designers to name an arbitary group of colors to be used in the theme, the application can use that name to alter the color values at runtime.";
+      color_class { "The <hilight>color_class</hilight> allows designers to name an arbitrary group of colors to be used in the theme, the application can use that name to alter the color values at runtime.";
+         color { "The main color.";
+         }
+         color2 { "Used as outline in text and textblock parts.";
+         }
+         color3 { "Used as shadow in text and textblock parts.";
+         }
+         name { "Sets the name for the color class, used as reference by both the theme and the application.";
+         }
+      }
+   }
+
+   fonts { "The <hilight>fonts</hilight> block is used to list each font file with an alias used later in the theme.";
+      font { "Defines each font file and alias.";
+      }
+   }
+
    group { "The <hilight>group</hilight> represents a widget style.</br>The <hilight>group</hilight> block contains parts and programs that compose a widget style.";
+      data { "The <hilight>data</hilight> block is used to pass arbitrary parameters from the theme to the application.";
+         item { "Defines a new parameter, the value is the string specified next to it.";
+         }
+      }
+
+      fonts { "The <hilight>fonts</hilight> block is used to list each font file with an alias used later in the theme.";
+         font { "Defines each font file and alias.";
+         }
+      }
+
+      images { "The <hilight>images</hilight> block is used to list each image file which are used in the theme. If any compression method is used, it is also defined here.";
+         image { "The <hilight>image</hilight> represents an image file which is used in the theme. If any compression method is used, it is also defined here.";
+         }
+         set { "The <hilight>set</hilight> block is used to define an image with different content depending on their size.";
+            image { "The <hilight>image</hilight> block inside the <hilight>set</hilight> block defines the characteristic of an image. Every block describes one image and the size rule to use it.";
+               size { "Defines the minimum and maximum size that selects the specified image.";
+               }
+               image { "This is included in each image file. Available compression methods are RAW, COMP, LOSSY, and USER.";
+               }
+            }
+            name { "Defines the name that refer to this image description.";
+            }
+         }
+      }
+
       parts { "The <hilight>parts</hilight> represents visual elements.</br>The <hilight>parts</hilight> block contains a list of parts that describes a basic design element.";
          part { "The <hilight>part</hilight> represents a basic design element such as an image, rectangle or text.</br>The <hilight>part</hilight> block contains a list of descriptions that defines a state of the element.";
             desc { "The <hilight>desc</hilight> defines a state of a part.</br>The <hilight>desc</hilight> block contains properties of a part such as a size, position, color, image and text.";
@@ -26,8 +69,120 @@ collections { "The <hilight>collections</hilight> represents a theme.</br>The <h
             }
          }
       }
+
       programs { "The <hilight>programs</hilight> defines how your interface reacts to events.</br>The <hilight>programs</hilight> block contains a list of programs that reacts to events.";
          program { "The <hilight>program</hilight> defines how your interface reacts to events. The <hilight>program</hilight> can change the state of parts and trigger/listen events.</br>The <hilight>program</hilight> block contains signal, source, action and target.</br>signal is an event that the program is waiting for.</br>source is a part that catches the signal. (e.g. mouse clicking area)</br>action defines what is going to do when the signal is caught. (e.g. changing the state of a part)</br>target is a part that changes its state.";
+         }
+      }
+
+      sounds { "The <hilight>sounds</hilight> block contains a list of one or more sound samples and tone items.";
+         sample { "The <hilight>sample</hilight> block defines the sound sample.";
+            name { "Used to include each sound file. Valid types are RAW, COMP, LOSSY, and AS_IS.";
+            }
+            source { "The sound source file name.";
+            }
+         }
+         tone { "A sound of the given frequency.";
+         }
+      }
+
+      styles { "The <hilight>styles</hilight> block contains a list of one or more <hilight>style</hilight> blocks.</br>The <hilight>style</hilight> block is used to create style <tags> for advanced TEXTBLOCK formatting.";
+         style { "The <hilight>style</hilight> block is used to create style <tags> for advanced TEXTBLOCK formatting.";
+            base { "The <hilight>base</hilight> represents style properties that are applied to the text.</br>The available tags that can be used in the style property are as follows.</br>font, font_size, color, color_class, text_class, ellipsis, wrap, style, valign, and align.";
+            }
+            name { "The name of the style to be used as reference later in the theme.";
+            }
+            tag { "The <hilight>tag</hilight> defines the meaning of each tag in the style.</br>Style is applied to the text between the beginning tag <tags> and the ending tag </tags>.";
+            }
+         }
+      }
+   }
+
+   images { "The <hilight>images</hilight> block is used to list each image file which are used in the theme. If any compression method is used, it is also defined here.";
+      image { "The <hilight>image</hilight> represents an image file which is used in the theme. If any compression method is used, it is also defined here.";
+      }
+      set { "The <hilight>set</hilight> block is used to define an image with different content depending on their size.";
+         image { "The <hilight>image</hilight> block inside the <hilight>set</hilight> block defines the characteristic of an image. Every block describes one image and the size rule to use it.";
+            size { "Defines the minimum and maximum size that selects the specified image.";
+            }
+            image { "This is included in each image file. Available compression methods are RAW, COMP, LOSSY, and USER.";
+            }
+         }
+         name { "Defines the name that refer to this image description.";
+         }
+      }
+   }
+
+   sounds { "The <hilight>sounds</hilight> block contains a list of one or more sound samples and tone items.";
+      sample { "The <hilight>sample</hilight> block defines the sound sample.";
+         name { "Used to include each sound file. Valid types are RAW, COMP, LOSSY, and AS_IS.";
+         }
+         source { "The sound source file name.";
+         }
+      }
+      tone { "A sound of the given frequency.";
+      }
+   }
+
+   styles { "The <hilight>styles</hilight> block contains a list of one or more <hilight>style</hilight> blocks.</br>The <hilight>style</hilight> block is used to create style <tags> for advanced TEXTBLOCK formatting.";
+      style { "The <hilight>style</hilight> block is used to create style <tags> for advanced TEXTBLOCK formatting.";
+         base { "The <hilight>base</hilight> represents style properties that are applied to the text.</br>The available tags that can be used in the style property are as follows.</br>font, font_size, color, color_class, text_class, ellipsis, wrap, style, valign, and align.";
+         }
+         name { "The name of the style to be used as reference later in the theme.";
+         }
+         tag { "The <hilight>tag</hilight> defines the meaning of each tag in the style.</br>Style is applied to the text between the beginning tag <tags> and the ending tag </tags>.";
+         }
+      }
+   }
+}
+
+color_classes { "The <hilight>color_classes</hilight> block contains a list of one or more <hilight>color_class</hilight> blocks.</br>Each <hilight>color_class</hilight> allows designers to name an arbitary group of colors to be used in the theme, the application can use that name to alter the color values at runtime.";
+   color_class { "The <hilight>color_class</hilight> allows designers to name an arbitrary group of colors to be used in the theme, the application can use that name to alter the color values at runtime.";
+      color { "The main color.";
+      }
+      color2 { "Used as outline in text and textblock parts.";
+      }
+      color3 { "Used as shadow in text and textblock parts.";
+      }
+      name { "Sets the name for the color class, used as reference by both the theme and the application.";
+      }
+   }
+}
+
+data { "The <hilight>data</hilight> block is used to pass arbitrary parameters from the theme to the application.";
+   file { "Defines a new parameter, the value is the contents of the specified file formatted as a single string of text.</br>This property only works with plain text files.";
+   }
+   item { "Defines a new parameter, the value is the string specified next to it.";
+   }
+}
+
+fonts { "The <hilight>fonts</hilight> block is used to list each font file with an alias used later in the theme.";
+   font { "Defines each font file and alias.";
+   }
+}
+
+images { "The <hilight>images</hilight> block is used to list each image file which are used in the theme. If any compression method is used, it is also defined here.";
+   image { "The <hilight>image</hilight> represents an image file which is used in the theme. If any compression method is used, it is also defined here.";
+   }
+   set { "The <hilight>set</hilight> block is used to define an image with different content depending on their size.";
+      image { "The <hilight>image</hilight> block inside the <hilight>set</hilight> block defines the characteristic of an image. Every block describes one image and the size rule to use it.";
+         size { "Defines the minimum and maximum size that selects the specified image.";
+         }
+         image { "This is included in each image file. Available compression methods are RAW, COMP, LOSSY, and USER.";
+         }
+      }
+      name { "Defines the name that refer to this image description.";
+      }
+   }
+}
+
+styles { "The <hilight>styles</hilight> block contains a list of one or more <hilight>style</hilight> blocks.</br>The <hilight>style</hilight> block is used to create style <tags> for advanced TEXTBLOCK formatting.";
+   style { "The <hilight>style</hilight> block is used to create style <tags> for advanced TEXTBLOCK formatting.";
+      base { "The <hilight>base</hilight> represents style properties that are applied to the text.</br>The available tags that can be used in the style property are as follows.</br>font, font_size, color, color_class, text_class, ellipsis, wrap, style, valign, and align.";
+      }
+      name { "The name of the style to be used as reference later in the theme.";
+      }
+      tag { "The <hilight>tag</hilight> defines the meaning of each tag in the style.</br>Style is applied to the text between the beginning tag <tags> and the ending tag </tags>.";
       }
    }
 }
