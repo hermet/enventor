@@ -31,13 +31,10 @@ files_DATA = ENVENTOR_EMBEDDED_IMAGE.png \
              ENVENTOR_EMBEDDED_ICON_ARROW.png \
              ENVENTOR_EMBEDDED_ICON_BADGE.png \
              ENVENTOR_EMBEDDED_ICON_BADGE_DOWN.png \
-             ENVENTOR_EMBEDDED_ICON_CHECK.png \
-             ENVENTOR_EMBEDDED_ICON_CHECK_DOWN.png \
              ENVENTOR_EMBEDDED_ICON_CLIP.png \
              ENVENTOR_EMBEDDED_ICON_CLIP_DOWN.png \
              ENVENTOR_EMBEDDED_ICON_LOCK.png \
              ENVENTOR_EMBEDDED_ICON_LOCK_DOWN.png \
-             ENVENTOR_EMBEDDED_ICON_USER.png \
              enventor_logo.png
 
 EXTRA_DIST = $(files_DATA)

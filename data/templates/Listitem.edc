@@ -7,20 +7,16 @@ collections {
          image: "ENVENTOR_EMBEDDED_ICON_ARROW.png" COMP;
          image: "ENVENTOR_EMBEDDED_ICON_BADGE.png" COMP;
          image: "ENVENTOR_EMBEDDED_ICON_BADGE_DOWN.png" COMP;
-         image: "ENVENTOR_EMBEDDED_ICON_CHECK.png" COMP;
-         image: "ENVENTOR_EMBEDDED_ICON_CHECK_DOWN.png" COMP;
          image: "ENVENTOR_EMBEDDED_ICON_CLIP.png" COMP;
          image: "ENVENTOR_EMBEDDED_ICON_CLIP_DOWN.png" COMP;
          image: "ENVENTOR_EMBEDDED_ICON_LOCK.png" COMP;
          image: "ENVENTOR_EMBEDDED_ICON_LOCK_DOWN.png" COMP;
-         image: "ENVENTOR_EMBEDDED_ICON_USER.png" COMP;
       }
       parts {
          rect { "bg";
             scale: 1;
             desc { "default";
                color: 233 242 242 255;
-               visible: 1;
                align: 0.5 0.5;
                rel1.relative: 0.0 0.0;
                rel2.relative: 1.0 1.0;
@@ -33,7 +29,6 @@ collections {
             scale: 1;
             desc { "default";
                color: 0 176 137 255;
-               visible: 1;
                align: 0.0 0.0;
                rel1.to: "bg";
                rel1.relative: 0.0 0.0;
@@ -57,10 +52,8 @@ collections {
          image { "icon_status";
             scale: 1;
             desc { "default";
-               visible: 1;
                /* TODO: Please replace embedded image files to your application image files. */
                image.normal: "ENVENTOR_EMBEDDED_ICON_ARROW.png";
-               //aspect: 1 1;
                align: 0.0 0.5;
                rel1.to: "padding_left";
                rel1.relative: 1.0 0.1;
@@ -71,14 +64,9 @@ collections {
                fixed: 1 1;
             }
          }
-
-         image { "icon_user";
+         swallow { "icon_user";
             scale: 1;
             desc { "default";
-               visible: 1;
-               /* TODO: Please replace embedded image files to your application image files. */
-               image.normal: "ENVENTOR_EMBEDDED_ICON_USER.png";
-               //aspect: 1 1;
                align: 0.0 0.5;
                rel1.to: "icon_status";
                rel1.relative: 1.0 0.0;
@@ -91,7 +79,6 @@ collections {
             scale: 1;
             desc { "default";
                color: 130 130 130 255;
-               visible: 1;
                text {
                   size: 15;
                   font: "Sans";
@@ -106,12 +93,11 @@ collections {
                min: 100 0;
                fixed: 1 0;
             }
-         }         
+         }
          text { "message";
             scale: 1;
             desc { "default";
                color: 145 145 145 255;
-               visible: 1;
                text {
                   size: 10;
                   font: "Sans";
@@ -128,7 +114,7 @@ collections {
                min: 200 0;
                fixed: 1 0;
             }
-         }         
+         }
          spacer { "padding_right";
             scale: 1;
             desc { "default";
@@ -139,12 +125,11 @@ collections {
                min: 15 0;
                fixed: 1 0;
             }
-         } 
+         }
          text { "date";
             scale: 1;
             desc { "default";
                color: 135 135 135 255;
-               visible: 1;
                text {
                   size: 10;
                   font: "Sans";
@@ -165,10 +150,8 @@ collections {
          image { "icon_clip";
             scale: 1;
             desc { "default";
-               visible: 1;
                /* TODO: Please replace embedded image files to your application image files. */
                image.normal: "ENVENTOR_EMBEDDED_ICON_CLIP.png";
-               //aspect: 1 1;
                align: 1.0 0.5;
                rel1.to: "date";
                rel1.relative: 1.0 0.0;
@@ -185,10 +168,8 @@ collections {
          image { "icon_badge";
             scale: 1;
             desc { "default";
-               visible: 1;
                /* TODO: Please replace embedded image files to your application image files. */
                image.normal: "ENVENTOR_EMBEDDED_ICON_BADGE.png";
-               //aspect: 1 1;
                align: 1.0 0.5;
                rel1.to: "icon_clip";
                rel1.relative: 1.0 0.0;
@@ -205,10 +186,8 @@ collections {
          image { "icon_lock";
             scale: 1;
             desc { "default";
-               visible: 1;
                /* TODO: Please replace embedded image files to your application image files. */
                image.normal: "ENVENTOR_EMBEDDED_ICON_LOCK.png";
-               //aspect: 1 1;
                align: 1.0 0.5;
                rel1.to: "icon_badge";
                rel1.relative: 1.0 0.0;
@@ -222,13 +201,9 @@ collections {
                image.normal: "ENVENTOR_EMBEDDED_ICON_LOCK_DOWN.png";
             }
          }
-         image { "icon_check";
+         swallow { "icon_check";
             scale: 1;
             desc { "default";
-               visible: 1;
-               /* TODO: Please replace embedded image files to your application image files. */
-               image.normal: "ENVENTOR_EMBEDDED_ICON_CHECK.png";
-               //aspect: 1 1;
                align: 1.0 0.5;
                rel1.to: "padding_right";
                rel1.relative: 1.0 0.5;
@@ -238,11 +213,7 @@ collections {
                max: 20 20;
                fixed: 1 1;
             }
-            desc { "clicked";
-               inherit: "default";
-               image.normal: "ENVENTOR_EMBEDDED_ICON_CHECK_DOWN.png";
-            }
-         }         
+         }
          spacer { "padding_icon";
             scale: 1;
             desc { "default";
@@ -254,14 +225,14 @@ collections {
                min: 20 0;
                fixed: 1 0;
             }
-         }         
+         }
       }
       programs {
          program { "mouse_down_lock";
             signal: "mouse,down,1";
             source: "icon_lock";
             action: STATE_SET "clicked";
-            target: "icon_lock";            
+            target: "icon_lock";
          }
          program { "mouse_up_lock";
             signal: "mouse,up,1";
@@ -273,7 +244,7 @@ collections {
             signal: "mouse,down,1";
             source: "icon_badge";
             action: STATE_SET "clicked";
-            target: "icon_badge";            
+            target: "icon_badge";
          }
          program { "mouse_up_badge";
             signal: "mouse,up,1";
@@ -285,25 +256,13 @@ collections {
             signal: "mouse,down,1";
             source: "icon_clip";
             action: STATE_SET "clicked";
-            target: "icon_clip";            
+            target: "icon_clip";
          }
          program { "mouse_up_clip";
             signal: "mouse,up,1";
             source: "icon_clip";
             action: STATE_SET "default";
             target: "icon_clip";
-         }
-         program { "mouse_down_check";
-            signal: "mouse,down,1";
-            source: "icon_check";
-            action: STATE_SET "clicked";
-            target: "icon_check";            
-         }
-         program { "mouse_up_check";
-            signal: "mouse,up,1";
-            source: "icon_check";
-            action: STATE_SET "default";
-            target: "icon_check";
          }
       }
    }
