@@ -162,6 +162,7 @@ collections {
             }
             desc { "clicked";
                inherit: "default";
+               /* TODO: Please replace embedded image files to your application image files. */
                image.normal: "ENVENTOR_EMBEDDED_ICON_CLIP_DOWN.png";
             }
          }
@@ -198,6 +199,7 @@ collections {
             }
             desc { "clicked";
                inherit: "default";
+               /* TODO: Please replace embedded image files to your application image files. */
                image.normal: "ENVENTOR_EMBEDDED_ICON_LOCK_DOWN.png";
             }
          }
