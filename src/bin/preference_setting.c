@@ -280,9 +280,9 @@ preference_setting_content_get(preference_setting_data *psd,
    //Toggle (Red Alert)
    Evas_Object *toggle_red_alert =
       toggle_create(box, _("Error Message Red Alert"), config_red_alert_get(),
-                    _("Enable the error message red alert effect.<br>"
-                      "When the EDC compilation fails because of<br>"
-                      "a grammartical error, Enventor alerts<br>"
+                    _("Enable error message red alert effect.<br>"
+                      "When EDC compilation fails because of<br>"
+                      "a grammar error, Enventor alerts<br>"
                       "you with a fading screen effect."));
    evas_object_size_hint_weight_set(toggle_red_alert, EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
