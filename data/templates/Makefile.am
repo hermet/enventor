@@ -6,6 +6,8 @@ EDJE_FLAGS = -id $(top_srcdir)/data/images -sd $(top_srcdir)/data/sounds
 filesdir = $(datadir)/$(PACKAGE)/templates
 files_DATA = Basic.edc \
              Basic.edj \
+             Button.edc \
+             Button.edj \
              Clip.edc \
              Clip.edj \
              Empty.edc \
@@ -48,6 +50,9 @@ builddir = $(top_builddir)/data/templates
 
 Basic.edj: Makefile Basic.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/Basic.edc $(builddir)/Basic.edj
+
+Button.edj: Makefile Button.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/Button.edc $(builddir)/Button.edj
 
 Empty.edj: Makefile Empty.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/Empty.edc $(builddir)/Empty.edj
