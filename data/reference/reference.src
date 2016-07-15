@@ -1,35 +1,33 @@
-collections { "<hilight>collections</hilight> represents a theme.</br>A <hilight>collections</hilight> block contains a list of group that composes a theme.";
-   group { "<hilight>group</hilight> represents a widget style.</br>A <hilight>group</hilight> block contains parts and programs that compose a widget style.";
-      parts { "<hilight>parts</hilight> represents visual elements.</br>A <hilight>parts</hilight> block contains a list of part that describes a basic design element.";
-         part { "<hilight>part</hilight> represents a basic design element such as an image, rectangle or text.</br>A <hilight>part</hilight> block contains a list of description that defines a state of the element.";
-            desc { "<hilight>desc</hilight> defines a state of a part.</br>A <hilight>desc</hilight> block contains properties of a part such as a size, position, color, image and text.";
+collections { "The <hilight>collections</hilight> represents a theme.</br>The <hilight>collections</hilight> block contains a list of groups that composes a theme.";
+   group { "The <hilight>group</hilight> represents a widget style.</br>The <hilight>group</hilight> block contains parts and programs that compose a widget style.";
+      parts { "The <hilight>parts</hilight> represents visual elements.</br>The <hilight>parts</hilight> block contains a list of parts that describes a basic design element.";
+         part { "The <hilight>part</hilight> represents a basic design element such as an image, rectangle or text.</br>The <hilight>part</hilight> block contains a list of descriptions that defines a state of the element.";
+            desc { "The <hilight>desc</hilight> defines a state of a part.</br>The <hilight>desc</hilight> block contains properties of a part such as a size, position, color, image and text.";
             }
          }
-         image { "<hilight>image</hilight> represents an image part. <hilight>image</hilight> is used to display an image file.</br>A <hilight>image</hilight> block contains a list of description that defines a state of the image part.";
-            desc { "<hilight>desc</hilight> defines a state of a part.</br>A <hilight>desc</hilight> block inside of an image block contains properties of the image part such as an image resource file, size, position and color.";
+         image { "The <hilight>image</hilight> represents an image part. The <hilight>image</hilight> is used to display an image file.</br>The <hilight>image</hilight> block contains a list of descriptions that defines a state of the image part.";
+            desc { "The <hilight>desc</hilight> defines a state of a part.</br>The <hilight>desc</hilight> block inside of an image block contains properties of the image part such as an image resource file, size, position and color.";
             }
          }
-         rect { "<hilight>rect</hilight> represents a rectangle part. <hilight>rect</hilight> is used to draw a rectangle.</br>A <hilight>rect</hilight> block contains a list of description that defines a state of the rectangle part.";
-            desc { "<hilight>desc</hilight> defines a state of a part.</br>A <hilight>desc</hilight> block inside of a rect block contains properties of the rect part such as a size, position and color.";
+         rect { "The <hilight>rect</hilight> represents a rectangle part. The <hilight>rect</hilight> is used to draw a rectangle.</br>The <hilight>rect</hilight> block contains a list of descriptions that defines a state of the rectangle part.";
+            desc { "The <hilight>desc</hilight> defines a state of a part.</br>The <hilight>desc</hilight> block inside of a rect block contains properties of the rect part such as a size, position and color.";
             }
          }
-         text { "<hilight>text</hilight> represents a text part. <hilight>text</hilight> is used to write a simple string with single line in this part.</br>A <hilight>text</hilight> block contains a list of description that defines a state of the text part.";
-            desc { "<hilight>desc</hilight> defines a state of a part.</br>A <hilight>desc</hilight> block inside of a text block contains properties of the text part such as a text font, text size, text position and text color.";
+         text { "The <hilight>text</hilight> represents a text part. The <hilight>text</hilight> is used to write a simple string with single line in this part.</br>The <hilight>text</hilight> block contains a list of descriptions that defines a state of the text part.";
+            desc { "The <hilight>desc</hilight> defines a state of a part.</br>The <hilight>desc</hilight> block inside of a text block contains properties of the text part such as a text font, text size, text position and text color.";
             }
          }
-         textblock { "<hilight>textblock</hilight> represents a textblock part. <hilight>textblock</hilight> is used to write complex strings and mark-up elements with multiple lines in this part.</br>A <hilight>textblock</hilight> block contains a list of description that defines a state of the textblock part.";
-            desc { "<hilight>desc</hilight> defines a state of a part.</br>A <hilight>desc</hilight> block inside of a textblock block contains properties of the textblock part such as a text style, text font, text size, text position and text color.";
+         textblock { "The <hilight>textblock</hilight> represents a textblock part. The <hilight>textblock</hilight> is used to write complex strings and mark-up elements with multiple lines in this part.</br>The <hilight>textblock</hilight> block contains a list of descriptions that defines a state of the textblock part.";
+            desc { "The <hilight>desc</hilight> defines a state of a part.</br>The <hilight>desc</hilight> block inside of a textblock block contains properties of the textblock part such as a text style, text font, text size, text position and text color.";
             }
          }
-         swallow { "<hilight>swallow</hilight> represents a swallow part. <hilight>swallow</hilight> is used to set a widget into this part.</br>A <hilight>swallow</hilight> block contains a list of description that defines a state of the swallow part.";
-            desc { "<hilight>desc</hilight> defines a state of a part.</br>A <hilight>desc</hilight> block inside of a swallow block contains properties of the swallow part such as size and position.";
+         swallow { "The <hilight>swallow</hilight> represents a swallow part. The <hilight>swallow</hilight> is used to set a widget into this part.</br>The <hilight>swallow</hilight> block contains a list of descriptions that defines a state of the swallow part.";
+            desc { "The <hilight>desc</hilight> defines a state of a part.</br>The <hilight>desc</hilight> block inside of a swallow block contains properties of the swallow part such as size and position.";
             }
          }
       }
-      programs { "<hilight>programs</hilight> defines how your interface reacts to events.</br>A <hilight>programs</hilight> block contains a list of program that reacts to events.";
-         program { "<hilight>program</hilight> defines how your interface reacts to events. <hilight>program</hilight> can change the state of parts and trigger/listen events.</br>A <hilight>program</hilight> block contains signal, source, action and target.</br>signal is an event that the program is waiting for.</br>source is a part that catches the signal. (e.g. mouse clicking area)</br>action defines what is going to do when the signal is caught. (e.g. changing the state of a part)</br>target is a part that changes its state.";
-            }
-         }
+      programs { "The <hilight>programs</hilight> defines how your interface reacts to events.</br>The <hilight>programs</hilight> block contains a list of programs that reacts to events.";
+         program { "The <hilight>program</hilight> defines how your interface reacts to events. The <hilight>program</hilight> can change the state of parts and trigger/listen events.</br>The <hilight>program</hilight> block contains signal, source, action and target.</br>signal is an event that the program is waiting for.</br>source is a part that catches the signal. (e.g. mouse clicking area)</br>action defines what is going to do when the signal is caught. (e.g. changing the state of a part)</br>target is a part that changes its state.";
       }
    }
 }
