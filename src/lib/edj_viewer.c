@@ -669,6 +669,7 @@ view_term(view_data *vd)
 Evas_Object *
 view_obj_get(view_data *vd)
 {
+   if (!vd) return NULL;
    return vd->scroller;
 }
 
@@ -768,6 +769,7 @@ view_group_name_get(view_data *vd)
 void *
 view_data_get(view_data *vd)
 {
+   if (!vd) return NULL;
    return vd->data;
 }
 

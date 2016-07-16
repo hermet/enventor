@@ -156,22 +156,22 @@ edj_mgr_view_new(Enventor_Item *it, const char *group)
    return vd;
 }
 
-view_data *
+void
 edj_mgr_view_switch_to(view_data *vd)
 {
    edj_mgr *em = g_em;
 
-   if (em->edj && (em->edj->vd == vd)) return vd;
+   if (em->edj && (em->edj->vd == vd)) return;
 
    //Switch views
    Evas_Object *prev =
       elm_object_part_content_unset(em->layout, "elm.swallow.content");
+
    elm_object_part_content_set(em->layout, "elm.swallow.content",
                                view_obj_get(vd));
    view_scale_set(vd, em->view_scale);
-
    //Switching effect
-   if (prev && (prev != view_obj_get(vd)))
+   if (prev != view_obj_get(vd))
      {
         Evas_Object *tmp =
            elm_object_part_content_unset(em->layout, "elm.swallow.prev");
@@ -186,8 +186,11 @@ edj_mgr_view_switch_to(view_data *vd)
 
    //Reset caching timers
    edj_data *cur_edj = view_data_get(vd);
-   ecore_timer_del(cur_edj->timer);
-   cur_edj->timer = NULL;
+   if (cur_edj)
+     {
+        ecore_timer_del(cur_edj->timer);
+        cur_edj->timer = NULL;
+     }
 
    edj_data *prev_edj = em->edj;
    if (prev_edj)
@@ -197,8 +200,6 @@ edj_mgr_view_switch_to(view_data *vd)
                                           prev_edj->vd);
      }
    em->edj = view_data_get(vd);
-
-   return vd;
 }
 
 Evas_Object *

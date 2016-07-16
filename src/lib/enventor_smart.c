@@ -886,6 +886,7 @@ enventor_item_represent(Enventor_Item *it)
      {
         edit_view_sync_cb_set(pd->focused_it->ed, NULL, NULL);
         evas_object_hide(edit_obj_get(pd->focused_it->ed));
+        edj_mgr_view_switch_to(NULL);
      }
    edit_view_sync_cb_set(it->ed, edit_view_sync_cb, it);
 
