@@ -18,6 +18,12 @@ collections { "The <hilight>collections</hilight> represents a theme.</br>The <h
    }
 
    group { "The <hilight>group</hilight> represents a widget style.</br>The <hilight>group</hilight> block contains parts and programs that compose a widget style.";
+      alias { "Additional name to be used as an identifier. Defining multiple aliases is supported.";
+      }
+
+      broadcast_signal { "Signal gets automatically broadcasted to all sub group parts. Default is "on".";
+      }
+
       data { "The <hilight>data</hilight> block is used to pass arbitrary parameters from the theme to the application.";
          item { "Defines a new parameter, the value is the string specified next to it.";
          }
@@ -41,6 +47,22 @@ collections { "The <hilight>collections</hilight> represents a theme.</br>The <h
             name { "Defines the name that refer to this image description.";
             }
          }
+      }
+
+      inherit { "Parent group name for inheritance.</br>Group inherit is used to inherit any predefined group and change some property which belongs to part, description, items or program. The child group has the same properties as its parent group.</br>If you specify the type again in an inherited part, it causes an error.";
+      }
+
+      limits { "This block is used to trigger signals when the Edje object is resized.";
+         horizontal { "This sends a signal limit,name,over when the object is resized and passes the limit by growing over it.</br>When the object's size is reduced below the limit, signal limit,name,below is sent.</br>This limit is applied on the y axis and is given in pixels.";
+         }
+         vertical { "This sends a signal limit,name,over when the object is resized and passes the limit by growing over it.</br>When the object's size is reduced below the limit, signal limit,name,below is sent.</br>This limit is applied on the x axis and is given in pixels.";
+         }
+      }
+
+      max { "The maximum size for the container defined by the totality of the parts.";
+      }
+
+      min { "The minimum size for the container defined by the composition of the parts.";
       }
 
       parts { "The <hilight>parts</hilight> represents visual elements.</br>The <hilight>parts</hilight> block contains a list of parts that describes a basic design element.";
@@ -73,6 +95,9 @@ collections { "The <hilight>collections</hilight> represents a theme.</br>The <h
       programs { "The <hilight>programs</hilight> defines how your interface reacts to events.</br>The <hilight>programs</hilight> block contains a list of programs that reacts to events.";
          program { "The <hilight>program</hilight> defines how your interface reacts to events. The <hilight>program</hilight> can change the state of parts and trigger/listen events.</br>The <hilight>program</hilight> block contains signal, source, action and target.</br>signal is an event that the program is waiting for.</br>source is a part that catches the signal. (e.g. mouse clicking area)</br>action defines what is going to do when the signal is caught. (e.g. changing the state of a part)</br>target is a part that changes its state.";
          }
+      }
+
+      script { "The <hilight>script</hilight> block is used to inject embryo scripts to a given Edje theme and it functions in two modalities. When it is included inside a program block, the script is executed every time the program is run, on the other hand, when included directly into a group, part, or description block, it is executed once at the load time, in the load order.";
       }
 
       sounds { "The <hilight>sounds</hilight> block contains a list of one or more sound samples and tone items.";
