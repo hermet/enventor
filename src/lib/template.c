@@ -179,7 +179,7 @@ select_random_name(Evas_Object *entry, const char* first_line,
 }
 
 static const char *
-_posix_fp(double fp, const char *fmt)
+_posix_fp(double fp, double fp2, const char *fmt)
 {
    static Eina_Strbuf *strbuf = NULL;
    static char storage[16];
@@ -199,7 +199,9 @@ _posix_fp(double fp, const char *fmt)
 
    eina_strbuf_reset(strbuf);
    eina_strbuf_append_printf(strbuf, fmt, fp);
-   eina_strbuf_replace_first(strbuf, lconv->decimal_point, ".");
+   eina_strbuf_append(strbuf, " ");
+   eina_strbuf_append_printf(strbuf, fmt, fp2);
+   eina_strbuf_replace_all(strbuf, lconv->decimal_point, ".");
 
    return eina_strbuf_string_get(strbuf);
 }
@@ -315,8 +317,8 @@ template_part_insert(edit_data *ed, Edje_Part_Type part_type,
 
    //Apply align values
    elm_entry_entry_insert(edit_entry, p);
-   snprintf(buf, sizeof(buf), "      align: %s %s;<br/>",
-            _posix_fp(align_x, "%.1f"), _posix_fp(align_y, "%1.f"));
+   snprintf(buf, sizeof(buf), "      align: %s;<br/>",
+            _posix_fp(align_x, align_y, "%.1f"));
    elm_entry_entry_insert(edit_entry, buf);
    line_cnt++;
 
@@ -372,23 +374,22 @@ template_part_insert(edit_data *ed, Edje_Part_Type part_type,
        (int)(rel2_x * 10000 + 0.5) % 100 ||
        (int)(rel2_y * 10000 + 0.5) % 100)
      {
-
-        snprintf(buf, sizeof(buf), "      rel1.relative: %s %s;<br/>",
-                 _posix_fp(rel1_x, "%.4f"), _posix_fp(rel1_y, "%.4f"));
+        snprintf(buf, sizeof(buf), "      rel1.relative: %s;<br/>",
+                 _posix_fp(rel1_x, rel1_y, "%.4f"));
         elm_entry_entry_insert(edit_entry, buf);
         elm_entry_entry_insert(edit_entry, p);
-        snprintf(buf, sizeof(buf), "      rel2.relative: %s %s;<br/>",
-                 _posix_fp(rel2_x, "%.4f"), _posix_fp(rel2_y, "%.4f"));
+        snprintf(buf, sizeof(buf), "      rel2.relative: %s;<br/>",
+                 _posix_fp(rel2_x, rel2_y, "%.4f"));
      }
    //Condition 2: relative values are 2 places of decimals
    else
      {
-        snprintf(buf, sizeof(buf), "      rel1.relative: %s %s;<br/>",
-                 _posix_fp(rel1_x, "%.2f"), _posix_fp(rel1_y, "%.2f"));
+        snprintf(buf, sizeof(buf), "      rel1.relative: %s;<br/>",
+                 _posix_fp(rel1_x, rel1_y, "%.2f"));
         elm_entry_entry_insert(edit_entry, buf);
         elm_entry_entry_insert(edit_entry, p);
-        snprintf(buf, sizeof(buf), "      rel2.relative: %s %s;<br/>",
-                 _posix_fp(rel2_x, "%.2f"), _posix_fp(rel2_y, "%.2f"));
+        snprintf(buf, sizeof(buf), "      rel2.relative: %s;<br/>",
+                 _posix_fp(rel2_x, rel2_y, "%.2f"));
      }
 
    elm_entry_entry_insert(edit_entry, buf);
