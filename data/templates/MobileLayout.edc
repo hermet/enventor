@@ -1,0 +1,557 @@
+collections {
+   base_scale: 1.0;
+   group { "main";
+      /* TODO: Please replace embedded image files to your application image files. */
+      images {
+         image: "ENVENTOR_EMBEDDED_ICON_DOCK.png" COMP;
+         image: "ENVENTOR_EMBEDDED_ICON_DOCK_DOWN.png" COMP;
+      }      
+      parts {
+         rect { "base";
+            scale: 1;
+            desc { "default";
+               color: 255 255 255 255;
+               visible: 1;
+               align: 0.5 0.5;
+               rel1.relative: 0.0 0.0;
+               rel2.relative: 1.0 1.0;
+               min: 200 300;
+            }
+         }         
+         /* Header */
+         rect { "header";
+            scale: 1;
+            desc { "default";
+               color: 200 0 0 255;
+               visible: 1;
+               align: 0.0 0.0;
+               rel1.to: "base";
+               rel1.relative: 0.0 0.0;
+               rel2.to: "base";
+               rel2.relative: 1.0 0.1;
+               min: 0 40;
+               max: 9999 40;
+               fixed: 0 1;
+            }
+         }
+         spacer { "header_padding";
+            scale: 1;
+            desc { "default";
+               align: 0.0 0.5;
+               rel1.to: "header";
+               rel1.relative: 0.0 0.0;
+               rel2.to: "header";
+               max: 10 20;
+               fixed: 1 1;
+            }
+         }
+         image { "header_button_panel_open";
+            scale: 1;
+            desc { "default";
+               visible: 1;
+               /* TODO: Please replace embedded image files to your application image files. */
+               image.normal: "ENVENTOR_EMBEDDED_ICON_DOCK.png";
+               //aspect: 1 1;
+               align: 0.0 0.5;
+               rel1.to: "header_padding";
+               rel1.relative: 1.0 0.0;
+               rel2.to: "header_padding";
+               min: 20 20;
+               fixed: 1 1;
+               visible: 1;
+            }
+            desc { "clicked";
+               inherit: "default";
+               visible: 0;
+            }
+         }
+         image { "header_button_panel_close";
+            scale: 1;
+            desc { "default";
+               visible: 1;
+               /* TODO: Please replace embedded image files to your application image files. */
+               image.normal: "ENVENTOR_EMBEDDED_ICON_DOCK_DOWN.png";
+               //aspect: 1 1;
+               align: 0.0 0.5;
+               rel1.to: "header_padding";
+               rel1.relative: 1.0 0.0;
+               rel2.to: "header_padding";
+               min: 20 20;
+               fixed: 1 1;
+               visible: 0;
+            }
+            desc { "clicked";
+               inherit: "default";
+               visible: 1;
+            }
+         }      
+         text { "header_title";
+            scale: 1;
+            desc { "default";
+               color: 255 255 255 255;
+               visible: 1;
+               text {
+                  size: 15;
+                  font: "Sans";
+                  text: "TITLE";
+                  align: 0.5 0.5;
+                  min: 0 0;
+               }
+               align: 0.5 0.5;
+               rel1.to: "header";
+               rel1.relative: 0.0 0.0;
+               rel2.to: "header";
+               rel2.relative: 1.0 1.0;
+            }
+         }
+         /* Content */
+         spacer { "content_padding_top";
+            scale: 1;
+            desc { "default";
+               align: 0.0 0.0;
+               rel1.to: "header";
+               rel1.relative: 0.0 1.0;
+               rel2.to: "header";
+               min: 0 5;
+               fixed: 0 1;
+            }
+         }
+         rect { "content_main";
+            scale: 1;
+            desc { "default";
+               color: 30 46 93 255;
+               visible: 1;
+               align: 0.5 0.0;
+               rel1.to: "content_padding_top";
+               rel1.relative: 0.0 1.0;
+               rel1.offset: 5 0;
+               rel2.to: "base";
+               rel2.relative: 1.0 0.5;
+               rel2.offset: -5 0;
+            }
+         }
+         text { "content_main_text";
+            scale: 1;
+            desc { "default";
+               color: 255 255 255 255;
+               visible: 1;
+               text {
+                  size: 15;
+                  font: "Sans";
+                  text: "add main content";
+                  align: 0.5 0.5;
+                  min: 0 0;
+               }
+               align: 0.5 0.5;
+               rel1.to: "content_main";
+               rel1.relative: 0.0 0.0;
+               rel2.to: "content_main";
+               rel2.relative: 1.0 1.0;
+            }
+         }         
+         spacer { "content_padding_middle";
+            scale: 1;
+            desc { "default";
+               align: 0.0 0.0;
+               rel1.to: "base";
+               rel1.relative: 0.0 0.5;
+               rel2.to: "base";
+               max: 0 5;
+            }
+         }
+         rect { "content_sub_1";
+            scale: 1;
+            desc { "default";
+               color: 0 136 170 255;
+               visible: 1;
+               align: 0.0 0.0;
+               rel1.to: "content_padding_middle";
+               rel1.relative: 0.0 0.0;
+               rel1.offset: 5 5;
+               rel2.to: "base";
+               rel2.relative: 0.5 0.85;
+               rel2.offset: 0 0;
+            }
+         }
+         text { "content_sub_1_text";
+            scale: 1;
+            desc { "default";
+               color: 255 255 255 255;
+               visible: 1;
+               text {
+                  size: 15;
+                  font: "Sans";
+                  text: "sub 1";
+                  align: 0.5 0.5;
+                  min: 0 0;
+               }
+               align: 0.5 0.5;
+               rel1.to: "content_sub_1";
+               rel1.relative: 0.0 0.0;
+               rel2.to: "content_sub_1";
+            }
+         }
+         rect { "content_sub_2";
+            scale: 1;
+            desc { "default";
+               color: 66 118 189 255;
+               visible: 1;
+               align: 0.0 0.5;
+               rel1.to: "content_sub_1";
+               rel1.relative: 1.0 0.0;
+               rel1.offset: 5 0;
+               rel2.to_x: "base";
+               rel2.to_y: "content_sub_1";
+               rel2.relative: 1.0 0.5;               
+               rel2.offset: -5 0;
+            }
+         }
+         text { "content_sub_2_text";
+            scale: 1;
+            desc { "default";
+               color: 255 255 255 255;
+               visible: 1;
+               text {
+                  size: 15;
+                  font: "Sans";
+                  text: "sub 2";
+                  align: 0.5 0.5;
+                  min: 0 0;
+               }
+               align: 0.5 0.5;
+               rel1.to: "content_sub_2";
+               rel1.relative: 0.0 0.0;
+               rel2.to: "content_sub_2";
+            }
+         }
+         rect { "content_sub_3";
+            scale: 1;
+            desc { "default";
+               color: 83 66 189 255;
+               visible: 1;
+               align: 0.0 0.5;
+               rel1.to: "content_sub_1";
+               rel1.relative: 1.0 0.5;
+               rel1.offset: 5 5;
+               rel2.to: "base";
+               rel2.relative: 1.0 0.85;
+               rel2.offset: -5 0;
+            }
+         }
+         text { "content_sub_3_text";
+            scale: 1;
+            desc { "default";
+               color: 255 255 255 255;
+               visible: 1;
+               text {
+                  size: 15;
+                  font: "Sans";
+                  text: "sub 3";
+                  align: 0.5 0.5;
+                  min: 0 0;
+               }
+               align: 0.5 0.5;
+               rel1.to: "content_sub_3";
+               rel1.relative: 0.0 0.0;
+               rel2.to: "content_sub_3";
+            }
+         }
+         rect { "content_bottom";
+            scale: 1;
+            desc { "default";
+               color: 95 95 95 255;
+               visible: 1;
+               align: 0.5 0.5;
+               rel1.to: "content_sub_1";
+               rel1.relative: 0.0 1.0;
+               rel1.offset: 0 5;
+               rel2.to: "base";
+               rel2.relative: 1.0 1.0;
+               rel2.offset: -5 -5;
+            }
+         }
+         text { "content_bottom_text";
+            scale: 1;
+            desc { "default";
+               color: 255 255 255 255;
+               visible: 1;
+               text {
+                  size: 15;
+                  font: "Sans";
+                  text: "add bottom content";
+                  align: 0.5 0.5;
+                  min: 0 0;
+               }
+               align: 0.5 0.5;
+               rel1.to: "content_bottom";
+               rel1.relative: 0.0 0.0;
+               rel2.to: "content_bottom";
+            }
+         }
+         /* Mask */
+         rect { "mask";
+            scale: 1;
+            desc { "default";
+               color: 0 0 0 155;
+               align: 0.5 0.5;
+               rel1.to: "header";
+               rel1.relative: 0.0 1.0;
+               rel2.to: "base";
+               rel2.relative: 1.0 1.0;
+               visible: 0;
+            }
+            desc { "clicked";
+               inherit: "default";
+               visible: 1;
+            }
+         }
+         /* Panel */
+         rect { "panel_base";
+            scale: 1;
+            desc { "default";
+               color: 255 255 225 255;
+               visible: 1;
+               align: 0.0 0.0;
+               rel1.to: "header";
+               rel1.relative: 0.0 1.0;
+               rel2.to: "base";
+               rel2.relative: 0.7 1.0;
+               visible: 0;
+            }
+            desc { "clicked";
+               inherit: "default";
+               visible: 1;
+            }
+         }
+         rect { "panel_content_1";
+            scale: 1;
+            desc { "default";
+               color: 255 94 0 255;
+               visible: 1;
+               align: 0.5 0.5;
+               rel1.to: "panel_base";
+               rel1.relative: 0.0 0.0;
+               rel1.offset: 0 1;
+               rel2.to: "panel_base";
+               rel2.relative: 1.0 0.15;
+               rel2.offset: -2 0;
+               visible: 0;
+            }
+            desc { "clicked";
+               inherit: "default";
+               visible: 1;
+            }
+         }
+         text { "panel_content_1_text";
+            scale: 1;
+            desc { "default";
+               color: 0 0 0 255;
+               visible: 1;
+               text {
+                  size: 14;
+                  font: "Sans";
+                  text: "Add";
+                  align: 0.0 0.5;
+                  min: 0 0;
+               }
+               align: 0.5 0.5;
+               rel1.to: "panel_content_1";
+               rel1.relative: 0.1 0.0;
+               rel2.to: "panel_content_1";
+               rel2.relative: 1.0 1.0;
+               visible: 0;
+            }
+            desc { "clicked";
+               inherit: "default";
+               visible: 1;
+            }
+         }
+         rect { "panel_content_2";
+            scale: 1;
+            desc { "default";
+               color: 255 130 36 255;
+               visible: 1;
+               align: 0.5 0.5;
+               rel1.to: "panel_base";
+               rel1.relative: 0.0 0.15;
+               rel1.offset: 0 2;
+               rel2.to: "panel_base";
+               rel2.relative: 1.0 0.30;
+               rel2.offset: -2 0;
+               visible: 0;
+            }
+            desc { "clicked";
+               inherit: "default";
+               visible: 1;
+            }
+         }
+         text { "panel_content_2_text";
+            scale: 1;
+            desc { "default";
+               color: 0 0 0 255;
+               visible: 1;
+               text {
+                  size: 14;
+                  font: "Sans";
+                  text: "Your";
+                  align: 0.0 0.5;
+                  min: 0 0;
+               }
+               align: 0.5 0.5;
+               rel1.to: "panel_content_2";
+               rel1.relative: 0.1 0.0;
+               rel2.to: "panel_content_2";
+               rel2.relative: 1.0 1.0;
+               visible: 0;
+            }
+            desc { "clicked";
+               inherit: "default";
+               visible: 1;
+            }
+         }
+         rect { "panel_content_3";
+            scale: 1;
+            desc { "default";
+               color: 255 166 72 255;
+               visible: 1;
+               align: 0.5 0.5;
+               rel1.to: "panel_base";
+               rel1.relative: 0.0 0.30;
+               rel1.offset: 0 2;
+               rel2.to: "panel_base";
+               rel2.relative: 1.0 0.45;
+               rel2.offset: -2 0;
+               visible: 0;
+            }
+            desc { "clicked";
+               inherit: "default";
+               visible: 1;
+            }
+         }
+         text { "panel_content_3_text";
+            scale: 1;
+            desc { "default";
+               color: 0 0 0 255;
+               visible: 1;
+               text {
+                  size: 14;
+                  font: "Sans";
+                  text: "Content";
+                  align: 0.0 0.5;
+                  min: 0 0;
+               }
+               align: 0.5 0.5;
+               rel1.to: "panel_content_3";
+               rel1.relative: 0.1 0.0;
+               rel2.to: "panel_content_3";
+               rel2.relative: 1.0 1.0;
+               visible: 0;
+            }
+            desc { "clicked";
+               inherit: "default";
+               visible: 1;
+            }
+         }
+         rect { "panel_content_4";
+            scale: 1;
+            desc { "default";
+               color: 255 202 108 255;
+               visible: 1;
+               align: 0.5 0.5;
+               rel1.to: "panel_base";
+               rel1.relative: 0.0 0.45;
+               rel1.offset: 0 2;
+               rel2.to: "panel_base";
+               rel2.relative: 1.0 0.60;
+               rel2.offset: -2 0;
+               visible: 0;
+            }
+            desc { "clicked";
+               inherit: "default";
+               visible: 1;
+            }
+         }
+         text { "panel_content_4_text";
+            scale: 1;
+            desc { "default";
+               color: 0 0 0 255;
+               visible: 1;
+               text {
+                  size: 14;
+                  font: "Sans";
+                  text: "in Swallow";
+                  align: 0.0 0.5;
+                  min: 0 0;
+               }
+               align: 0.5 0.5;
+               rel1.to: "panel_content_4";
+               rel1.relative: 0.1 0.0;
+               rel2.to: "panel_content_4";
+               rel2.relative: 1.0 1.0;
+               visible: 0;
+            }
+            desc { "clicked";
+               inherit: "default";
+               visible: 1;
+            }
+         }
+         swallow { "panel_swallow";
+            scale: 1;
+            desc { "default";
+               visible: 0;
+               align: 0.5 0.5;
+               rel1.to: "panel_base";
+               rel1.relative: 0.0 0.6;
+               rel1.offset: 5 5;
+               rel2.to: "panel_base";
+               rel2.relative: 1.0 1.0;
+               rel2.offset: -5 -5;
+
+            }
+            desc { "clicked";
+               inherit: "default";
+               visible: 1;
+            }
+         }
+      }
+
+      programs {
+         program { "panel_open";
+            signal: "mouse,down,1";
+            source: "header_button_panel_open";
+            action: STATE_SET "clicked";
+            target: "header_button_panel_open";
+            target: "header_button_panel_close";
+            target: "mask";
+            target: "panel_base";
+            target: "panel_content_1";
+            target: "panel_content_1_text";
+            target: "panel_content_2";
+            target: "panel_content_2_text";
+            target: "panel_content_3";
+            target: "panel_content_3_text";
+            target: "panel_content_4";
+            target: "panel_content_4_text";
+            target: "panel_swallow";
+         }
+         program { "panel_close";
+            signal: "mouse,down,1";
+            source: "header_button_panel_close";
+            action: STATE_SET "default";
+            target: "header_button_panel_open";
+            target: "header_button_panel_close";            
+            target: "mask";
+            target: "panel_base";
+            target: "panel_content_1";
+            target: "panel_content_1_text";
+            target: "panel_content_2";
+            target: "panel_content_2_text";
+            target: "panel_content_3";
+            target: "panel_content_3_text";
+            target: "panel_content_4";
+            target: "panel_content_4_text";
+            target: "panel_swallow";
+         }
+      }
+   }
+}

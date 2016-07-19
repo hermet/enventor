@@ -18,6 +18,8 @@ files_DATA = Basic.edc \
              Listitem.edj \
              Map.edc \
              Map.edj \
+             MobileLayout.edc \
+             MobileLayout.edj \
              Proxy.edc \
              Proxy.edj \
              Rect.edc \
@@ -54,6 +56,9 @@ Empty.edj: Makefile Empty.edc
 
 Map.edj: Makefile Map.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/Map.edc $(builddir)/Map.edj
+
+MobileLayout.edj: Makefile MobileLayout.edc
+	        $(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/MobileLayout.edc $(builddir)/MobileLayout.edj
 
 Textblock.edj: Makefile Textblock.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/Textblock.edc $(builddir)/Textblock.edj
