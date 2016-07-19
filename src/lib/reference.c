@@ -344,7 +344,10 @@ keyword_list_load(Eina_List **keyword_list, Eina_List **parent_name_list,
              if (!isspace(**ptr))
                {
                   if (!keyword_name_begin)
-                    keyword_name_begin = *ptr;
+                    {
+                       keyword_name_begin = *ptr;
+                       keyword_name_end = *ptr;
+                    }
                   else
                     keyword_name_end = *ptr;
                }
