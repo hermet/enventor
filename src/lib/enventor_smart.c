@@ -780,7 +780,7 @@ EOLIAN static void
 _enventor_object_keyword_reference_show(Eo *obj EINA_UNUSED,
                                         Enventor_Object_Data *pd)
 {
-   ref_show(pd->main_it->ed);
+   ref_show(pd->focused_it->ed);
 }
 
 /*****************************************************************************/

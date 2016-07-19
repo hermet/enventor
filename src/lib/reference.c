@@ -187,10 +187,14 @@ str_list_same_check(Eina_List *str_list1, Eina_List *str_list2)
 static Eina_List *
 keyword_parent_name_list_find(const char *text, const char *keyword_name)
 {
-   Eina_List *parent_name_list = NULL;
+   ref_data *md = g_md;
+   if (!md) return NULL;
+   if (!md->ed) return NULL;
 
    if (!text) return NULL;
    if (!keyword_name) return NULL;
+
+   Eina_List *parent_name_list = NULL;
 
    //Check from the end of the text.
    char *ptr = (char *)(text + ((strlen(text) - 1) * sizeof(char)));
@@ -260,6 +264,14 @@ keyword_parent_name_list_find(const char *text, const char *keyword_name)
              dot_grammar_valid = EINA_FALSE;
           }
         ptr--;
+     }
+
+   //In case of sub items, it won't contain "collections".
+   //We added it arbitrary.
+   if (!edit_is_main_file(md->ed))
+     {
+        parent_name_list = eina_list_append(parent_name_list,
+                                            strdup("collections"));
      }
 
    return parent_name_list;
