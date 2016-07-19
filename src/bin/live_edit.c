@@ -1909,15 +1909,7 @@ align_line_init(live_data *ld)
      {
         //Align line should be located between live edit item and live view
         Evas_Object *layout = elm_layout_add(ld->live_view);
-        evas_object_smart_member_add(layout, ld->live_view);
-
-        //Clip align line using scroller view
-        Evas_Object *scroller = view_scroller_get(ld);
-        Evas_Object *scroller_edje = elm_layout_edje_get(scroller);
-        Evas_Object *clipper =
-                     (Evas_Object *)edje_object_part_object_get(scroller_edje,
-                     "clipper");
-        evas_object_clip_set(layout, clipper);
+        evas_object_smart_member_add(layout, view_obj_get(ld));
         elm_layout_file_set(layout, EDJE_PATH,  "ctrl_pt");
         evas_object_show(layout);
         elm_object_signal_emit(layout, "elm,state,hide,instance", "");
