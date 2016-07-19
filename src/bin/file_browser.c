@@ -355,7 +355,12 @@ file_strcmp_cb(const void *data1, const void *data2)
    const brows_file *file1 = data1;
    const brows_file *file2 = data2;
 
-   return strcmp(file1->name, file2->name);
+   if (file1->type < file2->type)
+     return -1;
+   else if (file1->type > file2->type)
+     return 1;
+   else
+     return strcmp(file1->name, file2->name);
 }
 
 static File_Browser_File_Type
@@ -512,10 +517,8 @@ file_browser_workspace_reset(void)
    file_browser_workspace_set(config_workspace_path_get());
 }
 
-/* Create brows_file and append genlist item if the given file name contains
-   search word. This function is called recursively. */
 static void
-search_file_set(const char *file_path)
+search_file_set_internal(const char *file_path)
 {
    brows_data *bd = g_bd;
    if (!bd) return;
@@ -542,9 +545,10 @@ search_file_set(const char *file_path)
              brows_file *file = brows_file_create(file_path, EINA_FALSE);
              if (file)
                {
-                  bd->search_file_list = eina_list_append(bd->search_file_list,
-                                                          file);
-                  file_genlist_item_append(file, NULL, ELM_GENLIST_ITEM_NONE);
+                  bd->search_file_list =
+                     eina_list_sorted_insert(bd->search_file_list,
+                                             (Eina_Compare_Cb)file_strcmp_cb,
+                                             file);
                }
           }
      }
@@ -563,8 +567,32 @@ search_file_set(const char *file_path)
         snprintf(sub_file_path, sub_file_path_len, "%s/%s", dir_path,
                  sub_file_name);
 
-        search_file_set(sub_file_path);
+        search_file_set_internal(sub_file_path);
         free(sub_file_path);
+     }
+}
+
+/* Create brows_file and append genlist item if the given file name contains
+   search word. This function is called recursively. */
+static void
+search_file_set(const char *file_path)
+{
+   brows_data *bd = g_bd;
+   if (!bd) return;
+   if (!bd->search_entry) return;
+
+   if (!file_path) return;
+
+   const char *search_word = elm_entry_entry_get(bd->search_entry);
+   if (!search_word || !strcmp(search_word, "")) return;
+
+   search_file_set_internal(file_path);
+
+   Eina_List *l = NULL;
+   brows_file *file = NULL;
+   EINA_LIST_FOREACH(bd->search_file_list, l, file)
+     {
+        file_genlist_item_append(file, NULL, ELM_GENLIST_ITEM_NONE);
      }
 }
 
