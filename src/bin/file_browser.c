@@ -88,24 +88,21 @@ gl_clicked_double_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 
    //Case 1. main file.
    eit = file_mgr_main_item_get();
-   if (!eit)
+   if (eit)
      {
-        EINA_LOG_ERR("No main item??");
-        return;
-     }
-
-   it_file_path = enventor_item_file_get(eit);
-   if (!it_file_path)
-     {
-        EINA_LOG_ERR("No main item file path??");
-        return;
-     }
-   //Ok, This selected file is already openend, let's activate the item.
-   if (strlen(file->name) == strlen(it_file_path) &&
-       !strcmp(file->name, it_file_path))
-     {
-        file_mgr_file_focus(eit);
-        return;
+        it_file_path = enventor_item_file_get(eit);
+        if (!it_file_path)
+          {
+             EINA_LOG_ERR("No main item file path??");
+             return;
+          }
+        //Ok, This selected file is already openend, let's activate the item.
+        if (strlen(file->name) == strlen(it_file_path) &&
+            !strcmp(file->name, it_file_path))
+          {
+             file_mgr_file_focus(eit);
+             return;
+          }
      }
 
    //Case 2. sub files.

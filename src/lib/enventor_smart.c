@@ -1084,6 +1084,7 @@ enventor_item_del(Enventor_Item *it)
 
    if (pd->focused_it == it)
      {
+        edj_mgr_view_switch_to(NULL);
         autocomp_target_set(NULL);
         pd->focused_it = NULL;
      }
