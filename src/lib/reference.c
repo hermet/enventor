@@ -690,8 +690,8 @@ ref_show(edit_data *ed)
    Evas_Coord obj_x, obj_y, obj_w, obj_h;
    evas_object_geometry_get(edit_obj, &obj_x, &obj_y, &obj_w, &obj_h);
 
-   Evas_Coord entry_x;
-   evas_object_geometry_get(edit_entry, &entry_x, NULL, NULL, NULL);
+   Evas_Coord entry_x, entry_y;
+   evas_object_geometry_get(edit_entry, &entry_x, &entry_y, NULL, NULL);
 
    Evas_Coord cur_x, cur_y, cur_h;
    elm_entry_cursor_geometry_get(edit_entry, &cur_x, &cur_y, NULL, &cur_h);
@@ -715,10 +715,10 @@ ref_show(edit_data *ed)
    else
      ref_x = entry_x + cur_x - (ref_w / 2);
 
-   if ((obj_h - cur_y - cur_h) < ref_h)
-     ref_y = obj_y + cur_y - ref_h;
+   if (((obj_y + obj_h) - (entry_y + cur_y + cur_h)) < ref_h)
+     ref_y = entry_y + cur_y - ref_h;
    else
-     ref_y = obj_y + cur_y + cur_h;
+     ref_y = entry_y + cur_y + cur_h;
 
    evas_object_move(md->layout, ref_x, ref_y);
 }
