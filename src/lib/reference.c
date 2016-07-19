@@ -200,10 +200,16 @@ keyword_parent_name_list_find(const char *text, const char *keyword_name)
    const char *parent_begin = NULL;
    const char *parent_end = NULL;
 
+   //Check if dot('.') grammar is valid to identify parent keyword.
+   Eina_Bool dot_grammar_valid = EINA_TRUE;
+
    while (text <= ptr)
      {
-        if (*ptr == '{')
+        if ((*ptr == '{') || (dot_grammar_valid && (*ptr == '.')))
           {
+             if (dot_grammar_valid)
+               dot_grammar_valid = EINA_FALSE;
+
              height++;
              if (height == next_height)
                {
@@ -244,7 +250,14 @@ keyword_parent_name_list_find(const char *text, const char *keyword_name)
           }
         else if (*ptr == '}')
           {
+             if (dot_grammar_valid)
+               dot_grammar_valid = EINA_FALSE;
+
              height--;
+          }
+        else if (dot_grammar_valid && !isalnum(*ptr))
+          {
+             dot_grammar_valid = EINA_FALSE;
           }
         ptr--;
      }
