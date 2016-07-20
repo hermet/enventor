@@ -229,6 +229,21 @@ view_obj_get(live_data *ld)
 }
 
 static void
+view_obj_member_add(live_data *ld, Evas_Object *obj)
+{
+   //This is a trick! we got the actual view object from the live edit.
+   Evas_Object *scroller = view_scroller_get(ld);
+   if (!scroller) return;
+
+   evas_object_smart_member_add(obj, scroller);
+
+   Evas_Object *scroller_edje = elm_layout_edje_get(scroller);
+   Evas_Object *clipper =
+      (Evas_Object *)edje_object_part_object_get(scroller_edje, "clipper");
+   evas_object_clip_set(obj, clipper);
+}
+
+static void
 view_scroll_cb(void *data, Evas_Object *obj EINA_UNUSED,
                void *event_info EINA_UNUSED)
 {
@@ -1428,7 +1443,6 @@ cp_mouse_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
 
    evas_object_event_callback_add(obj, EVAS_CALLBACK_MOUSE_MOVE,
                                   cp_mouse_move_cb, data);
-   evas_object_layer_set(obj, CTRL_PT_LAYER);
 
    //Hide All Control Points
    live_data *ld = data;
@@ -1448,11 +1462,10 @@ ctrl_pt_init(live_data *ld)
 
    //Create Control Points
    int i;
-   Evas_Object *view_obj = view_obj_get(ld);
    for (i = 0; i < Ctrl_Pt_Cnt; i++)
      {
         Evas_Object *layout = elm_layout_add(ld->layout);
-        evas_object_smart_member_add(layout, view_obj);
+        view_obj_member_add(ld, layout);
         elm_layout_file_set(layout, EDJE_PATH,  "ctrl_pt");
         evas_object_resize(layout, ctrl_size, ctrl_size);
         evas_object_show(layout);
@@ -1906,12 +1919,11 @@ align_line_init(live_data *ld)
 {
    //Create Align Lines
    int i;
-   Evas_Object *view_obj = view_obj_get(ld);
    for (i = 0; i < Align_Line_Cnt; i++)
      {
         //Align line should be located between live edit item and live view
         Evas_Object *layout = elm_layout_add(ld->live_view);
-        evas_object_smart_member_add(layout, view_obj);
+        view_obj_member_add(ld, layout);
         elm_layout_file_set(layout, EDJE_PATH,  "ctrl_pt");
         evas_object_show(layout);
         elm_object_signal_emit(layout, "elm,state,hide,instance", "");
@@ -1930,9 +1942,8 @@ info_text_init(live_data *ld)
    for (i = 0; i < Info_Text_Cnt; i++)
      {
         Evas_Object *text = evas_object_text_add(e);
-        evas_object_smart_member_add(text, view_obj);
+        view_obj_member_add(ld, text);
         evas_object_pass_events_set(text, EINA_TRUE);
-        evas_object_layer_set(text, INFO_TEXT_LAYER);
         evas_object_text_font_set(text, LIVE_EDIT_FONT,
                                   ( LIVE_EDIT_FONT_SIZE * scale));
         evas_object_text_style_set(text, EVAS_TEXT_STYLE_OUTLINE);
@@ -2006,9 +2017,7 @@ live_edit_layer_set(live_data *ld)
         live_edit_cancel(EINA_FALSE);
         return EINA_FALSE;
      }
-   evas_object_smart_member_add(layout, view_obj);
-   //Live Edit layout should be more than spacer and dummies. 
-   evas_object_layer_set(layout, EVAS_LAYER_MAX);
+   view_obj_member_add(ld, layout);
    elm_layout_file_set(layout, EDJE_PATH,  "live_edit_layout");
    evas_object_event_callback_add(layout, EVAS_CALLBACK_MOUSE_DOWN,
                                   layout_mouse_down_cb, ld);

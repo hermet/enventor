@@ -62,6 +62,16 @@ wireframes_objs_update(wireframes_obj *wireframes)
           }
      }
 
+   //Trick!. set smart members of actual live view object.
+   Evas_Object *scroller = view_obj_get(VIEW_DATA);
+   if (!scroller) goto end;
+   Evas_Object *o = elm_object_content_get(scroller);
+   if (!o) goto end;
+   Evas_Object *o2 =
+      elm_object_part_content_get(o, "elm.swallow.content");
+   if (!o2) goto end;
+   Evas *evas = evas_object_evas_get(scroller);
+
    //Add new part object or Update changed part.
    EINA_LIST_FOREACH(parts, l, part_name)
      {
@@ -79,22 +89,15 @@ wireframes_objs_update(wireframes_obj *wireframes)
         }
         if (!pobj)
           {
-             Evas_Object *scroller = view_obj_get(VIEW_DATA);
-             Evas_Object *scroller_edje = elm_layout_edje_get(scroller);
-             Evas_Object *clipper =
-                (Evas_Object *)edje_object_part_object_get(scroller_edje,
-                                                           "clipper");
-
-             pobj = elm_image_add(scroller);
-             elm_image_file_set(pobj, EDJE_PATH, "wireframes");
-             evas_object_smart_member_add(pobj, scroller);
-
+             pobj = edje_object_add(scroller);
+             edje_object_file_set(pobj, EDJE_PATH, "wireframes");
+             evas_object_smart_member_add(pobj, o2);
              po = malloc(sizeof(part_obj));
              po->obj = pobj;
              po->name = eina_stringshare_add(part_name);
-             wireframes->part_list = eina_list_append(wireframes->part_list, po);
+             wireframes->part_list =
+                eina_list_append(wireframes->part_list, po);
              evas_object_show(pobj);
-             evas_object_clip_set(pobj, clipper);
              evas_object_data_set(pobj, OUTLINE_EDIT_LAYOUT_KEY,
                                   wireframes->layout);
           }
@@ -105,7 +108,7 @@ wireframes_objs_update(wireframes_obj *wireframes)
          evas_object_resize(pobj, part_w, part_h);
          evas_object_move(pobj, part_lx + part_x, part_ly + part_y);
      }
-
+end:
    edje_edit_string_list_free(parts);
 }
 

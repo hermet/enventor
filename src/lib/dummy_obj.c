@@ -101,6 +101,15 @@ dummy_objs_update(dummy_obj *dummy)
           }
      }
 
+   //Trick!. set smart members of actual live view object.
+   Evas_Object *scroller = view_obj_get(VIEW_DATA);
+   if (!scroller) goto end;
+   Evas_Object *o = elm_object_content_get(scroller);
+   if (!o) goto end;
+   Evas_Object *o2 =
+      elm_object_part_content_get(o, "elm.swallow.content");
+   if (!o2) goto end;
+
    //Add new part object or Update changed part.
    EINA_LIST_FOREACH(parts, l, part_name)
      {
@@ -146,18 +155,8 @@ dummy_objs_update(dummy_obj *dummy)
                   }
              if (!obj)
                {
-                  //Trick!. set smart members of actual live view object.
-                  Evas_Object *scroller = view_obj_get(VIEW_DATA);
-                  if (!scroller) continue;
-                  Evas_Object *o = elm_object_content_get(scroller);
-                  if (!o) continue;
-                  Evas_Object *o2 =
-                     elm_object_part_content_get(o, "elm.swallow.content");
-                  if (!o2) continue;
-
                   obj = edje_object_add(evas);
                   edje_object_file_set(obj, EDJE_PATH, "spacer");
-                  evas_object_layer_set(obj, EVAS_LAYER_MAX - 1);
                   evas_object_smart_member_add(obj, o2);
 
                   po = malloc(sizeof(part_obj));
@@ -176,7 +175,7 @@ dummy_objs_update(dummy_obj *dummy)
              evas_object_move(obj, lx + x, ly + y);
           }
      }
-
+end:
    edje_edit_string_list_free(parts);
 }
 
