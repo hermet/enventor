@@ -357,7 +357,8 @@ Eina_Bool
 config_init(const char *input_path, const char *output_path,
             const char *workspace_path,
             Eina_List *img_path, Eina_List *snd_path,
-            Eina_List *fnt_path, Eina_List *dat_path)
+            Eina_List *fnt_path, Eina_List *dat_path,
+            Eina_Bool default_workspace)
 {
    eddc_init();
 
@@ -370,7 +371,10 @@ config_init(const char *input_path, const char *output_path,
 
    if (workspace_path[0])
      eina_stringshare_replace(&cd->workspace_path, workspace_path);
-   else
+
+   //In case of default workspace
+   //we don't turn on file browser and file tab in default.
+   if (default_workspace)
      {
         cd->file_browser = EINA_FALSE;
         cd->file_tab = EINA_FALSE;
