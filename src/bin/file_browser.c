@@ -97,8 +97,7 @@ gl_clicked_double_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
              return;
           }
         //Ok, This selected file is already openend, let's activate the item.
-        if (strlen(file->name) == strlen(it_file_path) &&
-            !strcmp(file->name, it_file_path))
+        if (!strcmp(file->name, ecore_file_file_get(it_file_path)))
           {
              file_mgr_file_focus(eit);
              return;
@@ -421,8 +420,7 @@ brows_file_create(const char *file_path, Eina_Bool create_sub_file_list)
    if (file->type == FILE_BROWSER_FILE_TYPE_EDC &&
        config_input_path_get())
      {
-        if (!strcmp(file->name, config_input_path_get()) &&
-            (strlen(file->name) == strlen(config_input_path_get())))
+        if (!strcmp(file->name, ecore_file_file_get(config_input_path_get())))
           file->main = EINA_TRUE;
      }
 
