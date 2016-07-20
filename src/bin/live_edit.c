@@ -2013,10 +2013,22 @@ live_edit_layer_set(live_data *ld)
    Evas_Object *view_obj = view_obj_get(ld);
    if (!view_obj)
      {
-        stats_info_msg_update("Live Edit is not avaiable here. A base group is required!");
+        stats_info_msg_update("Live Edit is not available here. A base group is required!");
         live_edit_cancel(EINA_FALSE);
         return EINA_FALSE;
      }
+
+   //Check canvas has been set or not.
+   Evas_Coord w, h;
+   evas_object_geometry_get(view_obj, NULL, NULL, &w, &h);
+   if ((w < 2) || (h < 2))
+     {
+        stats_info_msg_update("Live Edit is not available here. Please set up live view size first!");
+        live_edit_cancel(EINA_FALSE);
+        return EINA_FALSE;
+
+     }
+
    view_obj_member_add(ld, layout);
    elm_layout_file_set(layout, EDJE_PATH,  "live_edit_layout");
    evas_object_event_callback_add(layout, EVAS_CALLBACK_MOUSE_DOWN,
