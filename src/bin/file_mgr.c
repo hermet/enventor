@@ -271,6 +271,8 @@ file_mgr_file_focus(Enventor_Item *it)
 
    //Reset context if the find/replace is working on.
    search_reset();
+   //Cancel if the live edit mode is turned on.
+   live_edit_cancel(EINA_FALSE);
 }
 
 Enventor_Item *

@@ -2171,9 +2171,7 @@ Eina_Bool
 live_edit_cancel(Eina_Bool phase_in)
 {
    live_data *ld = g_ld;
-   EINA_SAFETY_ON_NULL_RETURN_VAL(ld, EINA_FALSE);
-
-   if (!ld->on) return EINA_FALSE;
+   if (!ld || !ld->on) return EINA_FALSE;
 
    //Dismiss Relative To Ctxpopup firstly.
    if (phase_in && ld->rel_to_info.ctxpopup)

@@ -746,8 +746,6 @@ _enventor_object_live_view_get(Eo *obj EINA_UNUSED,
    return edj_mgr_obj_get();
 }
 
-
-//TODO: Might need for items
 EOLIAN static void
 _enventor_object_disabled_set(Eo *obj EINA_UNUSED,
                               Enventor_Object_Data *pd,
@@ -756,7 +754,7 @@ _enventor_object_disabled_set(Eo *obj EINA_UNUSED,
    disabled = !!disabled;
    if (pd->disabled == disabled) return;
 
-   edit_disabled_set(pd->main_it->ed, disabled);
+   edit_disabled_set(pd->focused_it->ed, disabled);
 
    pd->disabled = !!disabled;
 }
