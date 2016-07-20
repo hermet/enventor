@@ -11,14 +11,14 @@ typedef struct keyword_s
 {
    char *name;
    char *desc;
-   Eina_List *parent_name_list; //Parent keyword name list
+   Eina_List *children_list; //Children keyword data list
 } keyword_data;
 
 typedef struct ref_s
 {
    Eina_File *source_file;
 
-   Eina_List *keyword_list; //keyword_data list
+   keyword_data *keyword_root; //Root node of keyword data tree
 
    char *keyword_name;
    char *keyword_desc;
@@ -34,37 +34,24 @@ static ref_data *g_md = NULL;
 /* Internal method implementation                                            */
 /*****************************************************************************/
 
-static void keyword_data_free(keyword_data **keyword);
-static void keyword_list_free(Eina_List **keyword_list);
+static void keyword_data_free(keyword_data *keyword);
 static void ref_event_rect_delete(void);
 static void ref_layout_delete(void);
 
 static void
-keyword_data_free(keyword_data **keyword)
+keyword_data_free(keyword_data *keyword)
 {
-   if (!(*keyword)) return;
+   if (!keyword) return;
 
-   if ((*keyword)->name)
-     free((*keyword)->name);
-   if ((*keyword)->desc)
-     free((*keyword)->desc);
+   if (keyword->name)
+     free(keyword->name);
+   if (keyword->desc)
+     free(keyword->desc);
 
-   char *parent_name;
-   EINA_LIST_FREE((*keyword)->parent_name_list, parent_name)
+   keyword_data *child_keyword;
+   EINA_LIST_FREE(keyword->children_list, child_keyword)
      {
-        free(parent_name);
-     }
-}
-
-static void
-keyword_list_free(Eina_List **keyword_list)
-{
-   if (!(*keyword_list)) return;
-
-   keyword_data *keyword;
-   EINA_LIST_FREE(*keyword_list, keyword)
-     {
-        keyword_data_free(&keyword);
+        keyword_data_free(child_keyword);
      }
 }
 
@@ -185,7 +172,7 @@ str_list_same_check(Eina_List *str_list1, Eina_List *str_list2)
 }
 
 static Eina_List *
-keyword_parent_name_list_find(const char *text, const char *keyword_name)
+keyword_hierarchy_find(const char *text, const char *keyword_name)
 {
    ref_data *md = g_md;
    if (!md) return NULL;
@@ -194,7 +181,8 @@ keyword_parent_name_list_find(const char *text, const char *keyword_name)
    if (!text) return NULL;
    if (!keyword_name) return NULL;
 
-   Eina_List *parent_name_list = NULL;
+   Eina_List *keyword_hierarchy = eina_list_append(keyword_hierarchy,
+                                                   strdup(keyword_name));
 
    //Check from the end of the text.
    char *ptr = (char *)(text + ((strlen(text) - 1) * sizeof(char)));
@@ -247,8 +235,8 @@ keyword_parent_name_list_find(const char *text, const char *keyword_name)
 
                   char *parent_name = strndup(parent_begin,
                                               (parent_end - parent_begin + 1));
-                  parent_name_list = eina_list_append(parent_name_list,
-                                                      parent_name);
+                  keyword_hierarchy = eina_list_prepend(keyword_hierarchy,
+                                                        parent_name);
                   next_height++;
                }
           }
@@ -270,21 +258,61 @@ keyword_parent_name_list_find(const char *text, const char *keyword_name)
    //We added it arbitrary.
    if (!edit_is_main_file(md->ed))
      {
-        parent_name_list = eina_list_append(parent_name_list,
-                                            strdup("collections"));
+        keyword_hierarchy = eina_list_prepend(keyword_hierarchy,
+                                              strdup("collections"));
      }
 
-   return parent_name_list;
+   return keyword_hierarchy;
 }
 
 static keyword_data *
-cursor_keyword_data_find(Evas_Object *entry, Eina_List *keyword_list,
+keyword_data_find_internal(Eina_List *keyword_list, const char *keyword_name)
+{
+   if (!keyword_list) return NULL;
+   if (!keyword_name) return NULL;
+
+   Eina_List *l = NULL;
+   keyword_data *keyword = NULL;
+
+   EINA_LIST_FOREACH(keyword_list, l, keyword)
+     {
+        if (!strcmp(keyword->name, keyword_name))
+          return keyword;
+     }
+
+   return NULL;
+}
+
+static keyword_data *
+keyword_data_find(keyword_data *keyword_root, Eina_List *keyword_hierarchy)
+{
+   if (!keyword_root) return NULL;
+   if (!keyword_hierarchy) return NULL;
+
+   Eina_List *l = NULL;
+   char *keyword_name = NULL;
+   keyword_data *keyword = keyword_root;
+   keyword_data *found_keyword = NULL;
+
+   EINA_LIST_FOREACH(keyword_hierarchy, l, keyword_name)
+     {
+        keyword = keyword_data_find_internal(keyword->children_list,
+                                             keyword_name);
+        found_keyword = keyword;
+        if (!keyword) break;
+     }
+
+   return found_keyword;
+}
+
+static keyword_data *
+cursor_keyword_data_find(Evas_Object *entry, keyword_data *keyword_root,
                          const char *keyword_name)
 {
    keyword_data *found_keyword = NULL;
 
    if (!entry) return NULL;
-   if (!keyword_list) return NULL;
+   if (!keyword_root) return NULL;
    if (!keyword_name) return NULL;
 
    //Get text before cursor position.
@@ -292,7 +320,7 @@ cursor_keyword_data_find(Evas_Object *entry, Eina_List *keyword_list,
    Evas_Object *cur_begin = evas_object_textblock_cursor_new(tb);
    Evas_Object *cur_end = evas_object_textblock_cursor_get(tb);
    char *utf8_text = NULL;
-   Eina_List *parent_name_list = NULL;
+   Eina_List *keyword_hierarchy = NULL;
 
    /* FIXME: Getting text from range with EVAS_TEXTBLOCK_TEXT_PLAIN generates
       garbage characters.
@@ -306,36 +334,24 @@ cursor_keyword_data_find(Evas_Object *entry, Eina_List *keyword_list,
    free(markup_text);
    markup_text = NULL;
 
-   //Find parent name list of the selected keyword in text.
-   parent_name_list = keyword_parent_name_list_find((const char *)utf8_text,
-                                                    keyword_name);
-   Eina_List *l;
-   keyword_data *keyword;
-   EINA_LIST_FOREACH(keyword_list, l, keyword)
-     {
-        //Find a keyword which has the same name and the same parent names.
-        if (!strcmp(keyword->name, keyword_name) &&
-            str_list_same_check(keyword->parent_name_list, parent_name_list))
-          {
-             found_keyword = keyword;
-             break;
-          }
-     }
+   //Find keyword hierarchy of the selected keyword in text.
+   keyword_hierarchy = keyword_hierarchy_find((const char *)utf8_text,
+                                              keyword_name);
+
+   found_keyword = keyword_data_find(keyword_root, keyword_hierarchy);
 
 end:
    if (cur_begin) evas_textblock_cursor_free(cur_begin);
    if (utf8_text) free(utf8_text);
-   if (parent_name_list) eina_list_free(parent_name_list);
+   if (keyword_hierarchy) eina_list_free(keyword_hierarchy);
 
    return found_keyword;
 }
 
 static void
-keyword_list_load(Eina_List **keyword_list, Eina_List **parent_name_list,
-                  char **ptr)
+keyword_tree_load(keyword_data *keyword_root, char **ptr)
 {
-   if (!keyword_list) return;
-   if (!parent_name_list) return;
+   if (!keyword_root) return;
    if (!*ptr) return;
 
    int len = strlen(*ptr);
@@ -348,7 +364,6 @@ keyword_list_load(Eina_List **keyword_list, Eina_List **parent_name_list,
         char *keyword_desc = NULL;
         char *block_begin = NULL;
         char *block_end = NULL;
-        char *parent_name = NULL;
 
         //Find beginning position of keyword block to check pointer.
         block_begin = strstr(*ptr, "{");
@@ -415,43 +430,25 @@ keyword_list_load(Eina_List **keyword_list, Eina_List **parent_name_list,
           }
         *ptr = keyword_desc_end + 3; //Move pointer position after "\";".
 
-        //Set parent name list.
-        parent_name = keyword_name;
-        *parent_name_list = eina_list_append(*parent_name_list,
-                                             parent_name);
+        //Create a new keyword data and Append it to children list.
+        keyword = calloc(1, sizeof(keyword_data));
+        keyword->name = keyword_name;
+        keyword->desc = keyword_desc;
 
-        //Set child keyword list recursively.
-        keyword_list_load(keyword_list, parent_name_list, ptr);
+        //Set child keyword node recursively.
+        keyword_tree_load(keyword, ptr);
 
         //Find ending position of keyword block to update pointer.
         block_end = strstr(*ptr, "}");
         if (!block_end)
           {
-             free(keyword_name);
-             free(keyword_desc);
+             keyword_data_free(keyword);
              break;
           }
         *ptr = block_end + 1; //Move pointer position after "}".
 
-        //Remove current keyword name from parent name list.
-        *parent_name_list = eina_list_remove(*parent_name_list, parent_name);
-
-        //Create a new keyword data and Append it to keyword list.
-        keyword = calloc(1, sizeof(keyword_data));
-        keyword->name = keyword_name;
-        keyword->desc = keyword_desc;
-        if (*parent_name_list)
-          {
-             Eina_List *new_parent_name_list = NULL;
-             Eina_List *l = NULL;
-             EINA_LIST_REVERSE_FOREACH(*parent_name_list, l, parent_name)
-               {
-                  new_parent_name_list = eina_list_append(new_parent_name_list,
-                                                          strdup(parent_name));
-               }
-             keyword->parent_name_list = new_parent_name_list;
-          }
-        *keyword_list = eina_list_append(*keyword_list, keyword);
+        keyword_root->children_list =
+           eina_list_append(keyword_root->children_list, keyword);
      }
 }
 
@@ -472,18 +469,21 @@ ref_load(ref_data *md)
    char *text = (char *)eina_file_map_all(md->source_file, EINA_FILE_POPULATE);
    if (!text) goto end;
 
-   if (md->keyword_list)
+   if (md->keyword_root)
      {
-        keyword_list_free(&(md->keyword_list));
-        md->keyword_list = NULL;
+        keyword_data_free(md->keyword_root);
+        md->keyword_root = NULL;
      }
 
-   //Load keyword data list from text.
-   Eina_List *keyword_list = NULL;
-   Eina_List *parent_name_list = NULL;
+   //Load keyword data tree from text.
+   keyword_data *keyword_root = calloc(1, sizeof(keyword_data));
+   keyword_root->name = NULL;
+   keyword_root->desc = NULL;
+
    char *ptr = text;
-   keyword_list_load(&keyword_list, &parent_name_list, &ptr);
-   md->keyword_list = keyword_list;
+
+   keyword_tree_load(keyword_root, &ptr);
+   md->keyword_root = keyword_root;
 
 end:
    if (text) eina_file_map_free(md->source_file, text);
@@ -686,7 +686,7 @@ ref_show(edit_data *ed)
         md->keyword_desc = NULL;
      }
    keyword_data *keyword = cursor_keyword_data_find(edit_entry,
-                                                    md->keyword_list,
+                                                    md->keyword_root,
                                                     md->keyword_name);
    if (keyword)
      md->keyword_desc = strdup(keyword->desc);
@@ -755,7 +755,7 @@ ref_term(void)
 {
    ref_data *md = g_md;
 
-   keyword_list_free(&(md->keyword_list));
+   keyword_data_free(md->keyword_root);
 
    if (md->keyword_name) free(md->keyword_name);
    if (md->keyword_desc) free(md->keyword_desc);
