@@ -1543,7 +1543,7 @@ live_edit_auto_align_target_parts_init(live_data *ld, Eina_Bool is_update)
              EINA_LIST_FOREACH(parts, l, part_name)
              {
                 edje_object_part_geometry_get(view_obj, part_name,
-                                              x, &y, &w, &h);
+                                              &x, &y, &w, &h);
 
                 if (i < item_cnt)
                   {
