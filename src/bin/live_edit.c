@@ -1448,10 +1448,11 @@ ctrl_pt_init(live_data *ld)
 
    //Create Control Points
    int i;
+   Evas_Object *view_obj = view_obj_get(ld);
    for (i = 0; i < Ctrl_Pt_Cnt; i++)
      {
         Evas_Object *layout = elm_layout_add(ld->layout);
-        evas_object_smart_member_add(layout, ld->live_view);
+        evas_object_smart_member_add(layout, view_obj);
         elm_layout_file_set(layout, EDJE_PATH,  "ctrl_pt");
         evas_object_resize(layout, ctrl_size, ctrl_size);
         evas_object_show(layout);
@@ -1542,7 +1543,7 @@ live_edit_auto_align_target_parts_init(live_data *ld, Eina_Bool is_update)
              EINA_LIST_FOREACH(parts, l, part_name)
              {
                 edje_object_part_geometry_get(view_obj, part_name,
-                                              &x, &y, &w, &h);
+                                              x, &y, &w, &h);
 
                 if (i < item_cnt)
                   {
@@ -1905,11 +1906,12 @@ align_line_init(live_data *ld)
 {
    //Create Align Lines
    int i;
+   Evas_Object *view_obj = view_obj_get(ld);
    for (i = 0; i < Align_Line_Cnt; i++)
      {
         //Align line should be located between live edit item and live view
         Evas_Object *layout = elm_layout_add(ld->live_view);
-        evas_object_smart_member_add(layout, view_obj_get(ld));
+        evas_object_smart_member_add(layout, view_obj);
         elm_layout_file_set(layout, EDJE_PATH,  "ctrl_pt");
         evas_object_show(layout);
         elm_object_signal_emit(layout, "elm,state,hide,instance", "");
@@ -1924,10 +1926,11 @@ info_text_init(live_data *ld)
    int i;
    Evas *e = evas_object_evas_get(ld->layout);
    double scale = elm_config_scale_get();
+   Evas_Object *view_obj = view_obj_get(ld);
    for (i = 0; i < Info_Text_Cnt; i++)
      {
         Evas_Object *text = evas_object_text_add(e);
-        evas_object_smart_member_add(text, ld->live_view);
+        evas_object_smart_member_add(text, view_obj);
         evas_object_pass_events_set(text, EINA_TRUE);
         evas_object_layer_set(text, INFO_TEXT_LAYER);
         evas_object_text_font_set(text, LIVE_EDIT_FONT,
