@@ -315,9 +315,13 @@ gl_expanded_cb(void *data EINA_UNUSED, Evas_Object *obj, void *event_info)
         brows_file *sub_file = NULL;
         EINA_LIST_FOREACH(file->sub_file_list, l, sub_file)
           {
-             if (!elm_check_state_get(bd->show_all_check) &&
-                 (sub_file->type == FILE_BROWSER_FILE_TYPE_OTHERS))
-               continue;
+             if (!elm_check_state_get(bd->show_all_check))
+               {
+                  //Skip if the file name is started with "."
+                  if ((sub_file->type == FILE_BROWSER_FILE_TYPE_OTHERS) ||
+                      (sub_file->name[0] == '.'))
+                     continue;
+               }
 
              Elm_Genlist_Item_Type type = ELM_GENLIST_ITEM_NONE;
              if (sub_file->type == FILE_BROWSER_FILE_TYPE_DIR)
