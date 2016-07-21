@@ -388,7 +388,21 @@ calc_relative_info(live_data *ld)
              ld->rel_to_info.rel1_x_part = strndup(ld->rel_to_info.rel2_x_part,
                                           strlen(ld->rel_to_info.rel2_x_part));
           }
+        else
+          {
+             float center = (ld->rel_info.rel1_x + ld->rel_info.rel2_x) / 2;
+             ld->rel_to_info.rel1_x = center;
+             ld->rel_to_info.rel2_x = center;
+          }
         ld->rel_to_info.min_w = min_w;
+     }
+   else
+     {
+        //If there is no relative setting, set base relative
+        if (!ld->rel_to_info.rel1_x_part)
+          ld->rel_to_info.rel1_x = ld->rel_info.rel1_x;
+        if (!ld->rel_to_info.rel2_x_part)
+          ld->rel_to_info.rel2_x = ld->rel_info.rel2_x;
      }
 
    //Set fixed properties of height for current Live Edit Item
@@ -410,18 +424,22 @@ calc_relative_info(live_data *ld)
              ld->rel_to_info.rel1_y_part = strndup(ld->rel_to_info.rel2_y_part,
                                           strlen(ld->rel_to_info.rel2_y_part));
           }
+        else
+          {
+             float center = (ld->rel_info.rel1_y + ld->rel_info.rel2_y) / 2;
+             ld->rel_to_info.rel1_y = center;
+             ld->rel_to_info.rel2_y = center;
+          }
         ld->rel_to_info.min_h = min_h;
      }
-
-   //If there is no relative setting, set base relative
-   if (!ld->rel_to_info.rel1_x_part)
-     ld->rel_to_info.rel1_x = ld->rel_info.rel1_x;
-   if (!ld->rel_to_info.rel1_y_part)
-     ld->rel_to_info.rel1_y = ld->rel_info.rel1_y;
-   if (!ld->rel_to_info.rel2_x_part)
-     ld->rel_to_info.rel2_x = ld->rel_info.rel2_x;
-   if (!ld->rel_to_info.rel2_y_part)
-     ld->rel_to_info.rel2_y = ld->rel_info.rel2_y;
+   else
+     {
+        //If there is no relative setting, set base relative
+        if (!ld->rel_to_info.rel1_y_part)
+          ld->rel_to_info.rel1_y = ld->rel_info.rel1_y;
+        if (!ld->rel_to_info.rel2_y_part)
+          ld->rel_to_info.rel2_y = ld->rel_info.rel2_y;
+     }
 }
 
 static void
