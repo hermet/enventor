@@ -956,8 +956,16 @@ edit_edc_load(edit_data *ed, const char *file_path)
    strbuf_line = eina_strbuf_new();
    if (!strbuf_line) goto err;
 
+   eina_stringshare_del(ed->filepath);
+   ed->filepath = eina_stringshare_add(file_path);
+
    utf8_edit = eina_file_map_all(file, EINA_FILE_POPULATE);
-   if (!utf8_edit) goto err;
+   if (!utf8_edit)
+     {
+        ed->line_max = 0;
+        ret = EINA_TRUE;
+        goto err;
+     }
 
    //Check indentation.
    indent_data *id = syntax_indent_data_get(ed->sh);
@@ -1014,9 +1022,6 @@ edit_edc_load(edit_data *ed, const char *file_path)
    ecore_animator_add(syntax_color_timer_cb, ed);
 
    ret = EINA_TRUE;
-
-   eina_stringshare_del(ed->filepath);
-   ed->filepath = eina_stringshare_add(file_path);
 
 err:
    //Even any text is not inserted, line number should start with 1

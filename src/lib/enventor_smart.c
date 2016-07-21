@@ -386,7 +386,7 @@ _enventor_object_efl_file_file_set(Eo *obj EINA_UNUSED,
          fclose(fp);
      }
 
-   edit_load(pd->main_it->ed, file);
+   if (!edit_load(pd->main_it->ed, file)) return EINA_FALSE;
    build_edc();
    edit_changed_set(pd->main_it->ed, EINA_FALSE);
 
@@ -815,7 +815,13 @@ enventor_object_sub_item_add(Enventor_Object *obj, const char *file)
    it->ed = edit_init(obj, it);
    it->pd = pd;
 
-   edit_load(it->ed, file);
+   if (!edit_load(it->ed, file))
+     {
+        edit_term(it->ed);
+        free(it);
+        return NULL;
+     }
+
    edit_changed_set(it->ed, EINA_FALSE);
    edit_disabled_set(it->ed, EINA_TRUE);
 
@@ -841,8 +847,13 @@ enventor_object_main_item_set(Enventor_Object *obj, const char *file)
    it->ed = edit_init(obj, it);
    it->pd = pd;
 
-   Eina_Bool ret = efl_file_set(obj, file, NULL);
-   if (!ret) return NULL;
+   if (!efl_file_set(obj, file, NULL))
+     {
+        edit_term(it->ed);
+        pd->main_it = NULL;
+        free(it);
+        return NULL;
+     }
 
    return it;
 }
