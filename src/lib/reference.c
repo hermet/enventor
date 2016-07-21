@@ -141,36 +141,6 @@ end:
    return keyword_name;
 }
 
-/* Check two string lists have same strings.
-   Return EINA_TRUE if lists are same.
-   Return EINA_FALSE if lists are not same. */
-static Eina_Bool
-str_list_same_check(Eina_List *str_list1, Eina_List *str_list2)
-{
-   if (!str_list1 && !str_list2)
-     return EINA_TRUE;
-
-   if ((!str_list1 && str_list2) || (str_list1 && !str_list2))
-     return EINA_FALSE;
-
-   if (eina_list_count(str_list1) != eina_list_count(str_list2))
-     return EINA_FALSE;
-
-   while (str_list1 && str_list2)
-     {
-        char *str1 = eina_list_data_get(str_list1);
-        char *str2 = eina_list_data_get(str_list2);
-
-        if (!str1 || !str2) return EINA_FALSE;
-        if (strcmp(str1, str2)) return EINA_FALSE;
-
-        str_list1 = eina_list_next(str_list1);
-        str_list2 = eina_list_next(str_list2);
-     }
-
-   return EINA_TRUE;
-}
-
 /* Find keyword hierarchy in the given text and keyword name.
    (e.g. Keyword hierarchy of "parts" is collections -> group -> parts)
    Return keyword name list (e.g. collections -> group -> parts). */
