@@ -171,6 +171,9 @@ str_list_same_check(Eina_List *str_list1, Eina_List *str_list2)
    return EINA_TRUE;
 }
 
+/* Find keyword hierarchy in the given text and keyword name.
+   (e.g. Keyword hierarchy of "parts" is collections -> group -> parts)
+   Return keyword name list (e.g. collections -> group -> parts). */
 static Eina_List *
 keyword_hierarchy_find(const char *text, const char *keyword_name)
 {
@@ -283,6 +286,9 @@ keyword_data_find_internal(Eina_List *keyword_list, const char *keyword_name)
    return NULL;
 }
 
+/* Find keyword which has the given keyword hierarchy.
+   (e.g. Find "group" keyword which has keyword hierarchy, collections -> group)
+ */
 static keyword_data *
 keyword_data_find(keyword_data *keyword_root, Eina_List *keyword_hierarchy)
 {
