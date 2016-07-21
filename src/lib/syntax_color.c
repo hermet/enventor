@@ -487,9 +487,6 @@ macro_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
    *prev = *cur;
    *cur = macro_end;
 
-   eina_strbuf_append_length(strbuf, *prev, (*cur - *prev));
-   eina_strbuf_append(strbuf, "</color>");
-
    //push the macro to color table but only not numeric case.
    if ((macro_end > macro_begin) &&
        ((macro_begin[0] < '0') || (macro_begin[0] > '9')))
@@ -498,6 +495,30 @@ macro_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
         macro_key_push(cd, macro);
         free(macro);
      }
+
+   //Apply macro color to whole macro area continues to the "\".
+   while (macro_end < (*src + length))
+     {
+        char *slash = strstr(macro_end, "\\");
+        char *eol = strstr(macro_end, EOL);
+
+        if ((!slash && eol) ||
+            ((slash && eol) && (slash > eol)))
+          {
+             macro_end = eol;
+             break;
+          }
+
+        if (!slash || !eol) break;
+        if (eol < slash) break;
+
+        macro_end = eol + 1;
+     }
+
+   *cur = macro_end;
+
+   eina_strbuf_append_length(strbuf, *prev, (*cur - *prev));
+   eina_strbuf_append(strbuf, "</color>");
 
    *prev = *cur;
 

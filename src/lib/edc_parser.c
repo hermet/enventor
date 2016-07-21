@@ -2053,7 +2053,7 @@ parser_first_group_name_get(parser_data *pd, Evas_Object *entry)
                   char *slash = strstr(p, "\\");
                   if (!slash) break;
 
-                  char *eol = strstr(p, "\n");
+                  char *eol = strstr(p, EOL);
                   if (!eol) goto end;
 
                   if (eol < slash) break;
@@ -2385,7 +2385,7 @@ parser_group_list_get(parser_data *pd, Evas_Object *entry)
                   char *slash = strstr(p, "\\");
                   if (!slash) break;
 
-                  char *eol = strstr(p, "\n");
+                  char *eol = strstr(p, EOL);
                   if (!eol) goto end;
 
                   if (eol < slash) break;
