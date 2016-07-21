@@ -319,7 +319,12 @@ cursor_keyword_data_find(Evas_Object *entry, keyword_data *keyword_root,
 end:
    if (cur_begin) evas_textblock_cursor_free(cur_begin);
    if (utf8_text) free(utf8_text);
-   if (keyword_hierarchy) eina_list_free(keyword_hierarchy);
+
+   char *keyword_hierarchy_name = NULL;
+   EINA_LIST_FREE(keyword_hierarchy, keyword_hierarchy_name)
+     {
+        free(keyword_hierarchy_name);
+     }
 
    return found_keyword;
 }
