@@ -12,6 +12,7 @@ typedef struct keyword_s
    char *name;
    char *desc;
    Eina_List *children_list; //Children keyword data list
+   int ref_cnt;              //Reference count
 } keyword_data;
 
 typedef struct ref_s
@@ -28,6 +29,12 @@ typedef struct ref_s
    Evas_Object *layout;
 } ref_data;
 
+typedef struct inherit_s
+{
+   keyword_data *derived_keyword; //Derived keyword
+   char *base_keyword_full_name;  //Base keyword's name (e.g. collections.group)
+} inherit_data;
+
 static ref_data *g_md = NULL;
 
 /*****************************************************************************/
@@ -42,6 +49,9 @@ static void
 keyword_data_free(keyword_data *keyword)
 {
    if (!keyword) return;
+
+   keyword->ref_cnt--;
+   if (keyword->ref_cnt > 0) return;
 
    if (keyword->name)
      free(keyword->name);
@@ -329,11 +339,82 @@ end:
    return found_keyword;
 }
 
+/* Parse keyword's full name into keyword name list.
+   (e.g. collections.group.parts is parsed into collections -> group -> parts)
+   Return keyword name list. */
+static Eina_List *
+keyword_full_name_parse(const char *keyword_full_name)
+{
+   if (!keyword_full_name) return NULL;
+
+   Eina_List *keyword_hierarchy = NULL;
+
+   int len = strlen(keyword_full_name);
+   char *keyword_name = NULL;
+   char *keyword_begin = (char *)keyword_full_name;
+   char *keyword_end = (char *)keyword_full_name + len;
+   char *dot = strstr(keyword_full_name, ".");
+   while (dot)
+     {
+        keyword_name = strndup(keyword_begin, (dot - keyword_begin));
+        keyword_hierarchy = eina_list_append(keyword_hierarchy, keyword_name);
+
+        keyword_begin = dot + 1; //Move pointer after ".".
+        if (keyword_begin >= keyword_end)
+          break;
+
+        dot = strstr(keyword_begin, ".");
+     }
+
+   keyword_hierarchy =
+      eina_list_append(keyword_hierarchy,
+                       strndup(keyword_begin, (keyword_end - keyword_begin)));
+
+   return keyword_hierarchy;
+}
+
+/* Find base keyword's full name for keyword inheritance.
+   inherit_end indicates the ending position of #inherit expression.
+   Return base keyword's full name. (e.g. collections.group.parts.part) */
+static char *
+inherit_find(const char *text_begin, const char *text_end, char **inherit_end)
+{
+   if (!text_begin) return NULL;
+   if (!text_end) return NULL;
+
+   char *base_keyword_full_name = NULL;
+   char *base_keyword_begin = NULL;
+   char *base_keyword_end = NULL;
+
+   base_keyword_begin = strstr(text_begin, "#inherit \"");
+   if (!base_keyword_begin || (base_keyword_begin > text_end))
+     return NULL;
+
+   base_keyword_begin += 10; //Move pointer after "\"".
+
+   base_keyword_end = strstr(base_keyword_begin, "\";");
+   if (!base_keyword_end || (base_keyword_end > text_end))
+     return NULL;
+
+   base_keyword_end--;
+
+   base_keyword_full_name =
+      strndup((const char *)base_keyword_begin,
+              (base_keyword_end - base_keyword_begin + 1));
+
+   //Indicates the ending position of #inherit expression.
+   *inherit_end = base_keyword_end + 3; //Move pointer after "\";".
+
+   return base_keyword_full_name;
+}
+
 static void
-keyword_tree_load(keyword_data *keyword_root, char **ptr)
+keyword_tree_load_internal(keyword_data *keyword_root, char **ptr,
+                           Eina_List **inherit_list)
 {
    if (!keyword_root) return;
    if (!*ptr) return;
+   if (!inherit_list) return;
 
    int len = strlen(*ptr);
    const char *text_end = *ptr + len;
@@ -378,7 +459,7 @@ keyword_tree_load(keyword_data *keyword_root, char **ptr)
         keyword_name = strndup(keyword_name_begin,
                                (keyword_name_end - keyword_name_begin + 1));
         if (!keyword_name) break;
-        (*ptr)++; //Move pointer position after "{".
+        (*ptr)++; //Move pointer after "{".
 
         //Find keyword description.
         char *keyword_desc_begin = NULL;
@@ -409,27 +490,117 @@ keyword_tree_load(keyword_data *keyword_root, char **ptr)
              free(keyword_name);
              break;
           }
-        *ptr = keyword_desc_end + 3; //Move pointer position after "\";".
+        *ptr = keyword_desc_end + 3; //Move pointer after "\";".
 
         //Create a new keyword data and Append it to children list.
         keyword = calloc(1, sizeof(keyword_data));
         keyword->name = keyword_name;
         keyword->desc = keyword_desc;
+        keyword->ref_cnt = 1;
+
+        //Find the next block regardless of the block type (i.e. "{" or "}").
+        char *next_block = strstr(*ptr, "{");
+        if (!next_block || (next_block > block_end))
+          next_block = block_end;
+
+        //Find #inherit expression for keyword inheritance.
+        inherit_data *inherit = NULL;
+        char *base_keyword_full_name = NULL;
+        char *inherit_end = NULL;
+
+        base_keyword_full_name = inherit_find(*ptr, next_block, &inherit_end);
+        if (base_keyword_full_name)
+          {
+             inherit = calloc(1, sizeof(inherit_data));
+             inherit->derived_keyword = keyword;
+             inherit->base_keyword_full_name = base_keyword_full_name;
+
+             *inherit_list = eina_list_append(*inherit_list, inherit);
+
+             *ptr = inherit_end;
+          }
 
         //Set child keyword node recursively.
-        keyword_tree_load(keyword, ptr);
+        keyword_tree_load_internal(keyword, ptr, inherit_list);
 
         //Find ending position of keyword block to update pointer.
         block_end = strstr(*ptr, "}");
         if (!block_end)
           {
+             if (inherit)
+               {
+                  *inherit_list = eina_list_remove(*inherit_list, inherit);
+                  free(inherit->base_keyword_full_name);
+                  free(inherit);
+               }
              keyword_data_free(keyword);
              break;
           }
-        *ptr = block_end + 1; //Move pointer position after "}".
+        *ptr = block_end + 1; //Move pointer after "}".
 
         keyword_root->children_list =
            eina_list_append(keyword_root->children_list, keyword);
+     }
+}
+
+/* Load keywords' names and descriptions into a tree structure. */
+static void
+keyword_tree_load(keyword_data *keyword_root, char **ptr)
+{
+   if (!keyword_root) return;
+   if (!*ptr) return;
+
+   Eina_List *inherit_list = NULL;
+   inherit_data *inherit = NULL;
+
+   //Load keywords' names and descriptions.
+   keyword_tree_load_internal(keyword_root, ptr, &inherit_list);
+
+   //Update keywords' children lists based on keyword inheritance.
+   EINA_LIST_FREE(inherit_list, inherit)
+     {
+        Eina_List *keyword_hierarchy = NULL;
+        keyword_data *base_keyword = NULL;
+
+        keyword_hierarchy =
+           keyword_full_name_parse(inherit->base_keyword_full_name);
+
+        /* Copy base child keyword to derive child keyword if it is not
+           overriding keyword. */
+        base_keyword = keyword_data_find(keyword_root, keyword_hierarchy);
+        if (base_keyword && (base_keyword->children_list))
+          {
+             Eina_List **derived_children_list = NULL;
+             Eina_List **base_children_list = NULL;
+             Eina_List *l = NULL;
+             keyword_data *base_child_keyword = NULL;
+
+             derived_children_list = &(inherit->derived_keyword->children_list);
+             base_children_list = &(base_keyword->children_list);
+
+             EINA_LIST_FOREACH(*base_children_list, l, base_child_keyword)
+               {
+                  keyword_data *overriding_keyword =
+                     keyword_data_find_internal(*derived_children_list,
+                                                base_child_keyword->name);
+                  if (!overriding_keyword)
+                    {
+                       *derived_children_list =
+                          eina_list_append(*derived_children_list,
+                                           base_child_keyword);
+
+                       base_child_keyword->ref_cnt++;
+                    }
+               }
+          }
+
+        char *keyword_hierarchy_name = NULL;
+        EINA_LIST_FREE(keyword_hierarchy, keyword_hierarchy_name)
+          {
+             free(keyword_hierarchy_name);
+          }
+        free(inherit->base_keyword_full_name);
+        free(inherit);
      }
 }
 
@@ -456,13 +627,14 @@ ref_load(ref_data *md)
         md->keyword_root = NULL;
      }
 
-   //Load keyword data tree from text.
+   //Create keyword root node.
    keyword_data *keyword_root = calloc(1, sizeof(keyword_data));
    keyword_root->name = NULL;
    keyword_root->desc = NULL;
+   keyword_root->ref_cnt = 1;
 
    char *ptr = text;
-
+   //Load keyword data tree from text.
    keyword_tree_load(keyword_root, &ptr);
    md->keyword_root = keyword_root;
 
