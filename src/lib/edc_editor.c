@@ -942,7 +942,6 @@ edit_edc_load(edit_data *ed, const char *file_path)
    char buf[MAX_LINE_DIGIT_CNT];
    Eina_File *file = NULL;
    Eina_Strbuf *strbuf_line = NULL;
-   Eina_Stringshare *group_name = NULL;
    char *utf8_edit = NULL;
    char *markup_edit = NULL;
    char *markup_line = NULL;
