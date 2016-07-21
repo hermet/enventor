@@ -1861,3 +1861,13 @@ edit_focus_get(edit_data *ed)
 {
    return elm_object_focus_get(ed->en_edit);
 }
+
+Eina_List *
+edit_group_list_get(edit_data *ed)
+{
+   if (!ed) return NULL;
+
+   return parser_group_list_get(ed->pd, ed->en_edit);
+}
+
+

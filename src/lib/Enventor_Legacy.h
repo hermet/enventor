@@ -31,6 +31,6 @@ Eina_Bool enventor_item_template_insert(Enventor_Item *it, char *syntax, size_t 
 Eina_Bool enventor_item_template_part_insert(Enventor_Item *it, Edje_Part_Type part, Enventor_Template_Insert_Type insert_type, Eina_Bool fixed_w, Eina_Bool fixed_h, char *rel1_x_to, char *rel1_y_to, char *rel2_x_to, char *rel2_y_to, float align_x, float align_y, int min_w, int min_h, float rel1_x, float rel1_y, float rel2_x,float rel2_y, char *syntax, size_t n);
 EAPI Eina_Bool enventor_item_redo(Enventor_Item *it);
 EAPI Eina_Bool enventor_item_undo(Enventor_Item *it);
-
+EAPI Eina_List *enventor_item_group_list_get(Enventor_Item *it);
 
 #include "enventor_object.eo.legacy.h"

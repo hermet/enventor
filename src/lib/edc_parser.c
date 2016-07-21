@@ -67,6 +67,7 @@ typedef struct bracket_thread_data_s
 
 } bracket_td;
 
+
 struct parser_s
 {
    Eina_Inarray *attrs;
@@ -1981,6 +1982,7 @@ parser_first_group_name_get(parser_data *pd, Evas_Object *entry)
 {
    const char *markup = elm_entry_entry_get(entry);
    char *utf8 = elm_entry_markup_to_utf8(markup);
+   int utf8_len = strlen(utf8);
    char *p = utf8;
 
    const char *quot = QUOT_UTF8;
@@ -1995,7 +1997,7 @@ parser_first_group_name_get(parser_data *pd, Evas_Object *entry)
    parser_macro_list_set(pd, (const char *) utf8);
    Eina_List *macro_list = parser_macro_list_get(pd);
 
-   while (p < (utf8 + strlen(utf8)))
+   while (p < (utf8 + utf8_len))
      {
         if (*p == '\n') cur_line++;
 
@@ -2013,6 +2015,54 @@ parser_first_group_name_get(parser_data *pd, Evas_Object *entry)
              continue;
           }
 
+        //Skip comments: /* ~ */
+        if ((*p == '/') && (*(++p) == '*'))
+          {
+             p = strstr(p, "*/");
+             if (!p) goto end;
+             p += 2;
+             continue;
+          }
+
+        //Skip comments: //
+        if ((*p == '/') && (*(++p) == '/'))
+          {
+             p = strstr(p, "\n");
+             if (!p) goto end;
+             p++;
+             continue;
+          }
+
+        //Skip #if ~ #endif
+        if (!strncmp(p, "#if", 3))
+          {
+             p = strstr(p, "#endif");
+             if (!p) goto end;
+             p++;
+             continue;
+          }
+
+        //Skip #define
+        if (!strncmp(p, "#define", 7))
+          {
+             //escape "\", "ie, #define .... \"
+             p += 7; //strlen(#define)
+
+             while (p < (utf8 + utf8_len))
+               {
+                  char *slash = strstr(p, "\\");
+                  if (!slash) break;
+
+                  char *eol = strstr(p, "\"");
+                  if (!eol) goto end;
+
+                  if (eol < slash) break;
+
+                  p = eol + 1;
+               }
+          }
+
+        //group?
        if (!strncmp(p, group, group_len))
           {
              p += group_len;
@@ -2268,4 +2318,114 @@ parser_bracket_find(parser_data *pd, Evas_Object *entry,
                                   bracket_thread_end,
                                   bracket_thread_cancel,
                                   btd);
+}
+
+Eina_List *
+parser_group_list_get(parser_data *pd, Evas_Object *entry)
+{
+   const char *markup = elm_entry_entry_get(entry);
+   char *utf8 = elm_entry_markup_to_utf8(markup);
+   int utf8_len = strlen(utf8);
+   char *p = utf8;
+
+   const char *quot = QUOT_UTF8;
+   const char *group = "group";
+   const int quot_len = QUOT_UTF8_LEN;
+   const int group_len = 5; //strlen("group");
+   const char *group_name = NULL;
+   Eina_List *group_list = NULL;
+
+   while (p < (utf8 + utf8_len))
+     {
+        //Skip "" range
+        if (!strncmp(p, quot, quot_len))
+          {
+             p += quot_len;
+             p = strstr(p, quot);
+             if (!p) goto end;
+             p += quot_len;
+             continue;
+          }
+
+        //Skip comments: /* ~ */
+        if ((*p == '/') && (*(++p) == '*'))
+          {
+             p = strstr(p, "*/");
+             if (!p) goto end;
+             p += 2;
+             continue;
+          }
+
+        //Skip comments: //
+        if ((*p == '/') && (*(++p) == '/'))
+          {
+             p = strstr(p, "\n");
+             if (!p) goto end;
+             p++;
+             continue;
+          }
+
+        //Skip #if ~ #endif
+        if (!strncmp(p, "#if", 3))
+          {
+             p = strstr(p, "#endif");
+             if (!p) goto end;
+             p++;
+             continue;
+          }
+
+        //Skip #define
+        if (!strncmp(p, "#define", 7))
+          {
+             //escape "\", "ie, #define .... \"
+             p += 7; //strlen(#define)
+
+             while (p < (utf8 + utf8_len))
+               {
+                  char *slash = strstr(p, "\\");
+                  if (!slash) break;
+
+                  char *eol = strstr(p, "\"");
+                  if (!eol) goto end;
+
+                  if (eol < slash) break;
+
+                  p = eol + 1;
+               }
+          }
+
+        //group?
+       if (!strncmp(p, group, group_len))
+         {
+            p += group_len;
+
+            if (((*p != ' ') && (*p != '{') && (*p != '\n') && (*p != '\t')))
+              continue;
+
+            p++;
+
+            //We found a group
+            p = strstr(p, quot);
+            if (!p) goto end;
+
+            p++;
+            char *name_begin = p;
+
+            p = strstr(p, quot);
+            if (!p) goto end;
+
+            char *name_end = p;
+
+            group_name = eina_stringshare_add_length(name_begin,
+                                                     name_end - name_begin);
+            if (group_name)
+              group_list = eina_list_append(group_list, group_name);
+         }
+       p++;
+     }
+
+end:
+   free(utf8);
+
+   return group_list;
 }

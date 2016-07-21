@@ -1368,8 +1368,9 @@ edc_navigator_group_update(const char *cur_group)
 
    //Cancel item selection if group was not indicated. 
    if (!cur_group) navigator_item_deselect(nd);
+   Eina_List *group_list =
+      enventor_item_group_list_get(file_mgr_focused_item_get());
 
-   Eina_List *group_list = edje_file_collection_list(config_output_path_get());
    unsigned int cur_group_len = 0;
    group_it *git;
    Eina_List *l, *ll;
@@ -1449,7 +1450,7 @@ edc_navigator_group_update(const char *cur_group)
             group_update(nd, git);
      }
 
-   edje_file_collection_list_free(group_list);
+   EINA_LIST_FREE(group_list, name) eina_stringshare_del(name);
 }
 
 Evas_Object *

@@ -127,6 +127,7 @@ void parser_macro_update(parser_data *pd, Eina_Bool macro_update);
 typedef void (*Bracket_Update_Cb)(void *data, int left, int right);
 void parser_bracket_find(parser_data *pd, Evas_Object *entry, Bracket_Update_Cb func, void *data);
 void parser_bracket_cancel(parser_data *pd);
+Eina_List *parser_group_list_get(parser_data *pd, Evas_Object *entry);
 
 /* syntax helper */
 syntax_helper *syntax_init(edit_data *ed);
@@ -285,6 +286,7 @@ const char *edit_selection_get(edit_data *ed);
 Eina_Bool edit_is_main_file(edit_data *ed);
 Eina_Bool edit_focus_get(edit_data *ed);
 void edit_focus_set(edit_data *ed, Eina_Bool focus);
+Eina_List *edit_group_list_get(edit_data *ed);
 
 /* util */
 void mem_fail_msg(void);

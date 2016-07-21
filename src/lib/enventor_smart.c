@@ -1173,5 +1173,12 @@ enventor_item_undo(Enventor_Item *it)
    return edit_redoundo(it->ed, EINA_TRUE);
 }
 
+EAPI Eina_List *
+enventor_item_group_list_get(Enventor_Item *it)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(it, NULL);
+
+   return edit_group_list_get(it->ed);
+}
 
 #include "enventor_object.eo.c"
