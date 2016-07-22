@@ -7,8 +7,6 @@
 #define QUOT_LEN 6
 #define QUOT_UTF8 "\""
 #define QUOT_UTF8_LEN 1
-#define SEMICOL_UTF8 ";"
-#define SEMICOL_UTF8_LEN 1
 #define LESS "&lt;"
 #define GREATER "&gt;"
 #define AMP "&amp;"
@@ -121,8 +119,6 @@ Eina_Bool parser_images_pos_get(const Evas_Object *entry, int *ret);
 Eina_Bool parser_is_image_name(const Evas_Object *entry, const char *str);
 Eina_Bool parser_styles_pos_get(const Evas_Object *entry, int *ret);
 Eina_Bool parser_state_info_get(Evas_Object *entry, state_info *info);
-void parser_macro_list_set(parser_data *pd, const char *text);
-Eina_List *parser_macro_list_get(parser_data *pd);
 void parser_macro_update(parser_data *pd, Eina_Bool macro_update);
 typedef void (*Bracket_Update_Cb)(void *data, int left, int right);
 void parser_bracket_find(parser_data *pd, Evas_Object *entry, Bracket_Update_Cb func, void *data);
