@@ -1598,19 +1598,18 @@ parser_line_cnt_get(parser_data *pd EINA_UNUSED, const char *src)
 Eina_Stringshare *
 parser_first_group_name_get(parser_data *pd EINA_UNUSED, Evas_Object *entry)
 {
-   Evas_Object *tb = elm_entry_textblock_get(entry);
-   const char *text = evas_object_textblock_text_markup_get(tb);
-   if (!text) return NULL;
+   const char *markup = elm_entry_entry_get(entry);
+   char *utf8 = elm_entry_markup_to_utf8(markup);
+   int utf8_len = strlen(utf8);
+   char *p = utf8;
 
-   const int text_len = strlen(text);
-   char *p = (char *) text;
-
-   const char *quot = QUOT;
-   const int quot_len = QUOT_LEN;
+   const char *quot = QUOT_UTF8;
    const char *group = "group";
+   const int quot_len = QUOT_UTF8_LEN;
    const int group_len = 5; //strlen("group");
+   const char *group_name = NULL;
 
-   while (p < (text + text_len))
+   while (p < (utf8 + utf8_len))
      {
         //Skip "" range
         if (!strncmp(p, quot, quot_len))
@@ -1634,9 +1633,9 @@ parser_first_group_name_get(parser_data *pd EINA_UNUSED, Evas_Object *entry)
         //Skip comments: //
         if ((*p == '/') && (*(++p) == '/'))
           {
-             p = strstr(p, EOL);
+             p = strstr(p, "\n");
              if (!p) goto end;
-             p += EOL_LEN;
+             p++;
              continue;
           }
 
@@ -1655,17 +1654,17 @@ parser_first_group_name_get(parser_data *pd EINA_UNUSED, Evas_Object *entry)
              //escape "\", "ie, #define .... \"
              p += 7; //strlen(#define)
 
-             while (p < (text + text_len))
+             while (p < (utf8 + utf8_len))
                {
                   char *slash = strstr(p, "\\");
                   if (!slash) break;
 
-                  char *eol = strstr(p, EOL);
+                  char *eol = strstr(p, "\n");
                   if (!eol) goto end;
 
                   if (eol < slash) break;
 
-                  p = eol + EOL_LEN;
+                  p = eol + 1;
                }
           }
 
@@ -1680,13 +1679,17 @@ parser_first_group_name_get(parser_data *pd EINA_UNUSED, Evas_Object *entry)
              char *name_end = strstr(p, quot);
              if (!name_end) goto end;
 
-             return eina_stringshare_add_length(name_begin,
-                                                (name_end - name_begin));
+             group_name = eina_stringshare_add_length(name_begin,
+                                                      (name_end - name_begin));
+             goto end;
           }
         p++;
      }
+
 end:
-   return NULL;
+   free(utf8);
+
+   return group_name;
 }
 
 Eina_List *
