@@ -672,7 +672,7 @@ _enventor_object_focus_set(Eo *obj EINA_UNUSED,
 EOLIAN static Eina_Bool
 _enventor_object_focus_get(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
 {
-   if (!pd->focused_it) return;
+   if (!pd->focused_it) return EINA_FALSE;
    return edit_focus_get(pd->focused_it->ed);
 }
 
