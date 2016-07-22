@@ -1646,7 +1646,7 @@ parser_first_group_name_get(parser_data *pd EINA_UNUSED, Evas_Object *entry)
           {
              p = strstr(p, "#endif");
              if (!p) goto end;
-             p++;
+             p += 6; //strlen(#endif)
              continue;
           }
 
@@ -1933,7 +1933,7 @@ parser_group_list_get(parser_data *pd, Evas_Object *entry)
           {
              p = strstr(p, "#endif");
              if (!p) goto end;
-             p++;
+             p += 6; //strlen(#endif)
              continue;
           }
 
