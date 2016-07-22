@@ -153,6 +153,35 @@ cur_context_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
                  continue;
                }
           }
+        //Skip #if ~ #endif
+        if (!strncmp(p, "#if", 3))
+          {
+             p = strstr(p, "#endif");
+             if (!p) goto end;
+             p += 6; //strlen(#endif)
+             continue;
+          }
+
+        //Skip #define
+        if (!strncmp(p, "#define", 7))
+          {
+             //escape "\", "ie, #define .... \"
+             p += 7; //strlen(#define)
+
+             while (p <= end)
+               {
+                  char *eol = strstr(p, "\n");
+                  if (!eol) goto end;
+
+                  char *slash = strstr(p, "\\");
+
+                  p = eol + 1;
+
+                  if (!slash || (eol < slash))
+                    break;
+               }
+             continue;
+          }
         //Check whether outside of description or part or group
         if ((*p == '}') && (p < end))
           {
