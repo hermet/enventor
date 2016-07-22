@@ -1656,16 +1656,17 @@ parser_first_group_name_get(parser_data *pd EINA_UNUSED, Evas_Object *entry)
 
              while (p < (utf8 + utf8_len))
                {
-                  char *slash = strstr(p, "\\");
-                  if (!slash) break;
-
                   char *eol = strstr(p, "\n");
                   if (!eol) goto end;
 
-                  if (eol < slash) break;
+                  char *slash = strstr(p, "\\");
 
                   p = eol + 1;
+
+                  if (!slash || (eol < slash))
+                    break;
                }
+             continue;
           }
 
         //group?
@@ -1940,16 +1941,17 @@ parser_group_list_get(parser_data *pd, Evas_Object *entry)
 
              while (p < (utf8 + utf8_len))
                {
-                  char *slash = strstr(p, "\\");
-                  if (!slash) break;
-
                   char *eol = strstr(p, "\n");
                   if (!eol) goto end;
 
-                  if (eol < slash) break;
+                  char *slash = strstr(p, "\\");
 
                   p = eol + 1;
+
+                  if (!slash || (eol < slash))
+                    break;
                }
+             continue;
           }
 
         //group?
