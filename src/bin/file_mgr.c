@@ -268,10 +268,11 @@ file_mgr_file_focus(Enventor_Item *it)
    file_tab_it_select(it);
    enventor_item_represent(it);
    base_title_set(enventor_item_file_get(it));
+   base_edc_navigator_group_update();
 
-   //Reset context if the find/replace is working on.
+   //Reset file based contexts.
    search_reset();
-   //Cancel if the live edit mode is turned on.
+   goto_close();
    live_edit_cancel(EINA_FALSE);
 }
 
