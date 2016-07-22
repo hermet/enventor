@@ -1600,11 +1600,11 @@ Eina_Stringshare *
 parser_first_group_name_get(parser_data *pd EINA_UNUSED, Evas_Object *entry)
 {
    Evas_Object *tb = elm_entry_textblock_get(entry);
-   char *text = (char *) evas_object_textblock_text_markup_get(tb);
+   const char *text = evas_object_textblock_text_markup_get(tb);
    if (!text) return NULL;
 
    const int text_len = strlen(text);
-   char *p = text;
+   char *p = (char *) text;
 
    const char *quot = QUOT;
    const int quot_len = QUOT_LEN;
