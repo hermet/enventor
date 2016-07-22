@@ -35,6 +35,7 @@ extern const char SIG_CTXPOPUP_DISMISSED[];
 extern const char SIG_CTXPOPUP_ACTIVATED[];
 extern const char SIG_EDC_MODIFIED[];
 extern const char SIG_FOCUSED[];
+extern const char SIG_FILE_OPEN_REQUESTED[];
 
 typedef struct viewer_s view_data;
 typedef struct syntax_color_s color_data;

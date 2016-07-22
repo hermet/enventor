@@ -340,3 +340,59 @@ file_mgr_modified_get(void)
 
    return EINA_FALSE;
 }
+
+Eina_Bool
+file_mgr_file_open(const char *file_path)
+{
+   if (!file_path) return EINA_FALSE;
+
+   //skip non edc nor header files.
+   if (!(eina_str_has_extension(file_path, "edc") ||
+         eina_str_has_extension(file_path, "h"))) return EINA_FALSE;
+
+   unsigned int selected_file_len = strlen(file_path);
+
+   Enventor_Item *eit;
+   const char *it_file_path;
+
+   //Case 1. main file.
+   eit = file_mgr_main_item_get();
+   if (eit)
+     {
+        it_file_path = enventor_item_file_get(eit);
+        if (!it_file_path)
+          {
+             EINA_LOG_ERR("No main item file path??");
+             return EINA_FALSE;
+          }
+        //Ok, This selected file is already openend, let's activate the item.
+        if (!strcmp(file_path, ecore_file_file_get(it_file_path)))
+          {
+             file_mgr_file_focus(eit);
+             return EINA_TRUE;
+          }
+     }
+
+   //Case 2. sub files.
+   Eina_List *sub_items =
+      (Eina_List *)enventor_object_sub_items_get(base_enventor_get());
+   Eina_List *l;
+   EINA_LIST_FOREACH(sub_items, l, eit)
+     {
+        it_file_path = enventor_item_file_get(eit);
+        if (!it_file_path) continue;
+
+        //Let's check if the file is already opened.
+        if (selected_file_len != strlen(it_file_path)) continue;
+
+        //Ok, This selected file is already openend, let's activate the item.
+        if (!strcmp(file_path, it_file_path))
+          {
+             file_mgr_file_focus(eit);
+             return EINA_TRUE;
+          }
+     }
+
+   //This selected file hasn't been opened yet, so let's open this file newly.
+   file_mgr_sub_file_add(file_path);
+}

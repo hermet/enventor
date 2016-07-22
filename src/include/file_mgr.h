@@ -13,3 +13,5 @@ void file_mgr_file_focus(Enventor_Item *it);
 Eina_Bool file_mgr_save_all(void);
 Enventor_Item *file_mgr_main_item_get(void);
 Eina_Bool file_mgr_modified_get(void);
+Eina_Bool file_mgr_file_open(const char *file_path);
+

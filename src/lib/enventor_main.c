@@ -21,6 +21,7 @@ const char SIG_CTXPOPUP_DISMISSED[] = "ctxpopup,dismissed";
 const char SIG_CTXPOPUP_ACTIVATED[] = "ctxpopup,activated";
 const char SIG_EDC_MODIFIED[] = "edc,modified";
 const char SIG_FOCUSED[] = "focused";
+const char SIG_FILE_OPEN_REQUESTED[] = "file,open,requested";
 
 static int _enventor_init_count = 0;
 static int _enventor_log_dom = -1;

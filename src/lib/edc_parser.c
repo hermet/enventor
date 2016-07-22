@@ -372,7 +372,6 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
    type_init_td *td = data;
    parser_attr attr;
-
    td->attrs = eina_inarray_new(sizeof(parser_attr), 24);
    eina_inarray_step_set(td->attrs, sizeof(Eina_Inarray), sizeof(parser_attr),
                          4);
@@ -1739,33 +1738,26 @@ parser_init(void)
 void
 parser_term(parser_data *pd)
 {
-   if (pd->cntd)
-     {
-        pd->cntd->pd = NULL;
-        ecore_thread_cancel(pd->cntd->thread);
-     }
-   if (pd->titd)
-     {
-        pd->titd->pd = NULL;
-        ecore_thread_cancel(pd->titd->thread);
-     }
+   if (pd->cntd) ecore_thread_cancel(pd->cntd->thread);
+   if (pd->titd) ecore_thread_cancel(pd->titd->thread);
    if (pd->btd) ecore_thread_cancel(pd->btd->thread);
 
-   parser_attr *attr;
-
-   EINA_INARRAY_FOREACH(pd->attrs, attr)
+   if (pd->attrs)
      {
-        eina_stringshare_del(attr->keyword);
-
-        if (attr->value.strs)
+        parser_attr *attr;
+        EINA_INARRAY_FOREACH(pd->attrs, attr)
           {
-             while (eina_array_count(attr->value.strs))
-               eina_stringshare_del(eina_array_pop(attr->value.strs));
-             eina_array_free(attr->value.strs);
-          }
-     }
+             eina_stringshare_del(attr->keyword);
 
-   eina_inarray_free(pd->attrs);
+             if (attr->value.strs)
+               {
+                  while (eina_array_count(attr->value.strs))
+                    eina_stringshare_del(eina_array_pop(attr->value.strs));
+                  eina_array_free(attr->value.strs);
+               }
+          }
+        eina_inarray_free(pd->attrs);
+     }
 
    free(pd);
 }

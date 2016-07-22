@@ -323,7 +323,7 @@ syntax_color_thread_cancel_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
    free(td);
 }
 
-void
+static void
 bracket_changed_cb(void *data, int left, int right)
 {
    edit_data *ed = data;
@@ -936,6 +936,83 @@ scroller_vbar_unpress_cb(void *data, Evas_Object *obj EINA_UNUSED,
    syntax_color_partial_update(ed, SYNTAX_COLOR_SHORT_TIME);
 }
 
+static void
+edit_link_activate(edit_data *ed)
+{
+   Evas_Object *textblock = elm_entry_textblock_get(ed->en_edit);
+
+   int line1 = ed->cur_line - 1;
+   int line2 = ed->cur_line;
+
+   //min position case
+   if (line1 < 0)
+     {
+        line1 = 0;
+        line2 = 1;
+     }
+
+   //Max position case
+   Eina_Bool max = EINA_FALSE;
+   if (line2 >= ed->line_max)
+     {
+        line1 = (ed->line_max - 2);
+        line2 = (ed->line_max - 1);
+        max = EINA_TRUE;
+     }
+
+   Evas_Textblock_Cursor *cur1 = evas_object_textblock_cursor_new(textblock);
+   evas_textblock_cursor_line_set(cur1, line1);
+   if (max) evas_textblock_cursor_line_char_last(cur1);
+
+   Evas_Textblock_Cursor *cur2 = evas_object_textblock_cursor_new(textblock);
+   evas_textblock_cursor_line_set(cur2, line2);
+   if (max) evas_textblock_cursor_line_char_last(cur2);
+   int cur1_pos, cur2_pos;
+
+   cur1_pos = evas_textblock_cursor_pos_get(cur1);
+   cur2_pos = evas_textblock_cursor_pos_get(cur2);
+   char *content = evas_textblock_cursor_range_text_get(cur1, cur2,
+                                                    EVAS_TEXTBLOCK_TEXT_MARKUP);
+   char *utf8 = elm_entry_markup_to_utf8(content);
+   free(content);
+
+   //Case 1. File Link?
+   char *file_link = utf8;
+   if (file_link = strstr(utf8, "#include "))
+     {
+        file_link += 9; //strlen("#include "))
+        char *name_begin = strstr(utf8, "\"");
+        if (!name_begin) goto end;
+        name_begin++;
+        char *name_end = strstr(name_begin, "\"");
+        if (!name_end) goto end;
+        file_link = strndup(name_begin, name_end - name_begin);
+        if (file_link)
+          {
+             //Compose the absolute file path.
+             const char *file_name = ecore_file_file_get(ed->filepath);
+             if (!file_name) goto end;
+
+             char *file_path =
+                strndup(ed->filepath, (file_name - ed->filepath));
+             if (!file_path) goto end;
+
+             char buf[PATH_MAX];
+             snprintf(buf, sizeof(buf), "%s%s", file_path, file_link);
+             evas_object_smart_callback_call(ed->enventor,
+                                             SIG_FILE_OPEN_REQUESTED,
+                                             (void*)buf);
+             free(file_path);
+             free(file_link);
+          }
+     }
+
+   //TODO: Case 2. Part Link?
+
+end:
+   free(utf8);
+}
+
 static Eina_Bool
 edit_edc_load(edit_data *ed, const char *file_path)
 {
@@ -1328,7 +1405,7 @@ edit_line_delete(edit_data *ed)
    redoundo_text_push(ed->rd, content, cur1_pos, abs(cur2_pos - cur1_pos),
                       EINA_FALSE);
    elm_entry_calc_force(ed->en_edit);
-   if (content) free(content);
+   free(content);
 
    edit_line_decrease(ed, 1);
 
@@ -1768,6 +1845,10 @@ edit_key_up_event_dispatch(edit_data *ed, const char *key)
    //Control Key
    if (!strcmp("Control_L", key))
      ed->ctrl_pressed = EINA_FALSE;
+
+   //Link
+   if (!strcmp("F5", key))
+     edit_link_activate(ed);
 
    return EINA_FALSE;
 }

@@ -74,6 +74,7 @@ static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_CTXPOPUP_ACTIVATED, ""},
    {SIG_EDC_MODIFIED, ""},
    {SIG_FOCUSED, ""},
+   {SIG_FILE_OPEN_REQUESTED, ""},
    {NULL, NULL}
 };
 
@@ -810,8 +811,6 @@ enventor_object_sub_item_add(Enventor_Object *obj, const char *file)
         return NULL;
      }
 
-   pd->sub_its = eina_list_append(pd->sub_its, it);
-
    it->ed = edit_init(obj, it);
    it->pd = pd;
 
@@ -824,6 +823,8 @@ enventor_object_sub_item_add(Enventor_Object *obj, const char *file)
 
    edit_changed_set(it->ed, EINA_FALSE);
    edit_disabled_set(it->ed, EINA_TRUE);
+
+   pd->sub_its = eina_list_append(pd->sub_its, it);
 
    return it;
 }

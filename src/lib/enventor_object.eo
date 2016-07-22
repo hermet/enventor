@@ -235,5 +235,6 @@ class Enventor.Object (Elm.Widget, Efl.File) {
       ctxpopup,dismissed;
       edc,modified;
       focused;
+      file,open,requested;
    }
 }
