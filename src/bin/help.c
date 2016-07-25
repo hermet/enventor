@@ -54,7 +54,9 @@ list_item_selected_cb(void *data, Evas_Object *obj, void *event_info)
    entry = elm_object_part_content_get(layout, "swallow_entry");
    elm_object_signal_emit(layout, "elm,state,content,show", "");
 
-   //Read File
+   //Read each contents from files.
+
+   //About
    if (!strcmp(item, "about"))
    {
       elm_object_text_set(label, "<font_size=11><b>About</b></font_size>");
@@ -62,6 +64,7 @@ list_item_selected_cb(void *data, Evas_Object *obj, void *event_info)
       elm_entry_autosave_set(entry, EINA_FALSE);
       elm_entry_file_set(entry, buf, ELM_TEXT_FORMAT_MARKUP_UTF8);
    }
+   //History
    else if (!strcmp(item, "history"))
    {
       elm_object_text_set(label, "<font_size=11><b>Version History</b></font_size>");
@@ -69,6 +72,7 @@ list_item_selected_cb(void *data, Evas_Object *obj, void *event_info)
       elm_entry_autosave_set(entry, EINA_FALSE);
       elm_entry_file_set(entry, buf, ELM_TEXT_FORMAT_MARKUP_UTF8);
    }
+   //Shortcut key
    else if (!strcmp(item, "shortcut"))
    {
       elm_object_text_set(label, "<font_size=11><b>Shortcut Keys</b></font_size>");
@@ -76,6 +80,7 @@ list_item_selected_cb(void *data, Evas_Object *obj, void *event_info)
       elm_entry_autosave_set(entry, EINA_FALSE);
       elm_entry_file_set(entry, buf, ELM_TEXT_FORMAT_MARKUP_UTF8);
    }
+   //Commandline
    else if (!strcmp(item, "command"))
    {
       elm_object_text_set(label, "<font_size=11><b>Commandline Usage</b></font_size>");
@@ -83,6 +88,7 @@ list_item_selected_cb(void *data, Evas_Object *obj, void *event_info)
       elm_entry_autosave_set(entry, EINA_FALSE);
       elm_entry_file_set(entry, buf, ELM_TEXT_FORMAT_MARKUP_UTF8);
    }
+   //Developers
    else if (!strcmp(item, "devel"))
    {
       elm_object_text_set(label, "<font_size=11><b>Developers</b></font_size>");
@@ -218,14 +224,11 @@ help_close(void)
    Evas_Object *win = g_win;
    if (!win) return;
 
-   Evas_Object *layout = g_layout;
-   if (!layout) return;
-   evas_object_del(layout);
-   g_layout = NULL;
-
    //Save last state
    evas_object_geometry_get(win, NULL, NULL, &win_w, &win_h);
    elm_win_screen_position_get(win, &win_x, &win_y);
    evas_object_del(win);
+
    g_win = NULL;
+   g_layout = NULL;
 }
