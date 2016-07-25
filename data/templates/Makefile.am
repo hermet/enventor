@@ -20,6 +20,8 @@ files_DATA = Basic.edc \
              Map.edj \
              MobileLayout.edc \
              MobileLayout.edj \
+             MouseEvent.edc \
+             MouseEvent.edj \
              Proxy.edc \
              Proxy.edj \
              Rect.edc \
@@ -59,6 +61,9 @@ Map.edj: Makefile Map.edc
 
 MobileLayout.edj: Makefile MobileLayout.edc
 	        $(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/MobileLayout.edc $(builddir)/MobileLayout.edj
+
+MouseEvent.edj: Makefile MouseEvent.edc
+	        $(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/MouseEvent.edc $(builddir)/MouseEvent.edj
 
 Textblock.edj: Makefile Textblock.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/Textblock.edc $(builddir)/Textblock.edj
