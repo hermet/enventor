@@ -48,7 +48,6 @@ images {
    image: "left.png" COMP;
    image: "right.png" COMP;
    image: "filetab.png" COMP;
-   image: "about_bg.png" COMP;
 }
 
 #define ICON_GROUP(_group_name, _image_path) \
@@ -110,6 +109,5 @@ ICON_GROUP("wireframes_icon", "icon_wireframes.png")
 ICON_GROUP("left_arrow", "left.png")
 ICON_GROUP("right_arrow", "right.png")
 ICON_GROUP("filetab", "filetab.png")
-ICON_GROUP("about_bg", "about_bg.png")
 
 #undef ICON_GROUP

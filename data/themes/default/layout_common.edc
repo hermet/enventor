@@ -11,7 +11,7 @@ images {
    image: "cursor_arrow.png" COMP;
    image: "navi_group.png" COMP;
    image: "bg_demo.png" COMP;
-   image: "about_bg.png" COMP;
+   image: "help_bg.png" COMP;
 }
 
 group { "fileselector_layout";
@@ -3384,7 +3384,7 @@ group { "help_layout";
       image { "image_bg";
          scale: 1;
          desc { "default";
-            image.normal: "about_bg.png";
+            image.normal: "help_bg.png";
             image.border: 0 350 0 0;
             align: 0.5 0.0;
             rel1.to: "base";

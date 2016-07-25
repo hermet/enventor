@@ -1,6 +1,6 @@
 MAINTAINERCLEANFILES = Makefile.in
 EXTRA_DIST = \
-   about_bg.png \
+   help_bg.png \
    bevel_in.png \
    bevel_out.png \
    bg_glow_in.png \
