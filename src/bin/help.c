@@ -154,7 +154,8 @@ help_open(void)
    //Win
    win = elm_win_add(base_win_get(), _("Enventor Help"), ELM_WIN_BASIC);
    elm_win_focus_highlight_enabled_set(win, EINA_TRUE);
-   elm_win_title_set(win, _("About Enventor"));
+   snprintf(buf, sizeof(buf), "About Enventor v%s", PACKAGE_VERSION);
+   elm_win_title_set(win, buf);
    evas_object_smart_callback_add(win, "delete,request", win_delete_request_cb,
                                   NULL);
    evas_object_smart_callback_add(win, "moved", win_moved_cb, NULL);
@@ -172,20 +173,12 @@ help_open(void)
    evas_object_show(box);
 
    //Title Bg
-   Evas_Object *title_bg = elm_bg_add(box);
-   snprintf(buf, sizeof(buf), "%s/images/ENVENTOR_EMBEDDED_FULL_LOGO.png",
-            elm_app_data_dir_get());
-   elm_bg_file_set(title_bg, buf, NULL);
+   Evas_Object *title_bg = elm_image_add(box);
+   elm_image_file_set(title_bg, EDJE_PATH, "about");
    evas_object_size_hint_align_set(title_bg, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_min_set(title_bg, 430, 100);
    elm_box_pack_end(box, title_bg);
    evas_object_show(title_bg);
-
-   //Version Label
-   Evas_Object *label = elm_label_add(title_bg);
-   elm_object_text_set(label, "<align=0.95>Enventor v0.9.0</align>");
-   elm_object_content_set(title_bg, label);
-   evas_object_show(label);
 
    //Entry Box
    Evas_Object *entry_box = elm_box_add(win);
@@ -258,6 +251,6 @@ help_close(void)
    //Save last state
    evas_object_geometry_get(win, NULL, NULL, &win_w, &win_h);
    elm_win_screen_position_get(win, &win_x, &win_y);
-   evas_object_del(win);   
+   evas_object_del(win);
    g_win = NULL;
 }

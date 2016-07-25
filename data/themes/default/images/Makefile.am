@@ -101,4 +101,5 @@ EXTRA_DIST = \
    bevel_curved_vert_out.png \
    vgrad_med_dark.png \
    shadow_rounded_vert.png \
-   wireframes.png
+   wireframes.png \
+   about.png
