@@ -72,7 +72,7 @@ collections { "The <hilight>collections</hilight> represents a theme.</br>The <h
             box { "On a box part, the <hilight>box</hilight> block is used to set other groups as elements of the box.</br>These can be mixed with external objects set by the application through the edje_object_part_box*() functions.";
                items { "The <hilight>items</hilight> block contains a list of <hilight>item</hilight> blocks.</br>Each <hilight>item</hilight> item block contains other group as an element of the box.";
                   item { "The <hilight>item</hilight> item block contains other group as an element of the box.";
-                     align { "Sets the alignment hints for this object.";
+                     align { "Moves the item relatively along both axis inside the part.</br>For horizontal alignment, 0.0 moves the item to touch the left edge of the part and 1.0 moves the item to touch the right edge of the part.</br>For vertical alignment, 0.0 moves the item to touch the top edge of the part and 1.0 moves the item to touch the bottom edge of the part.</br>The default value is 0.5 0.5.";
                      }
                      aspect { "Sets the aspect width and height hints for this object.";
                      }
@@ -146,7 +146,7 @@ collections { "The <hilight>collections</hilight> represents a theme.</br>The <h
             table { "On a box part, the <hilight>table</hilight> block is used to set other groups as elements of the box.</br>These can be mixed with external objects set by the application through the edje_object_part_box*() functions.";
                items { "The <hilight>items</hilight> block contains a list of <hilight>item</hilight> blocks.</br>Each <hilight>item</hilight> item block contains other group as an element of the box.";
                   item { "The <hilight>item</hilight> item block contains other group as an element of the box.";
-                     align { "Sets the alignment hints for this object.";
+                     align { "Moves the item relatively along both axis inside the part.</br>For horizontal alignment, 0.0 moves the item to touch the left edge of the part and 1.0 moves the item to touch the right edge of the part.</br>For vertical alignment, 0.0 moves the item to touch the top edge of the part and 1.0 moves the item to touch the bottom edge of the part.</br>The default value is 0.5 0.5.";
                      }
                      aspect { "Sets the aspect width and height hints for this object.";
                      }
