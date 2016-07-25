@@ -12,33 +12,20 @@ collections {
             scale: 1;
             desc { "default";
                color: 0 0 0 155;
-               visible: 1;
-               align: 0.5 0.5;
                rel1.to: "button_bg";
-               rel1.relative: 0.0 0.0;
+               rel1.offset: 5 5;
                rel2.to: "button_bg";
-               rel2.relative: 1.0 1.0;
-               rel2.offset: 5 5;
-               min: 50 20;
-               max: 200 50;
-               fixed: 1 1;
+               rel2.offset: 4 4;
             }
          }
          image { "button_bg";
             scale: 1;
             desc { "default";
-               visible: 1;
                /* TODO: Please replace embedded image files to your application image files. */
                image.normal: "ENVENTOR_EMBEDDED_BUTTON_BG.png";
-               //aspect: 1 1;
                image.border: 3 3 3 3;
-               align: 0.5 0.5;
-               align: 0.5 0.5;
-               rel1.relative: 0.0 0.0;
-               rel2.relative: 1.0 1.0;
                min: 50 20;
                max: 200 50;
-               fixed: 1 1;
             }
             desc { "hovered";
                inherit: "default";
@@ -51,21 +38,16 @@ collections {
          }
          text { "button_text";
             scale: 1;
-            mouse_events: 0;
+            nomouse;
             desc { "default";
                color: 70 70 70 255;
-               visible: 1;
                text {
                   size: 15;
-                  font: "Mono";
+                  font: "Sans";
                   text: "Mouse Event Example";
-                  align: 0.5 0.5;
-                  min: 0 0;
                }
-               min: 50 20;
-               align: 0.5 0.5;
-               rel1.relative: 0.0 0.0;
-               rel2.relative: 1.0 1.0;
+               rel1.to: "button_bg";
+               rel2.to: "button_bg";
             }
          }
       }
