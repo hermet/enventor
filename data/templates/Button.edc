@@ -1,0 +1,427 @@
+collections {
+   group { name: "main";
+      /* TODO: Please replace embedded image files to your application image files. */      
+      images {
+         image: "ENVENTOR_EMBEDDED_BUTTON_BG.png" COMP;
+         image: "ENVENTOR_EMBEDDED_BUTTON_BG_HOVER.png" COMP;
+         image: "ENVENTOR_EMBEDDED_BUTTON_BG_DOWN.png" COMP;
+      }
+#define ICON     1
+#define LABEL    2
+#define MASK     3
+#define DISABLE  4
+#define PRESSED  8
+#define BACKGROUND  16
+      script {
+         public btmode;
+         public eval_mode(m) {
+            new m1 = m & MASK;
+            new d = m & DISABLE;
+            new p = m & PRESSED;
+            new bg = m & BACKGROUND;
+            if (bg) {
+               set_state(PART:"base", "hidden", 0.0);
+               set_state(PART:"elm.swallow.background", "visible", 0.0);
+            } else {
+               set_state(PART:"elm.swallow.background", "default", 0.0);
+               if (!d) {
+                  if (!p)
+                  {
+                     set_state(PART:"base", "default", 0.0);
+                     set_state(PART:"base", "default", 0.0);
+                  }
+                  else {
+                     set_state(PART:"base", "pressed", 0.0);
+                  }
+               } else {
+                  set_state(PART:"base", "disabled", 0.0);
+               }
+            }
+            if (m1 == (ICON | LABEL)) {
+               if (!d) {
+                  set_state(PART:"elm.swallow.content", "visible", 0.0);
+                  set_state(PART:"sizer.content", "visible", 0.0);
+                  set_state(PART:"event", "default", 0.0);
+                  if (!p) {
+                     set_state(PART:"elm.text", "visible", 0.0);
+                     set_state(PART:"icon_clip", "default", 0.0);
+                  } else {
+                     set_state(PART:"elm.text", "pressed_visible", 0.0);
+                     set_state(PART:"icon_clip", "pressed", 0.0);
+                  }
+               } else {
+                  set_state(PART:"elm.swallow.content", "visible", 0.0);
+                  set_state(PART:"sizer.content", "visible", 0.0);
+                  set_state(PART:"elm.text", "disabled_visible", 0.0);
+                  set_state(PART:"icon_clip", "disabled", 0.0);
+                  set_state(PART:"event", "disabled", 0.0);
+               }
+            } else if (m1 == (ICON)) {
+               if (!d) {
+                  set_state(PART:"elm.swallow.content", "icononly", 0.0);
+                  set_state(PART:"sizer.content", "icononly", 0.0);
+                  set_state(PART:"event", "default", 0.0);
+                  set_state(PART:"elm.text", "default", 0.0);
+                  if (!p)
+                  set_state(PART:"icon_clip", "default", 0.0);
+                  else
+                  set_state(PART:"icon_clip", "pressed", 0.0);
+               } else {
+                  set_state(PART:"elm.swallow.content", "icononly", 0.0);
+                  set_state(PART:"sizer.content", "icononly", 0.0);
+                  set_state(PART:"elm.text", "default", 0.0);
+                  set_state(PART:"icon_clip", "disabled", 0.0);
+                  set_state(PART:"event", "disabled", 0.0);
+               }
+            } else if (m1 == (LABEL)) {
+               if (!d) {
+                  set_state(PART:"elm.swallow.content", "default", 0.0);
+                  set_state(PART:"sizer.content", "default", 0.0);
+                  set_state(PART:"icon_clip", "default", 0.0);
+                  set_state(PART:"event", "default", 0.0);
+                  if (!p)
+                  set_state(PART:"elm.text", "textonly", 0.0);
+                  else
+                  set_state(PART:"elm.text", "pressed_textonly", 0.0);
+               } else {
+                  set_state(PART:"elm.swallow.content", "default", 0.0);
+                  set_state(PART:"sizer.content", "default", 0.0);
+                  set_state(PART:"elm.text", "disabled_textonly", 0.0);
+                  set_state(PART:"icon_clip", "disabled", 0.0);
+                  set_state(PART:"event", "disabled", 0.0);
+               }
+            } else {
+               if (!d) {
+                  set_state(PART:"elm.swallow.content", "default", 0.0);
+                  set_state(PART:"sizer.content", "default", 0.0);
+                  set_state(PART:"icon_clip", "default", 0.0);
+                  set_state(PART:"event", "default", 0.0);
+               } else {
+                  set_state(PART:"elm.swallow.content", "default", 0.0);
+                  set_state(PART:"sizer.content", "default", 0.0);
+                  set_state(PART:"icon_clip", "disabled", 0.0);
+                  set_state(PART:"event", "disabled", 0.0);
+               }
+            }
+         }
+      }
+      parts {
+         image { "base"; nomouse;
+            desc { "default";
+               /* TODO: Please replace embedded image files to your application image files. */
+               image.normal: "ENVENTOR_EMBEDDED_BUTTON_BG.png";
+               image.border: 3 3 3 3;
+               image.middle: SOLID;
+               rel1.offset: -1 0;
+               rel2.offset: 0 1;
+               fill.smooth: 0;
+               color_class: "button_bg";
+            }
+            desc { "hovered";
+               inherit: "default";
+               /* TODO: Please replace embedded image files to your application image files. */
+               image.normal: "ENVENTOR_EMBEDDED_BUTTON_BG_HOVER.png";
+            }
+            desc { "pressed";
+               inherit: "default";
+               /* TODO: Please replace embedded image files to your application image files. */
+               image.normal: "ENVENTOR_EMBEDDED_BUTTON_BG_DOWN.png";
+               color_class: "button_bg_pressed";
+            }
+            desc { "disabled";
+               inherit: "default";
+               color_class: "button_bg_disabled";
+            }
+            desc { "hidden";
+               inherit: "default";
+               visible: 0;
+            }
+         }
+         swallow { "elm.swallow.background"; nomouse;
+            desc { "default";
+               rel1.to: "base";
+               rel2.to: "base";
+               visible: 0;
+            }
+            desc { "visible";
+               inherit: "default";
+               visible: 1;
+            }
+         }
+         rect { "icon_clip";
+            desc { "default";
+               color_class: "button_icon";
+            }
+            desc { "pressed";
+               inherit: "default";
+               color_class: "button_icon_pressed";
+            }
+            desc { "disabled";
+               inherit: "default";
+               color_class: "button_icon_disabled";
+            }
+         }
+         swallow { "elm.swallow.content"; nomouse;
+            clip_to: "icon_clip";
+            desc { "default";
+               fixed: 1 0;
+               align: 0.0 0.5;
+               rel1.offset: 6 5;
+               rel1.to: "base";
+               rel2.relative: 0.0 1.0;
+               rel2.offset: 6 -8;
+               rel2.to: "base";
+               visible: 0;
+            }
+            desc { "visible";
+               inherit: "default";
+               fixed: 1 0;
+               aspect: 1.0 1.0;
+               visible: 1;
+            }
+            desc { "icononly";
+               inherit: "default";
+               fixed: 0 0;
+               align: 0.5 0.5;
+               rel2.relative: 1.0 1.0;
+               rel2.offset: -7 -8;
+               visible: 1;
+            }
+         }
+         text { "sizer.content"; nomouse;
+            scale: 1;
+            desc { "default";
+               visible: 0;
+               text { font: FN; size: 10;
+                  min: 0 0;
+                  text_class: "button_text";
+               }
+            }
+            desc { "visible";
+               inherit: "default";
+               rel1.to: "elm.swallow.content";
+               rel2.to: "elm.swallow.content";
+               text {
+                  min: 1 1;
+                  ellipsis: -1;
+                  text: "M";
+               }
+            }
+            desc { "icononly";
+               inherit: "default";
+               rel1.to: "elm.swallow.content";
+               rel2.to: "elm.swallow.content";
+               text {
+                  min: 1 1;
+                  ellipsis: -1;
+                  text: "M";
+               }
+            }
+         }
+         text { "elm.text"; nomouse;
+            effect: SHADOW BOTTOM;
+            scale: 1;
+            desc { "default";
+               rel1.offset: 0 5;
+               rel1.relative: 1.0 0.0;
+               rel1.to_x: "elm.swallow.content";
+               rel1.to_y: "base";
+               rel2.offset: -8 -8;
+               rel2.to: "base";
+               color_class: "button_text";
+               color3: 255 255 255 255;
+               text { font: FN; size: 10;
+                  align: 0.5 0.5;
+                  min: 0 0;
+                  text_class: "button";
+               }
+               visible: 0;
+               fixed: 1 1;
+            }
+            desc { "visible";
+               inherit: "default";
+               rel1.offset: 2 5;
+               text.min: 1 1;
+               text.ellipsis: -1;
+               visible: 1;
+               fixed: 0 0;
+            }
+            desc { "pressed_visible";
+               inherit: "default";
+               rel1.offset: 2 5;
+               text.min: 1 1;
+               text.ellipsis: -1;
+               visible: 1;
+               fixed: 0 0;
+               color_class: "button_text_pressed";
+            }
+            desc { "textonly";
+               inherit: "default";
+               text.min: 1 1;
+               text.ellipsis: -1;
+               visible: 1;
+               fixed: 0 0;
+            }
+            desc { "pressed_textonly";
+               inherit: "default";
+               text.min: 1 1;
+               text.ellipsis: -1;
+               visible: 1;
+               fixed: 0 0;
+               color_class: "button_text_pressed";
+            }
+            desc { "disabled_visible";
+               inherit: "default";
+               rel1.offset: 2 5;
+               color_class: "button_text_disabled";
+               color3: 255 255 255 255;
+               text.min: 1 1;
+               text.ellipsis: -1;
+               visible: 1;
+               fixed: 0 0;
+            }
+            desc { "disabled_textonly";
+               inherit: "default";
+               color_class: "button_text_disabled";
+               color3: 255 255 255 255;
+               text.min: 1 1;
+               text.ellipsis: -1;
+               visible: 1;
+               fixed: 0 0;
+            }
+         }
+         rect { "event";
+            desc { "default";
+               color: 0 0 0 0;
+            }
+            desc { "disabled";
+               inherit: "default";
+               visible: 0;
+            }
+         }
+      }
+      programs {
+         program {
+            signal: "mouse,down,1"; source: "event";
+            action: SIGNAL_EMIT "elm,action,press" "elm";
+            after: "button_click_anim";
+         }
+         program { name: "button_click_anim";
+            script {
+               new m = get_int(btmode);
+               m |= PRESSED; set_int(btmode, m);
+               eval_mode(m);
+            }
+         }
+         program { name: "button_unclick";
+            signal: "mouse,up,1"; source: "event";
+            action: SIGNAL_EMIT "elm,action,unpress" "elm";
+            after: "button_unclick_anim";
+         }
+         program { name: "button_unclick_anim";
+            script {
+               new m = get_int(btmode);
+               m &= ~PRESSED; set_int(btmode, m);
+               eval_mode(m);
+            }
+         }
+         program { name: "button_hover";
+            signal: "mouse,in";
+            source: "event";
+            action: STATE_SET "hovered";
+            target: "base";
+         }
+         program { name: "button_unhover";
+            signal: "mouse,out";
+            source: "event";
+            action: STATE_SET "default";
+            target: "base";
+         }
+         program { name: "buttonactivate";
+            signal: "elm,anim,activate"; source: "elm";
+            action: STATE_SET "pressed" 0.0;
+            target: "base";
+            after: "button_unpressed_anim";
+         }
+         program { name: "button_unpressed_anim";
+            action: STATE_SET "default" 0.0;
+            in: 0.5 0.0;
+            target: "base";
+         }
+         program {
+            signal: "mouse,clicked,1"; source: "event";
+            action: SIGNAL_EMIT "elm,action,click" "elm";
+         }
+         program { name: "button_text_visible";
+            signal: "elm,state,text,visible"; source: "elm";
+            script {
+               new m = get_int(btmode);
+               m |= LABEL; set_int(btmode, m);
+               eval_mode(m);
+            }
+         }
+         program { name: "button_text_hidden";
+            signal: "elm,state,text,hidden"; source: "elm";
+            script {
+               new m = get_int(btmode);
+               m &= ~LABEL; set_int(btmode, m);
+               eval_mode(m);
+            }
+         }
+         program { name: "button_icon_visible";
+            signal: "elm,state,icon,visible"; source: "elm";
+            script {
+               new m = get_int(btmode);
+               m |= ICON; set_int(btmode, m);
+               eval_mode(m);
+            }
+         }
+         program { name: "button_icon_hidden";
+            signal: "elm,state,icon,hidden"; source: "elm";
+            script {
+               new m = get_int(btmode);
+               m &= ~ICON; set_int(btmode, m);
+               eval_mode(m);
+            }
+         }
+         program { name: "button_background_visible";
+            signal: "elm,state,background,visible"; source: "elm";
+            script {
+               new m = get_int(btmode);
+               m |= BACKGROUND; set_int(btmode, m);
+               eval_mode(m);
+            }
+         }
+         program { name: "button_background_hidden";
+            signal: "elm,state,background,hidden"; source: "elm";
+            script {
+               new m = get_int(btmode);
+               m &= ~BACKGROUND; set_int(btmode, m);
+               eval_mode(m);
+            }
+         }
+         program { name: "button_state_disabled";
+            signal: "elm,state,disabled"; source: "elm";
+            script {
+               new m = get_int(btmode);
+               m |= DISABLE; set_int(btmode, m);
+               eval_mode(m);
+            }
+         }
+         program { name: "button_state_enabled";
+            signal: "elm,state,enabled"; source: "elm";
+            script {
+               new m = get_int(btmode);
+               m &= ~DISABLE; set_int(btmode, m);
+               eval_mode(m);
+            }
+         }
+      }
+#undef ICON
+#undef LABEL
+#undef MASK
+#undef DISABLE
+#undef PRESSED
+#undef BACKGROUND
+   }
+}
