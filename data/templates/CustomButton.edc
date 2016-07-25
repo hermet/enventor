@@ -1,6 +1,7 @@
 collections {
-   group { name: "main";
-      /* TODO: Please replace embedded image files to your application image files. */      
+   base_scale: 1.0;
+   group { "main";
+      /* TODO: Please replace embedded image files to your application image files. */
       images {
          image: "ENVENTOR_EMBEDDED_BUTTON_BG.png" COMP;
          image: "ENVENTOR_EMBEDDED_BUTTON_BG_HOVER.png" COMP;
@@ -106,7 +107,8 @@ collections {
          }
       }
       parts {
-         image { "base"; nomouse;
+         image { "base";
+            nomouse;
             desc { "default";
                /* TODO: Please replace embedded image files to your application image files. */
                image.normal: "ENVENTOR_EMBEDDED_BUTTON_BG.png";
@@ -137,7 +139,8 @@ collections {
                visible: 0;
             }
          }
-         swallow { "elm.swallow.background"; nomouse;
+         swallow { "elm.swallow.background";
+            nomouse;
             desc { "default";
                rel1.to: "base";
                rel2.to: "base";
@@ -161,7 +164,8 @@ collections {
                color_class: "button_icon_disabled";
             }
          }
-         swallow { "elm.swallow.content"; nomouse;
+         swallow { "elm.swallow.content";
+            nomouse;
             clip_to: "icon_clip";
             desc { "default";
                fixed: 1 0;
@@ -188,11 +192,14 @@ collections {
                visible: 1;
             }
          }
-         text { "sizer.content"; nomouse;
+         text { "sizer.content";
+            nomouse;
             scale: 1;
             desc { "default";
                visible: 0;
-               text { font: FN; size: 10;
+               text {
+                  font: FN;
+                  size: 10;
                   min: 0 0;
                   text_class: "button_text";
                }
@@ -218,7 +225,8 @@ collections {
                }
             }
          }
-         text { "elm.text"; nomouse;
+         text { "elm.text";
+            nomouse;
             effect: SHADOW BOTTOM;
             scale: 1;
             desc { "default";
@@ -230,7 +238,9 @@ collections {
                rel2.to: "base";
                color_class: "button_text";
                color3: 255 255 255 255;
-               text { font: FN; size: 10;
+               text {
+                  font: FN;
+                  size: 10;
                   align: 0.5 0.5;
                   min: 0 0;
                   text_class: "button";
@@ -302,114 +312,126 @@ collections {
       }
       programs {
          program {
-            signal: "mouse,down,1"; source: "event";
+            signal: "mouse,down,1";
+            source: "event";
             action: SIGNAL_EMIT "elm,action,press" "elm";
             after: "button_click_anim";
          }
-         program { name: "button_click_anim";
+         program { "button_click_anim";
             script {
                new m = get_int(btmode);
                m |= PRESSED; set_int(btmode, m);
                eval_mode(m);
             }
          }
-         program { name: "button_unclick";
-            signal: "mouse,up,1"; source: "event";
+         program { "button_unclick";
+            signal: "mouse,up,1";
+            source: "event";
             action: SIGNAL_EMIT "elm,action,unpress" "elm";
             after: "button_unclick_anim";
          }
-         program { name: "button_unclick_anim";
+         program { "button_unclick_anim";
             script {
                new m = get_int(btmode);
                m &= ~PRESSED; set_int(btmode, m);
                eval_mode(m);
             }
          }
-         program { name: "button_hover";
+         program { "button_hover";
             signal: "mouse,in";
             source: "event";
             action: STATE_SET "hovered";
             target: "base";
          }
-         program { name: "button_unhover";
+         program { "button_unhover";
             signal: "mouse,out";
             source: "event";
             action: STATE_SET "default";
             target: "base";
          }
-         program { name: "buttonactivate";
-            signal: "elm,anim,activate"; source: "elm";
+         program { "buttonactivate";
+            signal: "elm,anim,activate";
+            source: "elm";
             action: STATE_SET "pressed" 0.0;
             target: "base";
             after: "button_unpressed_anim";
          }
-         program { name: "button_unpressed_anim";
+         program { "button_unpressed_anim";
             action: STATE_SET "default" 0.0;
             in: 0.5 0.0;
             target: "base";
          }
          program {
-            signal: "mouse,clicked,1"; source: "event";
+            signal: "mouse,clicked,1";
+            source: "event";
             action: SIGNAL_EMIT "elm,action,click" "elm";
          }
-         program { name: "button_text_visible";
-            signal: "elm,state,text,visible"; source: "elm";
+         program { "button_text_visible";
+            signal: "elm,state,text,visible";
+            source: "elm";
             script {
                new m = get_int(btmode);
                m |= LABEL; set_int(btmode, m);
                eval_mode(m);
             }
          }
-         program { name: "button_text_hidden";
-            signal: "elm,state,text,hidden"; source: "elm";
+         program { "button_text_hidden";
+            signal: "elm,state,text,hidden";
+            source: "elm";
             script {
                new m = get_int(btmode);
                m &= ~LABEL; set_int(btmode, m);
                eval_mode(m);
             }
          }
-         program { name: "button_icon_visible";
-            signal: "elm,state,icon,visible"; source: "elm";
+         program { "button_icon_visible";
+            signal: "elm,state,icon,visible";
+            source: "elm";
             script {
                new m = get_int(btmode);
                m |= ICON; set_int(btmode, m);
                eval_mode(m);
             }
          }
-         program { name: "button_icon_hidden";
-            signal: "elm,state,icon,hidden"; source: "elm";
+         program { "button_icon_hidden";
+            signal: "elm,state,icon,hidden";
+            source: "elm";
             script {
                new m = get_int(btmode);
                m &= ~ICON; set_int(btmode, m);
                eval_mode(m);
             }
          }
-         program { name: "button_background_visible";
-            signal: "elm,state,background,visible"; source: "elm";
+         program { "button_background_visible";
+            signal: "elm,state,background,visible";
+            source: "elm";
             script {
                new m = get_int(btmode);
                m |= BACKGROUND; set_int(btmode, m);
                eval_mode(m);
             }
          }
-         program { name: "button_background_hidden";
-            signal: "elm,state,background,hidden"; source: "elm";
+         program { "button_background_hidden";
+            signal: "elm,state,background,hidden";
+            source: "elm";
             script {
                new m = get_int(btmode);
                m &= ~BACKGROUND; set_int(btmode, m);
                eval_mode(m);
             }
          }
-         program { name: "button_state_disabled";
-            signal: "elm,state,disabled"; source: "elm";
+         program { "button_state_disabled";
+            signal: "elm,state,disabled";
+            source: "elm";
             script {
                new m = get_int(btmode);
                m |= DISABLE; set_int(btmode, m);
                eval_mode(m);
             }
          }
-         program { name: "button_state_enabled";
-            signal: "elm,state,enabled"; source: "elm";
+         program { "button_state_enabled";
+            signal: "elm,state,enabled";
+            source: "elm";
             script {
                new m = get_int(btmode);
                m &= ~DISABLE; set_int(btmode, m);
