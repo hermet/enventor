@@ -11,6 +11,7 @@ images {
    image: "cursor_arrow.png" COMP;
    image: "navi_group.png" COMP;
    image: "bg_demo.png" COMP;
+   image: "about_bg.png" COMP;
 }
 
 group { "fileselector_layout";
@@ -3371,7 +3372,116 @@ group { "edit_layout";
       }
    }
 }
-
+group { "help_layout";
+   parts {
+      rect { "base";
+         scale: 1;
+         desc { "default";
+            color: 65 65 65 255;
+            min: 430 220;
+         }
+      }
+      image { "image_bg";
+         scale: 1;
+         desc { "default";
+            image.normal: "about_bg.png";
+            image.border: 0 350 0 0;
+            align: 0.5 0.0;
+            rel1.to: "base";
+            rel2.to: "base";
+            min: 430 90;
+            max: 9999 90;
+         }
+      }
+      image { "image_logo";
+         scale: 1;
+         desc { "default";
+            image.normal: "full_logo.png";
+            align: 0.0 0.5;
+            rel1.to: "image_bg";
+            rel2.to: "image_bg";
+            min: 115 90;
+            max: 115 90;
+         }
+      }
+      swallow { "swallow_list";
+         scale: 1;
+         desc { "default";
+            rel1.to: "image_bg";
+            rel1.relative: 0.0 1.0;
+            rel2.to: "base";
+         }
+      }
+      rect { "content_bg";
+         scale: 1;
+         desc { "default";
+            rel1.to: "base";
+            rel2.to: "base";
+            color: 65 65 65 255;
+         }
+         desc { "hide";
+            inherit: "default";
+            visible: 0;
+         }
+      }
+      swallow { "swallow_label";
+         scale: 1;
+         desc { "default";
+            align: 0.5 0.0;
+            min: 430 25;
+            max: 9999 25;
+         }
+         desc { "hide";
+            inherit: "default";
+            visible: 0;
+         }
+      }
+      swallow { "swallow_entry";
+         scale: 1;
+         desc { "default";
+            rel1.to: "swallow_label";
+            rel1.relative: 0.0 1.0;
+            rel2.to: "base";
+         }
+         desc { "hide";
+            inherit: "default";
+            visible: 0;
+         }
+      }
+      swallow { "swallow_button";
+         scale: 1;
+         desc { "default";
+            align: 1.0 0.5;
+            rel1.to: "swallow_label";
+            rel2.to: "swallow_label";
+            min: 25 25;
+            max: 25 25;
+         }
+         desc { "hide";
+            inherit: "default";
+            visible: 0;
+         }
+      }
+   }
+   programs {
+      program { "content_show";
+         signal: "elm,state,content,show";
+         action: STATE_SET "default";
+         target: "content_bg";
+         target: "swallow_label";
+         target: "swallow_entry";
+         target: "swallow_button";
+      }
+      program { "content_hide";
+         signal: "elm,state,content,hide";
+         action: STATE_SET "hide";
+         target: "content_bg";
+         target: "swallow_label";
+         target: "swallow_entry";
+         target: "swallow_button";
+      }
+   }
+}
 #define REFERENCE_LAYOUT_WIDTH 300
 #define REFERENCE_LAYOUT_HEIGHT 100
 group { "reference_layout";

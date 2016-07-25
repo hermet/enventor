@@ -4,19 +4,12 @@
 
 #include "common.h"
 
-typedef struct help_data_s
-{
-   Evas_Object *list;
-   Evas_Object *box;
-   Evas_Object *button;
-} help_data;
-
-static help_data *g_hd = NULL;
 static Evas_Coord win_x = -1;
 static Evas_Coord win_y = -1;
 static Evas_Coord win_w = DEFAULT_HELP_WIN_W;
 static Evas_Coord win_h = DEFAULT_HELP_WIN_H;
 static Evas_Object *g_win = NULL;
+static Evas_Object *g_layout = NULL;
 
 /*****************************************************************************/
 /* Internal method implementation                                            */
@@ -50,30 +43,16 @@ win_moved_cb(void *data EINA_UNUSED, Evas_Object *obj,
 static void
 list_item_selected_cb(void *data, Evas_Object *obj, void *event_info)
 {
+   Evas_Object *layout;
    Evas_Object *label;
    Evas_Object *entry;
    char buf[PATH_MAX];
-   help_data *hd = g_hd;
    char *item = data;
 
-   elm_box_clear(hd->box);
-
-   //Label
-   label =  elm_label_add(hd->box);
-   evas_object_size_hint_align_set(label, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_box_pack_end(hd->box, label);
-   evas_object_show(label);
-
-   //Entry
-   entry = elm_entry_add(hd->box);
-   elm_entry_scrollable_set(entry, EINA_TRUE);
-   elm_entry_line_wrap_set(entry, EINA_TRUE);
-   elm_entry_editable_set(entry, EINA_FALSE);
-   elm_entry_line_wrap_set(entry, ELM_WRAP_MIXED);
-   evas_object_size_hint_weight_set(entry, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(entry, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_box_pack_end(hd->box, entry);
-   evas_object_show(entry);
+   layout = g_layout;
+   label = elm_object_part_content_get(layout, "swallow_label");
+   entry = elm_object_part_content_get(layout, "swallow_entry");
+   elm_object_signal_emit(layout, "elm,state,content,show", "");
 
    //Read File
    if (!strcmp(item, "about"))
@@ -111,20 +90,15 @@ list_item_selected_cb(void *data, Evas_Object *obj, void *event_info)
       elm_entry_autosave_set(entry, EINA_FALSE);
       elm_entry_file_set(entry, buf, ELM_TEXT_FORMAT_MARKUP_UTF8);
    }
-
-   //Back Button
-   evas_object_show(hd->button);
 }
 
 static void
-backbutton_clicked_cb(void *data, Evas_Object *obj, void *event_info)
+button_clicked_cb(void *data, Evas_Object *obj, void *event_info)
 {
-   help_data *hd = g_hd;
-   Evas_Object *box = data;
-   elm_box_clear(box);
-
-   elm_list_item_selected_set(elm_list_selected_item_get(hd->list), EINA_FALSE);
-   evas_object_hide(hd->button);
+   Evas_Object *layout = g_layout;
+   Evas_Object *list = elm_object_part_content_get(layout, "swallow_list");
+   elm_list_item_selected_set(elm_list_selected_item_get(list), EINA_FALSE);
+   elm_object_signal_emit(layout, "elm,state,content,hide", "");
 }
 
 /*****************************************************************************/
@@ -141,14 +115,6 @@ help_open(void)
       return;
    }
 
-   help_data *hd = malloc(sizeof(help_data));
-   if (!hd)
-   {
-      mem_fail_msg();
-      return ;
-   }
-   g_hd = hd;
-
    char buf[PATH_MAX];
 
    //Win
@@ -160,42 +126,24 @@ help_open(void)
                                   NULL);
    evas_object_smart_callback_add(win, "moved", win_moved_cb, NULL);
 
-   //Bg
-   Evas_Object *bg = elm_bg_add(win);
-   evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_show(bg);
-   elm_win_resize_object_add(win, bg);
-
-   //Box
-   Evas_Object *box = elm_box_add(win);
-   evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_win_resize_object_add(win, box);
-   evas_object_show(box);
-
-   //Title Bg
-   Evas_Object *title_bg = elm_image_add(box);
-   elm_image_file_set(title_bg, EDJE_PATH, "about");
-   evas_object_size_hint_align_set(title_bg, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_size_hint_min_set(title_bg, 430, 100);
-   elm_box_pack_end(box, title_bg);
-   evas_object_show(title_bg);
-
-   //Entry Box
-   Evas_Object *entry_box = elm_box_add(win);
-   evas_object_size_hint_weight_set(entry_box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_win_resize_object_add(win, entry_box);
-   evas_object_show(entry_box);
-   hd->box = entry_box;
+   //Layout
+   Evas_Object *layout = elm_layout_add(win);
+   elm_layout_file_set(layout, EDJE_PATH, "help_layout");
+   evas_object_size_hint_align_set(layout, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   elm_win_resize_object_add(win, layout);
+   evas_object_show(layout);
+   g_layout = layout;
 
    //List
-   Evas_Object *list = elm_list_add(box);
+   Evas_Object *list = elm_list_add(win);
    evas_object_size_hint_weight_set(list, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(list, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_tree_focus_allow_set(list, EINA_FALSE);
    elm_list_select_mode_set(list, ELM_OBJECT_SELECT_MODE_DEFAULT);
    evas_object_show(list);
-   elm_box_pack_end(box, list);
-   hd->list = list;
+
+   elm_object_part_content_set(layout, "swallow_list", list);
 
    elm_list_item_append(list, "About", NULL, NULL, list_item_selected_cb,
                         "about");
@@ -208,23 +156,46 @@ help_open(void)
    elm_list_item_append(list, "Developers", NULL, NULL, list_item_selected_cb,
                         "devel");
 
-   // Back Button Box
-   Evas_Object *button_box = elm_box_add(win);
-   evas_object_size_hint_weight_set(button_box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_win_resize_object_add(win, button_box);
-   evas_object_show(button_box);
+   //Label
+   Evas_Object *label =  elm_label_add(win);
+   evas_object_size_hint_weight_set(label, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(label, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_show(label);
+
+   elm_object_part_content_set(layout, "swallow_label", label);
+
+   //Entry
+   Evas_Object *entry = elm_entry_add(win);
+   elm_entry_scrollable_set(entry, EINA_TRUE);
+   elm_entry_line_wrap_set(entry, EINA_TRUE);
+   elm_entry_editable_set(entry, EINA_FALSE);
+   elm_entry_line_wrap_set(entry, ELM_WRAP_MIXED);
+   evas_object_size_hint_weight_set(entry, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(entry, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_show(entry);
+
+   elm_object_part_content_set(layout, "swallow_entry", entry);
 
    //Back Button
-   Evas_Object *button = elm_button_add(button_box);
+   Evas_Object *button = elm_button_add(win);
    evas_object_size_hint_weight_set(button, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(button, 0.95, 0.95);
-   evas_object_size_hint_min_set(button, 60, 30);
-   elm_object_text_set(button, "Back");
-   evas_object_smart_callback_add(button, "clicked", backbutton_clicked_cb, entry_box);
-   elm_box_pack_end(button_box, button);
-   evas_object_hide(button);
-   hd->button = button;
+   evas_object_size_hint_align_set(button, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_smart_callback_add(button, "clicked", button_clicked_cb, NULL);
+   elm_object_focus_allow_set(button, EINA_FALSE);
+   elm_object_style_set(button, ENVENTOR_NAME);
+   evas_object_show(button);
 
+   //Back Button Icon
+   Evas_Object *back_img = elm_image_add(button);
+   elm_image_file_set(back_img, EDJE_PATH, "close");
+   elm_object_content_set(button, back_img);
+
+   elm_object_part_content_set(layout, "swallow_button", button);
+
+   //Content hide
+   elm_object_signal_emit(layout, "elm,state,content,hide", "");
+
+   //Window
    win_w = (Evas_Coord) ((double) win_w * elm_config_scale_get());
    win_h = (Evas_Coord) ((double) win_h * elm_config_scale_get());
    evas_object_resize(win, win_w, win_h);
@@ -246,7 +217,11 @@ help_close(void)
 {
    Evas_Object *win = g_win;
    if (!win) return;
-   free(g_hd);
+
+   Evas_Object *layout = g_layout;
+   if (!layout) return;
+   evas_object_del(layout);
+   g_layout = NULL;
 
    //Save last state
    evas_object_geometry_get(win, NULL, NULL, &win_w, &win_h);

@@ -1,5 +1,6 @@
 MAINTAINERCLEANFILES = Makefile.in
 EXTRA_DIST = \
+   about_bg.png \
    bevel_in.png \
    bevel_out.png \
    bg_glow_in.png \
@@ -101,5 +102,4 @@ EXTRA_DIST = \
    bevel_curved_vert_out.png \
    vgrad_med_dark.png \
    shadow_rounded_vert.png \
-   wireframes.png \
-   about.png
+   wireframes.png
