@@ -106,6 +106,183 @@ collections { "The <hilight>collections</hilight> represents a theme.</br>The <h
             cursor_mode { "Sets where to draw the (blinking) cursor for textblock parts.</br>The available modes are UNDER and BEFORE.";
             }
             desc { "The <hilight>desc</hilight> defines a state of a part.</br>The <hilight>desc</hilight> block contains properties of a part such as size, position, color, image and text.";
+               align { "Moves the object relatively along both axis inside its container.</br>For horizontal alignment, 0.0 moves the object to touch the left edge of its container and 1.0 moves the object to touch the right edge of its container.</br>For vertical alignment, 0.0 moves the object to touch the top edge of its container and 1.0 moves the object to touch the bottom edge of its container.</br>The default value is 0.5 0.5.";
+               }
+               aspect { "Forces the ratio of the width to height to be kept between the minimum and maximum set.</br>For example, 1.0 1.0 increases the width a pixel for every pixel added to height and 2.0 2.0 increases the width two pixels for every pixel added to height.</br>The default value is 0.0 0.0 which disables <hilight>aspect</hilight>.";
+               }
+               aspect_preference { "Sets the dimensions to which the <hilight>aspect</hilight> property applies.</br>For example, if the dimension is HORIZONTAL, then the object fits its width to its container's width so its height can be longer than its container's height.</br>Available options are BOTH, VERTICAL, HORIZONTAL, SOURCE, and NONE.";
+               }
+               box { "On a box part, the <hilight>box</hilight> block is used to define how items are displayed inside of the box part.";
+                  align { "Moves items relatively along both axis inside the box.</br>For horizontal alignment, 0.0 moves items to touch the left edge of the box and 1.0 moves items to touch the right edge of the box.</br>For vertical alignment, 0.0 moves items to touch the top edge of the box and 1.0 moves items to touch the bottom edge of the box.</br>The default value is 0.5 0.5.";
+                  }
+                  layout { "Sets how the items are arranged in the box.</br>The available layouts are horizontal (default), vertical, horizontal_homogeneous, vertical_homogeneous, horizontal_max, vertical_max, horizontal_flow, vertical_flow, and stack.";
+                  }
+                  min { "When any of the parameters is enabled (1) it forces the minimum size of the box to be equal to the minimum size of the items.</br>The default value is 0 0.";
+                  }
+                  padding { "Sets the padding in pixels between items of the box.</br>The default value is 0 0.";
+                  }
+               }
+               clip_to { "Only renders the area of the part that coincides with the given part.";
+               }
+               color { "Sets the main color to the specified values in RGBA (between 0 and 255).</br>Notice that the <hilight>color</hilight> of the textblock part is set in the text style.";
+               }
+               color2 { "Sets the text outline color to the specified values in RGBA (0 to 255).</br>Notice that <hilight>color2</hilight> is valid only for the text part with the outline effect.</br>Notice that the <hilight>color2</hilight> of the textblock part is set in the text style.";
+               }
+               color3 { "Sets the text shadow color to the specified values in RGBA (0 to 255).</br>Notice that <hilight>color3</hilight> is valid only for the text part with the shadow effect.</br>Notice that the <hilight>color3</hilight> of the textblock part is set in the text style.";
+               }
+               color_class { "The part uses the color values of the named color_class, these values can be overridden by the <hilight>color</hilight>, <hilight>color2</hilight>, and <hilight>color3</hilight> properties.";
+               }
+               fill { "Sets how the image is going to fill the image part.";
+                  origin { "Sets the starting point of the image relatively to the image part.";
+                     offset { "Sets the starting point of the image in pixels from the top-left of the image part.</br>For example, 50 50 fills the image from 50 pixels right and 50 pixels down from the top-left point of the image part.";
+                     }
+                     relative { "Sets the starting point of the image relatively from the top-left of the image part.</br>For example, 0.1 0.1 fills the image from the 0.1 0.1 relative position of the image part.";
+                     }
+                  }
+                  size { "Sets the tile size.";
+                     offset { "Increases the tile size in pixels along each axis.</br>For example, 50 50 increases the tile size by 50 pixels along x and y axis.";
+                     }
+                     relative { "Sets the tile size relatively to the image size.</br>For example, 0.5 0.5 shrinks the tile size to 1/4 of the image size.";
+                     }
+                  }
+                  smooth { "Specifies whether the smooth scaling is applied to the image when the image is scaled.</br>The default value is 1 (enabled).";
+                  }
+                  type { "Spicifies whether the image is scaled or tiled to fill the image part.</br>The available types are SCALE (default) and TILE.";
+                  }
+               }
+               fixed { "Specifies whether the minimum size of this part affects the minimum size of the widget (group).</br>Normally, <hilight>fixed</hilight> is used to set a minimum width or height to a line or a point shaped part.</br>For example, rel1 and rel2 of a part are the same position along x axis and the part has a minimum width, then fixed: 1 0 should be applied not to increase the minimum width of the widget infinitely.</br>The default value is 0 0 (the minimum size of the part affects the minimum size of the widget).";
+               }
+               image { "On an image part, the <hilight>image</hilight> block is used to define how the image is displayed.";
+                  border { "Sets the area (in pixels) of each side of the image (left, right, top, and bottom) which is displayed as a fixed size border from the side.</br>The border area is not resized when the image is resized to fill the image part.";
+                  }
+                  border_scale { "Specifies whether the border is scaled by the object/global scale factors.";
+                  }
+                  border_scale_by { "If border scaling is enabled then normally the OUTPUT border sizes (e.g. if 3 pixels on the left edge are set as a border, then normally at scale 1.0, those 3 columns are always exactly 3 columns of output, or at scale 2.0 they are 6 columns, or 0.33 they merge into a single column).</br>This property multiplies the input scale factor by this multiplier, allowing the creation of supersampled borders to make higher resolution outputs possible by always using the highest resolution artwork and then runtime scaling it down.</br>Value can be: 0.0 or bigger (0.0 or 1.0 to turn it off).";
+                  }
+                  middle { "Specifies how the rest of the image (not covered by the defined border) is displayed.</br>The rest of the image can be displayed with alpha (DEFAULT), displayed without alpha (SOLID), or not displayed (NONE).</br>The default value is DEFAULT.";
+                  }
+                  normal { "Sets the name of an image to be used.</br>Notice that the name of the image should be declared in the <hilight>images</hilight> block.";
+                  }
+                  scale_hint { "Sets the evas image scale hint letting the engine more effectively save cached copies of the scaled image if it makes sense.</br>The available values are NONE, DYNAMIC, and STATIC.";
+                  }
+                  tween { "Sets the name of an image to be animated during the transition to the state of the part containing the <hilight>image</hilight> block.</br>The <hilight>image</hilight> block can have none, one or multiple <hilight>tween</hilight> declarations.</br>Images declared with <hilight>tween</hilight> are displayed in the order they are listed during the transition to the state they are declared in.</br>The <hilight>normal</hilight> image is displayed in the beginning and in the end.";
+                  }
+               }
+               inherit { "Inherits all the properties from the named description.</br>The properties defined in the description override the inherited properties, reducing the amount of necessary code for simple state changes.";
+               }
+               limit { "Emits a signal when the part size changes from zero or to a zero ("limit,width,over" or "limit,width,zero"). By default no signal are emitted.</br>The available values are NONE, WIDTH, HEIGHT, and BOTH.";
+               }
+               link { "The <hilight>link</hilight> block can be used to create transitions to the enclosing part description state.</br>The result of the above block is identical to creating a program with.";
+                  after { "Specifies a program that is run after the current program completes.</br>The source and signal parameters of a program run as an after are ignored.</br>Multiple after statements can be specified per program.";
+                  }
+                  base { "Defines the signal and source which triggers the transition to this state.</br>The source parameter is optional here and is filled with the current group's default value if it is not provided.";
+                  }
+                  in { "in [from] [range]</br>Waits [from] seconds before executing the program and adds a random number of seconds (from 0 to [range]) to the total waiting time.";
+                  }
+                  transition { "transition [type] [length] (interp val 1) (interp val 2) (option)</br>Defines how transitions occur using STATE_SET action.</br>[type] is the style of the transition and [length] is a double specifying the number of seconds in which to preform the transition.</br>The available types are LINEAR, SINUSOIDAL, ACCELERATE, ACCELERATE_FACTOR, DECELERATE_FACTOR, SINUSOIDAL_FACTOR, DIVISOR_INTERP, BOUNCE, and SPRING";
+                  }
+               }
+               map { "The <hilight>map</hilight> block is used to apply evas map rendering functions (e.g. perspective effect, rotation effect, lighting, and color blending).";
+                  alpha { "Specifies whether alpha channel is enabled or not during map rendering.</br>The default value is 1 (enabled).";
+                  }
+                  backface_cull { "Specifies whether backface culling is enabled or not.";
+                  }
+                  color { "color [point] [red] [green] [blue] [alpha]</br>Sets the color of a vertex in the map.</br>Colors are linearly interpolated between vertex points through the map.</br>The default color of a vertex in a map is white solid (255, 255, 255, 255) which means it has no affect on modifying the part pixels.</br>Currently only four points are supported: 0 - Left-Top point of a part. 1 - Right-Top point of a part. 2 - Left-Bottom point of a part. 3 - Right-Bottom point of a part.";
+                  }
+                  light { "Sets the part that is used as the light for calculating the brightness (based on how directly the part's surface is facing the light source point).</br>Like the perspective point part, the center point is used and zplane is used for the z position (0 being the zero-plane where all 2D objects normally live) and positive values being further away into the distance.</br>The light part color is used as the light color (alpha not used for light color). The color2 color is used for the ambient lighting when calculating brightness (alpha also not used).";
+                  }
+                  on { "Specifies whether mapping is enabled or not for the part.</br>The default value is 0 (disabled).";
+                  }
+                  perspective { "Sets the part that is used as the perspective point for giving a part a 3D look.</br>The perspective point must have a perspective section that provides zplane and focal properties. The center of this part is used as the focal point, thus size, color and visibility are not relevant, just center point, zplane and focal are used. This also implicitly enables perspective transforms.";
+                  }
+                  perspective_on { "Specifies whether perspective effect is enabled or not.";
+                  }
+                  rotation { "The <hilight>rotation</hilight> is used to rotate the part, optionally with the center on another part.";
+                     center { "Sets the part that is used as the center of rotation when rotating the part with this description.</br>The part's center point is used as the rotation center when applying rotation around the x, y and z axes.</br>If no center is given, the parts original center itself is used for the rotation center.";
+                     }
+                     x { "Sets the rotation around the x axis of the part considering the <hilight>center</hilight> set.</br>The value is given in degrees.";
+                     }
+                     y { "Sets the rotation around the y axis of the part considering the <hilight>center</hilight> set.</br>The value is given in degrees.";
+                     }
+                     z { "Sets the rotation around the x axis of the part considering the <hilight>center</hilight> set.</br>The value is given in degrees.";
+                     }
+                  }
+                  smooth { "Specifies whether smooth map rendering is enabled or not.</br>This may be linear interpolation, anisotropic filtering or anything the engine decides is smooth. This is a best-effort hint and may not produce precisely the same results in all engines and situations.</br>The default value is 1 (enabled).";
+                  }
+               }
+               max { "Sets the maximum size of the part.</br>The size of -1.0 means that it is ignored in that direction.";
+               }
+               min { "Sets the minimum size of the part.</br>To make this <hilight>min</hilight> size not affect to the minimum size of the object, <hilight>fixed</hilight> should be set with 1 for that direction.";
+               }
+               minmul { "Sets a multiplier forcibly applied to whatever minimum size is only during minimum size calculation.";
+               }
+               perspective { "The <hilight>perspective</hilight> is used to add focal and plane perspective to the part.</br>Must be provided if the part is being used by other parts as it is perspective target.";
+                  focal { "Sets the z value that is not scaled.</br>Normally this is 0 as that is the z distance.";
+                  }
+                  zplane { "Sets the distance from the focal z plane (zplane) and the camera (i.e. equating to focal length of the camera).";
+                  }
+               }
+               rel1 { "The <hilight>rel1</hilight> block is used to define the position of the top-left corner of the part.</br>";
+                  offset { "Adds an absoute offset (in pixels) along each axis.";
+                  }
+                  relative { "Moves the corner to a relative position of the part given to the keyword <hilight>to</hilight>.</br>The value for the left side of the part is 0.0 and the value for the right side of the part is 1.0.</br>The value for the top side of the part is 0.0 and the value for the bottom side of the part is 1.0";
+                  }
+                  to { "Sets another part referenced for positioning the corners along both x axis and y axis.";
+                  }
+                  to_x { "Sets another part referenced for positioning the corners along x axis.";
+                  }
+                  to_y { "Sets another part referenced for positioning the corners along y axis.";
+                  }
+               }
+               rel2 { "The <hilight>rel2</hilight> block is used to define the position of the bottom-right corner of the part.";
+                  #inherit "collections.group.parts.part.desc.rel1";
+               }
+               source { "Sets another part to be used by the part's content.</br>Notice that this works only with proxy parts.";
+               }
+               step { "Restricts resizing of each dimension to values divisible by its value.</br>This causes the part to jump from value to value while resizing.</br>The default value is 0 0 which disables stepping.";
+               }
+               table { "On a table part, the <hilight>table</hilight> block is used to define how items are displayed inside of the table part.";
+                  align { "Moves items relatively along both axis inside the table.</br>For horizontal alignment, 0.0 moves items to touch the left edge of the table and 1.0 moves items to touch the right edge of the table.</br>For vertical alignment, 0.0 moves items to touch the top edge of the table and 1.0 moves items to touch the bottom edge of the table.</br>The default value is 0.5 0.5.";
+                  }
+                  homogeneous { "Sets how the space for each item is arranged in the table.</br>The available modes are NONE (default), TABLE, and ITEM.";
+                  }
+                  min { "When any of the parameters is enabled (1) it forces the minimum size of the table to be equal to the minimum size of the items.</br>The default value is 0 0.";
+                  }
+                  padding { "Sets the padding in pixels between items of the table.</br>The default value is 0 0.";
+                  }
+               }
+               text { "The <hilight>text</hilight> block is used to define text properties.";
+                  align { "Moves the text relatively along both axis inside the part.</br>For horizontal alignment, 0.0 moves the text to touch the left edge of the part and 1.0 moves the text to touch the right edge of the part.</br>For vertical alignment, 0.0 moves the text to touch the top edge of the part and 1.0 moves the text to touch the bottom edge of the part.</br>The default value is 0.5 0.5.";
+                  }
+                  ellipsis { "Balances the text in a relative point from 0.0 to 1.0, this point is the last section of the string to be cut out in case of a resize that is smaller than the text itself.</br>The default value is 0.0.";
+                  }
+                  fit { "Specifies whether resizing the text to fit in the part or not.</br>The default value is 0 0 (disabled).";
+                  }
+                  font { "Sets the font family to one of the aliases set up in the <hilight>fonts</hilight> block.";
+                  }
+                  max { "When any of the parameters is enabled (1) it forces the maximum size of the container to be equal to the maximum size of the text (width and height).</br>The default value is 0 0 (disabled).";
+                  }
+                  min { "When any of the parameters is enabled (1) it forces the minimum size of the container to be equal to the minimum size of the text (width and height).</br>The default value is 0 0 (disabled).";
+                  }
+                  repch { "Sets a replacement character string to hide the details in the password mode.</br>This works only if the part is <hilight>textblock</hilight> and the <hilight>entry_mode</hilight> is PASSWORD.</br>Normally * is used, but you can use anything you like.";
+                  }
+                  size { "Sets the default font size.";
+                  }
+                  size_range { "Sets the allowed font size.</br>Setting min and max to 0 means that sizing is not restricted.</br>The default value is 0 0 (sizing is not restricted).";
+                  }
+                  source { "Uses text properties of the given part (e.g. font and size).";
+                  }
+                  style { "Uses the default style and tags defined in the <hilight>style</hilight>block with the specified name.";
+                  }
+                  text { "Sets the default text string.";
+                  }
+                  text_class { "Sets the text's class which can be used to factor font and font size properties.";
+                  }
+                  text_source { "Sets the text string the same as the given part's text string.</br>The text string is updated when the given part's text string changes.";
+                  }
+               }
+               visible { "Specifies whether the part is visible or not.</br>If the part is not visible, then the part does not receive mouse events.</br>The default value is 1 (visible).";
+               }
             }
             dragable { "When this block is used the part can be dragged around the interface, do not confuse with external drag and drop.</br>By default Edje (and most applications) attempts to use the minimal size possible for a draggable part.</br>If the min property is not set in the description the part is (most likely) set to 0px width and 0px height, thus invisible.";
                confine { "Limits the movement of the dragged part to another part's container.</br>Set a min size for the part, or the dragged object will not show up.";
