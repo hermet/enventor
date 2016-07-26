@@ -175,7 +175,7 @@ collections { "The <hilight>collections</hilight> represents a theme.</br>The <h
                link { "The <hilight>link</hilight> block can be used to create transitions to the enclosing part description state.</br>The result of the above block is identical to creating a program with.";
                   after { "Specifies a program that is run after the current program completes.</br>The source and signal parameters of a program run as an after are ignored.</br>Multiple after statements can be specified per program.";
                   }
-                  base { "Defines the signal and source which triggers the transition to this state.</br>The source parameter is optional here and is filled with the current group's default value if it is not provided.";
+                  base { "Specifies a signal and a source which triggers the transition to this state.</br>The source parameter is optional here and is filled with the current group's default value if it is not provided.";
                   }
                   in { "in [from] [range]</br>Waits [from] seconds before executing the program and adds a random number of seconds (from 0 to [range]) to the total waiting time.";
                   }
@@ -405,6 +405,24 @@ collections { "The <hilight>collections</hilight> represents a theme.</br>The <h
 
       programs { "The <hilight>programs</hilight> defines how your interface reacts to events.</br>The <hilight>programs</hilight> block contains a list of programs that reacts to events.";
          program { "The <hilight>program</hilight> defines how your interface reacts to events. The <hilight>program</hilight> can change the state of parts and trigger/listen events.</br>The <hilight>program</hilight> block contains signal, source, action and target.</br>signal is an event that the program is waiting for.</br>source is a part that catches the signal. (e.g. mouse clicking area)</br>action defines what is going to do when the signal is caught. (e.g. changing the state of a part)</br>target is a part that changes its state.";
+            action { "action [type] (param1) (param2) (param3) (param4)</br>Specifies an action to be performed by the program.</br>The available types are STATE_SET, SIGNAL_EMIT, etc.";
+            }
+            after {"Specifies a program that is run after the current program completes.</br>The source and signal parameters of a program run as an after are ignored.</br>Multiple after statements can be specified per program.";
+            }
+            filter { "filter [part] [state]</br>Filters signals to be only accepted if the part is in state named [state].</br>Only one filter per program can be used.</br>If [state] is not given, the source of the event is used instead.";
+            }
+            in { "in [from] [range]</br>Waits [from] seconds before executing the program and adds a random number of seconds (from 0 to [range]) to the total waiting time.";
+            }
+            name { "Sets the name of the program as a unique identifier.";
+            }
+            signal { "Specifies a signal which triggers the transition to this state.</br>Only one signal per program can be used.</br>The available predefined signals are "mouse,in", "mouse,out", "mouse,move", "mouse,down,*", "mouse,up,*", "mouse,wheel,0,*", etc.";
+            }
+            source { "Specifies a source which filters the incoming signals depending on the sender name.</br>The part name which receives the signal is used as the source name (e.g. If a user does mouse down to a part named "abc", then "mouse,down,*" signal and "abc" source can catches this event.).</br>Only one source per program can be used.";
+            }
+            target { "Specifies a program or a part on which the specified action acts.";
+            }
+            transition { "transition [type] [length] (interp val 1) (interp val 2) (option)</br>Defines how transitions occur using STATE_SET action.</br>[type] is the style of the transition and [length] is a double specifying the number of seconds in which to preform the transition.</br>The available types are LINEAR, SINUSOIDAL, ACCELERATE, ACCELERATE_FACTOR, DECELERATE_FACTOR, SINUSOIDAL_FACTOR, DIVISOR_INTERP, BOUNCE, and SPRING";
+            }
          }
       }
 
