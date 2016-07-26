@@ -2315,6 +2315,10 @@ live_edit_init(Evas_Object *parent)
    Evas_Object *fixed_w_check = elm_check_add(fixed_box);
    elm_object_focus_allow_set(fixed_w_check, EINA_FALSE);
    elm_object_text_set(fixed_w_check, "Fixed width");
+   elm_object_tooltip_text_set(fixed_w_check,
+                               "When you check Fixed width, width of a new<br>"
+                               "part won't be resizable but it will stick a<br>"
+                               "fixed size.");
    evas_object_show(fixed_w_check);
    elm_box_pack_end(fixed_box, fixed_w_check);
 
@@ -2322,6 +2326,10 @@ live_edit_init(Evas_Object *parent)
    Evas_Object *fixed_h_check = elm_check_add(fixed_box);
    elm_object_focus_allow_set(fixed_h_check, EINA_FALSE);
    elm_object_text_set(fixed_h_check, "Fixed height");
+   elm_object_tooltip_text_set(fixed_h_check,
+                               "When you check Fixed height, height of a<br>"
+                               "new part won't be resizable but it will<br>"
+                               "stick a fixed size.");
    evas_object_show(fixed_h_check);
    elm_box_pack_end(fixed_box, fixed_h_check);
 
