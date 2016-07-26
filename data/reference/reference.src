@@ -284,6 +284,9 @@ collections { "The <hilight>collections</hilight> represents a theme.</br>The <h
                visible { "Specifies whether the part is visible or not.</br>If the part is not visible, then the part does not receive mouse events.</br>The default value is 1 (visible).";
                }
             }
+            description { "The <hilight>description</hilight> defines a state of a part.</br>The <hilight>description</hilight> block contains properties of a part such as size, position, color, image and text.";
+               #inherit "collections.group.parts.part.desc";
+            }
             dragable { "When this block is used the part can be dragged around the interface, do not confuse with external drag and drop.</br>By default Edje (and most applications) attempts to use the minimal size possible for a draggable part.</br>If the min property is not set in the description the part is (most likely) set to 0px width and 0px height, thus invisible.";
                confine { "Limits the movement of the dragged part to another part's container.</br>Set a min size for the part, or the dragged object will not show up.";
                }
@@ -355,6 +358,8 @@ collections { "The <hilight>collections</hilight> represents a theme.</br>The <h
                      }
                   }
                }
+            }
+            type { "Sets the part type.</br>The available types are IMAGE (default), RECT, SWALLOW, TEXT, TEXTBLOCK, SPACER, GROUP, BOX, TABLE, and PROXY.";
             }
          }
 
