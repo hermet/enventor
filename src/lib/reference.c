@@ -303,8 +303,8 @@ cursor_keyword_data_find(Evas_Object *entry, keyword_data *keyword_root,
 
    //Get text before cursor position.
    Evas_Object *tb = elm_entry_textblock_get(entry);
-   Evas_Object *cur_begin = evas_object_textblock_cursor_new(tb);
-   Evas_Object *cur_end = evas_object_textblock_cursor_get(tb);
+   Evas_Textblock_Cursor *cur_begin = evas_object_textblock_cursor_new(tb);
+   Evas_Textblock_Cursor *cur_end = evas_object_textblock_cursor_get(tb);
    char *utf8_text = NULL;
    Eina_List *keyword_hierarchy = NULL;
 
