@@ -1884,6 +1884,7 @@ group { "statusbar_layout";
                align: 0 0.5;
                min: 1 0;
                ellipsis: -1;
+               font: FN;
             }
          }
       }
@@ -1905,6 +1906,7 @@ group { "statusbar_layout";
                align: 0 0.5;
                min: 1 0;
                ellipsis: -1;
+               font: FN;
             }
          }
       }
@@ -1925,6 +1927,7 @@ group { "statusbar_layout";
                align: 0 0.5;
                min: 1 0;
                ellipsis: -1;
+               font: FN;
             }
          }
       }
@@ -1967,6 +1970,7 @@ group { "statusbar_layout";
                align: 0 0.5;
                min: 1 0;
                ellipsis: -1;
+               font: FN;
             }
          }
       }
@@ -1988,6 +1992,7 @@ group { "statusbar_layout";
                align: 0 0.5;
                min: 1 0;
                ellipsis: -1;
+               font: FN;
             }
          }
       }
@@ -2008,6 +2013,7 @@ group { "statusbar_layout";
                align: 0 0.5;
                min: 1 0;
                ellipsis: -1;
+               font: FN;
             }
          }
       }
@@ -2029,6 +2035,7 @@ group { "statusbar_layout";
                align: 0 1;
                min: 1 0;
                ellipsis: -1;
+               font: FN;
             }
          }
       }
@@ -2049,6 +2056,7 @@ group { "statusbar_layout";
                align: 0 0.5;
                min: 1 0;
                ellipsis: -1;
+               font: FN;
             }
          }
       }
@@ -2070,6 +2078,7 @@ group { "statusbar_layout";
                align: 0 0.5;
                min: 1 0;
                ellipsis: -1;
+               font: FN;
             }
          }
       }
@@ -2090,6 +2099,7 @@ group { "statusbar_layout";
                align: 0 0.5;
                min: 1 0;
                ellipsis: -1;
+               font: FN;
             }
          }
       }
@@ -2156,6 +2166,7 @@ group { "statusbar_layout";
                align: 1 0.5;
                min: 0 0;
                max: 1 0;
+               font: FN;
             }
          }
       }
@@ -2186,6 +2197,7 @@ group { "statusbar_layout";
                min: 1 0;
                max: 1 0;
                ellipsis: -1;
+               font: FN;
             }
          }
       }
@@ -2213,6 +2225,7 @@ group { "statusbar_layout";
                align: 1 0.5;
                min: 1 0;
                ellipsis: -1;
+               font: FN;
             }
          }
       }
@@ -2233,6 +2246,7 @@ group { "statusbar_layout";
                align: 1 0.5;
                min: 1 0;
                ellipsis: -1;
+               font: FN;
             }
          }
       }
@@ -2251,6 +2265,7 @@ group { "statusbar_layout";
                align: 1 0.5;
                min: 1 0;
                ellipsis: -1;
+               font: FN;
             }
          }
       }
