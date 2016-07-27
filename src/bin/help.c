@@ -126,7 +126,7 @@ help_open(void)
    //Win
    win = elm_win_add(base_win_get(), _("Enventor Help"), ELM_WIN_BASIC);
    elm_win_focus_highlight_enabled_set(win, EINA_TRUE);
-   snprintf(buf, sizeof(buf), "About Enventor v%s", PACKAGE_VERSION);
+   snprintf(buf, sizeof(buf), "Enventor v%s", PACKAGE_VERSION);
    elm_win_title_set(win, buf);
    evas_object_smart_callback_add(win, "delete,request", win_delete_request_cb,
                                   NULL);
