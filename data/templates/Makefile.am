@@ -1,7 +1,7 @@
 MAINTAINERCLEANFILES = Makefile.in
 
 EDJE_CC = @edje_cc@
-EDJE_FLAGS = -id $(top_srcdir)/data/images -sd $(top_srcdir)/data/sounds
+EDJE_FLAGS = -id $(top_srcdir)/data/images -sd $(top_srcdir)/data/sounds -beta
 
 filesdir = $(datadir)/$(PACKAGE)/templates
 files_DATA = Basic.edc \
@@ -45,7 +45,9 @@ files_DATA = Basic.edc \
              Watchface.edc \
              Watchface.edj \
              Watchface2.edc \
-             Watchface2.edj
+             Watchface2.edj \
+             Morphing.edc \
+             Morphing.edj
 
 EXTRA_DIST = $(files_DATA)
 
@@ -114,6 +116,10 @@ Watchface.edj: Makefile Watchface.edc
 
 Watchface2.edj: Makefile Watchface2.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/Watchface2.edc $(builddir)/Watchface2.edj
+
+Morphing.edj: Makefile Morphing.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/Morphing.edc $(builddir)/Morphing.edj
+
 
 clean-local:
 	rm -f *.edj

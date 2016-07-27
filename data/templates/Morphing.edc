@@ -1,0 +1,37 @@
+collections {
+   base_scale: 1.0;
+   group { "main";
+      /* TODO: Please replace embedded image files to your application image files. */
+      images {
+         vector: "ENVENTOR_EMBEDDED_BAT1.svg";
+         vector: "ENVENTOR_EMBEDDED_BAT2.svg";
+      }
+      parts {
+         vector { "svg";
+            desc { "default";
+               /* TODO: Please replace embedded image files to your application image files. */
+               image.normal: "ENVENTOR_EMBEDDED_BAT1.svg";
+            }
+            desc { "changed";
+               /* TODO: Please replace embedded image files to your application image files. */
+               image.normal: "ENVENTOR_EMBEDDED_BAT2.svg";
+            }
+         }
+      }
+      programs {
+         program { "load";
+            signal: "load";
+            action: STATE_SET "changed";
+            target: "svg";
+            transition: LINEAR 1;
+            after: "rewind";
+         }
+         program { "rewind";
+            action: STATE_SET "default";
+            target: "svg";
+            transition: LINEAR 1;
+            after: "load";
+         }
+      }
+   }
+}
