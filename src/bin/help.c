@@ -173,9 +173,8 @@ help_open(void)
    //Entry
    Evas_Object *entry = elm_entry_add(win);
    elm_entry_scrollable_set(entry, EINA_TRUE);
-   elm_entry_line_wrap_set(entry, EINA_TRUE);
    elm_entry_editable_set(entry, EINA_FALSE);
-   elm_entry_line_wrap_set(entry, ELM_WRAP_MIXED);
+   elm_entry_line_wrap_set(entry, ELM_WRAP_WORD);
    evas_object_size_hint_weight_set(entry, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(entry, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_show(entry);
