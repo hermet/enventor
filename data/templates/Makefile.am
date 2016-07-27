@@ -61,7 +61,7 @@ Basic.edj: Makefile Basic.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/Basic.edc $(builddir)/Basic.edj
 
 CustomButton.edj: Makefile CustomButton.edc
-	        $(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/CustomButton.edc $(builddir)/CustomButton.edj
+	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/CustomButton.edc $(builddir)/CustomButton.edj
 
 Empty.edj: Makefile Empty.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/Empty.edc $(builddir)/Empty.edj
@@ -70,10 +70,10 @@ Map.edj: Makefile Map.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/Map.edc $(builddir)/Map.edj
 
 MobileLayout.edj: Makefile MobileLayout.edc
-	        $(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/MobileLayout.edc $(builddir)/MobileLayout.edj
+	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/MobileLayout.edc $(builddir)/MobileLayout.edj
 
 MouseEvent.edj: Makefile MouseEvent.edc
-	        $(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/MouseEvent.edc $(builddir)/MouseEvent.edj
+	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/MouseEvent.edc $(builddir)/MouseEvent.edj
 
 Textblock.edj: Makefile Textblock.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/Textblock.edc $(builddir)/Textblock.edj
