@@ -215,6 +215,9 @@ group { "newfile_layout";
       rect { "content_clipper";
          clip_to: "clipper";
          desc { "default";
+            rel1.to: "elm.swallow.content";
+            rel2.to: "elm.swallow.content";
+            fixed: 1 1;
          }
       }
       rect { "bg";
