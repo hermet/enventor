@@ -9,13 +9,16 @@ group { "setting_layout";
       rect { "clipper";
          desc { state: "default";
             color: 127 127 127 127;
+            min: 650 435;
+            max: 600 435;
+            fixed: 1 1;
          }
          desc { state: "show";
+            inherit: "default";
             color: 255 255 255 255;
          }
       }
       rect { "bg";
-         clip_to: "clipper";
          desc { state: "default";
             color: 0 0 0 175;
          }
@@ -24,8 +27,8 @@ group { "setting_layout";
          scale: 1;
          clip_to: "clipper";
          desc {
-            min: 650 435;
-            max: 600 435;
+            rel1.to: "clipper";
+            rel2.to: "clipper";
             fixed: 1 1;
             image.normal: "frame_bg.png";
             image.border: 10 10 10 10;
