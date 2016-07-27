@@ -708,7 +708,6 @@ _enventor_object_font_set(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd,
    if (font_name) font = elm_font_fontconfig_name_get(font_name, font_style);
    elm_config_font_overlay_set("enventor_entry", font, -100);
    elm_config_font_overlay_apply();
-   elm_config_save();
 
    elm_font_fontconfig_name_free(font);
 }
