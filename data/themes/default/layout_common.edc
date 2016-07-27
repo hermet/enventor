@@ -212,6 +212,11 @@ group { "newfile_layout";
             color: 255 255 255 255;
          }
       }
+      rect { "content_clipper";
+         clip_to: "clipper";
+         desc { "default";
+         }
+      }
       rect { "bg";
          clip_to: "clipper";
          desc { "default";
@@ -293,7 +298,7 @@ group { "newfile_layout";
          }
       }
       swallow { "elm.swallow.content";
-         clip_to: "clipper";
+         clip_to: "content_clipper";
          desc {
             rel1 { to: "title_frame"; relative: 0 1; offset: 0 5; }
             rel2 { to: "base_frame"; relative: 1 0.91; }
