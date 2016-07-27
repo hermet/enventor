@@ -51,8 +51,9 @@ files_DATA = Basic.edc \
              Vector.edc \
              Vector.edj \
              Interpolation.edc \
-             Interpolation.edj
-
+             Interpolation.edj \
+             BgAnimation.edc \
+             BgAnimation.edj
 
 EXTRA_DIST = $(files_DATA)
 
@@ -131,6 +132,8 @@ Vector.edj: Makefile Vector.edc
 Interpolation.edj: Makefile Interpolation.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/Interpolation.edc $(builddir)/Interpolation.edj
 
+BgAnimation.edj: Makefile BgAnimation.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/BgAnimation.edc $(builddir)/BgAnimation.edj
 
 clean-local:
 	rm -f *.edj
