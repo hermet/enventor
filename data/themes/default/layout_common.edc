@@ -1948,9 +1948,9 @@ group { "statusbar_layout";
       }
       swallow { "elm.swallow.cursor_arrow.tooltip";
          desc { "default";
-           fixed: 1 1;
-           rel1.to: "cursor_arrow";
-           rel2.to: "cursor_arrow";
+            fixed: 1 1;
+            rel1.to: "cursor_arrow";
+            rel2.to: "cursor_arrow";
          }
       }
       text { "elm.text.cursor_pxx";
@@ -2144,9 +2144,9 @@ group { "statusbar_layout";
       }
       swallow { "elm.swallow.group_icon.tooltip";
          desc { "default";
-           fixed: 1 1;
-           rel1.to: "group_icon";
-           rel2.to: "group_icon";
+            fixed: 1 1;
+            rel1.to: "group_icon";
+            rel2.to: "group_icon";
          }
       }
       text { "elm.text.group_name";
@@ -2203,9 +2203,9 @@ group { "statusbar_layout";
       }
       swallow { "elm.swallow.line.tooltip";
          desc { "default";
-           fixed: 1 1;
-           rel1.to: "elm.text.line_[";
-           rel2.to: "elm.text.line_[";
+            fixed: 1 1;
+            rel1.to: "elm.text.line_[";
+            rel2.to: "elm.text.line_[";
          }
       }
       text { "elm.text.line_cur";
