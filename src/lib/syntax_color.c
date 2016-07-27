@@ -874,9 +874,10 @@ color_set(color_data *cd, Enventor_Syntax_Color_Type color_type,
 }
 
 const char *
-color_get(color_data *cd, Enventor_Syntax_Color_Type color_type)
+color_value_get(Enventor_Syntax_Color_Type color_type)
 {
-   syntax_color_source *col_src = cd->col_src;
+   syntax_color_source *col_src = &g_color_src;
+   if (!col_src) return NULL;
 
    switch (color_type)
      {

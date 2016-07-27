@@ -71,7 +71,7 @@ syntax_color_update(Enventor_Object *enventor)
           {
              enventor_color = enventor_object_syntax_color_get(enventor,
                                                                color_type);
-             if (strcmp(config_color, enventor_color))
+             if (!enventor_color || strcmp(config_color, enventor_color))
                {
                   enventor_object_syntax_color_set(enventor, color_type,
                                                    config_color);

@@ -1309,13 +1309,8 @@ void
 edit_syntax_color_set(edit_data *ed, Enventor_Syntax_Color_Type color_type,
                       const char *val)
 {
+   if (!ed) return;
    color_set(syntax_color_data_get(ed->sh), color_type, val);
-}
-
-const char *
-edit_syntax_color_get(edit_data *ed, Enventor_Syntax_Color_Type color_type)
-{
-   return color_get(syntax_color_data_get(ed->sh), color_type);
 }
 
 void

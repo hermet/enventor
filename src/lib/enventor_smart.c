@@ -48,6 +48,7 @@ struct _Enventor_Object_Data
    double font_scale;
    Eina_Stringshare *font_name;
    Eina_Stringshare *font_style;
+   const char *text_color_val[ENVENTOR_SYNTAX_COLOR_LAST];
 
    Eina_Bool dummy_parts : 1;
    Eina_Bool wireframes : 1;
@@ -275,6 +276,10 @@ _enventor_object_efl_canvas_group_group_add(Eo *obj, Enventor_Object_Data *pd)
 EOLIAN static void
 _enventor_object_efl_canvas_group_group_del(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
 {
+   int i;
+   for (i = ENVENTOR_SYNTAX_COLOR_STRING; i < ENVENTOR_SYNTAX_COLOR_LAST; i++)
+     eina_stringshare_del(pd->text_color_val[i]);
+
    eina_stringshare_del(pd->font_name);
    eina_stringshare_del(pd->font_style);
    eina_stringshare_del(pd->group_name);
@@ -726,8 +731,23 @@ _enventor_object_syntax_color_set(Eo *obj EINA_UNUSED,
                                   Enventor_Syntax_Color_Type color_type,
                                   const char *val)
 {
-   //TODO: Might need for items
+   EINA_SAFETY_ON_NULL_RETURN(val);
+
+   if ((color_type < ENVENTOR_SYNTAX_COLOR_STRING) ||
+       (color_type >= ENVENTOR_SYNTAX_COLOR_LAST))
+     EINA_LOG_ERR("Invalid color_type(%d)", color_type);
+
+   eina_stringshare_del(pd->text_color_val[color_type]);
+   pd->text_color_val[color_type] = eina_stringshare_add(val);
+
+   //Main Item
    edit_syntax_color_set(pd->main_it->ed, color_type, val);
+
+   //Sub Items
+   Eina_List *l;
+   Enventor_Item *it;
+   EINA_LIST_FOREACH(pd->sub_its, l, it)
+     edit_syntax_color_set(it->ed, color_type, val);
 }
 
 EOLIAN static const char *
@@ -735,8 +755,15 @@ _enventor_object_syntax_color_get(Eo *obj EINA_UNUSED,
                                   Enventor_Object_Data *pd,
                                   Enventor_Syntax_Color_Type color_type)
 {
-   //TODO: Might need for items
-   return edit_syntax_color_get(pd->main_it->ed, color_type);
+   if ((color_type < ENVENTOR_SYNTAX_COLOR_STRING) ||
+       (color_type >= ENVENTOR_SYNTAX_COLOR_LAST))
+     EINA_LOG_ERR("Invalid color_type(%d)", color_type);
+
+   //Return overriden color values or defaults.
+   if (pd->text_color_val[color_type])
+     return pd->text_color_val[color_type];
+   else
+     return color_value_get(color_type);
 }
 
 EOLIAN static Eo *
@@ -824,6 +851,14 @@ enventor_object_sub_item_add(Enventor_Object *obj, const char *file)
    edit_disabled_set(it->ed, EINA_TRUE);
 
    pd->sub_its = eina_list_append(pd->sub_its, it);
+
+   //Update Syntax Color Here.
+   int i;
+   for (i = ENVENTOR_SYNTAX_COLOR_STRING; i < ENVENTOR_SYNTAX_COLOR_LAST; i++)
+     {
+        if (!pd->text_color_val[i]) continue;
+        edit_syntax_color_set(it->ed, i, pd->text_color_val[i]);
+     }
 
    return it;
 }
