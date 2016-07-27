@@ -19,27 +19,23 @@ group { "fileselector_layout";
       rect { "clipper";
          desc { "default";
             color: 127 127 127 127;
-            min: 650 435;
-            max: 600 435;
-            fixed: 1 1;
          }
          desc { "show";
-            inherit: "default";
             color: 255 255 255 255;
          }
       }
       rect { "bg";
          clip_to: "clipper";
          desc { "default";
-            color: 0 0 0 0;
+            color: 0 0 0 175;
          }
       }
       image { "base_frame_img";
          scale: 1;
          clip_to: "clipper";
          desc {
-            rel1.to: "clipper";
-            rel2.to: "clipper";
+            min: 650 435;
+            max: 600 435;
             fixed: 1 1;
             image.normal: "frame_bg.png";
             image.border: 10 10 10 10;
@@ -211,12 +207,8 @@ group { "newfile_layout";
       rect { "clipper";
          desc { "default";
             color: 127 127 127 127;
-            min: 650 435;
-            max: 600 435;
-            fixed: 1 1;
          }
          desc { "show";
-            inherit: "default";
             color: 255 255 255 255;
          }
       }
@@ -230,8 +222,8 @@ group { "newfile_layout";
          scale: 1;
          clip_to: "clipper";
          desc {
-            rel1.to: "clipper";
-            rel2.to: "clipper";
+            min: 650 435;
+            max: 650 435;
             fixed: 1 1;
             image.normal: "frame_bg.png";
             image.border: 10 10 10 10;
@@ -389,12 +381,8 @@ group { "warning_layout";
       rect { "clipper";
          desc { "default";
             color: 127 127 127 127;
-            min: 300 135;
-            max: 300 135;
-            fixed: 1 1;
          }
          desc {state: "show";
-            inherit: "default";
             color: 255 255 255 255;
          }
       }
@@ -408,8 +396,8 @@ group { "warning_layout";
          scale: 1;
          clip_to: "clipper";
          desc {
-            rel1.to: "clipper";
-            rel2.to: "clipper";
+            min: 300 135;
+            max: 300 135;
             fixed: 1 1;
             image.normal: "frame_bg.png";
             image.border: 10 10 10 10;
@@ -788,6 +776,16 @@ group { "menu_layout";
             align: 0 0.5;
             min: 80 50;
             fixed: 1 1;
+         }
+      }
+      spacer { "padding7";
+         scale: 1;
+         desc { "default";
+            rel1.relative: 1 1;
+            rel2.offset: -10 -1;
+            min: 20 20;
+            fixed: 1 1;
+            align: 1 1;
          }
       }
       swallow { "elm.swallow.back_button";
