@@ -1,0 +1,257 @@
+ /* TODO: Please replace embedded image files to your application image files. */
+#define LADDER_POS(x1, y1, y2) \
+ image.normal: "ENVENTOR_EMBEDDED_LADDER.png"; \
+ min: 32 32; \
+ rel1.relative: x1 y1; \
+ rel2.relative: x1 y2; \
+ align: 0.5 0.5; \
+ fill.size.relative: 0 0; \
+ fill.size.offset: 32 32
+
+ /* TODO: Please replace embedded image files to your application image files. */
+#define TACK_POS(x1, y1) \
+ image.normal: "ENVENTOR_EMBEDDED_TACK.png"; \
+ min: 25 25; \
+ rel1.relative: x1 y1; \
+ rel2.relative: x1 y1; \
+ align: 0.5 1; \
+ fill.size.relative: 0 0; \
+ fill.size.offset: 25 25
+
+ /* TODO: Please replace embedded image files to your application image files. */
+#define PLATFORM_POS(x1, y1, x2) \
+ image.normal: "ENVENTOR_EMBEDDED_PLATFORM.png"; \
+ min: 33 20; \
+ rel1.relative: x1 y1; \
+ rel2.relative: x2 y1; \
+ rel2.offset: 0 -1; \
+ align: 0.5 0; \
+ fill.size.relative: 0 0; \
+ fill.size.offset: 33 20;
+
+#define FRUIT_POS(x1, y1) \
+ min: 35 35; \
+ rel1.relative: x1 y1; \
+ rel2.relative: x1 y1; \
+ align: 0.5 1; \
+ fill.size.relative: 0 0; \
+ fill.size.offset: 35 35; \
+} \
+desc { state:"hide" 0.0; \
+  inherit: "default" 0.0; \
+  visible: 0 \
+
+#define FRUIT_REMOVE(num, sig) \
+ program { num##_remove;\
+    signal: sig; \
+    source: ""; \
+    action: STATE_SET "hide" 0.0; \
+    target: num; \
+  }
+
+collections {
+   group { "main";
+      /* TODO: Please replace embedded image files to your application image files. */
+      images {
+         image: "ENVENTOR_EMBEDDED_FIELD.png" COMP;
+         image: "ENVENTOR_EMBEDDED_PLATFORM.png" COMP;
+         image: "ENVENTOR_EMBEDDED_LADDER.png" COMP;
+         image: "ENVENTOR_EMBEDDED_TACK.png" COMP;
+         image: "ENVENTOR_EMBEDDED_CHERRY.png" COMP;
+         image: "ENVENTOR_EMBEDDED_MELON.png" COMP;
+         image: "ENVENTOR_EMBEDDED_WATERMELON.png" COMP;
+      }
+      parts {
+         image { "foothold1";
+            desc { "default";
+               /* TODO: Please replace embedded image files to your application image files. */
+               image.normal: "ENVENTOR_EMBEDDED_FIELD.png";
+               min: 33 80;
+               rel1.relative: 0 0.88;
+               rel2.relative: 1 1;
+               align: 0 0;
+               fill.size.relative: 0 0;
+               fill.size.offset: 33 110;
+            }
+         }
+         image { "foothold2";
+            desc { "default";
+               PLATFORM_POS(0, 0.7, 0.3);
+            }
+         }
+         image { "foothold3";
+            desc { "default";
+               PLATFORM_POS(0.35, 0.7, 1.0);
+            }
+         }
+         image { "foothold4";
+            desc { "default";
+               PLATFORM_POS(0.7, 0.5, 1.0);
+            }
+         }
+         image { "foothold5";
+            desc { "default";
+               PLATFORM_POS(0.3, 0.5, 0.65);
+            }
+         }
+         image { "foothold6";
+            desc { "default";
+               PLATFORM_POS(0.0, 0.45, 0.2);
+            }
+         }
+         image { "foothold7";
+            desc { "default";
+               PLATFORM_POS(0.1, 0.3, 0.7);
+            }
+         }
+         image { "foothold8";
+            desc { "default";
+               PLATFORM_POS(0.9, 0.3, 1.0);
+            }
+         }
+         image { "foothold9";
+            desc { "default";
+               PLATFORM_POS(0.7, 0.3, 0.75);
+            }
+            desc { "move";
+               PLATFORM_POS(0.8, 0.3, 0.85);
+            }
+         }
+         image { "ladder1";
+            desc { "default";
+               LADDER_POS(0.2, 0.7, 0.89);
+            }
+         }
+         image { "ladder2";
+            desc { "default";
+               LADDER_POS(0.6, 0.7, 0.89);
+            }
+         }
+         image { "ladder3";
+            desc { "default";
+               LADDER_POS(0.8, 0.5, 0.7);
+            }
+         }
+         image { "ladder4";
+            desc { "default";
+               LADDER_POS(0.5, 0.3, 0.5);
+            }
+         }
+         image { "ladder5";
+            desc { "default";
+               LADDER_POS(0.1, 0.45, 0.7);
+            }
+         }
+         image { "tack1";
+            desc { "default";
+               TACK_POS(0.6, 0.505);
+            }
+         }
+         image { "tack2";
+            desc { "default";
+               TACK_POS(0.4, 0.705);
+            }
+         }
+         image { "tack3";
+            desc { "default";
+               TACK_POS(0.7, 0.89);
+            }
+         }
+         image { "tack4";
+            desc { "default";
+               TACK_POS(0.4, 0.305);
+            }
+         }
+         image { "tack5";
+            desc { "default";
+               TACK_POS(0.3, 0.305);
+            }
+         }
+         image { "tack6";
+            desc { "default";
+               TACK_POS(0.22, 0.305);
+            }
+         }
+         image { "fruit1";
+            desc { "default";
+               /* TODO: Please replace embedded image files to your application image files. */
+               image.normal: "ENVENTOR_EMBEDDED_CHERRY.png";
+               FRUIT_POS(0.92, 0.3);
+            }
+         }
+         image { "fruit2";
+            desc { "default";
+               /* TODO: Please replace embedded image files to your application image files. */
+               image.normal: "ENVENTOR_EMBEDDED_MELON.png";
+               FRUIT_POS(0.4, 0.89);
+            }
+         }
+         image { "fruit3";
+            desc { "default";
+               /* TODO: Please replace embedded image files to your application image files. */
+               image.normal: "ENVENTOR_EMBEDDED_WATERMELON.png";
+               FRUIT_POS(0.9, 0.708);
+            }
+         }
+         image { "fruit4";
+            desc { "default";
+               /* TODO: Please replace embedded image files to your application image files. */
+               image.normal: "ENVENTOR_EMBEDDED_MELON.png";
+               FRUIT_POS(0.05, 0.46);
+            }
+         }
+         image { "fruit5";
+            desc { "default";
+               /* TODO: Please replace embedded image files to your application image files. */
+               image.normal: "ENVENTOR_EMBEDDED_CHERRY.png";
+               FRUIT_POS(0.65, 0.7);
+            }
+         }
+         image { "fruit6";
+            desc { "default";
+               /* TODO: Please replace embedded image files to your application image files. */
+               image.normal: "ENVENTOR_EMBEDDED_MELON.png";
+               FRUIT_POS(0.85, 0.51);
+            }
+         }
+         image { "fruit7";
+            desc { "default";
+               /* TODO: Please replace embedded image files to your application image files. */
+               image.normal: "ENVENTOR_EMBEDDED_WATERMELON.png";
+               FRUIT_POS(0.35, 0.51);
+            }
+         }
+         image { "fruit8";
+            desc { "default";
+               /* TODO: Please replace embedded image files to your application image files. */
+               image.normal: "ENVENTOR_EMBEDDED_CHERRY.png";
+               FRUIT_POS(0.15, 0.3);
+            }
+         }
+      }
+      programs {
+         program { "foothold_move1";
+            signal: "load";
+            action: STATE_SET "move";
+            target: "foothold9";
+            transition: LINEAR 5.0;
+            after: "foothold_move2";
+         }
+         program { "foothold_move2";
+            signal: "load";
+            action: STATE_SET "default";
+            target: "foothold9";
+            transition: LINEAR 5.0;
+            after: "foothold_move1";
+         }
+         FRUIT_REMOVE("fruit1", "fruit1,remove");
+         FRUIT_REMOVE("fruit2", "fruit2,remove");
+         FRUIT_REMOVE("fruit3", "fruit3,remove");
+         FRUIT_REMOVE("fruit4", "fruit4,remove");
+         FRUIT_REMOVE("fruit5", "fruit5,remove");
+         FRUIT_REMOVE("fruit6", "fruit6,remove");
+         FRUIT_REMOVE("fruit7", "fruit7,remove");
+         FRUIT_REMOVE("fruit8", "fruit8,remove");
+      }
+   }
+}
