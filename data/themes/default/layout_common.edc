@@ -778,16 +778,6 @@ group { "menu_layout";
             fixed: 1 1;
          }
       }
-      spacer { "padding7";
-         scale: 1;
-         desc { "default";
-            rel1.relative: 1 1;
-            rel2.offset: -10 -1;
-            min: 20 20;
-            fixed: 1 1;
-            align: 1 1;
-         }
-      }
       swallow { "elm.swallow.back_button";
          scale: 1;
          clip_to: "clipper";
