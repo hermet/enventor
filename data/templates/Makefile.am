@@ -47,7 +47,10 @@ files_DATA = Basic.edc \
              Watchface2.edc \
              Watchface2.edj \
              Morphing.edc \
-             Morphing.edj
+             Morphing.edj \
+             Vector.edc \
+             Vector.edj
+
 
 EXTRA_DIST = $(files_DATA)
 
@@ -119,6 +122,9 @@ Watchface2.edj: Makefile Watchface2.edc
 
 Morphing.edj: Makefile Morphing.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/Morphing.edc $(builddir)/Morphing.edj
+
+Vector.edj: Makefile Vector.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/Vector.edc $(builddir)/Vector.edj
 
 
 clean-local:
