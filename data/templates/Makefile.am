@@ -49,7 +49,9 @@ files_DATA = Basic.edc \
              Morphing.edc \
              Morphing.edj \
              Vector.edc \
-             Vector.edj
+             Vector.edj \
+             Interpolation.edc \
+             Interpolation.edj
 
 
 EXTRA_DIST = $(files_DATA)
@@ -125,6 +127,9 @@ Morphing.edj: Makefile Morphing.edc
 
 Vector.edj: Makefile Vector.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/Vector.edc $(builddir)/Vector.edj
+
+Interpolation.edj: Makefile Interpolation.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/Interpolation.edc $(builddir)/Interpolation.edj
 
 
 clean-local:
