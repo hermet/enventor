@@ -1149,7 +1149,7 @@ enventor_item_del(Enventor_Item *it)
      }
 }
 
-Eina_Bool
+EAPI Eina_Bool
 enventor_item_template_insert(Enventor_Item *it, char *syntax, size_t n)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(it, EINA_FALSE);
@@ -1157,7 +1157,7 @@ enventor_item_template_insert(Enventor_Item *it, char *syntax, size_t n)
    return template_insert(it->ed, syntax, n);
 }
 
-Eina_Bool
+EAPI Eina_Bool
 enventor_item_template_part_insert(Enventor_Item *it,
                                    Edje_Part_Type part,
                                    Enventor_Template_Insert_Type insert_type,
