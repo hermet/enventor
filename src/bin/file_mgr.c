@@ -350,8 +350,6 @@ file_mgr_file_open(const char *file_path)
    if (!(eina_str_has_extension(file_path, "edc") ||
          eina_str_has_extension(file_path, "h"))) return EINA_FALSE;
 
-   unsigned int selected_file_len = strlen(file_path);
-
    Enventor_Item *eit;
    const char *it_file_path;
 
@@ -366,7 +364,8 @@ file_mgr_file_open(const char *file_path)
              return EINA_FALSE;
           }
         //Ok, This selected file is already openend, let's activate the item.
-        if (!strcmp(file_path, ecore_file_file_get(it_file_path)))
+        if (!strcmp(ecore_file_realpath(file_path),
+                    ecore_file_realpath(it_file_path)))
           {
              file_mgr_file_focus(eit);
              return EINA_TRUE;
@@ -382,11 +381,9 @@ file_mgr_file_open(const char *file_path)
         it_file_path = enventor_item_file_get(eit);
         if (!it_file_path) continue;
 
-        //Let's check if the file is already opened.
-        if (selected_file_len != strlen(it_file_path)) continue;
-
         //Ok, This selected file is already openend, let's activate the item.
-        if (!strcmp(file_path, it_file_path))
+        if (!strcmp(ecore_file_realpath(file_path),
+                    ecore_file_realpath(it_file_path)))
           {
              file_mgr_file_focus(eit);
              return EINA_TRUE;
