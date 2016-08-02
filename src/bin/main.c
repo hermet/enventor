@@ -447,6 +447,7 @@ enventor_live_view_resized_cb(void *data EINA_UNUSED,
 {
    Enventor_Live_View_Size *size = event_info;
    stats_view_size_update(size->w, size->h);
+   config_view_size_set(size->w, size->h);
 }
 
 static void
