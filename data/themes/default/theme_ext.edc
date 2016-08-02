@@ -1299,8 +1299,8 @@ group { name: "elm/panes/vertical/enventor";
             align: 1.0 0.5;
          }
          description { state: "active" 0.0;
-           inherit: "default" 0.0;
-           color: 255 255 255 255;
+            inherit: "default" 0.0;
+            color: 255 255 255 255;
          }
       }
       part { name: "glow1b"; mouse_events: 0;
@@ -1312,8 +1312,8 @@ group { name: "elm/panes/vertical/enventor";
             align: 0.0 0.5;
          }
          description { state: "active" 0.0;
-           inherit: "default" 0.0;
-           color: 255 255 255 255;
+            inherit: "default" 0.0;
+            color: 255 255 255 255;
          }
       }
       part { name: "glow2a"; mouse_events: 0;
@@ -1325,8 +1325,8 @@ group { name: "elm/panes/vertical/enventor";
             align: 1.0 0.5;
          }
          description { state: "active" 0.0;
-           inherit: "default" 0.0;
-           color: 255 255 255 255;
+            inherit: "default" 0.0;
+            color: 255 255 255 255;
          }
       }
       part { name: "glow2b"; mouse_events: 0;
@@ -1339,8 +1339,8 @@ group { name: "elm/panes/vertical/enventor";
             align: 0.0 0.5;
          }
          description { state: "active" 0.0;
-           inherit: "default" 0.0;
-           color: 255 255 255 255;
+            inherit: "default" 0.0;
+            color: 255 255 255 255;
          }
       }
       part { name: "bar1"; type: RECT; repeat_events: 1;
@@ -1881,7 +1881,7 @@ group { name: "elm/entry/base/enventor";
          source: "kbd-tap5.wav";
       }
    }
-   
+
    styles {
       style { name: "entry_style";
          base: "font="FN" font_size=10 color=#ffffff style=shadow,bottom shadow_color=#00000080 wrap=word text_class=enventor_entry color_class=enventor_entry left_margin=2 right_margin=2 tabstops=10";
