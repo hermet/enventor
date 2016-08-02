@@ -82,7 +82,7 @@ collections {
                text {
                   size: 15;
                   font: "Sans";
-                  text: "Bowon Ryu";
+                  text: "Lisa";
                   align: 0.0 0.5;
                   min: 0 0;
                }
