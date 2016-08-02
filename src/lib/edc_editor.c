@@ -1096,7 +1096,7 @@ edit_edc_load(edit_data *ed, const char *file_path)
    ed->cur_line = 1;
    ed->line_max = line_num;
 
-   ecore_animator_add(syntax_color_timer_cb, ed);
+   syntax_color_timer_cb(ed);
 
    ret = EINA_TRUE;
 
