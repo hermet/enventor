@@ -40,6 +40,7 @@ group "syntax_color_group" struct {
             value "key" string: "externals";
             value "key" string: "external";
             value "key" string: "fill";
+            value "key" string: "fonts";
             value "key" string: "gradient";
             value "key" string: "group";
             value "key" string: "images";
