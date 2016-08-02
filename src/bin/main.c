@@ -447,16 +447,20 @@ enventor_live_view_resized_cb(void *data EINA_UNUSED,
 {
    Enventor_Live_View_Size *size = event_info;
    stats_view_size_update(size->w, size->h);
-   config_view_size_set(size->w, size->h);
 }
 
 static void
 enventor_live_view_loaded_cb(void *data EINA_UNUSED, Enventor_Object *obj,
                              void *event_info EINA_UNUSED)
 {
-   Evas_Coord w, h;
-   config_view_size_get(&w, &h);
-   enventor_object_live_view_size_set(obj, w, h);
+   Evas_Coord view_w, view_h;
+   enventor_object_live_view_size_get(obj, &view_w, &view_h);
+   if (!view_w && !view_h)
+     {
+        Evas_Coord w, h;
+        config_view_size_get(&w, &h);
+        enventor_object_live_view_size_set(obj, w, h);
+     }
    base_edc_navigator_group_update();
 }
 
