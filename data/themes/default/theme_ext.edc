@@ -389,6 +389,11 @@ group { name: "elm/list/h_item/enventor";
             visible: 1;
          }
       }
+      swallow { "elm.swallow.end";
+         repeat_events: 1;
+         desc { "default";
+         }
+      }
       program {
          signal: "elm,state,selected"; source: "elm";
          action: STATE_SET "selected" 0.0;
