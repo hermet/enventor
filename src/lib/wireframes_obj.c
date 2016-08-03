@@ -72,26 +72,27 @@ wireframes_objs_update(wireframes_obj *wireframes)
    if (!o2) goto end;
    Evas *evas = evas_object_evas_get(scroller);
 
+   Evas_Coord part_lx = 0, part_ly = 0;
+   evas_object_geometry_get(wireframes->layout, &part_lx, &part_ly,
+                            NULL, NULL);
+
    //Add new part object or Update changed part.
    EINA_LIST_FOREACH(parts, l, part_name)
      {
         Eina_List *part_l;
         Evas_Object *pobj = NULL;
-        int part_x = 0, part_y = 0, part_w = 0, part_h = 0, part_lx = 0, part_ly = 0;
+        Evas_Coord part_x = 0, part_y = 0, part_w = 0, part_h = 0;
 
         EINA_LIST_FOREACH(wireframes->part_list, part_l, po)
-        {
-           if (po->name == part_name)
-             {
-                pobj = po->obj;
-                break;
-             }
-        }
+          {
+             if (po->name != part_name) continue;
+             pobj = po->obj;
+             break;
+          }
         if (!pobj)
           {
              pobj = edje_object_add(scroller);
              edje_object_file_set(pobj, EDJE_PATH, "wireframes");
-             evas_object_smart_member_add(pobj, o2);
              po = malloc(sizeof(part_obj));
              po->obj = pobj;
              po->name = eina_stringshare_add(part_name);
@@ -101,12 +102,14 @@ wireframes_objs_update(wireframes_obj *wireframes)
              evas_object_data_set(pobj, OUTLINE_EDIT_LAYOUT_KEY,
                                   wireframes->layout);
           }
-         evas_object_geometry_get(wireframes->layout, &part_lx, &part_ly,
-                                  NULL, NULL);
-         edje_object_part_geometry_get(wireframes->layout, part_name,
-                                       &part_x, &part_y, &part_w, &part_h);
-         evas_object_resize(pobj, part_w, part_h);
-         evas_object_move(pobj, part_lx + part_x, part_ly + part_y);
+        //Up to date smart members.
+        evas_object_smart_member_del(pobj);
+        evas_object_smart_member_add(pobj, o2);
+
+        edje_object_part_geometry_get(wireframes->layout, part_name,
+                                      &part_x, &part_y, &part_w, &part_h);
+        evas_object_resize(pobj, part_w, part_h);
+        evas_object_move(pobj, part_lx + part_x, part_ly + part_y);
      }
 end:
    edje_edit_string_list_free(parts);
