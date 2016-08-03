@@ -260,10 +260,10 @@ info_text_update(live_data *ld)
    Evas_Coord lx, ly, lw, lh;
    evas_object_geometry_get(ld->live_view, &lx, &ly, &lw, &lh);
 
-   Evas_Coord vw, vh;
-   config_view_size_get(&vw, &vh);
-
    Enventor_Object *enventor = base_enventor_get();
+
+   Evas_Coord vw, vh;
+   enventor_object_live_view_size_get(enventor, &vw, &vh);
 
    //reverse coordinates if mirror mode is enabled.
    double ox = ld->rel_info.rel1_x;
@@ -361,7 +361,7 @@ calc_relative_info(live_data *ld)
 
    //For real min size of Live Edit Item
    Evas_Coord vw, vh;
-   config_view_size_get(&vw, &vh);
+   enventor_object_live_view_size_get(base_enventor_get(), &vw, &vh);
 
    //Calculate real min size of Live Edit Item base on current relative
    Evas_Coord min_w = (Evas_Coord) (((double) vw) *

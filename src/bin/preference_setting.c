@@ -168,7 +168,7 @@ preference_setting_content_get(preference_setting_data *psd,
    elm_box_pack_end(box2, layout_padding3);
 
    Evas_Object *label_view_size = label_create(layout_padding3,
-                                               _("View Size"));
+                                               _("Default View Size"));
    elm_object_part_content_set(layout_padding3, "elm.swallow.content",
                                label_view_size);
 

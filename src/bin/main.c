@@ -123,10 +123,6 @@ config_update_cb(void *data EINA_UNUSED)
 
    syntax_color_update(enventor);
 
-   //Live View Size
-   Evas_Coord w, h;
-   config_view_size_get(&w, &h);
-   enventor_object_live_view_size_set(enventor, w, h);
    stats_view_scale_update(config_view_scale_get());
    base_tools_toggle(EINA_FALSE);
    base_statusbar_toggle(EINA_FALSE);
@@ -157,10 +153,6 @@ main_mouse_wheel_cb(void *data EINA_UNUSED, int type EINA_UNUSED, void *ev)
         config_view_scale_set(scale);
         scale = config_view_scale_get();
         enventor_object_live_view_scale_set(base_enventor_get(), scale);
-
-        Evas_Coord ww, hh;
-        config_view_size_get(&ww, &hh);
-        enventor_object_live_view_size_set(base_enventor_get(), ww, hh);
 
         //Just in live edit mode case.
         live_edit_update();
@@ -429,6 +421,16 @@ enventor_cursor_group_changed_cb(void *data EINA_UNUSED,
    const char *group_name = event_info;
    stats_edc_group_update(group_name);
    base_edc_navigator_group_update();
+
+   //Set default view size if this view has no size.
+   int w, h;
+   enventor_object_live_view_size_get(obj, &w, &h);
+   if ((w == 0) && (h == 0))
+     {
+        config_view_size_get(&w, &h);
+        enventor_object_live_view_size_set(obj, w, h);
+     }
+   stats_view_size_update(w, h);
 }
 
 static void
@@ -447,7 +449,6 @@ enventor_live_view_resized_cb(void *data EINA_UNUSED,
 {
    Enventor_Live_View_Size *size = event_info;
    stats_view_size_update(size->w, size->h);
-   config_view_size_set(size->w, size->h);
 }
 
 static void
@@ -455,13 +456,6 @@ enventor_live_view_loaded_cb(void *data EINA_UNUSED, Enventor_Object *obj,
                              void *event_info EINA_UNUSED)
 {
    Evas_Coord view_w, view_h;
-   enventor_object_live_view_size_get(obj, &view_w, &view_h);
-   if (!view_w && !view_h)
-     {
-        Evas_Coord w, h;
-        config_view_size_get(&w, &h);
-        enventor_object_live_view_size_set(obj, w, h);
-     }
    base_edc_navigator_group_update();
 }
 

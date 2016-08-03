@@ -139,23 +139,7 @@ edit_view_sync_cb(void *data, Eina_Stringshare *state_name, double state_value,
    if (pd->group_name != group_name)
      {
         view_data *vd = edj_mgr_view_get(group_name);
-        if (vd)
-          {
-             edj_mgr_view_switch_to(vd);
-
-             Evas_Coord prev_w, prev_h;
-             view_data *prev_vd = edj_mgr_view_get(pd->group_name);
-             view_size_get(prev_vd, &prev_w, &prev_h);
-
-             static Enventor_Live_View_Size size;
-             view_size_get(vd, &size.w, &size.h);
-             if (size.w && size.h &&
-                 ((size.w != prev_w) || (size.h != prev_h)))
-               {
-                  evas_object_smart_callback_call(pd->obj,
-                                                  SIG_LIVE_VIEW_RESIZED, &size);
-               }
-          }
+        if (vd) edj_mgr_view_switch_to(vd);
         else
           {
              vd = edj_mgr_view_new(it, group_name);

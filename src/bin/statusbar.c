@@ -41,10 +41,6 @@ view_scale_slider_changed_cb(void *data EINA_UNUSED, Evas_Object *obj,
    scale = config_view_scale_get();
    enventor_object_live_view_scale_set(base_enventor_get(), scale);
 
-   Evas_Coord w, h;
-   config_view_size_get(&w, &h);
-   enventor_object_live_view_size_set(base_enventor_get(), w, h);
-
    //Just in live edit mode case.
    live_edit_update();
 
@@ -80,7 +76,9 @@ static void
 view_invert_transit_end(void *data, Elm_Transit *transit EINA_UNUSED)
 {
    invert_data *id = data;
-   config_view_size_set((id->orig_w + id->diff_w), (id->orig_h + id->diff_h));
+   enventor_object_live_view_size_set(base_enventor_get(),
+                                      (id->orig_w + id->diff_w),
+                                      (id->orig_h + id->diff_h));
    free(id);
 }
 
@@ -91,7 +89,7 @@ view_invert_btn_cb(void *data EINA_UNUSED, Evas_Object *obj,
    invert_data *id = malloc(sizeof(invert_data));
 
    Evas_Coord w, h;
-   config_view_size_get(&w, &h);
+   enventor_object_live_view_size_get(base_enventor_get(), &w, &h);
    id->orig_w = w;
    id->orig_h = h;
    id->diff_w = h - w;
@@ -122,17 +120,11 @@ view_resize_slider_changed_cb(void *data, Evas_Object *obj EINA_UNUSED,
                                                      "elm.swallow.slider");
    int val = elm_slider_value_get(slider);
    int w, h;
-   config_view_size_get(&w, &h);
+   enventor_object_live_view_size_get(base_enventor_get(), &w, &h);
    if (horizontal)
-     {
-        config_view_size_set(val, h);
-        enventor_object_live_view_size_set(base_enventor_get(), val, h);
-     }
+     enventor_object_live_view_size_set(base_enventor_get(), val, h);
    else
-     {
-        config_view_size_set(w, val);
-        enventor_object_live_view_size_set(base_enventor_get(), w, val);
-     }
+     enventor_object_live_view_size_set(base_enventor_get(), w, val);
 
    //Just in live edit mode case.
    live_edit_update();
@@ -190,7 +182,7 @@ view_resize_btn_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
 
    Evas_Object *slider;
    Evas_Coord w, h;
-   config_view_size_get(&w, &h);
+   enventor_object_live_view_size_get(base_enventor_get(), &w, &h);
 
    //Slider 1
    slider = view_resize_slider_layout_create(box, VIEW_RESIZE_TYPE_W, w);
