@@ -156,7 +156,9 @@ preference_setting_content_get(preference_setting_data *psd,
    elm_box_pack_end(box, box2);
 
    elm_object_tooltip_text_set(box2,
-                               _("Set the size of the current live view."));
+                               _("Set default size of live view.<br>"
+                                 "When you open a new group, Its<br>"
+                                 "view size will be set with this."));
    //Label (View Size)
 
    /* This layout is intended to put the label aligned to left side
