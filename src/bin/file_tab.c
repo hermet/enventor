@@ -195,13 +195,11 @@ file_tab_it_add(Enventor_Item *enventor_it)
    elm_image_file_set(img, EDJE_PATH, "close");
    elm_object_content_set(btn, img);
 
-   //Tooltip Dummy object
-   Evas_Object *box = elm_image_add(fd->list);
-   elm_object_tooltip_text_set(box, ecore_file_realpath(filepath));
-   elm_object_tooltip_orient_set(box, ELM_TOOLTIP_ORIENT_TOP);
-
-   fti->it = elm_list_item_append(fd->list, filename, btn, box,
+   fti->it = elm_list_item_append(fd->list, filename, btn, NULL,
                                   list_item_selected_cb, fti);
+
+   elm_object_item_tooltip_text_set(fti->it, ecore_file_realpath(filepath));
+
    elm_list_go(fd->list);
 
    evas_object_smart_callback_add(btn, "clicked", close_btn_clicked_cb, fti);
