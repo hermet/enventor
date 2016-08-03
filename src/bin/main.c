@@ -455,7 +455,6 @@ static void
 enventor_live_view_loaded_cb(void *data EINA_UNUSED, Enventor_Object *obj,
                              void *event_info EINA_UNUSED)
 {
-   Evas_Coord view_w, view_h;
    base_edc_navigator_group_update();
 }
 
