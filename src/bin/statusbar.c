@@ -37,8 +37,8 @@ view_scale_slider_changed_cb(void *data EINA_UNUSED, Evas_Object *obj,
 
    /* Here logic is mostly duplicated with main_mouse_wheel_cb() in main.c */
 
-   config_view_scale_set(rounded);
-   scale = config_view_scale_get();
+   if (scale > MAX_VIEW_SCALE) scale = MAX_VIEW_SCALE;
+   else if (scale < MIN_VIEW_SCALE) scale = MIN_VIEW_SCALE;
    enventor_object_live_view_scale_set(base_enventor_get(), scale);
 
    //Just in live edit mode case.
@@ -221,7 +221,8 @@ view_scale_btn_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
    elm_slider_horizontal_set(slider, EINA_FALSE);
    elm_slider_inverted_set(slider, EINA_TRUE);
    elm_slider_min_max_set(slider, MIN_VIEW_SCALE, MAX_VIEW_SCALE);
-   elm_slider_value_set(slider, (double) config_view_scale_get());
+   elm_slider_value_set(slider,
+                        enventor_object_live_view_scale_get(base_enventor_get()));
    evas_object_smart_callback_add(slider, "changed",
                                   view_scale_slider_changed_cb, sd);
 
@@ -364,6 +365,7 @@ stats_init(Evas_Object *parent)
 
    stats_cursor_pos_update(0, 0, 0, 0);
    stats_edc_group_update(NULL);
+   stats_view_scale_update(1.0);
 
    return layout;
 }

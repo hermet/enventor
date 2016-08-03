@@ -36,7 +36,6 @@ enventor_common_setup(Enventor_Object *enventor)
    config_font_get(&font_name, &font_style);
    enventor_object_font_set(enventor, font_name, font_style);
    enventor_object_font_scale_set(enventor, config_font_scale_get());
-   enventor_object_live_view_scale_set(enventor, config_view_scale_get());
    enventor_object_auto_indent_set(enventor, config_auto_indent_get());
    enventor_object_auto_complete_set(enventor, config_auto_complete_get());
    enventor_object_smart_undo_redo_set(enventor, config_smart_undo_redo_get());
@@ -123,7 +122,6 @@ config_update_cb(void *data EINA_UNUSED)
 
    syntax_color_update(enventor);
 
-   stats_view_scale_update(config_view_scale_get());
    base_tools_toggle(EINA_FALSE);
    base_statusbar_toggle(EINA_FALSE);
    base_console_auto_hide();
@@ -145,13 +143,14 @@ main_mouse_wheel_cb(void *data EINA_UNUSED, int type EINA_UNUSED, void *ev)
    if ((event->x >= x) && (event->x <= (x + w)) &&
        (event->y >= y) && (event->y <= (y + h)))
      {
-        double scale = config_view_scale_get();
+        double scale = enventor_object_live_view_scale_get(base_enventor_get());
 
         if (event->z < 0) scale += 0.05;
         else scale -= 0.05;
 
-        config_view_scale_set(scale);
-        scale = config_view_scale_get();
+        if (scale > MAX_VIEW_SCALE) scale = MAX_VIEW_SCALE;
+        else if (scale < MIN_VIEW_SCALE) scale = MIN_VIEW_SCALE;
+
         enventor_object_live_view_scale_set(base_enventor_get(), scale);
 
         //Just in live edit mode case.
@@ -414,23 +413,28 @@ enventor_cursor_line_changed_cb(void *data EINA_UNUSED,
 }
 
 static void
-enventor_cursor_group_changed_cb(void *data EINA_UNUSED,
-                                 Enventor_Object *obj EINA_UNUSED,
+enventor_cursor_group_changed_cb(void *data EINA_UNUSED, Enventor_Object *obj,
                                  void *event_info)
 {
    const char *group_name = event_info;
    stats_edc_group_update(group_name);
    base_edc_navigator_group_update();
 
-   //Set default view size if this view has no size.
+   //View Size
    int w, h;
    enventor_object_live_view_size_get(obj, &w, &h);
+
+   //Set default view size if this view has no size.
    if ((w == 0) && (h == 0))
      {
         config_view_size_get(&w, &h);
         enventor_object_live_view_size_set(obj, w, h);
      }
    stats_view_size_update(w, h);
+
+   //View Scale
+   double scale = enventor_object_live_view_scale_get(obj);
+   stats_view_scale_update(scale);
 }
 
 static void
@@ -845,7 +849,6 @@ statusbar_set()
    Evas_Object *obj = stats_init(base_layout_get());
    elm_object_part_content_set(base_layout_get(), "elm.swallow.statusbar", obj);
    base_statusbar_toggle(EINA_FALSE);
-   stats_view_scale_update(config_view_scale_get());
 }
 
 static void

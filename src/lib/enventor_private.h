@@ -175,8 +175,6 @@ void edj_mgr_view_del(view_data *vd);
 void edj_mgr_reload_need_set(Eina_Bool reload);
 Eina_Bool edj_mgr_reload_need_get(void);
 void edj_mgr_clear(void);
-void edj_mgr_view_scale_set(double scale);
-double edj_mgr_view_scale_get(void);
 void edj_mgr_all_views_reload(void);
 
 
@@ -207,6 +205,7 @@ void view_programs_stop(view_data *vd);
 Eina_Stringshare *view_group_name_get(view_data *vd);
 void *view_data_get(view_data *vd);
 void view_scale_set(view_data *vd, double scale);
+double view_scale_get(view_data *vd);
 void view_size_get(view_data *vd, Evas_Coord *w, Evas_Coord *h);
 void view_size_set(view_data *vd, Evas_Coord w, Evas_Coord h);
 Eina_List *view_parts_list_get(view_data *vd);

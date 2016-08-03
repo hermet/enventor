@@ -47,8 +47,6 @@ void config_font_set(const char *font_name, const char *font_style);
 void config_font_get(const char **font_name, const char **font_style);
 void config_font_scale_set(float font_scale);
 float config_font_scale_get(void);
-void config_view_scale_set(double view_scale);
-double config_view_scale_get(void);
 Eina_Bool config_tools_get(void);
 void config_tools_set(Eina_Bool enabled);
 Eina_Bool config_config_get(void);

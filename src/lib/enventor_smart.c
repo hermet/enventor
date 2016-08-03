@@ -536,7 +536,7 @@ _enventor_object_live_view_scale_set(Eo *obj EINA_UNUSED,
                                      Enventor_Object_Data *pd EINA_UNUSED,
                                      double scale)
 {
-   edj_mgr_view_scale_set(scale);
+   view_scale_set(VIEW_DATA, scale);
 }
 
 EOLIAN static void
@@ -559,7 +559,7 @@ EOLIAN static double
 _enventor_object_live_view_scale_get(Eo *obj EINA_UNUSED,
                                      Enventor_Object_Data *pd EINA_UNUSED)
 {
-   return edj_mgr_view_scale_get();
+   return view_scale_get(VIEW_DATA);
 }
 
 EOLIAN static void

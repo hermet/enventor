@@ -344,7 +344,8 @@ live_edit_symbol_set(live_data *ld)
    snprintf(buf, sizeof(buf), "%s_bg", LIVEEDIT_ITEMS[ld->type].name);
    Evas_Object *layout_symbol = elm_layout_add(ld->layout);
    elm_layout_file_set(layout_symbol, EDJE_PATH, buf);
-   elm_object_scale_set(layout_symbol, config_view_scale_get());
+   elm_object_scale_set(layout_symbol,
+                        enventor_object_live_view_scale_get(base_enventor_get()));
    elm_object_part_content_set(ld->layout, "elm.swallow.symbol", layout_symbol);
 }
 
@@ -2184,7 +2185,8 @@ live_edit_update(void)
    Evas_Object *layout_symbol =
       elm_object_part_content_get(ld->layout, "elm.swallow.symbol");
    if (layout_symbol)
-     elm_object_scale_set(layout_symbol, config_view_scale_get());
+     elm_object_scale_set(layout_symbol,
+                          enventor_object_live_view_scale_get(base_enventor_get()));
 
    live_edit_update_internal(ld);
 }

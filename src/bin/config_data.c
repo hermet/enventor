@@ -21,7 +21,6 @@ typedef struct config_s
 
    unsigned int version;
    float font_scale;
-   double view_scale;
    double editor_size;
    double console_size;
 
@@ -189,7 +188,6 @@ config_load(void)
         cd->fnt_path_list = NULL;
         cd->dat_path_list = NULL;
         cd->font_scale = 1;
-        cd->view_scale = 1;
         cd->view_size_w = 300;
         cd->view_size_h = 300;
         cd->win_size_w = WIN_DEFAULT_W;
@@ -299,8 +297,6 @@ eddc_init(void)
                                  EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "font_scale", font_scale,
                                  EET_T_FLOAT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "view_scale",
-                                 view_scale, EET_T_DOUBLE);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "editor_size",
                                  editor_size, EET_T_DOUBLE);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "console_size",
@@ -937,28 +933,6 @@ config_auto_indent_set(Eina_Bool auto_indent)
    EINA_SAFETY_ON_NULL_RETURN(cd);
 
    cd->auto_indent = auto_indent;
-}
-
-void
-config_view_scale_set(double view_scale)
-{
-   config_data *cd = g_cd;
-   EINA_SAFETY_ON_NULL_RETURN(cd);
-
-   if (view_scale > MAX_VIEW_SCALE)
-     view_scale = MAX_VIEW_SCALE;
-   else if (view_scale < MIN_VIEW_SCALE)
-     view_scale = MIN_VIEW_SCALE;
-   cd->view_scale = view_scale;
-}
-
-double
-config_view_scale_get(void)
-{
-   config_data *cd = g_cd;
-   EINA_SAFETY_ON_NULL_RETURN_VAL(cd, 0);
-
-   return cd->view_scale;
 }
 
 void

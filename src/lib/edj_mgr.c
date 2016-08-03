@@ -19,7 +19,6 @@ typedef struct edj_mgr_s
    edj_data *edj;
    Enventor_Object *enventor;
    Evas_Object *layout;
-   double view_scale;
 
    Eina_Bool reload_need : 1;
 } edj_mgr;
@@ -87,7 +86,6 @@ edj_mgr_init(Enventor_Object *enventor)
    elm_layout_file_set(layout, EDJE_PATH, "viewer_layout");
    em->enventor = enventor;
    em->layout = layout;
-   em->view_scale = 1;
 }
 
 void
@@ -169,7 +167,6 @@ edj_mgr_view_switch_to(view_data *vd)
 
    elm_object_part_content_set(em->layout, "elm.swallow.content",
                                view_obj_get(vd));
-   view_scale_set(vd, em->view_scale);
    //Switching effect
    if (prev != view_obj_get(vd))
      {
@@ -221,21 +218,6 @@ edj_mgr_reload_need_get(void)
 {
    edj_mgr *em = g_em;
    return em->reload_need;
-}
-
-void
-edj_mgr_view_scale_set(double view_scale)
-{
-   edj_mgr *em = g_em;
-   em->view_scale = view_scale;
-   view_scale_set(VIEW_DATA, view_scale);
-}
-
-double
-edj_mgr_view_scale_get(void)
-{
-   edj_mgr *em = g_em;
-   return em->view_scale;
 }
 
 void

@@ -41,6 +41,7 @@ struct viewer_s
 
    /* view size configured by application */
    Evas_Coord_Size view_config_size;
+   double view_scale;
 
    //Keep the part info which state has been changed
    struct {
@@ -105,11 +106,9 @@ img_changed_cb(void *data, int type EINA_UNUSED, void *event)
 static void
 view_obj_min_update(view_data *vd)
 {
-   double scale = edj_mgr_view_scale_get();
-
-   double min_w = (double) vd->view_config_size.w * scale;
+   double min_w = (double) vd->view_config_size.w * vd->view_scale;
    if (1 > min_w) min_w = 1;
-   double min_h = (double) vd->view_config_size.h * scale;
+   double min_h = (double) vd->view_config_size.h * vd->view_scale;
    if (1 > min_h) min_h = 1;
 
    evas_object_size_hint_min_set(vd->layout, min_w, min_h);
@@ -568,7 +567,6 @@ view_obj_idler_cb(void *data)
    vd->base = base_create(vd->scroller);
 
    view_obj_create(vd);
-   view_scale_set(vd, edj_mgr_view_scale_get());
 
    event_layer_set(vd);
 
@@ -629,6 +627,7 @@ view_init(Enventor_Object *enventor, Enventor_Item *it, const char *group,
 
    vd->view_config_size.w = 0;
    vd->view_config_size.h = 0;
+   vd->view_scale = 1;
 
    return vd;
 }
@@ -773,6 +772,13 @@ view_data_get(view_data *vd)
    return vd->data;
 }
 
+double
+view_scale_get(view_data *vd)
+{
+   if (!vd) return 1.0;
+   return vd->view_scale;
+}
+
 void
 view_scale_set(view_data *vd, double scale)
 {
@@ -801,6 +807,8 @@ view_scale_set(view_data *vd, double scale)
 
    elm_scroller_region_show(vd->scroller, ((Evas_Coord) cx) - (sw / 2),
                             ((Evas_Coord) cy) - (sh / 2), sw, sh);
+
+   vd->view_scale = scale;
 }
 
 void
