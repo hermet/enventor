@@ -835,6 +835,12 @@ void
 view_size_get(view_data *vd, Evas_Coord *w, Evas_Coord *h)
 {
    if (!w || !h) return;
+   if (!vd)
+     {
+        *w = 0;
+        *h = 0;
+        return;
+     }
 
    evas_object_geometry_get(vd->layout, NULL , NULL, w, h);
 
