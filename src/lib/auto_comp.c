@@ -10,6 +10,8 @@
 #define MAX_CONTEXT_STACK 40
 #define MAX_KEYWORD_LENGTH 40
 
+typedef struct ctx_lexem_thread_data_s ctx_lexem_td;
+
 typedef struct lexem_s
 {
    Eina_List *nodes;
@@ -35,7 +37,7 @@ typedef struct autocomp_s
    Evas_Object *event_rect;
 
    Ecore_Thread *init_thread;
-   Ecore_Thread *cntx_lexem_thread;
+   ctx_lexem_td *cltd;
 
    Eina_Bool anchor_visible : 1;
    Eina_Bool initialized : 1;
@@ -45,14 +47,16 @@ typedef struct autocomp_s
    Eina_Bool term: 1;
 } autocomp_data;
 
-typedef struct ctx_lexem_thread_data_s
+struct ctx_lexem_thread_data_s
 {
    char *utf8;
    int cur_pos;
    lexem *result;
+   edit_data *ed;
    autocomp_data *ad;
-   Eina_Bool list_show;
-} ctx_lexem_td;
+   Ecore_Thread *thread;
+   Eina_Bool list_show : 1;
+};
 
 static autocomp_data *g_ad = NULL;
 
@@ -133,7 +137,7 @@ context_lexem_thread_cb(void *data, Ecore_Thread *thread)
    const int quot_len = QUOT_UTF8_LEN;
 
    ctx_lexem_td *td = (ctx_lexem_td *)data;
-   if (!td->utf8) return;
+   if (!td->ad || !td->utf8) return;
 
    int cur_pos = td->cur_pos;
    if (cur_pos <= 1) return;
@@ -158,7 +162,9 @@ context_lexem_thread_cb(void *data, Ecore_Thread *thread)
 
    //In case of sub items, it won't contain "collections".
    //We added it arbitrary.
-   if (!edit_is_main_file(td->ad->ed))
+   if (ecore_thread_check(thread)) return;
+
+   if (!edit_is_main_file(td->ed))
      {
         strcpy(stack[depth], "collections");
         depth++;
@@ -322,26 +328,18 @@ context_lexem_thread_end_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
    ctx_lexem_td *td = (ctx_lexem_td *)data;
 
-   td->ad->lexem_ptr = td->result;
-   td->ad->cntx_lexem_thread = NULL;
-
-   if (td->list_show  || (td->result && td->result->dot && td->ad->dot_candidate))
-     candidate_list_show(td->ad);
-   td->ad->dot_candidate = EINA_FALSE;
-   free(td->utf8);
-   free(td);
-}
-
-static void
-context_lexem_thread_cancel_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
-{
-   ctx_lexem_td *td = (ctx_lexem_td *)data;
+   if (!td->ad || (td->ad->cltd != td)) return;
 
    td->ad->lexem_ptr = td->result;
-   if (td->list_show || (td->result && td->result->dot && td->ad->dot_candidate))
-     candidate_list_show(td->ad);
-   td->ad->cntx_lexem_thread = NULL;
+
+   if (td->list_show ||
+       (td->result && td->result->dot && td->ad->dot_candidate))
+     {
+        candidate_list_show(td->ad);
+     }
    td->ad->dot_candidate = EINA_FALSE;
+   td->ad->cltd = NULL;
+
    free(td->utf8);
    free(td);
 }
@@ -355,19 +353,25 @@ context_lexem_get(autocomp_data *ad, Evas_Object *entry, Eina_Bool list_show)
         ad->lexem_ptr = (lexem *)ad->lexem_root;
         return;
      }
-   ecore_thread_cancel(ad->cntx_lexem_thread);
 
-   ctx_lexem_td *td = (ctx_lexem_td *)calloc(1, sizeof(ctx_lexem_td));
-   td->utf8 = elm_entry_markup_to_utf8(text);
-   td->cur_pos = elm_entry_cursor_pos_get(entry);
-   td->ad = ad;
-   td->result = NULL;
-   td->list_show = list_show;
+   if (ad->cltd)
+     {
+        ecore_thread_cancel(ad->cltd->thread);
+        ad->cltd->ad = NULL;
+     }
 
-   ad->cntx_lexem_thread =  ecore_thread_run(context_lexem_thread_cb,
-                                             context_lexem_thread_end_cb,
-                                             context_lexem_thread_cancel_cb,
-                                             td);
+   ad->cltd = (ctx_lexem_td *)malloc(sizeof(ctx_lexem_td));
+   ad->cltd->utf8 = elm_entry_markup_to_utf8(text);
+   ad->cltd->cur_pos = elm_entry_cursor_pos_get(entry);
+   ad->cltd->ad = ad;
+   ad->cltd->ed = ad->ed;
+   ad->cltd->result = NULL;
+   ad->cltd->list_show = list_show;
+
+   ad->cltd->thread =  ecore_thread_run(context_lexem_thread_cb,
+                                        context_lexem_thread_end_cb,
+                                        context_lexem_thread_end_cb,
+                                        ad->cltd);
 }
 
 static void
@@ -880,6 +884,13 @@ autocomp_target_set(edit_data *ed)
    autocomp_data *ad = g_ad;
    if (!ad) return;
 
+   if (ad->cltd)
+     {
+        ecore_thread_cancel(ad->cltd->thread);
+        ad->cltd->ad = NULL;
+        ad->cltd = NULL;
+     }
+
    Evas_Object *entry;
 
    queue_reset(ad);
@@ -982,6 +993,12 @@ autocomp_term(void)
         ecore_thread_cancel(ad->init_thread);
         ad->term = EINA_TRUE;
         return;
+     }
+
+   if (ad->cltd)
+     {
+        ecore_thread_cancel(ad->cltd->thread);
+        ad->cltd->ad = NULL;
      }
 
    evas_object_del(ad->event_rect);
