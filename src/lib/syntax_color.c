@@ -526,8 +526,8 @@ macro_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
 }
 
 const char *
-color_cancel(color_data *cd, const char *src, int length, int from_pos,
-             int to_pos, char **from, char **to)
+color_cancel(Ecore_Thread *thread, color_data *cd, const char *src,
+             int length, int from_pos, int to_pos, char **from, char **to)
 {
    if (!src || length < 1) return NULL;
    Eina_Strbuf *strbuf = cd->strbuf;
@@ -553,6 +553,7 @@ color_cancel(color_data *cd, const char *src, int length, int from_pos,
 
    while (cur && (cur <= (src + length)))
      {
+        if (thread && ecore_thread_check(thread)) return NULL;
         //Capture start line
         if (find_from && (line == from_pos))
           {
@@ -905,7 +906,8 @@ color_value_get(Enventor_Syntax_Color_Type color_type)
 }
 
 const char *
-color_apply(color_data *cd, const char *src, int length, char *from, char *to)
+color_apply(Ecore_Thread *thread, color_data *cd, const char *src, int length,
+            char *from, char *to)
 {
    Eina_Bool inside_string = EINA_FALSE;
    Eina_Bool inside_comment = EINA_FALSE;
@@ -924,6 +926,8 @@ color_apply(color_data *cd, const char *src, int length, char *from, char *to)
 
    while (cur && (cur <= (src + length)))
      {
+        if (thread && ecore_thread_check(thread)) return NULL;
+
         //escape empty string
         if (!from || (cur >= from))
           {

@@ -16,6 +16,7 @@ const double SYNTAX_COLOR_SHORT_TIME = 0.025;
 
 typedef struct syntax_color_thread_data_s
 {
+   Ecore_Thread *thread;
    edit_data *ed;
    char *text;
    const char *translated;
@@ -51,7 +52,7 @@ struct editor_s
    } bracket;
 
    Ecore_Timer *syntax_color_timer;
-   Ecore_Thread *syntax_color_thread;
+   syntax_color_td *sctd;
 
    void (*view_sync_cb)(void *data, Eina_Stringshare *state_name, double state_value,
                         Eina_Stringshare *part_name, Eina_Stringshare *group_name);
@@ -236,13 +237,13 @@ syntax_color_apply(edit_data *ed, Eina_Bool partial)
 
    char *from = NULL;
    char *to = NULL;
-   char *utf8 = (char *) color_cancel(syntax_color_data_get(ed->sh), text,
+   char *utf8 = (char *) color_cancel(NULL, syntax_color_data_get(ed->sh), text,
                                       strlen(text), from_line, to_line, &from,
                                       &to);
    if (!utf8) return;
 
-   const char *translated = color_apply(syntax_color_data_get(ed->sh), utf8,
-                                        strlen(utf8), from, to);
+   const char *translated = color_apply(NULL, syntax_color_data_get(ed->sh),
+                                        utf8, strlen(utf8), from, to);
    if (!translated) return;
 
    /* I'm not sure this will be problem.
@@ -272,29 +273,41 @@ syntax_color_partial_update(edit_data *ed, double interval)
    /* If the syntax_color_full_update is requested forcely, lock would be -1
       in this case, it should avoid partial updation by entry changed. */
    if (ed->syntax_color_lock != 0) return;
-   ecore_thread_cancel(ed->syntax_color_thread);
-   ed->syntax_color_thread = NULL;
+   if (ed->sctd)
+     {
+        ecore_thread_cancel(ed->sctd->thread);
+        ed->sctd->ed = NULL;
+     }
    ecore_timer_del(ed->syntax_color_timer);
-   ed->syntax_color_timer = ecore_timer_add(interval, syntax_color_timer_cb, ed);
+   ed->syntax_color_timer = ecore_timer_add(interval, syntax_color_timer_cb,
+                                            ed);
 }
 
 static void
-syntax_color_thread_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
+syntax_color_thread_cb(void *data, Ecore_Thread *thread)
 {
    syntax_color_td *td = data;
-   char *utf8 = (char *) color_cancel(syntax_color_data_get(td->ed->sh),
+   char *utf8 = (char *) color_cancel(thread, syntax_color_data_get(td->ed->sh),
                                       td->text, strlen(td->text), -1, -1, NULL,
                                       NULL);
    if (!utf8) return;
-   td->translated = color_apply(syntax_color_data_get(td->ed->sh), utf8,
+   td->translated = color_apply(thread, syntax_color_data_get(td->ed->sh), utf8,
                                 strlen(utf8), NULL, NULL);
 }
 
 static void
-syntax_color_thread_end_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
+syntax_color_thread_cancel_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
    syntax_color_td *td = data;
-   if (!td->translated) return;
+   if (td->ed && td->ed->sctd == td) td->ed->sctd = NULL;
+   free(td);
+}
+
+static void
+syntax_color_thread_end_cb(void *data, Ecore_Thread *thread)
+{
+   syntax_color_td *td = data;
+   if (!td->translated) goto end;
 
    Evas_Object *tb = elm_entry_textblock_get(td->ed->en_edit);
 
@@ -308,19 +321,8 @@ syntax_color_thread_end_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
    bracket_highlight(td->ed, tb);
    entry_recover(td->ed, cursor_pos, sel_cur_begin, sel_cur_end);
 
-   td->ed->syntax_color_thread = NULL;
-   free(td);
-}
-
-static void
-syntax_color_thread_cancel_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
-{
-   syntax_color_td *td = data;
-   Evas_Object *tb = elm_entry_textblock_get(td->ed->en_edit);
-   error_highlight(td->ed, tb);
-   bracket_highlight(td->ed, tb);
-   td->ed->syntax_color_thread = NULL;
-   free(td);
+end:
+   syntax_color_thread_cancel_cb(data, thread);
 }
 
 static void
@@ -877,20 +879,22 @@ syntax_color_full_update(edit_data *ed, Eina_Bool thread)
 
    if (thread)
      {
-        syntax_color_td *td = calloc(1, sizeof(syntax_color_td));
-        if (!td)
+        if (ed->sctd) ecore_thread_cancel(ed->sctd->thread);
+
+        ed->sctd = calloc(1, sizeof(syntax_color_td));
+        if (!ed->sctd)
           {
              EINA_LOG_ERR("Failed to allocate Memory!");
              return;
           }
-        td->ed = ed;
+        ed->sctd->ed = ed;
         Evas_Object *tb = elm_entry_textblock_get(ed->en_edit);
-        td->text = (char *) evas_object_textblock_text_markup_get(tb);
-        ed->syntax_color_thread =
+        ed->sctd->text = (char *) evas_object_textblock_text_markup_get(tb);
+        ed->sctd->thread =
            ecore_thread_run(syntax_color_thread_cb,
                             syntax_color_thread_end_cb,
                             syntax_color_thread_cancel_cb,
-                            td);
+                            ed->sctd);
      }
    else
      {
@@ -1540,7 +1544,11 @@ edit_term(edit_data *ed)
    parser_data *pd = ed->pd;
    redoundo_data *rd = ed->rd;
 
-   ecore_thread_cancel(ed->syntax_color_thread);
+   if (ed->sctd)
+     {
+        ecore_thread_cancel(ed->sctd->thread);
+        ed->sctd->ed = NULL;
+     }
    ecore_timer_del(ed->syntax_color_timer);
    evas_object_del(ed->scroller);
    eina_stringshare_del(ed->filepath);
@@ -1655,7 +1663,7 @@ error_line_num_highlight(edit_data *ed)
    char *from EINA_UNUSED = NULL;
    char *to EINA_UNUSED = NULL;
 
-   char *utf8 = (char *)color_cancel(syntax_color_data_get(ed->sh), text,
+   char *utf8 = (char *)color_cancel(NULL, syntax_color_data_get(ed->sh), text,
                                      strlen(text), from_line, to_line, &from,
                                      &to);
 
