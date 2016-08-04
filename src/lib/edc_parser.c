@@ -375,18 +375,6 @@ end:
 }
 
 static void
-cur_context_thread_end(void *data, Ecore_Thread *thread EINA_UNUSED)
-{
-   cur_context_td *td = data;
-   td->cb(td->cb_data, td->state_name, td->state_value,  td->part_name, td->group_name);
-   td->pd->cntd = NULL;
-   eina_stringshare_del(td->state_name);
-   eina_stringshare_del(td->part_name);
-   eina_stringshare_del(td->group_name);
-   free(td);
-}
-
-static void
 cur_context_thread_cancel(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
    cur_context_td *td = data;
@@ -394,9 +382,18 @@ cur_context_thread_cancel(void *data, Ecore_Thread *thread EINA_UNUSED)
    eina_stringshare_del(td->state_name);
    eina_stringshare_del(td->part_name);
    eina_stringshare_del(td->group_name);
-   free(td->utf8);
    free(td);
 }
+
+static void
+cur_context_thread_end(void *data, Ecore_Thread *thread)
+{
+   cur_context_td *td = data;
+   td->cb(td->cb_data, td->state_name, td->state_value,  td->part_name,
+          td->group_name);
+   cur_context_thread_cancel(data, thread);
+}
+
 
 static void
 type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
@@ -1014,8 +1011,11 @@ static void
 type_init_thread_end(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
    type_init_td *td = data;
-   td->pd->titd = NULL;
-   td->pd->attrs = td->attrs;
+   if (td->pd)
+     {
+        td->pd->titd = NULL;
+        td->pd->attrs = td->attrs;
+     }
    free(td);
 }
 
@@ -1265,22 +1265,20 @@ bracket_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
 }
 
 static void
-bracket_thread_end(void *data, Ecore_Thread *thread EINA_UNUSED)
+bracket_thread_cancel(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
    bracket_td *btd = data;
-   btd->update_cb(btd->data, btd->left, btd->right);
-   if (btd->pd->btd == btd) btd->pd->btd = NULL;
+   if (btd->pd && btd->pd->btd == btd) btd->pd->btd = NULL;
    free(btd->text);
    free(btd);
 }
 
 static void
-bracket_thread_cancel(void *data, Ecore_Thread *thread EINA_UNUSED)
+bracket_thread_end(void *data, Ecore_Thread *thread)
 {
    bracket_td *btd = data;
-   if (btd->pd->btd == btd) btd->pd->btd = NULL;
-   free(btd->text);
-   free(btd);
+   btd->update_cb(btd->data, btd->left, btd->right);
+   bracket_thread_cancel(data, thread);
 }
 
 /*****************************************************************************/
@@ -1773,9 +1771,21 @@ parser_init(void)
 void
 parser_term(parser_data *pd)
 {
-   if (pd->cntd) ecore_thread_cancel(pd->cntd->thread);
-   if (pd->titd) ecore_thread_cancel(pd->titd->thread);
-   if (pd->btd) ecore_thread_cancel(pd->btd->thread);
+   if (pd->cntd)
+     {
+        ecore_thread_cancel(pd->cntd->thread);
+        pd->cntd->pd = NULL;
+     }
+   if (pd->titd)
+     {
+        ecore_thread_cancel(pd->titd->thread);
+        pd->titd->pd = NULL;
+     }
+   if (pd->btd)
+     {
+        ecore_thread_cancel(pd->btd->thread);
+        pd->btd->pd = NULL;
+     }
 
    if (pd->attrs)
      {
