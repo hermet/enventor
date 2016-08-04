@@ -1496,6 +1496,12 @@ edit_init(Enventor_Object *enventor, Enventor_Item *it)
    elm_object_focus_set(en_edit, EINA_TRUE);
    elm_object_part_content_set(layout, "elm.swallow.edit", en_edit);
 
+   /* FIXME: This is a temporary patch to remove focus highlight on template
+      selection button of new file open. (enventor -t)
+      Without calling evas_object_show() here, en_edit cannot get focus because
+      its visibility is set with false. */
+   evas_object_show(en_edit);
+
    ed->scroller = scroller;
    ed->en_line = en_line;
    ed->en_edit = en_edit;
