@@ -287,11 +287,12 @@ _enventor_object_efl_canvas_group_group_del(Eo *obj EINA_UNUSED, Enventor_Object
    ref_term();
    ecore_event_handler_del(pd->key_down_handler);
    ecore_event_handler_del(pd->key_up_handler);
-   edj_mgr_term();
-   build_term();
 
    _enventor_sub_items_free(pd);
    _enventor_main_item_free(pd);
+
+   edj_mgr_term();
+   build_term();
 }
 
 EOLIAN static void
