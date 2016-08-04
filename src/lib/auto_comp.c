@@ -125,7 +125,7 @@ lexem_tree_free(lexem **root)
 }
 
 static void
-context_lexem_thread_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
+context_lexem_thread_cb(void *data, Ecore_Thread *thread)
 {
    const int quot_len = QUOT_UTF8_LEN;
 
@@ -163,6 +163,8 @@ context_lexem_thread_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
 
    while (cur && cur <= end)
      {
+        if (ecore_thread_check(thread)) break;
+
         //Check inside quote
         if ((cur != end) && (!strncmp(cur, quot, quot_len)))
           {

@@ -70,7 +70,7 @@ struct parser_s
 /*****************************************************************************/
 
 static void
-cur_context_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
+cur_context_thread_blocking(void *data, Ecore_Thread *thread)
 {
 #define PART_SYNTAX_CNT 14
 
@@ -122,6 +122,8 @@ cur_context_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
 
    while (p && p <= end)
      {
+        if (ecore_thread_check(thread)) break;
+
         //Skip "" range
         if (!strncmp(p, QUOT_UTF8, QUOT_UTF8_LEN))
           {
