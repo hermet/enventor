@@ -1532,8 +1532,8 @@ edit_term(edit_data *ed)
 
    syntax_helper *sh = ed->sh;
    parser_data *pd = ed->pd;
+   redoundo_data *rd = ed->rd;
 
-   redoundo_term(ed->rd);
    ecore_thread_cancel(ed->syntax_color_thread);
    ecore_timer_del(ed->syntax_color_timer);
    evas_object_del(ed->scroller);
@@ -1541,6 +1541,7 @@ edit_term(edit_data *ed)
 
    free(ed);
 
+   redoundo_term(rd);
    syntax_term(sh);
    parser_term(pd);
 }
