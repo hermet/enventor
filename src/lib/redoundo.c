@@ -28,13 +28,15 @@ struct redoundo_s
    Eina_List *current_node;
    diff_data *last_diff;
    unsigned int queue_max;        //Maximum queuing data count 0: unlimited
-   Eina_Bool internal_change : 1; //Entry change by redoundo
    edit_data *ed;
    struct {
       Ecore_Timer *timer;
       Eina_Bool continues_input;
       double input_delay;
    } smart;
+
+   Eina_Bool internal_change : 1; //Entry change by redoundo
+
 };
 
 /*****************************************************************************/

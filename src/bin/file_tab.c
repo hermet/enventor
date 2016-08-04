@@ -198,7 +198,9 @@ file_tab_it_add(Enventor_Item *enventor_it)
    fti->it = elm_list_item_append(fd->list, filename, btn, NULL,
                                   list_item_selected_cb, fti);
 
-   elm_object_item_tooltip_text_set(fti->it, ecore_file_realpath(filepath));
+   char *txt = ecore_file_realpath(filepath);
+   elm_object_item_tooltip_text_set(fti->it, txt);
+   free(txt);
 
    elm_list_go(fd->list);
 
