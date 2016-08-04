@@ -52,6 +52,7 @@ list_item_selected_cb(void *data, Evas_Object *obj, void *event_info)
    layout = g_layout;
    label = elm_object_part_content_get(layout, "swallow_label");
    entry = elm_object_part_content_get(layout, "swallow_entry");
+   elm_scroller_region_show(entry, 0, 0, 0, 0);
    elm_object_signal_emit(layout, "elm,state,content,show", "");
 
    //Read each contents from files.
