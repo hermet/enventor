@@ -33,13 +33,16 @@ typedef struct autocomp_s
    Evas_Object *anchor;
    Evas_Object *list;
    Evas_Object *event_rect;
+
    Ecore_Thread *init_thread;
+   Ecore_Thread *cntx_lexem_thread;
+
    Eina_Bool anchor_visible : 1;
    Eina_Bool initialized : 1;
    Eina_Bool enabled : 1;
-   Ecore_Thread *cntx_lexem_thread;
    Eina_Bool dot_candidate : 1;
    Eina_Bool on_keygrab : 1;
+   Eina_Bool term: 1;
 } autocomp_data;
 
 typedef struct ctx_lexem_thread_data_s
@@ -384,18 +387,19 @@ context_changed(autocomp_data *ad, Evas_Object *edit)
 }
 
 static void
-init_thread_end_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
-{
-   autocomp_data *ad = data;
-   ad->initialized = EINA_TRUE;
-   ad->init_thread = NULL;
-}
-
-static void
 init_thread_cancel_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
    autocomp_data *ad = data;
    ad->init_thread = NULL;
+   if (ad->term) autocomp_term();
+}
+
+static void
+init_thread_end_cb(void *data, Ecore_Thread *thread)
+{
+   autocomp_data *ad = data;
+   ad->initialized = EINA_TRUE;
+   init_thread_cancel_cb(data, thread);
 }
 
 static void
@@ -973,9 +977,15 @@ autocomp_term(void)
    autocomp_data *ad = g_ad;
    autocomp_target_set(NULL);
 
+   if (ad->init_thread)
+     {
+        ecore_thread_cancel(ad->init_thread);
+        ad->term = EINA_TRUE;
+        return;
+     }
+
    evas_object_del(ad->event_rect);
    evas_object_del(ad->anchor);
-   ecore_thread_cancel(ad->init_thread);
 
    lexem_tree_free((lexem **)&ad->lexem_root);
 
