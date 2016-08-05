@@ -24,6 +24,16 @@ list_del_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
    g_nd = NULL;
 }
 
+static int
+template_sort_cb(const void *data1, const void *data2)
+{
+   const char *name1 = data1;
+   const char *name2 = data2;
+
+   if (name1[0] > name2[0]) return 1;
+   else return -1;
+}
+
 static void
 file_dir_list_cb(const char *name, const char *path EINA_UNUSED, void *data)
 {
@@ -33,8 +43,9 @@ file_dir_list_cb(const char *name, const char *path EINA_UNUSED, void *data)
    if (!ext || strcmp(ext, ".edc")) return;
 
    char *file_name = ecore_file_strip_ext(name);
-   nd->templates = eina_list_append(nd->templates,
-                                    eina_stringshare_add(file_name));
+   nd->templates = eina_list_sorted_insert(nd->templates,
+                                           template_sort_cb,
+                                           eina_stringshare_add(file_name));
    free(file_name);
 }
 
