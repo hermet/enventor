@@ -178,7 +178,7 @@ void
 tools_term(void)
 {
    tools_data *td = g_td;
-   assert(td);
+   if (!td) return;
    free(td);
 }
 

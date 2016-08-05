@@ -99,5 +99,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n"
    #define NGETTEXT(single, plur, n) (((n)==1)? (single):(plur))
 #endif /* localization */
 
+#define ENVENTOR_LOCK_FILE ".enventor.lock"
 
 #endif

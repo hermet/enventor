@@ -94,19 +94,22 @@ static void
 config_save(config_data *cd)
 {
    char buf[PATH_MAX];
+   const char *config_home = efreet_config_home_get();
+   if (!config_home) return;
 
    //Create config home directory if it doesn't exist.
-   if (!ecore_file_exists(efreet_config_home_get()))
+   if (!ecore_file_exists(config_home))
      {
-        Eina_Bool success = ecore_file_mkdir(efreet_config_home_get());
+        Eina_Bool success = ecore_file_mkdir(config_home);
         if (!success)
           {
-             EINA_LOG_ERR(_("Cannot create a config folder \"%s\""), efreet_config_home_get());
+             EINA_LOG_ERR(_("Cannot create a config folder \"%s\""),
+                          config_home);
              return;
           }
      }
 
-   snprintf(buf, sizeof(buf), "%s/enventor", efreet_config_home_get());
+   snprintf(buf, sizeof(buf), "%s/enventor", config_home);
 
    //Create enventor config folder if it doesn't exist.
    if (!ecore_file_exists(buf))
@@ -114,14 +117,14 @@ config_save(config_data *cd)
         Eina_Bool success = ecore_file_mkdir(buf);
         if (!success)
           {
-             EINA_LOG_ERR(_("Cannot create a config folder \"%s\""), buf);
+             EINA_LOG_ERR(_("Cannot create a enventor config folder \"%s\""),
+                          buf);
              return;
           }
      }
 
    //Save config file.
-   snprintf(buf, sizeof(buf), "%s/enventor/config.eet",
-            efreet_config_home_get());
+   snprintf(buf, sizeof(buf), "%s/enventor/config.eet", config_home);
    Eet_File *ef = eet_open(buf, EET_FILE_MODE_WRITE);
    if (!ef)
      {
@@ -395,6 +398,7 @@ void
 config_term(void)
 {
    config_data *cd = g_cd;
+   if (!cd) return;
 
    config_save(cd);
 

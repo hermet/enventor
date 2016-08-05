@@ -13,6 +13,8 @@ typedef struct app_s
    Eina_Bool lazy_save : 1;
 } app_data;
 
+static Eina_Bool own_lock = EINA_FALSE;  //lock file owner?
+
 int main(int argc, char **argv);
 
 static void
@@ -913,6 +915,150 @@ keygrabber_init(app_data *ad)
 }
 
 static Eina_Bool
+enventor_lock_create(void)
+{
+   const char *config_home = efreet_config_home_get();
+
+   //Exception 1
+   //Create config home directory if it doesn't exist.
+   if (!config_home)
+     {
+        EINA_LOG_ERR("No config home directory?! = %s", config_home);
+        return EINA_TRUE;
+     }
+
+   //Exception 2
+   //Create config home directory if it doesn't exist.
+   if (!ecore_file_exists(config_home))
+     {
+        Eina_Bool success = ecore_file_mkdir(efreet_config_home_get());
+        if (!success)
+          {
+             EINA_LOG_ERR(_("Cannot create a config folder \"%s\""),
+                          config_home);
+             return EINA_TRUE;
+          }
+     }
+
+   char buf[PATH_MAX];
+   snprintf(buf, sizeof(buf), "%s/enventor", config_home);
+
+   //Exception 3
+   //Create enventor config folder if it doesn't exist.
+   if (!ecore_file_exists(buf))
+     {
+        Eina_Bool success = ecore_file_mkdir(buf);
+        if (!success)
+          {
+             EINA_LOG_ERR(_("Cannot create a enventor config folder \"%s\""),
+                          buf);
+             return EINA_TRUE;
+          }
+     }
+
+   snprintf(buf, sizeof(buf), "%s/enventor/"ENVENTOR_LOCK_FILE, config_home);
+
+   //Is there any other Enventor instance?
+   if (ecore_file_exists(buf))
+     {
+        fprintf(stdout, "Enventor program is already running!\n\n"
+                        "If you are really stuck in launching enventor due to "
+                        "this,\nTry removing a file \"%s\"\n", buf);
+        return EINA_FALSE;
+     }
+
+   //Ok, this is an unique instance!
+   FILE *fp = fopen(buf, "w");
+   if (!fp)
+     {
+        EINA_LOG_ERR("Failed to open file \"%s\"", buf);
+        return EINA_TRUE;
+     }
+   fputs("x", fp);
+   fclose(fp);
+
+   own_lock = EINA_TRUE;
+
+   return EINA_TRUE;
+}
+
+static void
+enventor_lock_remove()
+{
+   //You are not the owner of the lock.
+   if (!own_lock) return;
+
+   const char *config_home = efreet_config_home_get();
+   //Create config home directory if it doesn't exist.
+   if (!config_home || !ecore_file_exists(config_home))
+     {
+        EINA_LOG_ERR("No config home directory?! = %s", config_home);
+        return;
+     }
+
+   char buf[PATH_MAX];
+   snprintf(buf, sizeof(buf), "%s/enventor/"ENVENTOR_LOCK_FILE,
+            efreet_config_home_get());
+
+   //Just in case.
+   if (!ecore_file_exists(buf))
+     {
+        EINA_LOG_ERR("No enventor lock file?! = %s", buf);
+        return;
+     }
+
+   ecore_file_remove(buf);
+}
+
+static void
+crash_handler(int x EINA_UNUSED, siginfo_t *info EINA_UNUSED,
+              void *data EINA_UNUSED)
+{
+   EINA_LOG_ERR("Eeeek! Eventor is terminated abnormally!");
+   enventor_lock_remove();
+}
+
+static void
+sigaction_setup(void)
+{
+   //Just in case, if you are debugging using gdb,
+   //you can send signals like this. "handle SIGABRT pass"
+   //Use this for remove the enventor lock.
+
+   struct sigaction action;
+
+   memset(&action, 0x0, sizeof(action));
+   action.sa_handler = SIG_DFL;
+   action.sa_sigaction = crash_handler;
+   action.sa_flags = SA_NODEFER  | SA_RESETHAND | SA_SIGINFO;
+   sigemptyset(&action.sa_mask);
+
+   //Bus error (bad memory access)
+   sigaction(SIGBUS, &action, NULL);
+
+   //Floating pointer exception
+   sigaction(SIGFPE, &action, NULL);
+
+   //Illegal Instruction
+   sigaction(SIGILL, &action, NULL);
+
+   //Invalid memory reference
+   sigaction(SIGSEGV, &action, NULL);
+
+   //Kill
+   sigaction(SIGKILL, &action, NULL);
+
+   //Abort
+   sigaction(SIGABRT, &action, NULL);
+
+   //Stop
+   sigaction(SIGSTOP, &action, NULL);
+
+   //Interrupt from keyboard
+//   sigaction(SIGINT, &action, NULL);
+}
+
+static Eina_Bool
 init(app_data *ad, int argc, char **argv)
 {
 #ifdef ENABLE_NLS
@@ -922,8 +1068,11 @@ init(app_data *ad, int argc, char **argv)
 #endif /* set locale */
 
    elm_setup();
-
    enventor_init(argc, argv);
+
+   if (!enventor_lock_create()) return EINA_FALSE;
+   sigaction_setup();
+
 
    Eina_Bool template = EINA_FALSE;
    Eina_Bool default_edc = EINA_TRUE;
@@ -967,6 +1116,7 @@ term(void)
    base_gui_term();
    file_mgr_term();
    config_term();
+   enventor_lock_remove();
    enventor_shutdown();
 }
 

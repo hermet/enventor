@@ -228,7 +228,7 @@ void
 file_mgr_term(void)
 {
    file_mgr_data *fmd = g_fmd;
-   EINA_SAFETY_ON_NULL_RETURN(fmd);
+   if (!fmd) return;
 
    free(fmd);
 }

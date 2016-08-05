@@ -383,7 +383,7 @@ void
 stats_term(void)
 {
    stats_data *sd = g_sd;
-   EINA_SAFETY_ON_NULL_RETURN(sd);
+   if (!sd) return;
 
    eina_stringshare_del(sd->group_name);
    free(sd);

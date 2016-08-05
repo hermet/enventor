@@ -266,7 +266,7 @@ void
 base_gui_term(void)
 {
    base_data *bd = g_bd;
-   EINA_SAFETY_ON_NULL_RETURN(bd);
+   if (!bd) return;
 
    ecore_timer_del(bd->edc_navi_update_timer);
    file_browser_term();

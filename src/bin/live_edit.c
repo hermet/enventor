@@ -2345,7 +2345,7 @@ void
 live_edit_term(void)
 {
    live_data *ld = g_ld;
-   EINA_SAFETY_ON_NULL_RETURN(ld);
+   if (!ld) return;
 
    live_edit_cancel(EINA_FALSE);
 
