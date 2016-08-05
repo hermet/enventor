@@ -151,6 +151,92 @@ layout_del_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED, Evas_Object *obj,
    wireframes_obj_del(obj);
 }
 
+static void
+update_wireframe_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
+                    void *event_info EINA_UNUSED)
+{
+   wireframes_obj *wireframes = data;
+
+   Eina_List *part_l;
+   part_obj *po;
+   Evas_Object *pobj = NULL;
+
+   const char *part_name = evas_object_data_get(obj, "part_name");
+
+   //Find the wireframe matched to the part name.
+   EINA_LIST_FOREACH(wireframes->part_list, part_l, po)
+     {
+        if (po->name != part_name) continue;
+        pobj = po->obj;
+        break;
+     }
+
+   //Update the wireframe of the part name.
+   if (pobj)
+     {
+        Evas_Coord part_lx = 0, part_ly = 0;
+        Evas_Coord part_x = 0, part_y = 0, part_w = 0, part_h = 0;
+
+        Evas_Object *part_obj = (Evas_Object *)
+                                edje_object_part_object_get(wireframes->layout,
+                                                            part_name);
+
+        evas_object_geometry_get(part_obj, &part_x, &part_y, &part_w, &part_h);
+
+        evas_object_resize(pobj, part_w, part_h);
+        evas_object_move(pobj, part_x, part_y);
+     }
+}
+
+static void
+wireframes_callbacks_set(wireframes_obj *wireframes, Evas_Object *layout)
+{
+   Eina_List *l = NULL;
+   Eina_Stringshare *part_name = NULL;
+   Eina_List *parts = edje_edit_parts_list_get(layout);
+
+   //Set resize and move callback to the edje part in layout to update wireframe.
+   EINA_LIST_FOREACH(parts, l, part_name)
+     {
+        Evas_Object *edje_part =
+              (Evas_Object *)edje_object_part_object_get(layout, part_name);
+        if (edje_part)
+          {
+             evas_object_event_callback_del(edje_part, EVAS_CALLBACK_RESIZE,
+                                            update_wireframe_cb);
+             evas_object_event_callback_del(edje_part, EVAS_CALLBACK_MOVE,
+                                            update_wireframe_cb);
+             evas_object_event_callback_add(edje_part, EVAS_CALLBACK_RESIZE,
+                                            update_wireframe_cb, wireframes);
+             evas_object_event_callback_add(edje_part, EVAS_CALLBACK_MOVE,
+                                            update_wireframe_cb, wireframes);
+          }
+     }
+}
+
+static void
+wireframes_callbacks_del(wireframes_obj *wireframes, Evas_Object *layout)
+{
+   Eina_List *l = NULL;
+   Eina_Stringshare *part_name = NULL;
+   Eina_List *parts = edje_edit_parts_list_get(layout);
+
+   //Remove the callback of wireframe
+   EINA_LIST_FOREACH(parts, l, part_name)
+     {
+        Evas_Object *edje_part =
+              (Evas_Object *)edje_object_part_object_get(layout, part_name);
+        if (edje_part)
+          {
+             evas_object_event_callback_del(edje_part, EVAS_CALLBACK_RESIZE,
+                                            update_wireframe_cb);
+             evas_object_event_callback_del(edje_part, EVAS_CALLBACK_MOVE,
+                                            update_wireframe_cb);
+          }
+     }
+
+}
+
 /*****************************************************************************/
 /* Externally accessible calls                                               */
 /*****************************************************************************/
@@ -161,6 +247,14 @@ wireframes_obj_update(Evas_Object *layout)
    wireframes_obj *wireframes = evas_object_data_get(layout, OUTLINEOBJ);
    if (!wireframes) return;
    wireframes_objs_update(wireframes);
+}
+
+void
+wireframes_obj_callbacks_set(Evas_Object *layout)
+{
+   wireframes_obj *wireframes = evas_object_data_get(layout, OUTLINEOBJ);
+   if (!wireframes) return;
+   wireframes_callbacks_set(wireframes, layout);
 }
 
 void
@@ -184,12 +278,9 @@ wireframes_obj_new(Evas_Object *layout)
    evas_object_event_callback_add(layout, EVAS_CALLBACK_DEL, layout_del_cb,
                                   wireframes);
 
-   evas_object_event_callback_add(layout, EVAS_CALLBACK_RESIZE,
-                                  layout_geom_changed_cb, wireframes);
-   evas_object_event_callback_add(layout, EVAS_CALLBACK_MOVE,
-                                  layout_geom_changed_cb, wireframes);
    wireframes->layout = layout;
    wireframes->animator = animator;
+   wireframes_callbacks_set(wireframes, layout);
 }
 
 void
@@ -198,10 +289,7 @@ wireframes_obj_del(Evas_Object *layout)
    wireframes_obj *wireframes = evas_object_data_get(layout, OUTLINEOBJ);
    if (!wireframes) return;
 
-   evas_object_event_callback_del_full(layout, EVAS_CALLBACK_RESIZE,
-                                       layout_geom_changed_cb, wireframes);
-   evas_object_event_callback_del_full(layout, EVAS_CALLBACK_MOVE,
-                                       layout_geom_changed_cb, wireframes);
+   wireframes_callbacks_del(wireframes, layout);
 
    part_obj *po;
    EINA_LIST_FREE(wireframes->part_list, po)

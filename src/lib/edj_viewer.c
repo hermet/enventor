@@ -379,6 +379,7 @@ update_edj_file_internal(view_data *vd)
                                      vd->changed_part.state);
 
    view_obj_parts_callbacks_set(vd);
+   wireframes_obj_callbacks_set(vd->layout);
    vd->edj_reload_need = EINA_FALSE;
    vd->file_set_finished = EINA_TRUE;
 
@@ -928,6 +929,5 @@ view_mirror_mode_update(view_data *vd)
    edje_object_mirrored_set(vd->layout,
                             enventor_obj_mirror_mode_get(vd->enventor));
    dummy_obj_update(vd->layout);
-   wireframes_obj_update(vd->layout);
    part_obj_geom_cb(vd, evas_object_evas_get(vd->layout), vd->part_obj, NULL);
 }

@@ -163,6 +163,7 @@ void dummy_obj_update(Evas_Object *layout);
 void wireframes_obj_new(Evas_Object *layout);
 void wireframes_obj_del(Evas_Object *layout);
 void wireframes_obj_update(Evas_Object *layout);
+void wireframes_obj_callbacks_set(Evas_Object *layout);
 
 /* edj_mgr */
 void edj_mgr_init(Enventor_Object *enventor);
