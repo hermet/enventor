@@ -277,6 +277,7 @@ syntax_color_partial_update(edit_data *ed, double interval)
      {
         ecore_thread_cancel(ed->sctd->thread);
         ed->sctd->ed = NULL;
+        ed->sctd = NULL;
      }
    ecore_timer_del(ed->syntax_color_timer);
    ed->syntax_color_timer = ecore_timer_add(interval, syntax_color_timer_cb,
