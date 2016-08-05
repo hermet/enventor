@@ -786,12 +786,15 @@ view_scale_set(view_data *vd, double scale)
    if (!vd || !vd->layout) return;
    if (scale == edje_object_scale_get(vd->layout)) return;
 
+   vd->view_scale = scale;
+
    int pminw, pminh;
    evas_object_size_hint_min_get(vd->layout, &pminw, &pminh);
    Evas_Coord sx, sy, sw, sh;
    elm_scroller_region_get(vd->scroller, &sx, &sy, &sw, &sh);
 
    edje_object_scale_set(vd->layout, scale);
+
    view_obj_min_update(vd);
 
    //adjust scroller position according to the scale change.
@@ -808,8 +811,6 @@ view_scale_set(view_data *vd, double scale)
 
    elm_scroller_region_show(vd->scroller, ((Evas_Coord) cx) - (sw / 2),
                             ((Evas_Coord) cy) - (sh / 2), sw, sh);
-
-   vd->view_scale = scale;
 }
 
 void
