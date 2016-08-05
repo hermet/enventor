@@ -55,7 +55,9 @@ files_DATA = Basic.edc \
              BgAnimation.edc \
              BgAnimation.edj \
              GameStage.edc \
-             GameStage.edj
+             GameStage.edj \
+             Mask.edc \
+             Mask.edj
 
 EXTRA_DIST = $(files_DATA)
 
@@ -140,6 +142,8 @@ BgAnimation.edj: Makefile BgAnimation.edc
 GameStage.edj: Makefile GameStage.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/GameStage.edc $(builddir)/GameStage.edj
 
+Mask.edj: Makefile Mask.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $(srcdir)/Mask.edc $(builddir)/Mask.edj
 
 clean-local:
 	rm -f *.edj
