@@ -210,7 +210,7 @@ live_edit_set(void)
    base_live_edit_fixed_bar_set(fixed_bar);
 }
 
-static void
+static Eina_Bool
 args_dispatch(int argc, char **argv,
               char *edc_path, char *edj_path, char *workspace_path,
               Eina_List **img_path, Eina_List **snd_path,
@@ -289,11 +289,12 @@ args_dispatch(int argc, char **argv,
      }
 
    if ((ecore_getopt_parse(&optdesc, values, argc, argv) < 0) || quit)
-        exit(0);
+     return EINA_FALSE;
+
    if (help)
      {
         fprintf(stdout, ENVENTOR_HELP_EXAMPLES);
-        exit(0);
+        return EINA_FALSE;
      }
 
 defaults:
@@ -311,7 +312,7 @@ defaults:
           {
              fprintf(stdout, "\"%s\" already exists! Please input another file "
                      "name with \"-t\" option.\n", edc_path);
-             exit(0);
+             return EINA_FALSE;
           }
      }
 
@@ -345,6 +346,8 @@ defaults:
        {
           sprintf(workspace_path, ".");
        }
+
+     return EINA_TRUE;
 }
 
 static Eina_Bool
@@ -358,9 +361,10 @@ config_data_set(int argc, char **argv, Eina_Bool *default_edc,
    Eina_List *snd_path = NULL;
    Eina_List *fnt_path = NULL;
    Eina_List *dat_path = NULL;
-   args_dispatch(argc, argv, edc_path, edj_path, workspace_path,
-                 &img_path, &snd_path, &fnt_path, &dat_path,
-                 default_edc, template, PATH_MAX);
+   if (!args_dispatch(argc, argv, edc_path, edj_path, workspace_path,
+                      &img_path, &snd_path, &fnt_path, &dat_path,
+                      default_edc, template, PATH_MAX))
+     return EINA_FALSE;
    if (!config_init(edc_path, edj_path, workspace_path,
                     img_path, snd_path, fnt_path, dat_path))
      return EINA_FALSE;
