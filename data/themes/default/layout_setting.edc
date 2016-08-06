@@ -1,7 +1,8 @@
 images {
    image: "frame_bg.png" COMP;
    image: "setting_icon.png" COMP;
-   image: "folder.png" COMP;
+   image: "icon_folder.png" COMP;
+   image: "brows_logo.png" COMP;
 }
 
 group { "setting_layout";
@@ -210,10 +211,19 @@ group { "setting_layout";
 
 group { "build_setting_layout";
    parts {
-      spacer { "img_path_frame";
+      spacer { "main_edc_frame";
          desc {
             rel1 { relative: 0 0; }
             rel2 { relative: 1 0; }
+            align: 0.5 0;
+            min: 0 30;
+            fixed: 0 1;
+         }
+      }
+      spacer { "img_path_frame";
+         desc {
+            rel1 { to: "main_edc_frame"; relative: 0 1; }
+            rel2 { to: "main_edc_frame"; relative: 1 1; }
             align: 0.5 0;
             min: 0 30;
             fixed: 0 1;
@@ -259,6 +269,57 @@ group { "build_setting_layout";
             fixed: 0 1;
          }
       }
+      image { "main_edc_icon";
+         scale: 1;
+         desc {
+            align: 0 0.5;
+            min: 20 20;
+            max: 20 20;
+            fixed: 1 1;
+            rel1.to: "main_edc_frame";
+            rel2.to: "main_edc_frame";
+            image.normal: "brows_logo.png";
+         }
+      }
+      text { "main_edc_guide";
+         scale: 1;
+         effect: SHADOW BOTTOM;
+         desc {
+            rel1 { to: "main_edc_icon"; relative: 1 0; offset: 5 1; }
+            rel2 { to: "main_edc_icon"; relative: 1 1; }
+            color: COL_NM;
+            align: 0 0.5;
+            fixed: 1 1;
+            text {
+               font: FN;
+               text: "Main EDC File:";
+               size: 11;
+               align: 0 0.5;
+               min: 1 0;
+               ellipsis: -1;
+            }
+         }
+      }
+      swallow { "elm.swallow.main_edc_entry";
+         scale: 1;
+         desc {
+            align: 0 0;
+            fixed: 1 1;
+            rel1.to_x: "main_edc_guide";
+            rel1.to_y: "main_edc_guide";
+            rel1.offset: 5 0;
+            rel1.relative: 1 0;
+            rel2.to: "main_edc_frame";
+         }
+      }
+      swallow { "main_edc_tooltip";
+         repeat_events: 1;
+         desc {
+            rel1.to: "main_edc_frame";
+            rel2.to: "main_edc_frame";
+            fixed: 1 1;
+         }
+      }
       image { "img_path_icon";
          scale: 1;
          desc {
@@ -268,7 +329,7 @@ group { "build_setting_layout";
             fixed: 1 1;
             rel1.to: "img_path_frame";
             rel2.to: "img_path_frame";
-            image.normal: "folder.png";
+            image.normal: "icon_folder.png";
          }
       }
       text { "img_path_guide";
@@ -319,7 +380,7 @@ group { "build_setting_layout";
             fixed: 1 1;
             rel1.to: "snd_path_frame";
             rel2.to: "snd_path_frame";
-            image.normal: "folder.png";
+            image.normal: "icon_folder.png";
          }
       }
       text { "snd_path_guide";
@@ -370,7 +431,7 @@ group { "build_setting_layout";
             fixed: 1 1;
             rel1.to: "fnt_path_frame";
             rel2.to: "fnt_path_frame";
-            image.normal: "folder.png";
+            image.normal: "icon_folder.png";
          }
       }
       text { "fnt_path_guide";
@@ -421,7 +482,7 @@ group { "build_setting_layout";
             fixed: 1 1;
             rel1.to: "dat_path_frame";
             rel2.to: "dat_path_frame";
-            image.normal: "folder.png";
+            image.normal: "icon_folder.png";
          }
       }
       text { "dat_path_guide";

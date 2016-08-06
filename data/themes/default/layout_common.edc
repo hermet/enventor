@@ -1,8 +1,8 @@
 images {
    image: "frame_bg.png" COMP;
    image: "warning.png" COMP;
-   image: "folder.png" COMP;
-   image: "new.png" COMP;
+   image: "icon_folder.png" COMP;
+   image: "brows_logo.png" COMP;
    image: "shine.png" COMP;
    image: "bub_over_bot.png" COMP;
    image: "disabler.png" COMP;
@@ -82,7 +82,7 @@ group { "fileselector_layout";
             fixed: 1 1;
             rel1.to: "title_frame";
             rel2.to: "title_frame";
-            image.normal: "folder.png";
+            image.normal: "icon_folder.png";
          }
       }
       text { "elm.text.title";
@@ -278,7 +278,7 @@ group { "newfile_layout";
             fixed: 1 1;
             rel1.to: "title_frame";
             rel2.to: "title_frame";
-            image.normal: "new.png";
+            image.normal: "brows_logo.png";
          }
       }
       text { "elm.text.title";

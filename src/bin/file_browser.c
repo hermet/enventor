@@ -586,20 +586,7 @@ static void
 refresh_btn_clicked_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
                        void *event_info EINA_UNUSED)
 {
-   brows_data *bd = g_bd;
-   if (!bd) return;
-
-   if (bd->mode == FILE_BROWSER_MODE_DEFAULT)
-     file_browser_workspace_reset();
-   else
-     {
-        if (bd->search_file_list)
-          {
-             brows_file_list_free(bd->search_file_list);
-             bd->search_file_list = NULL;
-          }
-        search_file_set(config_workspace_path_get());
-     }
+   file_browser_refresh();
 }
 
 static void
@@ -820,4 +807,24 @@ file_browser_tools_visible_set(Eina_Bool visible)
      elm_object_signal_emit(bd->base_layout, "elm,state,tools,show", "");
    else
      elm_object_signal_emit(bd->base_layout, "elm,state,tools,hide", "");
+}
+
+void
+file_browser_refresh(void)
+{
+   brows_data *bd = g_bd;
+   if (!bd) return;
+
+   if (bd->mode == FILE_BROWSER_MODE_DEFAULT)
+     file_browser_workspace_reset();
+   else
+     {
+        if (bd->search_file_list)
+          {
+             brows_file_list_free(bd->search_file_list);
+             bd->search_file_list = NULL;
+          }
+        search_file_set(config_workspace_path_get());
+     }
+
 }

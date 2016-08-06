@@ -12,7 +12,6 @@ EXTRA_DIST = \
    bt_hilight.png \
    bt_shine.png \
    bub_over_bot.png \
-   folder.png \
    glow_small.png \
    holes_tiny_glow_horiz.png \
    holes_tiny_glow_vert.png \
@@ -59,7 +58,6 @@ EXTRA_DIST = \
    live_spacer_icon.png \
    live_text.png \
    live_textblock.png \
-   new.png \
    slider_up.png \
    slider_down.png \
    save.png \

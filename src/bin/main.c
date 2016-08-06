@@ -116,6 +116,19 @@ syntax_color_init(Enventor_Object *enventor)
 }
 
 static void
+main_edc_update(void)
+{
+   //Update file browser only if main item is changed,
+   Enventor_Item *main_it = enventor_object_main_item_get(base_enventor_get());
+   const char *prev_path = NULL;
+   if (main_it) prev_path = enventor_item_file_get(main_it);
+   if (prev_path == config_input_path_get()) return;
+
+   file_mgr_main_file_set(config_input_path_get());
+   file_browser_refresh();
+}
+
+static void
 config_update_cb(void *data EINA_UNUSED)
 {
    Enventor_Object *enventor = base_enventor_get();
@@ -127,6 +140,8 @@ config_update_cb(void *data EINA_UNUSED)
    base_tools_toggle(EINA_FALSE);
    base_statusbar_toggle(EINA_FALSE);
    base_console_auto_hide();
+
+   main_edc_update();
 }
 
 static Eina_Bool
@@ -563,7 +578,7 @@ enventor_mouse_down_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
    base_edc_navigator_deselect();
 }
 
-static void
+static Enventor_Object *
 enventor_setup(app_data *ad)
 {
    Enventor_Object *enventor = enventor_object_add(base_layout_get());
@@ -603,8 +618,8 @@ enventor_setup(app_data *ad)
    enventor_common_setup(enventor);
 
    base_enventor_set(enventor);
-   file_mgr_main_file_set(config_input_path_get());
-   base_live_view_set(enventor_object_live_view_get(enventor));
+
+   return enventor;
 }
 
 static Eina_Bool
@@ -1059,33 +1074,38 @@ init(app_data *ad, int argc, char **argv)
    enventor_init(argc, argv);
 
    if (!enventor_lock_create()) return EINA_FALSE;
-   sigaction_setup();
 
+   sigaction_setup();
 
    Eina_Bool template = EINA_FALSE;
    Eina_Bool default_edc = EINA_TRUE;
    if (!config_data_set(argc, argv, &default_edc, &template))
      return EINA_FALSE;
+
    newfile_default_set(default_edc);
    base_gui_init();
    statusbar_set();
-   enventor_setup(ad);
+   Enventor_Object *enventor = enventor_setup(ad);
    file_mgr_init();
+
+   file_mgr_main_file_set(config_input_path_get());
+   base_live_view_set(enventor_object_live_view_get(enventor));
+
    tools_set();
    live_edit_set();
 
    base_gui_show();
 
    //Guarantee Enventor editor has focus.
-   enventor_object_focus_set(base_enventor_get(), EINA_TRUE);
+   enventor_object_focus_set(enventor, EINA_TRUE);
 
    menu_init();
 
    if (template) menu_edc_new(EINA_TRUE);
 
    //Initialize syntax color.
-   syntax_color_init(base_enventor_get());
-   syntax_color_update(base_enventor_get());
+   syntax_color_init(enventor);
+   syntax_color_update(enventor);
 
    keygrabber_init(ad);
 

@@ -6,6 +6,7 @@
 typedef struct build_setting_s
 {
    Evas_Object *layout;
+   Evas_Object *main_edc_entry;
    Evas_Object *img_path_entry;
    Evas_Object *snd_path_entry;
    Evas_Object *fnt_path_entry;
@@ -26,6 +27,12 @@ entry_create(Evas_Object *parent)
    evas_object_show(entry);
 
    return entry;
+}
+
+static void
+main_edc_entry_update(Evas_Object *entry, const char *path)
+{
+   elm_entry_entry_set(entry, path);
 }
 
 static void
@@ -93,7 +100,7 @@ build_setting_focus_set(build_setting_data *bsd)
 {
    EINA_SAFETY_ON_NULL_RETURN(bsd);
 
-   elm_object_focus_set(bsd->img_path_entry, EINA_TRUE);
+   elm_object_focus_set(bsd->main_edc_entry, EINA_TRUE);
 }
 
 void
@@ -101,6 +108,7 @@ build_setting_config_set(build_setting_data *bsd)
 {
    if (!bsd) return;
 
+   config_input_path_set(elm_object_text_get(bsd->main_edc_entry));
    config_img_path_set(elm_object_text_get(bsd->img_path_entry));
    config_snd_path_set(elm_object_text_get(bsd->snd_path_entry));
    config_fnt_path_set(elm_object_text_get(bsd->fnt_path_entry));
@@ -112,6 +120,7 @@ build_setting_reset(build_setting_data *bsd)
 {
    if (!bsd) return;
 
+   main_edc_entry_update(bsd->main_edc_entry, config_input_path_get());
    img_path_entry_update(bsd->img_path_entry,
                          (Eina_List *)config_img_path_list_get());
    snd_path_entry_update(bsd->snd_path_entry,
@@ -135,11 +144,29 @@ build_setting_content_get(build_setting_data *bsd, Evas_Object *parent)
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_show(layout);
 
+   //Main EDC Path Entry
+   Evas_Object *main_edc_entry = entry_create(layout);
+   main_edc_entry_update(main_edc_entry, config_input_path_get());
+   elm_object_focus_set(main_edc_entry, EINA_TRUE);
+   elm_object_part_content_set(layout, "elm.swallow.main_edc_entry",
+                               main_edc_entry);
+   elm_layout_text_set(layout, "main_edc_guide", _("Main EDC File:"));
+
+   //Main EDC Path Tooltip
+   Evas_Object *main_edc_tooltip = elm_button_add(layout);
+   elm_object_style_set(main_edc_tooltip, ENVENTOR_NAME);
+   elm_object_part_content_set(layout, "main_edc_tooltip", main_edc_tooltip);
+
+   elm_object_tooltip_text_set(main_edc_tooltip,
+                               _("Main EDC File path, which is containing<br>"
+                                 "collections, used for a current<br>"
+                                 "project."));
+   elm_object_focus_allow_set(main_edc_tooltip, EINA_FALSE);
+
    //Image Path Entry
    Evas_Object *img_path_entry = entry_create(layout);
    img_path_entry_update(img_path_entry,
                          (Eina_List *)config_img_path_list_get());
-   elm_object_focus_set(img_path_entry, EINA_TRUE);
    elm_object_part_content_set(layout, "elm.swallow.img_path_entry",
                                img_path_entry);
    elm_layout_text_set(layout, "img_path_guide", _("Image paths:"));
@@ -209,6 +236,7 @@ build_setting_content_get(build_setting_data *bsd, Evas_Object *parent)
    elm_object_focus_allow_set(data_path_tooltip, EINA_FALSE);
 
    bsd->layout = layout;
+   bsd->main_edc_entry = main_edc_entry;
    bsd->img_path_entry = img_path_entry;
    bsd->snd_path_entry = snd_path_entry;
    bsd->fnt_path_entry = fnt_path_entry;

@@ -331,6 +331,7 @@ void
 config_input_path_set(const char *input_path)
 {
    config_data *cd = g_cd;
+   if (input_path == cd->input_path) return;
    eina_stringshare_replace(&cd->input_path, input_path);
    config_edj_path_update(cd);
 }
