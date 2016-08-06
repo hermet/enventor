@@ -917,46 +917,30 @@ keygrabber_init(app_data *ad)
 static Eina_Bool
 enventor_lock_create(void)
 {
-   const char *config_home = efreet_config_home_get();
+   //Tempoary Folder
+   const char *tmpdir = eina_environment_tmp_get();
 
    //Exception 1
-   //Create config home directory if it doesn't exist.
-   if (!config_home)
+   if (!tmpdir)
      {
-        EINA_LOG_ERR("No config home directory?! = %s", config_home);
+        EINA_LOG_ERR("No temporary directory?!");
         return EINA_TRUE;
      }
 
    //Exception 2
-   //Create config home directory if it doesn't exist.
-   if (!ecore_file_exists(config_home))
+   //Create temp directory if it doesn't exist.
+   if (!ecore_file_path_dir_exists(tmpdir))
      {
-        Eina_Bool success = ecore_file_mkdir(efreet_config_home_get());
+        Eina_Bool success = ecore_file_mkdir(tmpdir);
         if (!success)
           {
-             EINA_LOG_ERR(_("Cannot create a config folder \"%s\""),
-                          config_home);
+             EINA_LOG_ERR(_("Cannot create temporary diretory \"%s\""), tmpdir);
              return EINA_TRUE;
           }
      }
 
    char buf[PATH_MAX];
-   snprintf(buf, sizeof(buf), "%s/enventor", config_home);
-
-   //Exception 3
-   //Create enventor config folder if it doesn't exist.
-   if (!ecore_file_exists(buf))
-     {
-        Eina_Bool success = ecore_file_mkdir(buf);
-        if (!success)
-          {
-             EINA_LOG_ERR(_("Cannot create a enventor config folder \"%s\""),
-                          buf);
-             return EINA_TRUE;
-          }
-     }
-
-   snprintf(buf, sizeof(buf), "%s/enventor/"ENVENTOR_LOCK_FILE, config_home);
+   snprintf(buf, sizeof(buf), "%s/"ENVENTOR_LOCK_FILE, tmpdir);
 
    //Is there any other Enventor instance?
    if (ecore_file_exists(buf))
@@ -988,17 +972,22 @@ enventor_lock_remove()
    //You are not the owner of the lock.
    if (!own_lock) return;
 
-   const char *config_home = efreet_config_home_get();
-   //Create config home directory if it doesn't exist.
-   if (!config_home || !ecore_file_exists(config_home))
+   //Tempoary Folder
+   const char *tmpdir = eina_environment_tmp_get();
+   if (!tmpdir)
      {
-        EINA_LOG_ERR("No config home directory?! = %s", config_home);
+        EINA_LOG_ERR("No temporary directory?!");
+        return;
+     }
+
+   if (!ecore_file_path_dir_exists(tmpdir))
+     {
+        EINA_LOG_ERR("Cannot access to temporary directory?! = %s", tmpdir);
         return;
      }
 
    char buf[PATH_MAX];
-   snprintf(buf, sizeof(buf), "%s/enventor/"ENVENTOR_LOCK_FILE,
-            efreet_config_home_get());
+   snprintf(buf, sizeof(buf), "%s/"ENVENTOR_LOCK_FILE, tmpdir);
 
    //Just in case.
    if (!ecore_file_exists(buf))
