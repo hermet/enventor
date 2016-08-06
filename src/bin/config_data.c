@@ -44,15 +44,6 @@ typedef struct config_s
    Eina_Bool edc_navigator;
    Eina_Bool red_alert;
    Eina_Bool file_tab;
-
-   /* These two loaded variables are used for value overriding.
-      file_browser and file_tab will be forcely disabled if the workspace were
-      not given by user. In that case, these variables would have false always.
-      So, store original setting values here to keep the Enventor config
-      properly. */
-   Eina_Bool file_browser_loaded;
-   Eina_Bool file_tab_loaded;
-
 } config_data;
 
 static config_data *g_cd = NULL;
@@ -131,10 +122,6 @@ config_save(config_data *cd)
         EINA_LOG_ERR(_("Cannot save a config file \"%s\""), buf);
         return;
      }
-
-   //Restore loaded file browser & file tab config.
-   cd->file_browser = cd->file_browser_loaded;
-   cd->file_tab = cd->file_tab_loaded;
 
    eet_data_write(ef, edd_base, "config", cd, 1);
    eet_close(ef);
@@ -268,10 +255,6 @@ config_load(void)
    if (!cd->font_style)
      eina_stringshare_replace(&cd->font_style, "Regular");
 
-   //Store loaded file browser config.
-   cd->file_browser_loaded = cd->file_browser;
-   cd->file_tab_loaded = cd->file_tab;
-
    return cd;
 }
 
@@ -356,8 +339,7 @@ Eina_Bool
 config_init(const char *input_path, const char *output_path,
             const char *workspace_path,
             Eina_List *img_path, Eina_List *snd_path,
-            Eina_List *fnt_path, Eina_List *dat_path,
-            Eina_Bool default_workspace)
+            Eina_List *fnt_path, Eina_List *dat_path)
 {
    eddc_init();
 
@@ -370,14 +352,6 @@ config_init(const char *input_path, const char *output_path,
 
    if (workspace_path[0])
      eina_stringshare_replace(&cd->workspace_path, workspace_path);
-
-   //In case of default workspace
-   //we don't turn on file browser and file tab in default.
-   if (default_workspace)
-     {
-        cd->file_browser = EINA_FALSE;
-        cd->file_tab = EINA_FALSE;
-     }
 
    if (img_path)
      cd->img_path_list = img_path;
@@ -739,7 +713,6 @@ config_file_tab_set(Eina_Bool enabled)
    EINA_SAFETY_ON_NULL_RETURN(cd);
 
    cd->file_tab = enabled;
-   cd->file_tab_loaded = enabled;
 }
 
 Eina_Bool
@@ -1076,7 +1049,6 @@ config_file_browser_set(Eina_Bool enabled)
    EINA_SAFETY_ON_NULL_RETURN(cd);
 
    cd->file_browser = enabled;
-   cd->file_browser_loaded = enabled;
 }
 
 Eina_Bool

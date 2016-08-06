@@ -3,7 +3,7 @@
 #define MAX_VIEW_SCALE 5.0
 #define MIN_VIEW_SCALE 0.1
 
-Eina_Bool config_init(const char *input_path, const char *output_path, const char *workspace_path, Eina_List *img_path, Eina_List *snd_path, Eina_List *fnt_path, Eina_List *dat_path, Eina_Bool default_workspace);
+Eina_Bool config_init(const char *input_path, const char *output_path, const char *workspace_path, Eina_List *img_path, Eina_List *snd_path, Eina_List *fnt_path, Eina_List *dat_path);
 void config_term(void);
 const char *config_input_path_get(void);
 const char *config_output_path_get(void);

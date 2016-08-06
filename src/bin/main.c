@@ -210,7 +210,7 @@ live_edit_set(void)
    base_live_edit_fixed_bar_set(fixed_bar);
 }
 
-static Eina_Bool
+static void
 args_dispatch(int argc, char **argv,
               char *edc_path, char *edj_path, char *workspace_path,
               Eina_List **img_path, Eina_List **snd_path,
@@ -227,7 +227,6 @@ args_dispatch(int argc, char **argv,
 
    Eina_Bool quit = EINA_FALSE;
    Eina_Bool help = EINA_FALSE;
-   Eina_Bool default_workspace = EINA_TRUE;
 
    //No arguments. set defaults
    if (argc == 1) goto defaults;
@@ -341,13 +340,11 @@ defaults:
        {
           sprintf(workspace_path, "%s", (char *)eina_list_data_get(wd));
           EINA_LIST_FREE(wd, s) free(s);
-          default_workspace = EINA_FALSE;
        }
      else
        {
           sprintf(workspace_path, ".");
        }
-     return default_workspace;
 }
 
 static Eina_Bool
@@ -361,13 +358,11 @@ config_data_set(int argc, char **argv, Eina_Bool *default_edc,
    Eina_List *snd_path = NULL;
    Eina_List *fnt_path = NULL;
    Eina_List *dat_path = NULL;
-   Eina_Bool default_workspace =
-      args_dispatch(argc, argv, edc_path, edj_path, workspace_path,
+   args_dispatch(argc, argv, edc_path, edj_path, workspace_path,
                  &img_path, &snd_path, &fnt_path, &dat_path,
                  default_edc, template, PATH_MAX);
    if (!config_init(edc_path, edj_path, workspace_path,
-                    img_path, snd_path, fnt_path, dat_path,
-                    default_workspace))
+                    img_path, snd_path, fnt_path, dat_path))
      return EINA_FALSE;
    config_update_cb_set(config_update_cb, NULL);
 
