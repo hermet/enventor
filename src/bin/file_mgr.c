@@ -242,14 +242,17 @@ file_mgr_file_del(Enventor_Item *it)
 }
 
 Enventor_Item *
-file_mgr_sub_file_add(const char *path)
+file_mgr_sub_file_add(const char *path, Eina_Bool focus)
 {
    Enventor_Item *it = enventor_object_sub_item_add(base_enventor_get(), path);
    EINA_SAFETY_ON_NULL_RETURN_VAL(it, NULL);
 
    file_tab_it_add(it);
-   file_tab_it_select(it);
-   file_mgr_file_focus(it);
+   if (focus)
+     {
+        file_tab_it_select(it);
+        file_mgr_file_focus(it);
+     }
 
    return it;
 }
@@ -308,7 +311,7 @@ file_mgr_main_file_set(const char *path)
      {
         const char *file_path = NULL;
         file_path = enventor_item_file_get(main_it);
-        file_mgr_sub_file_add(file_path);
+        file_mgr_sub_file_add(file_path, EINA_FALSE);
         file_mgr_file_del(main_it);
      }
 
@@ -453,5 +456,5 @@ file_mgr_file_open(const char *file_path)
      }
 
    //This selected file hasn't been opened yet, so let's open this file newly.
-   file_mgr_sub_file_add(file_path);
+   file_mgr_sub_file_add(file_path, EINA_TRUE);
 }
