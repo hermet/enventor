@@ -233,6 +233,14 @@ file_mgr_term(void)
    free(fmd);
 }
 
+void
+file_mgr_file_del(Enventor_Item *it)
+{
+   if (!it) return;
+   file_tab_it_remove(it);
+   enventor_item_del(it);
+}
+
 Enventor_Item *
 file_mgr_sub_file_add(const char *path)
 {
@@ -249,15 +257,61 @@ file_mgr_sub_file_add(const char *path)
 Enventor_Item *
 file_mgr_main_file_set(const char *path)
 {
-   Enventor_Item *it = enventor_object_main_item_set(base_enventor_get(), path);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(it, NULL);
+   if (!path)
+     {
+        EINA_LOG_ERR("No path??");
+        return NULL;
+     }
 
-   file_tab_clear();
-   file_tab_it_add(it);
-   file_mgr_file_focus(it);
+   char *realpath = ecore_file_realpath(path);
+
+   //Same with previous?
+   Enventor_Item *main_it = file_mgr_main_item_get();
+   if (main_it)
+     {
+        const char *prev_path = enventor_item_file_get(main_it);
+        if (prev_path)
+          {
+             if (!strcmp(prev_path, realpath)) return main_it;
+          }
+     }
+
+   Eina_List *list;
+   Enventor_Item *it;
+
+   //If this file is already openend with sub file, remove it.
+   Eina_List *sub_its =
+      (Eina_List *) enventor_object_sub_items_get(base_enventor_get());
+   Eina_List *l;
+   EINA_LIST_FOREACH(sub_its, l, it)
+     {
+        const char *path2 = enventor_item_file_get(it);
+        if (!path2) continue;
+        if (strcmp(realpath, path2)) continue;
+        file_tab_it_remove(it);
+        enventor_item_del(it);
+        break;
+     }
+
+   //If main file is already openend, set it sub file first.
+   if (main_it)
+     {
+        const char *file_path = NULL;
+        file_path = enventor_item_file_get(main_it);
+        file_mgr_sub_file_add(file_path);
+        file_mgr_file_del(main_it);
+     }
+
+   main_it = enventor_object_main_item_set(base_enventor_get(), realpath);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(main_it, NULL);
+
+   file_tab_it_add(main_it);
+   file_mgr_file_focus(main_it);
    base_console_reset();
 
-   return it;
+   free(realpath);
+
+   return main_it;
 }
 
 void

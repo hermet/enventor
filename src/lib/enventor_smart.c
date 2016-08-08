@@ -104,6 +104,8 @@ key_up_cb(void *data, int type EINA_UNUSED, void *ev)
    Enventor_Object_Data *pd = data;
    Ecore_Event_Key *event = ev;
 
+   if (!pd->focused_it) return ECORE_CALLBACK_PASS_ON;
+
    edit_key_up_event_dispatch(pd->focused_it->ed, event->key);
 
    return ECORE_CALLBACK_DONE;
@@ -114,6 +116,9 @@ key_down_cb(void *data, int type EINA_UNUSED, void *ev)
 {
    Enventor_Object_Data *pd = data;
    Ecore_Event_Key *event = ev;
+
+   if (!pd->focused_it) return ECORE_CALLBACK_PASS_ON;
+
    Eina_Bool ret = edit_focus_get(pd->focused_it->ed);
    if (!ret) return ECORE_CALLBACK_PASS_ON;
 
@@ -594,14 +599,16 @@ EOLIAN static Eina_Bool
 _enventor_object_ctxpopup_visible_get(Eo *obj EINA_UNUSED,
                                       Enventor_Object_Data *pd)
 {
-   return edit_ctxpopup_visible_get(pd->main_it->ed);
+   if (!pd->focused_it) return;
+   return edit_ctxpopup_visible_get(pd->focused_it->ed);
 }
 
 EOLIAN static void
 _enventor_object_ctxpopup_dismiss(Eo *obj EINA_UNUSED,
                                   Enventor_Object_Data *pd)
 {
-   edit_ctxpopup_dismiss(pd->main_it->ed);
+   if (!pd->focused_it) return;
+   edit_ctxpopup_dismiss(pd->focused_it->ed);
 }
 
 EOLIAN static Eina_Bool
@@ -742,7 +749,8 @@ _enventor_object_syntax_color_set(Eo *obj EINA_UNUSED,
    pd->text_color_val[color_type] = eina_stringshare_add(val);
 
    //Main Item
-   edit_syntax_color_set(pd->main_it->ed, color_type, val);
+   if (pd->main_it)
+     edit_syntax_color_set(pd->main_it->ed, color_type, val);
 
    //Sub Items
    Eina_List *l;

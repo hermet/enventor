@@ -859,6 +859,17 @@ file_browser_selected_file_main_set(void)
         return;
      }
 
+   //Same to previous item
+   if (it == bd->main_it)
+     {
+        char buf[1024];
+        brows_file *file = elm_object_item_data_get(it);
+        if (!file) return;
+        snprintf(buf, sizeof(buf), "\"%s\" is already set to main", file->name);
+        stats_info_msg_update(buf);
+        return;
+     }
+
    brows_file *file = elm_object_item_data_get(it);
    if (!file)
      {

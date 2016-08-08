@@ -1791,13 +1791,14 @@ edit_error_set(edit_data *ed, int line, const char *target)
 Eina_Bool
 edit_ctxpopup_visible_get(edit_data *ed)
 {
+   if (!ed) return EINA_FALSE;
    return (ed->ctxpopup ? EINA_TRUE : EINA_FALSE);
 }
 
 void
 edit_ctxpopup_dismiss(edit_data *ed)
 {
-   if (ed->ctxpopup) elm_ctxpopup_dismiss(ed->ctxpopup);
+   if (ed && ed->ctxpopup) elm_ctxpopup_dismiss(ed->ctxpopup);
 }
 
 Eina_Bool

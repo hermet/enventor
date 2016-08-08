@@ -108,6 +108,27 @@ close_btn_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
 /*****************************************************************************/
 /* Externally accessible calls                                               */
 /*****************************************************************************/
+void
+file_tab_it_remove(Enventor_Item *enventor_it)
+{
+   file_data *fd = g_fd;
+   EINA_SAFETY_ON_NULL_RETURN(fd);
+
+   Eina_List *list = (Eina_List*) elm_list_items_get(fd->list);
+   Eina_List *l;
+   Elm_Object_Item *it;
+
+   EINA_LIST_FOREACH(list, l, it)
+     {
+        file_tab_it *fti = elm_object_item_data_get(it);
+        if (fti->enventor_it == enventor_it)
+          {
+             elm_object_item_del(it);
+             break;
+          }
+     }
+}
+
 Eina_Bool
 file_tab_it_select(Enventor_Item *enventor_it)
 {
@@ -205,8 +226,6 @@ file_tab_it_add(Enventor_Item *enventor_it)
    elm_list_go(fd->list);
 
    evas_object_smart_callback_add(btn, "clicked", close_btn_clicked_cb, fti);
-
-   free(filename);
 
    return EINA_TRUE;
 
@@ -319,3 +338,4 @@ file_tab_term(void)
    free(fd);
    g_fd = NULL;
 }
+
