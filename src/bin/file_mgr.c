@@ -263,7 +263,17 @@ file_mgr_main_file_set(const char *path)
         return NULL;
      }
 
-   char *realpath = ecore_file_realpath(path);
+   char *realpath;
+
+   if (ecore_file_exists(path))
+     realpath = ecore_file_realpath(path);
+   else
+     {
+        //This main file is not created yet.
+        FILE *fp = fopen(path, "w");
+        if (fp) fclose(fp);
+        realpath = ecore_file_realpath(path);
+     }
 
    //Same with previous?
    Enventor_Item *main_it = file_mgr_main_item_get();
@@ -418,17 +428,11 @@ file_mgr_file_open(const char *file_path)
              return EINA_FALSE;
           }
         //Ok, This selected file is already openend, let's activate the item.
-        char *txt1 = ecore_file_realpath(file_path);
-        char *txt2 = ecore_file_realpath(it_file_path);
-        if (!strcmp(txt1, txt2))
+        if (!strcmp(file_path, it_file_path))
           {
              file_mgr_file_focus(eit);
-             free(txt1);
-             free(txt2);
              return EINA_TRUE;
           }
-        free(txt1);
-        free(txt2);
      }
 
    //Case 2. sub files.
@@ -441,17 +445,11 @@ file_mgr_file_open(const char *file_path)
         if (!it_file_path) continue;
 
         //Ok, This selected file is already openend, let's activate the item.
-        char *txt1 = ecore_file_realpath(file_path);
-        char *txt2 = ecore_file_realpath(it_file_path);
-        if (!strcmp(txt1, txt2))
+        if (!strcmp(file_path, it_file_path))
           {
              file_mgr_file_focus(eit);
-             free(txt1);
-             free(txt2);
              return EINA_TRUE;
           }
-        free(txt1);
-        free(txt2);
      }
 
    //This selected file hasn't been opened yet, so let's open this file newly.
