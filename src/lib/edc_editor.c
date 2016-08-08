@@ -1860,7 +1860,7 @@ edit_key_up_event_dispatch(edit_data *ed, const char *key)
      ed->ctrl_pressed = EINA_FALSE;
 
    //Link
-   if (!strcmp("F5", key))
+   if (!strcmp("F3", key))
      edit_link_activate(ed);
 
    return EINA_FALSE;
