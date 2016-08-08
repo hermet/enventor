@@ -144,7 +144,13 @@ edit_view_sync_cb(void *data, Eina_Stringshare *state_name, double state_value,
    if (pd->group_name != group_name)
      {
         view_data *vd = edj_mgr_view_get(group_name);
-        if (vd) edj_mgr_view_switch_to(vd);
+        if (vd)
+          {
+             //If a group name equals to an other item's,
+             //Probably, Enventor switches multiple collections.
+             if (view_item_get(vd) == it) edj_mgr_view_switch_to(vd);
+             else edj_mgr_view_switch_to(NULL);
+          }
         else
           {
              vd = edj_mgr_view_new(it, group_name);
@@ -870,6 +876,7 @@ enventor_object_main_item_set(Enventor_Object *obj, const char *file)
 {
    Enventor_Object_Data *pd = eo_data_scope_get(obj, ENVENTOR_OBJECT_CLASS);
 
+   edj_mgr_clear();
    _enventor_main_item_free(pd);
 
    Enventor_Item_Data *it = calloc(1, sizeof(Enventor_Item_Data));

@@ -932,3 +932,10 @@ view_mirror_mode_update(view_data *vd)
    dummy_obj_update(vd->layout);
    part_obj_geom_cb(vd, evas_object_evas_get(vd->layout), vd->part_obj, NULL);
 }
+
+Enventor_Item *
+view_item_get(view_data *vd)
+{
+   if (!vd) return NULL;
+   return vd->it;
+}
