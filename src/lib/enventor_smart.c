@@ -395,7 +395,7 @@ _enventor_object_efl_file_file_set(Eo *obj EINA_UNUSED,
    if (!ecore_file_exists(file))
      {
          FILE *fp = fopen(file, "w");
-         fclose(fp);
+         if (fp) fclose(fp);
      }
 
    if (!edit_load(pd->main_it->ed, file)) return EINA_FALSE;
