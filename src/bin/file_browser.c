@@ -402,15 +402,15 @@ sub_brows_file_list_create(brows_file *file)
    Eina_List *sub_file_list = NULL;
 
    Eina_List *sub_file_name_list = ecore_file_ls(file->path);
-   Eina_List *l = NULL;
    char *sub_file_name = NULL;
    char *dir_path = file->path;
-   EINA_LIST_FOREACH(sub_file_name_list, l, sub_file_name)
+   EINA_LIST_FREE(sub_file_name_list, sub_file_name)
      {
         int sub_file_path_len = strlen(dir_path) + strlen(sub_file_name) + 2;
         char *sub_file_path = calloc(1, sizeof(char) * (sub_file_path_len));
         snprintf(sub_file_path, sub_file_path_len, "%s/%s", dir_path,
                  sub_file_name);
+        free(sub_file_name);
 
         //Create sub file without creating its sub file list.
         brows_file *sub_file = brows_file_create(sub_file_path, EINA_FALSE);
@@ -509,15 +509,15 @@ search_file_set_internal(const char *file_path)
 
    //Set sub files by calling function resursively.
    Eina_List *sub_file_name_list = ecore_file_ls(file_path);
-   Eina_List *l = NULL;
    char *sub_file_name = NULL;
    const char *dir_path = file_path;
-   EINA_LIST_FOREACH(sub_file_name_list, l, sub_file_name)
+   EINA_LIST_FREE(sub_file_name_list, sub_file_name)
      {
         int sub_file_path_len = strlen(dir_path) + strlen(sub_file_name) + 2;
         char *sub_file_path = calloc(1, sizeof(char) * (sub_file_path_len));
         snprintf(sub_file_path, sub_file_path_len, "%s/%s", dir_path,
                  sub_file_name);
+        free(sub_file_name);
 
         search_file_set_internal(sub_file_path);
         free(sub_file_path);
