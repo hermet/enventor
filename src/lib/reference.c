@@ -63,6 +63,8 @@ keyword_data_free(keyword_data *keyword)
      {
         keyword_data_free(child_keyword);
      }
+
+   free(keyword);
 }
 
 static char *
