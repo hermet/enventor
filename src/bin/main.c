@@ -116,7 +116,7 @@ syntax_color_init(Enventor_Object *enventor)
 }
 
 static void
-main_edc_update(void)
+main_edc_update(Eina_Bool refresh)
 {
    //Update file browser only if main item is changed,
    Enventor_Item *main_it = enventor_object_main_item_get(base_enventor_get());
@@ -125,7 +125,8 @@ main_edc_update(void)
    if (prev_path == config_input_path_get()) return;
 
    file_mgr_main_file_set(config_input_path_get());
-   file_browser_refresh();
+
+   if (refresh) file_browser_refresh();
 }
 
 static void
@@ -141,7 +142,7 @@ config_update_cb(void *data EINA_UNUSED)
    base_statusbar_toggle(EINA_FALSE);
    base_console_auto_hide();
 
-   main_edc_update();
+   main_edc_update(EINA_TRUE);
 }
 
 static Eina_Bool
@@ -770,7 +771,7 @@ keygrabber_key_down_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
    if (ctrl_func(ev)) return;
    if (alt_func(ev)) return;
 
-   //README
+   //About
    if (!strcmp(ev->key, "F1"))
      {
         enventor_object_ctxpopup_dismiss(base_enventor_get());
@@ -778,37 +779,25 @@ keygrabber_key_down_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
         help_open();
         return;
      }
-   //New
+   //Set Main EDC
    if (!strcmp(ev->key, "F2"))
      {
-        enventor_object_ctxpopup_dismiss(base_enventor_get());
-        live_edit_cancel(EINA_FALSE);
-        menu_edc_new(EINA_FALSE);
-        return;
-     }
-   //Save
-   if (!strcmp(ev->key, "F3"))
-     {
-        enventor_object_ctxpopup_dismiss(base_enventor_get());
-        live_edit_cancel(EINA_FALSE);
-        menu_edc_save();
-        return;
-     }
-   //Load
-   if (!strcmp(ev->key, "F4"))
-     {
-        enventor_object_ctxpopup_dismiss(base_enventor_get());
-        live_edit_cancel(EINA_FALSE);
-        menu_edc_load();
+        file_browser_selected_file_main_set();
+        main_edc_update(EINA_FALSE);
         return;
      }
    //Quick Jump
-   if (!strcmp(ev->key, "F5"))
+   if (!strcmp(ev->key, "F3"))
+     {
+        return;
+     }
+   //Revert Quick Jump
+   if (!strcmp(ev->key, "F4"))
      {
         return;
      }
    //Keyword Reference
-   if (!strcmp(ev->key, "F6"))
+   if (!strcmp(ev->key, "F5"))
      {
         enventor_object_ctxpopup_dismiss(base_enventor_get());
         enventor_object_keyword_reference_show(base_enventor_get());

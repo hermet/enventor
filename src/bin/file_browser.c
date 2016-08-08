@@ -35,7 +35,6 @@ typedef struct file_browser_s
    brows_file *workspace;       //workspace directory
    Eina_List *search_file_list; /* list of searched files. This is only used for
                                    showing search results. */
-
    Evas_Object *base_layout;
    Evas_Object *search_entry;
    Evas_Object *genlist;
@@ -45,6 +44,8 @@ typedef struct file_browser_s
    Elm_Genlist_Item_Class *search_itc;
 
    File_Browser_Mode mode;
+
+   Elm_Object_Item *main_it;
 } brows_data;
 
 static brows_data *g_bd = NULL;
@@ -90,6 +91,13 @@ gl_item_del_cb(void *data, Evas_Object *obj EINA_UNUSED,
    if (!file) return;
 
    file->it = NULL;
+
+   //Reset Main Item
+   if (file->main)
+     {
+        brows_data *bd = g_bd;
+        bd->main_it = NULL;
+     }
 }
 
 static Elm_Object_Item *
@@ -120,6 +128,13 @@ file_genlist_item_append(brows_file *file, Elm_Object_Item *parent_it,
    elm_object_item_del_cb_set(file->it, gl_item_del_cb);
 
    elm_genlist_item_expanded_set(file->it, EINA_FALSE);
+
+   //Keep Main Item
+   if (file->main)
+     {
+        brows_data *bd = g_bd;
+        bd->main_it = file->it;
+     }
 
    return file->it;
 }
@@ -827,4 +842,55 @@ file_browser_refresh(void)
         search_file_set(config_workspace_path_get());
      }
 
+}
+
+void
+file_browser_selected_file_main_set(void)
+{
+   const char *exception_msg = "Please select a main EDC file in file browser.";
+
+   brows_data *bd = g_bd;
+   if (!bd) return;
+
+   Elm_Object_Item *it = elm_genlist_selected_item_get(bd->genlist);
+   if(!it)
+     {
+        stats_info_msg_update(exception_msg);
+        return;
+     }
+
+   brows_file *file = elm_object_item_data_get(it);
+   if (!file)
+     {
+        EINA_LOG_ERR("No item data??");
+        return;
+     }
+
+   if (!file->path)
+     {
+        EINA_LOG_ERR("No item file path??");
+        return;
+
+     }
+
+   if (!eina_str_has_extension(file->path, "edc"))
+     {
+        stats_info_msg_update(exception_msg);
+        return;
+     }
+
+   //Replace main item
+   Elm_Object_Item *prev_main_it = bd->main_it;
+   if (prev_main_it)
+     {
+        brows_file *prev_file = elm_object_item_data_get(prev_main_it);
+        if (prev_file) prev_file->main = EINA_FALSE;
+        else EINA_LOG_ERR("No item data??");
+     }
+
+   file->main = EINA_TRUE;
+   bd->main_it = file->it;
+
+   config_input_path_set(file->path);
+   elm_genlist_realized_items_update(bd->genlist);
 }

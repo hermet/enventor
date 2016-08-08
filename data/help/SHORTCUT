@@ -1,11 +1,10 @@
 <b>Functions:</b></br>
   Esc - Open/Close Menu</br>
-  F1 - About</br>
-  F2 - New</br>
-  F3 - Save</br>
-  F4 - Load</br>
-  F5 - Quick Jump</br>
-  F6 - Keyword Reference</br>
+  F1 - Help</br>
+  F2 - Set Main EDC (in File Browser)</br>
+  F3 - Quick Jump (Open an including file / Jumping to a referencing part)</br>
+  F4 - Revert Quick Jump</br>
+  F5 - Keyword Reference</br>
   F7 - Toggle Tools</br>
   F8 - Toggle Status</br>
   F9 - Toggle File Browser</br>

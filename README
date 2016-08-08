@@ -30,12 +30,11 @@ Once you have met the requirements, compiling and installing is simple:
 [Short Cut Keys]
 
 Esc - Open/Close Menu
-F1 - About
-F2 - New
-F3 - Save
-F4 - Load
-F5 - Quick Jump
-F6 - Keyword Reference
+F1 - Help
+F2 - Set Main EDC (in File Browser)
+F3 - Quick Jump (Open an including file / Jumping to a referencing part)
+F4 - Revert Quick Jump
+F5 - Keyword Reference
 F7 - Toggle Tools
 F8 - Toggle Status
 F9 - Toggle File Browser
