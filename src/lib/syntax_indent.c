@@ -350,11 +350,20 @@ indent_code_line_list_create(indent_data *id EINA_UNUSED, const char *utf8)
         else
           {
              if (!append_begin)
-               append_begin = utf8_lexem;
-
-             //Newline only string does not need indentation.
-             if ((*append_begin == '\n') && (append_begin == utf8_end - 1))
-               code_line->indent_apply = EINA_FALSE;
+               {
+                  //Only spaces are in the rest of the input string.
+                  if (utf8_lexem <= utf8_appended)
+                    {
+                       append_begin = utf8_appended + 1;
+                       code_line->indent_apply = EINA_FALSE;
+                    }
+                  //Non-space characters are in the rest of the input string.
+                  else
+                    {
+                       append_begin = utf8_lexem;
+                       code_line->indent_apply = EINA_TRUE;
+                    }
+               }
              else
                code_line->indent_apply = EINA_TRUE;
           }
