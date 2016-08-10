@@ -721,7 +721,7 @@ candidate_reset(ctxpopup_data *ctxdata)
         colorselector_changed_cb(ctxdata, ctxdata->colorselector, NULL);
      }
    //Toggle Candidate
-   else if ((attr->type == ATTR_VALUE_BOOLEAN))
+   else if (attr->type == ATTR_VALUE_BOOLEAN)
      {
         Eina_List *l;
         Evas_Object *toggle;

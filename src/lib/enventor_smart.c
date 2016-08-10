@@ -3,6 +3,7 @@
 #endif
 
 #define ELM_INTERNAL_API_ARGESFSDFEFC 1
+#define EFL_CANVAS_OBJECT_PROTECTED 1
 
 #include <Enventor.h>
 #include <Eio.h>
@@ -598,7 +599,7 @@ EOLIAN static Eina_Bool
 _enventor_object_ctxpopup_visible_get(Eo *obj EINA_UNUSED,
                                       Enventor_Object_Data *pd)
 {
-   if (!pd->focused_it) return;
+   if (!pd->focused_it) return EINA_FALSE;
    return edit_ctxpopup_visible_get(pd->focused_it->ed);
 }
 
@@ -1156,6 +1157,8 @@ enventor_item_del(Enventor_Item *it)
         pd->sub_its = eina_list_remove(pd->sub_its, it);
         free(it);
      }
+
+   return EINA_TRUE;
 }
 
 EAPI Eina_Bool

@@ -41,7 +41,7 @@ win_moved_cb(void *data EINA_UNUSED, Evas_Object *obj,
 }
 
 static void
-list_item_selected_cb(void *data, Evas_Object *obj, void *event_info)
+list_item_selected_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 {
    Evas_Object *layout;
    Evas_Object *label;
@@ -100,7 +100,7 @@ list_item_selected_cb(void *data, Evas_Object *obj, void *event_info)
 }
 
 static void
-button_clicked_cb(void *data, Evas_Object *obj, void *event_info)
+button_clicked_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 {
    Evas_Object *layout = g_layout;
    Evas_Object *list = elm_object_part_content_get(layout, "swallow_list");

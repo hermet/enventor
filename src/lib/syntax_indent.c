@@ -642,7 +642,7 @@ indent_delete_apply(indent_data *id, const char *del, int cur_line)
 
    while (len > 0)
      {
-        if ((utf8[(len - 1)] == ' '))
+        if (utf8[(len - 1)] == ' ')
           {
              eina_strbuf_append(diff, evas_textblock_cursor_content_get(cur));
              evas_textblock_cursor_char_delete(cur);

@@ -738,6 +738,7 @@ entry_changed_cb(void *data, Evas_Object *obj EINA_UNUSED,
         if (info->change.del.content[0] != ' ')
           {
              entry_anchor_off(ad);
+             /* FIXME: abs() shouldn't be used here (size_t is unsigned) */
              int cnt = abs(info->change.del.end - info->change.del.start);
              pop_char(ad, cnt);
           }

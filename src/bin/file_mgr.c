@@ -289,7 +289,6 @@ file_mgr_main_file_set(const char *path)
           }
      }
 
-   Eina_List *list;
    Enventor_Item *it;
 
    //If this file is already openend with sub file, remove it.
@@ -457,4 +456,5 @@ file_mgr_file_open(const char *file_path)
 
    //This selected file hasn't been opened yet, so let's open this file newly.
    file_mgr_sub_file_add(file_path, EINA_TRUE);
+   return EINA_TRUE;
 }

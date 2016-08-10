@@ -166,8 +166,7 @@ keyword_hierarchy_find(const char *text, const char *keyword_name)
    if (!text) return NULL;
    if (!keyword_name) return NULL;
 
-   Eina_List *keyword_hierarchy = eina_list_append(keyword_hierarchy,
-                                                   strdup(keyword_name));
+   Eina_List *keyword_hierarchy = eina_list_append(NULL, strdup(keyword_name));
 
    //Check from the end of the text.
    char *ptr = (char *)(text + ((strlen(text) - 1) * sizeof(char)));

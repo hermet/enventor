@@ -61,7 +61,7 @@ dummy_objs_update(dummy_obj *dummy)
              if (!strcmp(po->name, part_name))
                {
                   type = edje_edit_part_type_get(dummy->layout, part_name);
-                  if ((type == EDJE_PART_TYPE_SWALLOW))
+                  if (type == EDJE_PART_TYPE_SWALLOW)
                     removed = EINA_FALSE;
                   break;
                }
@@ -87,7 +87,7 @@ dummy_objs_update(dummy_obj *dummy)
              if (!strcmp(po->name, part_name))
                {
                   type = edje_edit_part_type_get(dummy->layout, part_name);
-                  if ((type == EDJE_PART_TYPE_SPACER))
+                  if (type == EDJE_PART_TYPE_SPACER)
                     removed = EINA_FALSE;
                   break;
                }

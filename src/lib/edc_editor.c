@@ -984,7 +984,7 @@ edit_link_activate(edit_data *ed)
 
    //Case 1. File Link?
    char *file_link = utf8;
-   if (file_link = strstr(utf8, "#include "))
+   if ((file_link = strstr(utf8, "#include ")) != NULL)
      {
         file_link += 9; //strlen("#include "))
         char *name_begin = strstr(utf8, "\"");

@@ -473,7 +473,7 @@ enventor_live_view_resized_cb(void *data EINA_UNUSED,
 }
 
 static void
-enventor_live_view_loaded_cb(void *data EINA_UNUSED, Enventor_Object *obj,
+enventor_live_view_loaded_cb(void *data EINA_UNUSED, Enventor_Object *obj EINA_UNUSED,
                              void *event_info EINA_UNUSED)
 {
    base_edc_navigator_group_update();
@@ -556,8 +556,8 @@ enventor_ctxpopup_dismissed_cb(void *data EINA_UNUSED, Enventor_Object *obj,
 }
 
 static void
-enventor_file_open_requested_cb(void *data EINA_UNUSED, Enventor_Object *obj,
-                                void *event_info EINA_UNUSED)
+enventor_file_open_requested_cb(void *data EINA_UNUSED, Enventor_Object *obj EINA_UNUSED,
+                                void *event_info)
 {
    const char *file_name = event_info;
    file_mgr_file_open(file_name);

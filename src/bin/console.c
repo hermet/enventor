@@ -85,7 +85,7 @@ set_console_error_msg(Evas_Object *console, const char *src)
    free(color_msg);
 }
 
-static char*
+char*
 error_msg_syntax_color_set(char *text)
 {
    char *color_error_msg;

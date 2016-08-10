@@ -1957,7 +1957,6 @@ info_text_init(live_data *ld)
    int i;
    Evas *e = evas_object_evas_get(ld->layout);
    double scale = elm_config_scale_get();
-   Evas_Object *view_obj = view_obj_get(ld);
    for (i = 0; i < Info_Text_Cnt; i++)
      {
         Evas_Object *text = evas_object_text_add(e);

@@ -70,7 +70,6 @@ wireframes_objs_update(wireframes_obj *wireframes)
    Evas_Object *o2 =
       elm_object_part_content_get(o, "elm.swallow.content");
    if (!o2) goto end;
-   Evas *evas = evas_object_evas_get(scroller);
 
    Evas_Coord part_lx = 0, part_ly = 0;
    evas_object_geometry_get(wireframes->layout, &part_lx, &part_ly,
@@ -115,6 +114,7 @@ end:
    edje_edit_string_list_free(parts);
 }
 
+#if 0
 static void
 layout_geom_changed_cb(void *data, Evas *evas EINA_UNUSED,
                        Evas_Object *obj, void *ei EINA_UNUSED)
@@ -135,6 +135,8 @@ layout_geom_changed_cb(void *data, Evas *evas EINA_UNUSED,
           evas_object_move(po->obj, lx + x, ly + y);
        }
 }
+#endif
+
 static Eina_Bool
 animator_cb(void *data)
 {
@@ -174,7 +176,6 @@ update_wireframe_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
    //Update the wireframe of the part name.
    if (pobj)
      {
-        Evas_Coord part_lx = 0, part_ly = 0;
         Evas_Coord part_x = 0, part_y = 0, part_w = 0, part_h = 0;
 
         Evas_Object *part_obj = (Evas_Object *)
@@ -215,7 +216,7 @@ wireframes_callbacks_set(wireframes_obj *wireframes, Evas_Object *layout)
 }
 
 static void
-wireframes_callbacks_del(wireframes_obj *wireframes, Evas_Object *layout)
+wireframes_callbacks_del(wireframes_obj *wireframes EINA_UNUSED, Evas_Object *layout)
 {
    Eina_List *l = NULL;
    Eina_Stringshare *part_name = NULL;

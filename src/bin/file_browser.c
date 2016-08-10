@@ -132,7 +132,7 @@ file_genlist_item_append(brows_file *file, Elm_Object_Item *parent_it,
    //Keep Main Item
    if (file->main)
      {
-        brows_data *bd = g_bd;
+        bd = g_bd;
         bd->main_it = file->it;
      }
 
@@ -261,7 +261,7 @@ gl_contract_request_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, voi
 }
 
 static void
-gl_expanded_cb(void *data EINA_UNUSED, Evas_Object *obj, void *event_info)
+gl_expanded_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    brows_data *bd = g_bd;
    if (!bd) return;
@@ -300,7 +300,7 @@ gl_expanded_cb(void *data EINA_UNUSED, Evas_Object *obj, void *event_info)
 }
 
 static void
-gl_contracted_cb(void *data EINA_UNUSED, Evas_Object *obj, void *event_info)
+gl_contracted_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    brows_data *bd = g_bd;
    if (!bd) return;

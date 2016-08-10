@@ -1855,7 +1855,7 @@ parser_styles_pos_get(const Evas_Object *entry, int *ret)
 Eina_Bool
 parser_is_image_name(const Evas_Object *entry, const char *str)
 {
-   int start_pos, end_pos, i;
+   int start_pos, end_pos = -1, i;
    if (!parser_collections_block_pos_get(entry, "images", &start_pos))
      return EINA_FALSE;
 
@@ -1869,6 +1869,8 @@ parser_is_image_name(const Evas_Object *entry, const char *str)
            end_pos = i;
            break;
         }
+
+   if (end_pos < 0) return EINA_FALSE;
 
    char *candidate_str = alloca(end_pos - start_pos + 1);
    const char *src_str = elm_entry_markup_to_utf8(str);
@@ -1921,7 +1923,7 @@ parser_bracket_find(parser_data *pd, Evas_Object *entry,
 }
 
 Eina_List *
-parser_group_list_get(parser_data *pd, Evas_Object *entry)
+parser_group_list_get(parser_data *pd EINA_UNUSED, Evas_Object *entry)
 {
    const char *markup = elm_entry_entry_get(entry);
    char *utf8 = elm_entry_markup_to_utf8(markup);

@@ -510,19 +510,19 @@ macro_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
    while (macro_end < (*src + length))
      {
         char *slash = strstr(macro_end, "\\");
-        char *eol = strstr(macro_end, EOL);
+        char *endeol = strstr(macro_end, EOL);
 
-        if ((!slash && eol) ||
-            ((slash && eol) && (slash > eol)))
+        if ((!slash && endeol) ||
+            ((slash && endeol) && (slash > endeol)))
           {
-             macro_end = eol;
+             macro_end = endeol;
              break;
           }
 
-        if (!slash || !eol) break;
-        if (eol < slash) break;
+        if (!slash || !endeol) break;
+        if (endeol < slash) break;
 
-        macro_end = eol + 1;
+        macro_end = endeol + 1;
      }
 
    *cur = macro_end;
