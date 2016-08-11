@@ -920,6 +920,7 @@ keygrabber_init(app_data *ad)
 static Eina_Bool
 enventor_lock_create(void)
 {
+#ifndef _WIN32
    //Tempoary Folder
    const char *tmpdir = eina_environment_tmp_get();
 
@@ -966,12 +967,15 @@ enventor_lock_create(void)
 
    own_lock = EINA_TRUE;
 
+#endif
+
    return EINA_TRUE;
 }
 
 static void
 enventor_lock_remove()
 {
+#ifndef _WIN32
    //You are not the owner of the lock.
    if (!own_lock) return;
 
@@ -1000,8 +1004,10 @@ enventor_lock_remove()
      }
 
    ecore_file_remove(buf);
+#endif
 }
 
+#ifndef _WIN32
 static void
 crash_handler(int x EINA_UNUSED, siginfo_t *info EINA_UNUSED,
               void *data EINA_UNUSED)
@@ -1009,10 +1015,12 @@ crash_handler(int x EINA_UNUSED, siginfo_t *info EINA_UNUSED,
    EINA_LOG_ERR("Eeeek! Eventor is terminated abnormally!");
    enventor_lock_remove();
 }
+#endif
 
 static void
 sigaction_setup(void)
 {
+#ifndef _WIN32
    //Just in case, if you are debugging using gdb,
    //you can send signals like this. "handle SIGABRT pass"
    //Use this for remove the enventor lock.
@@ -1048,6 +1056,7 @@ sigaction_setup(void)
 
    //Interrupt from keyboard
 //   sigaction(SIGINT, &action, NULL);
+#endif
 }
 
 static Eina_Bool
@@ -1062,12 +1071,9 @@ init(app_data *ad, int argc, char **argv)
    elm_setup();
    enventor_init(argc, argv);
 
-//FIXME: We need a win porting.
-#ifndef _WIN32
    if (!enventor_lock_create()) return EINA_FALSE;
 
    sigaction_setup();
-#endif
 
    Eina_Bool template = EINA_FALSE;
    Eina_Bool default_edc = EINA_TRUE;
@@ -1116,9 +1122,7 @@ term(void)
    base_gui_term();
    file_mgr_term();
    config_term();
-#ifndef _WIN32
    enventor_lock_remove();
-#endif
    enventor_shutdown();
 }
 
