@@ -35,7 +35,7 @@ typedef struct inherit_s
    char *base_keyword_full_name;  //Base keyword's name (e.g. collections.group)
 } inherit_data;
 
-static ref_data *g_md = NULL;
+static ref_data *g_rd = NULL;
 
 /*****************************************************************************/
 /* Internal method implementation                                            */
@@ -159,9 +159,9 @@ end:
 static Eina_List *
 keyword_hierarchy_find(const char *text, const char *keyword_name)
 {
-   ref_data *md = g_md;
-   if (!md) return NULL;
-   if (!md->ed) return NULL;
+   ref_data *rd = g_rd;
+   if (!rd) return NULL;
+   if (!rd->ed) return NULL;
 
    if (!text) return NULL;
    if (!keyword_name) return NULL;
@@ -240,7 +240,7 @@ keyword_hierarchy_find(const char *text, const char *keyword_name)
 
    //In case of sub items, it won't contain "collections".
    //We added it arbitrary.
-   if (!edit_is_main_file(md->ed))
+   if (!edit_is_main_file(rd->ed))
      {
         keyword_hierarchy = eina_list_prepend(keyword_hierarchy,
                                               strdup("collections"));
@@ -606,26 +606,26 @@ keyword_tree_load(keyword_data *keyword_root, char **ptr)
 }
 
 static void
-ref_load(ref_data *md)
+ref_load(ref_data *rd)
 {
-   if (!md) return;
+   if (!rd) return;
 
    char buf[PATH_MAX];
    snprintf(buf, sizeof(buf), "%s/reference/reference.src",
             eina_prefix_data_get(PREFIX));
 
    //Open source file.
-   md->source_file = eina_file_open((const char *)buf, EINA_FALSE);
-   if (!md->source_file) return;
+   rd->source_file = eina_file_open((const char *)buf, EINA_FALSE);
+   if (!rd->source_file) return;
 
    //Load text from source file.
-   char *text = (char *)eina_file_map_all(md->source_file, EINA_FILE_POPULATE);
+   char *text = (char *)eina_file_map_all(rd->source_file, EINA_FILE_POPULATE);
    if (!text) goto end;
 
-   if (md->keyword_root)
+   if (rd->keyword_root)
      {
-        keyword_data_free(md->keyword_root);
-        md->keyword_root = NULL;
+        keyword_data_free(rd->keyword_root);
+        rd->keyword_root = NULL;
      }
 
    //Create keyword root node.
@@ -637,13 +637,13 @@ ref_load(ref_data *md)
    char *ptr = text;
    //Load keyword data tree from text.
    keyword_tree_load(keyword_root, &ptr);
-   md->keyword_root = keyword_root;
+   rd->keyword_root = keyword_root;
 
 end:
-   if (text) eina_file_map_free(md->source_file, text);
+   if (text) eina_file_map_free(rd->source_file, text);
 
-   eina_file_close(md->source_file);
-   md->source_file = NULL;
+   eina_file_close(rd->source_file);
+   rd->source_file = NULL;
 }
 
 static void
@@ -707,27 +707,27 @@ entry_cursor_changed_manual_cb(void *data EINA_UNUSED,
 static void
 ref_event_rect_delete(void)
 {
-   ref_data *md = g_md;
-   if (!md) return;
+   ref_data *rd = g_rd;
+   if (!rd) return;
 
-   if (!md->event_rect) return;
-   evas_object_del(md->event_rect);
-   md->event_rect = NULL;
+   if (!rd->event_rect) return;
+   evas_object_del(rd->event_rect);
+   rd->event_rect = NULL;
 }
 
 static void
 ref_layout_delete(void)
 {
-   ref_data *md = g_md;
-   if (!md) return;
+   ref_data *rd = g_rd;
+   if (!rd) return;
 
-   if (!md->layout) return;
-   evas_object_del(md->layout);
-   md->layout = NULL;
+   if (!rd->layout) return;
+   evas_object_del(rd->layout);
+   rd->layout = NULL;
 
-   if (!md->ed) return;
+   if (!rd->ed) return;
    //Delete entry callbacks to delete reference layout.
-   Evas_Object *edit_entry = edit_entry_get(md->ed);
+   Evas_Object *edit_entry = edit_entry_get(rd->ed);
    evas_object_event_callback_del(edit_entry, EVAS_CALLBACK_MOVE,
                                   entry_move_cb);
    evas_object_smart_callback_del(edit_entry, "unfocused", entry_unfocused_cb);
@@ -814,43 +814,43 @@ ref_layout_create(Evas_Object *edit_entry, const char *desc)
 void
 ref_show(edit_data *ed)
 {
-   ref_data *md = g_md;
+   ref_data *rd = g_rd;
    Evas_Object *edit_obj = NULL;
    Evas_Object *edit_entry = NULL;
 
-   if (!md) return;
+   if (!rd) return;
    if (!ed) return;
-   md->ed = ed;
+   rd->ed = ed;
 
    //Return if reference layout is already shown.
-   if (md->event_rect || md->layout) return;
+   if (rd->event_rect || rd->layout) return;
 
    edit_obj = edit_obj_get(ed);
    edit_entry = edit_entry_get(ed);
 
    //Set keyword name.
-   if (md->keyword_name) free(md->keyword_name);
-   md->keyword_name = cursor_keyword_name_find(edit_entry);
-   if (!md->keyword_name) return;
+   if (rd->keyword_name) free(rd->keyword_name);
+   rd->keyword_name = cursor_keyword_name_find(edit_entry);
+   if (!rd->keyword_name) return;
 
    //Set keyword desc.
-   if (md->keyword_desc)
+   if (rd->keyword_desc)
      {
-        free(md->keyword_desc);
-        md->keyword_desc = NULL;
+        free(rd->keyword_desc);
+        rd->keyword_desc = NULL;
      }
    keyword_data *keyword = cursor_keyword_data_find(edit_entry,
-                                                    md->keyword_root,
-                                                    md->keyword_name);
+                                                    rd->keyword_root,
+                                                    rd->keyword_name);
    if (keyword)
-     md->keyword_desc = strdup(keyword->desc);
-   if (!md->keyword_desc) return;
+     rd->keyword_desc = strdup(keyword->desc);
+   if (!rd->keyword_desc) return;
 
    //Create event rect which catches mouse down event.
-   md->event_rect = ref_event_rect_create(edit_obj);
+   rd->event_rect = ref_event_rect_create(edit_obj);
 
    //Create reference layout.
-   md->layout = ref_layout_create(edit_entry, md->keyword_desc);
+   rd->layout = ref_layout_create(edit_entry, rd->keyword_desc);
 
    //Calculate reference layout position.
    Evas_Coord obj_x, obj_y, obj_w, obj_h;
@@ -863,9 +863,9 @@ ref_show(edit_data *ed)
    elm_entry_cursor_geometry_get(edit_entry, &cur_x, &cur_y, NULL, &cur_h);
 
    char *layout_width =
-      (char *)edje_object_data_get(elm_layout_edje_get(md->layout), "width");
+      (char *)edje_object_data_get(elm_layout_edje_get(rd->layout), "width");
    char *layout_height =
-      (char *)edje_object_data_get(elm_layout_edje_get(md->layout), "height");
+      (char *)edje_object_data_get(elm_layout_edje_get(rd->layout), "height");
    if (!layout_width || !layout_height) return;
 
    const Evas_Coord ref_w = ELM_SCALE_SIZE(atoi(layout_width));
@@ -886,37 +886,37 @@ ref_show(edit_data *ed)
    else
      ref_y = entry_y + cur_y + cur_h;
 
-   evas_object_move(md->layout, ref_x, ref_y);
+   evas_object_move(rd->layout, ref_x, ref_y);
 }
 
 void
 ref_init(void)
 {
-   ref_data *md = calloc(1, sizeof(ref_data));
-   if (!md)
+   ref_data *rd = calloc(1, sizeof(ref_data));
+   if (!rd)
      {
         EINA_LOG_ERR("Failed to allocate Memory!");
         return;
      }
 
-   ref_load(md);
+   ref_load(rd);
 
-   g_md = md;
+   g_rd = rd;
 }
 
 void
 ref_term(void)
 {
-   ref_data *md = g_md;
+   ref_data *rd = g_rd;
 
-   keyword_data_free(md->keyword_root);
+   keyword_data_free(rd->keyword_root);
 
-   if (md->keyword_name) free(md->keyword_name);
-   if (md->keyword_desc) free(md->keyword_desc);
+   if (rd->keyword_name) free(rd->keyword_name);
+   if (rd->keyword_desc) free(rd->keyword_desc);
 
    ref_event_rect_delete();
    ref_layout_delete();
 
-   free(md);
-   g_md = NULL;
+   free(rd);
+   g_rd = NULL;
 }
