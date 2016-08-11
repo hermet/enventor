@@ -1062,9 +1062,12 @@ init(app_data *ad, int argc, char **argv)
    elm_setup();
    enventor_init(argc, argv);
 
+//FIXME: We need a win porting.
+#ifndef _WIN32
    if (!enventor_lock_create()) return EINA_FALSE;
 
    sigaction_setup();
+#endif
 
    Eina_Bool template = EINA_FALSE;
    Eina_Bool default_edc = EINA_TRUE;
@@ -1113,7 +1116,9 @@ term(void)
    base_gui_term();
    file_mgr_term();
    config_term();
+#ifndef _WIN32
    enventor_lock_remove();
+#endif
    enventor_shutdown();
 }
 
