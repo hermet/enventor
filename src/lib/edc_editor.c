@@ -866,7 +866,6 @@ edit_cursor_changed_cb(void *data, Evas_Object *obj EINA_UNUSED,
    edit_data *ed = data;
    cur_line_pos_set(ed, EINA_FALSE);
    edit_view_sync(ed);
-
    bracket_update(ed);
 }
 
@@ -1774,7 +1773,6 @@ edit_disabled_set(edit_data *ed, Eina_Bool disabled)
 
    //Turn off the part highlight in case of disable.
    if (disabled) view_part_highlight_set(VIEW_DATA, NULL);
-   else if (enventor_obj_part_highlight_get(ed->enventor)) edit_view_sync(ed);
 
    //Reset whatever ctrl pressed is on.
    ed->ctrl_pressed = EINA_FALSE;

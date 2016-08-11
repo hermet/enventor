@@ -155,7 +155,7 @@ edit_view_sync_cb(void *data, Eina_Stringshare *state_name, double state_value,
         else
           {
              vd = edj_mgr_view_new(it, group_name);
-             if (!vd) return;
+             if (!vd) edj_mgr_view_switch_to(NULL);
           }
         view_dummy_set(vd, pd->dummy_parts);
         view_wireframes_set(vd, pd->wireframes);
@@ -935,6 +935,9 @@ enventor_item_represent(Enventor_Item *it)
    Enventor_Object_Data *pd = it->pd;
 
    if (pd->focused_it == it) return EINA_TRUE;
+
+   eina_stringshare_del(pd->group_name);
+   pd->group_name = NULL;
 
    if (pd->focused_it)
      {

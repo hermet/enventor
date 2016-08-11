@@ -1268,7 +1268,7 @@ static void
 bracket_thread_cancel(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
    bracket_td *btd = data;
-   if (btd->pd && btd->pd->btd == btd) btd->pd->btd = NULL;
+   if (btd->pd) btd->pd->btd = NULL;
    free(btd->text);
    free(btd);
 }
@@ -1288,7 +1288,11 @@ bracket_thread_end(void *data, Ecore_Thread *thread)
 void
 parser_cancel(parser_data *pd)
 {
-   if (pd->cntd) ecore_thread_cancel(pd->cntd->thread);
+   if (pd->cntd)
+     {
+        pd->cntd->pd = NULL;
+        ecore_thread_cancel(pd->cntd->thread);
+     }
 }
 
 char *
@@ -1578,7 +1582,11 @@ parser_cur_context_get(parser_data *pd, Evas_Object *entry,
                        Eina_Stringshare *group_name), void *data,
                        Eina_Bool collections)
 {
-   if (pd->cntd) ecore_thread_cancel(pd->cntd->thread);
+   if (pd->cntd)
+     {
+        pd->cntd->pd = NULL;
+        ecore_thread_cancel(pd->cntd->thread);
+     }
 
    const char *text = elm_entry_entry_get(entry);
    if (!text) return;
@@ -1892,7 +1900,11 @@ parser_macro_update(parser_data *pd, Eina_Bool macro_update)
 void
 parser_bracket_cancel(parser_data *pd)
 {
-   if (pd->btd) ecore_thread_cancel(pd->btd->thread);
+   if (pd->btd)
+     {
+        pd->btd->pd = NULL;
+        ecore_thread_cancel(pd->btd->thread);
+     }
 }
 
 void
@@ -1901,6 +1913,7 @@ parser_bracket_find(parser_data *pd, Evas_Object *entry,
 {
    if (pd->btd)
      {
+        pd->btd->pd = NULL;
         ecore_thread_cancel(pd->btd->thread);
      }
 

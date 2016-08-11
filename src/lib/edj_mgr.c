@@ -132,6 +132,8 @@ edj_mgr_view_new(Enventor_Item *it, const char *group)
 {
    edj_mgr *em = g_em;
 
+   if (!group) return NULL;
+
    edj_data *edj = calloc(1, sizeof(edj_data));
    if (!edj)
      {

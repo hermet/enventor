@@ -59,6 +59,9 @@ list_item_selected_cb(void *data, Evas_Object *obj EINA_UNUSED,
 
    if (fd->selected_it == it) return;
    file_tab_it *fti = data;
+
+   //FIXME: If the item is going closed (by closed button)
+   //This focus is unnecessary!
    file_mgr_file_focus(fti->enventor_it);
 }
 
