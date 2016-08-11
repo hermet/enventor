@@ -278,6 +278,8 @@ file_mgr_main_file_set(const char *path)
         realpath = ecore_file_realpath(path);
      }
 
+   Eina_Bool same_file = EINA_FALSE;
+
    //Same with previous?
    Enventor_Item *main_it = file_mgr_main_item_get();
    if (main_it)
@@ -285,7 +287,7 @@ file_mgr_main_file_set(const char *path)
         const char *prev_path = enventor_item_file_get(main_it);
         if (prev_path)
           {
-             if (!strcmp(prev_path, realpath)) return main_it;
+             if (!strcmp(prev_path, realpath)) same_file = EINA_TRUE;
           }
      }
 
@@ -306,7 +308,7 @@ file_mgr_main_file_set(const char *path)
      }
 
    //If main file is already openend, set it sub file first.
-   if (main_it)
+   if (main_it && !same_file)
      {
         const char *file_path = NULL;
         file_path = enventor_item_file_get(main_it);
