@@ -11,6 +11,7 @@ typedef struct file_tab_it_s
 {
    Enventor_Item *enventor_it;
    Elm_Object_Item *it;
+   Ecore_Animator *animator;
 } file_tab_it;
 
 file_data *g_fd = NULL;
@@ -48,6 +49,17 @@ right_btn_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
    elm_list_item_selected_set(it, EINA_TRUE);
 }
 
+static Eina_Bool
+list_item_anim_cb(void *data)
+{
+   file_tab_it *fti = data;
+
+   file_mgr_file_focus(fti->enventor_it);
+   fti->animator = NULL;
+
+   return ECORE_CALLBACK_CANCEL;
+}
+
 static void
 list_item_selected_cb(void *data, Evas_Object *obj EINA_UNUSED,
                       void *event_info)
@@ -58,11 +70,15 @@ list_item_selected_cb(void *data, Evas_Object *obj EINA_UNUSED,
    Elm_Object_Item *it = event_info;
 
    if (fd->selected_it == it) return;
-   file_tab_it *fti = data;
 
-   //FIXME: If the item is going closed (by closed button)
-   //This focus is unnecessary!
-   file_mgr_file_focus(fti->enventor_it);
+   //When list item's close button is clicked, this selection is triggered
+   //prior to the close button clicked callback.
+   //It's useless to perform this selected callback anyway this file tab
+   //item is gonna removed soon. But, due to the list's behavior,
+   //it's unavoidable so we need this tricky animator.
+   file_tab_it *fti = data;
+   ecore_animator_del(fti->animator);
+   fti->animator = ecore_animator_add(list_item_anim_cb, fti);
 }
 
 static void
@@ -95,6 +111,7 @@ file_tab_it_del(file_tab_it *fti)
 
    //Remove item.
    elm_object_item_del(fti->it);
+   ecore_animator_del(fti->animator);
    free(fti);
 
    elm_list_go(list);
@@ -105,6 +122,7 @@ close_btn_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
                      void *event_info EINA_UNUSED)
 {
    file_tab_it *fti = data;
+
    file_tab_it_del(fti);
 }
 
@@ -168,6 +186,7 @@ file_tab_clear(void)
    EINA_LIST_FOREACH(list, l, it)
      {
         file_tab_it *fti = elm_object_item_data_get(it);
+        ecore_animator_del(fti->animator);
         free(fti);
      }
    elm_list_clear(fd->list);
@@ -331,6 +350,7 @@ file_tab_term(void)
    EINA_LIST_FOREACH(children, l, it)
      {
         fti = elm_object_item_data_get(it);
+        ecore_animator_del(fti->animator);
         free(fti);
      }
 
