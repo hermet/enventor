@@ -316,8 +316,8 @@ info_text_update(live_data *ld)
    evas_object_move(ld->info_text[Info_Text_Rel1], x, y);
 
    //Rel1 BG
-   evas_object_move(ld->info_text_bg[Info_Text_Rel1], x, y);
-   evas_object_resize(ld->info_text_bg[Info_Text_Rel1], w, h);
+   evas_object_move(ld->info_text_bg[Info_Text_Rel1], x - 2, y);
+   evas_object_resize(ld->info_text_bg[Info_Text_Rel1], w + 4, h);
 
    //Rel2
    evas_object_geometry_get(ld->ctrl_pt[Ctrl_Pt_Rel2], &rx, &ry, &rw, &rh);
@@ -329,8 +329,8 @@ info_text_update(live_data *ld)
    evas_object_move(ld->info_text[Info_Text_Rel2], x, y);
 
    //rel2 BG
-   evas_object_move(ld->info_text_bg[Info_Text_Rel2], x, y);
-   evas_object_resize(ld->info_text_bg[Info_Text_Rel2], w, h);
+   evas_object_move(ld->info_text_bg[Info_Text_Rel2], x - 2, y);
+   evas_object_resize(ld->info_text_bg[Info_Text_Rel2], w + 4, h);
 
    //Size
    Evas_Coord layout_x, layout_y, layout_w, layout_h;
@@ -346,8 +346,8 @@ info_text_update(live_data *ld)
    evas_object_move(ld->info_text[Info_Text_Size], x, y);
 
    //Size BG
-   evas_object_move(ld->info_text_bg[Info_Text_Size], x, y);
-   evas_object_resize(ld->info_text_bg[Info_Text_Size], w, h);
+   evas_object_move(ld->info_text_bg[Info_Text_Size], x - 2, y);
+   evas_object_resize(ld->info_text_bg[Info_Text_Size], w + 4, h);
 }
 
 static void
@@ -1975,7 +1975,7 @@ info_text_init(live_data *ld)
         Evas_Object *rect = evas_object_rectangle_add(e);
         view_obj_member_add(ld, rect);
         evas_object_pass_events_set(rect, EINA_TRUE);
-        evas_object_color_set(rect, 0, 0, 0, 77);
+        evas_object_color_set(rect, 0, 0, 0, 125);
         evas_object_show(rect);
         ld->info_text_bg[i] = rect;
 
