@@ -842,17 +842,39 @@ text_setting_font_set(text_setting_data *tsd, const char *font_name,
 
    if (!tsd->list_font_name) return;
 
-   const Eina_List *it_list = elm_list_items_get(tsd->list_font_name);
-   const Eina_List *l;
-   Elm_Object_Item *it;
-
-   EINA_LIST_FOREACH(it_list, l, it)
+   //Reset font name
+   if (font_name)
      {
-        const char *name = elm_object_item_text_get(it);
-        if (font_name && !strcmp(font_name, name))
+        const Eina_List *it_list = elm_list_items_get(tsd->list_font_name);
+        const Eina_List *l;
+        Elm_Object_Item *it;
+
+        EINA_LIST_FOREACH(it_list, l, it)
           {
-             elm_list_item_selected_set(it, EINA_TRUE);
-             break;
+             const char *name = elm_object_item_text_get(it);
+             if (!strcmp(font_name, name))
+               {
+                  elm_list_item_selected_set(it, EINA_TRUE);
+                  break;
+               }
+          }
+     }
+
+   //Reset font style
+   if (font_style)
+     {
+        const Eina_List *it_list = elm_list_items_get(tsd->list_font_style);
+        const Eina_List *l;
+        Elm_Object_Item *it;
+
+        EINA_LIST_FOREACH(it_list, l, it)
+          {
+             const char *name = elm_object_item_text_get(it);
+             if (!strcmp(font_style, name))
+               {
+                  elm_list_item_selected_set(it, EINA_TRUE);
+                  break;
+               }
           }
      }
 }
