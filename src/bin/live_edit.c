@@ -56,6 +56,7 @@ typedef struct live_editor_s
    Evas_Object *ctrl_pt[Ctrl_Pt_Cnt];
    Evas_Object *align_line[Align_Line_Cnt];
    Evas_Object *info_text[Info_Text_Cnt];
+   Evas_Object *info_text_bg[Info_Text_Cnt];
    Evas_Coord_Point move_delta;
    double half_ctrl_size;
    unsigned int type;
@@ -298,7 +299,7 @@ info_text_update(live_data *ld)
                       (ld->rel_info.rel2_x - ld->rel_info.rel1_x));
    vh = (Evas_Coord) (((double) vh) *
                       (ld->rel_info.rel2_y - ld->rel_info.rel1_y));
-   snprintf(buf, sizeof(buf), "[%d x %d]", vw, vh);
+   snprintf(buf, sizeof(buf), "%d X %d", vw, vh);
    evas_object_text_text_set(ld->info_text[Info_Text_Size], buf);
 
    //Update Position
@@ -314,6 +315,10 @@ info_text_update(live_data *ld)
    if (y < ly) y = (ry + rh);
    evas_object_move(ld->info_text[Info_Text_Rel1], x, y);
 
+   //Rel1 BG
+   evas_object_move(ld->info_text_bg[Info_Text_Rel1], x, y);
+   evas_object_resize(ld->info_text_bg[Info_Text_Rel1], w, h);
+
    //Rel2
    evas_object_geometry_get(ld->ctrl_pt[Ctrl_Pt_Rel2], &rx, &ry, &rw, &rh);
    evas_object_geometry_get(ld->info_text[Info_Text_Rel2], NULL, NULL, &w, &h);
@@ -322,6 +327,10 @@ info_text_update(live_data *ld)
    if (x < lx) x = (rx + rw);
    if ((y + h) > (ly + lh)) y = (ry - h);
    evas_object_move(ld->info_text[Info_Text_Rel2], x, y);
+
+   //rel2 BG
+   evas_object_move(ld->info_text_bg[Info_Text_Rel2], x, y);
+   evas_object_resize(ld->info_text_bg[Info_Text_Rel2], w, h);
 
    //Size
    Evas_Coord layout_x, layout_y, layout_w, layout_h;
@@ -335,6 +344,10 @@ info_text_update(live_data *ld)
    if ((x + w) > (lx + lw)) x = ((lx + lw) - w);
    if ((y + h) > (ly + lh)) y = ((ly + lh) - h);
    evas_object_move(ld->info_text[Info_Text_Size], x, y);
+
+   //Size BG
+   evas_object_move(ld->info_text_bg[Info_Text_Size], x, y);
+   evas_object_resize(ld->info_text_bg[Info_Text_Size], w, h);
 }
 
 static void
@@ -1959,13 +1972,18 @@ info_text_init(live_data *ld)
    double scale = elm_config_scale_get();
    for (i = 0; i < Info_Text_Cnt; i++)
      {
+        Evas_Object *rect = evas_object_rectangle_add(e);
+        view_obj_member_add(ld, rect);
+        evas_object_pass_events_set(rect, EINA_TRUE);
+        evas_object_color_set(rect, 0, 0, 0, 77);
+        evas_object_show(rect);
+        ld->info_text_bg[i] = rect;
+
         Evas_Object *text = evas_object_text_add(e);
         view_obj_member_add(ld, text);
         evas_object_pass_events_set(text, EINA_TRUE);
         evas_object_text_font_set(text, LIVE_EDIT_FONT,
                                   ( LIVE_EDIT_FONT_SIZE * scale));
-        evas_object_text_style_set(text, EVAS_TEXT_STYLE_OUTLINE);
-        evas_object_text_outline_color_set(text, 0, 0, 0, 255);
         evas_object_show(text);
         ld->info_text[i] = text;
      }
@@ -2255,6 +2273,12 @@ live_edit_cancel(Eina_Bool phase_in)
      {
         evas_object_del(ld->info_text[i]);
         ld->info_text[i] = NULL;
+     }
+   //Delete Info Text BGs
+   for (i = 0 ; i < Info_Text_Cnt; i++)
+     {
+        evas_object_del(ld->info_text_bg[i]);
+        ld->info_text_bg[i] = NULL;
      }
 
    ld->on = EINA_FALSE;
