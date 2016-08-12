@@ -841,7 +841,25 @@ file_browser_refresh(void)
           }
         search_file_set(config_workspace_path_get());
      }
+}
 
+void
+file_browser_main_file_unset(void)
+{
+   brows_data *bd = g_bd;
+   if (!bd || !bd->main_it) return;
+
+   brows_file *file = elm_object_item_data_get(bd->main_it);
+   if (!file)
+     {
+        EINA_LOG_ERR("No item data??");
+        return;
+     }
+
+   file->main = EINA_FALSE;
+   bd->main_it = NULL;
+
+   elm_genlist_realized_items_update(bd->genlist);
 }
 
 void

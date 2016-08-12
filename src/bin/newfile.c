@@ -126,6 +126,7 @@ newfile_set(Eina_Bool template_new)
      }
    file_mgr_main_file_set(path);
    file_mgr_reset();
+   file_browser_main_file_unset();
 }
 
 void
