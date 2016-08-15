@@ -114,7 +114,6 @@ end:
    edje_edit_string_list_free(parts);
 }
 
-#if 0
 static void
 layout_geom_changed_cb(void *data, Evas *evas EINA_UNUSED,
                        Evas_Object *obj, void *ei EINA_UNUSED)
@@ -128,14 +127,23 @@ layout_geom_changed_cb(void *data, Evas *evas EINA_UNUSED,
    evas_object_geometry_get(obj, &lx, &ly, NULL, NULL);
 
    EINA_LIST_FOREACH(wireframes->part_list, spacer_l, po)
-     if (edje_object_part_exists(obj, po->name))
-       {
-          edje_object_part_geometry_get(obj, po->name, &x, &y, &w, &h);
-          evas_object_resize(po->obj, w, h);
-          evas_object_move(po->obj, lx + x, ly + y);
-       }
+   {
+      const char *sel_part = edje_edit_part_selected_state_get(obj,
+                                                               po->name, NULL);
+      // In case of spacer and text, it should be updated
+      // since spacer part can not receive the resize callback and
+      // text is part has delay in update_wireframe_cb.
+      if (edje_object_part_exists(obj, po->name)
+          && ((edje_edit_part_type_get(obj, po->name) == EDJE_PART_TYPE_SPACER)
+          || (edje_edit_part_type_get(obj, po->name) == EDJE_PART_TYPE_TEXT)
+          ||  !edje_edit_state_visible_get(obj, po->name, sel_part, 0.0)))
+        {
+           edje_object_part_geometry_get(obj, po->name, &x, &y, &w, &h);
+           evas_object_resize(po->obj, w, h);
+           evas_object_move(po->obj, lx + x, ly + y);
+        }
+    }
 }
-#endif
 
 static Eina_Bool
 animator_cb(void *data)
@@ -178,14 +186,30 @@ update_wireframe_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
      {
         Evas_Coord part_x = 0, part_y = 0, part_w = 0, part_h = 0;
 
-        Evas_Object *part_obj = (Evas_Object *)
-                                edje_object_part_object_get(wireframes->layout,
-                                                            part_name);
-
-        evas_object_geometry_get(part_obj, &part_x, &part_y, &part_w, &part_h);
+        //Case 1: If Part is the TEXT, the geometry information is different
+        //between edje_object_part_geometry_get and evas_object_geometry_get.
+        //So here, it should be considered.
+        if (edje_edit_part_type_get(wireframes->layout, part_name)
+            == EDJE_PART_TYPE_TEXT)
+          {
+             evas_object_geometry_get(wireframes->layout, &part_lx, &part_ly,
+                                      NULL, NULL);
+             edje_object_part_geometry_get(wireframes->layout, part_name,
+                                           &part_x, &part_y, &part_w, &part_h);
+          }
+        //Case 2: In case of not text case, evas_object_geomtry_get is more
+        //precise than edje_object_part_geometry_get.
+        else
+          {
+             Evas_Object *part_obj = (Evas_Object *)
+                                 edje_object_part_object_get(wireframes->layout,
+                                                             part_name);
+             evas_object_geometry_get(part_obj, &part_x, &part_y,
+                                      &part_w, &part_h);
+          }
 
         evas_object_resize(pobj, part_w, part_h);
-        evas_object_move(pobj, part_x, part_y);
+        evas_object_move(pobj, part_lx + part_x, part_ly + part_y);
      }
 }
 
@@ -279,6 +303,11 @@ wireframes_obj_new(Evas_Object *layout)
    evas_object_event_callback_add(layout, EVAS_CALLBACK_DEL, layout_del_cb,
                                   wireframes);
 
+   evas_object_event_callback_add(layout, EVAS_CALLBACK_RESIZE,
+                                  layout_geom_changed_cb, wireframes);
+   evas_object_event_callback_add(layout, EVAS_CALLBACK_MOVE,
+                                  layout_geom_changed_cb, wireframes);
+
    wireframes->layout = layout;
    wireframes->animator = animator;
    wireframes_callbacks_set(wireframes, layout);
@@ -289,6 +318,11 @@ wireframes_obj_del(Evas_Object *layout)
 {
    wireframes_obj *wireframes = evas_object_data_get(layout, OUTLINEOBJ);
    if (!wireframes) return;
+
+   evas_object_event_callback_del_full(layout, EVAS_CALLBACK_RESIZE,
+                                  layout_geom_changed_cb, wireframes);
+   evas_object_event_callback_del_full(layout, EVAS_CALLBACK_MOVE,
+                                  layout_geom_changed_cb, wireframes);
 
    wireframes_callbacks_del(wireframes, layout);
 
