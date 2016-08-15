@@ -942,7 +942,7 @@ scroller_vbar_unpress_cb(void *data, Evas_Object *obj EINA_UNUSED,
 }
 
 static void
-edit_link_activate(edit_data *ed)
+edit_quick_jump(edit_data *ed)
 {
    Evas_Object *textblock = elm_entry_textblock_get(ed->en_edit);
 
@@ -1857,9 +1857,9 @@ edit_key_up_event_dispatch(edit_data *ed, const char *key)
    if (!strcmp("Control_L", key))
      ed->ctrl_pressed = EINA_FALSE;
 
-   //Link
+   //Quick Jump
    if (!strcmp("F3", key))
-     edit_link_activate(ed);
+     edit_quick_jump(ed);
 
    return EINA_FALSE;
 }
