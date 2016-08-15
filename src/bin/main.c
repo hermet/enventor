@@ -6,6 +6,10 @@
 #include <Eio.h>
 #include "common.h"
 
+#ifdef _WIN32
+#include <signal.h>
+#endif
+
 typedef struct app_s
 {
    Evas_Object *keygrabber;
@@ -922,7 +926,6 @@ keygrabber_init(app_data *ad)
 static Eina_Bool
 enventor_lock_create(void)
 {
-#ifndef _WIN32
    //Tempoary Folder
    const char *tmpdir = eina_environment_tmp_get();
 
@@ -969,15 +972,12 @@ enventor_lock_create(void)
 
    own_lock = EINA_TRUE;
 
-#endif
-
    return EINA_TRUE;
 }
 
 static void
 enventor_lock_remove()
 {
-#ifndef _WIN32
    //You are not the owner of the lock.
    if (!own_lock) return;
 
@@ -1006,10 +1006,28 @@ enventor_lock_remove()
      }
 
    ecore_file_remove(buf);
-#endif
 }
 
-#ifndef _WIN32
+#ifdef _WIN32
+static void
+crash_handler(int signal EINA_UNUSED)
+{
+   EINA_LOG_ERR("Eeeek! Eventor is terminated abnormally!");
+   enventor_lock_remove();
+}
+
+static void
+sigaction_setup(void)
+{
+   SignalHandlerPointer prev_handle;
+   prev_handle = signal(SIGABRT, &crash_handler);
+   prev_handle = signal(SIGFPE, &crash_handler);
+   prev_handle = signal(SIGILL, &crash_handler);
+   prev_handle = signal(SIGINT, &crash_handler);
+   prev_handle = signal(SIGSEGV, &crash_handler);
+   prev_handle = signal(SIGTERM, &crash_handler);
+}
+#else
 static void
 crash_handler(int x EINA_UNUSED, siginfo_t *info EINA_UNUSED,
               void *data EINA_UNUSED)
@@ -1017,12 +1035,10 @@ crash_handler(int x EINA_UNUSED, siginfo_t *info EINA_UNUSED,
    EINA_LOG_ERR("Eeeek! Eventor is terminated abnormally!");
    enventor_lock_remove();
 }
-#endif
 
 static void
 sigaction_setup(void)
 {
-#ifndef _WIN32
    //Just in case, if you are debugging using gdb,
    //you can send signals like this. "handle SIGABRT pass"
    //Use this for remove the enventor lock.
@@ -1057,9 +1073,9 @@ sigaction_setup(void)
    sigaction(SIGSTOP, &action, NULL);
 
    //Interrupt from keyboard
-//   sigaction(SIGINT, &action, NULL);
-#endif
+   //sigaction(SIGINT, &action, NULL);
 }
+#endif
 
 static Eina_Bool
 init(app_data *ad, int argc, char **argv)
