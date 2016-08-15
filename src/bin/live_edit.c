@@ -1631,6 +1631,10 @@ live_edit_update_internal(live_data *ld)
    ctrl_pt_update(ld);
    align_line_update(ld);
    info_text_update(ld);
+
+   //ctxpopup position won't be valid anymore.
+   if (ld->rel_to_info.ctxpopup)
+     elm_ctxpopup_dismiss(ld->rel_to_info.ctxpopup);
 }
 
 static void
