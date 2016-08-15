@@ -225,8 +225,8 @@ part_obj_geom_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
      }
 
    Evas_Coord x, y, w , h;
-   if (edje_edit_part_type_get(vd->layout, vd->part_name) ==
-       EDJE_PART_TYPE_SPACER)
+   Edje_Part_Type type = edje_edit_part_type_get(vd->layout, vd->part_name);
+   if (type == EDJE_PART_TYPE_SPACER)
      {
         Evas_Object *scroller_edje = elm_layout_edje_get(vd->scroller);
         // Clipper need, to clip the highlight object for the  part SPACER,
@@ -246,6 +246,15 @@ part_obj_geom_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
         evas_object_move(part_highlight, (x + lx), (y + ly));
         evas_object_resize(part_highlight, w, h);
         evas_object_clip_set(part_highlight, clipper);
+     }
+   else if (type == EDJE_PART_TYPE_TEXT)
+     {
+        Evas_Coord lx, ly;
+        evas_object_geometry_get(vd->layout, &lx, &ly, NULL, NULL);
+        edje_object_part_geometry_get(vd->layout, vd->part_name,
+                                      &x, &y, &w, &h);
+        evas_object_resize(part_highlight, w, h);
+        evas_object_move(part_highlight, lx + x, ly + y);
      }
    else
      {
