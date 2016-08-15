@@ -184,6 +184,7 @@ update_wireframe_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
    //Update the wireframe of the part name.
    if (pobj)
      {
+        Evas_Coord part_lx = 0, part_ly = 0;
         Evas_Coord part_x = 0, part_y = 0, part_w = 0, part_h = 0;
 
         //Case 1: If Part is the TEXT, the geometry information is different
