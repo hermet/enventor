@@ -5,9 +5,14 @@
 #include <Eio.h>
 #include "common.h"
 
+#define FILE_QUEUE_CNT 20
+
 typedef struct file_mgr_s {
+     Eina_List *file_queue;
      Evas_Object *warning_layout;
+     Enventor_Item *focused_it;
      Eina_Bool edc_modified : 1;
+     Eina_Bool no_queue : 1;  //file queueing?
 } file_mgr_data;
 
 static file_mgr_data *g_fmd = NULL;
@@ -142,6 +147,21 @@ enventor_edc_modified_cb(void *data, Evas_Object *obj EINA_UNUSED,
    warning_open(fmd);
 }
 
+static void
+file_mgr_file_push(file_mgr_data *fmd, const char *file)
+{
+   if (!file) return;
+   if (fmd->no_queue) return;
+
+   //Prevent overflow. Remove first node.
+   if (eina_list_count(fmd->file_queue) >= FILE_QUEUE_CNT)
+     fmd->file_queue = eina_list_remove_list(fmd->file_queue, fmd->file_queue);
+
+   //Append new file.
+   Eina_Stringshare *tmp = eina_stringshare_add(file);
+   fmd->file_queue = eina_list_append(fmd->file_queue, tmp);
+}
+
 /*****************************************************************************/
 /* Externally accessible calls                                               */
 /*****************************************************************************/
@@ -230,6 +250,11 @@ file_mgr_term(void)
    file_mgr_data *fmd = g_fmd;
    if (!fmd) return;
 
+   //Remove file queue
+   Eina_Stringshare *file;
+   EINA_LIST_FREE(fmd->file_queue, file)
+     eina_stringshare_del(file);
+
    free(fmd);
 }
 
@@ -248,11 +273,7 @@ file_mgr_sub_file_add(const char *path, Eina_Bool focus)
    EINA_SAFETY_ON_NULL_RETURN_VAL(it, NULL);
 
    file_tab_it_add(it);
-   if (focus)
-     {
-        file_tab_it_select(it);
-        file_mgr_file_focus(it);
-     }
+   if (focus) file_mgr_file_focus(it);
 
    return it;
 }
@@ -260,6 +281,9 @@ file_mgr_sub_file_add(const char *path, Eina_Bool focus)
 Enventor_Item *
 file_mgr_main_file_set(const char *path)
 {
+   file_mgr_data *fmd = g_fmd;
+   if (!fmd) return NULL;
+
    if (!path)
      {
         EINA_LOG_ERR("No path??");
@@ -283,6 +307,7 @@ file_mgr_main_file_set(const char *path)
       (Eina_List *) enventor_object_sub_items_get(base_enventor_get());
    Eina_List *l;
    Enventor_Item *it;
+   Eina_Bool replace_focus = EINA_FALSE;
 
    EINA_LIST_FOREACH(sub_its, l, it)
      {
@@ -290,6 +315,8 @@ file_mgr_main_file_set(const char *path)
         if (!path2) continue;
         if (strcmp(realpath, path2)) continue;
         file_mgr_file_del(it);
+        if (fmd->focused_it == it)
+          replace_focus = EINA_TRUE;
         break;
      }
 
@@ -302,13 +329,18 @@ file_mgr_main_file_set(const char *path)
           {
              const char *file_path = NULL;
              file_path = enventor_item_file_get(main_it);
-             file_mgr_sub_file_add(file_path, EINA_FALSE);
+             Enventor_Item *it2 = file_mgr_sub_file_add(file_path, EINA_FALSE);
              file_mgr_file_del(main_it);
+             if (fmd->focused_it == main_it)
+               fmd->focused_it = it2;
           }
      }
 
    main_it = enventor_object_main_item_set(base_enventor_get(), realpath);
    EINA_SAFETY_ON_NULL_RETURN_VAL(main_it, NULL);
+
+   if (replace_focus)
+     fmd->focused_it = main_it;
 
    file_tab_it_add(main_it);
    file_mgr_file_focus(main_it);
@@ -324,10 +356,16 @@ file_mgr_file_focus(Enventor_Item *it)
 {
    EINA_SAFETY_ON_NULL_RETURN(it);
 
+   file_mgr_data *fmd = g_fmd;
+
+   if (fmd->focused_it && (fmd->focused_it != it))
+     file_mgr_file_push(fmd, enventor_item_file_get(fmd->focused_it));
+
    file_tab_it_select(it);
    enventor_item_represent(it);
    base_title_set(enventor_item_file_get(it));
    base_edc_navigator_group_update();
+   fmd->focused_it = it;
 
    //Reset file based contexts.
    search_reset();
@@ -450,4 +488,33 @@ file_mgr_file_open(const char *file_path)
    //This selected file hasn't been opened yet, so let's open this file newly.
    file_mgr_sub_file_add(file_path, EINA_TRUE);
    return EINA_TRUE;
+}
+
+Eina_Bool
+file_mgr_file_backward(void)
+{
+   file_mgr_data *fmd = g_fmd;
+  if (!fmd) return EINA_FALSE;
+
+   Eina_List *last = eina_list_last(fmd->file_queue);
+   if (!last) return EINA_FALSE;
+
+   Eina_Stringshare *file = eina_list_data_get(last);
+   if (!file)
+     {
+        EINA_LOG_ERR("No file path??");
+        return EINA_FALSE;
+     }
+
+   fmd->file_queue = eina_list_remove_list(fmd->file_queue, last);
+
+   Eina_Bool ret;
+
+   fmd->no_queue = EINA_TRUE;
+   ret = file_mgr_file_open(file);
+   fmd->no_queue = EINA_FALSE;
+
+   eina_stringshare_del(file);
+
+   return ret;
 }

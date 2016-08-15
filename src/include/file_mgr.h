@@ -15,4 +15,4 @@ Enventor_Item *file_mgr_main_item_get(void);
 Eina_Bool file_mgr_modified_get(void);
 Eina_Bool file_mgr_file_open(const char *file_path);
 void file_mgr_file_del(Enventor_Item *it);
-
+Eina_Bool file_mgr_file_backward(void);

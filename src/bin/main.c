@@ -794,6 +794,8 @@ keygrabber_key_down_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
    //Revert Quick Jump
    if (!strcmp(ev->key, "F4"))
      {
+        if (!file_mgr_file_backward())
+          stats_info_msg_update("No files go back.");
         return;
      }
    //Keyword Reference
