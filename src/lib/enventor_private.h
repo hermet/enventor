@@ -105,6 +105,7 @@ Eina_Bool color_ready(color_data *cd);
 parser_data *parser_init(void);
 void parser_term(parser_data *pd);
 Eina_Stringshare *parser_first_group_name_get(parser_data *pd, Evas_Object *entry);
+Eina_Stringshare *parser_cur_context_group_name_get(parser_data *pd, Evas_Object *entry, Eina_Bool collections);
 void parser_cur_context_get(parser_data *pd, Evas_Object *entry, void (*cb)(void *data, Eina_Stringshare *state_name, double state_value, Eina_Stringshare *part_name, Eina_Stringshare *group_name), void *data, Eina_Bool collections);
 Eina_Stringshare *parser_cur_context_fast_get(Evas_Object *entry, const char *scope);
 Eina_Bool parser_type_name_compare(parser_data *pd, const char *str);
@@ -287,7 +288,27 @@ Eina_List *edit_group_list_get(edit_data *ed);
 
 /* util */
 void mem_fail_msg(void);
+#define ESCAPE_GOTO_END() \
+   p++; \
+   p = strstr(p, "\""); \
+   if (!p) goto end; \
+   p++; \
+   continue
 
+#define ESCAPE_RET_NULL() \
+   p++; \
+   p = strstr(p, "\""); \
+   if (!p) return NULL; \
+   p++; \
+   continue
+
+const char* part_type_get(Edje_Part_Type type);
+char* find_group_proc_internal(char *utf8, char *utf8_end,
+                               const char *group_name);
+char* find_part_proc_internal(char *utf8, char *utf8_end,
+                              const char* group_name,
+                              const char *part_name,
+                              const char *part_type);
 
 /* reference */
 void ref_init(void);

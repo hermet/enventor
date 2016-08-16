@@ -374,6 +374,121 @@ end:
    td->utf8 = NULL;
 }
 
+Eina_Stringshare *
+parser_cur_context_group_name_get(parser_data *pd EINA_UNUSED,
+                                  Evas_Object *entry, Eina_Bool collections)
+{
+   const char *GROUP = "group";
+   const int GROUP_LEN = 5;
+   const char *markup = elm_entry_entry_get(entry);
+   char *utf8 = elm_entry_markup_to_utf8(markup);
+   char *p = utf8;
+   int cur_pos = elm_entry_cursor_pos_get(entry);
+   char *end = utf8 + cur_pos;
+   int bracket = 0;
+   const char *group_name = NULL;
+   int group_name_len = 0;
+
+   if (!collections) bracket = 1;
+
+   while (p && (p <= end))
+     {
+        //Skip "" range
+        if (!strncmp(p, QUOT_UTF8, QUOT_UTF8_LEN))
+          {
+             p += QUOT_UTF8_LEN;
+             p = strstr(p, QUOT_UTF8);
+             if (!p) goto end;
+             p += QUOT_UTF8_LEN;
+             continue;
+          }
+        //Enter one depth into Bracket.
+        if (*p == '{')
+          {
+             bracket++;
+             p++;
+             continue;
+          }
+        //Check inside comment
+        if (*p == '/')
+          {
+             if (p[1] == '/')
+               {
+                 p = strchr(p, '\n');
+                 continue;
+               }
+             else if (p[1] == '*')
+               {
+                 p = strstr(p, "*/");
+                 continue;
+               }
+          }
+        //Skip #if ~ #endif
+        if (!strncmp(p, "#if", 3))
+          {
+             p = strstr(p, "#endif");
+             if (!p) goto end;
+             p += 6; //strlen(#endif)
+             continue;
+          }
+        //Skip #define
+        if (!strncmp(p, "#define", 7))
+          {
+             //escape "\", "ie, #define .... \"
+             p += 7; //strlen(#define)
+
+             while (p <= end)
+               {
+                  char *eol = strstr(p, "\n");
+                  if (!eol) goto end;
+
+                  char *slash = strstr(p, "\\");
+
+                  p = eol + 1;
+
+                  if (!slash || (eol < slash))
+                    break;
+               }
+             continue;
+          }
+        //Check whether outside of description or part or group
+        if ((*p == '}') && (p < end))
+          {
+             bracket--;
+             p++;
+             if (bracket == 1) group_name = NULL;
+             continue;
+          }
+        //Check Group in. Probably inside of collections or the most outside.
+        if (bracket == 1)
+          {
+             if (!strncmp(p, GROUP, GROUP_LEN))
+               {
+                  p += GROUP_LEN;
+                  char *name_begin = strstr(p, QUOT_UTF8);
+                  if (!name_begin) goto end;
+                  name_begin += QUOT_UTF8_LEN;
+                  p = name_begin;
+                  char *name_end = strstr(p, QUOT_UTF8);
+                  if (!name_end) goto end;
+
+                  group_name = name_begin;
+                  group_name_len = name_end - name_begin;
+                  p = name_end + QUOT_UTF8_LEN;
+                  bracket++;
+                  continue;
+               }
+          }
+        p++;
+     }
+   if (group_name)
+     group_name = eina_stringshare_add_length(group_name, group_name_len);
+
+end:
+   free(utf8);
+   return group_name;
+}
+
 static void
 cur_context_thread_cancel(void *data, Ecore_Thread *thread EINA_UNUSED)
 {

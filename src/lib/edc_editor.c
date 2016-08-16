@@ -1848,6 +1848,123 @@ edit_key_down_event_dispatch(edit_data *ed, const char *key)
    return EINA_FALSE;
 }
 
+static char*
+cursor_part_name_get(edit_data *ed)
+{
+   int part_begin, part_end;
+   part_begin = part_end = -1;
+
+   Evas_Object *tb = elm_entry_textblock_get(ed->en_edit);
+   Evas_Textblock_Cursor *cur = evas_object_textblock_cursor_get(tb);
+   Evas_Textblock_Cursor *cur_l = evas_object_textblock_cursor_new(tb);
+   Evas_Textblock_Cursor *cur_r = evas_object_textblock_cursor_new(tb);
+
+   int cur_pos = evas_textblock_cursor_pos_get(cur);
+   evas_textblock_cursor_pos_set(cur_l, cur_pos);
+   evas_textblock_cursor_pos_set(cur_r, cur_pos);
+
+   //Search the end character to the left
+   Eina_Bool is_prev = EINA_TRUE;
+   char *ch_l = NULL;
+   ch_l = evas_textblock_cursor_content_get(cur_l);
+   if (!ch_l) goto end;
+   /* If current character is ", move cursor to the previous character
+      to find part name correctly */
+   if (*ch_l == '\"')
+     is_prev = evas_textblock_cursor_char_prev(cur_l);
+
+   while (is_prev)
+     {
+        ch_l = evas_textblock_cursor_content_get(cur_l);
+        if (!ch_l || (*ch_l == '\n') || (*ch_l == ';') || (*ch_l == '\0'))
+          break;
+        if (*ch_l == '\"')
+          {
+             evas_textblock_cursor_char_next(cur_l);
+             part_begin = evas_textblock_cursor_pos_get(cur_l);
+             break;
+          }
+        is_prev = evas_textblock_cursor_char_prev(cur_l);
+     }
+   if (part_begin == -1) goto end;
+
+   //Search the end character to the right
+   Eina_Bool is_next = EINA_TRUE;
+   char *ch_r = NULL;
+   while (is_next)
+     {
+        ch_r = evas_textblock_cursor_content_get(cur_r);
+        if (!ch_r || (*ch_r == '\n') || (*ch_r == ';') || (*ch_r == '\0'))
+          break;
+        if (*ch_r == '\"')
+          {
+             part_end = evas_textblock_cursor_pos_get(cur_r);
+             break;
+          }
+        is_next = evas_textblock_cursor_char_next(cur_r);
+     }
+   if (part_end == -1) goto end;
+
+   //Verify the part name
+   if (part_begin != part_end)
+     {
+        char *cur_part_name =
+           evas_textblock_cursor_range_text_get(cur_l, cur_r,
+                                                EVAS_TEXTBLOCK_TEXT_PLAIN);
+        if (!cur_part_name) goto end;
+
+        Eina_List *l;
+        char *part_name;
+        Eina_List *parts = view_parts_list_get(edj_mgr_view_get(NULL));
+        EINA_LIST_FOREACH(parts, l, part_name)
+          {
+             //If part is detected
+             if (!strcmp(part_name, cur_part_name))
+               return cur_part_name;
+          }
+        free(cur_part_name);
+     }
+
+end:
+   evas_textblock_cursor_free(cur_l);
+   evas_textblock_cursor_free(cur_r);
+   return NULL;
+}
+
+static void
+goto_part_name(edit_data *ed, const char *part_name)
+{
+   //Find current group name for searching part
+   Eina_Stringshare *group_name =
+      parser_cur_context_group_name_get(ed->pd, ed->en_edit, ed->main);
+   if (!group_name) return;
+
+   const char *text = elm_entry_entry_get(ed->en_edit);
+   char *utf8 = elm_entry_markup_to_utf8(text);
+
+   //Find part name in current group
+   const char *part_type =
+      part_type_get(view_part_type_get(edj_mgr_view_get(NULL), part_name));
+   if (!part_type) goto end;
+
+   const char *start_pos =
+      find_part_proc_internal(utf8,
+                              (utf8 + strlen(utf8)),
+                              group_name,
+                              part_name,
+                              part_type);
+   if (!start_pos) goto end;
+
+   //Select part name
+   edit_selection_region_center_set(ed,
+                                    (start_pos - utf8),
+                                    (start_pos - utf8 + strlen(part_name)));
+
+end:
+   eina_stringshare_del(group_name);
+   free(utf8);
+}
+
 Eina_Bool
 edit_key_up_event_dispatch(edit_data *ed, const char *key)
 {
@@ -1859,7 +1976,18 @@ edit_key_up_event_dispatch(edit_data *ed, const char *key)
 
    //Quick Jump
    if (!strcmp("F3", key))
-     edit_quick_jump(ed);
+     {
+        char *part_name = cursor_part_name_get(ed);
+        //Case 1: cursor on part name
+        if (part_name)
+          {
+             goto_part_name(ed, part_name);
+             free(part_name);
+          }
+        //Case 2: cursor on filepath
+        else
+          edit_quick_jump(ed);
+     }
 
    return EINA_FALSE;
 }
