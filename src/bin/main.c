@@ -790,11 +790,6 @@ keygrabber_key_down_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
         main_edc_update(EINA_FALSE);
         return;
      }
-   //Quick Jump
-   if (!strcmp(ev->key, "F3"))
-     {
-        return;
-     }
    //Revert Quick Jump
    if (!strcmp(ev->key, "F4"))
      {
