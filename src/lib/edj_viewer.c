@@ -772,6 +772,7 @@ view_part_highlight_set(view_data *vd, const char *part_name)
 Eina_Stringshare *
 view_group_name_get(view_data *vd)
 {
+   if (!vd) return NULL;
    return vd->group_name;
 }
 
