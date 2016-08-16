@@ -1902,8 +1902,9 @@ parser_bracket_cancel(parser_data *pd)
 {
    if (pd->btd)
      {
-        pd->btd->pd = NULL;
         ecore_thread_cancel(pd->btd->thread);
+        pd->btd->pd = NULL;
+        pd->btd = NULL;
      }
 }
 
