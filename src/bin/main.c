@@ -1014,13 +1014,12 @@ crash_handler(int signal EINA_UNUSED)
 static void
 sigaction_setup(void)
 {
-   SignalHandlerPointer prev_handle;
-   prev_handle = signal(SIGABRT, &crash_handler);
-   prev_handle = signal(SIGFPE, &crash_handler);
-   prev_handle = signal(SIGILL, &crash_handler);
-   prev_handle = signal(SIGINT, &crash_handler);
-   prev_handle = signal(SIGSEGV, &crash_handler);
-   prev_handle = signal(SIGTERM, &crash_handler);
+   signal(SIGABRT, &crash_handler);
+   signal(SIGFPE, &crash_handler);
+   signal(SIGILL, &crash_handler);
+   signal(SIGINT, &crash_handler);
+   signal(SIGSEGV, &crash_handler);
+   signal(SIGTERM, &crash_handler);
 }
 #else
 static void
