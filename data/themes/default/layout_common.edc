@@ -1037,7 +1037,7 @@ group { "search_layout";
             fixed: 1 1;
          }
       }
-      swallow { "elm.swallow.forward";
+      swallow { "elm.swallow.backward";
          scale: 1;
          desc { "default";
             rel1.relative: 0 1;
@@ -1052,13 +1052,13 @@ group { "search_layout";
             fixed: 1 1;
          }
       }
-      swallow { "elm.swallow.backward";
+      swallow { "elm.swallow.forward";
          scale: 1;
          desc { "default";
             rel1.relative: 1 0;
             rel2.relative: 1 1;
-            rel1.to: "elm.swallow.forward";
-            rel2.to: "elm.swallow.forward";
+            rel1.to: "elm.swallow.backward";
+            rel2.to: "elm.swallow.backward";
             rel1.offset: 5 0;
             min: 50 25;
             align: 0 0;
@@ -1070,8 +1070,8 @@ group { "search_layout";
          desc { "default";
             rel1.relative: 1 0;
             rel2.relative: 1 1;
-            rel1.to: "elm.swallow.backward";
-            rel2.to: "elm.swallow.backward";
+            rel1.to: "elm.swallow.forward";
+            rel2.to: "elm.swallow.forward";
             rel1.offset: 5 0;
             min: 50 25;
             align: 0 0;

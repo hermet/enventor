@@ -402,13 +402,6 @@ search_open(void)
    evas_object_size_hint_align_set(entry_replace, EVAS_HINT_FILL, 0);
    elm_object_part_content_set(layout, "elm.swallow.replace_entry",
                                entry_replace);
-   //Button (forward)
-   Evas_Object *btn_forward = elm_button_add(layout);
-   elm_object_text_set(btn_forward, _("Next"));
-   evas_object_smart_callback_add(btn_forward, "clicked", forward_clicked_cb,
-                                  sd);
-   elm_object_part_content_set(layout, "elm.swallow.forward", btn_forward);
-
    //Button (backward)
    Evas_Object *btn_backward = elm_button_add(layout);
    elm_object_text_set(btn_backward, _("Previous"));
@@ -416,6 +409,12 @@ search_open(void)
                                   backward_clicked_cb, sd);
    elm_object_part_content_set(layout, "elm.swallow.backward",
                                btn_backward);
+   //Button (forward)
+   Evas_Object *btn_forward = elm_button_add(layout);
+   elm_object_text_set(btn_forward, _("Next"));
+   evas_object_smart_callback_add(btn_forward, "clicked", forward_clicked_cb,
+                                  sd);
+   elm_object_part_content_set(layout, "elm.swallow.forward", btn_forward);
 
    //Button (replace)
    Evas_Object *btn_replace = elm_button_add(layout);
