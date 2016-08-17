@@ -191,7 +191,11 @@ macro_key_push(color_data *cd, char *str)
 
    //cutoff "()" from the macro name
    char *cut = strchr(key, '(');
-   if (cut) key = strndup(str, cut - str);
+   if (cut)
+     {
+        key = strndup(str, cut - str);
+        if (!key) return;
+     }
 
    char tmp[2];
    tmp[0] = key[0];
