@@ -5,7 +5,7 @@
 #include <Enventor.h>
 #include "enventor_private.h"
 
-const double VIEW_CACHING_TIME = 60 * 30;
+const double VIEW_CACHING_TIME = 60 * 5;
 
 typedef struct edj_data_s
 {
