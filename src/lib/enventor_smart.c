@@ -743,7 +743,10 @@ _enventor_object_syntax_color_set(Eo *obj EINA_UNUSED,
 
    if ((color_type < ENVENTOR_SYNTAX_COLOR_STRING) ||
        (color_type >= ENVENTOR_SYNTAX_COLOR_LAST))
-     EINA_LOG_ERR("Invalid color_type(%d)", color_type);
+     {
+        EINA_LOG_ERR("Invalid color_type(%d)", color_type);
+        return;
+     }
 
    eina_stringshare_del(pd->text_color_val[color_type]);
    pd->text_color_val[color_type] = eina_stringshare_add(val);
@@ -766,7 +769,10 @@ _enventor_object_syntax_color_get(Eo *obj EINA_UNUSED,
 {
    if ((color_type < ENVENTOR_SYNTAX_COLOR_STRING) ||
        (color_type >= ENVENTOR_SYNTAX_COLOR_LAST))
-     EINA_LOG_ERR("Invalid color_type(%d)", color_type);
+     {
+        EINA_LOG_ERR("Invalid color_type(%d)", color_type);
+        return NULL;
+     }
 
    //Return overriden color values or defaults.
    if (pd->text_color_val[color_type])
