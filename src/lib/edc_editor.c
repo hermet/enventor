@@ -729,6 +729,8 @@ edit_cursor_double_clicked_cb(void *data, Evas_Object *obj,
    if (!selected) return;
 
    selected = elm_entry_markup_to_utf8(selected);
+   if (!selected) return;
+
    if (selected[0] == '\"')
      {
         free(selected);
