@@ -144,6 +144,7 @@ view_resize_slider_layout_create(Evas_Object *parent, const char *type,
 
    //Slider
    Evas_Object *slider = elm_slider_add(layout);
+   elm_object_focus_allow_set(slider, EINA_FALSE);
    elm_slider_span_size_set(slider, 120);
    elm_slider_indicator_show_set(slider, EINA_FALSE);
    double step = 1 / (double) (3840 - 1);
