@@ -382,6 +382,7 @@ base_gui_show(void)
    base_data *bd = g_bd;
    EINA_SAFETY_ON_NULL_RETURN(bd);
 
+   evas_object_resize(bd->win, INIT_WIN_W, INIT_WIN_H);
    evas_object_show(bd->win);
 }
 

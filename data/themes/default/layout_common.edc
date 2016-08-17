@@ -35,7 +35,7 @@ group { "fileselector_layout";
          clip_to: "clipper";
          desc {
             min: 650 435;
-            max: 600 435;
+            max: 650 435;
             fixed: 1 1;
             image.normal: "frame_bg.png";
             image.border: 10 10 10 10;

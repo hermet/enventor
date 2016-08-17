@@ -196,10 +196,10 @@ config_load(void)
         cd->auto_complete = EINA_TRUE;
         cd->version = ENVENTOR_CONFIG_VERSION;
         cd->smart_undo_redo = EINA_FALSE;
-        cd->file_browser = EINA_FALSE;
+        cd->file_browser = EINA_TRUE;
         cd->edc_navigator = EINA_TRUE;
         cd->red_alert = EINA_TRUE;
-        cd->file_tab = EINA_FALSE;
+        cd->file_tab = EINA_TRUE;
      }
 
    g_cd = cd;
