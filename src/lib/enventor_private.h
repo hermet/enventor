@@ -220,6 +220,7 @@ void view_part_state_set(view_data *vd, const char *part, const char *descriptio
 void view_obj_need_reload_set(view_data *vd);
 Edje_Part_Type view_part_type_get(view_data *vd, const char *part);
 Enventor_Item *view_item_get(view_data *vd);
+void view_activated_set(view_data *vd, Eina_Bool activated);
 
 /* template */
 Eina_Bool template_part_insert(edit_data *ed, Edje_Part_Type part_type, Enventor_Template_Insert_Type insert_type, Eina_Bool fixed_w, Eina_Bool fixed_h, char *rel1_x_to, char *rel1_y_to, char *rel2_x_to, char *rel2_y_to, float align_x, float align_y, int min_w, int min_h,

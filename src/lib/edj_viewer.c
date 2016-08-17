@@ -52,6 +52,8 @@ struct viewer_s
 
    Eina_Bool edj_reload_need : 1;
    Eina_Bool file_set_finished : 1;
+   Eina_Bool activated: 1;
+   Eina_Bool view_update_call_request : 1;
 };
 
 const char *PART_NAME = "part_name";
@@ -374,7 +376,7 @@ view_obj_parts_callbacks_set(view_data *vd)
 }
 
 static void
-update_edj_file_internal(view_data *vd)
+update_view(view_data *vd)
 {
    view_images_monitor_set(vd);
    view_obj_min_update(vd);
@@ -382,6 +384,7 @@ update_edj_file_internal(view_data *vd)
    dummy_obj_update(vd->layout);
    wireframes_obj_update(vd->layout);
    view_mirror_mode_update(vd);
+
    if (vd->changed_part.part)
    edje_edit_part_selected_state_set(vd->layout, vd->changed_part.part,
                                      vd->changed_part.desc,
@@ -389,10 +392,25 @@ update_edj_file_internal(view_data *vd)
 
    view_obj_parts_callbacks_set(vd);
    wireframes_obj_callbacks_set(vd->layout);
+
+   if (vd->view_update_call_request)
+     {
+        evas_object_smart_callback_call(vd->enventor,
+                                        SIG_LIVE_VIEW_UPDATED, vd->it);
+        vd->view_update_call_request = EINA_FALSE;
+     }
+}
+
+static void
+update_edj_file_internal(view_data *vd)
+{
+   vd->view_update_call_request = EINA_TRUE;
    vd->edj_reload_need = EINA_FALSE;
    vd->file_set_finished = EINA_TRUE;
 
-   evas_object_smart_callback_call(vd->enventor, SIG_LIVE_VIEW_UPDATED, vd->it);
+   if (!vd->activated) return;
+
+   update_view(vd);
 }
 
 static Eina_Bool
@@ -431,8 +449,11 @@ exe_del_event_cb(void *data, int type EINA_UNUSED, void *event EINA_UNUSED)
    //Failed to load edj? I have no idea. Try again.
    if (!edje_object_file_set(vd->layout, build_edj_path_get(), vd->group_name))
      {
-        dummy_obj_update(vd->layout);
-        wireframes_obj_update(vd->layout);
+        if (vd->activated)
+          {
+             dummy_obj_update(vd->layout);
+             wireframes_obj_update(vd->layout);
+          }
         ecore_timer_del(vd->update_edj_timer);
         vd->file_set_finished = EINA_FALSE;
         vd->update_edj_timer = ecore_timer_add(0.25, update_edj_file, vd);
@@ -949,3 +970,16 @@ view_item_get(view_data *vd)
    if (!vd) return NULL;
    return vd->it;
 }
+
+void
+view_activated_set(view_data *vd, Eina_Bool activated)
+{
+   if (!vd) return;
+   activated = !!activated;
+   if (activated == vd->activated) return;
+   vd->activated = activated;
+   if (!activated) return;
+
+   update_view(vd);
+}
+

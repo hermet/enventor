@@ -197,8 +197,11 @@ edj_mgr_view_switch_to(view_data *vd)
         ecore_timer_del(prev_edj->timer);
         prev_edj->timer = ecore_timer_add(VIEW_CACHING_TIME, view_del_timer_cb,
                                           prev_edj->vd);
+        view_activated_set(prev_edj->vd, EINA_FALSE);
      }
    em->edj = view_data_get(vd);
+
+   view_activated_set(vd, EINA_TRUE);
 }
 
 Evas_Object *
