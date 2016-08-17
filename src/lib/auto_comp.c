@@ -166,7 +166,7 @@ context_lexem_thread_cb(void *data, Ecore_Thread *thread)
 
    if (!edit_is_main_file(td->ed))
      {
-        strcpy(stack[depth], "collections");
+        strncpy(stack[depth], "collections", MAX_KEYWORD_LENGTH);
         depth++;
      }
 
