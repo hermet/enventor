@@ -480,6 +480,7 @@ macro_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
           while (bracket_inside > 0)
             {
                macro_end = strchr(macro_end, ')');
+               if (!macro_end) break;
                bracket_inside--;
             }
           if (!macro_end) macro_end = (char *) eol;
