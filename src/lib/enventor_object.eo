@@ -206,6 +206,9 @@ class Enventor.Object (Elm.Widget, Efl.File) {
       }
       keyword_reference_show {
       }
+      base_scale_get {
+         return: double;
+      }
    }
    implements {
       class.constructor;

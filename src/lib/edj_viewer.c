@@ -983,3 +983,10 @@ view_activated_set(view_data *vd, Eina_Bool activated)
    update_view(vd);
 }
 
+double
+view_base_scale_get(view_data *vd)
+{
+   if (!vd) return 0.0;
+
+   return edje_object_base_scale_get(vd->layout);
+}
