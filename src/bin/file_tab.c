@@ -90,10 +90,6 @@ file_tab_it_del(file_tab_it *fti)
 {
    Evas_Object *list = elm_object_item_widget_get(fti->it);
 
-   //Be aware, if you change this api call order, it may break enventor.
-   //Just keep this here as possible.
-   enventor_item_del(fti->enventor_it);
-
    //FIXME: If this item is main, then it needs to close project.
 
    //If the focused item is removed, then enable next item.
@@ -114,6 +110,7 @@ file_tab_it_del(file_tab_it *fti)
      }
 
    //Remove item.
+   enventor_item_del(fti->enventor_it);
    elm_object_item_del(fti->it);
    ecore_animator_del(fti->animator);
    free(fti);

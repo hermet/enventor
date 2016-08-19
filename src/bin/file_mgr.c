@@ -262,6 +262,12 @@ void
 file_mgr_file_del(Enventor_Item *it)
 {
    if (!it) return;
+
+   file_mgr_data *fmd = g_fmd;
+
+   if (fmd->focused_it == it)
+     fmd->focused_it = NULL;
+
    file_tab_it_remove(it);
    enventor_item_del(it);
 }
