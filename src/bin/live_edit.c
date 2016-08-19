@@ -295,10 +295,10 @@ info_text_update(live_data *ld)
    evas_object_text_text_set(ld->info_text[Info_Text_Rel2], buf);
 
    //Size
-   vw = (Evas_Coord) (((double) vw) *
-                      (ld->rel_info.rel2_x - ld->rel_info.rel1_x));
-   vh = (Evas_Coord) (((double) vh) *
-                      (ld->rel_info.rel2_y - ld->rel_info.rel1_y));
+   vw = (Evas_Coord) round(((double) vw) *
+                           (ld->rel_info.rel2_x - ld->rel_info.rel1_x));
+   vh = (Evas_Coord) round(((double) vh) *
+                           (ld->rel_info.rel2_y - ld->rel_info.rel1_y));
    snprintf(buf, sizeof(buf), "%d X %d", vw, vh);
    evas_object_text_text_set(ld->info_text[Info_Text_Size], buf);
 
@@ -378,10 +378,12 @@ calc_relative_info(live_data *ld)
    enventor_object_live_view_size_get(base_enventor_get(), &vw, &vh);
 
    //Calculate real min size of Live Edit Item base on current relative
-   Evas_Coord min_w = (Evas_Coord) (((double) vw) *
-                          (ld->rel_info.rel2_x - ld->rel_info.rel1_x));
-   Evas_Coord min_h = (Evas_Coord) (((double) vh) *
-                          (ld->rel_info.rel2_y - ld->rel_info.rel1_y));
+   Evas_Coord min_w =
+      (Evas_Coord) round(((double) vw) *
+                         (ld->rel_info.rel2_x - ld->rel_info.rel1_x));
+   Evas_Coord min_h =
+      (Evas_Coord) round(((double) vh) *
+                         (ld->rel_info.rel2_y - ld->rel_info.rel1_y));
 
    //Set fixed properties of width for current Live Edit Item
    if (fixed_w)
