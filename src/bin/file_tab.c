@@ -31,7 +31,9 @@ left_btn_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
    if (!it) return;
    it = elm_list_item_prev(it);
    if (!it) return;
+
    elm_list_item_selected_set(it, EINA_TRUE);
+   elm_list_item_bring_in(it);
 }
 
 static void
@@ -46,7 +48,9 @@ right_btn_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
    if (!it) return;
    it = elm_list_item_next(it);
    if (!it) return;
+
    elm_list_item_selected_set(it, EINA_TRUE);
+   elm_list_item_bring_in(it);
 }
 
 static Eina_Bool
