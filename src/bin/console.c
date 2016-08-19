@@ -18,6 +18,13 @@ token_value_get(char *src, char *key_str, char end_key, int offset, char *dst)
 static void
 error_word_select(Evas_Object *console)
 {
+   Enventor_Item *it = file_mgr_focused_item_get();
+   if (!it)
+     {
+        EINA_LOG_ERR("No focused item??");
+        return;
+     }
+
    //Convert console text including markup text to the plain text
    const char *markup_text = elm_entry_entry_get(console);
    if (!markup_text) return;
@@ -41,10 +48,6 @@ error_word_select(Evas_Object *console)
      token_value_get(error_token, "name", ' ', 1, error_word);
    else
      goto end;
-
-   //FIXME: Need to get the file that contains errors.
-   Enventor_Item *it = file_mgr_focused_item_get();
-   EINA_SAFETY_ON_NULL_RETURN(it);
 
    //Find error word position
    enventor_item_line_goto(it, atoi(error_line));
