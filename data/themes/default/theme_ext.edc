@@ -144,6 +144,7 @@ group { name: "elm/list/h_item/enventor";
    images.image: "vgrad_med_dark.png" COMP;
    images.image: "bevel_out.png" COMP;
    images.image: "shine.png" COMP;
+   images.image: "brows_logo.png" COMP;
    parts {
       part { name: "event"; type: RECT;
          description { state: "default" 0.0;
@@ -253,13 +254,15 @@ group { name: "elm/list/h_item/enventor";
             rel1.offset: 5 2;
             rel1.relative: 1.0 0;
             rel1.to_x: "elm.swallow.icon";
-            rel2.offset: -11 -3;
+            rel2.offset: -7 -3;
+            rel2.relative: 0.0 1.0;
+            rel2.to_x: "elm.swallow.end";
             color3: 0 0 0 128;
             color_class: "list_item";
             text { font: FN; size: 10;
                min: 1 1;
                ellipsis: -1;
-               align: 0.5 0;
+               align: 0.5 0.5;
                text_class: "list_item";
             }
          }
@@ -351,7 +354,20 @@ group { name: "elm/list/h_item/enventor";
          target: "label2";
          target: "label3";
       }
-      swallow {"elm.swallow.icon";
+      image { "icon";
+         scale: 1;
+         desc { "default";
+            fixed: 1 1;
+            min: 15 15;
+            align: 0 0.5;
+            rel1.relative: 0.0 0.5;
+            rel1.offset: 5 -1;
+            rel2.relative: 0.0 0.5;
+            rel2.offset: 5 -2;
+            image.normal: "brows_logo.png";
+         }
+      }
+      swallow { "elm.swallow.icon";
          scale: 1;
          desc { "default";
             fixed: 1 1;
@@ -392,17 +408,31 @@ group { name: "elm/list/h_item/enventor";
       swallow { "elm.swallow.end";
          repeat_events: 1;
          desc { "default";
+            visible: 0;
+            fixed: 1 1;
+            min: 15 15;
+            align: 1.0 0.5;
+            aspect: 1.0 1.0;
+            rel1.offset: 5 -3;
+            rel1.relative: 1.0 0.0;
+            rel2.offset: 0 -2;
+         }
+         desc { "selected";
+            inherit: "default";
+            visible: 1;
          }
       }
       program {
          signal: "elm,state,selected"; source: "elm";
          action: STATE_SET "selected" 0.0;
          target: "sel_shine";
+         target: "elm.swallow.end";
       }
       program {
          signal: "elm,state,unselected"; source: "elm";
          action: STATE_SET "default" 0.0;
          target: "sel_shine";
+         target: "elm.swallow.end";
       }
       program {
          signal: "elm,state,disabled"; source: "elm";

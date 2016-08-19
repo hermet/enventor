@@ -242,7 +242,7 @@ file_tab_it_add(Enventor_Item *enventor_it)
    elm_image_file_set(img, EDJE_PATH, "close");
    elm_object_content_set(btn, img);
 
-   fti->it = elm_list_item_append(fd->list, filename, btn, NULL,
+   fti->it = elm_list_item_append(fd->list, filename, NULL, btn,
                                   list_item_selected_cb, fti);
 
    elm_object_item_tooltip_text_set(fti->it, filepath);
