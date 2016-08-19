@@ -1946,15 +1946,16 @@ goto_part_name(edit_data *ed, const char *part_name)
 
    //Find part name in current group
    const char *part_type =
-      part_type_get(view_part_type_get(edj_mgr_view_get(NULL), part_name));
+      part_type_str_convert(view_part_type_get(edj_mgr_view_get(NULL),
+                            part_name));
    if (!part_type) goto end;
 
    const char *start_pos =
-      find_part_proc_internal(utf8,
-                              (utf8 + strlen(utf8)),
-                              group_name,
-                              part_name,
-                              part_type);
+      parser_part_pos_get(utf8,
+                          (utf8 + strlen(utf8)),
+                          group_name,
+                          part_name,
+                          part_type);
    if (!start_pos) goto end;
 
    //Select part name

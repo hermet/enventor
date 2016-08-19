@@ -127,6 +127,27 @@ void parser_bracket_find(parser_data *pd, Evas_Object *entry, Bracket_Update_Cb 
 void parser_bracket_cancel(parser_data *pd);
 Eina_List *parser_group_list_get(parser_data *pd, Evas_Object *entry);
 
+#define ESCAPE_GOTO_END() \
+   p++; \
+   p = strstr(p, "\""); \
+   if (!p) goto end; \
+   p++; \
+   continue
+
+#define ESCAPE_RET_NULL() \
+   p++; \
+   p = strstr(p, "\""); \
+   if (!p) return NULL; \
+   p++; \
+   continue
+
+char* parser_group_pos_get(char *utf8, char *utf8_end,
+                           const char *group_name);
+char* parser_part_pos_get(char *utf8, char *utf8_end,
+                          const char* group_name,
+                          const char *part_name,
+                          const char *part_type);
+
 /* syntax helper */
 syntax_helper *syntax_init(edit_data *ed);
 void syntax_term(syntax_helper *sh);
@@ -289,27 +310,7 @@ Eina_List *edit_group_list_get(edit_data *ed);
 
 /* util */
 void mem_fail_msg(void);
-#define ESCAPE_GOTO_END() \
-   p++; \
-   p = strstr(p, "\""); \
-   if (!p) goto end; \
-   p++; \
-   continue
-
-#define ESCAPE_RET_NULL() \
-   p++; \
-   p = strstr(p, "\""); \
-   if (!p) return NULL; \
-   p++; \
-   continue
-
-const char* part_type_get(Edje_Part_Type type);
-char* find_group_proc_internal(char *utf8, char *utf8_end,
-                               const char *group_name);
-char* find_part_proc_internal(char *utf8, char *utf8_end,
-                              const char* group_name,
-                              const char *part_name,
-                              const char *part_type);
+const char* part_type_str_convert(Edje_Part_Type type);
 
 /* reference */
 void ref_init(void);
