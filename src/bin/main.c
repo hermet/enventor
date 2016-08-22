@@ -7,7 +7,7 @@
 #include "common.h"
 
 #ifdef _WIN32
-#include <signal.h>
+#include <Windows.h>
 #endif
 
 typedef struct app_s
@@ -956,6 +956,15 @@ enventor_lock_create(void)
      }
 
    //Ok, this is an unique instance!
+#ifdef _WIN32
+   HANDLE handle = CreateFile(buf, GENERIC_READ, NULL, NULL, CREATE_NEW,
+                              FILE_FLAG_DELETE_ON_CLOSE, 0);
+   if (INVALID_HANDLE_VALUE == handle)
+     {
+        EINA_LOG_ERR("Failed to open file \"%s\"", buf);
+        return EINA_TRUE;
+     }
+#else
    FILE *fp = fopen(buf, "w");
    if (!fp)
      {
@@ -964,6 +973,7 @@ enventor_lock_create(void)
      }
    fputs("x", fp);
    fclose(fp);
+#endif
 
    own_lock = EINA_TRUE;
 
@@ -973,6 +983,7 @@ enventor_lock_create(void)
 static void
 enventor_lock_remove()
 {
+#ifndef _WIN32
    //You are not the owner of the lock.
    if (!own_lock) return;
 
@@ -1001,38 +1012,27 @@ enventor_lock_remove()
      }
 
    ecore_file_remove(buf);
-}
-
-#ifdef _WIN32
-static void
-crash_handler(int signal EINA_UNUSED)
-{
-   EINA_LOG_ERR("Eeeek! Eventor is terminated abnormally!");
-   enventor_lock_remove();
-}
-
-static void
-sigaction_setup(void)
-{
-   signal(SIGABRT, &crash_handler);
-   signal(SIGFPE, &crash_handler);
-   signal(SIGILL, &crash_handler);
-   signal(SIGINT, &crash_handler);
-   signal(SIGSEGV, &crash_handler);
-   signal(SIGTERM, &crash_handler);
-}
 #else
+   (void) 0;
+#endif
+}
+
 static void
 crash_handler(int x EINA_UNUSED, siginfo_t *info EINA_UNUSED,
               void *data EINA_UNUSED)
 {
+#ifndef _WIN32
    EINA_LOG_ERR("Eeeek! Eventor is terminated abnormally!");
    enventor_lock_remove();
+#else
+   (void) 0;
+#endif
 }
 
 static void
 sigaction_setup(void)
 {
+#ifndef _WIN32
    //Just in case, if you are debugging using gdb,
    //you can send signals like this. "handle SIGABRT pass"
    //Use this for remove the enventor lock.
@@ -1068,8 +1068,10 @@ sigaction_setup(void)
 
    //Interrupt from keyboard
    //sigaction(SIGINT, &action, NULL);
-}
+#else
+   (void) 0;
 #endif
+}
 
 static Eina_Bool
 init(app_data *ad, int argc, char **argv)
