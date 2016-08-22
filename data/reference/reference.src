@@ -1,4 +1,6 @@
 collections { "The <hilight>collections</hilight> represents a theme.</br>The <hilight>collections</hilight> block contains a list of groups that composes a theme.";
+   base_scale { "The <hilight>base_scale</hilight> indicates the scale factor that the edc file is based on.</br>The size of a scalable object is multiplied with the device scale value. If the scalable object with the size 10 is created in a device with the scale 1.0, the size of the object is 20 in a device with the scale 2.0, and 40 in a device with the scale 4.0.</br>The relationship among scale, device scale and base scale is as follows.</br>Scale = Device Scale / Base Scale.";
+   }
    color_classes { "The <hilight>color_classes</hilight> block contains a list of one or more <hilight>color_class</hilight> blocks.</br>Each <hilight>color_class</hilight> allows designers to name an arbitary group of colors to be used in the theme, the application can use that name to alter the color values at runtime.";
       color_class { "The <hilight>color_class</hilight> allows designers to name an arbitrary group of colors to be used in the theme, the application can use that name to alter the color values at runtime.";
          color { "The main color.";
