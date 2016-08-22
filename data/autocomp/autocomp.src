@@ -4,6 +4,20 @@ group "lexem" struct {
          group "nodes" list {
             group "lexem" struct {
                group "nodes" list {
+               }
+               group "txt" var_array {
+                   count 1;
+                   value "string" string: "%s: ;"
+               }
+               value "cursor_offset" int: 1;
+               value "line_back" int: 0;
+               group "name" var_array {
+                  count 1;
+                  value "string" string: "base_scale";
+               }
+            }
+            group "lexem" struct {
+               group "nodes" list {
                   group "lexem" struct {
                      group "nodes" list {
                         group "lexem" struct {
