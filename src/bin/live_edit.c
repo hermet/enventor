@@ -378,15 +378,12 @@ calc_relative_info(live_data *ld)
    enventor_object_live_view_size_get(base_enventor_get(), &vw, &vh);
 
    //Calculate real min size of Live Edit Item base on current relative
-   double base_scale = enventor_object_base_scale_get(base_enventor_get());
    Evas_Coord min_w =
       (Evas_Coord) round(((double) vw) *
-                         (ld->rel_info.rel2_x - ld->rel_info.rel1_x) *
-                         base_scale);
+                         (ld->rel_info.rel2_x - ld->rel_info.rel1_x));
    Evas_Coord min_h =
       (Evas_Coord) round(((double) vh) *
-                         (ld->rel_info.rel2_y - ld->rel_info.rel1_y) *
-                         base_scale);
+                         (ld->rel_info.rel2_y - ld->rel_info.rel1_y));
 
    //Set fixed properties of width for current Live Edit Item
    if (fixed_w)
@@ -2340,78 +2337,6 @@ live_edit_tools_create(Evas_Object *parent)
    return btn_list;
 }
 
-static void
-fixed_w_check_changed_cb(void *data, Evas_Object *obj,
-                         void *event_info EINA_UNUSED)
-{
-   live_data *ld = data;
-
-   double base_scale = enventor_object_base_scale_get(base_enventor_get());
-
-   Evas_Coord w;
-   evas_object_geometry_get(ld->layout, NULL, NULL, &w, NULL);
-
-   //Calculate scaled width based on base scale.
-   double scaled_w;
-   if (elm_check_state_get(obj))
-     scaled_w = w / base_scale; //Apply base scale.
-   else
-     scaled_w = w * base_scale; //Revert applying base scale.
-
-   //Calculate width difference based on scaled width.
-   double diff_w = w - scaled_w;
-
-   Evas_Coord vw;
-   Evas_Object *view = view_obj_get(ld);
-   evas_object_geometry_get(view, NULL, NULL, &vw, NULL);
-
-   //Update relative positions based on width difference.
-   ld->rel_info.rel1_x += ((diff_w / 2.0) / vw);
-   ld->rel_info.rel2_x -= ((diff_w / 2.0) / vw);
-
-   //Round off in the end to reduce round-off error.
-   ROUNDING(ld->rel_info.rel1_x, 2);
-   ROUNDING(ld->rel_info.rel2_x, 2);
-
-   live_edit_update_internal(ld);
-}
-
-static void
-fixed_h_check_changed_cb(void *data, Evas_Object *obj,
-                         void *event_info EINA_UNUSED)
-{
-   live_data *ld = data;
-
-   double base_scale = enventor_object_base_scale_get(base_enventor_get());
-
-   Evas_Coord h;
-   evas_object_geometry_get(ld->layout, NULL, NULL, NULL, &h);
-
-   //Calculate scaled height based on base scale.
-   double scaled_h;
-   if (elm_check_state_get(obj))
-     scaled_h = h / base_scale; //Apply base scale.
-   else
-     scaled_h = h * base_scale; //Revert applying base scale.
-
-   //Calculate height difference based on scaled height.
-   double diff_h = h - scaled_h;
-
-   Evas_Coord vh;
-   Evas_Object *view = view_obj_get(ld);
-   evas_object_geometry_get(view, NULL, NULL, NULL, &vh);
-
-   //Update relative positions based on height difference.
-   ld->rel_info.rel1_y += ((diff_h / 2.0) / vh);
-   ld->rel_info.rel2_y -= ((diff_h / 2.0) / vh);
-
-   //Round off in the end to reduce round-off error.
-   ROUNDING(ld->rel_info.rel1_y, 2);
-   ROUNDING(ld->rel_info.rel2_y, 2);
-
-   live_edit_update_internal(ld);
-}
-
 Evas_Object *
 live_edit_init(Evas_Object *parent)
 {
@@ -2437,8 +2362,6 @@ live_edit_init(Evas_Object *parent)
                                "When you check Fixed width, width of a new<br>"
                                "part won't be resizable but it will stick a<br>"
                                "fixed size.");
-   evas_object_smart_callback_add(fixed_w_check, "changed",
-                                  fixed_w_check_changed_cb, ld);
    evas_object_show(fixed_w_check);
    elm_box_pack_end(fixed_box, fixed_w_check);
 
@@ -2450,8 +2373,6 @@ live_edit_init(Evas_Object *parent)
                                "When you check Fixed height, height of a<br>"
                                "new part won't be resizable but it will<br>"
                                "stick a fixed size.");
-   evas_object_smart_callback_add(fixed_h_check, "changed",
-                                  fixed_h_check_changed_cb, ld);
    evas_object_show(fixed_h_check);
    elm_box_pack_end(fixed_box, fixed_h_check);
 
