@@ -1017,17 +1017,15 @@ enventor_lock_remove()
 #endif
 }
 
+#ifndef _WIN32
 static void
 crash_handler(int x EINA_UNUSED, siginfo_t *info EINA_UNUSED,
               void *data EINA_UNUSED)
 {
-#ifndef _WIN32
    EINA_LOG_ERR("Eeeek! Eventor is terminated abnormally!");
    enventor_lock_remove();
-#else
-   (void) 0;
-#endif
 }
+#endif
 
 static void
 sigaction_setup(void)
