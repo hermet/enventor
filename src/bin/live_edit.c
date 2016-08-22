@@ -378,12 +378,15 @@ calc_relative_info(live_data *ld)
    enventor_object_live_view_size_get(base_enventor_get(), &vw, &vh);
 
    //Calculate real min size of Live Edit Item base on current relative
+   double base_scale = enventor_object_base_scale_get(base_enventor_get());
    Evas_Coord min_w =
       (Evas_Coord) round(((double) vw) *
-                         (ld->rel_info.rel2_x - ld->rel_info.rel1_x));
+                         (ld->rel_info.rel2_x - ld->rel_info.rel1_x) *
+                         base_scale);
    Evas_Coord min_h =
       (Evas_Coord) round(((double) vh) *
-                         (ld->rel_info.rel2_y - ld->rel_info.rel1_y));
+                         (ld->rel_info.rel2_y - ld->rel_info.rel1_y) *
+                         base_scale);
 
    //Set fixed properties of width for current Live Edit Item
    if (fixed_w)
