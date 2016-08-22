@@ -2501,6 +2501,17 @@ group { "main_layout";
 
 group { "tools_layout";
    parts {
+      swallow { "elm.swallow.content";
+         scale: 1;
+         desc { "default";
+            rel1 {
+               relative: 0.0 1.0;
+               to_y: "elm.swallow.tools";
+            }
+            rel2.to_y: "elm.swallow.fixed_bar";
+            rel2.relative: 1.0 0.0;
+         }
+      }
       rect { "tools_base";
          scale: 1;
          desc { "default";
@@ -2534,17 +2545,6 @@ group { "tools_layout";
             image.normal: "bevel_out.png";
             image.border: 1 1 1 1;
             image.border_scale: 1;
-         }
-      }
-      swallow { "elm.swallow.content";
-         scale: 1;
-         desc { "default";
-            rel1 {
-               relative: 0.0 1.0;
-               to_y: "elm.swallow.tools";
-            }
-            rel2.to_y: "elm.swallow.fixed_bar";
-            rel2.relative: 1.0 0.0;
          }
       }
       rect { "fixed_bar_bg";
