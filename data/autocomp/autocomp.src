@@ -1595,12 +1595,13 @@ group "lexem" struct {
                             value "cursor_offset" int: 4;
                             value "line_back" int: 1;
                             group "name" var_array {
-                               count 13;
+                               count 14;
                                value "string" string: "image";
                                value "string" string: "group";
                                value "string" string: "swallow";
                                value "string" string: "external";
                                value "string" string: "rect";
+                               value "string" string: "snapshot";
                                value "string" string: "spacer";
                                value "string" string: "proxy";
                                value "string" string: "box";
