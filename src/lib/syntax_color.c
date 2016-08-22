@@ -44,11 +44,7 @@ struct syntax_color_s
    Eina_Strbuf *strbuf;
    Eina_Strbuf *cachebuf;
    Eina_List *macros;
-   Ecore_Thread *thread;
    syntax_color_source *col_src;
-
-   Eina_Bool ready : 1;
-   Eina_Bool term : 1;
 };
 
 typedef struct color_hash_foreach_data
@@ -216,34 +212,6 @@ macro_key_push(color_data *cd, char *str)
    cd->macros = eina_list_append(cd->macros, eina_stringshare_add(tuple.key));
 
    if (cut) free(key);
-}
-
-static void
-init_thread_cancel(void *data, Ecore_Thread *thread EINA_UNUSED)
-{
-   color_data *cd = data;
-   cd->thread = NULL;
-
-   if (cd->term) color_term(cd);
-}
-
-static void
-init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
-{
-   color_data *cd = data;
-
-   //Initialize color table once.
-   if (init_count == 1)
-     {
-        eddc_init();
-        color_load();
-        eddc_term();
-        color_table_init();
-     }
-
-   cd->col_src = &g_color_src;
-   cd->thread = NULL;
-   cd->ready = EINA_TRUE;
 }
 
 static Eina_Bool
@@ -741,9 +709,15 @@ color_init(Eina_Strbuf *strbuf)
 
    cd->strbuf = strbuf;
    cd->cachebuf = eina_strbuf_new();
-   cd->thread = ecore_thread_run(init_thread_blocking,
-                                 init_thread_cancel,
-                                 init_thread_cancel, cd);
+
+   if (init_count == 1)
+     {
+        eddc_init();
+        color_load();
+        eddc_term();
+        color_table_init();
+     }
+   cd->col_src = &g_color_src;
 
    /* TODO: Improve to share macro info through color instances. Might be this
       could be global static instance and could be shared with locking
@@ -756,13 +730,6 @@ color_init(Eina_Strbuf *strbuf)
 void
 color_term(color_data *cd)
 {
-   if (cd->thread)
-     {
-        ecore_thread_cancel(cd->thread);
-        cd->term = EINA_TRUE;
-        return;
-     }
-
    Eina_Stringshare *macro;
    EINA_LIST_FREE(cd->macros, macro) eina_stringshare_del(macro);
 
@@ -1044,10 +1011,4 @@ finished:
    macro_keys_free(cd);
 
    return str;
-}
-
-Eina_Bool
-color_ready(color_data *cd)
-{
-   return cd->ready;
 }

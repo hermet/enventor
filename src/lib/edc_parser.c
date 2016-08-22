@@ -60,8 +60,6 @@ struct parser_s
    cur_context_td *cntd;
    type_init_td *titd;
    bracket_td *btd;
-
-   Eina_Bool macro_update : 1;
 };
 
 
@@ -112,9 +110,6 @@ cur_context_thread_blocking(void *data, Ecore_Thread *thread)
    double value_convert = 0.0;
 
    if (!collections) bracket = 1;
-
-   if (td->pd->macro_update)
-     parser_macro_update(td->pd, EINA_FALSE);
 
    td->part_name = NULL;
    td->group_name = NULL;
@@ -2004,12 +1999,6 @@ parser_is_image_name(const Evas_Object *entry, const char *str)
      return EINA_TRUE;
    else
      return EINA_FALSE;
-}
-
-void
-parser_macro_update(parser_data *pd, Eina_Bool macro_update)
-{
-   pd->macro_update = macro_update;
 }
 
 void

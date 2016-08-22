@@ -261,7 +261,6 @@ static Eina_Bool
 syntax_color_timer_cb(void *data)
 {
    edit_data *ed = data;
-   if (!color_ready(syntax_color_data_get(ed->sh))) return ECORE_CALLBACK_RENEW;
    syntax_color_apply(ed, EINA_TRUE);
    ed->syntax_color_timer = NULL;
    return ECORE_CALLBACK_CANCEL;
@@ -406,7 +405,6 @@ edit_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
    Elm_Entry_Change_Info *info = event_info;
    edit_data *ed = data;
    edit_changed_set(ed, EINA_TRUE);
-   parser_macro_update(ed->pd, EINA_TRUE);
 
    Eina_Bool syntax_color = EINA_TRUE;
    ed->error_line = -1;

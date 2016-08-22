@@ -98,7 +98,6 @@ void color_set(color_data *cd, Enventor_Syntax_Color_Type color_type, const char
 const char *color_value_get(Enventor_Syntax_Color_Type color_type);
 const char *color_cancel(Ecore_Thread *thread, color_data *cd, const char *str, int length, int from_pos, int to_pos, char **from, char **to);
 const char *color_apply(Ecore_Thread *thread, color_data *cd, const char *str, int length, char *from, char *to);
-Eina_Bool color_ready(color_data *cd);
 
 
 /*parser */
@@ -121,7 +120,6 @@ Eina_Bool parser_images_pos_get(const Evas_Object *entry, int *ret);
 Eina_Bool parser_is_image_name(const Evas_Object *entry, const char *str);
 Eina_Bool parser_styles_pos_get(const Evas_Object *entry, int *ret);
 Eina_Bool parser_state_info_get(Evas_Object *entry, state_info *info);
-void parser_macro_update(parser_data *pd, Eina_Bool macro_update);
 typedef void (*Bracket_Update_Cb)(void *data, int left, int right);
 void parser_bracket_find(parser_data *pd, Evas_Object *entry, Bracket_Update_Cb func, void *data);
 void parser_bracket_cancel(parser_data *pd);
