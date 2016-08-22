@@ -58,6 +58,7 @@ list_item_anim_cb(void *data)
 {
    file_tab_it *fti = data;
 
+   elm_list_item_bring_in(fti->it);
    file_mgr_file_focus(fti->enventor_it);
    fti->animator = NULL;
 
@@ -245,6 +246,8 @@ file_tab_it_add(Enventor_Item *enventor_it)
    elm_object_item_tooltip_text_set(fti->it, filepath);
 
    elm_list_go(fd->list);
+
+   elm_list_item_bring_in(fti->it);
 
    evas_object_smart_callback_add(btn, "clicked", close_btn_clicked_cb, fti);
 
