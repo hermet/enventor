@@ -249,6 +249,7 @@ part_obj_geom_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
         evas_object_resize(part_highlight, w, h);
         evas_object_clip_set(part_highlight, clipper);
      }
+#if 0
    else if (type == EDJE_PART_TYPE_TEXT)
      {
         Evas_Coord lx, ly;
@@ -258,6 +259,7 @@ part_obj_geom_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
         evas_object_resize(part_highlight, w, h);
         evas_object_move(part_highlight, lx + x, ly + y);
      }
+#endif
    else
      {
         evas_object_geometry_get(obj, &x, &y, &w, &h);
