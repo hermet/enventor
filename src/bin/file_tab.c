@@ -168,6 +168,7 @@ file_tab_it_select(Enventor_Item *enventor_it)
         if (fti->enventor_it != enventor_it) continue;
         fd->selected_it = it;
         elm_list_item_selected_set(it, EINA_TRUE);
+        elm_list_item_bring_in(it);
         return EINA_TRUE;
      }
 
