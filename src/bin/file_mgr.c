@@ -321,7 +321,7 @@ file_mgr_main_file_set(const char *path)
         if (!path2) continue;
         if (strcmp(realpath, path2)) continue;
         file_mgr_file_del(it);
-        if (fmd->focused_it == it)
+        if (!fmd->focused_it)
           replace_focus = EINA_TRUE;
         break;
      }
@@ -337,7 +337,7 @@ file_mgr_main_file_set(const char *path)
              file_path = enventor_item_file_get(main_it);
              Enventor_Item *it2 = file_mgr_sub_file_add(file_path, EINA_FALSE);
              file_mgr_file_del(main_it);
-             if (fmd->focused_it == main_it)
+             if (!fmd->focused_it)
                fmd->focused_it = it2;
           }
      }
