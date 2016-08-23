@@ -333,10 +333,18 @@ file_mgr_main_file_set(const char *path)
         const char *prev_path = enventor_item_file_get(main_it);
         if (prev_path)
           {
-             Enventor_Item *it2 = file_mgr_sub_file_add(prev_path, EINA_FALSE);
+             //Replace the current main file if it is not the new main file.
+             if (strcmp(realpath, prev_path))
+               {
+                  Enventor_Item *it2 = file_mgr_sub_file_add(prev_path,
+                                                             EINA_FALSE);
+                  if (fmd->focused_it == main_it)
+                    fmd->focused_it = it2;
+               }
+             else
+               replace_focus = EINA_TRUE;
+
              file_mgr_file_del(main_it);
-             if (!fmd->focused_it)
-               fmd->focused_it = it2;
           }
      }
 
