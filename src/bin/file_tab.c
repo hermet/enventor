@@ -87,7 +87,7 @@ list_item_selected_cb(void *data, Evas_Object *obj EINA_UNUSED,
 }
 
 static void
-file_tab_it_del(file_tab_it *fti)
+file_tab_it_remove_internal(file_tab_it *fti)
 {
    Evas_Object *list = elm_object_item_widget_get(fti->it);
 
@@ -124,8 +124,7 @@ close_btn_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
                      void *event_info EINA_UNUSED)
 {
    file_tab_it *fti = data;
-
-   file_tab_it_del(fti);
+   file_mgr_file_del(fti->enventor_it);
 }
 
 /*****************************************************************************/
@@ -146,7 +145,7 @@ file_tab_it_remove(Enventor_Item *enventor_it)
         file_tab_it *fti = elm_object_item_data_get(it);
         if (fti->enventor_it == enventor_it)
           {
-             elm_object_item_del(it);
+             file_tab_it_remove_internal(fti);
              break;
           }
      }

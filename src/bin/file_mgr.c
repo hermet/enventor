@@ -269,7 +269,6 @@ file_mgr_file_del(Enventor_Item *it)
      fmd->focused_it = NULL;
 
    file_tab_it_remove(it);
-   enventor_item_del(it);
 }
 
 Enventor_Item *
