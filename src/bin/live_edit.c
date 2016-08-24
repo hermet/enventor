@@ -844,10 +844,10 @@ keygrabber_direction_key_down_cb(void *data, Evas *e EINA_UNUSED,
    ld->rel_info.rel2_y += ld->rel_info.rel1_y - orig_rel1_y;
 
    //Round off in the end to reduce round-off error.
-   ROUNDING(ld->rel_info.rel1_x, 4);
-   ROUNDING(ld->rel_info.rel1_y, 4);
-   ROUNDING(ld->rel_info.rel2_x, 4);
-   ROUNDING(ld->rel_info.rel2_y, 4);
+   ld->rel_info.rel1_x = ROUNDING(ld->rel_info.rel1_x, 4);
+   ld->rel_info.rel1_y = ROUNDING(ld->rel_info.rel1_y, 4);
+   ld->rel_info.rel2_x = ROUNDING(ld->rel_info.rel2_x, 4);
+   ld->rel_info.rel2_y = ROUNDING(ld->rel_info.rel2_y, 4);
 
    ctrl_pt_update(ld);
    info_text_update(ld);
@@ -1894,10 +1894,10 @@ layout_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
    ld->rel_info.rel2_y += ld->rel_info.rel1_y - orig_rel1_y;
 
    //Round off in the end to reduce round-off error.
-   ROUNDING(ld->rel_info.rel1_x, 2);
-   ROUNDING(ld->rel_info.rel1_y, 2);
-   ROUNDING(ld->rel_info.rel2_x, 2);
-   ROUNDING(ld->rel_info.rel2_y, 2);
+   ld->rel_info.rel1_x = ROUNDING(ld->rel_info.rel1_x, 2);
+   ld->rel_info.rel1_y = ROUNDING(ld->rel_info.rel1_y, 2);
+   ld->rel_info.rel2_x = ROUNDING(ld->rel_info.rel2_x, 2);
+   ld->rel_info.rel2_y = ROUNDING(ld->rel_info.rel2_y, 2);
 
    evas_object_move(obj, x, y);
 
@@ -1913,7 +1913,7 @@ layout_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
    info_text_update(ld);
    align_line_update(ld);
    update_line_attach_effect(ld, align_line);
-}
+
 
 static void
 layout_mouse_up_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
