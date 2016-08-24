@@ -5,6 +5,8 @@
 #include <Enventor.h>
 #include "enventor_private.h"
 
+
+
 typedef struct builder_s
 {
    Eina_Strbuf *strbuf;
@@ -146,22 +148,14 @@ build_edc(void)
    char *cur_dir = ecore_file_realpath("./");
    if (!cur_dir) goto err;
 
-#ifdef _WIN32
-   if (_chdir(edc_dir)) goto err;
-#else
-   if (chdir(edc_dir)) goto err;
-#endif
+   if (change_cur_dir(edc_dir)) goto err;
 
    Ecore_Exe_Flags flags =
       (ECORE_EXE_PIPE_READ_LINE_BUFFERED | ECORE_EXE_PIPE_READ |
        ECORE_EXE_PIPE_ERROR_LINE_BUFFERED | ECORE_EXE_PIPE_ERROR);
    ecore_exe_pipe_run(bd->build_cmd, flags, NULL);
 
-#ifdef _WIN32
-   if (_chdir(cur_dir)) goto err;
-#else
-   if (chdir(cur_dir)) goto err;
-#endif
+   if (change_cur_dir(cur_dir)) goto err;
 
 err:
    if (edc_dir) free(edc_dir);

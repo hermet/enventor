@@ -5,7 +5,18 @@
 #include <Enventor.h>
 #include "enventor_private.h"
 
-void mem_fail_msg(void)
+int
+change_cur_dir(const char *dir)
+{
+#ifdef _WIN32
+   return _chdir(dir);
+#else
+   return chdir(dir);
+#endif
+}
+
+void
+mem_fail_msg(void)
 {
    EINA_LOG_ERR("Failed to allocate Memory!");
 }
