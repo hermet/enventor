@@ -120,6 +120,7 @@ static const char *IMAGE_TYPE_STR = "image";
 static const char *SWALLOW_TYPE_STR = "swallow";
 static const char *TEXTBLOCK_TYPE_STR = "textblock";
 static const char *SPACER_TYPE_STR = "spacer";
+static const char *VECTOR_TYPE_STR = "vector";
 static const char *PART_TYPE_STR = "part";
 
 static void group_contract(group_it *git);
@@ -275,6 +276,8 @@ part_type_get(part_it *pit)
          return TEXTBLOCK_TYPE_STR;
       case EDJE_PART_TYPE_SPACER:
          return SPACER_TYPE_STR;
+      case EDJE_PART_TYPE_VECTOR:
+         return VECTOR_TYPE_STR;
       default:
          return PART_TYPE_STR;
      }
@@ -1115,6 +1118,9 @@ gl_part_content_get_cb(void *data, Evas_Object *obj, const char *part)
          break;
       case EDJE_PART_TYPE_SPACER:
          group = "navi_spacer";
+         break;
+      case EDJE_PART_TYPE_VECTOR:
+         group = "navi_vector";
          break;
       default:
          group = "navi_unknown";
