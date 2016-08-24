@@ -972,10 +972,6 @@ edit_quick_jump(edit_data *ed)
    Evas_Textblock_Cursor *cur2 = evas_object_textblock_cursor_new(textblock);
    evas_textblock_cursor_line_set(cur2, line2);
    if (max) evas_textblock_cursor_line_char_last(cur2);
-   int cur1_pos, cur2_pos;
-
-   cur1_pos = evas_textblock_cursor_pos_get(cur1);
-   cur2_pos = evas_textblock_cursor_pos_get(cur2);
    char *content = evas_textblock_cursor_range_text_get(cur1, cur2,
                                                     EVAS_TEXTBLOCK_TEXT_MARKUP);
    char *utf8 = elm_entry_markup_to_utf8(content);

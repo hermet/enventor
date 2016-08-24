@@ -813,7 +813,7 @@ _enventor_object_keyword_reference_show(Eo *obj EINA_UNUSED,
 
 EOLIAN static double
 _enventor_object_base_scale_get(Eo *obj EINA_UNUSED,
-                                Enventor_Object_Data *pd)
+                                Enventor_Object_Data *pd EINA_UNUSED)
 {
    return view_base_scale_get(VIEW_DATA);
 }

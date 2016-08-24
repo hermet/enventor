@@ -202,10 +202,10 @@ update_wireframe_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
         //precise than edje_object_part_geometry_get.
         else
           {
-             Evas_Object *part_obj = (Evas_Object *)
+             Evas_Object *pobj2 = (Evas_Object *)
                                  edje_object_part_object_get(wireframes->layout,
                                                              part_name);
-             evas_object_geometry_get(part_obj, &part_x, &part_y,
+             evas_object_geometry_get(pobj2, &part_x, &part_y,
                                       &part_w, &part_h);
           }
 
