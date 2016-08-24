@@ -1092,7 +1092,7 @@ init(app_data *ad, int argc, char **argv)
    if (!config_data_set(argc, argv, &default_edc, &template))
      return EINA_FALSE;
 
-   newfile_default_set(default_edc);
+   if (!template) newfile_default_set(default_edc);
    base_gui_init();
    statusbar_set();
    Enventor_Object *enventor = enventor_setup(ad);
