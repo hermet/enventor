@@ -1913,7 +1913,7 @@ layout_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
    info_text_update(ld);
    align_line_update(ld);
    update_line_attach_effect(ld, align_line);
-
+}
 
 static void
 layout_mouse_up_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj,
