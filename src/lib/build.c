@@ -98,20 +98,8 @@ build_cmd_set(build_data *bd)
         goto err;
      }
 
-   /* Move to main edc file's directory to set it as the current working
-      directory to support relative resource paths in sub edc files.
-      (e.g. images.image: "./images/icon.png" COMP; in sub edc files) */
-   char *edc_dir = ecore_file_dir_get(bd->edc_path);
-   if (!edc_dir) goto err;
-
-   /* Move back to current working directory to restore the current working
-      directory after edje_cc compile. */
-   char *cur_dir = ecore_file_realpath("./");
-   if (!cur_dir) goto err;
-
    eina_strbuf_append_printf(strbuf,
-      "cd %s && edje_cc -fastcomp %s %s -id %s/images -sd %s/sounds -fd %s/fonts -dd %s/data %s %s %s %s -beta && cd %s",
-      edc_dir,
+      "edje_cc -fastcomp %s %s -id %s/images -sd %s/sounds -fd %s/fonts -dd %s/data %s %s %s %s -beta",
       bd->edc_path,
       (char *) eina_list_data_get(bd->pathes_list[ENVENTOR_PATH_TYPE_EDJ]),
       elm_app_data_dir_get(),
@@ -121,15 +109,11 @@ build_cmd_set(build_data *bd)
       eina_strbuf_string_get(strbuf_img),
       eina_strbuf_string_get(strbuf_snd),
       eina_strbuf_string_get(strbuf_fnt),
-      eina_strbuf_string_get(strbuf_dat),
-      cur_dir);
+      eina_strbuf_string_get(strbuf_dat));
    bd->build_cmd = eina_strbuf_string_steal(strbuf);
    bd->build_cmd_changed = EINA_FALSE;
 
 err:
-   if (edc_dir) free(edc_dir);
-   if (cur_dir) free(cur_dir);
-
    eina_strbuf_free(strbuf);
    eina_strbuf_free(strbuf_img);
    eina_strbuf_free(strbuf_snd);
@@ -150,10 +134,38 @@ build_edc(void)
         EINA_LOG_ERR("Build Command is not set!");
         return;
      }
+
+   /* Move to main edc file's directory to set it as the current working
+      directory to support relative resource paths in sub edc files.
+      (e.g. images.image: "./images/icon.png" COMP; in sub edc files) */
+   char *edc_dir = ecore_file_dir_get(bd->edc_path);
+   if (!edc_dir) goto err;
+
+   /* Move back to current working directory to restore the current working
+      directory after edje_cc compile. */
+   char *cur_dir = ecore_file_realpath("./");
+   if (!cur_dir) goto err;
+
+#ifdef _WIN32
+   _chdir(edc_dir);
+#else
+   chdir(edc_dir);
+#endif
+
    Ecore_Exe_Flags flags =
       (ECORE_EXE_PIPE_READ_LINE_BUFFERED | ECORE_EXE_PIPE_READ |
        ECORE_EXE_PIPE_ERROR_LINE_BUFFERED | ECORE_EXE_PIPE_ERROR);
    ecore_exe_pipe_run(bd->build_cmd, flags, NULL);
+
+#ifdef _WIN32
+   _chdir(cur_dir);
+#else
+   chdir(cur_dir);
+#endif
+
+err:
+   if (edc_dir) free(edc_dir);
+   if (cur_dir) free(cur_dir);
 }
 
 /*****************************************************************************/
