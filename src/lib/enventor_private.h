@@ -310,7 +310,6 @@ Eina_List *edit_group_list_get(edit_data *ed);
 /* util */
 void mem_fail_msg(void);
 const char* part_type_str_convert(Edje_Part_Type type);
-int change_cur_dir(const char *dir);
 
 /* reference */
 void ref_init(void);
