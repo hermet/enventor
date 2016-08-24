@@ -147,9 +147,9 @@ build_edc(void)
    if (!cur_dir) goto err;
 
 #ifdef _WIN32
-   _chdir(edc_dir);
+   if (_chdir(edc_dir)) goto err;
 #else
-   chdir(edc_dir);
+   if (chdir(edc_dir)) goto err;
 #endif
 
    Ecore_Exe_Flags flags =
@@ -158,9 +158,9 @@ build_edc(void)
    ecore_exe_pipe_run(bd->build_cmd, flags, NULL);
 
 #ifdef _WIN32
-   _chdir(cur_dir);
+   if (_chdir(cur_dir)) goto err;
 #else
-   chdir(cur_dir);
+   if (chdir(cur_dir)) goto err;
 #endif
 
 err:
