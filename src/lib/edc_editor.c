@@ -225,7 +225,7 @@ bracket_highlight(edit_data *ed, Evas_Object *tb)
    evas_textblock_cursor_free(cur1);
 }
 
-static void
+static Eina_Bool
 syntax_color_apply(edit_data *ed, Eina_Bool partial)
 {
    Evas_Object *tb = elm_entry_textblock_get(ed->en_edit);
@@ -240,11 +240,11 @@ syntax_color_apply(edit_data *ed, Eina_Bool partial)
    char *utf8 = (char *) color_cancel(NULL, syntax_color_data_get(ed->sh), text,
                                       strlen(text), from_line, to_line, &from,
                                       &to);
-   if (!utf8) return;
+   if (!utf8) return EINA_FALSE;
 
    const char *translated = color_apply(NULL, syntax_color_data_get(ed->sh),
                                         utf8, strlen(utf8), from, to);
-   if (!translated) return;
+   if (!translated) return EINA_FALSE;
 
    /* I'm not sure this will be problem.
       But it can avoid entry_object_text_escaped_set() in Edje.
@@ -255,13 +255,18 @@ syntax_color_apply(edit_data *ed, Eina_Bool partial)
    error_highlight(ed, tb);
    bracket_highlight(ed, tb);
    entry_recover(ed, cursor_pos, sel_cur_begin, sel_cur_end);
+
+   return EINA_TRUE;
 }
 
 static Eina_Bool
 syntax_color_timer_cb(void *data)
 {
    edit_data *ed = data;
-   syntax_color_apply(ed, EINA_TRUE);
+   if (!syntax_color_apply(ed, EINA_TRUE))
+     {
+        return ECORE_CALLBACK_RENEW;
+     }
    ed->syntax_color_timer = NULL;
    return ECORE_CALLBACK_CANCEL;
 }
