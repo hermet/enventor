@@ -8,6 +8,7 @@
 
 #ifdef _WIN32
 #include <Windows.h>
+static HANDLE hMutex = INVALID_HANDLE_VALUE;
 #endif
 
 typedef struct app_s
@@ -949,14 +950,27 @@ enventor_lock_create(void)
    //Is there any other Enventor instance?
    if (ecore_file_exists(buf))
      {
+#ifdef _WIN32
+        hMutex = OpenMutex(MUTEX_ALL_ACCESS, 0, ENVENTOR_NAME);
+        if (hMutex != INVALID_HANDLE_VALUE)
+          {
+             fprintf(stdout, "Enventor program is already running!\n\n"
+                     "If you are really stuck in launching enventor due to "
+                     "this,\nTry removing a file \"%s\"\n", buf);
+             return EINA_FALSE;
+          }
+#else
         fprintf(stdout, "Enventor program is already running!\n\n"
-                        "If you are really stuck in launching enventor due to "
-                        "this,\nTry removing a file \"%s\"\n", buf);
+                "If you are really stuck in launching enventor due to "
+                "this,\nTry removing a file \"%s\"\n", buf);
         return EINA_FALSE;
+#endif
      }
 
    //Ok, this is an unique instance!
 #ifdef _WIN32
+   hMutex = CreateMutex(NULL, FALSE, ENVENTOR_NAME);
+
    HANDLE handle = CreateFile(buf, GENERIC_READ, NULL, NULL, CREATE_NEW,
                               FILE_FLAG_DELETE_ON_CLOSE, 0);
    if (INVALID_HANDLE_VALUE == handle)
@@ -983,10 +997,16 @@ enventor_lock_create(void)
 static void
 enventor_lock_remove()
 {
-#ifndef _WIN32
    //You are not the owner of the lock.
    if (!own_lock) return;
 
+#ifdef _WIN32
+   if (INVALID_HANDLE_VALUE != hMutex)
+     {
+        Closehandle(hMutex);
+        hMutex = INVALID_HANDLE_VALUE;
+     }
+#else
    //Tempoary Folder
    const char *tmpdir = eina_environment_tmp_get();
    if (!tmpdir)
@@ -1012,8 +1032,6 @@ enventor_lock_remove()
      }
 
    ecore_file_remove(buf);
-#else
-   (void) 0;
 #endif
 }
 
