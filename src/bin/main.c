@@ -8,7 +8,7 @@
 
 #ifdef _WIN32
 #include <Windows.h>
-static HANDLE hMutex = INVALID_HANDLE_VALUE;
+static HANDLE hMutex = NULL;
 #endif
 
 typedef struct app_s
@@ -952,7 +952,7 @@ enventor_lock_create(void)
      {
 #ifdef _WIN32
         hMutex = OpenMutex(MUTEX_ALL_ACCESS, 0, ENVENTOR_NAME);
-        if (hMutex != INVALID_HANDLE_VALUE)
+        if (hMutex)
           {
              fprintf(stdout, "Enventor program is already running!\n\n"
                      "If you are really stuck in launching enventor due to "
@@ -1001,10 +1001,10 @@ enventor_lock_remove()
    if (!own_lock) return;
 
 #ifdef _WIN32
-   if (INVALID_HANDLE_VALUE != hMutex)
+   if (hMutex)
      {
-        Closehandle(hMutex);
-        hMutex = INVALID_HANDLE_VALUE;
+        CloseHandle(hMutex);
+        hMutex = NULL;
      }
 #else
    //Tempoary Folder
