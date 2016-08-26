@@ -1,6 +1,56 @@
 ==============
-Enventor 0.9.0
+Enventor 1.0.0
 ==============
+
+Changes since Enventor 0.9.0:
+-----------------------------
+
+Additions:
+   * Tooltips: Newly supported.
+   * Wireframe: Newly introduced.
+   * File Tab: Newly introduced.
+   * Reference Popup: Newly introduced.
+   * A lot of Enventor APIs are changed.
+
+Improvements:
+   * EDC Editor: Rearrange searched part to be placed in center.
+   * EDC Editor: Support to jump to the part define.
+   * File Borwser: Set current directory as a workspace in default.
+   * File Browser: add a function to set a main edc file with a marker.
+   * File Browser: Display sorted file list based on file type.
+   * File Browser: Skip files if their names were started with dot.
+   * Template: Add various samples.
+   * New File: Sort template list in alphabetical order.
+   * Help: Update overall content.
+   * Setting: Apply layze style to syntax color template code.
+   * Setting: Add the main EDC file path.
+   * Live Edit: support base_scale values.
+   * Console: Apply syntax color for error messages:.
+   * EDC Parser: Identify whole macro functions to have syntax color.
+   * Support vector type part.
+   * Update overall GUIs & Shortcut keys.
+   * Support individual group view size and view scale.
+   * Limit to an single Enventor instance.
+   * Update Syntax color keywords.
+   * Allow multi-file editor.
+
+Fixes:
+   * Template: Fix Map template code typo.
+   * Template: don't localize floats in the relative values.
+   * Statusbar: Fix an incorrect view size.
+   * Indentation: Fix a incorrect indentation in a corner case.
+   * Live Edit: Fix incorrect stacking.
+   * Live Edit: Fix an added object to have min size properly.
+   * Live Edit: Dismiss ctxpopup when view position is changed.
+   * Goto: Fix window closing issue.
+   * Setting: Fix to not abuse user Elementary configuration file.
+   * Setting: Reset font style properly.
+   * EDC Editor: Show images on cursor "images.image".
+   * EDC Editor: Fix to remove focus highlight on template seletion button.
+   * Fix many crash scenarios.
+   * Fix a dummy swallow/spacer selection bug.
+   * Fix Undo's indiscriminate red alert.
+   * Fix build break on Win32.
 
 Changes since Enventor 0.8.0:
 -----------------------------
