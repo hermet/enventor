@@ -1,7 +1,7 @@
 ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
 ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
-m4_define([v_maj], [0])
-m4_define([v_min], [9])
+m4_define([v_maj], [1])
+m4_define([v_min], [0])
 m4_define([v_mic], [0])
 #m4_define([v_rev], m4_esyscmd([(git rev-list --count HEAD 2>/dev/null || echo 0) | tr -d '\n']))dnl
 ##--   When released, remove the dnl on the below line
@@ -74,7 +74,7 @@ EFL_ENABLE_BETA_API_SUPPORT
 AC_DEFINE_UNQUOTED(ENVENTOR_WIN32_BUILD_SUPPORT, 1, "Support Win32 dllexport")
 AC_DEFINE_UNQUOTED(ENVENTOR_BETA_API_SUPPORT, 1, "Enable access to unstable ENVENTOR API that are still in beta")
 
-efl_version="1.17.0"
+efl_version="1.18.0"
 requirement_enventor=" \
 eo >= ${efl_version} \
 eina >= ${efl_version} \

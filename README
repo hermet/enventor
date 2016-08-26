@@ -1,4 +1,4 @@
-[Enventor v0.9.0]
+[Enventor v1.0.0]
 
 Enventor, which is also known as EDC (Edje Data Collections) Editor, is a EDC script editor tool that supports text edit function and preview function for EDC source code.
 
@@ -6,8 +6,8 @@ When your application ral-time changeable layouts like animated ones, then you c
 
 [Requirements]
 
-  efl (>= 1.17.0)
-  elementary (>= 1.17.0)
+  efl (>= 1.18.0)
+  elementary (>= 1.18.0)
 
 Please note that some features may not quite function correctly or completely prior to EFL 1.17. Newer would be better.
 
@@ -105,6 +105,7 @@ Jaehyun Cho
 Mykyta Biliavskyi
 Kateryna Fesyna
 Tae-Hyup Kim
+Bowon Ryu
 Yunho Jeong
 Mincheol Seo
 Raoul Hecky
