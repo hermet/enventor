@@ -124,7 +124,7 @@ cur_context_thread_blocking(void *data, Ecore_Thread *thread)
           {
              p += QUOT_UTF8_LEN;
              p = strstr(p, QUOT_UTF8);
-             if (!p) goto end;
+             if (!p) return;
              p += QUOT_UTF8_LEN;
              continue;
           }
@@ -154,7 +154,7 @@ cur_context_thread_blocking(void *data, Ecore_Thread *thread)
         if (!strncmp(p, "#if", 3))
           {
              p = strstr(p, "#endif");
-             if (!p) goto end;
+             if (!p) return;
              p += 6; //strlen(#endif)
              continue;
           }
@@ -168,7 +168,7 @@ cur_context_thread_blocking(void *data, Ecore_Thread *thread)
              while (p <= end)
                {
                   char *eol = strstr(p, "\n");
-                  if (!eol) goto end;
+                  if (!eol) return;
 
                   char *slash = strstr(p, "\\");
 
@@ -198,7 +198,7 @@ cur_context_thread_blocking(void *data, Ecore_Thread *thread)
                {
                  inside_parts = EINA_TRUE;
                  p = strstr(p, "{");
-                 if (!p) goto end;
+                 if (!p) return;
                  continue;
                }
          }
@@ -221,11 +221,11 @@ cur_context_thread_blocking(void *data, Ecore_Thread *thread)
                 {
                    p += PART_LEN[part_idx];
                    char *name_begin = strstr(p, QUOT_UTF8);
-                   if (!name_begin) goto end;
+                   if (!name_begin) return;
                    name_begin += QUOT_UTF8_LEN;
                    p = name_begin;
                    char *name_end = strstr(p, QUOT_UTF8);
-                   if (!name_end) goto end;
+                   if (!name_end) return;
                    part_name = name_begin;
                    part_name_len = name_end - name_begin;
                    p = name_end + QUOT_UTF8_LEN;
@@ -253,11 +253,10 @@ cur_context_thread_blocking(void *data, Ecore_Thread *thread)
                   /* skip keyword */
                   p += DESC_LEN[desc_idx];
                   p = strstr(p, "{");
-                  if (!p) goto end;
+                  if (!p) return;
                   /*Limit size of text for processing*/
                   char *end_brace = strstr(p, "}");
-                  if (!end_brace)
-                     goto end;
+                  if (!end_brace) return;
 
                   /* proccessing for "description" keyword with "state"
                      attribute */
@@ -281,7 +280,7 @@ cur_context_thread_blocking(void *data, Ecore_Thread *thread)
                   if (!name_begin)
                      continue;
                   char *end_range = strstr(p, ";");
-                  if (!end_range) goto end;
+                  if (!end_range) return;
 
                   /* if string placed outside desc block*/
                   if ((name_begin > end_brace) || (name_begin > end_range) ||
@@ -302,7 +301,7 @@ cur_context_thread_blocking(void *data, Ecore_Thread *thread)
                   name_begin += QUOT_UTF8_LEN;
                   p = name_begin;
                   char *name_end = strstr(p, QUOT_UTF8);
-                  if (!name_end) goto end;
+                  if (!name_end) return;
                   desc_name = name_begin;
                   desc_name_len = name_end - name_begin;
                   p = name_end + QUOT_UTF8_LEN;
@@ -337,11 +336,11 @@ cur_context_thread_blocking(void *data, Ecore_Thread *thread)
                {
                   p += GROUP_LEN;
                   char *name_begin = strstr(p, QUOT_UTF8);
-                  if (!name_begin) goto end;
+                  if (!name_begin) return;
                   name_begin += QUOT_UTF8_LEN;
                   p = name_begin;
                   char *name_end = strstr(p, QUOT_UTF8);
-                  if (!name_end) goto end;
+                  if (!name_end) return;
 
                   group_name = name_begin;
                   group_name_len = name_end - name_begin;
@@ -363,10 +362,6 @@ cur_context_thread_blocking(void *data, Ecore_Thread *thread)
    td->group_name = group_name;
    td->state_name = desc_name;
    td->state_value = value_convert;
-
-end:
-   free(utf8);
-   td->utf8 = NULL;
 }
 
 Eina_Stringshare *
@@ -492,6 +487,7 @@ cur_context_thread_cancel(void *data, Ecore_Thread *thread EINA_UNUSED)
    eina_stringshare_del(td->state_name);
    eina_stringshare_del(td->part_name);
    eina_stringshare_del(td->group_name);
+   free(td->utf8);
    free(td);
 }
 

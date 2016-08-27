@@ -18,7 +18,6 @@ typedef struct syntax_color_thread_data_s
 {
    Ecore_Thread *thread;
    edit_data *ed;
-   char *text;
    const char *translated;
 } syntax_color_td;
 
@@ -302,8 +301,19 @@ static void
 syntax_color_thread_cb(void *data, Ecore_Thread *thread)
 {
    syntax_color_td *td = data;
+   ecore_thread_main_loop_begin();
+   if (!td->ed)
+     {
+        ecore_thread_main_loop_end();
+        return;
+     }
+
+   Evas_Object *tb = elm_entry_textblock_get(td->ed->en_edit);
+   const char *text = (char *) evas_object_textblock_text_markup_get(tb);
+   ecore_thread_main_loop_end();
+
    char *utf8 = (char *) color_cancel(thread, syntax_color_data_get(td->ed->sh),
-                                      td->text, strlen(td->text), -1, -1, NULL,
+                                      text, strlen(text), -1, -1, NULL,
                                       NULL);
    if (!utf8) return;
    td->translated = color_apply(thread, syntax_color_data_get(td->ed->sh), utf8,
@@ -894,7 +904,11 @@ syntax_color_full_update(edit_data *ed, Eina_Bool thread)
 
    if (thread)
      {
-        if (ed->sctd) ecore_thread_cancel(ed->sctd->thread);
+        if (ed->sctd)
+          {
+             ecore_thread_cancel(ed->sctd->thread);
+             ed->sctd->ed = NULL;
+          }
 
         ed->sctd = calloc(1, sizeof(syntax_color_td));
         if (!ed->sctd)
@@ -903,8 +917,6 @@ syntax_color_full_update(edit_data *ed, Eina_Bool thread)
              return;
           }
         ed->sctd->ed = ed;
-        Evas_Object *tb = elm_entry_textblock_get(ed->en_edit);
-        ed->sctd->text = (char *) evas_object_textblock_text_markup_get(tb);
         ed->sctd->thread =
            ecore_thread_run(syntax_color_thread_cb,
                             syntax_color_thread_end_cb,
