@@ -28,7 +28,7 @@ typedef struct autocomp_s
 {
    char queue[QUEUE_SIZE];
    int queue_pos;
-   const lexem *lexem_root;
+   lexem *lexem_root;
    lexem *lexem_ptr;
    Eet_File *source_file;
    edit_data *ed;
@@ -98,7 +98,7 @@ autocomp_load(autocomp_data *ad)
    ad->source_file = eet_open(buf, EET_FILE_MODE_READ);
 
    ad->lexem_root = (lexem *)eet_data_read(ad->source_file, lex_desc, "node");
-   ad->lexem_ptr = (lexem *)ad->lexem_root;
+   ad->lexem_ptr = ad->lexem_root;
 }
 
 static void
@@ -110,25 +110,17 @@ init_thread_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
 }
 
 static void
-lexem_tree_free(lexem **root)
+lexem_tree_free(lexem *node)
 {
-   lexem *data = NULL;
-   Eina_List *l = NULL;
+   if (!node) return;
 
-   if (!(*root)) return;
+   lexem *child;
+   EINA_LIST_FREE(node->nodes, child)
+     lexem_tree_free(child);
 
-   EINA_LIST_FOREACH((*root)->nodes, l, data)
-    {
-       if (data->nodes)
-         lexem_tree_free(&data);
-    }
-
-   EINA_LIST_FREE((*root)->nodes, data)
-     {
-        free(data->txt);
-        free(data->name);
-        free(data);
-     }
+   free(node->txt);
+   free(node->name);
+   free(node);
 }
 
 static void
@@ -144,7 +136,7 @@ context_lexem_thread_cb(void *data, Ecore_Thread *thread)
 
    Eina_List *l = NULL;
    Eina_List *nodes = td->ad->lexem_root->nodes;
-   td->result = (lexem *)td->ad->lexem_root;
+   td->result = td->ad->lexem_root;
    int i = 0;
    int k = 0;
    int depth = 0;
@@ -355,7 +347,7 @@ context_lexem_get(autocomp_data *ad, Evas_Object *entry, Eina_Bool list_show)
    const char *text = elm_entry_entry_get(entry);
    if (!text)
      {
-        ad->lexem_ptr = (lexem *)ad->lexem_root;
+        ad->lexem_ptr = ad->lexem_root;
         return;
      }
 
@@ -388,7 +380,7 @@ context_changed(autocomp_data *ad, Evas_Object *edit)
 
    if (!cursor_position)
      {
-        ad->lexem_ptr = (lexem *)ad->lexem_root;
+        ad->lexem_ptr = ad->lexem_root;
         return;
      }
 
@@ -1010,7 +1002,7 @@ autocomp_term(void)
    evas_object_del(ad->event_rect);
    evas_object_del(ad->anchor);
 
-   lexem_tree_free((lexem **)&ad->lexem_root);
+   lexem_tree_free(ad->lexem_root);
 
    eet_data_descriptor_free(lex_desc);
    eet_close(ad->source_file);
