@@ -262,7 +262,7 @@ _enventor_object_efl_canvas_group_group_add(Eo *obj, Enventor_Object_Data *pd)
 {
    pd->obj = obj;
 
-   efl_canvas_group_add(efl_super(obj, MY_CLASS));
+   efl_canvas_group_add(eo_super(obj, MY_CLASS));
    elm_widget_sub_object_parent_add(obj);
 
    build_init();
@@ -317,7 +317,7 @@ _enventor_object_efl_canvas_group_group_member_add(Eo *obj, Enventor_Object_Data
    //Don't go through elm_widget to avoid color set.
    evas_object_data_set(child, "_elm_leaveme", (void*)1);
 
-   efl_canvas_group_member_add(efl_super(obj, MY_CLASS), child);
+   efl_canvas_group_member_add(eo_super(obj, MY_CLASS), child);
 
    Evas_Coord x, y, w, h;
    evas_object_geometry_get(obj, &x, &y, &w, &h);
@@ -386,7 +386,7 @@ EOLIAN static Eo *
 _enventor_object_efl_object_constructor(Eo *obj,
                                      Enventor_Object_Data *pd EINA_UNUSED)
 {
-   obj = efl_constructor(efl_super(obj, MY_CLASS));
+   obj = efl_constructor(eo_super(obj, MY_CLASS));
    efl_canvas_object_type_set(obj, MY_CLASS_NAME_LEGACY);
    evas_object_smart_callbacks_descriptions_set(obj, _smart_callbacks);
 
@@ -829,14 +829,14 @@ EAPI Enventor_Object *
 enventor_object_add(Enventor_Object *parent)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(parent, NULL);
-   Evas_Object *obj = efl_add(MY_CLASS, parent);
+   Evas_Object *obj = eo_add(MY_CLASS, parent);
    return obj;
 }
 
 EAPI Enventor_Item *
 enventor_object_sub_item_add(Enventor_Object *obj, const char *file)
 {
-   Enventor_Object_Data *pd = efl_data_scope_get(obj, ENVENTOR_OBJECT_CLASS);
+   Enventor_Object_Data *pd = eo_data_scope_get(obj, ENVENTOR_OBJECT_CLASS);
 
    if (!file)
      {
@@ -880,7 +880,7 @@ enventor_object_sub_item_add(Enventor_Object *obj, const char *file)
 EAPI Enventor_Item *
 enventor_object_main_item_set(Enventor_Object *obj, const char *file)
 {
-   Enventor_Object_Data *pd = efl_data_scope_get(obj, ENVENTOR_OBJECT_CLASS);
+   Enventor_Object_Data *pd = eo_data_scope_get(obj, ENVENTOR_OBJECT_CLASS);
 
    edj_mgr_clear();
    _enventor_main_item_free(pd);
@@ -911,21 +911,21 @@ enventor_object_main_item_set(Enventor_Object *obj, const char *file)
 EAPI Enventor_Item *
 enventor_object_main_item_get(const Enventor_Object *obj)
 {
-   Enventor_Object_Data *pd = efl_data_scope_get(obj, ENVENTOR_OBJECT_CLASS);
+   Enventor_Object_Data *pd = eo_data_scope_get(obj, ENVENTOR_OBJECT_CLASS);
    return pd->main_it;
 }
 
 EAPI const Eina_List *
 enventor_object_sub_items_get(const Enventor_Object *obj)
 {
-   Enventor_Object_Data *pd = efl_data_scope_get(obj, ENVENTOR_OBJECT_CLASS);
+   Enventor_Object_Data *pd = eo_data_scope_get(obj, ENVENTOR_OBJECT_CLASS);
    return pd->sub_its;
 }
 
 EAPI Enventor_Item *
 enventor_object_focused_item_get(const Enventor_Object *obj)
 {
-   Enventor_Object_Data *pd = efl_data_scope_get(obj, ENVENTOR_OBJECT_CLASS);
+   Enventor_Object_Data *pd = eo_data_scope_get(obj, ENVENTOR_OBJECT_CLASS);
    return  pd->focused_it;
 }
 
