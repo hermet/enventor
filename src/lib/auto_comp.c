@@ -328,7 +328,12 @@ context_lexem_thread_end_cb(void *data, Ecore_Thread *thread EINA_UNUSED)
 {
    ctx_lexem_td *td = (ctx_lexem_td *)data;
 
-   if (!td->ad || (td->ad->cltd != td)) return;
+   if (!td->ad || (td->ad->cltd != td))
+     {
+        free(td->utf8);
+        free(td);
+        return;
+     }
 
    td->ad->lexem_ptr = td->result;
 
