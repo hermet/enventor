@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enventor 0.6.0\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2016-08-27 15:43+0900\n"
+"POT-Creation-Date: 2016-08-28 01:00+0900\n"
 "PO-Revision-Date: 2015-11-17 17:37+0000\n"
 "Last-Translator: nikawhite belyavskijnb@gmail.com \n"
 "Language-Team: \n"
@@ -105,7 +105,7 @@ msgid "Failed to grab key - Escape"
 msgstr ""
 
 #: src/bin/live_edit.c:2020 src/bin/live_edit.c:2057 src/bin/live_edit.c:2059
-#: src/bin/main.c:870 src/lib/auto_comp.c:413 src/lib/ctxpopup.c:779
+#: src/bin/main.c:870 src/lib/auto_comp.c:410 src/lib/ctxpopup.c:779
 #, c-format
 msgid "Failed to grab key - %s"
 msgstr ""
