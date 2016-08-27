@@ -1888,8 +1888,7 @@ cursor_part_name_get(edit_data *ed)
 
    //Search the end character to the left
    Eina_Bool is_prev = EINA_TRUE;
-   char *ch_l = NULL;
-   ch_l = evas_textblock_cursor_content_get(cur_l);
+   char *ch_l = evas_textblock_cursor_content_get(cur_l);
    if (!ch_l) goto end;
    /* If current character is ", move cursor to the previous character
       to find part name correctly */
@@ -1898,6 +1897,7 @@ cursor_part_name_get(edit_data *ed)
 
    while (is_prev)
      {
+        free(ch_l);
         ch_l = evas_textblock_cursor_content_get(cur_l);
         if (!ch_l || (*ch_l == '\n') || (*ch_l == ';') || (*ch_l == '\0'))
           break;
@@ -1909,6 +1909,7 @@ cursor_part_name_get(edit_data *ed)
           }
         is_prev = evas_textblock_cursor_char_prev(cur_l);
      }
+   free(ch_l);
    if (part_begin == -1) goto end;
 
    //Search the end character to the right
@@ -1916,6 +1917,7 @@ cursor_part_name_get(edit_data *ed)
    char *ch_r = NULL;
    while (is_next)
      {
+        free(ch_r);
         ch_r = evas_textblock_cursor_content_get(cur_r);
         if (!ch_r || (*ch_r == '\n') || (*ch_r == ';') || (*ch_r == '\0'))
           break;
@@ -1926,6 +1928,7 @@ cursor_part_name_get(edit_data *ed)
           }
         is_next = evas_textblock_cursor_char_next(cur_r);
      }
+   free(ch_r);
    if (part_end == -1) goto end;
 
    //Verify the part name
