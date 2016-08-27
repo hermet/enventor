@@ -251,6 +251,8 @@ file_tab_it_add(Enventor_Item *enventor_it)
 
    evas_object_smart_callback_add(btn, "clicked", close_btn_clicked_cb, fti);
 
+   free(filename);
+
    return EINA_TRUE;
 
 err:
