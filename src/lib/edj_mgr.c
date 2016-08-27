@@ -96,6 +96,7 @@ edj_mgr_term(void)
    edj_mgr_clear();
    evas_object_del(em->layout);
    free(em);
+   g_em = NULL;
 }
 
 view_data *
