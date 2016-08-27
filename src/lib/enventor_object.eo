@@ -212,7 +212,7 @@ class Enventor.Object (Elm.Widget, Efl.File) {
    }
    implements {
       class.constructor;
-      Efl.Object.constructor;
+      Eo.Base.constructor;
       Efl.Canvas.Group.group_add;
       Efl.Canvas.Group.group_del;
       Efl.Canvas.Group.group_move;

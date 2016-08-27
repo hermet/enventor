@@ -252,7 +252,7 @@ _enventor_part_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED, void *ei)
 /* Internal Eo object required routines                                      */
 /*****************************************************************************/
 EOLIAN static void
-_enventor_object_class_constructor(Efl_Class *klass)
+_enventor_object_class_constructor(Eo_Class *klass)
 {
    evas_smart_legacy_type_register(MY_CLASS_NAME_LEGACY, klass);
 }
@@ -383,10 +383,10 @@ _enventor_object_efl_canvas_group_group_clip_unset(Eo *obj, Enventor_Object_Data
 }
 
 EOLIAN static Eo *
-_enventor_object_efl_object_constructor(Eo *obj,
+_enventor_object_eo_base_constructor(Eo *obj,
                                      Enventor_Object_Data *pd EINA_UNUSED)
 {
-   obj = efl_constructor(eo_super(obj, MY_CLASS));
+   obj = eo_constructor(eo_super(obj, MY_CLASS));
    efl_canvas_object_type_set(obj, MY_CLASS_NAME_LEGACY);
    evas_object_smart_callbacks_descriptions_set(obj, _smart_callbacks);
 
