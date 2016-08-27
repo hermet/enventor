@@ -6,7 +6,6 @@ EXTRA_DIST = common.h \
 	menu.h \
 	panes.h \
 	statusbar.h \
-	globals.h \
 	tools.h \
 	newfile.h \
 	goto.h \
@@ -20,4 +19,6 @@ EXTRA_DIST = common.h \
 	file_browser.h \
 	build_setting.h \
 	preference_setting.h \
-	help.h
+	help.h \
+	utils.h \
+	file_tab.h

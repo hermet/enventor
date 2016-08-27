@@ -2,7 +2,6 @@ src/bin/base_gui.c
 src/bin/config_data.c
 src/bin/console.c
 src/bin/file_mgr.c
-src/bin/globals.c
 src/bin/goto.c
 src/bin/live_edit.c
 src/bin/main.c
