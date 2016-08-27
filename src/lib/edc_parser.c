@@ -546,10 +546,6 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    attr.context = eina_stringshare_add("text");
    eina_inarray_push(td->attrs, &attr);
 
-   wh = eina_array_new(2);
-   eina_array_push(wh, eina_stringshare_add("W:"));
-   eina_array_push(wh, eina_stringshare_add("H:"));
-
    // Context independed attributes
    Eina_Array *trans = eina_array_new(11);
    eina_array_push(trans, eina_stringshare_add("LINEAR"));
