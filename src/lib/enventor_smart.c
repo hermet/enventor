@@ -94,8 +94,12 @@ static void
 _enventor_sub_items_free(Enventor_Object_Data *pd)
 {
    Enventor_Item *it;
-   EINA_LIST_FREE(pd->sub_its, it)
-     enventor_item_del(it);
+
+   while(pd->sub_its)
+     {
+        it = eina_list_data_get(pd->sub_its);
+        enventor_item_del(it);
+     }
    pd->sub_its = NULL;
 }
 
