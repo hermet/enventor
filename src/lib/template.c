@@ -334,7 +334,7 @@ template_part_insert(edit_data *ed, Edje_Part_Type part_type,
         line_cnt += 2;
      }
 
-   //If there are some relative_to part then insert relative_to 
+   //If there are some relative_to part then insert relative_to
    if (rel1_x_to)
      {
         elm_entry_entry_insert(edit_entry, p);
