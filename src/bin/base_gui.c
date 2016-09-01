@@ -105,7 +105,8 @@ base_file_tab_toggle(Eina_Bool toggle)
      }
 }
 
-void base_file_browser_toggle(Eina_Bool toggle)
+void
+base_file_browser_toggle(Eina_Bool toggle)
 {
    base_data *bd = g_bd;
    EINA_SAFETY_ON_NULL_RETURN(bd);
@@ -118,7 +119,8 @@ void base_file_browser_toggle(Eina_Bool toggle)
      elm_object_signal_emit(bd->layout, "elm,state,file_browser,hide", "");
 }
 
-void base_edc_navigator_deselect(void)
+void
+base_edc_navigator_deselect(void)
 {
    if (config_edc_navigator_get())
      edc_navigator_deselect();
