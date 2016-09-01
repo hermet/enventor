@@ -140,7 +140,7 @@ enventor_edc_modified_cb(void *data, Evas_Object *obj EINA_UNUSED,
 
    fmd->edc_modified = EINA_TRUE;
 
-   /* FIXME: Here ignore edc changes, if any menu is closed, 
+   /* FIXME: Here ignore edc changes, if any menu is closed,
       then we need to open warning box. */
    if (menu_activated_get()) return;
 
