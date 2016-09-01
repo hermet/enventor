@@ -199,6 +199,7 @@ layout_geom_changed_cb(void *data, Evas *evas EINA_UNUSED,
           evas_object_move(po->obj, lx + x, ly + y);
        }
 }
+
 static Eina_Bool
 animator_cb(void *data)
 {
