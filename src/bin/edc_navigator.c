@@ -937,7 +937,7 @@ programs_update(navi_data *nd, group_it *git)
    Enventor_Object *enventor = base_enventor_get();
    Eina_List *program_list = enventor_object_programs_list_get(enventor);
 
-   //oh, no programs.. 
+   //oh, no programs..
    if (!program_list)
      {
         navigator_programs_clear(git);
@@ -1372,7 +1372,7 @@ edc_navigator_group_update(const char *cur_group)
 
    //FIXME: This function is unnecessarily called... why?
 
-   //Cancel item selection if group was not indicated. 
+   //Cancel item selection if group was not indicated.
    if (!cur_group) navigator_item_deselect(nd);
    Eina_List *group_list =
       enventor_item_group_list_get(file_mgr_focused_item_get());
