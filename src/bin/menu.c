@@ -700,7 +700,7 @@ menu_toggle(void)
         return;
      }
 
-   //Main Menu 
+   //Main Menu
    if (md->active_request) menu_close(md);
    else
      {
