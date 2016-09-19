@@ -375,7 +375,7 @@ tools_init(Evas_Object *parent)
                           _("File tab (F11)<br>"
                             "Display the file tab in the bottom area<br>"
                              "It shows an opened file list to switch<br>"
-                             "files quickly. to switch files quickly."),
+                             "files quickly."),
                           file_tab_cb);
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
