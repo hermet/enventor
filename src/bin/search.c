@@ -228,6 +228,7 @@ replace_proc(search_data *sd)
    if (strcmp(find, utf8)) return EINA_FALSE;
    const char *replace = elm_entry_entry_get(sd->en_replace);
    enventor_item_text_insert(sd->it, replace);
+   enventor_item_select_none(sd->it);
    free(utf8);
    return EINA_TRUE;
 }
