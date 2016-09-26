@@ -934,7 +934,7 @@ enventor_lock_create(void)
 
    //Exception 2
    //Create temp directory if it doesn't exist.
-   if (!ecore_file_path_dir_exists(tmpdir))
+   if (!ecore_file_is_dir(tmpdir))
      {
         Eina_Bool success = ecore_file_mkdir(tmpdir);
         if (!success)
@@ -1015,7 +1015,7 @@ enventor_lock_remove()
         return;
      }
 
-   if (!ecore_file_path_dir_exists(tmpdir))
+   if (!ecore_file_is_dir(tmpdir))
      {
         EINA_LOG_ERR("Cannot access to temporary directory?! = %s", tmpdir);
         return;
