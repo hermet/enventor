@@ -25,6 +25,8 @@ error_word_select(Evas_Object *console)
         return;
      }
 
+   if (elm_entry_is_empty(console)) return;
+
    //Convert console text including markup text to the plain text
    const char *markup_text = elm_entry_entry_get(console);
    if (!markup_text) return;
@@ -79,6 +81,12 @@ end:
 static void
 set_console_error_msg(Evas_Object *console, const char *src)
 {
+   if (!src || !strcmp(src, ""))
+     {
+        elm_entry_entry_set(console, NULL);
+        return;
+     }
+
    /* We cut error messages since it contains unnecessary information.
       Most of the time, first one line has a practical information. */
    const char *new_line  = "<br/>";
