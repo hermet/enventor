@@ -889,8 +889,8 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    eina_inarray_push(td->attrs, &attr);
 
    wh = eina_array_new(2);
-   eina_array_push(wh, eina_stringshare_add("W:"));
-   eina_array_push(wh, eina_stringshare_add("H:"));
+   eina_array_push(wh, eina_stringshare_add("Min:"));
+   eina_array_push(wh, eina_stringshare_add("Max:"));
 
    memset(&attr, 0x00, sizeof(parser_attr));
    attr.keyword = eina_stringshare_add("aspect");
