@@ -74,7 +74,7 @@ templates_get(new_data *nd)
    char buf[PATH_MAX];
    snprintf(buf, sizeof(buf), "%s/templates", elm_app_data_dir_get());
 
-   if (!ecore_file_path_dir_exists(buf))
+   if (!ecore_file_is_dir(buf))
      {
         EINA_LOG_ERR(_("Cannot find templates folder! \"%s\""), buf);
         return;
