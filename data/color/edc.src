@@ -40,6 +40,8 @@ group "syntax_color_group" struct {
             value "key" string: "externals";
             value "key" string: "external";
             value "key" string: "fill";
+            value "key" string: "filters";
+            value "key" string: "filter";
             value "key" string: "fonts";
             value "key" string: "gradient";
             value "key" string: "group";
@@ -98,6 +100,7 @@ group "syntax_color_group" struct {
             value "key" string: "border";
             value "key" string: "center";
             value "key" string: "clip_to";
+            value "key" string: "code";
             value "key" string: "color2";
             value "key" string: "color3";
             value "key" string: "color_class:";
@@ -107,9 +110,11 @@ group "syntax_color_group" struct {
             value "key" string: "effect";
             value "key" string: "ellipsis";
             value "key" string: "entry_mode";
+            value "key" string: "file";
             value "key" string: "fixed";
             value "key" string: "focal";
             value "key" string: "font";
+            value "key" string: "hid";
             value "key" string: "ignore_flags";
             value "key" string: "image";
             value "key" string: "inherit";
@@ -242,6 +247,7 @@ group "syntax_color_group" struct {
          value "val" string: "00FFFF";
          group "keys" list {
             value "key" string: "anim";
+            value "key" string: "blur";
             value "key" string: "cancel_anim";
             value "key" string: "cancel_timer";
             value "key" string: "custom_state";
@@ -254,6 +260,7 @@ group "syntax_color_group" struct {
             value "key" string: "get_state_val";
             value "key" string: "get_state";
             value "key" string: "get_text";
+            value "key" string: "padding_set";
             value "key" string: "round";
             value "key" string: "run_program";
             value "key" string: "set_float";
