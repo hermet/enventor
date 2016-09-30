@@ -247,7 +247,6 @@ group "syntax_color_group" struct {
          value "val" string: "00FFFF";
          group "keys" list {
             value "key" string: "anim";
-            value "key" string: "blur";
             value "key" string: "cancel_anim";
             value "key" string: "cancel_timer";
             value "key" string: "custom_state";
@@ -260,7 +259,6 @@ group "syntax_color_group" struct {
             value "key" string: "get_state_val";
             value "key" string: "get_state";
             value "key" string: "get_text";
-            value "key" string: "padding_set";
             value "key" string: "round";
             value "key" string: "run_program";
             value "key" string: "set_float";
