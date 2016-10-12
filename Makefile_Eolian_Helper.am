@@ -13,12 +13,12 @@ am__v_EOL_0 = @echo "  EOLIAN  " $@;
 SUFFIXES = .eo .eo.c .eo.h .eo.legacy.h
 
 %.eo.c: %.eo ${_EOLIAN_GEN_DEP}
-	$(AM_V_EOL)$(EOLIAN_GEN) --legacy $(EOLIAN_FLAGS) --gc -o $@ $<
+	$(AM_V_EOL) $(EOLIAN_GEN) $(EOLIAN_FLAGS) -gc -o c:$@ $<
 
 %.eo.h: %.eo ${_EOLIAN_GEN_DEP}
-	$(AM_V_EOL)$(EOLIAN_GEN) $(EOLIAN_FLAGS) --gh -o $@ $<
+	$(AM_V_EOL)$(EOLIAN_GEN) $(EOLIAN_FLAGS) -gh -o h:$@ $<
 
 %.eo.legacy.h: %.eo ${_EOLIAN_GEN_DEP}
-	$(AM_V_EOL)$(EOLIAN_GEN) --legacy $(EOLIAN_FLAGS) --gh -o $@ $<
+	$(AM_V_EOL)$(EOLIAN_GEN) $(EOLIAN_FLAGS) -gl -o l:$@ $<
 
 CLEANFILES += $(BUILT_SOURCES)
