@@ -239,8 +239,7 @@ preference_setting_content_get(preference_setting_data *psd,
       toggle_create(box, _("Status"), config_stats_bar_get(),
                     _("Status (F8)<br>"
                       "Display Status bar, which shows subsidiary<br>"
-                      "information  for editing in the bottom area."
-                      "editing."));
+                      "information for editing in the bottom area."));
    elm_box_pack_end(box, toggle_status);
 
    //Toggle (Console)
