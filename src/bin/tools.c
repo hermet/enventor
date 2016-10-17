@@ -342,7 +342,7 @@ tools_init(Evas_Object *parent)
                           _("Console box (Alt + Down)<br>"
                             "Display the console box, which shows the EDC<br>"
                             "build logs, such as error messages. It pops<br>"
-                            "up automatically when compliation errors occur."),
+                            "up automatically when compilation errors occur."),
                           console_cb);
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
