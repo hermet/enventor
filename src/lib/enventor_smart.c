@@ -4,6 +4,8 @@
 
 #define ELM_INTERNAL_API_ARGESFSDFEFC 1
 #define EFL_CANVAS_OBJECT_PROTECTED 1
+#define EFL_CANVAS_GROUP_PROTECTED
+#define EFL_CANVAS_GROUP_BETA
 
 #include <Enventor.h>
 #include <Eio.h>
@@ -327,7 +329,7 @@ _enventor_object_efl_canvas_group_group_member_add(Eo *obj, Enventor_Object_Data
 }
 
 EOLIAN static void
-_enventor_object_efl_canvas_group_group_move(Eo *obj, Enventor_Object_Data *pd EINA_UNUSED, Evas_Coord x, Evas_Coord y)
+_enventor_object_efl_gfx_position_set(Eo *obj, Enventor_Object_Data *pd EINA_UNUSED, Evas_Coord x, Evas_Coord y)
 {
    Eina_Iterator *it = evas_object_smart_iterator_new(obj);
    Evas_Object *o;
@@ -337,7 +339,7 @@ _enventor_object_efl_canvas_group_group_move(Eo *obj, Enventor_Object_Data *pd E
 }
 
 EOLIAN static void
-_enventor_object_efl_canvas_group_group_resize(Eo *obj, Enventor_Object_Data *pd EINA_UNUSED, Evas_Coord w, Evas_Coord h)
+_enventor_object_efl_gfx_size_set(Eo *obj, Enventor_Object_Data *pd EINA_UNUSED, Evas_Coord w, Evas_Coord h)
 {
    Eina_Iterator *it = evas_object_smart_iterator_new(obj);
    Evas_Object *o;
@@ -347,38 +349,23 @@ _enventor_object_efl_canvas_group_group_resize(Eo *obj, Enventor_Object_Data *pd
 }
 
 EOLIAN static void
-_enventor_object_efl_canvas_group_group_show(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
+_enventor_object_efl_gfx_visible_set(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd, Eina_Bool vis)
 {
    if (!pd->focused_it) return;
    Evas_Object *o = edit_obj_get(pd->focused_it->ed);
-   evas_object_show(o);
+   if (vis)
+     evas_object_show(o);
+   else
+     evas_object_hide(o);
 }
 
 EOLIAN static void
-_enventor_object_efl_canvas_group_group_hide(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
-{
-   if (!pd->focused_it) return;
-   Evas_Object *o = edit_obj_get(pd->focused_it->ed);
-   evas_object_hide(o);
-}
-
-EOLIAN static void
-_enventor_object_efl_canvas_group_group_clip_set(Eo *obj, Enventor_Object_Data *pd EINA_UNUSED, Evas_Object *clip)
+_enventor_object_efl_canvas_object_clip_set(Eo *obj, Enventor_Object_Data *pd EINA_UNUSED, Evas_Object *clip)
 {
    Eina_Iterator *it = evas_object_smart_iterator_new(obj);
    Evas_Object *o;
    EINA_ITERATOR_FOREACH(it, o)
      evas_object_clip_set(o, clip);
-   eina_iterator_free(it);
-}
-
-EOLIAN static void
-_enventor_object_efl_canvas_group_group_clip_unset(Eo *obj, Enventor_Object_Data *pd EINA_UNUSED)
-{
-   Eina_Iterator *it = evas_object_smart_iterator_new(obj);
-   Evas_Object *o;
-   EINA_ITERATOR_FOREACH(it, o)
-     evas_object_clip_unset(o);
    eina_iterator_free(it);
 }
 

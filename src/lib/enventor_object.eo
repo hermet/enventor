@@ -213,14 +213,12 @@ class Enventor.Object (Elm.Widget, Efl.File) {
    implements {
       class.constructor;
       Efl.Object.constructor;
+      Efl.Gfx.visible.set;
+      Efl.Gfx.position.set;
+      Efl.Gfx.size.set;
+      Efl.Canvas.Object.clip.set;
       Efl.Canvas.Group.group_add;
       Efl.Canvas.Group.group_del;
-      Efl.Canvas.Group.group_move;
-      Efl.Canvas.Group.group_resize;
-      Efl.Canvas.Group.group_show;
-      Efl.Canvas.Group.group_hide;
-      Efl.Canvas.Group.group_clip.set;
-      Efl.Canvas.Group.group_clip_unset;
       Efl.Canvas.Group.group_member_add;
       Efl.File.file.set;
    }
