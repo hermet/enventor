@@ -331,6 +331,8 @@ _enventor_object_efl_canvas_group_group_member_add(Eo *obj, Enventor_Object_Data
 EOLIAN static void
 _enventor_object_efl_gfx_position_set(Eo *obj, Enventor_Object_Data *pd EINA_UNUSED, Evas_Coord x, Evas_Coord y)
 {
+   efl_gfx_position_set(efl_super(obj, MY_CLASS), x, y);
+
    Eina_Iterator *it = evas_object_smart_iterator_new(obj);
    Evas_Object *o;
    EINA_ITERATOR_FOREACH(it, o)
@@ -341,6 +343,8 @@ _enventor_object_efl_gfx_position_set(Eo *obj, Enventor_Object_Data *pd EINA_UNU
 EOLIAN static void
 _enventor_object_efl_gfx_size_set(Eo *obj, Enventor_Object_Data *pd EINA_UNUSED, Evas_Coord w, Evas_Coord h)
 {
+   efl_gfx_size_set(efl_super(obj, MY_CLASS), w, h);
+
    Eina_Iterator *it = evas_object_smart_iterator_new(obj);
    Evas_Object *o;
    EINA_ITERATOR_FOREACH(it, o)
@@ -351,6 +355,8 @@ _enventor_object_efl_gfx_size_set(Eo *obj, Enventor_Object_Data *pd EINA_UNUSED,
 EOLIAN static void
 _enventor_object_efl_gfx_visible_set(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd, Eina_Bool vis)
 {
+   efl_gfx_visible_set(efl_super(obj, MY_CLASS), vis);
+
    if (!pd->focused_it) return;
    Evas_Object *o = edit_obj_get(pd->focused_it->ed);
    if (vis)
@@ -362,6 +368,8 @@ _enventor_object_efl_gfx_visible_set(Eo *obj EINA_UNUSED, Enventor_Object_Data *
 EOLIAN static void
 _enventor_object_efl_canvas_object_clip_set(Eo *obj, Enventor_Object_Data *pd EINA_UNUSED, Evas_Object *clip)
 {
+   efl_canvas_object_clip_set(efl_super(obj, MY_CLASS), clip);
+
    Eina_Iterator *it = evas_object_smart_iterator_new(obj);
    Evas_Object *o;
    EINA_ITERATOR_FOREACH(it, o)
