@@ -264,7 +264,7 @@ preference_setting_content_get(preference_setting_data *psd,
    Evas_Object *toggle_autocomp =
       toggle_create(box, _("Auto Completion"), config_auto_complete_get(),
                     _("Display the candidate keyword popup with<br>"
-                      "regards to the current editing contxt.<br>"
+                      "regards to the current editing context.<br>"
                       "When you type texts in the editor, the candidate<br>"
                       "popup appears. You can choose an item<br>"
                       "from the list, and a code template is inserted."));
