@@ -41,7 +41,7 @@
    * EDC Editor: Compare name elaborately to search the clicked part correctly.<br>
    * Live Edit: Fix malfunction of key input on Windows.<br>
    * Live Edit: Fix center guide text positioning problem.<br>
-   * Live View: Update dummpy part when removing all source code.<br>
+   * Live View: Update dummy part when removing all source code.<br>
    * RedoUndo: Correct work with unicode symbols.<br>
    * Template: Fix the error of line position when inserting group template.<br>
    * Template: Fix line count of textblock part inserted in live edit mode.<br>
@@ -53,7 +53,7 @@
    * Ctxpopup: Don't display image previews if the selected image string is in comments.<br>
    * Auto Completion: Fix its list moved to selected part name position.<br>
    * Fix a crash issue when removing all code in edc editor.<br>
-   * Fix a complation issue when new empty file is opened.<br>
+   * Fix a compilation issue when new empty file is opened.<br>
    * Fix a color selector to scalable.<br>
 <br>
 Please see NEWS for more information.

@@ -96,7 +96,7 @@ Fixes:
    * EDC Editor: Compare name elaborately to search the clicked part correctly.
    * Live Edit: Fix malfunction of key input on Windows.
    * Live Edit: Fix center guide text positioning problem.
-   * Live View: Update dummpy part when removing all source code.
+   * Live View: Update dummy part when removing all source code.
    * RedoUndo: Correct work with unicode symbols.
    * Template: Fix the error of line position when inserting group template.
    * Template: Fix line count of textblock part inserted in live edit mode.
@@ -108,7 +108,7 @@ Fixes:
    * Ctxpopup: Don't display image previews if the selected image string is in comments.
    * Auto Completion: Fix its list moved to selected part name position.
    * Fix a crash issue when removing all code in edc editor.
-   * Fix a complation issue when new empty file is opened.
+   * Fix a compilation issue when new empty file is opened.
    * Fix a color selector to scalable.
 
 Changes since Enventor 0.7.0:
