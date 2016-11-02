@@ -56,7 +56,7 @@ Alt+Up - Toggle Full Console View
 Alt+Down - Toggle Full Editors View
 
 Ctrl+A - Select Text All
-Ctrl+Double Click - Select a word
+Ctrl+Double Click - Select a word without openning candidate popup
 Ctrl+Z - Undo Text
 Ctrl+R - Redo Text
 Ctrl+C - Copy Selected Text
