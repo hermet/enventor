@@ -3,7 +3,7 @@ collections {
    group { "main";
       parts {
          spacer { "spacer1";
-            scale: 1;
+            scale;
             desc { "default";
                min: 50 50;
                fixed: 1 1;
@@ -13,7 +13,7 @@ collections {
             }
          }
          spacer { "spacer2";
-            scale: 1;
+            scale;
             desc { "default";
                min: 50 50;
                fixed: 1 1;

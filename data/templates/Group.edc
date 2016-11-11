@@ -21,7 +21,7 @@ collections {
    group { "my_group";
       parts {
          text { "text";
-            scale: 1;
+            scale;
             effect: SOFT_OUTLINE;
             desc { "default";
                color: 255 255 255 255;

@@ -3,7 +3,7 @@ collections {
    group { "main";
       parts {
          text { "text";
-            scale: 1;
+            scale;
             effect: SOFT_OUTLINE;
             desc { "default";
                rel1.relative: 0.0 0.0;

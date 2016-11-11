@@ -26,7 +26,7 @@ collections {
    group { "main";
       parts {
          textblock { "text_block";
-            scale: 1;
+            scale;
             desc { "default";
                text {
                   style: "basic_style";
@@ -40,7 +40,7 @@ collections {
       }
       parts {
          textblock { "text_wrap_none";
-            scale: 1;
+            scale;
             desc { "default";
                rel1.to: "text_block";
                rel1.relative: 0.0 1.0;
@@ -54,7 +54,7 @@ collections {
       }
       parts {
          textblock { "text_wrap_char";
-            scale: 1;
+            scale;
             desc { "default";
                rel1.to: "text_wrap_none";
                rel1.relative: 0.0 1.0;
@@ -68,7 +68,7 @@ collections {
       }
       parts {
          textblock { "text_wrap_word";
-            scale: 1;
+            scale;
             desc { "default";
                rel1.to: "text_wrap_char";
                rel1.relative: 0.0 1.0;
@@ -82,7 +82,7 @@ collections {
       }
       parts {
          textblock { "text_wrap_mixed";
-            scale: 1;
+            scale;
             desc { "default";
                rel1.to: "text_wrap_word";
                rel1.relative: 0.0 1.0;
@@ -96,7 +96,7 @@ collections {
       }
       parts {
          textblock { "text_ellipsis_1";
-            scale: 1;
+            scale;
             desc { "default";
                rel1.to: "text_wrap_mixed";
                rel1.relative: 0.0 1.0;
@@ -110,7 +110,7 @@ collections {
       }
       parts {
          textblock { "text_ellipsis_0";
-            scale: 1;
+            scale;
             desc { "default";
                rel1.to: "text_ellipsis_1";
                rel1.relative: 0.0 1.0;

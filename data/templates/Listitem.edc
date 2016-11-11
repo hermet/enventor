@@ -14,7 +14,7 @@ collections {
       }
       parts {
          rect { "bg";
-            scale: 1;
+            scale;
             desc { "default";
                color: 233 242 242 255;
                align: 0.5 0.5;
@@ -26,7 +26,7 @@ collections {
             }
          }
          rect { "point_rect";
-            scale: 1;
+            scale;
             desc { "default";
                color: 0 176 137 255;
                align: 0.0 0.0;
@@ -39,7 +39,7 @@ collections {
             }
          }
          spacer { "padding_left";
-            scale: 1;
+            scale;
             desc { "default";
                align: 0.0 0.5;
                rel1.to: "point_rect";
@@ -50,7 +50,7 @@ collections {
             }
          }
          image { "icon_status";
-            scale: 1;
+            scale;
             desc { "default";
                /* TODO: Please replace embedded image files to your application image files. */
                image.normal: "ENVENTOR_EMBEDDED_ICON_ARROW.png";
@@ -65,7 +65,7 @@ collections {
             }
          }
          swallow { "icon_user";
-            scale: 1;
+            scale;
             desc { "default";
                align: 0.0 0.5;
                rel1.to: "icon_status";
@@ -76,7 +76,7 @@ collections {
             }
          }
          text { "user_name";
-            scale: 1;
+            scale;
             desc { "default";
                color: 130 130 130 255;
                text {
@@ -95,7 +95,7 @@ collections {
             }
          }
          text { "message";
-            scale: 1;
+            scale;
             desc { "default";
                color: 145 145 145 255;
                text {
@@ -116,7 +116,7 @@ collections {
             }
          }
          spacer { "padding_right";
-            scale: 1;
+            scale;
             desc { "default";
                align: 1.0 0.5;
                rel1.to: "bg";
@@ -127,7 +127,7 @@ collections {
             }
          }
          text { "date";
-            scale: 1;
+            scale;
             desc { "default";
                color: 135 135 135 255;
                text {
@@ -148,7 +148,7 @@ collections {
             }
          }
          image { "icon_clip";
-            scale: 1;
+            scale;
             desc { "default";
                /* TODO: Please replace embedded image files to your application image files. */
                image.normal: "ENVENTOR_EMBEDDED_ICON_CLIP.png";
@@ -167,7 +167,7 @@ collections {
             }
          }
          image { "icon_badge";
-            scale: 1;
+            scale;
             desc { "default";
                /* TODO: Please replace embedded image files to your application image files. */
                image.normal: "ENVENTOR_EMBEDDED_ICON_BADGE.png";
@@ -185,7 +185,7 @@ collections {
             }
          }
          image { "icon_lock";
-            scale: 1;
+            scale;
             desc { "default";
                /* TODO: Please replace embedded image files to your application image files. */
                image.normal: "ENVENTOR_EMBEDDED_ICON_LOCK.png";
@@ -204,7 +204,7 @@ collections {
             }
          }
          swallow { "icon_check";
-            scale: 1;
+            scale;
             desc { "default";
                align: 1.0 0.5;
                rel1.to: "padding_right";
@@ -217,7 +217,7 @@ collections {
             }
          }
          spacer { "padding_icon";
-            scale: 1;
+            scale;
             desc { "default";
                align: 1.0 0.5;
                rel1.to: "icon_check";

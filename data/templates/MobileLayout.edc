@@ -8,14 +8,14 @@ collections {
       }
       parts {
          rect { "base";
-            scale: 1;
+            scale;
             desc { "default";
                min: 200 300;
             }
          }
          /* Header */
          rect { "header";
-            scale: 1;
+            scale;
             desc { "default";
                color: 200 0 0 255;
                align: 0.0 0.0;
@@ -28,7 +28,7 @@ collections {
             }
          }
          spacer { "header_padding";
-            scale: 1;
+            scale;
             desc { "default";
                align: 0.0 0.5;
                rel1.to: "header";
@@ -38,7 +38,7 @@ collections {
             }
          }
          image { "header_button_panel_open";
-            scale: 1;
+            scale;
             desc { "default";
                /* TODO: Please replace embedded image files to your application image files. */
                image.normal: "ENVENTOR_EMBEDDED_ICON_DOCK.png";
@@ -56,7 +56,7 @@ collections {
             }
          }
          image { "header_button_panel_close";
-            scale: 1;
+            scale;
             desc { "default";
                /* TODO: Please replace embedded image files to your application image files. */
                image.normal: "ENVENTOR_EMBEDDED_ICON_DOCK_DOWN.png";
@@ -75,7 +75,7 @@ collections {
             }
          }
          text { "header_title";
-            scale: 1;
+            scale;
             desc { "default";
                text {
                   size: 15;
@@ -89,7 +89,7 @@ collections {
          }
          /* Content */
          spacer { "content_padding_top";
-            scale: 1;
+            scale;
             desc { "default";
                align: 0.0 0.0;
                rel1.to: "header";
@@ -100,7 +100,7 @@ collections {
             }
          }
          rect { "content_main";
-            scale: 1;
+            scale;
             desc { "default";
                color: 30 46 93 255;
                align: 0.5 0.0;
@@ -113,7 +113,7 @@ collections {
             }
          }
          text { "content_main_text";
-            scale: 1;
+            scale;
             desc { "default";
                text {
                   size: 15;
@@ -126,7 +126,7 @@ collections {
             }
          }
          spacer { "content_padding_middle";
-            scale: 1;
+            scale;
             desc { "default";
                align: 0.0 0.0;
                rel1.to: "base";
@@ -136,7 +136,7 @@ collections {
             }
          }
          rect { "content_sub_1";
-            scale: 1;
+            scale;
             desc { "default";
                color: 0 136 170 255;
                align: 0.0 0.0;
@@ -148,7 +148,7 @@ collections {
             }
          }
          text { "content_sub_1_text";
-            scale: 1;
+            scale;
             desc { "default";
                text {
                   size: 15;
@@ -161,7 +161,7 @@ collections {
             }
          }
          rect { "content_sub_2";
-            scale: 1;
+            scale;
             desc { "default";
                color: 66 118 189 255;
                align: 0.0 0.5;
@@ -175,7 +175,7 @@ collections {
             }
          }
          text { "content_sub_2_text";
-            scale: 1;
+            scale;
             desc { "default";
                text {
                   size: 15;
@@ -188,7 +188,7 @@ collections {
             }
          }
          rect { "content_sub_3";
-            scale: 1;
+            scale;
             desc { "default";
                color: 83 66 189 255;
                align: 0.0 0.5;
@@ -201,7 +201,7 @@ collections {
             }
          }
          text { "content_sub_3_text";
-            scale: 1;
+            scale;
             desc { "default";
                text {
                   size: 15;
@@ -214,7 +214,7 @@ collections {
             }
          }
          rect { "content_bottom";
-            scale: 1;
+            scale;
             desc { "default";
                color: 95 95 95 255;
                rel1.to: "content_sub_1";
@@ -225,7 +225,7 @@ collections {
             }
          }
          text { "content_bottom_text";
-            scale: 1;
+            scale;
             desc { "default";
                text {
                   size: 15;
@@ -240,7 +240,7 @@ collections {
          }
          /* Mask */
          rect { "mask";
-            scale: 1;
+            scale;
             desc { "default";
                color: 0 0 0 155;
                rel1.to: "header";
@@ -255,7 +255,7 @@ collections {
          }
          /* Panel */
          rect { "panel_base";
-            scale: 1;
+            scale;
             desc { "default";
                align: 0.0 0.0;
                rel1.to: "header";
@@ -270,7 +270,7 @@ collections {
             }
          }
          rect { "panel_content_1";
-            scale: 1;
+            scale;
             desc { "default";
                color: 255 94 0 255;
                rel1.to: "panel_base";
@@ -286,7 +286,7 @@ collections {
             }
          }
          text { "panel_content_1_text";
-            scale: 1;
+            scale;
             desc { "default";
                color: 0 0 0 255;
                text {
@@ -308,7 +308,7 @@ collections {
             }
          }
          rect { "panel_content_2";
-            scale: 1;
+            scale;
             desc { "default";
                color: 255 130 36 255;
                rel1.to: "panel_base";
@@ -325,7 +325,7 @@ collections {
             }
          }
          text { "panel_content_2_text";
-            scale: 1;
+            scale;
             desc { "default";
                color: 0 0 0 255;
                text {
@@ -346,7 +346,7 @@ collections {
             }
          }
          rect { "panel_content_3";
-            scale: 1;
+            scale;
             desc { "default";
                color: 255 166 72 255;
                rel1.to: "panel_base";
@@ -363,7 +363,7 @@ collections {
             }
          }
          text { "panel_content_3_text";
-            scale: 1;
+            scale;
             desc { "default";
                color: 0 0 0 255;
                text {
@@ -384,7 +384,7 @@ collections {
             }
          }
          rect { "panel_content_4";
-            scale: 1;
+            scale;
             desc { "default";
                color: 255 202 108 255;
                rel1.to: "panel_base";
@@ -401,7 +401,7 @@ collections {
             }
          }
          text { "panel_content_4_text";
-            scale: 1;
+            scale;
             desc { "default";
                color: 0 0 0 255;
                text {
@@ -422,7 +422,7 @@ collections {
             }
          }
          swallow { "panel_swallow";
-            scale: 1;
+            scale;
             desc { "default";
                visible: 0;
                rel1.to: "panel_base";

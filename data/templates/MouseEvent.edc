@@ -9,7 +9,7 @@ collections {
       }
       parts {
          rect { "button_shadow";
-            scale: 1;
+            scale;
             desc { "default";
                color: 0 0 0 155;
                rel1.to: "button_bg";
@@ -19,7 +19,7 @@ collections {
             }
          }
          image { "button_bg";
-            scale: 1;
+            scale;
             desc { "default";
                /* TODO: Please replace embedded image files to your application image files. */
                image.normal: "ENVENTOR_EMBEDDED_BUTTON_BG.png";
@@ -37,7 +37,7 @@ collections {
             }
          }
          text { "button_text";
-            scale: 1;
+            scale;
             nomouse;
             desc { "default";
                color: 70 70 70 255;

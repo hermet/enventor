@@ -13,7 +13,7 @@ collections {
       }
       parts {
          image { "bg";
-            scale: 1;
+            scale;
             desc { "default";
                /* TODO: Please replace embedded image files to your application image files. */
                image.normal: "ENVENTOR_EMBEDDED_WATCHFACE.png";
@@ -24,7 +24,7 @@ collections {
             }
          }
          image { "moonphase_moon";
-            scale: 1;
+            scale;
             desc { "default";
                /* TODO: Please replace embedded image files to your application image files. */
                image.normal: "ENVENTOR_EMBEDDED_MOONPHASE_MOON.png";
@@ -40,7 +40,7 @@ collections {
             }
          }
          image { "moonphase_cover";
-            scale: 1;
+            scale;
             desc { "default";
                /* TODO: Please replace embedded image files to your application image files. */
                image.normal: "ENVENTOR_EMBEDDED_MOONPHASE_COVER.png";
@@ -54,7 +54,7 @@ collections {
             }
          }
          image { "month_stroke";
-            scale: 1;
+            scale;
             desc { "default";
                /* TODO: Please replace embedded image files to your application image files. */
                image.normal: "ENVENTOR_EMBEDDED_MONTH_STROKE.png";
@@ -110,7 +110,7 @@ collections {
             }
          }
          text { "date";
-            scale: 1;
+            scale;
             desc { "default";
                color: 0 0 0 255;
                fixed: 1 1;
@@ -131,7 +131,7 @@ collections {
             }
          }
          image { "hour";
-            scale: 1;
+            scale;
             nomouse;
             desc { "default";
                rel1.to: "bg";
@@ -151,7 +151,7 @@ collections {
             }
          }
          image { "minute";
-            scale: 1;
+            scale;
             nomouse;
             desc { "default";
                rel1.to: "bg";
@@ -171,7 +171,7 @@ collections {
             }
          }
          image { "second";
-            scale: 1;
+            scale;
             nomouse;
             desc { "default";
                rel1.to: "bg";
@@ -179,7 +179,7 @@ collections {
                rel1.relative: 0.5 0.0;
                rel2.relative: 0.5 1.0;
                min: 25 0;
-               fixed: 1 0;                 
+               fixed: 1 0;
                /* TODO: Please replace embedded image files to your application image files. */
                image.normal: "ENVENTOR_EMBEDDED_NEEDLE_SECOND.png";
                map.on: 1;

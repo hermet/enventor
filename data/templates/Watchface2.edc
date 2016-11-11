@@ -10,7 +10,7 @@ collections {
       }
       parts {
          image { "bg";
-            scale: 1;
+            scale;
             desc { "default";
                visible: 1;
                /* TODO: Please replace embedded image files to your application image files. */
@@ -22,7 +22,7 @@ collections {
             }
          }
          text { "date";
-            scale: 1;
+            scale;
             desc { "default";
                color: 219 219 219 255;
                fixed: 1 1;
@@ -43,7 +43,7 @@ collections {
             }
          }
          text { "meridiem";
-            scale: 1;
+            scale;
             desc { "default";
                color: 255 120 0 255;
                fixed: 1 1;
@@ -62,7 +62,7 @@ collections {
             }
          }
          text { "time";
-            scale: 1;
+            scale;
             desc { "default";
                color: 250 250 250 255;
                fixed: 1 1;
@@ -81,7 +81,7 @@ collections {
             }
          }
          image { "hour";
-            scale: 1;
+            scale;
             nomouse;
             desc { "default";
                rel1.to: "bg";
@@ -101,7 +101,7 @@ collections {
             }
          }
          image { "minute";
-            scale: 1;
+            scale;
             nomouse;
             desc { "default";
                rel1.to: "bg";
@@ -121,7 +121,7 @@ collections {
             }
          }
          image { "second";
-            scale: 1;
+            scale;
             nomouse;
             desc { "default";
                rel1.to: "bg";
@@ -129,7 +129,7 @@ collections {
                rel1.relative: 0.5 0.0;
                rel2.relative: 0.5 1.0;
                min: 30 0;
-               fixed: 1 0;                 
+               fixed: 1 0;
                /* TODO: Please replace embedded image files to your application image files. */
                image.normal: "ENVENTOR_EMBEDDED_NEEDLE_SECOND_RECT.png";
                map.on: 1;

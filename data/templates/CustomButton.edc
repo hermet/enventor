@@ -194,7 +194,7 @@ collections {
          }
          text { "sizer.content";
             nomouse;
-            scale: 1;
+            scale;
             desc { "default";
                visible: 0;
                text {
@@ -228,7 +228,7 @@ collections {
          text { "elm.text";
             nomouse;
             effect: SHADOW BOTTOM;
-            scale: 1;
+            scale;
             desc { "default";
                rel1.offset: 0 5;
                rel1.relative: 1.0 0.0;
