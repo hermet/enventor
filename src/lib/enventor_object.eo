@@ -119,26 +119,26 @@ class Enventor.Object (Elm.Widget, Efl.File) {
          return: bool;
          params {
             @in type: Enventor_Path_Type;
-            @in pathes: own(const(list<own(Eina_Stringshare *)>));
+            @in pathes: own(const(list<own(stringshare)>));
          }
       }
       path_get {
-         return: const(list<own(Eina_Stringshare *)>);
+         return: const(list<own(stringshare)>);
          params {
             @in type: Enventor_Path_Type;
          }
       }
       programs_list_get {
-         return: list<char *>;
+         return: list<string>;
       }
       part_states_list_get {
-         return: list<char *>;
+         return: list<string>;
          params {
-            @in type: const(char) *;
+            @in type: string;
          }
       }
       parts_list_get {
-         return: list<char *>;
+         return: list<string>;
       }
       live_view_get {
          return: Efl.Canvas.Object;
@@ -147,17 +147,17 @@ class Enventor.Object (Elm.Widget, Efl.File) {
       }
       program_run {
          params {
-            @in program: const(char) *;
+            @in program: string;
          }
       }
       syntax_color_set {
          params {
             @in color_type: Enventor_Syntax_Color_Type;
-            @in val: const(char) *;
+            @in val: string;
          }
       }
       syntax_color_get {
-         return: const(char) *;
+         return: string;
          params {
             @in color_type: Enventor_Syntax_Color_Type;
          }
@@ -180,26 +180,26 @@ class Enventor.Object (Elm.Widget, Efl.File) {
       }
       live_view_size_get {
          params {
-            @in w: Evas.Coord *;
-            @in h: Evas.Coord *;
+            @in w: ptr(Evas.Coord);
+            @in h: ptr(Evas.Coord);
          }
       }
       part_type_get {
          return: Edje_Part_Type;
          params {
-            @in part_name: const(char) *;
+            @in part_name: string;
          }
       }
       font_set {
          params {
-            @in font_name: const(char) *;
-            @in font_style: const(char) *;
+            @in font_name: string;
+            @in font_style: string;
          }
       }
       font_get {
          params {
-            @in font_name: const(char) **;
-            @in font_style: const(char) **;
+            @out font_name: string;
+            @out font_style: string;
          }
       }
       auto_complete_list_show {
