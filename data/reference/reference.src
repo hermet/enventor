@@ -323,7 +323,7 @@ collections { "The <hilight>collections</hilight> represents a theme.</br>The <h
             }
             select_mode { "Sets how the text selection is triggered for textblock parts.</br>The available modes are DEFAULT and EXPLICIT.";
             }
-            source { "Sets the given group to the group/textblock parts.";
+            source { "Sets the given group to the group/textblock parts.</br>Sets the given elementary widget to the external part. (e.g. elm/button)";
             }
             table { "On a box part, the <hilight>table</hilight> block is used to set other groups as elements of the box.</br>These can be mixed with external objects set by the application through the edje_object_part_box*() functions.";
                items { "The <hilight>items</hilight> block contains a list of <hilight>item</hilight> blocks.</br>Each <hilight>item</hilight> item block contains other group as an element of the box.";
@@ -361,11 +361,15 @@ collections { "The <hilight>collections</hilight> represents a theme.</br>The <h
                   }
                }
             }
-            type { "Sets the part type.</br>The available types are IMAGE (default), RECT, SWALLOW, TEXT, TEXTBLOCK, SPACER, GROUP, BOX, TABLE, and PROXY.";
+            type { "Sets the part type.</br>The available types are IMAGE (default), RECT, SWALLOW, TEXT, TEXTBLOCK, SPACER, GROUP, BOX, TABLE, PROXY and EXTERNAL.";
             }
          }
 
          box { "The <hilight>box</hilight> represents a box part. The <hilight>box</hilight> part is used to contain other objects.</br>The <hilight>box</hilight> block contains a list of descriptions that defines a state of the box part.</br>It also has a row or column.";
+            #inherit "collections.group.parts.part";
+         }
+
+         external { "The <hilight>external</hilight> represents an external part. The <hilight>external</hilight> part is used to set a widget inside of it.</br>The <hilight>external</hilight> block contains a list of descriptions that defines a state of the external part.";
             #inherit "collections.group.parts.part";
          }
 
