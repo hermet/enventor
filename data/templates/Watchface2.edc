@@ -140,59 +140,59 @@ collections {
                map.rotation.z: 360;
             }
          }
-         programs {
-            program { "load";
-               signal: "load";
-               source: "";
-               action: STATE_SET "rotated";
-               target: "bg";
-               transition: LINEAR 30;
-               after: "reset";
-            }
-            program { "reset";
-               action: STATE_SET "default";
-               target: "bg";
-               after: "load";
-            }
-            program { "hour_begin";
-               signal: "load";
-               source: "";
-               action: STATE_SET "rotated";
-               target: "hour";
-               transition: LINEAR 216000;
-               after: "hour_reset";
-            }
-            program { "hour_reset";
-               action: STATE_SET "default";
-               target: "hour";
-               after: "hour_begin";
-            }
-            program { "minute_begin";
-               signal: "load";
-               source: "";
-               action: STATE_SET "rotated";
-               target: "minute";
-               transition: LINEAR 3600;
-               after: "minute_begin";
-            }
-            program { "minute_reset";
-               action: STATE_SET "default";
-               target: "minute";
-               after: "minute_begin";
-            }
-            program { "second_begin";
-               signal: "load";
-               source: "";
-               action: STATE_SET "rotated";
-               target: "second";
-               transition: LINEAR 60;
-               after: "second_reset";
-            }
-            program { "second_reset";
-               action: STATE_SET "default";
-               target: "second";
-               after: "second_begin";
-            }
+      }
+      programs {
+         program { "load";
+            signal: "load";
+            source: "";
+            action: STATE_SET "rotated";
+            target: "bg";
+            transition: LINEAR 30;
+            after: "reset";
+         }
+         program { "reset";
+            action: STATE_SET "default";
+            target: "bg";
+            after: "load";
+         }
+         program { "hour_begin";
+            signal: "load";
+            source: "";
+            action: STATE_SET "rotated";
+            target: "hour";
+            transition: LINEAR 216000;
+            after: "hour_reset";
+         }
+         program { "hour_reset";
+            action: STATE_SET "default";
+            target: "hour";
+            after: "hour_begin";
+         }
+         program { "minute_begin";
+            signal: "load";
+            source: "";
+            action: STATE_SET "rotated";
+            target: "minute";
+            transition: LINEAR 3600;
+            after: "minute_begin";
+         }
+         program { "minute_reset";
+            action: STATE_SET "default";
+            target: "minute";
+            after: "minute_begin";
+         }
+         program { "second_begin";
+            signal: "load";
+            source: "";
+            action: STATE_SET "rotated";
+            target: "second";
+            transition: LINEAR 60;
+            after: "second_reset";
+         }
+         program { "second_reset";
+            action: STATE_SET "default";
+            target: "second";
+            after: "second_begin";
          }
       }
    }
