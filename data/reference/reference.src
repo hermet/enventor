@@ -256,6 +256,8 @@ collections { "The <hilight>collections</hilight> represents a theme.</br>The <h
                text { "The <hilight>text</hilight> block is used to define text properties.";
                   align { "Moves the text relatively along both axis inside the part.</br>For horizontal alignment, 0.0 moves the text to touch the left edge of the part and 1.0 moves the text to touch the right edge of the part.</br>For vertical alignment, 0.0 moves the text to touch the top edge of the part and 1.0 moves the text to touch the bottom edge of the part.</br>The default value is 0.5 0.5.";
                   }
+                  domain { "Sets the domain name of the .mo file which has to be checked for translation.";
+                  }
                   ellipsis { "Balances the text in a relative point from 0.0 to 1.0, this point is the last section of the string to be cut out in case of a resize that is smaller than the text itself.</br>The default value is 0.0.";
                   }
                   fit { "Specifies whether resizing the text to fit in the part or not.</br>The default value is 0 0 (disabled).";
