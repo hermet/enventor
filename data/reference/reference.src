@@ -274,7 +274,7 @@ collections { "The <hilight>collections</hilight> represents a theme.</br>The <h
                   }
                   source { "Uses text properties of the given part (e.g. font and size).";
                   }
-                  style { "Uses the default style and tags defined in the <hilight>style</hilight>block with the specified name.";
+                  style { "Uses the default style and tags defined in the <hilight>style</hilight> block with the specified name.";
                   }
                   text { "Sets the default text string.";
                   }
