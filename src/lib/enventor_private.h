@@ -69,6 +69,8 @@ struct attr_value_s
    attr_value_type type;
    const char *prepend_str;
    const char *append_str;
+   Eina_Array *append_str_array;
+   Eina_Bool use_append_str_array : 1;
    Eina_Bool program : 1;
 };
 

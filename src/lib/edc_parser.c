@@ -9,6 +9,9 @@ const char ATTR_PREPEND_COLON[] = ":";
 const char ATTR_PREPEND_NONE[] = "";
 const char ATTR_APPEND_SEMICOLON[] = ";";
 const char ATTR_APPEND_TRANSITION_TIME[] = " 1.0;";
+const char ATTR_APPEND_TRANSITION_TIME_FACTOR[] = " 1.0 0.0;";
+const char ATTR_APPEND_TRANSITION_TIME_FACTOR2[] = " 1.0 0.0 0.0;";
+const char ATTR_APPEND_TRANSITION_TIME_FACTOR4[] = " 1.0 0.0 0.0 0.0 0.0;";
 
 typedef struct parser_attr_s
 {
@@ -560,12 +563,26 @@ type_init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
    eina_array_push(trans, eina_stringshare_add("SPRING"));
    eina_array_push(trans, eina_stringshare_add("CUBIC_BEZIER"));
 
+   Eina_Array *trans_append_str = eina_array_new(11);
+   eina_array_push(trans_append_str, eina_stringshare_add(ATTR_APPEND_TRANSITION_TIME));
+   eina_array_push(trans_append_str, eina_stringshare_add(ATTR_APPEND_TRANSITION_TIME));
+   eina_array_push(trans_append_str, eina_stringshare_add(ATTR_APPEND_TRANSITION_TIME));
+   eina_array_push(trans_append_str, eina_stringshare_add(ATTR_APPEND_TRANSITION_TIME));
+   eina_array_push(trans_append_str, eina_stringshare_add(ATTR_APPEND_TRANSITION_TIME_FACTOR));
+   eina_array_push(trans_append_str, eina_stringshare_add(ATTR_APPEND_TRANSITION_TIME_FACTOR));
+   eina_array_push(trans_append_str, eina_stringshare_add(ATTR_APPEND_TRANSITION_TIME_FACTOR));
+   eina_array_push(trans_append_str, eina_stringshare_add(ATTR_APPEND_TRANSITION_TIME_FACTOR2));
+   eina_array_push(trans_append_str, eina_stringshare_add(ATTR_APPEND_TRANSITION_TIME_FACTOR2));
+   eina_array_push(trans_append_str, eina_stringshare_add(ATTR_APPEND_TRANSITION_TIME_FACTOR2));
+   eina_array_push(trans_append_str, eina_stringshare_add(ATTR_APPEND_TRANSITION_TIME_FACTOR4));
+
    memset(&attr, 0x00, sizeof(parser_attr));
    attr.keyword = eina_stringshare_add("transition");
    attr.value.strs = trans;
    attr.value.type = ATTR_VALUE_CONSTANT;
    attr.value.prepend_str = ATTR_PREPEND_COLON;
-   attr.value.append_str = ATTR_APPEND_TRANSITION_TIME;
+   attr.value.append_str_array = trans_append_str;
+   attr.value.use_append_str_array = EINA_TRUE;
    eina_inarray_push(td->attrs, &attr);
 
    Eina_Array *aspect_mode = eina_array_new(5);

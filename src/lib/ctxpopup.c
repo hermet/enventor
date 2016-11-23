@@ -91,15 +91,49 @@ update_preset_colors(Eina_Bool update)
      }
 }
 
+static int
+array_data_idx(const Eina_Array *array, void *data)
+{
+   Eina_Stringshare *array_data;
+   Eina_Array_Iterator itr;
+   int idx;
+
+   if (!array) return -1;
+
+   EINA_ARRAY_ITER_NEXT(array, idx, array_data, itr)
+     {
+        if (array_data == data)
+          return idx;
+     }
+
+   return -1;
+}
+
 static void
 ctxpopup_it_cb(void *data, Evas_Object *obj, void *event_info)
 {
    ctxpopup_data *ctxdata = data;
    Elm_Object_Item *it = event_info;
    const char *text = elm_object_item_text_get(it);
+   const Eina_Stringshare *append_str = NULL;
 
+   //Append different string to each candidate list.
+   if (ctxdata->attr->use_append_str_array)
+     {
+        int idx = array_data_idx(ctxdata->attr->strs, (void *)text);
+        if (idx != -1)
+          {
+             append_str = (const Eina_Stringshare *)
+                eina_array_data_get(ctxdata->attr->append_str_array, idx);
+          }
+     }
+   //Append same string to all candidate lists.
+   else
+     {
+        append_str = ctxdata->attr->append_str;
+     }
    snprintf(ctxdata->candidate, sizeof(ctxdata->candidate), "%s %s%s",
-            ctxdata->attr->prepend_str, text, ctxdata->attr->append_str);
+            ctxdata->attr->prepend_str, text, append_str);
 
    ctxdata->changed_cb(ctxdata->data, obj, ctxdata->candidate);
    elm_ctxpopup_dismiss(obj);
