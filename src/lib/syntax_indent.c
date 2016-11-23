@@ -95,6 +95,75 @@ indent_insert_br_case(indent_data *id)
 }
 
 static void
+indent_insert_tab_case(indent_data *id)
+{
+   Evas_Object *entry = id->entry;
+   Evas_Object *tb = elm_entry_textblock_get(entry);
+   Evas_Textblock_Cursor *cur_orig = evas_object_textblock_cursor_get(tb);
+   Evas_Textblock_Cursor *cur = evas_object_textblock_cursor_new(tb);
+   char *utf8 = NULL;
+   int utf8_len = 0;
+   char *p = NULL;
+   Eina_Bool insert_indent_space = EINA_FALSE;
+
+   //Remove inserted "<tab/>".
+   evas_textblock_cursor_pos_set(cur, evas_textblock_cursor_pos_get(cur_orig));
+   evas_textblock_cursor_char_prev(cur);
+   if (!strncmp(evas_textblock_cursor_content_get(cur), TAB, TAB_LEN))
+     {
+        //Cancel added "<tab/>" from redoundo.
+        redoundo_n_diff_cancel(id->rd, 1);
+        evas_textblock_cursor_char_delete(cur);
+     }
+   evas_textblock_cursor_pos_set(cur, evas_textblock_cursor_pos_get(cur_orig));
+
+   /* Spaces for indent are not required.
+      Insert spaces for tab. */
+   int space = indent_space_get(id);
+   if (space <= 0) goto end;
+
+   evas_textblock_cursor_paragraph_prev(cur);
+   evas_textblock_cursor_paragraph_next(cur);
+   utf8 = evas_textblock_cursor_range_text_get(cur, cur_orig,
+                                               EVAS_TEXTBLOCK_TEXT_PLAIN);
+   /* There is no paragraph.
+      Insert spaces for indent. */
+   if (!utf8)
+     {
+        insert_indent_space = EINA_TRUE;
+        goto end;
+     }
+
+   utf8_len = strlen(utf8);
+   /* Paragraph is shorter than spaces for indent.
+      Insert spaces for indent. */
+   if (utf8_len < space)
+     insert_indent_space = EINA_TRUE;
+
+end:
+   if (insert_indent_space)
+     {
+        //Allocate spaces for indent.
+        p = alloca(space - utf8_len + 1);
+        memset(p, ' ', space - utf8_len);
+        p[space - utf8_len] = '\0';
+     }
+   else
+     {
+        //Allocate spaces for tab.
+        p = alloca(TAB_SPACE + 1);
+        memset(p, ' ', TAB_SPACE);
+        p[TAB_SPACE] = '\0';
+     }
+
+   redoundo_text_push(id->rd, p, elm_entry_cursor_pos_get(entry), 0, EINA_TRUE);
+   elm_entry_entry_insert(entry, p);
+
+   if (utf8) free(utf8);
+   evas_textblock_cursor_free(cur);
+}
+
+static void
 indent_insert_bracket_case(indent_data *id, int cur_line)
 {
    Evas_Object *entry = id->entry;
@@ -940,6 +1009,11 @@ indent_insert_apply(indent_data *id, const char *insert, int cur_line)
           {
              indent_insert_br_case(id);
              return 1;
+          }
+        else if (!strcmp(insert, TAB))
+          {
+             indent_insert_tab_case(id);
+             return 0;
           }
         else if (!strcmp(insert, QUOT))
           return 0;
