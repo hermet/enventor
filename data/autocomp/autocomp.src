@@ -1254,7 +1254,7 @@ group "lexem" struct {
                                             }
                                             group "txt" var_array {
                                                 count 1;
-                                                value "string" string: "%s: LINEAR ;";
+                                                value "string" string: "%s: LINEAR 1.0;";
                                             }
                                             value "cursor_offset" int: 1;
                                             value "line_back" int: 0;
@@ -1696,7 +1696,7 @@ group "lexem" struct {
                                }
                                group "txt" var_array {
                                    count 1;
-                                   value "string" string: "%s: LINEAR ;";
+                                   value "string" string: "%s: LINEAR 1.0;";
                                }
                                value "cursor_offset" int: 1;
                                value "line_back" int: 0;
