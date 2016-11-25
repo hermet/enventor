@@ -41,6 +41,7 @@ struct editor_s
    int error_line;
    int syntax_color_lock;
    int cursor_pos;
+   int ctxpopup_cursor_pos;
    Evas_Coord scroller_h;
 
    struct {
@@ -522,7 +523,9 @@ ctxpopup_candidate_changed_cb(void *data, Evas_Object *obj EINA_UNUSED,
    char *ch = NULL;
    int cur_pos, end_pos;
    int i;
-   cur_pos = elm_entry_cursor_pos_get(ed->en_edit);
+
+   cur_pos = ed->ctxpopup_cursor_pos;
+   elm_entry_cursor_pos_set(ed->en_edit, cur_pos);
    elm_entry_cursor_line_end_set(ed->en_edit);
    end_pos = elm_entry_cursor_pos_get(ed->en_edit);
 
@@ -717,6 +720,8 @@ candidate_list_show(edit_data *ed, char *text, char *cur, char *selected)
    if (!attr) return;
 
    parser_attribute_value_set(attr, cur);
+
+   ed->ctxpopup_cursor_pos = elm_entry_cursor_pos_get(ed->en_edit);
 
    //Show up the list of the types
    Enventor_Ctxpopup_Type type;
