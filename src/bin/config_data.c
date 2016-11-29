@@ -23,6 +23,7 @@ typedef struct config_s
    float font_scale;
    double editor_size;
    double console_size;
+   double file_browser_size;
 
    void (*update_cb)(void *data);
    void *update_cb_data;
@@ -184,6 +185,7 @@ config_load(void)
         cd->win_size_h = WIN_DEFAULT_H;
         cd->editor_size = DEFAULT_EDITOR_SIZE;
         cd->console_size = DEFAULT_CONSOLE_SIZE;
+        cd->file_browser_size = DEFAULT_FILE_BROWSER_SIZE;
         cd->stats_bar = EINA_TRUE;
         cd->linenumber = EINA_TRUE;
         cd->part_highlight = EINA_TRUE;
@@ -287,6 +289,8 @@ eddc_init(void)
                                  editor_size, EET_T_DOUBLE);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "console_size",
                                  console_size, EET_T_DOUBLE);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "file_browser_size",
+                                 file_browser_size, EET_T_DOUBLE);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "view_size_w",
                                  view_size_w, EET_T_INT);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "view_size_h",
@@ -1058,6 +1062,24 @@ config_file_browser_get(void)
    EINA_SAFETY_ON_NULL_RETURN_VAL(cd, EINA_FALSE);
 
    return cd->file_browser;
+}
+
+void
+config_file_browser_size_set(double size)
+{
+   config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN(cd);
+
+   cd->file_browser_size = size;
+}
+
+double
+config_file_browser_size_get(void)
+{
+   config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN_VAL(cd, 0.0);
+
+   return cd->file_browser_size;
 }
 
 void

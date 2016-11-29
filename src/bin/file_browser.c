@@ -624,6 +624,44 @@ show_all_check_changed_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
      }
 }
 
+static void
+dragable_bar_mouse_up_cb(void *data, Evas *e EINA_UNUSED,
+                            Evas_Object *obj EINA_UNUSED,
+                            void *event_info EINA_UNUSED)
+{
+   Evas_Object *main_layout = data;
+   if (!main_layout) return;
+
+   double w;
+   edje_object_part_drag_value_get
+           (elm_layout_edje_get(main_layout), "elm.bar.left", &w, NULL);
+   if (w < 0.01)
+     {
+        config_file_browser_set(EINA_FALSE);
+        tools_file_browser_update(EINA_FALSE);
+        config_file_browser_size_set(0.0);
+     }
+   else
+     config_file_browser_size_set(w);
+}
+
+static void
+dragable_bar_mouse_down_cb(void *data, Evas *e EINA_UNUSED,
+                            Evas_Object *obj EINA_UNUSED,
+                            void *event_info EINA_UNUSED)
+{
+   Evas_Object *main_layout = data;
+   if (!main_layout) return;
+
+   double w;
+   edje_object_part_drag_value_get
+           (elm_layout_edje_get(main_layout), "elm.bar.left", &w, NULL);
+   if (w < 0.01)
+     {
+        config_file_browser_set(EINA_TRUE);
+        tools_file_browser_update(EINA_FALSE);
+     }
+}
 /*****************************************************************************/
 /* Externally accessible calls                                               */
 /*****************************************************************************/
@@ -772,10 +810,22 @@ file_browser_init(Evas_Object *parent)
    search_itc->func.content_get = gl_search_content_get_cb;
    bd->search_itc = search_itc;
 
+   //Dragable Bar
+   Evas_Object *bar = evas_object_rectangle_add(evas_object_evas_get(parent));
+   evas_object_color_set(bar, 0, 0, 0, 0);
+   evas_object_event_callback_add(bar, EVAS_CALLBACK_MOUSE_DOWN,
+                                  dragable_bar_mouse_down_cb, parent);
+   evas_object_event_callback_add(bar, EVAS_CALLBACK_MOUSE_UP,
+                                  dragable_bar_mouse_up_cb, parent);
+   elm_object_part_content_set(parent, "bar_left", bar);
+
    bd->base_layout = base_layout;
    bd->search_entry = search_entry;
    bd->genlist = genlist;
    bd->show_all_check = show_all_check;
+
+   if (config_file_browser_get())
+     config_file_browser_size_set(config_file_browser_size_get());
 
    elm_object_disabled_set(base_layout, EINA_TRUE);
 
@@ -922,4 +972,29 @@ file_browser_selected_file_main_set(void)
 
    config_input_path_set(file->path);
    elm_genlist_realized_items_update(bd->genlist);
+}
+
+void
+file_browser_show()
+{
+   brows_data *bd = g_bd;
+   if (!bd) return;
+
+   Evas_Object *main_layout = evas_object_smart_parent_get(bd->base_layout);
+   if (!main_layout) return;
+
+   double w = config_file_browser_size_get();
+   edje_object_part_drag_value_set(main_layout, "elm.bar.left", w, 0.0);
+}
+
+void
+file_browser_hide()
+{
+   brows_data *bd = g_bd;
+   if (!bd) return;
+
+   Evas_Object *main_layout = evas_object_smart_parent_get(bd->base_layout);
+   if (!main_layout) return;
+
+   edje_object_part_drag_value_set(main_layout, "elm.bar.left", 0.0, 0.0);
 }

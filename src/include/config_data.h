@@ -63,6 +63,8 @@ void config_smart_undo_redo_set(Eina_Bool smart_undo_redo);
 Eina_Bool config_smart_undo_redo_get(void);
 void config_file_browser_set(Eina_Bool enabled);
 Eina_Bool config_file_browser_get(void);
+void config_file_browser_size_set(double size);
+double config_file_browser_size_get(void);
 void config_edc_navigator_set(Eina_Bool enabled);
 Eina_Bool config_edc_navigator_get(void);
 Eina_Bool config_mirror_mode_get(void);

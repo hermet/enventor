@@ -105,6 +105,18 @@ base_file_tab_toggle(Eina_Bool toggle)
      }
 }
 
+static void
+file_browser_hide_done(void *data, Evas_Object *obj EINA_UNUSED,
+                       const char *emission EINA_UNUSED,
+                       const char *source EINA_UNUSED)
+{
+   base_data *bd = data;
+   elm_object_signal_callback_del(bd->layout,
+                                  "elm,state,file_browser_hide,done", "",
+                                  file_browser_hide_done);
+   file_browser_hide();
+}
+
 void
 base_file_browser_toggle(Eina_Bool toggle)
 {
@@ -114,9 +126,17 @@ base_file_browser_toggle(Eina_Bool toggle)
    if (toggle) config_file_browser_set(!config_file_browser_get());
 
    if (config_file_browser_get())
-     elm_object_signal_emit(bd->layout, "elm,state,file_browser,show", "");
+     {
+        elm_object_signal_emit(bd->layout, "elm,state,file_browser,show", "");
+        file_browser_show();
+     }
    else
-     elm_object_signal_emit(bd->layout, "elm,state,file_browser,hide", "");
+     {
+        elm_object_signal_callback_add(bd->layout,
+                                       "elm,state,file_browser_hide,done", "",
+                                       file_browser_hide_done, bd);
+        elm_object_signal_emit(bd->layout, "elm,state,file_browser,hide", "");
+     }
 }
 
 void
