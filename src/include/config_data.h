@@ -67,6 +67,8 @@ void config_file_browser_size_set(double size);
 double config_file_browser_size_get(void);
 void config_edc_navigator_set(Eina_Bool enabled);
 Eina_Bool config_edc_navigator_get(void);
+void config_edc_navigator_size_set(double size);
+double config_edc_navigator_size_get(void);
 Eina_Bool config_mirror_mode_get(void);
 void config_mirror_mode_set(Eina_Bool mirror_mode);
 void config_red_alert_set(Eina_Bool enabled);

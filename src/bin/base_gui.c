@@ -146,6 +146,18 @@ base_edc_navigator_deselect(void)
      edc_navigator_deselect();
 }
 
+static void
+edc_navigator_hide_done(void *data, Evas_Object *obj EINA_UNUSED,
+                        const char *emission EINA_UNUSED,
+                        const char *source EINA_UNUSED)
+{
+   base_data *bd = data;
+   elm_object_signal_callback_del(bd->layout,
+                                  "elm,state,edc_navigator_hide,done", "",
+                                  edc_navigator_hide_done);
+   edc_navigator_hide();
+}
+
 void base_edc_navigator_toggle(Eina_Bool toggle)
 {
    base_data *bd = g_bd;
@@ -157,9 +169,13 @@ void base_edc_navigator_toggle(Eina_Bool toggle)
      {
         base_edc_navigator_group_update();
         elm_object_signal_emit(bd->layout, "elm,state,edc_navigator,show", "");
+        edc_navigator_show();
      }
    else
      {
+        elm_object_signal_callback_add(bd->layout,
+                                       "elm,state,edc_navigator_hide,done", "",
+                                       edc_navigator_hide_done, bd);
         elm_object_signal_emit(bd->layout, "elm,state,edc_navigator,hide", "");
         edc_navigator_deselect();
      }

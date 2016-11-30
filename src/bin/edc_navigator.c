@@ -1351,6 +1351,44 @@ gl_contract_request_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
      }
 }
 
+static void
+dragable_bar_mouse_up_cb(void *data, Evas *e EINA_UNUSED,
+                         Evas_Object *obj EINA_UNUSED,
+                         void *event_info EINA_UNUSED)
+{
+   Evas_Object *main_layout = data;
+   if (!main_layout) return;
+
+   double w;
+   edje_object_part_drag_value_get
+           (elm_layout_edje_get(main_layout), "elm.bar.right", &w, NULL);
+   if (w > 0.99)
+   {
+      config_edc_navigator_set(EINA_FALSE);
+      tools_edc_navigator_update(EINA_FALSE);
+      config_edc_navigator_size_set(0.0);
+   }
+   else
+      config_edc_navigator_size_set(w);
+}
+
+static void
+dragable_bar_mouse_down_cb(void *data, Evas *e EINA_UNUSED,
+                           Evas_Object *obj EINA_UNUSED,
+                           void *event_info EINA_UNUSED)
+{
+   Evas_Object *main_layout = data;
+   if (!main_layout) return;
+
+   double w;
+   edje_object_part_drag_value_get
+           (elm_layout_edje_get(main_layout), "elm.bar.right", &w, NULL);
+   if (w > 0.99)
+   {
+      config_edc_navigator_set(EINA_TRUE);
+      tools_edc_navigator_update(EINA_FALSE);
+   }
+}
 /*****************************************************************************/
 /* Externally accessible calls                                               */
 /*****************************************************************************/
@@ -1536,8 +1574,20 @@ edc_navigator_init(Evas_Object *parent)
 
    nd->program_itc = itc;
 
+   //Dragable Bar
+   Evas_Object *bar = evas_object_rectangle_add(evas_object_evas_get(parent));
+   evas_object_color_set(bar, 0, 0, 0, 0);
+   evas_object_event_callback_add(bar, EVAS_CALLBACK_MOUSE_DOWN,
+                                  dragable_bar_mouse_down_cb, parent);
+   evas_object_event_callback_add(bar, EVAS_CALLBACK_MOUSE_UP,
+                                  dragable_bar_mouse_up_cb, parent);
+   elm_object_part_content_set(parent, "bar_right", bar);
+
    nd->base_layout = base_layout;
    nd->genlist = genlist;
+
+   if (config_edc_navigator_get())
+     config_edc_navigator_size_set(config_edc_navigator_size_get());
 
    return base_layout;
 }
@@ -1584,4 +1634,29 @@ edc_navigator_tools_visible_set(Eina_Bool visible)
      elm_object_signal_emit(nd->base_layout, "elm,state,tools,show", "");
    else
      elm_object_signal_emit(nd->base_layout, "elm,state,tools,hide", "");
+}
+
+void
+edc_navigator_show()
+{
+   navi_data *nd = g_nd;
+   if (!nd) return;
+
+   Evas_Object *main_layout = evas_object_smart_parent_get(nd->base_layout);
+   if (!main_layout) return;
+
+   double w = config_edc_navigator_size_get();
+   edje_object_part_drag_value_set(main_layout, "elm.bar.right", w, 0.0);
+}
+
+void
+edc_navigator_hide()
+{
+   navi_data *nd = g_nd;
+   if (!nd) return;
+
+   Evas_Object *main_layout = evas_object_smart_parent_get(nd->base_layout);
+   if (!main_layout) return;
+
+   edje_object_part_drag_value_set(main_layout, "elm.bar.right", 1.0, 0.0);
 }

@@ -24,6 +24,7 @@ typedef struct config_s
    double editor_size;
    double console_size;
    double file_browser_size;
+   double edc_navigator_size;
 
    void (*update_cb)(void *data);
    void *update_cb_data;
@@ -186,6 +187,7 @@ config_load(void)
         cd->editor_size = DEFAULT_EDITOR_SIZE;
         cd->console_size = DEFAULT_CONSOLE_SIZE;
         cd->file_browser_size = DEFAULT_FILE_BROWSER_SIZE;
+        cd->edc_navigator_size = DEFAULT_EDC_NAVIGATOR_SIZE;
         cd->stats_bar = EINA_TRUE;
         cd->linenumber = EINA_TRUE;
         cd->part_highlight = EINA_TRUE;
@@ -291,6 +293,8 @@ eddc_init(void)
                                  console_size, EET_T_DOUBLE);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "file_browser_size",
                                  file_browser_size, EET_T_DOUBLE);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "edc_navigator_size",
+                                 edc_navigator_size, EET_T_DOUBLE);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "view_size_w",
                                  view_size_w, EET_T_INT);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, config_data, "view_size_h",
@@ -1098,4 +1102,22 @@ config_edc_navigator_get(void)
    EINA_SAFETY_ON_NULL_RETURN_VAL(cd, EINA_FALSE);
 
    return cd->edc_navigator;
+}
+
+void
+config_edc_navigator_size_set(double size)
+{
+   config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN(cd);
+
+   cd->edc_navigator_size = size;
+}
+
+double
+config_edc_navigator_size_get(void)
+{
+   config_data *cd = g_cd;
+   EINA_SAFETY_ON_NULL_RETURN_VAL(cd, 0.0);
+
+   return cd->edc_navigator_size;
 }
