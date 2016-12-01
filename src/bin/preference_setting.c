@@ -254,8 +254,7 @@ preference_setting_content_get(preference_setting_data *psd,
    //Toggle (Auto Indentation)
    Evas_Object *toggle_indent =
       toggle_create(box, _("Auto Indentation"), config_auto_indent_get(),
-                    _("Auto indentation (Ctrl + I)<br>"
-                      "Apply automatic indentation for text editing.<br>"
+                    _("Apply automatic indentation for text editing.<br>"
                       "When wrapping the text around, Enventor<br>"
                       "inserts the line indentation automatically."));
    elm_box_pack_end(box, toggle_indent);
