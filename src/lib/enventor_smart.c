@@ -446,6 +446,8 @@ _enventor_object_linenumber_set(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd,
 
    if (pd->linenumber == linenumber) return;
 
+   if (!pd->focused_it) return;
+
    //Main Item
    edit_linenumber_set(pd->focused_it->ed, linenumber);
 
@@ -633,8 +635,10 @@ _enventor_object_part_highlight_set(Eo *obj EINA_UNUSED,
    if (pd->part_highlight == part_highlight) return;
    pd->part_highlight = part_highlight;
 
+   if (!pd->focused_it) return;
+
    //Main Item
-   if (part_highlight && pd->focused_it) edit_view_sync(pd->focused_it->ed);
+   if (part_highlight) edit_view_sync(pd->focused_it->ed);
    else view_part_highlight_set(VIEW_DATA, NULL);
 }
 
@@ -783,6 +787,7 @@ _enventor_object_disabled_set(Eo *obj EINA_UNUSED,
    disabled = !!disabled;
    if (pd->disabled == disabled) return;
 
+   if (!pd->focused_it) return;
    edit_disabled_set(pd->focused_it->ed, disabled);
 
    pd->disabled = !!disabled;
@@ -807,6 +812,7 @@ EOLIAN static void
 _enventor_object_keyword_reference_show(Eo *obj EINA_UNUSED,
                                         Enventor_Object_Data *pd)
 {
+   if (!pd->focused_it) return;
    ref_show(pd->focused_it->ed);
 }
 
