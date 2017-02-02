@@ -1659,10 +1659,14 @@ edit_max_line_get(edit_data *ed)
 void
 edit_goto(edit_data *ed, int line)
 {
+   int cursor_y;
+
    elm_entry_select_none(ed->en_edit);
    Evas_Object *tb = elm_entry_textblock_get(ed->en_edit);
    Evas_Textblock_Cursor *cur = evas_object_textblock_cursor_get(tb);
    evas_textblock_cursor_line_set(cur, (line - 1));
+   elm_entry_cursor_geometry_get(ed->en_edit, NULL, &cursor_y, NULL, NULL);
+   elm_scroller_region_show(ed->scroller, 0, cursor_y, 0, 0);
    elm_entry_calc_force(ed->en_edit);
    elm_object_focus_set(ed->en_edit, EINA_TRUE);
 }
