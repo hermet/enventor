@@ -631,8 +631,7 @@ enventor_setup(app_data *ad)
 static Eina_Bool
 alt_func(Evas_Event_Key_Down *event)
 {
-   if (evas_key_modifier_is_set(event->modifiers, "Shift") ||
-       evas_key_modifier_is_set(event->modifiers, "Ctrl"))
+   if (!evas_key_modifier_is_set(event->modifiers, "Alt"))
      return EINA_FALSE;
 
    //Full Edit View
@@ -666,8 +665,7 @@ alt_func(Evas_Event_Key_Down *event)
 static Eina_Bool
 ctrl_func(Evas_Event_Key_Down *event)
 {
-   if (evas_key_modifier_is_set(event->modifiers, "Shift") ||
-       evas_key_modifier_is_set(event->modifiers, "Alt"))
+   if (!evas_key_modifier_is_set(event->modifiers, "Control"))
      return EINA_FALSE;
 
    //Save
@@ -862,7 +860,7 @@ static void
 keygrabber_init(app_data *ad)
 {
    Evas *e = evas_object_evas_get(base_enventor_get());
-   ad->keygrabber = evas_object_rectangle_add(e);
+   ad->keygrabber = base_enventor_get();
    evas_object_event_callback_add(ad->keygrabber, EVAS_CALLBACK_KEY_DOWN,
                                   keygrabber_key_down_cb, NULL);
 #define GRAB_ADD(key, modifier) \
