@@ -778,7 +778,10 @@ font_name_selected_cb(void *data, Evas_Object *obj,
 
    config_font_get(&font_name, &font_style);
 
+   //Initialize font style
    elm_list_clear(tsd->list_font_style);
+   eina_stringshare_del(tsd->font_style);
+   tsd->font_style = NULL;
 
    //Append Items of Font Style List
    Elm_Font_Properties *efp;
@@ -802,6 +805,7 @@ font_name_selected_cb(void *data, Evas_Object *obj,
                                                  NULL,
                                                  NULL, font_style_selected_cb,
                                                  tsd);
+
                        if (font_name && !strcmp(font_name, efp->name) &&
                            font_style && !strcmp(font_style, style))
                          font_style_it = it;
@@ -814,7 +818,6 @@ font_name_selected_cb(void *data, Evas_Object *obj,
    if (font_style_it) elm_list_item_selected_set(font_style_it, EINA_TRUE);
 
    eina_stringshare_replace(&tsd->font_name, sel_font_name);
-   eina_stringshare_replace(&tsd->font_style, NULL);
    text_setting_font_apply(tsd);
 }
 
