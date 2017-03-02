@@ -107,6 +107,11 @@ selection_region_anim_cb(void *data)
    search_data *sd = data;
    enventor_item_select_region_set(sd->it, sd->pos,
                                    (sd->pos + sd->len));
+
+   //Move search position to the end of the word if search type is forward
+   if (sd->forward)
+     sd->pos += sd->len;
+
    return ECORE_CALLBACK_CANCEL;
 }
 
