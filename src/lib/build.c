@@ -61,7 +61,9 @@ strbuf_path_get(build_data *bd, Enventor_Path_Type type, const char *syntax)
    EINA_LIST_FOREACH(bd->pathes_list[type], l, path)
      {
         eina_strbuf_append(strbuf, syntax);
+        eina_strbuf_append(strbuf, "\"");
         eina_strbuf_append(strbuf, path);
+        eina_strbuf_append(strbuf, "\"");
      }
    return strbuf;
 }
@@ -99,7 +101,7 @@ build_cmd_set(build_data *bd)
      }
 
    eina_strbuf_append_printf(strbuf,
-      "edje_cc -fastcomp %s %s -id %s/images -sd %s/sounds -fd %s/fonts -dd %s/data %s %s %s %s -beta",
+      "edje_cc -fastcomp \"%s\" \"%s\" -id \"%s/images\" -sd \"%s/sounds\" -fd \"%s/fonts\" -dd \"%s/data\" %s %s %s %s -beta",
       bd->edc_path,
       (char *) eina_list_data_get(bd->pathes_list[ENVENTOR_PATH_TYPE_EDJ]),
       elm_app_data_dir_get(),
