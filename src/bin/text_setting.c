@@ -815,7 +815,10 @@ font_name_selected_cb(void *data, Evas_Object *obj,
           }
      }
    elm_list_go(tsd->list_font_style);
-   if (font_style_it) elm_list_item_selected_set(font_style_it, EINA_TRUE);
+
+   if (!font_style_it)
+     font_style_it = elm_list_first_item_get(tsd->list_font_style);
+   elm_list_item_selected_set(font_style_it, EINA_TRUE);
 
    eina_stringshare_replace(&tsd->font_name, sel_font_name);
    text_setting_font_apply(tsd);
