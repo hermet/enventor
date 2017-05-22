@@ -260,60 +260,6 @@ _enventor_object_class_constructor(Efl_Class *klass)
 }
 
 EOLIAN static void
-_enventor_object_efl_canvas_group_group_add(Eo *obj, Enventor_Object_Data *pd)
-{
-   pd->obj = obj;
-
-   efl_canvas_group_add(efl_super(obj, MY_CLASS));
-   elm_widget_sub_object_parent_add(obj);
-
-   build_init();
-   autocomp_init();
-   ref_init();
-   edj_mgr_init(obj);
-   build_err_noti_cb_set(build_err_noti_cb, pd);
-
-   elm_widget_can_focus_set(obj, EINA_FALSE);
-
-   pd->key_down_handler =
-      ecore_event_handler_add(ECORE_EVENT_KEY_DOWN, key_down_cb, pd);
-   pd->key_up_handler =
-      ecore_event_handler_add(ECORE_EVENT_KEY_UP, key_up_cb, pd);
-
-   evas_object_smart_callback_add(pd->obj, "part,clicked",
-                                  _enventor_part_clicked_cb, pd);
-
-   pd->font_scale = DEFAULT_FONT_SCALE;
-   pd->linenumber = DEFAULT_LINENUMBER;
-   pd->auto_indent = DEFAULT_AUTO_INDENT;
-   pd->part_highlight = DEFAULT_PART_HIGHLIGHT;
-   pd->smart_undo_redo = DEFAULT_SMART_UNDO_REDO;
-   pd->ctxpopup = DEFAULT_CTXPOPUP;
-}
-
-EOLIAN static void
-_enventor_object_efl_canvas_group_group_del(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
-{
-   int i;
-   for (i = ENVENTOR_SYNTAX_COLOR_STRING; i < ENVENTOR_SYNTAX_COLOR_LAST; i++)
-     eina_stringshare_del(pd->text_color_val[i]);
-
-   eina_stringshare_del(pd->font_name);
-   eina_stringshare_del(pd->font_style);
-   eina_stringshare_del(pd->group_name);
-   autocomp_term();
-   ref_term();
-   ecore_event_handler_del(pd->key_down_handler);
-   ecore_event_handler_del(pd->key_up_handler);
-
-   _enventor_sub_items_free(pd);
-   _enventor_main_item_free(pd);
-
-   edj_mgr_term();
-   build_term();
-}
-
-EOLIAN static void
 _enventor_object_efl_canvas_group_group_member_add(Eo *obj, Enventor_Object_Data *pd EINA_UNUSED, Evas_Object *child)
 {
    //Don't go through elm_widget to avoid color set.
@@ -378,14 +324,64 @@ _enventor_object_efl_canvas_object_clip_set(Eo *obj, Enventor_Object_Data *pd EI
 }
 
 EOLIAN static Eo *
-_enventor_object_efl_object_constructor(Eo *obj,
-                                     Enventor_Object_Data *pd EINA_UNUSED)
+_enventor_object_efl_object_constructor(Eo *obj, Enventor_Object_Data *pd)
 {
    obj = efl_constructor(efl_super(obj, MY_CLASS));
-   efl_canvas_object_type_set(obj, MY_CLASS_NAME_LEGACY);
+
+   pd->obj = obj;
+
+   elm_widget_sub_object_parent_add(obj);
+
+   build_init();
+   autocomp_init();
+   ref_init();
+   edj_mgr_init(obj);
+   build_err_noti_cb_set(build_err_noti_cb, pd);
+
+   elm_widget_can_focus_set(obj, EINA_FALSE);
+
+   pd->key_down_handler =
+      ecore_event_handler_add(ECORE_EVENT_KEY_DOWN, key_down_cb, pd);
+   pd->key_up_handler =
+      ecore_event_handler_add(ECORE_EVENT_KEY_UP, key_up_cb, pd);
+
+   evas_object_smart_callback_add(pd->obj, "part,clicked",
+                                  _enventor_part_clicked_cb, pd);
+
+   pd->font_scale = DEFAULT_FONT_SCALE;
+   pd->linenumber = DEFAULT_LINENUMBER;
+   pd->auto_indent = DEFAULT_AUTO_INDENT;
+   pd->part_highlight = DEFAULT_PART_HIGHLIGHT;
+   pd->smart_undo_redo = DEFAULT_SMART_UNDO_REDO;
+   pd->ctxpopup = DEFAULT_CTXPOPUP;
+
    evas_object_smart_callbacks_descriptions_set(obj, _smart_callbacks);
 
    return obj;
+}
+
+EOLIAN static void
+_enventor_object_efl_object_destructor(Eo *obj, Enventor_Object_Data *pd)
+{
+   int i;
+   for (i = ENVENTOR_SYNTAX_COLOR_STRING; i < ENVENTOR_SYNTAX_COLOR_LAST; i++)
+     eina_stringshare_del(pd->text_color_val[i]);
+
+   eina_stringshare_del(pd->font_name);
+   eina_stringshare_del(pd->font_style);
+   eina_stringshare_del(pd->group_name);
+   autocomp_term();
+   ref_term();
+   ecore_event_handler_del(pd->key_down_handler);
+   ecore_event_handler_del(pd->key_up_handler);
+
+   _enventor_sub_items_free(pd);
+   _enventor_main_item_free(pd);
+
+   edj_mgr_term();
+   build_term();
+
+   efl_destructor(efl_super(obj, MY_CLASS));
 }
 
 EOLIAN static Eina_Bool

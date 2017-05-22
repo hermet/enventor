@@ -174,14 +174,14 @@ class Enventor.Object (Elm.Widget, Efl.File) {
       }
       live_view_size_set {
          params {
-            @in w: Evas.Coord;
-            @in h: Evas.Coord;
+            @in w: int;
+            @in h: int;
          }
       }
       live_view_size_get {
          params {
-            @in w: ptr(Evas.Coord);
-            @in h: ptr(Evas.Coord);
+            @in w: ptr(int);
+            @in h: ptr(int);
          }
       }
       part_type_get {
@@ -213,12 +213,11 @@ class Enventor.Object (Elm.Widget, Efl.File) {
    implements {
       class.constructor;
       Efl.Object.constructor;
+      Efl.Object.destructor;
       Efl.Gfx.visible {set;}
       Efl.Gfx.position {set;}
       Efl.Gfx.size {set;}
       Efl.Canvas.Object.clip {set;}
-      Efl.Canvas.Group.group_add;
-      Efl.Canvas.Group.group_del;
       Efl.Canvas.Group.group_member_add;
       Efl.File.file {set;}
    }
