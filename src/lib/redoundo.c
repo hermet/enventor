@@ -63,6 +63,7 @@ _input_timer_cb(void *data)
 static diff_data *
 smart_analyser(redoundo_data *rd, diff_data *diff)
 {
+   Eina_Bool is_continues_text = EINA_FALSE;
    if (!enventor_obj_smart_undo_redo_get(rd->enventor)) return diff;
 
    if (rd->smart.timer)
@@ -73,21 +74,43 @@ smart_analyser(redoundo_data *rd, diff_data *diff)
 
    if (!diff) return diff;
 
+   if (!rd->last_diff || (rd->last_diff->action != diff->action))
+     {
+        rd->smart.continues_input = EINA_TRUE;
+        return diff;
+     }
+
    if (diff->length == 1 && enventor_obj_auto_indent_get(rd->enventor))
      {
        if (strstr(diff->text, "<br/>")) diff->relative = EINA_TRUE;
          else diff->relative = EINA_FALSE;
      }
 
+   // Determine the text of diff is continuous
+   if (diff->action ?
+       ((rd->last_diff->cursor_pos + rd->last_diff->length) == diff->cursor_pos) :
+       ((diff->cursor_pos + diff->length) == rd->last_diff->cursor_pos) ||
+       (diff->cursor_pos == rd->last_diff->cursor_pos))
+     is_continues_text = EINA_TRUE;
+
    // Analyse speed of text input and words separates
    if ((rd->smart.continues_input) && (!diff->relative) &&
-       (isalpha(diff->text[0])) && (rd->last_diff && (isalpha(rd->last_diff->text[0]))))
+       (isalpha(diff->text[0])) && (isalpha(rd->last_diff->text[0])) &&
+       (is_continues_text))
      {
         diff_data *tmp = diff;
         const char *text;
         diff = rd->last_diff;
         diff->length += tmp->length;
-        text = eina_stringshare_printf("%s%s", diff->text, tmp->text);
+
+        if (diff->action || (diff->cursor_pos == tmp->cursor_pos))
+          text = eina_stringshare_printf("%s%s", diff->text, tmp->text);
+        else
+          {
+             diff->cursor_pos = tmp->cursor_pos;
+             text = eina_stringshare_printf("%s%s", tmp->text, diff->text);
+          }
+
         eina_stringshare_replace(&diff->text, text);
         eina_stringshare_del(text);
         rd->last_diff = eina_list_data_get(eina_list_prev(rd->current_node));
