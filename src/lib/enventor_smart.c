@@ -275,26 +275,26 @@ _enventor_object_efl_canvas_group_group_member_add(Eo *obj, Enventor_Object_Data
 }
 
 EOLIAN static void
-_enventor_object_efl_gfx_position_set(Eo *obj, Enventor_Object_Data *pd EINA_UNUSED, Evas_Coord x, Evas_Coord y)
+_enventor_object_efl_gfx_position_set(Eo *obj, Enventor_Object_Data *pd EINA_UNUSED, Eina_Position2D pos)
 {
-   efl_gfx_position_set(efl_super(obj, MY_CLASS), x, y);
+   efl_gfx_position_set(efl_super(obj, MY_CLASS), pos);
 
    Eina_Iterator *it = evas_object_smart_iterator_new(obj);
    Evas_Object *o;
    EINA_ITERATOR_FOREACH(it, o)
-     evas_object_move(o, x, y);
+     evas_object_move(o, pos.x, pos.y);
    eina_iterator_free(it);
 }
 
 EOLIAN static void
-_enventor_object_efl_gfx_size_set(Eo *obj, Enventor_Object_Data *pd EINA_UNUSED, Evas_Coord w, Evas_Coord h)
+_enventor_object_efl_gfx_size_set(Eo *obj, Enventor_Object_Data *pd EINA_UNUSED, Eina_Size2D size)
 {
-   efl_gfx_size_set(efl_super(obj, MY_CLASS), w, h);
+   efl_gfx_size_set(efl_super(obj, MY_CLASS), size);
 
    Eina_Iterator *it = evas_object_smart_iterator_new(obj);
    Evas_Object *o;
    EINA_ITERATOR_FOREACH(it, o)
-     evas_object_resize(o, w, h);
+     evas_object_resize(o, size.w, size.h);
    eina_iterator_free(it);
 }
 

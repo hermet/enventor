@@ -119,11 +119,11 @@ class Enventor.Object (Elm.Widget, Efl.File) {
          return: bool;
          params {
             @in type: Enventor_Path_Type;
-            @in pathes: own(const(list<own(stringshare)>));
+            @in pathes: const (list< stringshare @owned >) @owned ;
          }
       }
       path_get {
-         return: const(list<own(stringshare)>);
+         return: const (list< stringshare @owned >) @owned ;
          params {
             @in type: Enventor_Path_Type;
          }
