@@ -1152,20 +1152,11 @@ err:
 }
 
 static void
-edit_focused_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
+edit_focused_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                void *event_info EINA_UNUSED)
 {
    edit_data *ed = data;
    evas_object_smart_callback_call(ed->enventor, SIG_FOCUSED, NULL);
-
-   //Prevent auto-scrolling by scroller
-   elm_object_focus_allow_set(obj, EINA_FALSE);
-}
-
-static void
-edit_unfocused_cb(void *data EINA_UNUSED, Evas_Object *obj,
-                  void *event_info EINA_UNUSED)
-{
-   elm_object_focus_allow_set(obj, EINA_TRUE);
 }
 
 /*****************************************************************************/
@@ -1522,8 +1513,6 @@ edit_init(Enventor_Object *enventor, Enventor_Item *it)
    elm_entry_context_menu_disabled_set(en_edit, EINA_TRUE);
    elm_entry_line_wrap_set(en_edit, ELM_WRAP_NONE);
    evas_object_smart_callback_add(en_edit, "focused", edit_focused_cb, ed);
-   evas_object_smart_callback_add(en_edit, "unfocused",
-                                  edit_unfocused_cb, NULL);
    evas_object_smart_callback_add(en_edit, "changed,user", edit_changed_cb, ed);
    evas_object_smart_callback_add(en_edit, "cursor,changed",
                                   edit_cursor_changed_cb, ed);
