@@ -3065,23 +3065,41 @@ group { "edit_layout";
             rel2.relative: 0 1;
          }
       }
+      spacer { "line_dummy";
+         scale: 1;
+         clip_to: "base_clip";
+         nomouse;
+         desc { "default";
+            fixed: 1 0;
+            align: 0 1;
+            min: 15 15;
+            rel1.relative: 0 1;
+            rel1.offset: 3 0;
+            rel2.relative: 0 1;
+         }
+         desc { "hide";
+            inherit: "default";
+            min: 0 0;
+         }
+      }
       swallow { "elm.swallow.linenumber";
          scale: 1;
          clip_to: "base_clip";
          nomouse;
          desc {
             fixed: 1 0;
-            align: 0 0.5;
+            align: 0 0;
             min: 15 0;
             rel1.relative: 0 0;
             rel1.offset: 3 0;
-            rel2.relative: 0 1;
+            rel2.relative: 0 0;
+            rel2.to_y: "line_dummy";
          }
       }
       swallow { "elm.swallow.edit";
          scale: 1;
          desc {
-            align: 0 0.5;
+            align: 0 0;
             rel1.relative: 1 0;
             rel1.to: "base_clip";
             fixed: 0 1;
@@ -3113,6 +3131,16 @@ group { "edit_layout";
          action: STATE_SET "hide";
          target: "base_clip";
          transition: DECELERATE 0.35;
+      }
+      program { "linedummy_show";
+         signal: "elm,state,linedummy,show";
+         action: STATE_SET "default";
+         target: "line_dummy";
+      }
+      program { "linedummy_hide";
+         signal: "elm,state,linedummy,hide";
+         action: STATE_SET "hide";
+         target: "line_dummy";
       }
    }
    programs {

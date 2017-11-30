@@ -25,7 +25,8 @@ struct editor_s
 {
    Evas_Object *en_edit;
    Evas_Object *en_line;
-   Evas_Object *scroller;
+   Evas_Object *scr_edit;
+   Evas_Object *scr_line;
    Evas_Object *layout;
    Evas_Object *ctxpopup;
    Enventor_Object *enventor;
@@ -93,7 +94,7 @@ visible_text_region_get(edit_data *ed, int *from_line, int *to_line)
    Evas_Coord region_y, region_h;
    Evas_Coord cursor_h;
 
-   elm_scroller_region_get(ed->scroller, NULL, &region_y, NULL, &region_h);
+   elm_scroller_region_get(ed->scr_edit, NULL, &region_y, NULL, &region_h);
    elm_entry_cursor_geometry_get(ed->en_edit, NULL, NULL, NULL, &cursor_h);
 
    int from = (region_y / cursor_h);
@@ -602,7 +603,7 @@ preview_img_relay_show(edit_data *ed, Evas_Object *ctxpopup, Eina_Bool next)
 
    //Limit the ctxpopup position in the scroller vertical zone.
    Evas_Coord scrl_y, scrl_h;
-   evas_object_geometry_get(ed->scroller, NULL, &scrl_y, NULL, &scrl_h);
+   evas_object_geometry_get(ed->scr_edit, NULL, &scrl_y, NULL, &scrl_h);
 
    if (y > (scrl_y + scrl_h)) y = (scrl_y + scrl_h);
    else if (y < scrl_y) y = scrl_y;
@@ -939,7 +940,13 @@ scroller_scroll_cb(void *data, Evas_Object *obj EINA_UNUSED,
                    void *event_info EINA_UNUSED)
 {
    edit_data *ed = data;
+   Evas_Coord x, y, w, h;
+
    syntax_color_partial_update(ed, SYNTAX_COLOR_SHORT_TIME);
+
+   elm_scroller_region_get(ed->scr_edit, &x, &y, NULL, NULL);
+   evas_object_geometry_get(ed->scr_edit, NULL, NULL, &w, &h);
+   elm_scroller_region_show(ed->scr_line, x, y, w, h);
 }
 
 static void
@@ -971,6 +978,30 @@ scroller_vbar_unpress_cb(void *data, Evas_Object *obj EINA_UNUSED,
    edit_data *ed = data;
    ed->syntax_color_lock--;
    syntax_color_partial_update(ed, SYNTAX_COLOR_SHORT_TIME);
+}
+
+static void
+scroller_hbar_show_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                      const char *emission EINA_UNUSED,
+                      const char *source EINA_UNUSED)
+{
+   edit_data *ed = data;
+   if (!ed->layout)
+     return;
+
+   elm_object_signal_emit(ed->layout, "elm,state,linedummy,show", "");
+}
+
+static void
+scroller_hbar_hide_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                      const char *emission EINA_UNUSED,
+                      const char *source EINA_UNUSED)
+{
+   edit_data *ed = data;
+   if (!ed->layout)
+     return;
+
+   elm_object_signal_emit(ed->layout, "elm,state,linedummy,hide", "");
 }
 
 static void
@@ -1464,38 +1495,56 @@ edit_init(Enventor_Object *enventor, Enventor_Item *it)
    ed->bracket.left = -1;
    ed->bracket.right = -1;
 
-   //Scroller
-   Evas_Object *scroller = elm_scroller_add(enventor);
-   evas_object_smart_member_add(scroller, enventor);
-   elm_scroller_policy_set(scroller, ELM_SCROLLER_POLICY_AUTO,
-                           ELM_SCROLLER_POLICY_AUTO);
-   elm_object_focus_allow_set(scroller, EINA_FALSE);
-   evas_object_smart_callback_add(scroller, "scroll,up", scroller_scroll_cb,
-                                  ed);
-   evas_object_smart_callback_add(scroller, "scroll,down", scroller_scroll_cb,
-                                  ed);
-   evas_object_smart_callback_add(scroller, "vbar,press",
-                                  scroller_vbar_press_cb, ed);
-   evas_object_smart_callback_add(scroller, "vbar,unpress",
-                                  scroller_vbar_unpress_cb, ed);
-   evas_object_event_callback_add(scroller, EVAS_CALLBACK_RESIZE,
-                                  scroller_resize_cb, ed);
-   evas_object_size_hint_weight_set(scroller, EVAS_HINT_EXPAND,
-                                    EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(scroller, EVAS_HINT_FILL, EVAS_HINT_FILL);
-
-   //This is hackish call to not change scroller color by widget.
-   evas_object_data_set(scroller, "_elm_leaveme", (void *)1);
-
    //Layout
-   Evas_Object *layout = elm_layout_add(scroller);
-   elm_layout_file_set(layout, EDJE_PATH,  "edit_layout");
+   Evas_Object *layout = elm_layout_add(enventor);
+   evas_object_smart_member_add(layout, enventor);
+   elm_layout_file_set(layout, EDJE_PATH, "edit_layout");
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(layout, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_object_content_set(scroller, layout);
+
+   //EDC Editor Scroller
+   Evas_Object *scr_edit = elm_scroller_add(layout);
+   elm_scroller_policy_set(scr_edit, ELM_SCROLLER_POLICY_AUTO,
+                           ELM_SCROLLER_POLICY_AUTO);
+   elm_object_focus_allow_set(scr_edit, EINA_FALSE);
+   evas_object_smart_callback_add(scr_edit, "scroll,up", scroller_scroll_cb,
+                                  ed);
+   evas_object_smart_callback_add(scr_edit, "scroll,down", scroller_scroll_cb,
+                                  ed);
+   evas_object_smart_callback_add(scr_edit, "vbar,press",
+                                  scroller_vbar_press_cb, ed);
+   evas_object_smart_callback_add(scr_edit, "vbar,unpress",
+                                  scroller_vbar_unpress_cb, ed);
+   evas_object_event_callback_add(scr_edit, EVAS_CALLBACK_RESIZE,
+                                  scroller_resize_cb, ed);
+   edje_object_signal_callback_add(elm_layout_edje_get(scr_edit),
+                                   "elm,action,show,hbar", "elm",
+                                   scroller_hbar_show_cb, ed);
+   edje_object_signal_callback_add(elm_layout_edje_get(scr_edit),
+                                   "elm,action,hide,hbar", "elm",
+                                   scroller_hbar_hide_cb, ed);
+
+   evas_object_size_hint_weight_set(scr_edit, EVAS_HINT_EXPAND,
+                                    EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(scr_edit, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_object_part_content_set(layout, "elm.swallow.edit", scr_edit);
+
+   //This is hackish call to not change scroller color by widget.
+   evas_object_data_set(scr_edit, "_elm_leaveme", (void *)1);
+
+   //Line number Scroller
+   Evas_Object *scr_line = elm_scroller_add(layout);
+   elm_scroller_content_min_limit(scr_line, 15, 0);
+   elm_scroller_policy_set(scr_line, ELM_SCROLLER_POLICY_OFF,
+                           ELM_SCROLLER_POLICY_OFF);
+   elm_object_focus_allow_set(scr_line, EINA_FALSE);
+   evas_object_size_hint_weight_set(scr_line, EVAS_HINT_EXPAND,
+                                    EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(scr_line, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_object_part_content_set(layout, "elm.swallow.linenumber", scr_line);
 
    //Line Number Entry
-   Evas_Object *en_line = elm_entry_add(layout);
+   Evas_Object *en_line = elm_entry_add(scr_line);
    elm_object_style_set(en_line, "enventor");
    evas_object_color_set(en_line, 101, 101, 101, 255);
    elm_entry_editable_set(en_line, EINA_FALSE);
@@ -1503,10 +1552,10 @@ edit_init(Enventor_Object *enventor, Enventor_Item *it)
    elm_object_focus_allow_set(en_line, EINA_FALSE);
    evas_object_size_hint_weight_set(en_line, 0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(en_line, 0, EVAS_HINT_FILL);
-   elm_object_part_content_set(layout, "elm.swallow.linenumber", en_line);
+   elm_object_content_set(scr_line, en_line);
 
    //EDC Editor Entry
-   Evas_Object *en_edit = elm_entry_add(layout);
+   Evas_Object *en_edit = elm_entry_add(scr_edit);
    elm_object_style_set(en_edit, "enventor");
    elm_object_focus_highlight_style_set(en_edit, "blank");
    elm_entry_cnp_mode_set(en_edit, ELM_CNP_MODE_PLAINTEXT);
@@ -1526,7 +1575,7 @@ edit_init(Enventor_Object *enventor, Enventor_Item *it)
                                     EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(en_edit, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_focus_set(en_edit, EINA_TRUE);
-   elm_object_part_content_set(layout, "elm.swallow.edit", en_edit);
+   elm_object_content_set(scr_edit, en_edit);
 
    /* FIXME: This is a temporary patch to remove focus highlight on template
       selection button of new file open. (enventor -t)
@@ -1534,7 +1583,8 @@ edit_init(Enventor_Object *enventor, Enventor_Item *it)
       its visibility is set with false. */
    evas_object_show(en_edit);
 
-   ed->scroller = scroller;
+   ed->scr_edit = scr_edit;
+   ed->scr_line = scr_line;
    ed->en_line = en_line;
    ed->en_edit = en_edit;
    ed->layout = layout;
@@ -1560,7 +1610,7 @@ Evas_Object *
 edit_obj_get(edit_data *ed)
 {
    if (!ed) return NULL;
-   return ed->scroller;
+   return ed->layout;
 }
 
 void
@@ -1578,7 +1628,7 @@ edit_term(edit_data *ed)
         ed->sctd->ed = NULL;
      }
    ecore_timer_del(ed->syntax_color_timer);
-   evas_object_del(ed->scroller);
+   evas_object_del(ed->layout);
    eina_stringshare_del(ed->filepath);
 
    free(ed);
@@ -1614,7 +1664,8 @@ edit_font_scale_set(edit_data *ed, double font_scale)
 {
    if (!ed) return;
 
-   elm_object_scale_set(ed->layout, font_scale);
+   elm_object_scale_set(ed->en_line, font_scale);
+   elm_object_scale_set(ed->en_edit, font_scale);
    syntax_color_partial_update(ed, 0);
 }
 
@@ -1666,7 +1717,7 @@ edit_goto(edit_data *ed, int line)
    Evas_Textblock_Cursor *cur = evas_object_textblock_cursor_get(tb);
    evas_textblock_cursor_line_set(cur, (line - 1));
    elm_entry_cursor_geometry_get(ed->en_edit, NULL, &cursor_y, NULL, NULL);
-   elm_scroller_region_show(ed->scroller, 0, cursor_y, 0, 0);
+   elm_scroller_region_show(ed->scr_edit, 0, cursor_y, 0, 0);
    elm_entry_calc_force(ed->en_edit);
    elm_object_focus_set(ed->en_edit, EINA_TRUE);
 }
@@ -2047,7 +2098,7 @@ edit_selection_region_center_set(edit_data *ed, int start, int end)
    int cur_line = (cursor_y / cursor_h) + 1;
 
    //Calculate current region of scroller
-   elm_scroller_region_get(ed->scroller, NULL, &region_y, NULL, &region_h);
+   elm_scroller_region_get(ed->scr_edit, NULL, &region_y, NULL, &region_h);
 
 
    int line;
@@ -2069,7 +2120,7 @@ edit_selection_region_center_set(edit_data *ed, int start, int end)
    Evas_Textblock_Cursor *cur = evas_object_textblock_cursor_get(tb);
    evas_textblock_cursor_line_set(cur, (line - 1));
    elm_entry_cursor_geometry_get(ed->en_edit, NULL, &region_y, NULL, NULL);
-   elm_scroller_region_show(ed->scroller, 0, region_y, 0, 0);
+   elm_scroller_region_show(ed->scr_edit, 0, region_y, 0, 0);
 
    //Select region
    elm_entry_select_region_set(ed->en_edit, start, end);
