@@ -3,7 +3,7 @@ type Enventor_Syntax_Color_Type: __undefined_type;
 type Enventor_Template_Insert_Type: __undefined_type;
 type Edje_Part_Type: __undefined_type;
 
-class Enventor.Object (Elm.Widget, Efl.File) {
+class Enventor.Object (Efl.Ui.Widget, Efl.File) {
    legacy_prefix: enventor_object;
    eo_prefix: enventor_obj;
    methods {
