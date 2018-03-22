@@ -509,7 +509,7 @@ _enventor_object_auto_complete_list_show(Eo *obj EINA_UNUSED,
 EOLIAN static Eina_Bool
 _enventor_object_path_set(Eo *obj EINA_UNUSED,
                           Enventor_Object_Data *pd EINA_UNUSED,
-                          Enventor_Path_Type type, const Eina_List *pathes)
+                          Enventor_Path_Type type, Eina_List *pathes)
 {
    return build_path_set(type, pathes);
 }
@@ -662,16 +662,17 @@ _enventor_object_mirror_mode_get(Eo *obj EINA_UNUSED,
 }
 
 EOLIAN static void
-_enventor_object_focus_set(Eo *obj EINA_UNUSED,
+_enventor_object_efl_ui_focus_object_focus_set(Eo *obj EINA_UNUSED,
                            Enventor_Object_Data *pd EINA_UNUSED,
                            Eina_Bool focus)
 {
    if (!pd->focused_it) return;
+
    edit_focus_set(pd->focused_it->ed, focus);
 }
 
 EOLIAN static Eina_Bool
-_enventor_object_focus_get(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
+_enventor_object_efl_ui_focus_object_focus_get(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
 {
    if (!pd->focused_it) return EINA_FALSE;
    return edit_focus_get(pd->focused_it->ed);

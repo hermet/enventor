@@ -28,7 +28,7 @@ warning_dismiss_done(void *data, Evas_Object *obj EINA_UNUSED,
 {
    file_mgr_data *fmd = data;
    evas_object_del(fmd->warning_layout);
-   enventor_object_focus_set(base_enventor_get(), EINA_TRUE);
+   efl_ui_focus_object_focus_set(base_enventor_get(), EINA_TRUE);
    fmd->warning_layout = NULL;
 }
 

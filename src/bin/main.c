@@ -557,7 +557,7 @@ enventor_ctxpopup_dismissed_cb(void *data EINA_UNUSED, Enventor_Object *obj,
                                void *event_info EINA_UNUSED)
 {
    if (menu_activated_get() > 0)
-     enventor_object_focus_set(obj, EINA_FALSE);
+     efl_ui_focus_object_focus_set(obj, EINA_FALSE);
 }
 
 static void
@@ -747,7 +747,7 @@ keygrabber_key_down_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
 
         if (live_edit_cancel(EINA_TRUE))
           {
-             enventor_object_focus_set(base_enventor_get(), EINA_TRUE);
+             efl_ui_focus_object_focus_set(base_enventor_get(), EINA_TRUE);
              return;
           }
         if (file_mgr_warning_is_opened())
@@ -1123,7 +1123,7 @@ init(app_data *ad, int argc, char **argv)
    base_gui_show();
 
    //Guarantee Enventor editor has focus.
-   enventor_object_focus_set(enventor, EINA_TRUE);
+   efl_ui_focus_object_focus_set(enventor, EINA_TRUE);
 
    menu_init();
 

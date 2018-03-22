@@ -73,6 +73,7 @@ EFL_ENABLE_EO_API_SUPPORT
 EFL_ENABLE_BETA_API_SUPPORT
 AC_DEFINE_UNQUOTED(ENVENTOR_WIN32_BUILD_SUPPORT, 1, "Support Win32 dllexport")
 AC_DEFINE_UNQUOTED(ENVENTOR_BETA_API_SUPPORT, 1, "Enable access to unstable ENVENTOR API that are still in beta")
+AC_DEFINE_UNQUOTED(EFL_UI_FOCUS_OBJECT_PROTECTED, 1, "Enable Focus Protected API")
 
 efl_version="1.18.0"
 requirement_enventor=" \

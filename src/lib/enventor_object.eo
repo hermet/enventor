@@ -3,7 +3,8 @@ type Enventor_Syntax_Color_Type: __undefined_type;
 type Enventor_Template_Insert_Type: __undefined_type;
 type Edje_Part_Type: __undefined_type;
 
-class Enventor.Object (Efl.Ui.Widget, Efl.File) {
+class Enventor.Object (Efl.Ui.Widget, Efl.File, Efl.Ui.Focus.Object)
+{
    legacy_prefix: enventor_object;
    eo_prefix: enventor_obj;
    methods {
@@ -79,15 +80,6 @@ class Enventor.Object (Efl.Ui.Widget, Efl.File) {
             ctxpopup: bool;
          }
       }
-      @property focus {
-         set {
-         }
-         get {
-         }
-         values {
-            focus: bool;
-         }
-      }
       @property font_scale {
          set {
          }
@@ -119,7 +111,7 @@ class Enventor.Object (Efl.Ui.Widget, Efl.File) {
          return: bool;
          params {
             @in type: Enventor_Path_Type;
-            @in pathes: const (list< stringshare @owned >) @owned ;
+            @in pathes: list< stringshare @owned > @owned ;
          }
       }
       path_get {
@@ -214,12 +206,13 @@ class Enventor.Object (Efl.Ui.Widget, Efl.File) {
       class.constructor;
       Efl.Object.constructor;
       Efl.Object.destructor;
-      Efl.Gfx.visible {set;}
-      Efl.Gfx.position {set;}
-      Efl.Gfx.size {set;}
-      Efl.Canvas.Object.clip {set;}
+      Efl.Gfx.visible { set; }
+      Efl.Gfx.position { set; }
+      Efl.Gfx.size { set; }
+      Efl.Canvas.Object.clip { set; }
       Efl.Canvas.Group.group_member_add;
-      Efl.File.file {set;}
+      Efl.File.file { set; }
+      Efl.Ui.Focus.Object.focus { set; get; }
    }
    events {
       cursor,line,changed;
