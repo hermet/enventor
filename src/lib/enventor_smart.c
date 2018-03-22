@@ -663,8 +663,8 @@ _enventor_object_mirror_mode_get(Eo *obj EINA_UNUSED,
 
 EOLIAN static void
 _enventor_object_efl_ui_focus_object_focus_set(Eo *obj EINA_UNUSED,
-                           Enventor_Object_Data *pd EINA_UNUSED,
-                           Eina_Bool focus)
+                                           Enventor_Object_Data *pd EINA_UNUSED,
+                                           Eina_Bool focus)
 {
    if (!pd->focused_it) return;
 
@@ -672,7 +672,8 @@ _enventor_object_efl_ui_focus_object_focus_set(Eo *obj EINA_UNUSED,
 }
 
 EOLIAN static Eina_Bool
-_enventor_object_efl_ui_focus_object_focus_get(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
+_enventor_object_efl_ui_focus_object_focus_get(Eo *obj EINA_UNUSED,
+                                               Enventor_Object_Data *pd)
 {
    if (!pd->focused_it) return EINA_FALSE;
    return edit_focus_get(pd->focused_it->ed);
