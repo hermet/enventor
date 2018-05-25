@@ -12,9 +12,8 @@ extern "C"
 {
 #endif
 
-#include <Elementary.h>
 #include <Efl_Config.h>
-#include <Efl_Ui.h>
+#include <Elementary.h>
 
 /***
  * Compatible ABI for Win32
