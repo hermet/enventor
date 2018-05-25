@@ -275,9 +275,9 @@ _enventor_object_efl_canvas_group_group_member_add(Eo *obj, Enventor_Object_Data
 }
 
 EOLIAN static void
-_enventor_object_efl_gfx_position_set(Eo *obj, Enventor_Object_Data *pd EINA_UNUSED, Eina_Position2D pos)
+_enventor_object_efl_gfx_entity_position_set(Eo *obj, Enventor_Object_Data *pd EINA_UNUSED, Eina_Position2D pos)
 {
-   efl_gfx_position_set(efl_super(obj, MY_CLASS), pos);
+   efl_gfx_entity_position_set(efl_super(obj, MY_CLASS), pos);
 
    Eina_Iterator *it = evas_object_smart_iterator_new(obj);
    Evas_Object *o;
@@ -287,9 +287,9 @@ _enventor_object_efl_gfx_position_set(Eo *obj, Enventor_Object_Data *pd EINA_UNU
 }
 
 EOLIAN static void
-_enventor_object_efl_gfx_size_set(Eo *obj, Enventor_Object_Data *pd EINA_UNUSED, Eina_Size2D size)
+_enventor_object_efl_gfx_entity_size_set(Eo *obj, Enventor_Object_Data *pd EINA_UNUSED, Eina_Size2D size)
 {
-   efl_gfx_size_set(efl_super(obj, MY_CLASS), size);
+   efl_gfx_entity_size_set(efl_super(obj, MY_CLASS), size);
 
    Eina_Iterator *it = evas_object_smart_iterator_new(obj);
    Evas_Object *o;
@@ -299,9 +299,9 @@ _enventor_object_efl_gfx_size_set(Eo *obj, Enventor_Object_Data *pd EINA_UNUSED,
 }
 
 EOLIAN static void
-_enventor_object_efl_gfx_visible_set(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd, Eina_Bool vis)
+_enventor_object_efl_gfx_entity_visible_set(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd, Eina_Bool vis)
 {
-   efl_gfx_visible_set(efl_super(obj, MY_CLASS), vis);
+   efl_gfx_entity_visible_set(efl_super(obj, MY_CLASS), vis);
 
    if (!pd->focused_it) return;
    Evas_Object *o = edit_obj_get(pd->focused_it->ed);
@@ -451,7 +451,8 @@ _enventor_object_linenumber_set(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd,
 }
 
 EOLIAN static Eina_Bool
-_enventor_object_linenumber_get(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
+_enventor_object_linenumber_get(const Eo *obj EINA_UNUSED,
+                                Enventor_Object_Data *pd)
 {
    return pd->linenumber;
 }
@@ -466,7 +467,8 @@ _enventor_object_smart_undo_redo_set(Eo *obj EINA_UNUSED,
 }
 
 EOLIAN static Eina_Bool
-_enventor_object_smart_undo_redo_get(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
+_enventor_object_smart_undo_redo_get(const Eo *obj EINA_UNUSED,
+                                     Enventor_Object_Data *pd)
 {
    return pd->smart_undo_redo;
 }
@@ -479,7 +481,7 @@ _enventor_object_auto_indent_set(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd,
 }
 
 EOLIAN static Eina_Bool
-_enventor_object_auto_indent_get(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
+_enventor_object_auto_indent_get(const Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
 {
    return pd->auto_indent;
 }
@@ -493,7 +495,7 @@ _enventor_object_auto_complete_set(Eo *obj EINA_UNUSED,
 }
 
 EOLIAN static Eina_Bool
-_enventor_object_auto_complete_get(Eo *obj EINA_UNUSED,
+_enventor_object_auto_complete_get(const Eo *obj EINA_UNUSED,
                                    Enventor_Object_Data *pd EINA_UNUSED)
 {
    return autocomp_enabled_get();
@@ -547,7 +549,7 @@ _enventor_object_live_view_size_get(Eo *obj EINA_UNUSED,
 }
 
 EOLIAN static double
-_enventor_object_live_view_scale_get(Eo *obj EINA_UNUSED,
+_enventor_object_live_view_scale_get(const Eo *obj EINA_UNUSED,
                                      Enventor_Object_Data *pd EINA_UNUSED)
 {
    return view_scale_get(VIEW_DATA);
@@ -566,7 +568,7 @@ _enventor_object_dummy_parts_set(Eo *obj EINA_UNUSED,
 }
 
 EOLIAN static Eina_Bool
-_enventor_object_ctxpopup_get(Eo *obj EINA_UNUSED,
+_enventor_object_ctxpopup_get(const Eo *obj EINA_UNUSED,
                               Enventor_Object_Data *pd)
 {
    return pd->ctxpopup;
@@ -597,8 +599,8 @@ _enventor_object_ctxpopup_dismiss(Eo *obj EINA_UNUSED,
 }
 
 EOLIAN static Eina_Bool
-_enventor_object_dummy_parts_get(Eo *obj EINA_UNUSED,
-                                   Enventor_Object_Data *pd)
+_enventor_object_dummy_parts_get(const Eo *obj EINA_UNUSED,
+                                 Enventor_Object_Data *pd)
 {
    return pd->dummy_parts;
 }
@@ -615,7 +617,7 @@ _enventor_object_wireframes_set(Eo *obj EINA_UNUSED,
 }
 
 EOLIAN static Eina_Bool
-_enventor_object_wireframes_get(Eo *obj EINA_UNUSED,
+_enventor_object_wireframes_get(const Eo *obj EINA_UNUSED,
                                 Enventor_Object_Data *pd)
 {
    return pd->wireframes;
@@ -639,7 +641,7 @@ _enventor_object_part_highlight_set(Eo *obj EINA_UNUSED,
 }
 
 EOLIAN static Eina_Bool
-_enventor_object_part_highlight_get(Eo *obj EINA_UNUSED,
+_enventor_object_part_highlight_get(const Eo *obj EINA_UNUSED,
                                     Enventor_Object_Data *pd)
 {
    return pd->part_highlight;
@@ -655,7 +657,7 @@ _enventor_object_mirror_mode_set(Eo *obj EINA_UNUSED,
 }
 
 EOLIAN static Eina_Bool
-_enventor_object_mirror_mode_get(Eo *obj EINA_UNUSED,
+_enventor_object_mirror_mode_get(const Eo *obj EINA_UNUSED,
                                  Enventor_Object_Data *pd)
 {
    return pd->mirror_mode;
@@ -672,7 +674,7 @@ _enventor_object_efl_ui_focus_object_focus_set(Eo *obj EINA_UNUSED,
 }
 
 EOLIAN static Eina_Bool
-_enventor_object_efl_ui_focus_object_focus_get(Eo *obj EINA_UNUSED,
+_enventor_object_efl_ui_focus_object_focus_get(const Eo *obj EINA_UNUSED,
                                                Enventor_Object_Data *pd)
 {
    if (!pd->focused_it) return EINA_FALSE;
@@ -691,7 +693,8 @@ _enventor_object_font_scale_set(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd,
 }
 
 EOLIAN static double
-_enventor_object_font_scale_get(Eo *obj EINA_UNUSED, Enventor_Object_Data *pd)
+_enventor_object_font_scale_get(const Eo *obj EINA_UNUSED,
+                                Enventor_Object_Data *pd)
 {
    return pd->font_scale;
 }

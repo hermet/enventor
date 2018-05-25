@@ -206,28 +206,44 @@ class Enventor.Object (Efl.Ui.Widget, Efl.File, Efl.Ui.Focus.Object)
       class.constructor;
       Efl.Object.constructor;
       Efl.Object.destructor;
-      Efl.Gfx.visible { set; }
-      Efl.Gfx.position { set; }
-      Efl.Gfx.size { set; }
+      Efl.Gfx.Entity.visible { set; }
+      Efl.Gfx.Entity.position { set; }
+      Efl.Gfx.Entity.size { set; }
       Efl.Canvas.Object.clip { set; }
       Efl.Canvas.Group.group_member_add;
       Efl.File.file { set; }
       Efl.Ui.Focus.Object.focus { set; get; }
    }
    events {
-      cursor,line,changed;
-      cursor,group,changed;
-      live_view,updated;
-      live_view,loaded;
-      live_view,cursor,moved;
-      live_view,resized;
-      max_line,changed;
-      compile,error;
-      ctxpopup,activated;
-      ctxpopup,changed;
-      ctxpopup,dismissed;
-      edc,modified;
-      focused;
-      file,open,requested;
+      cursor,line,changed: void;
+      cursor,group,changed: void;
+      live_view,updated: void;
+      live_view,loaded: void;
+      live_view,cursor,moved: void;
+      live_view,resized: void;
+      max_line,changed: void;
+      compile,error: void;
+      ctxpopup,activated: void;
+      ctxpopup,changed: void;
+      ctxpopup,dismissed: void;
+      edc,modified: void;
+      focused: void;
+      file,open,requested: void;
+/*
+      cursor,line,changed: Enventor.Cursor_Line;
+      cursor,group,changed: Eina_String;
+      live_view,updated: Enventor.Item;
+      live_view,loaded: Enventor.Item;
+      live_view,cursor,moved: Enventor.Live_View_Cursor;
+      live_view,resized: Enventor.Live_View_Size;
+      max_line,changed: Enventor.Cursor_Line;
+      compile,error: char;
+      ctxpopup,activated: Enventor.Ctxpopup_Type;
+      ctxpopup,changed: Enventor.Item;
+      ctxpopup,dismissed: Enventor.Item;
+      edc,modified: Enventor.EDC_Modified;
+      focused: void;
+      file,open,requested: char;
+*/
    }
 }

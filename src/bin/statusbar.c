@@ -1,4 +1,3 @@
-#define EFL_UI_FOCUS_OBJECT_PROTECTED 1
 #include "common.h"
 
 #define VIEW_RESIZE_TYPE_W "W"
