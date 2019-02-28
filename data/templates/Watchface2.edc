@@ -50,7 +50,7 @@ collections {
                text {
                   size: 20;
                   font: "Mono";
-                  text: "AM";                  
+                  text: "AM";
                }
                min: 150 0;
                fixed: 1 0;
@@ -69,7 +69,7 @@ collections {
                text {
                   size: 20;
                   font: "Mono";
-                  text: "12:00";                  
+                  text: "12:00";
                }
                min: 150 0;
                fixed: 1 0;
@@ -109,7 +109,7 @@ collections {
                rel1.relative: 0.5 0.0;
                rel2.relative: 0.5 1.0;
                min: 30 0;
-               fixed: 1 0;               
+               fixed: 1 0;
                /* TODO: Please replace embedded image files to your application image files. */
                image.normal: "ENVENTOR_EMBEDDED_NEEDLE_MINUTE_RECT.png";
                map.on: 1;

@@ -159,7 +159,7 @@ collections {
                rel1.relative: 0.5 0.0;
                rel2.relative: 0.5 1.0;
                min: 35 0;
-               fixed: 1 0;               
+               fixed: 1 0;
                /* TODO: Please replace embedded image files to your application image files. */
                image.normal: "ENVENTOR_EMBEDDED_NEEDLE_MINUTE.png";
                map.on: 1;
