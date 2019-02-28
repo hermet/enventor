@@ -9,7 +9,7 @@
 #include "enventor_private.h"
 
 //FIXME: Make flexible
-const int MAX_LINE_DIGIT_CNT = 10;
+const int MAX_LINE_DIGIT_CNT = 12;
 const int SYNTAX_COLOR_SPARE_LINES = 42;
 const double SYNTAX_COLOR_DEFAULT_TIME = 0.25;
 const double SYNTAX_COLOR_SHORT_TIME = 0.025;
@@ -1745,7 +1745,6 @@ edit_entry_get(edit_data *ed)
 static void
 error_line_num_highlight(edit_data *ed)
 {
-#define LINE_NUM_SIZE 5
    Evas_Object *tb = elm_entry_textblock_get(ed->en_line);
    char *text = (char *) evas_object_textblock_text_markup_get(tb);
 
@@ -1767,8 +1766,8 @@ error_line_num_highlight(edit_data *ed)
         return;
      }
 
-   char line_str[LINE_NUM_SIZE];
-   snprintf(line_str, LINE_NUM_SIZE, "%d", ed->error_line + 1);
+   char line_str[MAX_LINE_DIGIT_CNT];
+   snprintf(line_str, MAX_LINE_DIGIT_CNT, "%d", ed->error_line + 1);
    char *ptr = strstr(utf8, line_str);
    if (!ptr) return;
 
