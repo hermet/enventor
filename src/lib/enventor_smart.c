@@ -82,6 +82,9 @@ static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {NULL, NULL}
 };
 
+static Eina_Error ENVENTOR_FILE_SET_ERROR_NONE;
+static Eina_Error ENVENTOR_FILE_SET_ERROR_GENERIC;
+
 /*****************************************************************************/
 /* Internal method implementation                                            */
 /*****************************************************************************/
@@ -257,6 +260,8 @@ EOLIAN static void
 _enventor_object_class_constructor(Efl_Class *klass)
 {
    evas_smart_legacy_type_register(MY_CLASS_NAME_LEGACY, klass);
+
+   ENVENTOR_FILE_SET_ERROR_GENERIC = eina_error_msg_static_register("Generic load error");
 }
 
 EOLIAN static void
@@ -312,9 +317,9 @@ _enventor_object_efl_gfx_entity_visible_set(Eo *obj EINA_UNUSED, Enventor_Object
 }
 
 EOLIAN static void
-_enventor_object_efl_canvas_object_clip_set(Eo *obj, Enventor_Object_Data *pd EINA_UNUSED, Evas_Object *clip)
+_enventor_object_efl_canvas_object_clipper_set(Eo *obj, Enventor_Object_Data *pd EINA_UNUSED, Evas_Object *clip)
 {
-   efl_canvas_object_clip_set(efl_super(obj, MY_CLASS), clip);
+   efl_canvas_object_clipper_set(efl_super(obj, MY_CLASS), clip);
 
    Eina_Iterator *it = evas_object_smart_iterator_new(obj);
    Evas_Object *o;
@@ -384,11 +389,10 @@ _enventor_object_efl_object_destructor(Eo *obj, Enventor_Object_Data *pd)
    efl_destructor(efl_super(obj, MY_CLASS));
 }
 
-EOLIAN static Eina_Bool
+EOLIAN static Eina_Error
 _enventor_object_efl_file_file_set(Eo *obj EINA_UNUSED,
                                    Enventor_Object_Data *pd,
-                                   const char *file,
-                                   const char *group EINA_UNUSED)
+                                   const char *file)
 {
    build_edc_path_set(file);
    if (!file) goto err;
@@ -397,11 +401,12 @@ _enventor_object_efl_file_file_set(Eo *obj EINA_UNUSED,
    build_edc();
    edit_changed_set(pd->main_it->ed, EINA_FALSE);
 
-   return EINA_TRUE;
+   return 0;
 
 err:
+   eina_error_set( ENVENTOR_FILE_SET_ERROR_GENERIC);
    build_edc_path_set(NULL);
-   return EINA_FALSE;
+   return 1;
 }
 
 EOLIAN static Eina_List *
@@ -899,7 +904,7 @@ enventor_object_main_item_set(Enventor_Object *obj, const char *file)
    it->ed = edit_init(obj, it);
    it->pd = pd;
 
-   if (!efl_file_set(obj, file, NULL))
+   if (efl_file_set(obj, file))
      {
         edit_term(it->ed);
         pd->main_it = NULL;

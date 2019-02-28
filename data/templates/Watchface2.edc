@@ -142,19 +142,6 @@ collections {
          }
       }
       programs {
-         program { "load";
-            signal: "load";
-            source: "";
-            action: STATE_SET "rotated";
-            target: "bg";
-            transition: LINEAR 30;
-            after: "reset";
-         }
-         program { "reset";
-            action: STATE_SET "default";
-            target: "bg";
-            after: "load";
-         }
          program { "hour_begin";
             signal: "load";
             source: "";

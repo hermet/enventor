@@ -160,14 +160,14 @@ group { name: "elm/list/h_item/enventor";
             color: 64 64 64 255;
             color_class: "list_item_base";
          }
-         description { state: "odd" 0.0;
+         description { state: "odd";
             color: 56 56 56 255;
             color_class: "list_item_base_odd";
          }
       }
       program {
          signal: "elm,state,odd"; source: "elm";
-         action: STATE_SET "odd" 1.0;
+         action: STATE_SET "odd";
          target: "base";
       }
       program {
@@ -603,7 +603,6 @@ group { name: "elm/scroller/base/enventor";
       program {
          signal: "mouse,down,1*"; source: "sb_vbar_a1";
          action: STATE_SET "clicked" 0.0;
-         target: "sb_vbar_a1";
          target: "arrow1_vbar";
       }
       program {
@@ -614,13 +613,11 @@ group { name: "elm/scroller/base/enventor";
       program {
          signal: "mouse,up,1"; source: "sb_vbar_a1";
          action: STATE_SET "default" 0.0;
-         target: "sb_vbar_a1";
          target: "arrow1_vbar";
       }
       program {
          signal: "mouse,down,1*"; source: "sb_vbar_a2";
          action: STATE_SET "clicked" 0.0;
-         target: "sb_vbar_a2";
          target: "arrow2_vbar";
       }
       program {
@@ -631,7 +628,6 @@ group { name: "elm/scroller/base/enventor";
       program {
          signal: "mouse,up,1"; source: "sb_vbar_a2";
          action: STATE_SET "default" 0.0;
-         target: "sb_vbar_a2";
          target: "arrow2_vbar";
       }
       program {
@@ -763,7 +759,6 @@ group { name: "elm/scroller/base/enventor";
       program {
          signal: "mouse,down,1*"; source: "sb_hbar_a1";
          action: STATE_SET "clicked" 0.0;
-         target: "sb_hbar_a1";
          target: "arrow1_hbar";
       }
       program {
@@ -774,13 +769,11 @@ group { name: "elm/scroller/base/enventor";
       program {
          signal: "mouse,up,1"; source: "sb_hbar_a1";
          action: STATE_SET "default" 0.0;
-         target: "sb_hbar_a1";
          target: "arrow1_hbar";
       }
       program {
          signal: "mouse,down,1*"; source: "sb_hbar_a2";
          action: STATE_SET "clicked" 0.0;
-         target: "sb_hbar_a2";
          target: "arrow2_hbar";
       }
       program {
@@ -791,7 +784,6 @@ group { name: "elm/scroller/base/enventor";
       program {
          signal: "mouse,up,1"; source: "sb_hbar_a2";
          action: STATE_SET "default" 0.0;
-         target: "sb_hbar_a2";
          target: "arrow2_hbar";
       }
       program {
@@ -1146,7 +1138,6 @@ group { name: "elm/scroller/base/enventor";
       program {
          signal: "mouse,down,1*"; source: "elm.dragable.vbar";
          action: STATE_SET "clicked" 0.0;
-         target: "elm.dragable.vbar";
          target: "shadow_vbar";
          target: "glow_vbar";
          target: "center_glow_vbar";
@@ -1154,7 +1145,6 @@ group { name: "elm/scroller/base/enventor";
       program {
          signal: "mouse,up,1"; source: "elm.dragable.vbar";
          action: STATE_SET "default" 0.0;
-         target: "elm.dragable.vbar";
          target: "shadow_vbar";
          target: "glow_vbar";
          target: "center_glow_vbar";
@@ -1162,7 +1152,6 @@ group { name: "elm/scroller/base/enventor";
       program {
          signal: "mouse,down,1*"; source: "elm.dragable.hbar";
          action: STATE_SET "clicked" 0.0;
-         target: "elm.dragable.hbar";
          target: "shadow_hbar";
          target: "glow_hbar";
          target: "center_glow_hbar";
@@ -1170,7 +1159,6 @@ group { name: "elm/scroller/base/enventor";
       program {
          signal: "mouse,up,1"; source: "elm.dragable.hbar";
          action: STATE_SET "default" 0.0;
-         target: "elm.dragable.hbar";
          target: "shadow_hbar";
          target: "glow_hbar";
          target: "center_glow_hbar";
@@ -1706,14 +1694,12 @@ group { name: "elm/button/base/enventor";
       program {
          signal: "elm,anim,activate"; source: "elm";
          action: STATE_SET "clicked" 0.0;
-         target: "base";
          target: "text2";
          after: "button_unpressed_anim";
       }
       program { name: "button_unpressed_anim";
          action: STATE_SET "default" 0.0;
          in: 0.5 0.0;
-         target: "base";
          target: "text2";
       }
       program {
