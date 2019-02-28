@@ -397,14 +397,12 @@ _enventor_object_efl_file_file_set(Eo *obj EINA_UNUSED,
    build_edc_path_set(file);
    if (!file) goto err;
 
-   if (!edit_load(pd->main_it->ed, file)) return EINA_FALSE;
+   if (!edit_load(pd->main_it->ed, file)) goto err;
    build_edc();
    edit_changed_set(pd->main_it->ed, EINA_FALSE);
-
    return 0;
-
 err:
-   eina_error_set( ENVENTOR_FILE_SET_ERROR_GENERIC);
+   eina_error_set(ENVENTOR_FILE_SET_ERROR_GENERIC);
    build_edc_path_set(NULL);
    return 1;
 }
