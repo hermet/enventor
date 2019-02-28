@@ -1480,6 +1480,13 @@ edit_cur_indent_depth_get(edit_data *ed)
    return indent_space_get(syntax_indent_data_get(ed->sh));
 }
 
+static void
+edit_obj_del_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+   edit_data *ed = data;
+   ed->en_edit = NULL;
+}
+
 edit_data *
 edit_init(Enventor_Object *enventor, Enventor_Item *it)
 {
@@ -1571,6 +1578,7 @@ edit_init(Enventor_Object *enventor, Enventor_Item *it)
                                   edit_selection_cleared_cb, ed);
    evas_object_smart_callback_add(en_edit, "selection,start",
                                   edit_selection_start_cb, ed);
+   evas_object_event_callback_add(en_edit, EVAS_CALLBACK_DEL, edit_obj_del_cb, ed);
    evas_object_size_hint_weight_set(en_edit, EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(en_edit, EVAS_HINT_FILL, EVAS_HINT_FILL);

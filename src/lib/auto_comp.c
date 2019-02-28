@@ -897,15 +897,18 @@ autocomp_target_set(edit_data *ed)
    if (ad->ed)
      {
         entry = edit_entry_get(ad->ed);
-        evas_object_smart_callback_del(entry, "changed,user", entry_changed_cb);
-        evas_object_smart_callback_del(entry, "cursor,changed",
-                                       entry_cursor_changed_cb);
-        evas_object_smart_callback_del(entry, "cursor,changed,manual",
-                                               entry_cursor_changed_manual_cb);
-        evas_object_smart_callback_del(entry, "unfocused", anchor_unfocused_cb);
-        evas_object_smart_callback_del(entry, "press", entry_press_cb);
-        evas_object_event_callback_del(entry, EVAS_CALLBACK_MOVE,
-                                       entry_move_cb);
+        if (entry)
+          {
+             evas_object_smart_callback_del(entry, "changed,user", entry_changed_cb);
+             evas_object_smart_callback_del(entry, "cursor,changed",
+                                            entry_cursor_changed_cb);
+             evas_object_smart_callback_del(entry, "cursor,changed,manual",
+                                            entry_cursor_changed_manual_cb);
+             evas_object_smart_callback_del(entry, "unfocused", anchor_unfocused_cb);
+             evas_object_smart_callback_del(entry, "press", entry_press_cb);
+             evas_object_event_callback_del(entry, EVAS_CALLBACK_MOVE,
+                                            entry_move_cb);
+          }
         evas_object_del(ad->anchor);
         ad->anchor = NULL;
         ad->ed = NULL;
