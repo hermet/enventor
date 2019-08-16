@@ -4,6 +4,8 @@ Enventor, which is also known as EDC (Edje Data Collections) Editor, is a EDC sc
 
 When your application requires real-time changeable layouts like animated ones, then you can write the layout design using EDC script, compile it into EDJ format file, and import it into your application using a UI layout component. You can also write design layouts from simple to complex ones using the EDC script with Enventor. Enventor helps you write EDC script code easier and finish your work faster. If you are not familiar with EDC programming, see Edje Programming Guide - https://www.enlightenment.org/program_guide/edje_pg for more information.
 
+![Example1](https://www.enlightenment.org/_media/enventor-main.png?cache=&w=900&h=506&tok=efd42d)
+
 ## Contents
 - [Requirements](#requirements)
 - [Compiling](#compiling)
