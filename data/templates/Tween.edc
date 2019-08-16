@@ -1,0 +1,50 @@
+collections {
+   base_scale: 1.0;
+   group { "main";
+      /* TODO: Please replace embedded image files to your application image files. */
+      images {
+         image: "ENVENTOR_EMBEDDED_TRIAB-01.png" COMP;
+         image: "ENVENTOR_EMBEDDED_TRIAB-02.png" COMP;
+         image: "ENVENTOR_EMBEDDED_TRIAB-03.png" COMP;
+         image: "ENVENTOR_EMBEDDED_TRIAB-04.png" COMP;
+         image: "ENVENTOR_EMBEDDED_TRIAB-05.png" COMP;
+         image: "ENVENTOR_EMBEDDED_TRIAB-06.png" COMP;
+         image: "ENVENTOR_EMBEDDED_TRIAB-07.png" COMP;
+         image: "ENVENTOR_EMBEDDED_TRIAB-08.png" COMP;
+         image: "ENVENTOR_EMBEDDED_TRIAB-09.png" COMP;
+         image: "ENVENTOR_EMBEDDED_TRIAB-10.png" COMP;
+         image: "ENVENTOR_EMBEDDED_TRIAB-11.png" COMP;
+         image: "ENVENTOR_EMBEDDED_TRIAB-12.png" COMP;
+      }
+      parts {
+         image { "image";
+            desc { "default";
+               /* TODO: Please replace embedded image files to your application image files. */
+               image.normal: "ENVENTOR_EMBEDDED_TRIAB-01.png";
+               image.tween: "ENVENTOR_EMBEDDED_TRIAB-02.png";
+               image.tween: "ENVENTOR_EMBEDDED_TRIAB-03.png";
+               image.tween: "ENVENTOR_EMBEDDED_TRIAB-04.png";
+               image.tween: "ENVENTOR_EMBEDDED_TRIAB-05.png";
+               image.tween: "ENVENTOR_EMBEDDED_TRIAB-06.png";
+               image.tween: "ENVENTOR_EMBEDDED_TRIAB-07.png";
+               image.tween: "ENVENTOR_EMBEDDED_TRIAB-08.png";
+               image.tween: "ENVENTOR_EMBEDDED_TRIAB-09.png";
+               image.tween: "ENVENTOR_EMBEDDED_TRIAB-10.png";
+               image.tween: "ENVENTOR_EMBEDDED_TRIAB-11.png";
+               image.tween: "ENVENTOR_EMBEDDED_TRIAB-12.png";
+               aspect: 1 1;
+               aspect_preference: BOTH;
+            }
+         }
+      }
+      programs {
+         program { "tween_anim";
+            signal: "load";
+            action: STATE_SET "default";
+            transition: LINEAR 1;
+            target: "image";
+            after: "tween_anim";
+         }
+      }
+   }
+}

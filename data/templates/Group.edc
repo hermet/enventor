@@ -1,0 +1,38 @@
+collections {
+   base_scale: 1.0;
+   group { "main";
+      parts {
+         rect { "rect";
+            desc { "default";
+               rel1.relative: 0.0 0.0;
+               rel2.relative: 1.0 0.5;
+               color: 0 136 170 255;
+            }
+         }
+         group { "group";
+            source: "my_group";
+            desc { "default";
+               rel1.relative: 0.0 0.5;
+               rel2.relative: 1.0 1.0;
+            }
+         }
+      }
+   }
+   group { "my_group";
+      parts {
+         text { "text";
+            scale;
+            effect: SOFT_OUTLINE;
+            desc { "default";
+               color: 255 255 255 255;
+               color2: 0 136 170 100;
+               text {
+                  size: 30;
+                  font: "Sans";
+                  text: "My Group";
+               }
+            }
+         }
+      }
+   }
+}

@@ -1,0 +1,423 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Enventor development team
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: enventor 0.9.0\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2016-09-19 14:56+0200\n"
+"PO-Revision-Date: 2016-09-21 17:09+0200\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.9\n"
+"Last-Translator: Renato Rener <renato.rener@gmail.com>\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 "
+"|| n%100==4 ? 2 : 3);\n"
+"Language: sl_SI\n"
+
+#: src/bin/base_gui.c:67
+#, c-format
+msgid "%s - Enventor"
+msgstr "%s - Enventor"
+
+#: src/bin/config_data.c:72
+msgid "Failed to generate tmp folder!"
+msgstr "Neuspeh pri ustvarjanju začasne mape!"
+
+#: src/bin/config_data.c:91 src/bin/config_data.c:104
+#, c-format
+msgid "Cannot create a config folder \"%s\""
+msgstr "Ne morem ustvariti nastavitvene mape \"%s\""
+
+#: src/bin/config_data.c:115
+#, c-format
+msgid "Cannot save a config file \"%s\""
+msgstr "Ne morem shraniti nastavitvene datoteke \"%s\""
+
+#: src/bin/config_data.c:157
+#, c-format
+msgid "Cannot load a config file \"%s\""
+msgstr "Ne morem naložiti nastavitvene datoteke \"%s\""
+
+#: src/bin/config_data.c:165 src/bin/file_mgr.c:193 src/bin/goto.c:136
+#: src/bin/menu.c:613 src/bin/newfile.c:144 src/bin/panes.c:321
+#: src/bin/search.c:337 src/bin/setting.c:187 src/bin/statusbar.c:312
+#: src/bin/text_setting.c:405 src/bin/text_setting.c:456
+#: src/bin/text_setting.c:487 src/bin/text_setting.c:956 src/bin/tools.c:186
+msgid "Failed to allocate Memory!"
+msgstr "Dodeljevanje spomina spodletelo!"
+
+#: src/bin/file_mgr.c:71
+msgid "EDC has been changed on the file system."
+msgstr "EDC je bil spremenjen na datotečnem sistemu."
+
+#: src/bin/file_mgr.c:73
+msgid "Do you want to replace the contents?"
+msgstr "Ali želite zamenjati vsebino?"
+
+#: src/bin/file_mgr.c:84
+msgid "Save As"
+msgstr "Shrani kot"
+
+#: src/bin/file_mgr.c:92 src/bin/search.c:407
+msgid "Replace"
+msgstr "Zamenjaj"
+
+#: src/bin/file_mgr.c:98
+msgid "Ignore"
+msgstr "Spreglej"
+
+#: src/bin/file_mgr.c:157
+#, c-format
+msgid "File saved. \"%s\""
+msgstr "Datoteka shranjena. \"%s\""
+
+#: src/bin/file_mgr.c:159
+#, c-format
+msgid "Already saved. \"%s\""
+msgstr "Že shranjeno. \"%s\""
+
+#: src/bin/goto.c:93
+msgid "Invalid line number"
+msgstr "Napačno število vrstice"
+
+#: src/bin/goto.c:142
+msgid "Enventor Goto Line"
+msgstr "Enventor Skoči na vrstico"
+
+#: src/bin/goto.c:146
+msgid "Go to Line"
+msgstr "Skoči na vrstico"
+
+#: src/bin/goto.c:168
+#, c-format
+msgid "Enter line number [1..%d]:"
+msgstr "Vnesi vrstico številka [1..%d]:"
+
+#: src/bin/goto.c:192 src/bin/menu.c:150
+msgid "Ok"
+msgstr "V Redu"
+
+#: src/bin/goto.c:204 src/bin/search.c:429
+msgid "Failed to grab key - Escape"
+msgstr "Zajetje tipke Esc spodletelo"
+
+#: src/bin/live_edit.c:1983 src/bin/live_edit.c:2028 src/bin/live_edit.c:2030
+#: src/bin/main.c:851 src/lib/auto_comp.c:369 src/lib/ctxpopup.c:766
+#, c-format
+msgid "Failed to grab key - %s"
+msgstr "Zajetje znaka spodletelo - %s"
+
+#: src/bin/live_edit.c:2091
+msgid ""
+"Double click part to confirm. (Esc = cancel, Direction Key = move item per "
+"pixel, Ctrl = disable auto-aligning)"
+msgstr ""
+"Dvoklikni del za potrditev. (Esc = preklic, Smerna tipka = premikanje en "
+"predmet na piksel, Ctrl = onemogoči samodejno poravnavo)"
+
+#: src/bin/live_edit.c:2247
+msgid "Faild to allocate Memory!"
+msgstr "Dodeljevanje spomina spodletelo!"
+
+#: src/bin/main.c:24
+msgid "Auto Completion Enabled."
+msgstr "Samodokončanje omogočeno."
+
+#: src/bin/main.c:25
+msgid "Auto Completion Disabled."
+msgstr "Samodokončanje onemogočeno."
+
+#: src/bin/main.c:34
+msgid "Auto Indentation Enabled."
+msgstr "Samozamik omogočen."
+
+#: src/bin/main.c:35
+msgid "Auto Indentation Disabled."
+msgstr "Samozamik onemogočen."
+
+#: src/bin/main.c:207
+#, c-format
+msgid "Font Size: %1.1fx"
+msgstr "Velikost pisave: %1.1fx"
+
+#: src/bin/menu.c:137
+msgid "New File: Choose a template"
+msgstr "Nova datoteka: izberi predlogo"
+
+#: src/bin/menu.c:156 src/bin/menu.c:202 src/bin/setting.c:245
+msgid "Cancel"
+msgstr "Prekliči"
+
+#: src/bin/menu.c:175
+msgid "Without save, you will lose last changes!"
+msgstr "Brez shranitve boste izgubili zadnje spremembe!"
+
+#: src/bin/menu.c:177
+msgid "Will you save changes?"
+msgstr "Ali boste shranili spremembe?"
+
+#: src/bin/menu.c:188 src/bin/menu.c:466 src/bin/menu.c:582
+msgid "Save"
+msgstr "Shrani"
+
+#: src/bin/menu.c:196
+msgid "Discard"
+msgstr "Zavrži"
+
+#: src/bin/menu.c:324
+msgid "Choose a file to save"
+msgstr "Izberite datoteko za shranjevanje"
+
+#: src/bin/menu.c:351
+#, c-format
+msgid "Failed to save: %s."
+msgstr "Neuspeh pri shranjevanju: %s."
+
+#: src/bin/menu.c:406
+msgid "Support only .edc file."
+msgstr "Podpora le za .edc datoteke."
+
+#: src/bin/menu.c:416
+msgid "Choose a file to load."
+msgstr "Izberite datoteko za naložitev."
+
+#: src/bin/menu.c:427
+#, c-format
+msgid "Failed to load: %s."
+msgstr "Neuspeh pri nalaganju: %s."
+
+#: src/bin/menu.c:458
+msgid "Save File: Choose a EDC"
+msgstr "Shrani datoteko: Izberi EDC"
+
+#: src/bin/menu.c:467 src/bin/menu.c:502
+msgid "Close"
+msgstr "Zapri"
+
+#: src/bin/menu.c:492
+msgid "Load File: Choose a EDC"
+msgstr "Naloži datoteko : Izberi EDC"
+
+#: src/bin/menu.c:501 src/bin/menu.c:586
+msgid "Load"
+msgstr "Naloži"
+
+#: src/bin/menu.c:577
+msgid "New"
+msgstr "Nov"
+
+#: src/bin/menu.c:590 src/bin/setting.c:201
+msgid "Settings"
+msgstr "Nastavitve"
+
+#: src/bin/menu.c:594
+msgid "Help"
+msgstr "Pomoč"
+
+#: src/bin/menu.c:598
+msgid "Exit"
+msgstr "Izhod"
+
+#: src/bin/newfile.c:57 src/bin/newfile.c:82
+#, c-format
+msgid "Cannot find file! \"%s\""
+msgstr "Ne najdem datoteke! \"%s\""
+
+#: src/bin/newfile.c:128
+#, c-format
+msgid "Cannot find templates folder! \"%s\""
+msgstr "Ne najdem mape predlog! \"%s\""
+
+#: src/bin/search.c:82
+#, c-format
+msgid "%d matches replaced"
+msgstr "%d zadetki zamenjani"
+
+#: src/bin/search.c:132 src/bin/search.c:194
+#, c-format
+msgid "No \"%s\" in the text"
+msgstr "Ni \"%s\" v besedilu"
+
+#: src/bin/search.c:233 src/bin/search.c:399
+msgid "Backward"
+msgstr "Nazaj"
+
+#: src/bin/search.c:265 src/bin/search.c:392
+msgid "Forward"
+msgstr "Naprej"
+
+#: src/bin/search.c:343
+msgid "Enventor Search"
+msgstr "Enventor Iskanje"
+
+#: src/bin/search.c:346
+msgid "Find/Replace"
+msgstr "Najdi/Zamenjaj"
+
+#: src/bin/search.c:414
+msgid "Replace All"
+msgstr "Zamenjaj vse"
+
+#: src/bin/setting.c:213
+msgid "Preferences"
+msgstr "Prednostne nastavitve"
+
+#: src/bin/setting.c:215
+msgid "Text Editor"
+msgstr "Urejevalnik besedil"
+
+#: src/bin/setting.c:217
+msgid "EDC Build"
+msgstr "EDC izgradnja"
+
+#: src/bin/setting.c:231
+msgid "Apply"
+msgstr "Uveljavi"
+
+#: src/bin/setting.c:238
+msgid "Reset"
+msgstr "Obnovi"
+
+#: src/bin/text_setting.c:438
+#, c-format
+msgid "Failed to open file \"%s\""
+msgstr "Neuspeh pri odpiranju datoteke \"%s\""
+
+#: src/bin/text_setting.c:759
+msgid "Double click a keyword to change its color :"
+msgstr "Dvoklikni ključno besedo za spremembo njene barve :"
+
+#: src/bin/text_setting.c:796
+msgid "Font Size "
+msgstr "Velikost pisave:"
+
+#: src/bin/text_setting.c:829
+msgid "Font Name"
+msgstr "Ime pisave"
+
+#: src/bin/text_setting.c:856
+msgid "Font Style"
+msgstr "Slog pisave:"
+
+#: src/bin/tools.c:134
+msgid "Redo text."
+msgstr "Ponovno uveljavi besedilo."
+
+#: src/bin/tools.c:136
+msgid "No text to be redo."
+msgstr "Ni besedila za ponovno uveljavitev."
+
+#: src/bin/tools.c:144
+msgid "Undo text."
+msgstr "Razveljavi besedilo."
+
+#: src/bin/tools.c:146
+msgid "No text to be undo."
+msgstr "Ni besedila za razveljavitev."
+
+#: src/bin/tools.c:201
+msgid "Part Highlighting (Ctrl + H)"
+msgstr "Poudarjanje dela (Ctrl + H)"
+
+#: src/bin/tools.c:208
+msgid "Dummy Parts (Ctrl + W)"
+msgstr "Butasti deli (Ctrl + W)"
+
+#: src/bin/tools.c:217
+msgid "Mirror Mode (Ctrl + M)"
+msgstr "Način ogledala (Ctrl + M)"
+
+#: src/bin/tools.c:251
+msgid "Save File (Ctrl + S)"
+msgstr "Shrani datoteko (Ctrl + S)"
+
+#: src/bin/tools.c:257
+msgid "Undo Text (Ctrl + Z)"
+msgstr "Razveljavi besedilo (Ctrl + Z)"
+
+#: src/bin/tools.c:263
+msgid "Redo Text (Ctrl + R)"
+msgstr "Ponovno uveljavi besedilo (Ctrl + R)"
+
+#: src/bin/tools.c:269
+msgid "Find/Replace (Ctrl + F)"
+msgstr "Najdi/Zamenjaj (Ctrl + F)"
+
+#: src/bin/tools.c:276
+msgid "Goto Lines (Ctrl + L)"
+msgstr "Pojdi na vrstice (Ctrl + L)"
+
+#: src/bin/tools.c:283
+msgid "Line Numbers (F5)"
+msgstr "Številke vrstic (F5)"
+
+#: src/bin/tools.c:291
+msgid "Insert Template (Ctrl + T)"
+msgstr "Vstavi predlogo (Ctrl + T)"
+
+#: src/bin/tools.c:298
+msgid "Console Box (Alt + Down)"
+msgstr "Konzolna škatla (Alt + Down)"
+
+#: src/bin/tools.c:305
+msgid "File Browser (F9)"
+msgstr "Brskalnik datotek (F9)"
+
+#: src/bin/tools.c:312
+msgid "EDC Navigator (F10)"
+msgstr "EDC Navigator (F10)"
+
+#: src/bin/tools.c:319
+msgid "Status (F11)"
+msgstr "Stanje (F11)"
+
+#: src/bin/tools.c:326
+msgid "Enventor Menu (Esc)"
+msgstr "Enventor Meni (Esc)"
+
+#: src/bin/tools.c:371
+msgid "Part Highlighting Enabled."
+msgstr "Omogočeno poudarjanje delov."
+
+#: src/bin/tools.c:373
+msgid "Part Highlighting Disabled."
+msgstr "Onemogočeno poudarjanje delov."
+
+#: src/bin/tools.c:458
+msgid "Dummy Parts Enabled."
+msgstr "Omogočeni butasti deli."
+
+#: src/bin/tools.c:460
+msgid "Dummy Parts Disabled."
+msgstr "Onemogočeni butasti deli."
+
+#: src/bin/tools.c:483
+msgid "Mirror Mode Enabled."
+msgstr "Omogočen način ogledala."
+
+#: src/bin/tools.c:485
+msgid "Mirror Mode Disabled."
+msgstr "Onemogočen način ogledala."
+
+#: src/bin/tools.c:539
+msgid "Insertion of template code is disabled while in Live Edit mode"
+msgstr ""
+"Med načinom urejanja v živo, je vstavljanje kode predloge onemogočeno"
+
+#: src/bin/tools.c:548
+#, c-format
+msgid "Template code inserted, (%s)"
+msgstr "Vstavljena koda predloge, (%s)"
+
+#: src/bin/tools.c:554
+msgid ""
+"Can't insert template code here. Move the cursor inside the \"Collections,"
+"Images,Parts,Part,Programs\" scope."
+msgstr ""
+"Tukaj ne morem vstaviti kode predloge. Premaknite kurzor znotraj okvirja "
+"\"Zbirke,Slike,Deli,Del,Programi\"."

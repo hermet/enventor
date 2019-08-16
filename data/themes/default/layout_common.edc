@@ -1,0 +1,3302 @@
+images {
+   image: "frame_bg.png" COMP;
+   image: "warning.png" COMP;
+   image: "icon_folder.png" COMP;
+   image: "brows_logo.png" COMP;
+   image: "shine.png" COMP;
+   image: "bub_over_bot.png" COMP;
+   image: "disabler.png" COMP;
+   image: "bevel_out.png" COMP;
+   image: "full_logo.png" COMP;
+   image: "cursor_arrow.png" COMP;
+   image: "navi_group.png" COMP;
+   image: "bg_demo.png" COMP;
+   image: "help_bg.png" COMP;
+   image: "downlight_glow_left.png" COMP;
+   image: "downlight_glow_right.png" COMP;
+}
+
+group { "fileselector_layout";
+   parts {
+      rect { "clipper";
+         desc { "default";
+            color: 127 127 127 127;
+         }
+         desc { "show";
+            color: 255 255 255 255;
+         }
+      }
+      rect { "bg";
+         clip_to: "clipper";
+         desc { "default";
+            color: 0 0 0 175;
+         }
+      }
+      image { "base_frame_img";
+         scale: 1;
+         clip_to: "clipper";
+         desc {
+            min: 650 435;
+            max: 650 435;
+            fixed: 1 1;
+            image.normal: "frame_bg.png";
+            image.border: 10 10 10 10;
+            image.border_scale: 1;
+         }
+      }
+      image { "shine_img";
+         scale: 1;
+         clip_to: "clipper";
+         desc {
+            rel1 { to: "base_frame_img"; relative: 0 0; }
+            rel2 { to: "base_frame_img"; relative: 1 0; }
+            align: 0.5 0;
+            min: 650 3;
+            fixed: 1 1;
+            image.normal: "shine.png";
+         }
+      }
+      spacer { "base_frame";
+         desc {
+            rel1 { to: "base_frame_img"; offset: 10 10; }
+            rel2 { to: "base_frame_img"; offset: -11 -11; }
+         }
+      }
+      rect { "title_frame";
+         scale: 1;
+         clip_to: "clipper";
+         desc {
+            rel1 { to: "base_frame"; }
+            rel2 { to: "base_frame"; relative: 1 0; }
+            align: 0.5 0;
+            min: 0 23;
+            fixed: 0 1;
+            color: 0 0 0 255;
+         }
+      }
+      image { "title_icon";
+         scale: 1;
+         clip_to: "clipper";
+         desc {
+            align: 0 0.5;
+            min: 20 20;
+            max: 20 20;
+            fixed: 1 1;
+            rel1.to: "title_frame";
+            rel2.to: "title_frame";
+            image.normal: "icon_folder.png";
+         }
+      }
+      text { "elm.text.title";
+         scale: 1;
+         clip_to: "clipper";
+         effect: GLOW;
+         desc {
+            rel1.to: "title_frame";
+            rel2.to: "title_frame";
+            align: 0.5 0.5;
+            fixed: 1 1;
+            text {
+               font: FN;
+               size: 12;
+               align: 0.5 0.5;
+               min: 1 0;
+               ellipsis: -1;
+            }
+            color: COL_HI;
+         }
+      }
+      swallow { "elm.swallow.fileselector";
+         clip_to: "clipper";
+         desc {
+            rel1 { to: "title_frame"; relative: 0 1; }
+            rel2 { to: "base_frame"; }
+         }
+      }
+      text { "elm.text.msg";
+         effect: SHADOW BOTTOM;
+         scale: 1;
+         clip_to: "clipper";
+         desc { "default";
+            rel1.relative: 0 1;
+            rel1.to: "elm.swallow.fileselector";
+            rel2.relative: 1 1;
+            rel2.to: "elm.swallow.fileselector";
+            text {
+               font: FN;
+               size: 11;
+               align: 0.5 1;
+            }
+            color: COL_NM_TRANS;
+            fixed: 0 1;
+         }
+         desc { "show";
+            inherit: "default";
+            color: COL_NM;
+         }
+      }
+      rect { "event_blocker";
+         desc { "default";
+            color: 0 0 0 0;
+            visible: 1;
+         }
+         desc { "hide";
+            inherit: "default";
+            visible: 0;
+         }
+      }
+      image { "over_img";
+         scale: 1;
+         clip_to: "clipper";
+         nomouse;
+         desc {
+            rel1 { to: "base_frame_img"; relative: 0 0; }
+            rel2 { to: "base_frame_img"; relative: 1 1; }
+            image.normal: "bub_over_bot.png";
+         }
+      }
+   }
+   programs {
+      program { "load";
+         signal: "load";
+         action: STATE_SET "show";
+         transition: "DECELERATE" 0.5;
+         target: "clipper";
+         after: "event_blocker_hide";
+      }
+      program { "dismiss";
+         signal: "elm,state,dismiss";
+         source: "";
+         action: STATE_SET "default";
+//         transition: "DECELERATE" 0.125;
+         target: "clipper";
+         target: "event_blocker";
+         after: "dismiss_done";
+      }
+      program { "event_blocker_hide";
+         signal: "elm,state,event_blocker,hide";
+         source: "";
+         action: STATE_SET "hide";
+         target: "event_blocker";
+      }
+      program { "dismiss_done";
+         action: SIGNAL_EMIT "elm,state,dismiss,done" "";
+      }
+      program { "msg_show";
+         signal: "elm,action,msg,show";
+         source: "";
+         action: STATE_SET "show";
+         target: "elm.text.msg";
+         transition: DECELERATE 0.3;
+         after: "msg_idle";
+      }
+      program { "msg_idle";
+         action: STATE_SET "show";
+         target: "elm.text.msg";
+         transition: LINEAR 1;
+         after: "msg_hide";
+      }
+      program { "msg_hide";
+         action: STATE_SET "default";
+         target: "elm.text.msg";
+         transition: DECELERATE 0.3;
+      }
+   }
+}
+
+group { "newfile_layout";
+   parts {
+      rect { "clipper";
+         desc { "default";
+            color: 127 127 127 127;
+         }
+         desc { "show";
+            color: 255 255 255 255;
+         }
+      }
+      rect { "content_clipper";
+         clip_to: "clipper";
+         desc { "default";
+            rel1.to: "elm.swallow.content";
+            rel2.to: "elm.swallow.content";
+            fixed: 1 1;
+         }
+      }
+      rect { "bg";
+         clip_to: "clipper";
+         desc { "default";
+            color: 0 0 0 175;
+         }
+      }
+      image { "base_frame_img";
+         scale: 1;
+         clip_to: "clipper";
+         desc {
+            min: 650 435;
+            max: 650 435;
+            fixed: 1 1;
+            image.normal: "frame_bg.png";
+            image.border: 10 10 10 10;
+            image.border_scale: 1;
+         }
+      }
+      image { "shine_img";
+         scale: 1;
+         clip_to: "clipper";
+         desc {
+            rel1 { to: "base_frame_img"; relative: 0 0; }
+            rel2 { to: "base_frame_img"; relative: 1 0; }
+            align: 0.5 0;
+            min: 650 3;
+            fixed: 1 1;
+            image.normal: "shine.png";
+         }
+      }
+      spacer { "base_frame";
+         desc {
+            rel1 { to: "base_frame_img"; offset: 10 10; }
+            rel2 { to: "base_frame_img"; offset: -11 -11; }
+         }
+      }
+      rect { "title_frame";
+         scale: 1;
+         clip_to: "clipper";
+         desc {
+            rel1 { to: "base_frame"; }
+            rel2 { to: "base_frame"; relative: 1 0; }
+            align: 0.5 0;
+            min: 0 23;
+            fixed: 0 1;
+            color: 0 0 0 255;
+         }
+      }
+      image { "title_icon";
+         scale: 1;
+         clip_to: "clipper";
+         desc {
+            align: 0 0.5;
+            min: 20 20;
+            max: 20 20;
+            fixed: 1 1;
+            rel1.to: "title_frame";
+            rel2.to: "title_frame";
+            image.normal: "brows_logo.png";
+         }
+      }
+      text { "elm.text.title";
+         scale: 1;
+         clip_to: "clipper";
+         effect: GLOW;
+         desc {
+            rel1.to: "title_frame";
+            rel2.to: "title_frame";
+            align: 0.5 0.5;
+            fixed: 1 1;
+            text {
+               font: FN;
+               size: 12;
+               align: 0.5 0.5;
+               min: 1 0;
+               ellipsis: -1;
+            }
+            color: COL_HI;
+         }
+      }
+      swallow { "elm.swallow.content";
+         clip_to: "content_clipper";
+         desc {
+            rel1 { to: "title_frame"; relative: 0 1; offset: 0 5; }
+            rel2 { to: "base_frame"; relative: 1 0.91; }
+         }
+      }
+      swallow { "elm.swallow.ok_btn";
+         scale: 1;
+         clip_to: "clipper";
+         desc {
+            align: 1 1;
+            min: 50 25;
+            fixed: 1 1;
+            rel1.to: "base_frame";
+            rel1.relative: 0.5 1;
+            rel2.to: "base_frame";
+            rel2.relative: 0.5 1;
+            rel2.offset: -2 -1;
+         }
+      }
+      swallow { "elm.swallow.cancel_btn";
+         scale: 1;
+         clip_to: "clipper";
+         desc {
+            align: 0 1;
+            min: 50 25;
+            fixed: 1 1;
+            rel1.to: "base_frame";
+            rel1.relative: 0.5 1;
+            rel1.offset: 1 0;
+            rel2.to: "base_frame";
+            rel2.relative: 0.5 1;
+         }
+      }
+      rect { "event_blocker";
+         desc { "default";
+            color: 0 0 0 0;
+            visible: 1;
+         }
+         desc { "hide";
+            inherit: "default";
+            visible: 0;
+         }
+      }
+      image { "over_img";
+         scale: 1;
+         clip_to: "clipper";
+         nomouse;
+         desc {
+            rel1 { to: "base_frame_img"; relative: 0 0; }
+            rel2 { to: "base_frame_img"; relative: 1 1; }
+            image.normal: "bub_over_bot.png";
+         }
+      }
+   }
+   programs {
+      program { "load";
+         signal: "load";
+         action: STATE_SET "show";
+         transition: "DECELERATE" 0.5;
+         target: "clipper";
+         after: "event_blocker_hide";
+      }
+      program { "dismiss";
+         signal: "elm,state,dismiss";
+         source: "";
+         action: STATE_SET "default";
+         target: "clipper";
+         target: "event_blocker";
+         after: "dismiss_done";
+      }
+      program { "event_blocker_hide";
+         signal: "elm,state,event_blocker,hide";
+         source: "";
+         action: STATE_SET "hide";
+         target: "event_blocker";
+      }
+      program { "dismiss_done";
+         action: SIGNAL_EMIT "elm,state,dismiss,done" "";
+      }
+   }
+}
+
+group { "warning_layout";
+   parts {
+      rect { "clipper";
+         desc { "default";
+            color: 127 127 127 127;
+         }
+         desc {state: "show";
+            color: 255 255 255 255;
+         }
+      }
+      rect { "bg";
+         clip_to: "clipper";
+         desc { "default";
+            color: 0 0 0 175;
+         }
+      }
+      image { "base_frame_img";
+         scale: 1;
+         clip_to: "clipper";
+         desc {
+            min: 300 135;
+            max: 300 135;
+            fixed: 1 1;
+            image.normal: "frame_bg.png";
+            image.border: 10 10 10 10;
+            image.border_scale: 1;
+         }
+      }
+      image { "shine_img";
+         scale: 1;
+         clip_to: "clipper";
+         desc {
+            rel1 { to: "base_frame_img"; relative: 0 0; }
+            rel2 { to: "base_frame_img"; relative: 1 0; }
+            align: 0.5 0;
+            min: 300 3;
+            fixed: 1 1;
+            image.normal: "shine.png";
+         }
+      }
+      spacer { "base_frame";
+         desc {
+            rel1 { to: "base_frame_img"; offset: 10 10; }
+            rel2 { to: "base_frame_img"; offset: -11 -11; }
+         }
+      }
+      rect { "title_bg";
+         scale: 1;
+         desc {
+            rel1.to: "base_frame";
+            rel2.to: "base_frame";
+            rel2.relative: 1 0;
+            align: 0.5 0;
+            min: 0 23;
+            fixed: 0 1;
+            color: 0 0 0 255;
+         }
+      }
+      image { "warning_img";
+         clip_to: "clipper";
+         desc {
+            min: 20 20;
+            max: 20 20;
+            fixed: 1 1;
+            align: 0 0.5;
+            rel1.to: "title_bg";
+            rel2.to: "title_bg";
+            rel1.offset: 5 0;
+            image.normal: "warning.png";
+         }
+      }
+      text { "elm.text.title";
+         clip_to: "clipper";
+         scale: 1;
+         effect: GLOW;
+         desc {
+            rel1.to: "title_bg";
+            rel2.to: "title_bg";
+            text.text: "EDC has been changed";
+            text {
+               font: FN;
+               size: 12;
+               align: 0.5 0.5;
+               min: 1 1;
+               ellipsis: -1;
+            }
+            fixed: 1 1;
+            align: 0.5 0.5;
+            color: COL_HI;
+         }
+      }
+      text { "elm.text.desc";
+         clip_to: "clipper";
+         scale: 1;
+         desc {
+            rel1 { to: "elm.text.title"; relative: 0.5 1; offset: 0 10; }
+            rel2 { to: "elm.text.title"; relative: 0.5 1; }
+            text {
+               font: FN;
+               size: 11;
+               align: 0.5 0;
+               min: 1 1;
+               ellipsis: -1;
+            }
+            align: 0.5 0;
+            fixed: 1 1;
+         }
+      }
+      text { "elm.text.question";
+         clip_to: "clipper";
+         scale: 1;
+         desc {
+            rel1 { to: "elm.text.desc"; relative: 0.5 1; }
+            rel2 { to: "elm.text.desc"; relative: 0.5 1; }
+            text {
+               font: FN;
+               size: 11;
+               align: 0.5 0;
+               min: 1 1;
+               ellipsis: -1;
+            }
+            align: 0.5 0;
+            fixed: 1 1;
+         }
+      }
+      swallow { "elm.swallow.btn1";
+         clip_to: "clipper";
+         scale: 1;
+         desc {
+            rel1.to: "elm.swallow.btn2";
+            rel2.to: "elm.swallow.btn2";
+            rel1.relative: 0 0;
+            rel2.relative: 0 1;
+            rel2.offset: -10 -1;
+            min: 50 25;
+            align: 1 1;
+            fixed: 1 1;
+         }
+      }
+      swallow { "elm.swallow.btn2";
+         clip_to: "clipper";
+         scale: 1;
+         desc {
+            rel1.to: "base_frame";
+            rel2.to: "base_frame";
+            rel1.relative: 0.5 1;
+            rel2.relative: 0.5 1;
+            min: 50 25;
+            align: 0.5 1;
+            fixed: 1 1;
+         }
+      }
+      swallow { "elm.swallow.btn3";
+         clip_to: "clipper";
+         scale: 1;
+         desc {
+            rel1.to: "elm.swallow.btn2";
+            rel2.to: "elm.swallow.btn2";
+            rel1.relative: 1 0;
+            rel2.relative: 1 1;
+            rel1.offset: 10 0;
+            min: 50 25;
+            align: 0 0.5;
+            fixed: 1 1;
+            color: 0 0 0 255;
+         }
+      }
+      rect { "event_blocker";
+         desc { "default";
+            color: 0 0 0 0;
+            visible: 1;
+         }
+         desc { "hide";
+            inherit: "default";
+            visible: 0;
+         }
+      }
+      image { "over_img";
+         scale: 1;
+         clip_to: "clipper";
+         nomouse;
+         desc {
+            rel1 { to: "base_frame_img"; relative: 0 0; }
+            rel2 { to: "base_frame_img"; relative: 1 1; }
+            image.normal: "bub_over_bot.png";
+         }
+      }
+   }
+   programs {
+      program { "load";
+         signal: "load";
+         action: STATE_SET "show";
+         transition: "DECELERATE" 0.25;
+         target: "clipper";
+         after: "event_blocker_hide";
+      }
+      program { "dismiss";
+         signal: "elm,state,dismiss";
+         source: "";
+         action: STATE_SET "default";
+         transition: "DECELERATE" 0.125;
+         target: "clipper";
+         target: "event_blocker";
+         after: "dismiss_done";
+      }
+      program { "event_blocker_hide";
+         signal: "elm,state,event_blocker,hide";
+         source: "";
+         action: STATE_SET "hide";
+         target: "event_blocker";
+      }
+      program { "dismiss_done";
+         action: SIGNAL_EMIT "elm,state,dismiss,done" "";
+      }
+   }
+}
+
+group { "menu_layout";
+   parts {
+      rect { "clipper";
+         desc { "default";
+            color: 255 255 255 0;
+         }
+         desc { "show";
+            color: 255 255 255 255;
+         }
+      }
+      rect { "bg";
+         desc { "default";
+            color: 0 0 0 0;
+         }
+         desc { "show";
+            color: 0 0 0 175;
+         }
+         desc { "anim";
+            color: 0 0 0 200;
+         }
+      }
+      spacer { "base_frame";
+         scale: 1;
+         desc {
+            align: 0.5 0.5;
+            min: 640 0;
+            fixed: 1 0;
+            rel1.relative: 0.5 0;
+            rel2.relative: 0.5 1;
+         }
+      }
+      image { "logo";
+         scale: 1;
+         clip_to: "clipper";
+         desc { "default";
+            rel1.relative: 0.5 0;
+            rel2.relative: 0.5 0;
+            rel1.to_y: "padding1";
+            rel2.to_y: "padding1";
+            min: 350 250;
+            fixed: 1 1;
+            align: 0.5 0.8;
+            image.normal: "full_logo.png";
+         }
+      }
+      spacer { "padding1";
+         scale: 1;
+         desc { "default";
+            rel1.relative: 0 0.5;
+            rel2.relative: 0 0.5;
+            rel1.to: "base_frame";
+            rel2.to: "base_frame";
+            min: 23 100;
+            fixed: 1 1;
+            align: 0 0.5;
+         }
+      }
+      swallow { "elm.swallow.new_btn";
+         scale: 1;
+         clip_to: "clipper";
+         desc { "default";
+            rel1.to: "padding1";
+            rel2.to: "padding1";
+            rel1.relative: 1 0.2;
+            align: 0 0;
+            min: 80 50;
+            max: 80 50;
+            fixed: 1 1;
+         }
+      }
+      spacer { "padding2";
+         scale: 1;
+         desc { "default";
+            rel1.to: "elm.swallow.new_btn";
+            rel2.to: "elm.swallow.new_btn";
+            rel1.relative: 1 0;
+            min: 23 50;
+            fixed: 1 1;
+            align: 0 0.5;
+         }
+      }
+      swallow { "elm.swallow.save_btn";
+         scale: 1;
+         clip_to: "clipper";
+         desc { "default";
+            rel1.to: "padding2";
+            rel2.to: "padding2";
+            rel1.relative: 1 0;
+            align: 0 0.5;
+            min: 80 50;
+            fixed: 1 1;
+         }
+      }
+      spacer { "padding3";
+         scale: 1;
+         desc { "default";
+            rel1.to: "elm.swallow.save_btn";
+            rel2.to: "elm.swallow.save_btn";
+            rel1.relative: 1 0;
+            min: 23 50;
+            fixed: 1 1;
+            align: 0 0.5;
+         }
+      }
+      swallow { "elm.swallow.load_btn";
+         scale: 1;
+         clip_to: "clipper";
+         desc { "default";
+            rel1.to: "padding3";
+            rel2.to: "padding3";
+            rel1.relative: 1 0;
+            align: 0 0.5;
+            min: 80 50;
+            fixed: 1 1;
+         }
+      }
+      spacer { "padding4";
+         scale: 1;
+         desc { "default";
+            rel1.to: "elm.swallow.load_btn";
+            rel2.to: "elm.swallow.load_btn";
+            rel1.relative: 1 0;
+            min: 23 50;
+            fixed: 1 1;
+            align: 0 0.5;
+         }
+      }
+      swallow { "elm.swallow.setting_btn";
+         scale: 1;
+         clip_to: "clipper";
+         desc { "default";
+            rel1.to: "padding4";
+            rel2.to: "padding4";
+            rel1.relative: 1 0;
+            align: 0 0.5;
+            min: 80 50;
+            fixed: 1 1;
+         }
+      }
+      spacer { "padding5";
+         scale: 1;
+         desc { "default";
+            rel1.to: "elm.swallow.setting_btn";
+            rel2.to: "elm.swallow.setting_btn";
+            rel1.relative: 1 0;
+            min: 23 50;
+            fixed: 1 1;
+            align: 0 0.5;
+         }
+      }
+      swallow { "elm.swallow.help_btn";
+         scale: 1;
+         clip_to: "clipper";
+         desc { "default";
+            rel1.to: "padding5";
+            rel2.to: "padding5";
+            rel1.relative: 1 0;
+            align: 0 0.5;
+            min: 80 50;
+            fixed: 1 1;
+         }
+      }
+      spacer { "padding6";
+         scale: 1;
+         desc { "default";
+            rel1.to: "elm.swallow.help_btn";
+            rel2.to: "elm.swallow.help_btn";
+            rel1.relative: 1 0;
+            min: 23 50;
+            fixed: 1 1;
+            align: 0 0.5;
+         }
+      }
+      swallow { "elm.swallow.exit_btn";
+         scale: 1;
+         clip_to: "clipper";
+         desc { "default";
+            rel1.to: "padding6";
+            rel2.to: "padding6";
+            rel1.relative: 1 0;
+            align: 0 0.5;
+            min: 80 50;
+            fixed: 1 1;
+         }
+      }
+      swallow { "elm.swallow.back_button";
+         scale: 1;
+         clip_to: "clipper";
+         desc {
+            fixed: 1 1;
+            min: 26 26;
+            max: 26 26;
+            align: 1 0.0;
+         }
+      }
+      rect { "event_blocker";
+         desc { "default";
+            color: 0 0 0 0;
+            visible: 1;
+         }
+         desc { "hide";
+            inherit: "default";
+            visible: 0;
+         }
+      }
+   }
+   programs {
+      program { "load";
+         signal: "load";
+         action: STATE_SET "show";
+         transition: "DECELERATE" 0.25;
+         target: "bg";
+         target: "clipper";
+         after: "event_blocker_hide";
+      }
+      program { "event_blocker_hide";
+         signal: "elm,state,event_blocker,hide";
+         source: "";
+         action: STATE_SET "hide";
+         target: "event_blocker";
+         after: "bg_anim";
+      }
+      program { "bg_anim";
+         action: STATE_SET "anim";
+         transition: "DECELERATE" 2;
+         target: "bg";
+         after: "bg_anim2";
+      }
+      program { "bg_anim2";
+         action: STATE_SET "show";
+         transition: "DECELERATE" 2;
+         target: "bg";
+         after: "bg_anim";
+      }
+      program { "dismiss";
+         signal: "elm,state,dismiss";
+         source: "";
+         action: STATE_SET "default";
+         transition: "DECELERATE" 0.125;
+         target: "bg";
+         target: "event_blocker";
+         target: "clipper";
+         after: "dismiss_done";
+      }
+      program { "dismiss_done";
+         action: SIGNAL_EMIT "elm,state,dismiss,done" "";
+      }
+   }
+}
+
+group { "goto_layout";
+   parts {
+      spacer { "base";
+         scale: 1;
+         desc { "default";
+            min: 300 67;
+         }
+      }
+      spacer { "left_top_padding";
+         scale: 1;
+         desc { "default";
+            rel1.relative: 0 0;
+            rel2.relative: 0 0;
+            fixed: 1 1;
+            align: 0 0;
+            min: 5 5;
+         }
+      }
+      text { "elm.text.goto";
+         scale: 1;
+         effect: SHADOW BOTTOM;
+         desc { "default";
+            align: 0 0;
+            rel1.to: "left_top_padding";
+            rel2.to: "left_top_padding";
+            rel1.relative: 1 1;
+            rel2.relative: 1 1;
+            text {
+               font: FN;
+               size: 11;
+               align: 0 0;
+            }
+            color: COL_NM;
+            min: 180 20;
+            fixed: 1 1;
+         }
+      }
+      swallow { "elm.swallow.entry";
+         scale: 1;
+         desc { "default";
+            rel1.relative: 1 0;
+            rel2.relative: 1 1;
+            rel1.to: "elm.text.goto";
+            rel2.to_y: "elm.text.goto";
+            rel2.offset: -5 -1;
+            fixed: 1 1;
+         }
+      }
+      text { "elm.text.msg";
+         scale: 1;
+         effect: GLOW;
+         desc { "default";
+            align: 0 0;
+            rel1.to: "elm.text.goto";
+            rel2.to: "elm.text.goto";
+            rel1.relative: 0 1;
+            rel2.relative: 0 1;
+            rel1.offset: 0 10;
+            text {
+               font: FN;
+               size: 10;
+               align: 0 0.5;
+            }
+            color: COL_HI;
+            min: 180 30;
+            fixed: 1 1;
+         }
+      }
+      swallow { "elm.swallow.btn";
+         scale: 1;
+         desc { "default";
+            rel1.relative: 1 0;
+            rel2.relative: 1 0;
+            rel1.to_y: "elm.text.msg";
+            rel2.to_y: "elm.text.msg";
+            rel1.offset: 5 0;
+            rel2.offset: -3 -1;
+            min: 75 25;
+            align: 1 0;
+            fixed: 1 1;
+         }
+      }
+   }
+}
+group { "search_layout";
+   parts {
+      spacer { "base";
+         scale: 1;
+         desc { "default";
+            min: 330 90;
+         }
+      }
+      spacer { "left_top_padding";
+         scale: 1;
+         desc { "default";
+            rel1.relative: 0 0;
+            rel2.relative: 0 0;
+            fixed: 1 1;
+            align: 0 0;
+            min: 5 5;
+         }
+      }
+      text { "elm.text.find";
+         scale: 1;
+         effect: SHADOW BOTTOM;
+         desc { "default";
+            align: 0 0;
+            rel1.to: "left_top_padding";
+            rel2.to: "left_top_padding";
+            rel1.relative: 1 1;
+            rel2.relative: 1 1;
+            text {
+               font: FN;
+               size: 11;
+               align: 0 0;
+               text: "Find:";
+            }
+            color: COL_NM;
+            min: 80 20;
+            fixed: 1 1;
+         }
+      }
+      text { "elm.text.replace";
+         scale: 1;
+         effect: SHADOW BOTTOM;
+         desc { "default";
+            align: 0 0;
+            rel1.to: "elm.text.find";
+            rel2.to: "elm.text.find";
+            rel1.relative: 0 1;
+            rel2.relative: 0 1;
+            rel1.offset: 0 5;
+            text {
+               font: FN;
+               size: 11;
+               align: 0 0;
+               text: "Replace with:";
+            }
+            color: COL_NM;
+            min: 80 20;
+            fixed: 1 1;
+         }
+      }
+      text { "elm.text.dir";
+         scale: 1;
+         effect: GLOW;
+         desc { "default";
+            align: 0 0;
+            rel1.to: "elm.text.replace";
+            rel2.to: "elm.text.replace";
+            rel1.relative: 0 1;
+            rel2.relative: 0 1;
+            rel1.offset: 0 10;
+            text {
+               font: FN;
+               size: 10;
+               align: 0 0.5;
+               text: "Next";
+            }
+            color: COL_HI;
+            min: 80 30;
+            fixed: 1 1;
+         }
+      }
+      swallow { "elm.swallow.find_entry";
+         scale: 1;
+         desc { "default";
+            rel1.relative: 1 0;
+            rel2.relative: 1 1;
+            rel1.to: "elm.text.find";
+            rel2.to_y: "elm.text.find";
+            rel2.offset: -5 -1;
+            fixed: 1 1;
+         }
+      }
+      swallow { "elm.swallow.replace_entry";
+         scale: 1;
+         desc { "default";
+            rel1.relative: 1 0;
+            rel2.relative: 1 1;
+            rel1.to: "elm.text.replace";
+            rel2.to_y: "elm.text.replace";
+            rel2.offset: -5 -1;
+            fixed: 1 1;
+         }
+      }
+      swallow { "elm.swallow.backward";
+         scale: 1;
+         desc { "default";
+            rel1.relative: 0 1;
+            rel2.relative: 0 1;
+            rel1.to_x: "elm.swallow.replace_entry";
+            rel1.to_y: "elm.swallow.replace_entry";
+            rel2.to_x: "elm.swallow.replace_entry";
+            rel2.to_y: "elm.swallow.replace_entry";
+            rel1.offset: 0 10;
+            min: 50 25;
+            align: 0 0;
+            fixed: 1 1;
+         }
+      }
+      swallow { "elm.swallow.forward";
+         scale: 1;
+         desc { "default";
+            rel1.relative: 1 0;
+            rel2.relative: 1 1;
+            rel1.to: "elm.swallow.backward";
+            rel2.to: "elm.swallow.backward";
+            rel1.offset: 5 0;
+            min: 50 25;
+            align: 0 0;
+            fixed: 1 1;
+         }
+      }
+      swallow { "elm.swallow.replace";
+         scale: 1;
+         desc { "default";
+            rel1.relative: 1 0;
+            rel2.relative: 1 1;
+            rel1.to: "elm.swallow.forward";
+            rel2.to: "elm.swallow.forward";
+            rel1.offset: 5 0;
+            min: 50 25;
+            align: 0 0;
+            fixed: 1 1;
+         }
+      }
+      swallow { "elm.swallow.replace_all";
+         scale: 1;
+         desc { "default";
+            rel1.relative: 1 0;
+            rel2.relative: 1 1;
+            rel1.to: "elm.swallow.replace";
+            rel2.to: "elm.swallow.replace";
+            rel1.offset: 5 0;
+            min: 50 25;
+            align: 0 0;
+            fixed: 1 1;
+         }
+      }
+   }
+}
+
+group { "live_edit_layout";
+   data.item: "ctrl_size" "8";
+   parts {
+      rect { "clipper";
+         desc { "default";
+            color: 0 0 0 0;
+         }
+         desc { "show";
+            color: 255 255 255 255;
+         }
+      }
+      swallow { "elm.swallow.symbol";
+         scale: 1;
+         clip_to: "clipper";
+         desc { "default";
+         }
+      }
+      rect { "cursor_body";
+         repeat_events: 1;
+         desc { "default";
+            color: 0 0 0 0;
+         }
+      }
+      rect { "frame_l";
+         nomouse;
+         clip_to: "clipper";
+         scale: 1;
+         desc { "default";
+            align: 0 0.5;
+            rel1.relative: 0 0;
+            rel2.relative: 0 1;
+            min: 1 0;
+            fixed: 1 0;
+         }
+         desc { "anim";
+            inherit: "default";
+            color: 51 153 255 127;
+         }
+      }
+      rect { "frame_r";
+         nomouse;
+         clip_to: "clipper";
+         scale: 1;
+         desc { "default";
+            align: 1 0.5;
+            rel1.relative: 1 0;
+            rel2.relative: 1 1;
+            min: 1 0;
+            fixed: 1 0;
+         }
+         desc { "anim";
+            inherit: "default";
+            color: 51 153 255 127;
+         }
+      }
+      rect { "frame_t";
+         nomouse;
+         clip_to: "clipper";
+         scale: 1;
+         desc { "default";
+            align: 0.5 0;
+            rel1.relative: 0 0;
+            rel2.relative: 1 0;
+            min: 0 1;
+            fixed: 0 1;
+         }
+         desc { "anim";
+            inherit: "default";
+            color: 51 153 255 127;
+         }
+      }
+      rect { "frame_b";
+         nomouse;
+         clip_to: "clipper";
+         scale: 1;
+         desc { "default";
+            align: 0.5 1;
+            rel1.relative: 0 1;
+            rel2.relative: 1 1;
+            min: 0 1;
+            fixed: 0 1;
+         }
+         desc { "anim";
+            inherit: "default";
+            color: 51 153 255 127;
+         }
+      }
+   }
+   programs {
+      program { "on_load";
+         signal: "load";
+         action: STATE_SET "show";
+         target: "clipper";
+         after: "anim";
+         after: "clip_init";
+      }
+      program { "clip_init";
+         action: STATE_SET "show";
+         target: "clipper";
+         transition: DECELERATE 0.25;
+      }
+      program { "anim";
+         action: STATE_SET "anim";
+         target: "frame_l";
+         target: "frame_r";
+         target: "frame_t";
+         target: "frame_b";
+         transition: LINEAR 0.5;
+         after: "anim2";
+      }
+      program { "anim2";
+         action: STATE_SET "default";
+         target: "frame_l";
+         target: "frame_r";
+         target: "frame_t";
+         target: "frame_b";
+         transition: LINEAR 0.5;
+         after: "anim";
+      }
+   }
+}
+
+group { "viewer_layout_bg";
+   parts {
+      image { "bg"; nomouse;
+         desc { "default";
+            image.normal: "bg_demo.png";
+            fill {
+               size.relative: 0 0;
+               size.offset: 16 16;
+            }
+            rel1.to: "elm.swallow.content";
+            rel2.to: "elm.swallow.content";
+         }
+      }
+      swallow { "elm.swallow.content";
+         desc { "default";
+         }
+      }
+   }
+}
+
+group { "viewer_layout";
+   parts {
+      rect { "prev_clipper";
+         desc { "default";
+         }
+         desc { "switched";
+            color: 255 255 255 0;
+         }
+      }
+      rect { "cur_clipper";
+         desc { "default";
+            rel1.relative: -1 0;
+            rel2.relative: 0 1;
+            color: 255 255 255 0;
+         }
+         desc { "switched";
+            rel1.relative: 0 0;
+            rel2.relative: 1 1;
+            color: 255 255 255 255;
+         }
+      }
+      swallow { "elm.swallow.prev";
+         clip_to: "prev_clipper";
+         desc { "default";
+         }
+      }
+      swallow { "elm.swallow.content";
+         clip_to: "cur_clipper";
+         desc { "default";
+            rel1.to: "cur_clipper";
+            rel2.to: "cur_clipper";
+         }
+      }
+   }
+   programs {
+      program { "switch_instant";
+         signal: "elm,view,switch,instant";
+         source: "";
+         action: STATE_SET "switched";
+         target: "prev_clipper";
+         target: "cur_clipper";
+      }
+      program { "switch";
+         signal: "elm,view,switch";
+         source: "";
+         action: STATE_SET "default";
+         target: "prev_clipper";
+         target: "cur_clipper";
+         after: "switched";
+      }
+      program { "switched";
+         action: STATE_SET "switched";
+         target: "prev_clipper";
+         target: "cur_clipper";
+         transition: DECELERATE 0.25;
+      }
+   }
+}
+
+group { "preview_layout";
+   parts {
+      image { "bg";
+         desc { "default";
+            min: 120 120;
+            image.normal: "bg_demo.png";
+            fill {
+               size.relative: 0 0;
+               size.offset: 16 16;
+            }
+            rel1.offset: 2 2;
+            rel2.offset: -3 -3;
+         }
+      }
+      swallow { "elm.swallow.img";
+         desc {
+            rel1.to: "bg";
+            rel2.to: "bg";
+         }
+      }
+   }
+}
+
+group { "toggle_layout";
+   parts {
+      rect { "base";
+         scale: 1;
+         desc { "default";
+            min: 150 1;
+            color: 56 56 56 255;
+         }
+         desc { "odd";
+            inherit: "default";
+            color: 64 64 64 255;
+         }
+      }
+      spacer { "text_base";
+         desc { "default";
+            rel1.to: "base";
+            rel2.to: "base";
+            rel2.relative: 0.0 1.0;
+            align: 0.0 0.5;
+            min: 35 0;
+            fixed: 1 0;
+         }
+      }
+      text { "elm.text.type";
+         desc { "default";
+            rel1.to: "text_base";
+            rel1.offset: 5 0;
+            rel2.to: "text_base";
+            align: 0.0 0.5;
+            fixed: 1 0;
+            text {
+               font: FN;
+               size: 10;
+               align: 0.0 0.5;
+               min: 1 0;
+               ellipsis: -1;
+            }
+            color: COL_NM;
+         }
+      }
+      spacer { "padding1";
+         desc { "default";
+            rel1.to: "text_base";
+            rel1.relative: 1.0 0.0;
+            rel2.to: "text_base";
+            align: 0.0 0.5;
+            min: 5 0;
+            fixed: 1 0;
+         }
+      }
+      swallow { "elm.swallow.toggle";
+         desc { "default";
+            rel1.to: "padding1";
+            rel1.relative: 1.0 0.0;
+            rel2.to: "padding2";
+            rel2.relative: 0.0 1.0;
+         }
+      }
+      spacer { "padding2";
+         desc { "default";
+            rel1.to: "base";
+            rel1.relative: 1.0 0.0;
+            rel2.to: "base";
+            align: 1.0 0.5;
+            min: 5 0;
+            fixed: 1 0;
+         }
+      }
+   }
+   programs {
+      program { "odd_item_set";
+         signal: "odd,item,set";
+         source: "";
+         action: STATE_SET "odd";
+         target: "base";
+      }
+   }
+}
+
+group { "slider_layout";
+   parts {
+      rect { "base";
+         scale: 1;
+         desc { "default";
+            min: 235 1;
+            color: 56 56 56 255;
+         }
+         desc { "odd";
+            inherit: "default";
+            color: 64 64 64 255;
+         }
+      }
+      spacer { "text_base";
+         scale: 1;
+         desc { "default";
+            rel1.to: "base";
+            rel2.to: "base";
+            rel2.relative: 0.0 1.0;
+            align: 0.0 0.5;
+            min: 35 0;
+            fixed: 1 0;
+         }
+      }
+      text { "elm.text.type";
+         scale: 1;
+         desc { "default";
+            rel1.to: "text_base";
+            rel1.offset: 5 0;
+            rel2.to: "text_base";
+            align: 0.0 0.5;
+            fixed: 1 0;
+            text {
+               font: FN;
+               size: 10;
+               align: 0.0 0.5;
+               min: 1 0;
+               ellipsis: -1;
+            }
+            color: COL_NM;
+         }
+      }
+      spacer { "padding1";
+         scale: 1;
+         desc { "default";
+            rel1.to: "text_base";
+            rel1.relative: 1.0 0.0;
+            rel2.to: "text_base";
+            align: 0.0 0.5;
+            min: 5 0;
+            fixed: 1 0;
+         }
+      }
+      text { "elm.text.slider_min";
+         scale: 1;
+         desc { "default";
+            rel1.to: "padding1";
+            rel1.relative: 1.0 0.0;
+            rel2.to: "padding1";
+            rel2.relative: 1.0 0.0;
+            align: 0.0 0.0;
+            fixed: 1 1;
+            text {
+               font: FN;
+               size: 8;
+               align: 0.0 0.0;
+               min: 1 1;
+               ellipsis: -1;
+            }
+            color: COL_NM;
+         }
+      }
+      text { "elm.text.slider_max";
+         scale: 1;
+         desc { "default";
+            rel1.to: "padding2";
+            rel1.relative: 0.0 0.0;
+            rel2.to: "padding2";
+            rel2.relative: 0.0 0.0;
+            align: 1.0 0.0;
+            fixed: 1 1;
+            text {
+               font: FN;
+               size: 8;
+               align: 0.0 0.5;
+               min: 1 1;
+               ellipsis: -1;
+            }
+            color: COL_NM;
+         }
+      }
+      swallow { "elm.swallow.slider";
+         scale: 1;
+         desc { "default";
+            rel1.to_x: "padding1";
+            rel1.to_y: "elm.text.slider_min";
+            rel1.relative: 1.0 1.0;
+            rel2.to: "padding1";
+            rel2.relative: 1.0 1.0;
+            align: 0 0;
+            min: 185 0;
+            fixed: 1 0;
+         }
+      }
+      spacer { "padding2";
+         scale: 1;
+         desc { "default";
+            rel1.to_x: "elm.swallow.slider";
+            rel2.to_x: "elm.swallow.slider";
+            rel1.relative: 1.0 0.0;
+            rel2.relative: 1.0 1.0;
+            align: 0.0 0.5;
+            min: 0 0;
+            fixed: 1 0;
+         }
+      }
+   }
+   programs {
+      program { "odd_item_set";
+         signal: "odd,item,set";
+         source: "";
+         action: STATE_SET "odd";
+         target: "base";
+      }
+   }
+}
+
+group { "colorselector_layout";
+   parts {
+      spacer { "base";
+         scale: 1;
+         desc {
+         }
+      }
+      swallow { "elm.swallow.colorselector";
+         scale: 1;
+         desc {
+            fixed: 1 1;
+            rel1.to: "base";
+            rel2.to: "base";
+            align: 0.0 0.0;
+            min: 160 130;
+            max: 160 130;
+         }
+      }
+      spacer { "colors_padding";
+         scale: 1;
+         desc {
+            fixed: 0 1;
+            rel1.to_y: "elm.swallow.colorselector";
+            rel2.to_y: "elm.swallow.colorselector";
+            rel1.relative: 0.0 1.0;
+            rel2.relative: 1.0 1.0;
+            align: 0.5 0.0;
+            min: 0 1;
+         }
+      }
+      spacer { "vertical_padding";
+         scale: 1;
+         desc {
+            fixed: 1 1;
+            align: 0.0 0.5;
+            min: 7 0;
+            rel1.to_x: "elm.swallow.colorselector";
+            rel2.to_x: "elm.swallow.colorselector";
+            rel1.to_y: "colors_padding";
+            rel2.to_y: "colors_padding";
+            rel1.relative: 1.0 0.0;
+            rel2.relative: 1.0 0.0;
+         }
+      }
+      spacer { "view_top_padding";
+         scale: 1;
+         desc {
+            align: 0.5 0.0;
+            fixed: 0 1;
+            min: 0 10;
+            rel1.to_x: "vertical_padding";
+            rel1.relative: 1.0 0.0;
+            rel2.relative: 1.0 0.0;
+         }
+      }
+      swallow { "view_left_padding";
+         scale: 1;
+         desc {
+            align: 0.0 0.5;
+            fixed: 1 0;
+            min: 3 0;
+            rel1.to_x: "vertical_padding";
+            rel1.to_y: "view_top_padding";
+            rel2.to_x: "vertical_padding";
+            rel1.relative: 1.0 1.0;
+            rel2.relative: 1.0 1.0;
+         }
+      }
+      swallow { "elm.swallow.color_view";
+         scale: 1;
+         desc {
+            align: 0.0 0.0;
+            min: 77 0;
+            max: 77 40;
+            rel1.to_x: "view_left_padding";
+            rel1.to_y: "view_top_padding";
+            rel2.to_y: "colors_padding";
+            rel1.relative: 1.0 1.0;
+            rel2.relative: 1.0 0.0;
+         }
+      }
+      spacer { "inputs_padding";
+         scale: 1;
+         desc {
+            fixed: 0 1;
+            align: 0.5 0.0;
+            min: 0 5;
+            rel1.to_x: "vertical_padding";
+            rel1.to_y: "elm.swallow.color_view";
+            rel2.to_y: "elm.swallow.color_view";
+            rel1.relative: 1.0 1.0;
+            rel2.relative: 1.0 1.0;
+         }
+      }
+      text { "elm.text.red";
+         scale: 1;
+         desc {
+            align: 0.0 0.0;
+            min: 15 20;
+            max: 15 20;
+            fixed: 1 1;
+            rel1.to_x: "vertical_padding";
+            rel1.to_y: "inputs_padding";
+            rel2.to_x: "vertical_padding";
+            rel1.relative: 1.0 1.0;
+            rel2.relative: 1.0 1.0;
+            text {
+               font: FN;
+               size: 10;
+               align: 0.5 0.5;
+               min: 1 0;
+               ellipsis: -1;
+            }
+         }
+      }
+      text { "elm.text.green";
+         scale: 1;
+         desc {
+            align: 0.0 0.0;
+            min: 15 20;
+            max: 15 20;
+            fixed: 1 1;
+            rel1.to_x: "vertical_padding";
+            rel1.to_y: "elm.text.red";
+            rel2.to_x: "vertical_padding";
+            rel1.relative: 1.0 1.0;
+            rel2.relative: 1.0 1.0;
+            text {
+               font: FN;
+               size: 10;
+               align: 0.5 0.5;
+               min: 1 0;
+               ellipsis: -1;
+            }
+         }
+      }
+      text { "elm.text.blue";
+         scale: 1;
+         desc {
+            align: 0.0 0.0;
+            min: 15 20;
+            max: 15 20;
+            fixed: 1 1;
+            rel1.to_x: "vertical_padding";
+            rel1.to_y: "elm.text.green";
+            rel2.to_x: "vertical_padding";
+            rel1.relative: 1.0 1.0;
+            rel2.relative: 1.0 1.0;
+            text {
+               font: FN;
+               size: 10;
+               align: 0.5 0.5;
+               min: 1 0;
+               ellipsis: -1;
+            }
+         }
+      }
+      text { "elm.text.alpha";
+         scale: 1;
+         desc {
+            align: 0.0 0.0;
+            min: 15 20;
+            max: 15 20;
+            fixed: 1 1;
+            rel1.to_x: "vertical_padding";
+            rel1.to_y: "elm.text.blue";
+            rel2.to_x: "vertical_padding";
+            rel2.to_y: "colors_padding";
+            rel1.relative: 1.0 1.0;
+            rel2.relative: 1.0 0.0;
+            text {
+               font: FN;
+               size: 10;
+               align: 0.5 0.5;
+               min: 1 0;
+               ellipsis: -1;
+            }
+         }
+      }
+      swallow { "elm.swallow.input_red";
+         scale: 1;
+         desc {
+            align: 0.0 0.0;
+            min: 65 20;
+            max: 65 20;
+            rel1.to_x: "elm.text.red";
+            rel1.to_y: "inputs_padding";
+            rel1.to_y: "inputs_padding";
+            rel1.relative: 1.0 1.0;
+            rel2.relative: 1.0 1.0;
+         }
+      }
+      swallow { "elm.swallow.input_green";
+         scale: 1;
+         desc {
+            align: 0.0 0.0;
+            min: 65 20;
+            max: 65 20;
+            rel1.to_x: "elm.text.red";
+            rel1.to_y: "elm.swallow.input_red";
+            rel1.to_y: "elm.swallow.input_red";
+            rel1.relative: 1.0 1.0;
+            rel2.relative: 1.0 1.0;
+         }
+      }
+      swallow { "elm.swallow.input_blue";
+         scale: 1;
+         desc {
+            align: 0.0 0.0;
+            min: 65 20;
+            max: 65 20;
+            rel1.to_x: "elm.text.red";
+            rel1.to_y: "elm.swallow.input_green";
+            rel1.to_y: "elm.swallow.input_green";
+            rel1.relative: 1.0 1.0;
+            rel2.relative: 1.0 1.0;
+         }
+      }
+      swallow { "elm.swallow.input_alpha";
+         scale: 1;
+         desc {
+            align: 0.0 0.0;
+            min: 65 20;
+            max: 65 20;
+            rel1.to_x: "elm.text.red";
+            rel1.to_y: "elm.swallow.input_blue";
+            rel1.to_y: "elm.swallow.input_blue";
+            rel1.relative: 1.0 1.0;
+            rel2.relative: 1.0 1.0;
+         }
+      }
+      swallow { "elm.swallow.preset_colors";
+         scale: 1;
+         desc {
+            align: 0.0 0.0;
+            min: 0 25;
+            max: -1 25;
+            rel1.to_y: "elm.swallow.input_alpha";
+            rel1.relative: 0.0 1.0;
+            color: 128 0 0 128;
+         }
+      }
+   }
+}
+
+group { "statusbar_layout";
+   parts {
+      rect { "bg";
+         desc { "default";
+            color: 64 64 64 255;
+         }
+      }
+      rect { "base_clip";
+         desc { "default";
+            color: 255 255 255 255;
+         }
+         desc { "hide";
+            color: 0 0 0 0;
+         }
+      }
+      spacer { "scale_spacer";
+         scale: 1;
+         desc { "default";
+            rel1.relative: 0 0;
+            rel2.relative: 0 1;
+            min: 120 0;
+            fixed: 1 0;
+         }
+      }
+      swallow { "scale_btn";
+         clip_to: "base_clip";
+         scale: 1;
+         desc { "default";
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 0.0 1.0;
+            rel1.offset: 3 -3;
+            align: 0.0 0.5;
+            min: 15 15;
+            fixed: 1 0;
+         }
+      }
+      text { "elm.text.scale";
+         clip_to: "base_clip";
+         scale: 1;
+         effect: GLOW;
+         desc { "default";
+            rel1.to_x: "scale_btn";
+            rel2.to_x: "scale_btn";
+            rel1.relative: 1.0 0.0;
+            rel2.relative: 1.0 1.0;
+            align: 0 0.5;
+            fixed: 1 0;
+            color: COL_HI;
+            text {
+               size: 11;
+               align: 0 0.5;
+               min: 1 0;
+               ellipsis: -1;
+               text:"1.00x";
+            }
+         }
+      }
+      spacer { "size_spacer";
+         scale: 1;
+         desc { "default";
+            rel1.relative: 1 0;
+            rel2.relative: 1 1;
+            rel1.to: "scale_spacer";
+            rel2.to: "scale_spacer";
+            rel1.offset: 5 0;
+            min: 120 0;
+            fixed: 1 0;
+            align: 0 0.5;
+         }
+      }
+      swallow { "resize_btn";
+         clip_to: "base_clip";
+         scale: 1;
+         desc {
+            rel1.to_x: "size_spacer";
+            rel1.relative: 0.0 0;
+            rel2.relative: 0.0 1;
+            rel1.offset: 3 -3;
+            align: 0 0;
+            fixed: 1 0;
+            min: 15 15;
+         }
+      }
+      swallow { "invert_btn";
+         clip_to: "base_clip";
+         scale: 1;
+         desc {
+            rel1.to_x: "resize_btn";
+            rel1.relative: 1.0 0;
+            rel2.relative: 0.0 1;
+            rel1.offset: 3 -3;
+            align: 0 0;
+            fixed: 1 0;
+            min: 15 15;
+         }
+      }
+      text { "elm.text.size_w";
+         clip_to: "base_clip";
+         scale: 1;
+         effect: GLOW;
+         desc { "default";
+            rel1.to_x: "invert_btn";
+            rel2.to_x: "invert_btn";
+            rel1.relative: 1.0 0.0;
+            rel2.relative: 1.0 1.0;
+            align: 0 0.5;
+            fixed: 1 0;
+            color: COL_HI;
+            text {
+               size: 11;
+               align: 0 0.5;
+               min: 1 0;
+               ellipsis: -1;
+               font: FN;
+            }
+         }
+      }
+      text { "elm.text.size_x";
+         clip_to: "base_clip";
+         scale: 1;
+         effect: SHADOW BOTTOM;
+         desc { "default";
+            rel1.to_x: "elm.text.size_w";
+            rel2.to_x: "elm.text.size_w";
+            rel1.relative: 1.0 0.0;
+            rel2.relative: 1.0 1.0;
+            align: 0 0.5;
+            fixed: 1 0;
+            color: COL_NM;
+            text {
+               text: "x";
+               size: 11;
+               align: 0 0.5;
+               min: 1 0;
+               ellipsis: -1;
+               font: FN;
+            }
+         }
+      }
+      text { "elm.text.size_h";
+         clip_to: "base_clip";
+         scale: 1;
+         effect: GLOW;
+         desc { "default";
+            rel1.to_x: "elm.text.size_x";
+            rel2.to_x: "elm.text.size_x";
+            rel1.relative: 1.0 0.0;
+            rel2.relative: 1.0 1.0;
+            align: 0 0.5;
+            fixed: 1 0;
+            color: COL_HI;
+            text {
+               size: 11;
+               align: 0 0.5;
+               min: 1 0;
+               ellipsis: -1;
+               font: FN;
+            }
+         }
+      }
+      image { "cursor_arrow";
+         clip_to: "base_clip";
+         scale: 1;
+         desc {
+            rel1.to_x: "size_spacer";
+            rel2.to_x: "size_spacer";
+            rel1.relative: 1.0 0.5;
+            rel2.relative: 1.0 0.5;
+            rel1.offset: 3 0;
+            align: 0 0.5;
+            fixed: 1 1;
+            min: 12 12;
+            image.normal: "cursor_arrow.png";
+         }
+      }
+      swallow { "elm.swallow.cursor_arrow.tooltip";
+         desc { "default";
+            fixed: 1 1;
+            rel1.to: "cursor_arrow";
+            rel2.to: "cursor_arrow";
+         }
+      }
+      text { "elm.text.cursor_pxx";
+         clip_to: "base_clip";
+         scale: 1;
+         effect: GLOW;
+         desc { "default";
+            rel1.to_x: "cursor_arrow";
+            rel2.to_x: "cursor_arrow";
+            rel1.relative: 1.0 0.0;
+            rel2.relative: 1.0 1.0;
+            align: 0 0.5;
+            fixed: 1 0;
+            color: COL_HI;
+            text {
+               size: 11;
+               align: 0 0.5;
+               min: 1 0;
+               ellipsis: -1;
+               font: FN;
+            }
+         }
+      }
+      text { "elm.text.cursor_px.";
+         clip_to: "base_clip";
+         scale: 1;
+         effect: SHADOW BOTTOM;
+         desc { "default";
+            rel1.to_x: "elm.text.cursor_pxx";
+            rel2.to_x: "elm.text.cursor_pxx";
+            rel1.relative: 1.0 0.0;
+            rel2.relative: 1.0 1.0;
+            align: 0 0.5;
+            fixed: 1 0;
+            color: COL_NM;
+            text {
+               text: ",";
+               size: 11;
+               align: 0 0.5;
+               min: 1 0;
+               ellipsis: -1;
+               font: FN;
+            }
+         }
+      }
+      text { "elm.text.cursor_pxy";
+         clip_to: "base_clip";
+         scale: 1;
+         effect: GLOW;
+         desc { "default";
+            rel1.to_x: "elm.text.cursor_px.";
+            rel2.to_x: "elm.text.cursor_px.";
+            rel1.relative: 1.0 0.0;
+            rel2.relative: 1.0 1.0;
+            align: 0 0.5;
+            fixed: 1 0;
+            color: COL_HI;
+            text {
+               size: 11;
+               align: 0 0.5;
+               min: 1 0;
+               ellipsis: -1;
+               font: FN;
+            }
+         }
+      }
+      text { "elm.text.cursor_sep";
+         clip_to: "base_clip";
+         scale: 1;
+         effect: SHADOW BOTTOM;
+         desc { "default";
+            rel1.to_x: "elm.text.cursor_pxy";
+            rel2.to_x: "elm.text.cursor_pxy";
+            rel1.relative: 1.0 0.0;
+            rel2.relative: 1.0 1.0;
+            align: 0 0.5;
+            fixed: 1 0;
+            color: COL_NM;
+            text {
+               text: " | ";
+               size: 11;
+               align: 0 1;
+               min: 1 0;
+               ellipsis: -1;
+               font: FN;
+            }
+         }
+      }
+      text { "elm.text.cursor_relx";
+         clip_to: "base_clip";
+         scale: 1;
+         effect: GLOW;
+         desc { "default";
+            rel1.to_x: "elm.text.cursor_sep";
+            rel2.to_x: "elm.text.cursor_sep";
+            rel1.relative: 1.0 0.0;
+            rel2.relative: 1.0 1.0;
+            align: 0 0.5;
+            fixed: 1 0;
+            color: COL_HI;
+            text {
+               size: 11;
+               align: 0 0.5;
+               min: 1 0;
+               ellipsis: -1;
+               font: FN;
+            }
+         }
+      }
+      text { "elm.text.cursor_rel.";
+         clip_to: "base_clip";
+         scale: 1;
+         effect: SHADOW BOTTOM;
+         desc { "default";
+            rel1.to_x: "elm.text.cursor_relx";
+            rel2.to_x: "elm.text.cursor_relx";
+            rel1.relative: 1.0 0.0;
+            rel2.relative: 1.0 1.0;
+            align: 0 0.5;
+            fixed: 1 0;
+            color: COL_NM;
+            text {
+               text: ",";
+               size: 11;
+               align: 0 0.5;
+               min: 1 0;
+               ellipsis: -1;
+               font: FN;
+            }
+         }
+      }
+      text { "elm.text.cursor_rely";
+         clip_to: "base_clip";
+         scale: 1;
+         effect: GLOW;
+         desc { "default";
+            rel1.to_x: "elm.text.cursor_rel.";
+            rel2.to_x: "elm.text.cursor_rel.";
+            rel1.relative: 1.0 0.0;
+            rel2.relative: 1.0 1.0;
+            align: 0 0.5;
+            fixed: 1 0;
+            color: COL_HI;
+            text {
+               size: 11;
+               align: 0 0.5;
+               min: 1 0;
+               ellipsis: -1;
+               font: FN;
+            }
+         }
+      }
+      spacer { "cursor_spacer";
+         scale: 1;
+         desc {
+            rel1.to: "size_spacer";
+            rel1.relative: 1.0 0.0;
+            rel2.to: "size_spacer";
+            rel2.relative: 1.0 1.0;
+            min: 200 0;
+            fixed: 1 0;
+            align: 0 0.5;
+         }
+      }
+      spacer { "group_spacer";
+         scale: 1;
+         desc {
+            rel1.to: "line_spacer";
+            rel1.relative: 0.0 0.0;
+            rel2.to: "line_spacer";
+            rel2.relative: 0.0 1.0;
+            min: 200 0;
+            fixed: 1 0;
+            align: 1 0.5;
+         }
+      }
+      image { "group_icon";
+         clip_to: "base_clip";
+         scale: 1;
+         desc { "default";
+            rel1.to_x: "cursor_spacer";
+            rel2.to_x: "elm.text.group_name";
+            rel1.relative: 1.0 0.0;
+            rel2.relative: 0.0 1.0;
+            rel1.offset: 0 1;
+            min: 15 15;
+            max: 15 15;
+            align: 1 0.5;
+            image.normal: "navi_group.png";
+         }
+      }
+      swallow { "elm.swallow.group_icon.tooltip";
+         desc { "default";
+            fixed: 1 1;
+            rel1.to: "group_icon";
+            rel2.to: "group_icon";
+         }
+      }
+      text { "elm.text.group_name";
+         clip_to: "base_clip";
+         scale: 1;
+         effect: GLOW;
+         desc { "default";
+            rel1.to_x: "group_spacer";
+            rel2.to_x: "line_spacer";
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 0.0 1.0;
+            align: 1 0.5;
+            fixed: 1 0;
+            color: COL_HI;
+            text {
+               size: 11;
+               align: 1 0.5;
+               min: 0 0;
+               max: 1 0;
+               font: FN;
+            }
+         }
+      }
+      spacer { "line_spacer";
+         scale: 1;
+         desc {
+            rel1.relative: 1 0;
+            align: 1 0.5;
+            min: 100 0;
+            fixed: 1 0;
+         }
+      }
+      text { "elm.text.line_[";
+         clip_to: "base_clip";
+         scale: 1;
+         effect: SHADOW BOTTOM;
+         desc { "default";
+            rel1.to: "elm.text.line_cur";
+            rel2.to: "elm.text.line_cur";
+            rel2.relative: 0 1.0;
+            align: 1 0.5;
+            fixed: 1 0;
+            color: COL_NM;
+            text {
+               text: "Line  ";
+               size: 11;
+               align: 1 0.5;
+               min: 1 0;
+               max: 1 0;
+               ellipsis: -1;
+               font: FN;
+            }
+         }
+      }
+      swallow { "elm.swallow.line.tooltip";
+         desc { "default";
+            fixed: 1 1;
+            rel1.to: "elm.text.line_[";
+            rel2.to: "elm.text.line_[";
+         }
+      }
+      text { "elm.text.line_cur";
+         clip_to: "base_clip";
+         scale: 1;
+         effect: GLOW;
+         desc { "default";
+            rel1.to: "elm.text.line_c";
+            rel2.to: "elm.text.line_c";
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 0.0 1.0;
+            align: 1 0.5;
+            fixed: 1 0;
+            color: COL_HI;
+            text {
+               size: 11;
+               align: 1 0.5;
+               min: 1 0;
+               ellipsis: -1;
+               font: FN;
+            }
+         }
+      }
+      text { "elm.text.line_c";
+         clip_to: "base_clip";
+         scale: 1;
+         effect: SHADOW BOTTOM;
+         desc { "default";
+            rel1.to: "elm.text.line_max";
+            rel2.to: "elm.text.line_max";
+            rel2.relative: 0 1.0;
+            align: 1 0.5;
+            fixed: 1 0;
+            color: COL_NM;
+            text {
+               text: ":";
+               size: 11;
+               align: 1 0.5;
+               min: 1 0;
+               ellipsis: -1;
+               font: FN;
+            }
+         }
+      }
+      text { "elm.text.line_max";
+         clip_to: "base_clip";
+         scale: 1;
+         effect: GLOW;
+         desc { "default";
+            rel1.relative: 1.0 0.0;
+            rel2.relative: 1.0 1.0;
+            align: 1 0.5;
+            fixed: 1 0;
+            color: COL_HI;
+            text {
+               size: 11;
+               align: 1 0.5;
+               min: 1 0;
+               ellipsis: -1;
+               font: FN;
+            }
+         }
+      }
+      text { "elm.text.info_msg";
+         scale: 1;
+         effect: SHADOW BOTTOM;
+         nomouse;
+         desc { "default";
+            align: 0 0.5;
+            rel1.offset: 0 -1;
+            rel2.offset: -1 -2;
+            text {
+               font: FN;
+               size: 11;
+               align: 0 0.5;
+            }
+            color: COL_NM_TRANS;
+         }
+         desc { "show";
+            inherit: "default";
+            color: COL_NM;
+         }
+      }
+      program { "info_msg_show";
+         signal: "elm,action,info_msg,show";
+         source: "";
+         action: STATE_SET "hide";
+         target: "base_clip";
+         transition: DECELERATE 0.15;
+         after: "info_msg_show2";
+      }
+      program { "info_msg_show2";
+         action: STATE_SET "show";
+         target: "elm.text.info_msg";
+         transition: DECELERATE 0.3;
+         after: "info_msg_idle";
+      }
+      program { "info_msg_idle";
+         action: STATE_SET "show";
+         target: "elm.text.info_msg";
+         transition: LINEAR 3.5;
+         after: "info_msg_hide";
+      }
+      program { "info_msg_hide";
+         signal: "elm,action,info_msg,hide";
+         source: "";
+         action: STATE_SET "default";
+         target: "elm.text.info_msg";
+         transition: DECELERATE 0.3;
+         after: "info_msg_hide2";
+      }
+      program { "info_msg_hide2";
+         action: STATE_SET "default";
+         target: "base_clip";
+         transition: DECELERATE 0.3;
+      }
+   }
+}
+
+group { "main_layout";
+   parts {
+      spacer { "base";
+         scale: 1;
+         desc {
+            min: 810 475;
+         }
+      }
+      swallow { "elm.swallow.panes";
+         scale: 1;
+         desc { "default";
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "elm.swallow.file_browser";
+            }
+            rel2 {
+               relative: 0.0 0.0;
+               to_x: "elm.swallow.edc_navigator";
+               to_y: "elm.swallow.file_tab";
+            }
+         }
+      }
+      rect { "error_alert";
+         nomouse;
+         desc { "default";
+            rel1.to_y: "elm.swallow.panes";
+            rel2.to_y: "elm.swallow.panes";
+            color: 0 0 0 0;
+         }
+         desc { "visible";
+            inherit: "default";
+            color: 200 0 0 175;
+         }
+      }
+      swallow { "elm.swallow.file_tab";
+         scale: 1;
+         desc { "default";
+            rel1 { to: "elm.swallow.statusbar"; relative: 0 0; }
+            rel2 { to: "elm.swallow.statusbar"; relative: 1 0; }
+            align: 0.5 0;
+            min: 0 25;
+            fixed: 0 1;
+         }
+         desc { "visible";
+            inherit: "default";
+            align: 0.5 1;
+         }
+      }
+      swallow { "elm.swallow.statusbar";
+         scale: 1;
+         desc { "default";
+            rel1.relative: 0 1;
+            rel2.relative: 1 1;
+            align: 0.5 0;
+            min: 0 18;
+            fixed: 0 1;
+         }
+         desc { "visible";
+            inherit: "default";
+            align: 0.5 1;
+         }
+      }
+      swallow { "elm.swallow.file_browser";
+         scale: 1;
+         desc { "default";
+            rel1 {
+               offset: 1 0;
+            }
+            rel2 {
+               relative: 0.0 0.0;
+               to_y: "elm.swallow.file_tab";
+            }
+            align: 1 0;
+            fixed: 1 0;
+            visible: 0;
+         }
+         desc { "visible";
+            inherit: "default";
+            rel2 {
+               relative: 1.0 0.0;
+               to_x: "elm.bar.left";
+               to_y: "elm.swallow.file_tab";
+            }
+            visible: 1;
+         }
+      }
+      swallow { "elm.swallow.edc_navigator";
+         scale: 1;
+         desc { "default";
+            rel1 {
+               relative: 1.0 0.0;
+            }
+            rel2 {
+               relative: 1.0 0.0;
+               to_y: "elm.swallow.file_tab";
+            }
+            align: 0 0;
+            fixed: 1 0;
+            visible: 0;
+         }
+         desc { "visible";
+            inherit: "default";
+            rel1 {
+               relative: 1.0 0.0;
+               to: "elm.bar.right";
+            }
+            visible: 1;
+         }
+      }
+      spacer { "whole_left";
+         desc { "default";
+            rel2.relative: 0.5 1.0;
+         }
+      }
+      spacer { "whole_right";
+         desc { "default";
+            rel1.relative: 0.5 0.0;
+         }
+      }
+      spacer { "elm.bar.left";
+         dragable { confine: "whole_left";
+            x: 1 1 1;
+            y: 0 0 0;
+         }
+         desc { "default";
+            max: 0 99999;
+            min: 0 14;
+            fixed: 1 1;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 1.0 1.0;
+         }
+      }
+      spacer { "elm.bar.right";
+         dragable { confine: "whole_right";
+            x: 1 1 1;
+            y: 0 0 0;
+         }
+         desc { "default";
+            max: 0 99999;
+            min: 0 14;
+            fixed: 1 1;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 1.0 1.0;
+         }
+      }
+      spacer { "elm.bar.event_left";
+         desc { "default";
+            rel1.to_x: "elm.bar.left";
+            rel2.to_x: "elm.bar.left";
+            rel2.to_y: "elm.swallow.file_tab";
+            rel2.relative: 1.0 0.0;
+         }
+      }
+      spacer { "elm.bar.event_right";
+         desc { "default";
+            rel1.to_x: "elm.bar.right";
+            rel2.to_x: "elm.bar.right";
+            rel2.to_y: "elm.swallow.file_tab";
+            rel2.relative: 1.0 0.0;
+         }
+      }
+      swallow { "bar_left";
+         dragable.events: "elm.bar.left";
+         desc { "default";
+            min: 10 0;
+            max: 99999 99999;
+            fixed: 1 0;
+            rel1.to_x: "elm.bar.event_left";
+            rel1.relative: 0.0 0.25;
+            rel2.to: "elm.bar.event_left";
+            rel2.relative: 1.0 0.75;
+            color: 0 0 0 0;
+         }
+      }
+      swallow { "bar_right";
+         dragable.events: "elm.bar.right";
+         desc { "default";
+            min: 10 0;
+            max: 99999 99999;
+            fixed: 1 0;
+            rel1.to_x: "elm.bar.event_right";
+            rel1.relative: 0.0 0.25;
+            rel2.to: "elm.bar.event_right";
+            rel2.relative: 1.0 0.75;
+            color: 0 0 0 0;
+         }
+      }
+      rect { "bar_left1";
+         repeat_events: 1;
+         desc { "default";
+            fixed: 1 1;
+            rel1.to: "bar_left";
+            rel2.to: "bar_left";
+            rel2.relative: 0.5 1.0;
+            color: 0 0 0 0;
+         }
+      }
+      rect { "bar_left2";
+         repeat_events: 1;
+         desc { "default";
+            fixed: 1 1;
+            rel1.to: "bar_left";
+            rel1.relative: 0.5 0.0;
+            rel2.to: "bar_left";
+            color: 0 0 0 0;
+         }
+      }
+      rect { "bar_right1";
+         repeat_events: 1;
+         desc { "default";
+            fixed: 1 1;
+            rel1.to: "bar_right";
+            rel2.to: "bar_right";
+            rel2.relative: 0.5 1.0;
+            color: 0 0 0 0;
+         }
+      }
+      rect { "bar_right2";
+         repeat_events: 1;
+         desc { "default";
+            fixed: 1 1;
+            rel1.to: "bar_right";
+            rel1.relative: 0.5 0.0;
+            rel2.to: "bar_right";
+            color: 0 0 0 0;
+         }
+      }
+      image { "glow1a_left";
+         nomouse;
+         desc { "default";
+            image.normal: "downlight_glow_left.png";
+            image.border: 0 3 0 0;
+            max: 32 99999;
+            rel2.to_x: "elm.bar.left";
+            rel2.to_y: "elm.swallow.file_tab";
+            rel2.relative: 1.0 0.0;
+            color: 255 255 255 0;
+            align: 1.0 0.5;
+         }
+         desc { "active";
+            inherit: "default";
+            color: 255 255 255 255;
+         }
+      }
+      image { "glow1b_left";
+         nomouse;
+         desc { "default";
+            image.normal: "downlight_glow_right.png";
+            max: 4 99999;
+            rel1.to_x: "elm.bar.left";
+            rel2.to_y: "elm.swallow.file_tab";
+            rel2.relative: 1.0 0.0;
+            color: 255 255 255 0;
+            align: 0.0 0.5;
+         }
+         desc { "active";
+            inherit: "default";
+            color: 255 255 255 255;
+         }
+      }
+      image { "glow2a_left";
+         nomouse;
+         desc { "default";
+            image.normal: "downlight_glow_left.png";
+            max: 4 99999;
+            rel2.to_x: "elm.bar.left";
+            rel2.to_y: "elm.swallow.file_tab";
+            rel2.relative: 1.0 0.0;
+            color: 255 255 255 0;
+            align: 1.0 0.5;
+         }
+         desc { "active";
+            inherit: "default";
+            color: 255 255 255 255;
+         }
+      }
+      image { "glow2b_left";
+         nomouse;
+         desc { "default";
+            image.normal: "downlight_glow_right.png";
+            image.border: 0 3 0 0;
+            max: 32 99999;
+            rel1.to_x: "elm.bar.left";
+            rel2.to_y: "elm.swallow.file_tab";
+            rel2.relative: 1.0 0.0;
+            color: 255 255 255 0;
+            align: 0.0 0.5;
+         }
+         desc { "active";
+            inherit: "default";
+            color: 255 255 255 255;
+         }
+      }
+      image { "glow1a_right";
+         nomouse;
+         desc { "default";
+            image.normal: "downlight_glow_left.png";
+            image.border: 0 3 0 0;
+            max: 32 99999;
+            rel2.to_x: "elm.bar.right";
+            rel2.to_y: "elm.swallow.file_tab";
+            rel2.relative: 1.0 0.0;
+            color: 255 255 255 0;
+            align: 1.0 0.5;
+         }
+         desc { "active";
+            inherit: "default";
+            color: 255 255 255 255;
+         }
+      }
+      image { "glow1b_right";
+         nomouse;
+         desc { "default";
+            image.normal: "downlight_glow_right.png";
+            max: 4 99999;
+            rel1.to_x: "elm.bar.right";
+            rel2.to_y: "elm.swallow.file_tab";
+            rel2.relative: 1.0 0.0;
+            color: 255 255 255 0;
+            align: 0.0 0.5;
+         }
+         desc { "active";
+            inherit: "default";
+            color: 255 255 255 255;
+         }
+      }
+      image { "glow2a_right";
+         nomouse;
+         desc { "default";
+            image.normal: "downlight_glow_left.png";
+            max: 4 99999;
+            rel2.to_x: "elm.bar.right";
+            rel2.to_y: "elm.swallow.file_tab";
+            rel2.relative: 1.0 0.0;
+            color: 255 255 255 0;
+            align: 1.0 0.5;
+         }
+         desc { "active";
+            inherit: "default";
+            color: 255 255 255 255;
+         }
+      }
+      image { "glow2b_right";
+         nomouse;
+         desc { "default";
+            image.normal: "downlight_glow_right.png";
+            image.border: 0 3 0 0;
+            max: 32 99999;
+            rel1.to_x: "elm.bar.right";
+            rel2.to_y: "elm.swallow.file_tab";
+            rel2.relative: 1.0 0.0;
+            color: 255 255 255 0;
+            align: 0.0 0.5;
+         }
+         desc { "active";
+            inherit: "default";
+            color: 255 255 255 255;
+         }
+      }
+   }
+   programs {
+      program { "file_browser_show";
+         signal: "elm,state,file_browser,show";
+         action: STATE_SET "visible";
+         target: "elm.swallow.file_browser";
+         transition: DECELERATE 0.25;
+      }
+      program { "file_browser_hide";
+         signal: "elm,state,file_browser,hide";
+         action: STATE_SET "default";
+         target: "elm.swallow.file_browser";
+         transition: DECELERATE 0.25;
+         after: "file_browser_hide_done";
+      }
+      program { "file_browser_hide_done";
+         action: SIGNAL_EMIT "elm,state,file_browser_hide,done" "";
+      }
+      program { "edc_navigator_show";
+         signal: "elm,state,edc_navigator,show";
+         action: STATE_SET "visible";
+         target: "elm.swallow.edc_navigator";
+         transition: DECELERATE 0.25;
+      }
+      program { "edc_navigator_hide";
+         signal: "elm,state,edc_navigator,hide";
+         action: STATE_SET "default";
+         target: "elm.swallow.edc_navigator";
+         transition: DECELERATE 0.25;
+         after: "edc_navigator_hide_done";
+      }
+      program { "edc_navigator_hide_done";
+         action: SIGNAL_EMIT "elm,state,edc_navigator_hide,done" "";
+      }
+      program { "statusbar_show";
+         signal: "elm,state,statusbar,show";
+         action: STATE_SET "visible";
+         target: "elm.swallow.statusbar";
+         transition: DECELERATE 0.25;
+      }
+      program { "statusbar_hide";
+         signal: "elm,state,statusbar,hide";
+         action: STATE_SET "default";
+         target: "elm.swallow.statusbar";
+         transition: DECELERATE 0.25;
+      }
+      program { "file_tab_show";
+         signal: "elm,state,file_tab,show";
+         action: STATE_SET "visible";
+         target: "elm.swallow.file_tab";
+         transition: DECELERATE 0.25;
+      }
+      program { "file_tab_hide";
+         signal: "elm,state,file_tab,hide";
+         action: STATE_SET "default";
+         target: "elm.swallow.file_tab";
+         transition: DECELERATE 0.25;
+      }
+      program { "alert_show";
+         signal: "elm,state,alert,show";
+         action: STATE_SET "visible";
+         target: "error_alert";
+         after: "alert_show2";
+      }
+      program { "alert_show2";
+         action: STATE_SET "default";
+         target: "error_alert";
+         transition: DECELERATE 1;
+      }
+      program { "left_bar_mouse_in1";
+         signal: "mouse,in"; source: "bar_left1";
+         action: STATE_SET "active";
+         transition: BOUNCE 0.4 0.5 4;
+         target: "glow1a_left";
+         target: "glow1b_left";
+      }
+      program { "left_bar_mouse_out1";
+         signal: "mouse,out"; source: "bar_left1";
+         action: STATE_SET "default";
+         transition: DECELERATE 0.5;
+         target: "glow1a_left";
+         target: "glow1b_left";
+      }
+      program { "left_bar_mouse_in2";
+         signal: "mouse,in"; source: "bar_left2";
+         action: STATE_SET "active";
+         transition: BOUNCE 0.4 0.5 4;
+         target: "glow2a_left";
+         target: "glow2b_left";
+      }
+      program { "left_bar_mouse_out2";
+         signal: "mouse,out"; source: "bar_left2";
+         action: STATE_SET "default";
+         transition: DECELERATE 0.5;
+         target: "glow2a_left";
+         target: "glow2b_left";
+      }
+      program { "right_bar_mouse_in1";
+         signal: "mouse,in"; source: "bar_right1";
+         action: STATE_SET "active";
+         transition: BOUNCE 0.4 0.5 4;
+         target: "glow1a_right";
+         target: "glow1b_right";
+      }
+      program { "right_bar_mouse_out1";
+         signal: "mouse,out"; source: "bar_right1";
+         action: STATE_SET "default";
+         transition: DECELERATE 0.5;
+         target: "glow1a_right";
+         target: "glow1b_right";
+      }
+      program { "right_bar_mouse_in2";
+         signal: "mouse,in"; source: "bar_right2";
+         action: STATE_SET "active";
+         transition: BOUNCE 0.4 0.5 4;
+         target: "glow2a_right";
+         target: "glow2b_right";
+      }
+      program { "right_bar_mouse_out2";
+         signal: "mouse,out"; source: "bar_right2";
+         action: STATE_SET "default";
+         transition: DECELERATE 0.5;
+         target: "glow2a_right";
+         target: "glow2b_right";
+      }
+   }
+}
+
+group { "tools_layout";
+   parts {
+      swallow { "elm.swallow.content";
+         scale: 1;
+         desc { "default";
+            rel1 {
+               relative: 0.0 1.0;
+               to_y: "elm.swallow.tools";
+            }
+            rel2.to_y: "elm.swallow.fixed_bar";
+            rel2.relative: 1.0 0.0;
+         }
+      }
+      rect { "tools_base";
+         scale: 1;
+         desc { "default";
+            rel1.relative: 0 0;
+            rel2.relative: 1 0;
+            min: 0 23;
+            fixed: 0 1;
+            align: 0.5 1;
+            color: 64 64 64 255;
+         }
+         desc { "visible";
+            inherit: "default";
+            align: 0.5 0;
+         }
+      }
+      swallow { "elm.swallow.tools";
+         scale: 1;
+         desc { "default";
+            rel1.to: "tools_base";
+            rel2.to: "tools_base";
+            rel1.offset: 2 0;
+            rel2.offset: -4 -1;
+         }
+      }
+      image { "tools_overlay";
+         scale: 1;
+         nomouse;
+         desc { "default";
+            rel1 { to: "tools_base"; }
+            rel2 { to: "tools_base"; }
+            image.normal: "bevel_out.png";
+            image.border: 1 1 1 1;
+            image.border_scale: 1;
+         }
+      }
+      rect { "fixed_bar_bg";
+         desc { "default";
+            color: 175 175 175 175;
+            rel.to: "elm.swallow.fixed_bar";
+         }
+      }
+      swallow { "elm.swallow.fixed_bar";
+         scale: 1;
+         desc { "default";
+            min: 0 0;
+            align: 0.5 0;
+            fixed: 1 1;
+            rel1.relative: 0.0 1.0;
+            rel2.relative: 1.0 1.0;
+         }
+         desc { "visible";
+            inherit: "default";
+            min: 0 20;
+            align: 0.5 1;
+         }
+      }
+   }
+   programs {
+      program { "tools_show";
+         signal: "elm,state,tools,show";
+         action: STATE_SET "visible";
+         target: "tools_base";
+         transition: DECELERATE 0.25 CURRENT;
+      }
+      program { "tools_hide";
+         signal: "elm,state,tools,hide";
+         action: STATE_SET "default";
+         target: "tools_base";
+         transition: DECELERATE 0.25 CURRENT;
+      }
+      program { "fixed_bar_show";
+         signal: "elm,state,fixed_bar,show";
+         action: STATE_SET "visible";
+         target: "elm.swallow.fixed_bar";
+         transition: DECELERATE 0.25 CURRENT;
+      }
+      program { "fixed_bar_hide";
+         signal: "elm,state,fixed_bar,hide";
+         action: STATE_SET "default";
+         target: "elm.swallow.fixed_bar";
+         transition: DECELERATE 0.25 CURRENT;
+      }
+   }
+}
+
+group { "rel_to_layout";
+   parts {
+      spacer { "base";
+         scale: 1;
+         desc { "default";
+            min: 230 95;
+         }
+         desc { "single";
+            min: 115 95;
+         }
+      }
+      text { "guide_x";
+         scale: 1;
+         effect: SHADOW BOTTOM;
+         desc { "default";
+            rel1.relative: 0 0;
+            rel2.relative: 0 0;
+            align: 0 0;
+            min: 115 20;
+            fixed: 1 1;
+            text {
+               font: FN;
+               size: 10;
+               align: 0.1 0.5;
+               min: 1 0;
+               ellipsis: -1;
+               text: "Relative to X:";
+            }
+            color: COL_NM;
+         }
+         desc { "single";
+            rel.to: "guide_y";
+            visible: 0;
+         }
+      }
+      text { "guide_y";
+         scale: 1;
+         effect: SHADOW BOTTOM;
+         desc { "default";
+            rel1.relative: 1 0;
+            rel2.relative: 1 0;
+            align: 1 0;
+            min: 115 20;
+            fixed: 1 1;
+            text {
+               font: FN;
+               size: 10;
+               align: 0.1 0.5;
+               min: 1 0;
+               ellipsis: -1;
+               text: "Relative to Y:";
+            }
+            color: COL_NM;
+         }
+         desc { "single";
+            rel.to: "guide_x";
+            visible: 0;
+         }
+      }
+      swallow { "elm.swallow.x";
+         scale: 1;
+         desc { "default";
+            rel1.to: "guide_x";
+            rel1.relative: 0 1;
+            rel2.to_x: "guide_x";
+            rel2.to_y: "button_area";
+            rel2.relative: 1 0;
+            rel2.offset: -3 -1;
+            align: 0.5 0;
+         }
+         desc { "single";
+            rel.to: "elm.swallow.y";
+            visible: 0;
+         }
+      }
+      swallow { "elm.swallow.y";
+         scale: 1;
+         desc { "default";
+            rel1.to: "guide_y";
+            rel1.relative: 0 1;
+            rel2.to_x: "guide_y";
+            rel2.to_y: "button_area";
+            rel2.relative: 1 0;
+            rel1.offset: 2 0;
+            align: 0.5 0;
+         }
+         desc { "single";
+            rel.to: "elm.swallow.x";
+            visible: 0;
+         }
+      }
+      spacer { "button_area";
+         scale: 1;
+         desc { "default";
+            min: 0 30;
+            align: 0.5 1;
+            fixed: 1 1;
+            rel1.relative: 0 1;
+            rel2.relative: 1 1;
+         }
+      }
+      swallow { "elm.swallow.ok_btn";
+         scale: 1;
+         desc { "default";
+            rel.to: "button_area";
+            rel1.relative: 0.5 1;
+            rel2.relative: 0.5 1;
+            align: 0.5 1;
+            fixed: 1 1;
+            min: 50 25;
+         }
+      }
+   }
+   programs {
+      program { "show_x";
+         signal: "elm,state,show,x";
+         action: STATE_SET "single";
+         target: "elm.swallow.y";
+         target: "guide_y";
+         target: "base";
+      }
+      program { "show_y";
+         signal: "elm,state,show,y";
+         action: STATE_SET "single";
+         target: "elm.swallow.x";
+         target: "guide_x";
+         target: "base";
+      }
+   }
+}
+
+group { "padding3_layout";
+   parts {
+      swallow { "elm.swallow.content";
+         desc { "default";
+            rel1.offset: 3 0;
+         }
+      }
+   }
+}
+
+group { "edit_layout";
+   parts {
+      rect { "base_clip";
+         desc { "default";
+            rel1.to: "elm.swallow.linenumber";
+            rel2.to: "elm.swallow.linenumber";
+            rel2.relative: 1 1;
+            fixed: 1 0;
+         }
+         desc { "hide";
+            inherit: "default";
+            rel2.relative: 0 1;
+         }
+      }
+      spacer { "line_dummy";
+         scale: 1;
+         clip_to: "base_clip";
+         nomouse;
+         desc { "default";
+            fixed: 1 0;
+            align: 0 1;
+            min: 15 15;
+            rel1.relative: 0 1;
+            rel1.offset: 3 0;
+            rel2.relative: 0 1;
+         }
+         desc { "hide";
+            inherit: "default";
+            min: 0 0;
+         }
+      }
+      swallow { "elm.swallow.linenumber";
+         scale: 1;
+         clip_to: "base_clip";
+         nomouse;
+         desc {
+            fixed: 1 0;
+            align: 0 0;
+            min: 15 0;
+            rel1.relative: 0 0;
+            rel1.offset: 3 0;
+            rel2.relative: 0 0;
+            rel2.to_y: "line_dummy";
+         }
+      }
+      swallow { "elm.swallow.edit";
+         scale: 1;
+         desc {
+            align: 0 0;
+            rel1.relative: 1 0;
+            rel1.to: "base_clip";
+            fixed: 0 1;
+         }
+      }
+      part { "disabler";
+         desc { "default";
+            image.normal: "disabler.png";
+            fill.type: TILE;
+            color: 255 255 255 0;
+            visible: 0;
+         }
+         desc { "disabled";
+            inherit: "default";
+            color: 255 255 255 255;
+            visible: 1;
+         }
+      }
+   }
+   programs {
+      program { "linenumber_show";
+         signal: "elm,state,linenumber,show";
+         action: STATE_SET "default";
+         target: "base_clip";
+         transition: DECELERATE 0.35;
+      }
+      program { "linenumber_hide";
+         signal: "elm,state,linenumber,hide";
+         action: STATE_SET "hide";
+         target: "base_clip";
+         transition: DECELERATE 0.35;
+      }
+      program { "linedummy_show";
+         signal: "elm,state,linedummy,show";
+         action: STATE_SET "default";
+         target: "line_dummy";
+      }
+      program { "linedummy_hide";
+         signal: "elm,state,linedummy,hide";
+         action: STATE_SET "hide";
+         target: "line_dummy";
+      }
+   }
+   programs {
+      program { "layout_disable";
+         signal: "elm,state,disabled";
+         action: STATE_SET "disabled";
+         target: "disabler";
+         transition: DECELERATE 0.125;
+      }
+      program { "layout_enable";
+         signal: "elm,state,enabled";
+         action: STATE_SET "default";
+         target: "disabler";
+         transition: DECELERATE 0.125;
+      }
+   }
+}
+group { "help_layout";
+   parts {
+      rect { "base";
+         scale: 1;
+         desc { "default";
+            color: 65 65 65 255;
+            min: 430 220;
+         }
+      }
+      image { "image_bg";
+         scale: 1;
+         desc { "default";
+            image.normal: "help_bg.png";
+            image.border: 0 350 0 0;
+            align: 0.5 0.0;
+            rel1.to: "base";
+            rel2.to: "base";
+            min: 430 90;
+            max: 9999 90;
+         }
+      }
+      image { "image_logo";
+         scale: 1;
+         desc { "default";
+            image.normal: "full_logo.png";
+            align: 0.0 0.5;
+            rel1.to: "image_bg";
+            rel2.to: "image_bg";
+            min: 115 90;
+            max: 115 90;
+         }
+      }
+      swallow { "swallow_list";
+         scale: 1;
+         desc { "default";
+            rel1.to: "image_bg";
+            rel1.relative: 0.0 1.0;
+            rel2.to: "base";
+         }
+      }
+      rect { "content_bg";
+         scale: 1;
+         desc { "default";
+            rel1.to: "base";
+            rel2.to: "base";
+            color: 65 65 65 255;
+         }
+         desc { "hide";
+            inherit: "default";
+            visible: 0;
+         }
+      }
+      swallow { "swallow_label";
+         scale: 1;
+         desc { "default";
+            align: 0.5 0.0;
+            min: 430 25;
+            max: 9999 25;
+         }
+         desc { "hide";
+            inherit: "default";
+            visible: 0;
+         }
+      }
+      swallow { "swallow_entry";
+         scale: 1;
+         desc { "default";
+            rel1.to: "swallow_label";
+            rel1.relative: 0.0 1.0;
+            rel2.to: "base";
+         }
+         desc { "hide";
+            inherit: "default";
+            visible: 0;
+         }
+      }
+      swallow { "swallow_button";
+         scale: 1;
+         desc { "default";
+            align: 1.0 0.5;
+            rel1.to: "swallow_label";
+            rel2.to: "swallow_label";
+            min: 25 25;
+            max: 25 25;
+         }
+         desc { "hide";
+            inherit: "default";
+            visible: 0;
+         }
+      }
+   }
+   programs {
+      program { "content_show";
+         signal: "elm,state,content,show";
+         action: STATE_SET "default";
+         target: "content_bg";
+         target: "swallow_label";
+         target: "swallow_entry";
+         target: "swallow_button";
+      }
+      program { "content_hide";
+         signal: "elm,state,content,hide";
+         action: STATE_SET "hide";
+         target: "content_bg";
+         target: "swallow_label";
+         target: "swallow_entry";
+         target: "swallow_button";
+      }
+   }
+}
+#define REFERENCE_LAYOUT_WIDTH 300
+#define REFERENCE_LAYOUT_HEIGHT 100
+group { "reference_layout";
+   data.item: "width" REFERENCE_LAYOUT_WIDTH;
+   data.item: "height" REFERENCE_LAYOUT_HEIGHT;
+   parts {
+      spacer { "base";
+         scale: 1;
+         desc { "default";
+         }
+      }
+      rect { "bg";
+         scale: 1;
+         desc { "default";
+            min: REFERENCE_LAYOUT_WIDTH REFERENCE_LAYOUT_HEIGHT;
+            max: REFERENCE_LAYOUT_WIDTH REFERENCE_LAYOUT_HEIGHT;
+            fixed: 1 1;
+            align: 0.0 0.0;
+            rel1.to: "base";
+            rel2.to: "base";
+            color: 128 128 128 255;
+         }
+      }
+      swallow { "elm.swallow.content";
+         scale: 1;
+         desc { "default";
+            rel1.to: "bg";
+            rel2.to: "bg";
+         }
+      }
+   }
+}

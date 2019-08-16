@@ -1,0 +1,126 @@
+collections {
+   base_scale: 1.0;
+   styles {
+      style { "basic_style";
+         base: "font="Sans" font_size=20 text_class=entry color=#FFFFFF style=soft_outline outline_color=#0088AA64 valign=0.5 ellipsis=1.0 wrap=none align=center";
+      }
+      style { "wrap_none_style";
+         base: "font="Sans" font_size=15 text_class=entry color=#FFFFFF style=outline outline_color=#FF0000 valign=0.5 wrap=none align=center";
+      }
+      style { "wrap_char_style";
+         base: "font="Sans" font_size=15 text_class=entry color=#FFFFFF style=outline outline_color=#FF5E00 valign=0.5 wrap=char align=center";
+      }
+      style { "wrap_word_style";
+         base: "font="Sans" font_size=15 text_class=entry color=#FFFFFF style=outline outline_color=#FFBB00 valign=0.5 wrap=word align=center";
+      }
+      style { "wrap_mixed_style";
+         base: "font="Sans" font_size=15 text_class=entry color=#FFFFFF style=outline outline_color=#1DDB16 valign=0.5 wrap=mixed align=center";
+      }
+      style { "ellipsis_1_style";
+         base: "font="Sans" font_size=15 text_class=entry color=#FFFFFF style=soft_outline outline_color=#0054FF valign=0.5 ellipsis=1.0 wrap=none align=center";
+      }
+      style { "ellipsis_0_style";
+         base: "font="Sans" font_size=15 text_class=entry color=#FFFFFF style=soft_outline outline_color=#5F00FF valign=0.5 ellipsis=0.0 wrap=none align=center";
+      }
+   }
+   group { "main";
+      parts {
+         textblock { "text_block";
+            scale;
+            desc { "default";
+               text {
+                  style: "basic_style";
+                  text: "Try resizing view!";
+                  min: 0 1;
+               }
+               rel1.relative: 0.0 0.0;
+               rel2.relative: 1.0 0.1;
+            }
+         }
+      }
+      parts {
+         textblock { "text_wrap_none";
+            scale;
+            desc { "default";
+               rel1.to: "text_block";
+               rel1.relative: 0.0 1.0;
+               rel2.relative: 1.0 0.25;
+               text {
+                  style: "wrap_none_style";
+                  text: "[wrap = none] https://www.enlightenment.org/";
+               }
+            }
+         }
+      }
+      parts {
+         textblock { "text_wrap_char";
+            scale;
+            desc { "default";
+               rel1.to: "text_wrap_none";
+               rel1.relative: 0.0 1.0;
+               rel2.relative: 1.0 0.4;
+               text {
+                  style: "wrap_char_style";
+                  text: "[wrap = char] https://www.enlightenment.org/";
+               }
+            }
+         }
+      }
+      parts {
+         textblock { "text_wrap_word";
+            scale;
+            desc { "default";
+               rel1.to: "text_wrap_char";
+               rel1.relative: 0.0 1.0;
+               rel2.relative: 1.0 0.55;
+               text {
+                  style: "wrap_word_style";
+                  text: "[wrap = word] https://www.enlightenment.org/";
+               }
+            }
+         }
+      }
+      parts {
+         textblock { "text_wrap_mixed";
+            scale;
+            desc { "default";
+               rel1.to: "text_wrap_word";
+               rel1.relative: 0.0 1.0;
+               rel2.relative: 1.0 0.7;
+               text {
+                  style: "wrap_mixed_style";
+                  text: "[wrap = mixed] https://www.enlightenment.org/";
+               }
+            }
+         }
+      }
+      parts {
+         textblock { "text_ellipsis_1";
+            scale;
+            desc { "default";
+               rel1.to: "text_wrap_mixed";
+               rel1.relative: 0.0 1.0;
+               rel2.relative: 1.0 0.85;
+               text {
+                  style: "ellipsis_1_style";
+                  text: "[ellipsis = 1] https://www.enlightenment.org/";
+               }
+            }
+         }
+      }
+      parts {
+         textblock { "text_ellipsis_0";
+            scale;
+            desc { "default";
+               rel1.to: "text_ellipsis_1";
+               rel1.relative: 0.0 1.0;
+               rel2.relative: 1.0 1.0;
+               text {
+                  style: "ellipsis_0_style";
+                  text: "[ellipsis = 0] https://www.enlightenment.org/";
+               }
+            }
+         }
+      }
+   }
+}

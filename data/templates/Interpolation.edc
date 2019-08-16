@@ -1,0 +1,84 @@
+#define PART(NAME, POS_Y1, POS_Y2, COLOR) \
+   rect { NAME; \
+   desc { "default"; \
+      rel1.relative: 0.0 POS_Y1; \
+      rel2.relative: 0.2 POS_Y2; \
+      color: COLOR 255; \
+   } \
+   desc { "changed"; \
+      inherit: "default"; \
+      rel1.relative: 0.8 POS_Y1; \
+      rel2.relative: 1.0 POS_Y2; \
+   } \
+}
+
+#define PROGRAM1(NAME1, NAME2, TARGET, INTERPOL) \
+   program { NAME1; \
+      signal: "load"; \
+      action: STATE_SET "changed"; \
+      target: TARGET; \
+      transition: INTERPOL 1.0 CURRENT; \
+      after: NAME2; \
+   } \
+   program { NAME2; \
+      action: STATE_SET "default"; \
+      target: TARGET; \
+      transition: INTERPOL 1.0 CURRENT; \
+      after: NAME1; \
+   }
+
+#define PROGRAM2(NAME1, NAME2, TARGET, INTERPOL) \
+   program { NAME1; \
+      signal: "load"; \
+      action: STATE_SET "changed"; \
+      target: TARGET; \
+      transition: INTERPOL 1.0 1.0 1.0 CURRENT; \
+      after: NAME2; \
+   } \
+   program { NAME2; \
+      action: STATE_SET "default"; \
+      target: TARGET; \
+      transition: INTERPOL 1.0 1.0 1.0 CURRENT; \
+      after: NAME1; \
+   }
+
+#define PROGRAM3(NAME1, NAME2, TARGET, INTERPOL) \
+   program { NAME1; \
+      signal: "load"; \
+      action: STATE_SET "changed"; \
+      target: TARGET; \
+      transition: INTERPOL 1.0 0.14 0.84 0.79 0.27 CURRENT; \
+      after: NAME2; \
+   } \
+   program { NAME2; \
+      action: STATE_SET "default"; \
+      target: TARGET; \
+      transition: INTERPOL 1.0 0.14 0.84 0.79 0.27 CURRENT; \
+      after: NAME1; \
+   }
+
+collections {
+   base_scale: 1.0;
+   group { "main";
+      parts {
+         PART("rect1", 0.0, 0.125, 255 255 0);
+         PART("rect2", 0.125, 0.25, 0 255 0);
+         PART("rect3", 0.25, 0.375, 0 0 255);
+         PART("rect4", 0.375, 0.5, 0 255 255);
+         PART("rect5", 0.5, 0.625, 255 255 255);
+         PART("rect6", 0.625, 0.75, 0 0 0);
+         PART("rect7", 0.75, 0.875, 255 0 0);
+         PART("rect8", 0.875, 1.0, 255 0 255);
+      }
+      programs {
+         PROGRAM1("anim1", "anim2", "rect1", LINEAR);
+         PROGRAM1("anim3", "anim4", "rect2", ACCELERATE);
+         PROGRAM1("anim5", "anim6", "rect3", DECELERATE);
+         PROGRAM1("anim7", "anim8", "rect4", SINUSOIDAL);
+         PROGRAM2("anim9", "anim10", "rect5", DIVISOR_INTERP);
+         PROGRAM2("anim11", "anim12", "rect6", BOUNCE);
+         PROGRAM2("anim13", "anim14", "rect7", SPRING);
+         PROGRAM3("anim15", "anim16", "rect8", CUBIC_BEZIER);
+      }
+   }
+}

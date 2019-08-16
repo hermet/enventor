@@ -1,0 +1,12 @@
+void menu_init(void);
+void menu_term(void);
+void menu_toggle(void);
+void menu_edc_new(Eina_Bool template_new);
+void menu_edc_save(void);
+void menu_edc_load(void);
+void menu_exit(void);
+void menu_about(void);
+void menu_setting(void);
+int menu_activated_get(void);
+void menu_activate_request(void);
+void menu_deactivate_request(void);

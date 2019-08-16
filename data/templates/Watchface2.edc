@@ -1,0 +1,186 @@
+collections {
+   base_scale: 1.0;
+   group { "main";
+      /* TODO: Please replace embedded image files to your application image files. */
+      images {
+         image: "ENVENTOR_EMBEDDED_WATCHFACE_RECT.png" COMP;
+         image: "ENVENTOR_EMBEDDED_NEEDLE_HOUR_RECT.png" COMP;
+         image: "ENVENTOR_EMBEDDED_NEEDLE_MINUTE_RECT.png" COMP;
+         image: "ENVENTOR_EMBEDDED_NEEDLE_SECOND_RECT.png" COMP;
+      }
+      parts {
+         image { "bg";
+            scale;
+            desc { "default";
+               visible: 1;
+               /* TODO: Please replace embedded image files to your application image files. */
+               image.normal: "ENVENTOR_EMBEDDED_WATCHFACE_RECT.png";
+               //aspect: 1 1;
+               min: 300 300;
+               rel1.relative: 0.5 0.5;
+               rel2.relative: 0.5 0.5;
+            }
+         }
+         text { "date";
+            scale;
+            desc { "default";
+               color: 219 219 219 255;
+               fixed: 1 1;
+               text {
+                  size: 13;
+                  font: "Sans";
+                  text: "19";
+                  align: 0.5 0.5;
+                  min: 0 0;
+               }
+               min: 30 30;
+               align: 0.5 1.0;
+               fixed: 1 1;
+               rel1.to: "bg";
+               rel2.to: "bg";
+               rel1.relative: 0.795 0.545;
+               rel2.relative: 0.795 0.545;
+            }
+         }
+         text { "meridiem";
+            scale;
+            desc { "default";
+               color: 255 120 0 255;
+               fixed: 1 1;
+               text {
+                  size: 20;
+                  font: "Mono";
+                  text: "AM";
+               }
+               min: 150 0;
+               fixed: 1 0;
+               align: 0.9 0.5;
+               rel1.to: "bg";
+               rel2.to: "bg";
+               rel1.relative: 0.5 0.69;
+               rel2.relative: 0.5 0.69;
+            }
+         }
+         text { "time";
+            scale;
+            desc { "default";
+               color: 250 250 250 255;
+               fixed: 1 1;
+               text {
+                  size: 20;
+                  font: "Mono";
+                  text: "12:00";
+               }
+               min: 150 0;
+               fixed: 1 0;
+               align: 0.5 0.5;
+               rel1.to: "bg";
+               rel2.to: "bg";
+               rel1.relative: 0.5 0.69;
+               rel2.relative: 0.5 0.69;
+            }
+         }
+         image { "hour";
+            scale;
+            nomouse;
+            desc { "default";
+               rel1.to: "bg";
+               rel2.to: "bg";
+               rel1.relative: 0.5 0.0;
+               rel2.relative: 0.5 1.0;
+               min: 30 0;
+               fixed: 1 0;
+               /* TODO: Please replace embedded image files to your application image files. */
+               image.normal: "ENVENTOR_EMBEDDED_NEEDLE_HOUR_RECT.png";
+               map.on: 1;
+               map.rotation.z: 0;
+            }
+            desc { "rotated";
+               inherit: "default";
+               map.rotation.z: 360;
+            }
+         }
+         image { "minute";
+            scale;
+            nomouse;
+            desc { "default";
+               rel1.to: "bg";
+               rel2.to: "bg";
+               rel1.relative: 0.5 0.0;
+               rel2.relative: 0.5 1.0;
+               min: 30 0;
+               fixed: 1 0;
+               /* TODO: Please replace embedded image files to your application image files. */
+               image.normal: "ENVENTOR_EMBEDDED_NEEDLE_MINUTE_RECT.png";
+               map.on: 1;
+               map.rotation.z: 0;
+            }
+            desc { "rotated";
+               inherit: "default";
+               map.rotation.z: 360;
+            }
+         }
+         image { "second";
+            scale;
+            nomouse;
+            desc { "default";
+               rel1.to: "bg";
+               rel2.to: "bg";
+               rel1.relative: 0.5 0.0;
+               rel2.relative: 0.5 1.0;
+               min: 30 0;
+               fixed: 1 0;
+               /* TODO: Please replace embedded image files to your application image files. */
+               image.normal: "ENVENTOR_EMBEDDED_NEEDLE_SECOND_RECT.png";
+               map.on: 1;
+               map.rotation.z: 0;
+            }
+            desc { "rotated";
+               inherit: "default";
+               map.rotation.z: 360;
+            }
+         }
+      }
+      programs {
+         program { "hour_begin";
+            signal: "load";
+            source: "";
+            action: STATE_SET "rotated";
+            target: "hour";
+            transition: LINEAR 216000;
+            after: "hour_reset";
+         }
+         program { "hour_reset";
+            action: STATE_SET "default";
+            target: "hour";
+            after: "hour_begin";
+         }
+         program { "minute_begin";
+            signal: "load";
+            source: "";
+            action: STATE_SET "rotated";
+            target: "minute";
+            transition: LINEAR 3600;
+            after: "minute_begin";
+         }
+         program { "minute_reset";
+            action: STATE_SET "default";
+            target: "minute";
+            after: "minute_begin";
+         }
+         program { "second_begin";
+            signal: "load";
+            source: "";
+            action: STATE_SET "rotated";
+            target: "second";
+            transition: LINEAR 60;
+            after: "second_reset";
+         }
+         program { "second_reset";
+            action: STATE_SET "default";
+            target: "second";
+            after: "second_begin";
+         }
+      }
+   }
+}

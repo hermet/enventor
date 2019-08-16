@@ -1,0 +1,387 @@
+==============
+Enventor 1.0.0
+==============
+
+Changes since Enventor 0.9.0:
+-----------------------------
+
+Additions:
+   * Tooltips: Newly supported.
+   * Wireframe: Newly introduced.
+   * File Tab: Newly introduced.
+   * Reference Popup: Newly introduced.
+   * A lot of Enventor APIs are changed.
+
+Improvements:
+   * EDC Editor: Rearrange searched part to be placed in center.
+   * EDC Editor: Support to jump to the part define.
+   * File Borwser: Set current directory as a workspace in default.
+   * File Browser: add a function to set a main edc file with a marker.
+   * File Browser: Display sorted file list based on file type.
+   * File Browser: Skip files if their names were started with dot.
+   * Template: Add various samples.
+   * New File: Sort template list in alphabetical order.
+   * Help: Update overall content.
+   * Setting: Apply layze style to syntax color template code.
+   * Setting: Add the main EDC file path.
+   * Live Edit: support base_scale values.
+   * Console: Apply syntax color for error messages:.
+   * EDC Parser: Identify whole macro functions to have syntax color.
+   * Support vector type part.
+   * Update overall GUIs & Shortcut keys.
+   * Support individual group view size and view scale.
+   * Limit to an single Enventor instance.
+   * Update Syntax color keywords.
+   * Allow multi-file editor.
+
+Fixes:
+   * Template: Fix Map template code typo.
+   * Template: don't localize floats in the relative values.
+   * Statusbar: Fix an incorrect view size.
+   * Indentation: Fix a incorrect indentation in a corner case.
+   * Live Edit: Fix incorrect stacking.
+   * Live Edit: Fix an added object to have min size properly.
+   * Live Edit: Dismiss ctxpopup when view position is changed.
+   * Goto: Fix window closing issue.
+   * Setting: Fix to not abuse user Elementary configuration file.
+   * Setting: Reset font style properly.
+   * EDC Editor: Show images on cursor "images.image".
+   * EDC Editor: Fix to remove focus highlight on template seletion button.
+   * Fix many crash scenarios.
+   * Fix a dummy swallow/spacer selection bug.
+   * Fix Undo's indiscriminate red alert.
+   * Fix build break on Win32.
+
+Changes since Enventor 0.8.0:
+-----------------------------
+
+Additions:
+   * Mirror Mode: Newly introduced.
+   * File Browser: Newly introduced.
+   * Live Edit: Support Auto-Align feature.
+   * Live Edit: Support relative_to among the exist parts.
+   * Live Edit: Support Fixed Width & Height Interface.
+   * Live Edit: Add Edge Attaching Effect.
+   * Template: Add a Watchface code.
+
+Improvements:
+   * Live Edit: Improve part name for more formal naming rule.
+   * Live Edit: Support direction key for moving live edit object item per pixels.
+   * Live Edit: Do not highlight part during live edit mode.
+   * Template: Remove a duplicated image comment to look better.
+   * Syntax Color: Improve string syntax color logic.
+   * Console: Hide unnecessary error messages.
+   * RedoUndo: Enhance smart function to support auto indentation.
+   * RedoUndo: Enable smart analyze for a pushed region text.
+   * Setting: Redesign GUI.
+   * Setting: Set Error-Message-Red-Alert-Effect configurable.
+   * About: Redesign from About to Help.
+   * EDC Navigator: Provide a program launch/stop functions.
+   * EDC Navigator: Redesign its basic tree behavior.
+   * Enventor API: renamed from enventor_object_file_set() -> enventor_object_main_file_set()
+   * Tools: Support a template insert button.
+   * Don't overwrite existing EDC with new template code.
+   * EDC Editor: Turned off focus highlight effect.
+
+Fixes:
+   * Setting: Fix to activate edc navigator toggle correctly.
+   * Setting: Show current font correctly.
+   * EDC Navigator: Fix the editor cursor jumping issue.
+   * EDC Navigator: Compare name elaborately to search the part correctly.
+   * Statusbar: Fix view sizing issue when an invert button is clicked repeatedly.
+   * Indentation: Check '\r' when indented code line is created on Windows.
+   * Indentation: Fix to calculate indent depth after multi line comment.
+   * Indentation: Fix to paste a word at correct position.
+   * EDC Editor: Fix a crash issue on Windows when preview part on live view is clicked.
+   * EDC Editor: Compare name elaborately to search the clicked part correctly.
+   * Live Edit: Fix malfunction of key input on Windows.
+   * Live Edit: Fix center guide text positioning problem.
+   * Live View: Update dummy part when removing all source code.
+   * RedoUndo: Correct work with unicode symbols.
+   * Template: Fix the error of line position when inserting group template.
+   * Template: Fix line count of textblock part inserted in live edit mode.
+   * Template: Fix to insert template code to the correct place.
+   * EDC Parser: Fix wrong minimum value of "base_scale"
+   * EDC Parser: Fix a crash issue when double click words on Windows.
+   * Ctxpopup: Fix a broken preview image relay behavior.
+   * Ctxpopup: Block whole area if the editor ctxpopup is activated.
+   * Ctxpopup: Don't display image previews if the selected image string is in comments.
+   * Auto Completion: Fix its list moved to selected part name position.
+   * Fix a crash issue when removing all code in edc editor.
+   * Fix a compilation issue when new empty file is opened.
+   * Fix a color selector to scalable.
+
+Changes since Enventor 0.7.0:
+-----------------------------
+
+Additions:
+   * Editor: Open/Close Bracket Highlighting.
+   * Statusbar: Support view inverting function (for simulating device rotation)
+   * Introduce a edc navigator.
+   * Support a color selector for "color" keywords in edc to change color.
+   * Add Enventor APis.
+     - enventor_object_part_states_list_get()
+     - enventor_object_parts_list_get()
+     - enventor_object_part_type_get()
+     - enventor_object_programs_list_get()
+     - ctxpopup,activated signal.
+
+Removes:
+   * Remove fixed size option in setting.
+   * Remove minimum new template code.
+   * Remove Enventr_Max_Line data type.
+
+Improvements:
+   * Editor: Support group name macros and preview those group macros.
+   * Improve Dummy Spacer UI.
+   * Statusbar supports live view zooming.
+   * Statusbar supports view size setting.
+   * View Scale slider in setting works on step size for mouse wheel.
+   * Improve the usage of the live view zooming with mouse wheel.
+   * Template code: fixed weird code insertion inside LazyEDC block.
+   * Support more autocomplete keywords.
+   * New design of Enventor logo.
+   * Improve tools ui.
+   * Simpilier editor ctxpopup ui.
+   * Console Box: Clicking Error log redirects editor cursor to the error code.
+   * Auto Indentation: Apply auto indentation for a edc file which is newly loaded.
+   * Auto Indentation: Improve logics for better smart results.
+   * Auto-select error code when error is occured.
+   * Auto completion: improve logic to guide better smart candidates lists.
+   * Live Edit: Select a name text in edc for a newly inserted part.
+   * Part Selection: Select a name in edc for a current selected part.
+   * RedoUndo: Support real-time preview when we undo/redo the code.
+   * Set a default font as Monospace type.
+   * Support monospace font types in the setting fonts list.
+   * In default, Select a current font type in the text setting.
+   * Editor Ctxpopup: Support Back key to reset the modification.
+
+Fixes:
+   * Fix incorrect tools' tooltip position.
+   * Remove some unsupported edc keyowrds.
+   * Fix some memory leak issues.
+   * Fix ridiculous editor cursor jumping issue.
+   * Fix to paste markup symbols correctly.
+   * Fix editor to work with Copy & Paste Plain Text mode.
+   * Fix crash issues.
+   * Fix a bug that dummy swallow is invisible.
+   * Fix a bug that part selection in live view doesn't work.
+   * Fix not to insert an empty line at the end of file.
+   * Fix to keep the edc changed status correctly. This brought enventor save edc files multiple times unnecessarily.
+   * Fix initial line max is 0 issue.
+   * Reset cursor position to 0 when edc file is loaded.
+   * Fix to update images properly even if very large size of image were updated by other process.
+
+Changes since Enventor 0.6.0:
+-----------------------------
+
+Additions:
+   * Tracking image resources for realtime live view updation.
+   * Marking lines which contains errors in edc editor.
+   * Support localization (English, Russian)
+   * Smart redo/undo function which applies coding convention for undo texts.
+   * Support dummy spacer.
+   * Jumping on to the code related with the current clicked part in live view.
+
+Removes:
+   * Get rid of ELM_ENGINE environment.
+
+Improvements:
+   * Focus shouldn't move on to ctxpopup when its moving.
+   * File Saving contains .edc extension automatically.
+   * Migrate on to lazy edc fully (syntax color, template code, etc..)
+   * Support realtime live view updation for the slider in ctxpoup.
+   * Renamed syntax color data file from color.src to edc.src.
+   * More compatible with ms windows platform.
+   * Add "base_scale" into template code.
+   * Improve auto completion for more correct and useful candidate keywords.
+   * Support ELM_ACCEL environment.
+   * Move the editor cursor at the end of the attributes after dismissing candidate list.
+   * Rename a temporary output file name to be different with input file name so that multiple enventors could modify same input file at the same time.
+   * Support more auto complete keywords.
+    - effect, anti_alias, mask_flags, limit, clip_to, domain
+   * Improve live edit icons quality.
+
+Fixes:
+   * Fix key modifiers to work short cut keys correctly.
+   * Correct incorrect syntax color.
+   * Enventor_Path_Type interface is updated.
+   * Fix missing edc updation if it is modified by other processes.
+   * Fix some memory leaks.
+   * Recognize part descriptions properly in the editor even though they don't have names.
+   * Create a config home folder properly if it's not existed.
+   * Fix eo build break on the latest efl(1.16)
+   * Fix a broken redo/undo function after replacing the text with search/replace feature.
+   * Fix to be avaiable to choose the last item on the candidate list.
+   * Fix to work part highlighting out for all groups in one edc.
+   * Fix to close goto window while it's toggled with a toolbar button.
+   * Fix a wierd behavior which changes edc source when ctxpopup is going to be closed.
+   * Fix to move scroller bar to correct position for find function.
+   * Fix the issue that ctxpopup preview images are remained when mouse wheel works quickly.
+   * Reset console box error messages when new or open file is performed.
+   * Let the editor have focus after live edit is done.
+   * Dismiss ctxpopup when edc build error.
+   * Dismiss ctxpopup when warning box is shown up at window exit.
+   * Fix incorrect size displaying of the live object.
+
+Changes since Enventor 0.5.0:
+-----------------------------
+
+Additions:
+   * Support editor font setting(font name, style, size).
+   * Add Enventor APis.
+     - enventor_object_font_set()/get() APIs.
+     - enventor_object_auto_complete_list_show() API.
+
+Removes:
+   * Get rid of template insert feature per parts.
+   * Get rid of tooltips from menu buttons.
+
+Improvements:
+   * Support more keywords in auto completion.
+   * Support more syntax color keywords
+   * Update live view with the current part that cursor positioned in.
+   * Improve live edit dragging handling.
+   * Introduce new command line arguments.
+   * Add more new file templates.
+   * Support edj output file path set.
+   * Update previous enventor config file properly by version info.
+   * Support saving edj file from file dialog.
+   * Enhance auto completion feature.
+   * Support part highlighting for SPACER type.
+   * Change short-cut keys for split views.
+   * Apply auto indentation when code is pasted.
+   * Support toggle effect on Tools GUI.
+   * Store/Restore editor split view status.
+   * Change live view scaling to zoom in/out concept.
+   * Adjust live view zoom range. (0.1 ~ 10.0)
+
+Fixes:
+   * Fix the compatibility to eo syntax change.
+   * Fix library initialization count corruption.
+   * Disable part highlight on Live Edit mode.
+   * Fix the live view to update by groups correctly.
+   * Fix wrong candidate popup position.
+   * Fix context corruption of font/view scale up/down.
+   * Fix auto completion popup sizing issue.
+   * Close auto completion popup if the line is deleted.
+   * Fix focus highlight remaining issue when live edit item is selected.
+   * Zoom up/down properly on live edit mode.
+   * Cancel live edit if the about(F1) is activated.
+   * Ctrl + wheel works even with numlock.
+
+Changes since Enventor 0.4.0:
+-----------------------------
+
+Additions:
+   * Support syntax color customization in setting.
+   * Add console auto hide mode.
+   * Support Live Edit (Ctrl + E).
+   * Add Enventor APIs.
+     - enventor_object_redo(), undo() APIs.
+     - enventor_object_cursor_pos_set() API.
+     - enventor_object_syntax_color_set()/get() APIs.
+   * Add "live_view,loaded" enventor smart callback.
+
+Improvements:
+   * Enable to insert image descirtiption and textblock style in template inserting.
+   * Reset console error message when error is gone.
+   * Add Text Editor mode in setting.
+   * Menu supports tooltip.
+   * Redesign Tools and support tooltip helper.
+   * Redesign candidate popup and it's behavior.
+   * Support more keywords in candidate popup.
+   * Support more keywords in auto completion.
+   * Keep window size set last time.
+
+Fixes:
+   * Fix to monitor empty file in live view.
+   * Fix intinite loop with "-to xxx.edc" in command line.
+   * Fix live view updation problem.
+   * Exporting/Importing Enventor dll for win32.
+   * Fix that edj is not reloaded when newly opened edc is changed.
+   * Fix wrong cursor position on status bar.
+   * Fix to goto window scalable.
+   * Set temporary path to default edc path by eina_file_mkstemp().
+   * Fix to show double quotation marks(") on efl 1.13
+   * Don't dismiss candidate popup on key events.
+   * Disable autoscrolling while ctxpopup is visible.
+   * Fix max value of mouse_events from 1000 to 1
+   * Fix to toggle linenumber properly with Shortcut key(F5)
+   * Fix max value of the mouse_events from 1000 to 1
+   * Fix candidate keyword name "align"
+   * Install missing eo header files
+   * Fix build package dependency.
+
+Changes since Enventor 0.3.0:
+-----------------------------
+
+Additions:
+   * Support Redo/Undo (Ctrl+R/Ctrl+Z)
+   * Support Enventor APIs.
+   * Support Console box that displays error messages.
+
+Improvements:
+   * Support auto completion Tab key to insert selection.
+   * Support auto completion more candidate keywords.
+   * Support tracking edc file modification and notification of it.
+   * Support "-to" command line option to open template menu at launching.
+   * Support multiple Enventor app processes.
+   * Improve GUIs.
+   * Generate template parts with random names.
+
+Fixes:
+   * Fixed auto completion popup to be shown even if entry cursor is moved up and down.
+   * Fixed to clear selection when find window is moved or closed.
+   * Fixed incorrect part highlight Short Cut key.
+   * Fixed memory leaks in some cases.
+   * Fixed segfault in applying syntax color.
+   * Fixed window title file path to be updated correctly.
+   * Fixed auto completion keyword relative
+   * Fixed auto completion candidation list to be updated correctly.
+   * Fixed dummy object(swallow) was invisible case.
+
+Changes since Enventor 0.2.0:
+-----------------------------
+
+Additions:
+   * Go to line (Ctrl+L)
+   * Support template codes from the new file
+   * Auto Completion (Ctrl+O)
+
+Improvements:
+   * Improved syntax color keywords to be configurable (enventor/data/color/color.src)
+   * Support more syntax color keywords
+   * Optimized syntax color function with parital applying mechacnism (Much faster in case of editing huge text)
+   * Support syntax color on macros
+   * Better intelligent focus movement
+   * Changed desktop category to Development/Utility
+
+Fixes:
+   * Fixed broken Search GUI scalability
+   * Fixed corrupted line number displaying
+   * Fixed a crash when an invalid input file is requested
+   * Got rid of a dangling empty space in the end of the file
+   * Fixed missing loading "&" character in a edc
+
+Changes since Enventor 0.1:
+---------------------------
+
+Additions:
+   * Save/Load config values (~/.config/enventor/enventor.eet)
+   * Toolbar GUI (F11)
+   * View scale change (Ctrl + Mouse Wheel)
+   * Find/Replace (Ctrl+F)
+   * Line Deletion (Ctrl+D)
+
+Improvements:
+   * Applied more syntax color keywords
+   * Display the current file path on the window title bar
+   * Support ELM_ENGINE gl set
+   * Better Pretty GUI
+   * Create a new file that is specified on the command line
+   * Support more selection keyword for candidate list display. - "action", "STATE_SET", "inherit", "image.normal", "image.tween", "target", "source" 
+
+Fixes:
+   * GUI scalability
+   * Open real "new" template code when New is requested

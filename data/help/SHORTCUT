@@ -1,0 +1,43 @@
+<b>Functions:</b></br>
+  Esc - Open/Close Menu</br>
+  F1 - Help</br>
+  F2 - Set Main EDC (in File Browser)</br>
+  F3 - Quick Jump (Open an including file / Jumping to a referencing part)</br>
+  F4 - Revert Quick Jump</br>
+  F5 - Keyword Reference</br>
+  F7 - Toggle Tools</br>
+  F8 - Toggle Status</br>
+  F9 - Toggle File Browser</br>
+  F10 - Toggle EDC Navigator</br>
+  F11 - Toggle File Tab</br>
+  F12 - Settings</br>
+</br>
+  Ctrl+S - Quick Save + Update Live View</br>
+  Ctrl+U - Toggle Dummy Parts</br>
+  Ctrl+H - Toggle Part Highlighting</br>
+  Ctrl+M - Toggle Mirror Mode</br>
+  Ctrl+W - Toggle Wireframes</br>
+  Ctrl+T - Insert Default Template Code</br>
+  Ctrl+Mouse Wheel Up - View Zoom In / Font Size Up</br>
+  Ctrl+Mouse Wheel Down - View Zoom Out / Font Size Down</br>
+</br>
+<b>Panes Control:</b></br>
+  Alt+Left - Toggle Full Edit View</br>
+  Alt+Right - Toggle Full Live View</br>
+  Alt+Up - Toggle Full Console View</br>
+  Alt+Down - Toggle Full Editors View</br>
+</br>
+<b>Text Editor:</b></br>
+  Ctrl+A - Select Text All</br>
+  Ctrl+Double Click - Select a word without openning candidate popup</br>
+  Ctrl+Z - Undo Text</br>
+  Ctrl+R - Redo Text</br>
+  Ctrl+C - Copy Selected Text</br>
+  Ctrl+V - Paste Copied Text</br>
+  Ctrl+X - Cut Selected Text</br>
+  Ctrl+D - Delete a Current line</br>
+  Ctrl+F - Find/Replace</br>
+  Ctrl+L - Go to line</br>
+  Ctrl+Home - Go to the Top line</br>
+  Ctrl+End - Go to the Bottom line</br>
+  Ctrl+Space - Search candidate keywords in the context

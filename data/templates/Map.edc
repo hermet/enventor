@@ -1,0 +1,78 @@
+collections {
+   base_scale: 1.0;
+   group { "main";
+      /* TODO: Please replace embedded image files to your application image files. */
+      images {
+         image: "ENVENTOR_EMBEDDED_IMAGE.png" COMP;
+      }
+      parts {
+         image { "logo";
+            desc { "default";
+               rel1.relative: 0.0 0.0;
+               rel2.relative: 0.5 0.5;
+               /* TODO: Please replace embedded image files to your application image files. */
+               image.normal: "ENVENTOR_EMBEDDED_IMAGE.png";
+               aspect: 1 1;
+               aspect_preference: BOTH;
+               map.on: 1;
+               map.color[2]: 0 0 0 0;
+               map.color[3]: 0 0 0 0;
+            }
+         }
+         rect { "perps_point";
+            desc { "default";
+               rel1.relative: 0.6 0.1;
+               rel2.relative: 0.9 0.4;
+               visible: 0;
+            }
+         }
+         rect { "rect";
+            desc { "default";
+               rel1.relative: 0.5 0.0;
+               rel2.relative: 1.0 0.5;
+               color: 0 136 170 255;
+               map {
+                  on: 1;
+                  rotation.y: 45;
+                  perspective_on: 1;
+                  perspective: "perps_point";
+                  backface_cull: 1;
+               }
+            }
+         }
+         text { "text";
+            scale;
+            effect: SOFT_OUTLINE;
+            desc { "default";
+               rel1.relative: 0.0 0.5;
+               rel2.relative: 0.5 1.0;
+               color: 255 255 255 255;
+               color2: 0 136 170 100;
+               text {
+                  size: 25;
+                  font: "Sans";
+                  text: "enventor";
+                  align: 0.5 0.5;
+               }
+               map {
+                  on: 1;
+                  rotation.z: 90;
+               }
+            }
+         }
+         rect { "rect2";
+            desc { "default";
+               rel1.relative: 0.55 0.55;
+               rel2.relative: 0.95 0.95;
+               map {
+                  on: 1;
+                  color[0]: 255 0 0 255;
+                  color[1]: 0 255 0 255;
+                  color[2]: 0 0 255 255;
+                  color[3]: 255 255 255 255;
+               }
+            }
+         }
+      }
+   }
+}

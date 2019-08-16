@@ -1,0 +1,115 @@
+images {
+   image: "icon_close.png" COMP;
+   image: "icon_file.png" COMP;
+   image: "icon_folder.png" COMP;
+   image: "icon_search.png" COMP;
+   image: "icon_wireframes.png" COMP;
+   image: "slider_up.png" COMP;
+   image: "slider_down.png" COMP;
+   image: "menu.png" COMP;
+   image: "find.png" COMP;
+   image: "highlight.png" COMP;
+   image: "lines.png" COMP;
+   image: "console.png" COMP;
+   image: "dummy.png" COMP;
+   image: "mirror.png" COMP;
+   image: "goto.png" COMP;
+   image: "save.png" COMP;
+   image: "redo.png" COMP;
+   image: "undo.png" COMP;
+   image: "live_image.png" COMP;
+   image: "live_rectangle.png" COMP;
+   image: "live_swallow.png" COMP;
+   image: "live_spacer_icon.png" COMP;
+   image: "live_text.png" COMP;
+   image: "live_textblock.png" COMP;
+   image: "expand.png" COMP;
+   image: "invert.png" COMP;
+   image: "file_browser.png" COMP;
+   image: "edc_navigator.png" COMP;
+   image: "navi_group.png" COMP;
+   image: "navi_rect.png" COMP;
+   image: "navi_image.png" COMP;
+   image: "navi_swallow.png" COMP;
+   image: "navi_text.png" COMP;
+   image: "navi_textblock.png" COMP;
+   image: "navi_spacer.png" COMP;
+   image: "navi_state.png" COMP;
+   image: "navi_program.png" COMP;
+   image: "navi_unknown.png" COMP;
+   image: "navi_play.png" COMP;
+   image: "navi_stop.png" COMP;
+   image: "refresh.png" COMP;
+   image: "brows_logo.png" COMP;
+   image: "brows_image.png" COMP;
+   image: "brows_sound.png" COMP;
+   image: "brows_font.png" COMP;
+   image: "template.png" COMP;
+   image: "left.png" COMP;
+   image: "right.png" COMP;
+   image: "filetab.png" COMP;
+   image: "navi_vector.png" COMP;
+}
+
+#define ICON_GROUP(_group_name, _image_path) \
+   group { _group_name; \
+      parts { \
+         image { "img"; \
+            desc { \
+               image.normal: _image_path; \
+            } \
+         } \
+      } \
+   }
+ICON_GROUP("goto", "goto.png")
+ICON_GROUP("menu", "menu.png")
+ICON_GROUP("find", "find.png")
+ICON_GROUP("highlight", "highlight.png")
+ICON_GROUP("lines", "lines.png")
+ICON_GROUP("console", "console.png")
+ICON_GROUP("dummy", "dummy.png")
+ICON_GROUP("mirror", "mirror.png")
+ICON_GROUP("up", "slider_up.png")
+ICON_GROUP("down", "slider_down.png")
+ICON_GROUP("save", "save.png")
+ICON_GROUP("undo", "undo.png")
+ICON_GROUP("redo", "redo.png")
+ICON_GROUP("expand", "expand.png")
+ICON_GROUP("invert", "invert.png")
+ICON_GROUP("Image", "live_image.png")
+ICON_GROUP("Rect", "live_rectangle.png")
+ICON_GROUP("Spacer_Icon", "live_spacer_icon.png")
+ICON_GROUP("Swallow", "live_swallow.png")
+ICON_GROUP("Text", "live_text.png")
+ICON_GROUP("Textblock", "live_textblock.png")
+ICON_GROUP("close", "icon_close.png")
+ICON_GROUP("file", "icon_file.png")
+ICON_GROUP("folder", "icon_folder.png")
+ICON_GROUP("search", "icon_search.png")
+ICON_GROUP("file_browser", "file_browser.png")
+ICON_GROUP("edc_navigator", "edc_navigator.png")
+ICON_GROUP("navi_group", "navi_group.png")
+ICON_GROUP("navi_image", "navi_image.png")
+ICON_GROUP("navi_rect", "navi_rect.png")
+ICON_GROUP("navi_swallow", "navi_swallow.png")
+ICON_GROUP("navi_text", "navi_text.png")
+ICON_GROUP("navi_textblock", "navi_textblock.png")
+ICON_GROUP("navi_spacer", "navi_spacer.png")
+ICON_GROUP("navi_state", "navi_state.png")
+ICON_GROUP("navi_program", "navi_program.png")
+ICON_GROUP("navi_unknown", "navi_unknown.png")
+ICON_GROUP("navi_play", "navi_play.png")
+ICON_GROUP("navi_stop", "navi_stop.png")
+ICON_GROUP("refresh", "refresh.png")
+ICON_GROUP("brows_logo", "brows_logo.png")
+ICON_GROUP("brows_image", "brows_image.png")
+ICON_GROUP("brows_sound", "brows_sound.png")
+ICON_GROUP("brows_font", "brows_font.png")
+ICON_GROUP("template", "template.png")
+ICON_GROUP("wireframes_icon", "icon_wireframes.png")
+ICON_GROUP("left_arrow", "left.png")
+ICON_GROUP("right_arrow", "right.png")
+ICON_GROUP("filetab", "filetab.png")
+ICON_GROUP("navi_vector", "navi_vector.png")
+
+#undef ICON_GROUP

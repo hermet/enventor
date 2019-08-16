@@ -1,0 +1,249 @@
+type Enventor_Path_Type: __undefined_type;
+type Enventor_Syntax_Color_Type: __undefined_type;
+type Enventor_Template_Insert_Type: __undefined_type;
+type Edje_Part_Type: __undefined_type;
+
+class Enventor.Object extends Efl.Ui.Widget implements Efl.File, Efl.Ui.Focus.Object
+{
+   legacy_prefix: enventor_object;
+   eo_prefix: enventor_obj;
+   methods {
+      @property part_highlight {
+         set {
+         }
+         get {
+         }
+         values {
+            part_highlight: bool;
+         }
+      }
+      @property live_view_scale {
+         set {
+         }
+         get {
+         }
+         values {
+            scale: double;
+         }
+      }
+      @property dummy_parts {
+         set {
+         }
+         get {
+         }
+         values {
+            dummy_parts: bool;
+         }
+      }
+      @property wireframes {
+         set {
+         }
+         get {
+         }
+         values {
+            wireframe: bool;
+         }
+      }
+      @property mirror_mode {
+         set {
+         }
+         get {
+         }
+         values {
+            mirror_mode: bool;
+         }
+      }
+      @property auto_complete {
+         set {
+         }
+         get {
+         }
+         values {
+            auto_complete: bool;
+         }
+      }
+      @property auto_indent {
+         set {
+         }
+         get {
+         }
+         values {
+            auto_indent: bool;
+         }
+      }
+      @property ctxpopup {
+         set {
+         }
+         get {
+         }
+         values {
+            ctxpopup: bool;
+         }
+      }
+      @property font_scale {
+         set {
+         }
+         get {
+         }
+         values {
+            font_scale: double;
+         }
+      }
+      @property linenumber {
+         set {
+         }
+         get {
+         }
+         values {
+            linenumber: bool;
+         }
+      }
+      @property smart_undo_redo {
+         set {
+         }
+         get {
+         }
+         values {
+            smart_undo_redo: bool;
+         }
+      }
+      path_set {
+         return: bool;
+         params {
+            @in type: Enventor_Path_Type;
+            @in pathes: list< stringshare @owned > @owned ;
+         }
+      }
+      path_get {
+         return: const (list< stringshare @owned >) @owned ;
+         params {
+            @in type: Enventor_Path_Type;
+         }
+      }
+      programs_list_get {
+         return: list<string>;
+      }
+      part_states_list_get {
+         return: list<string>;
+         params {
+            @in type: string;
+         }
+      }
+      parts_list_get {
+         return: list<string>;
+      }
+      live_view_get {
+         return: Efl.Canvas.Object;
+      }
+      programs_stop {
+      }
+      program_run {
+         params {
+            @in program: string;
+         }
+      }
+      syntax_color_set {
+         params {
+            @in color_type: Enventor_Syntax_Color_Type;
+            @in val: string;
+         }
+      }
+      syntax_color_get {
+         return: string;
+         params {
+            @in color_type: Enventor_Syntax_Color_Type;
+         }
+      }
+      ctxpopup_visible_get {
+         return: bool;
+      }
+      ctxpopup_dismiss {
+      }
+      disabled_set {
+         params {
+            @in disabled: bool;
+         }
+      }
+      live_view_size_set {
+         params {
+            @in w: int;
+            @in h: int;
+         }
+      }
+      live_view_size_get {
+         params {
+            @in w: ptr(int);
+            @in h: ptr(int);
+         }
+      }
+      part_type_get {
+         return: Edje_Part_Type;
+         params {
+            @in part_name: string;
+         }
+      }
+      font_set {
+         params {
+            @in font_name: string;
+            @in font_style: string;
+         }
+      }
+      font_get {
+         params {
+            @out font_name: string;
+            @out font_style: string;
+         }
+      }
+      auto_complete_list_show {
+      }
+      keyword_reference_show {
+      }
+      base_scale_get {
+         return: double;
+      }
+   }
+   implements {
+      class.constructor;
+      Efl.Object.constructor;
+      Efl.Object.destructor;
+      Efl.Gfx.Entity.visible { set; }
+      Efl.Gfx.Entity.position { set; }
+      Efl.Gfx.Entity.size { set; }
+      Efl.Canvas.Object.clipper { set; }
+      Efl.Canvas.Group.group_member_add;
+      Efl.File.file { set; }
+      Efl.Ui.Focus.Object.focus { set; get; }
+   }
+   events {
+      cursor,line,changed: void;
+      cursor,group,changed: void;
+      live_view,updated: void;
+      live_view,loaded: void;
+      live_view,cursor,moved: void;
+      live_view,resized: void;
+      max_line,changed: void;
+      compile,error: void;
+      ctxpopup,activated: void;
+      ctxpopup,changed: void;
+      ctxpopup,dismissed: void;
+      edc,modified: void;
+      focused: void;
+      file,open,requested: void;
+/*
+      cursor,line,changed: Enventor.Cursor_Line;
+      cursor,group,changed: Eina_String;
+      live_view,updated: Enventor.Item;
+      live_view,loaded: Enventor.Item;
+      live_view,cursor,moved: Enventor.Live_View_Cursor;
+      live_view,resized: Enventor.Live_View_Size;
+      max_line,changed: Enventor.Cursor_Line;
+      compile,error: char;
+      ctxpopup,activated: Enventor.Ctxpopup_Type;
+      ctxpopup,changed: Enventor.Item;
+      ctxpopup,dismissed: Enventor.Item;
+      edc,modified: Enventor.EDC_Modified;
+      focused: void;
+      file,open,requested: char;
+*/
+   }
+}

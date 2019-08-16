@@ -1,0 +1,160 @@
+images {
+   image: "part_highlight.png" COMP;
+   image: "swallow.png" COMP;
+   image: "live_spacer.png" COMP;
+   image: "wireframes.png" COMP;
+}
+
+group { "swallow";
+   parts {
+      image { "img";
+         desc { "default";
+            image.normal: "swallow.png";
+            aspect: 1 1;
+            aspect_preference: BOTH;
+         }
+      }
+   }
+}
+
+group { "spacer";
+   parts {
+      image { "img";
+         desc {
+            image.normal: "live_spacer.png";
+            image.border: 3 3 2 4;
+            fill.smooth: 0;
+         }
+      }
+   }
+}
+
+group { "part_highlight";
+   parts {
+      image { "base";
+         nomouse;
+         desc { "default";
+            image.normal: "part_highlight.png";
+            image.border: 2 2 2 2;
+            image.border_scale: 1;
+         }
+         desc { "transparent";
+            inherit: "default";
+            color: 255 255 255 0;
+         }
+      }
+   }
+   programs {
+      program { "load";
+         signal: "load";
+         action: STATE_SET "transparent";
+         target: "base";
+         transition: LINEAR 0.65;
+         after: "anim";
+      }
+      program { "anim";
+         action: STATE_SET "default";
+         target: "base";
+         transition: LINEAR 0.65;
+         after: "load";
+      }
+   }
+}
+
+group { "wireframes";
+   parts {
+      image { "img";
+         repeat_events: 1;
+         desc {
+            image.normal: "wireframes.png";
+            image.border: 3 3 2 4;
+            fill.smooth: 0;
+         }
+      }
+   }
+}
+
+group { "ctrl_pt";
+   parts {
+      rect { "clipper";
+         desc { "default";
+         }
+         desc { "hide";
+            inherit: "default";
+            color: 255 255 255 0;
+         }
+      }
+      rect { "base";
+         clip_to: "clipper";
+         desc { "default";
+         }
+         desc { "anim";
+            inherit: "default";
+            color: COL_HI_S;
+         }
+      }
+      rect { "highlight";
+         clip_to: "clipper";
+         desc { "default";
+            color: 225 0 0 255;
+            visible: 0;
+         }
+         desc { "show";
+            inherit: "default";
+            visible: 1;
+         }
+      }
+   }
+   programs {
+      program { "load";
+         signal: "load";
+         after: "anim";
+      }
+      program { "anim";
+         action: STATE_SET "anim";
+         target: "base";
+         transition: LINEAR 0.5;
+         after: "anim2";
+      }
+      program { "anim2";
+         action: STATE_SET "default";
+         target: "base";
+         transition: LINEAR 0.5;
+         after: "anim";
+      }
+      program { "show";
+         signal: "elm,state,show";
+         source: "";
+         action: STATE_SET "default";
+         target: "clipper";
+         transition: LINEAR 0.125;
+      }
+      program { "hide";
+         signal: "elm,state,hide";
+         source: "";
+         action: STATE_SET "hide";
+         target: "clipper";
+         transition: LINEAR 0.125;
+      }
+      program { "hide,instance";
+         signal: "elm,state,hide,instance";
+         source: "";
+         action: STATE_SET "hide";
+         target: "clipper";
+      }
+      program { "show_highlight";
+         signal: "elm,state,show,highlight";
+         source: "";
+         action: STATE_SET "show";
+         target: "highlight";
+         transition: LINEAR 0.125;
+      }
+      program { "hide_highlight";
+         signal: "elm,state,hide,highlight";
+         source: "";
+         action: STATE_SET "default";
+         target: "highlight";
+         transition: LINEAR 0.125;
+      }
+   }
+}

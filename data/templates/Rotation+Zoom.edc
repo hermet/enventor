@@ -1,0 +1,43 @@
+collections {
+   base_scale: 1.0;
+   group { "main";
+      /* TODO: Please replace embedded image files to your application image files. */
+      images {
+         image: "ENVENTOR_EMBEDDED_IMAGE.png" COMP;
+      }
+      parts {
+         image { "logo";
+            desc { "default";
+               /* TODO: Please replace embedded image files to your application image files. */
+               image.normal: "ENVENTOR_EMBEDDED_IMAGE.png";
+               aspect: 1 1;
+               aspect_preference: BOTH;
+               map.on: 1;
+            }
+            desc { "rotated";
+               inherit: "default";
+               map {
+                  rotation.z: 360;
+                  zoom.x: 0.25;
+                  zoom.y: 0.25;
+               }
+            }
+         }
+      }
+      programs {
+         program { "anim1";
+            signal: "load";
+            action: STATE_SET "rotated";
+            target: "logo";
+            transition: ACCELERATE 2;
+            after: "anim2";
+         }
+         program { "anim2";
+            action: STATE_SET "default";
+            target: "logo";
+            transition: ACCELERATE 2.0;
+            after: "anim1";
+         }
+      }
+   }
+}

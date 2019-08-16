@@ -1,0 +1,59 @@
+<b>Changes since Enventor 0.8.0</b><br>
+<br>
+<b>Additions:</b><br>
+   * Mirror Mode: Newly introduced.<br>
+   * File Browser: Newly introduced.<br>
+   * Live Edit: Support Auto-Align feature.<br>
+   * Live Edit: Support relative_to among the exist parts.<br>
+   * Live Edit: Support Fixed Width and Height Interface.<br>
+   * Live Edit: Add Edge Attaching Effect.<br>
+   * Template: Add a Watchface code.<br>
+<br>
+<b>Improvements:</b><br>
+   * Live Edit: Improve part name for more formal naming rule.<br>
+   * Live Edit: Support direction key for moving live edit object item per pixels.<br>
+   * Live Edit: Do not highlight part during live edit mode.<br>
+   * Template: Remove a duplicated image comment to look better.<br>
+   * Syntax Color: Improve string syntax color logic.<br>
+   * Console: Hide unnecessary error messages.<br>
+   * RedoUndo: Enhance smart function to support auto indentation.<br>
+   * RedoUndo: Enable smart analyze for a pushed region text.<br>
+   * Setting: Redesign GUI.<br>
+   * Setting: Set Error-Message-Red-Alert-Effect configurable.<br>
+   * About: Redesign from About to Help.<br>
+   * EDC Navigator: Provide a program launch/stop functions.<br>
+   * EDC Navigator: Redesign its basic tree behavior.<br>
+   * Enventor API: renamed from enventor_object_file_set() -> enventor_object_main_file_set()<br>
+   * Tools: Support a template insert button.<br>
+   * Don't overwrite existing EDC with new template code.<br>
+   * EDC Editor: Turned off focus highlight effect.<br>
+<br>
+<b>Fixes:</b><br>
+   * Setting: Fix to activate edc navigator toggle correctly.<br>
+   * Setting: Show current font correctly.<br>
+   * EDC Navigator: Fix the editor cursor jumping issue.<br>
+   * EDC Navigator: Compare name elaborately to search the part correctly.<br>
+   * Statusbar: Fix view sizing issue when an invert button is clicked repeatedly.<br>
+   * Indentation: Check '\r' when indented code line is created on Windows.<br>
+   * Indentation: Fix to calculate indent depth after multi line comment.<br>
+   * Indentation: Fix to paste a word at correct position.<br>
+   * EDC Editor: Fix a crash issue on Windows when preview part on live view is clicked.<br>
+   * EDC Editor: Compare name elaborately to search the clicked part correctly.<br>
+   * Live Edit: Fix malfunction of key input on Windows.<br>
+   * Live Edit: Fix center guide text positioning problem.<br>
+   * Live View: Update dummy part when removing all source code.<br>
+   * RedoUndo: Correct work with unicode symbols.<br>
+   * Template: Fix the error of line position when inserting group template.<br>
+   * Template: Fix line count of textblock part inserted in live edit mode.<br>
+   * Template: Fix to insert template code to the correct place.<br>
+   * EDC Parser: Fix wrong minimum value of "base_scale"<br>
+   * EDC Parser: Fix a crash issue when double click words on Windows.<br>
+   * Ctxpopup: Fix a broken preview image relay behavior.<br>
+   * Ctxpopup: Block whole area if the editor ctxpopup is activated.<br>
+   * Ctxpopup: Don't display image previews if the selected image string is in comments.<br>
+   * Auto Completion: Fix its list moved to selected part name position.<br>
+   * Fix a crash issue when removing all code in edc editor.<br>
+   * Fix a compilation issue when new empty file is opened.<br>
+   * Fix a color selector to scalable.<br>
+<br>
+Please see NEWS for more information.

@@ -1,0 +1,24 @@
+collections {
+   base_scale: 1.0;
+   sounds {
+      sample { name: "sound" LOSSY 64;
+         source: "ENVENTOR_EMBEDDED_TAP.wav";
+      }
+   }
+   group { "main";
+      parts {
+         rect { "rect";
+            desc { "default";
+               color: 0 136 170 255;
+            }
+         }
+      }
+      programs {
+         program { "mouse_down";
+            signal: "mouse,down,1";
+            source: "rect";
+            action: PLAY_SAMPLE "sound" 1.0;
+         }
+      }
+   }
+}

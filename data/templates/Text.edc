@@ -1,0 +1,23 @@
+collections {
+   base_scale: 1.0;
+   group { "main";
+      parts {
+         text { "text";
+            scale;
+            effect: SOFT_OUTLINE;
+            desc { "default";
+               rel1.relative: 0.0 0.0;
+               rel2.relative: 1.0 1.0;
+               color: 255 255 255 255;
+               color2: 0 136 170 100;
+               text {
+                  size: 50;
+                  font: "Sans";
+                  text: "TEXT";
+                  align: 0.5 0.5;
+               }
+            }
+         }
+      }
+   }
+}

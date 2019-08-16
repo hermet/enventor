@@ -1,0 +1,12 @@
+<b>Enventor v1.0.0</b></br>
+</br>
+Enventor, which is also known as EDC (Edje Data Collections) Editor, is a EDC script editor tool that supports text editing and previewing functions for the EDC source code.</br>
+</br>
+When your application requires real-time changeable layouts like animated ones, then you can write the layout design using EDC script, compile it into EDJ format file, and import it into your application using a UI layout component. You can also write design layouts from simple to complex ones using the EDC script with Enventor. Enventor helps you write EDC script code easier and finish your work faster. If you are not familiar with EDC programming, see Edje Programming Guide - https://www.enlightenment.org/program_guide/edje_pg for more information.</br>
+</br>
+Please see the following sites for more information.</br>
+</br>
+https://www.enlightenment.org/about-enventor</br>
+https://phab.enlightenment.org/w/projects/enventor</br>
+http://www.openhub.net/p/enventor
+

@@ -1,0 +1,36 @@
+collections {
+   base_scale: 1.0;
+   group { "main";
+      parts {
+         spacer { "spacer1";
+            scale;
+            desc { "default";
+               min: 50 50;
+               fixed: 1 1;
+               align: 0 0;
+               rel1.relative: 0.0 0.0;
+               rel2.relative: 0.0 0.0;
+            }
+         }
+         spacer { "spacer2";
+            scale;
+            desc { "default";
+               min: 50 50;
+               fixed: 1 1;
+               align: 1 1;
+               rel1.relative: 1.0 1.0;
+               rel2.relative: 1.0 1.0;
+            }
+         }
+         rect { "rect";
+            desc { "default";
+               rel1.to: "spacer1";
+               rel1.relative: 1.0 1.0;
+               rel2.to: "spacer2";
+               rel2.relative: 0.0 0.0;
+               color: 0 136 170 255;
+            }
+         }
+      }
+   }
+}

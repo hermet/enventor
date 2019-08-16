@@ -1,0 +1,555 @@
+collections { "The <hilight>collections</hilight> represents a theme.</br>The <hilight>collections</hilight> block contains a list of groups that composes a theme.";
+   base_scale { "The <hilight>base_scale</hilight> indicates the scale factor that the edc file is based on.</br>The size of a scalable object is multiplied with the device scale value. If the scalable object with the size 10 is created in a device with the scale 1.0, the size of the object is 20 in a device with the scale 2.0, and 40 in a device with the scale 4.0.</br>The relationship among scale, device scale and base scale is as follows.</br>Scale = Device Scale / Base Scale.";
+   }
+   color_classes { "The <hilight>color_classes</hilight> block contains a list of one or more <hilight>color_class</hilight> blocks.</br>Each <hilight>color_class</hilight> allows designers to name an arbitary group of colors to be used in the theme, the application can use that name to alter the color values at runtime.";
+      color_class { "The <hilight>color_class</hilight> allows designers to name an arbitrary group of colors to be used in the theme, the application can use that name to alter the color values at runtime.";
+         color { "The main color.";
+         }
+         color2 { "Used as outline in text and textblock parts.";
+         }
+         color3 { "Used as shadow in text and textblock parts.";
+         }
+         name { "Sets the name for the color class, used as reference by both the theme and the application.";
+         }
+      }
+   }
+
+   fonts { "The <hilight>fonts</hilight> block is used to list each font file with an alias used later in the theme.";
+      font { "Defines each font file and alias.";
+      }
+   }
+
+   group { "The <hilight>group</hilight> represents a widget style.</br>The <hilight>group</hilight> block contains parts and programs that compose a widget style.";
+      alias { "Additional name to be used as an identifier. Defining multiple aliases is supported.";
+      }
+
+      broadcast_signal { "Signal gets automatically broadcasted to all sub group parts. Default is "on".";
+      }
+
+      data { "The <hilight>data</hilight> block is used to pass arbitrary parameters from the theme to the application.";
+         item { "Defines a new parameter, the value is the string specified next to it.";
+         }
+      }
+
+      fonts { "The <hilight>fonts</hilight> block is used to list each font file with an alias used later in the theme.";
+         font { "Defines each font file and alias.";
+         }
+      }
+
+      images { "The <hilight>images</hilight> block is used to list each image file which are used in the theme. If any compression method is used, it is also defined here.";
+         image { "The <hilight>image</hilight> represents an image file which is used in the theme. If any compression method is used, it is also defined here.";
+         }
+         set { "The <hilight>set</hilight> block is used to define an image with different content depending on their size.";
+            image { "The <hilight>image</hilight> block inside the <hilight>set</hilight> block defines the characteristic of an image. Every block describes one image and the size rule to use it.";
+               size { "Defines the minimum and maximum size that selects the specified image.";
+               }
+               image { "This is included in each image file. Available compression methods are RAW, COMP, LOSSY, and USER.";
+               }
+            }
+            name { "Defines the name that refer to this image description.";
+            }
+         }
+      }
+
+      inherit { "Parent group name for inheritance.</br>Group inherit is used to inherit any predefined group and change some property which belongs to part, description, items or program. The child group has the same properties as its parent group.</br>If you specify the type again in an inherited part, it causes an error.";
+      }
+
+      limits { "This block is used to trigger signals when the Edje object is resized.";
+         horizontal { "This sends a signal limit,name,over when the object is resized and passes the limit by growing over it.</br>When the object's size is reduced below the limit, signal limit,name,below is sent.</br>This limit is applied on the y axis and is given in pixels.";
+         }
+         vertical { "This sends a signal limit,name,over when the object is resized and passes the limit by growing over it.</br>When the object's size is reduced below the limit, signal limit,name,below is sent.</br>This limit is applied on the x axis and is given in pixels.";
+         }
+      }
+
+      max { "The maximum size for the container defined by the totality of the parts.";
+      }
+
+      min { "The minimum size for the container defined by the composition of the parts.";
+      }
+
+      parts { "The <hilight>parts</hilight> represents visual elements.</br>The <hilight>parts</hilight> block contains a list of parts that describes a basic design element.";
+         part { "The <hilight>part</hilight> represents a basic design element such as an image, rectangle or text.</br>The <hilight>part</hilight> block contains a list of descriptions that defines a state of the element.";
+            access { "Specifies whether the part uses accessibility feature (1), or not (0).</br>It is set to 0 by default.";
+            }
+            box { "On a box part, the <hilight>box</hilight> block is used to set other groups as elements of the box.</br>These can be mixed with external objects set by the application through the edje_object_part_box*() functions.";
+               items { "The <hilight>items</hilight> block contains a list of <hilight>item</hilight> blocks.</br>Each <hilight>item</hilight> item block contains other group as an element of the box.";
+                  item { "The <hilight>item</hilight> item block contains other group as an element of the box.";
+                     align { "Moves the item relatively along both axis inside the part.</br>For horizontal alignment, 0.0 moves the item to touch the left edge of the part and 1.0 moves the item to touch the right edge of the part.</br>For vertical alignment, 0.0 moves the item to touch the top edge of the part and 1.0 moves the item to touch the bottom edge of the part.</br>The default value is 0.5 0.5.";
+                     }
+                     aspect { "Sets the aspect width and height hints for this object.";
+                     }
+                     aspect_mode { "Sets the aspect control hints for this object.</br>The available hints are NONE, NEITHER, HORIZONTAL, VERTICAL, and BOTH.";
+                     }
+                     max { "Sets the maximum size hints for this object.";
+                     }
+                     min { "Sets the minimum size hints for this object.";
+                     }
+                     name { "Sets the name of the object via evas_object_name_set()";
+                     }
+                     options { "Sets extra options for the object.";
+                     }
+                     padding { "Sets the padding hints for this object.";
+                     }
+                     prefer { "Sets the preferred size hints for this object.";
+                     }
+                     source { "Sets the group this object is made of.";
+                     }
+                     spread { "Replicates the item in a rectangle of size width x height box starting from the defined position of this item.</br>The default value is 1 1.";
+                     }
+                     type { "Sets the type of the object this item holds.</br>The supported type is GROUP.";
+                     }
+                     weight { "Sets the weight hints for this object.";
+                     }
+                  }
+               }
+            }
+            clip_to { "Only renders the area of the part that coincides with the given part.";
+            }
+            cursor_mode { "Sets where to draw the (blinking) cursor for textblock parts.</br>The available modes are UNDER and BEFORE.";
+            }
+            desc { "The <hilight>desc</hilight> defines a state of a part.</br>The <hilight>desc</hilight> block contains properties of a part such as size, position, color, image and text.";
+               align { "Moves the object relatively along both axis inside its container.</br>For horizontal alignment, 0.0 moves the object to touch the left edge of its container and 1.0 moves the object to touch the right edge of its container.</br>For vertical alignment, 0.0 moves the object to touch the top edge of its container and 1.0 moves the object to touch the bottom edge of its container.</br>The default value is 0.5 0.5.";
+               }
+               aspect { "Forces the ratio of the width to height to be kept between the minimum and maximum set.</br>For example, 1.0 1.0 increases the width a pixel for every pixel added to height and 2.0 2.0 increases the width two pixels for every pixel added to height.</br>The default value is 0.0 0.0 which disables <hilight>aspect</hilight>.";
+               }
+               aspect_preference { "Sets the dimensions to which the <hilight>aspect</hilight> property applies.</br>For example, if the dimension is HORIZONTAL, then the object fits its width to its container's width so its height can be longer than its container's height.</br>Available options are BOTH, VERTICAL, HORIZONTAL, SOURCE, and NONE.";
+               }
+               box { "On a box part, the <hilight>box</hilight> block is used to define how items are displayed inside of the box part.";
+                  align { "Moves items relatively along both axis inside the box.</br>For horizontal alignment, 0.0 moves items to touch the left edge of the box and 1.0 moves items to touch the right edge of the box.</br>For vertical alignment, 0.0 moves items to touch the top edge of the box and 1.0 moves items to touch the bottom edge of the box.</br>The default value is 0.5 0.5.";
+                  }
+                  layout { "Sets how the items are arranged in the box.</br>The available layouts are horizontal (default), vertical, horizontal_homogeneous, vertical_homogeneous, horizontal_max, vertical_max, horizontal_flow, vertical_flow, and stack.";
+                  }
+                  min { "When any of the parameters is enabled (1) it forces the minimum size of the box to be equal to the minimum size of the items.</br>The default value is 0 0.";
+                  }
+                  padding { "Sets the padding in pixels between items of the box.</br>The default value is 0 0.";
+                  }
+               }
+               clip_to { "Only renders the area of the part that coincides with the given part.";
+               }
+               color { "Sets the main color to the specified values in RGBA (between 0 and 255).</br>Notice that the <hilight>color</hilight> of the textblock part is set in the text style.";
+               }
+               color2 { "Sets the text outline color to the specified values in RGBA (0 to 255).</br>Notice that <hilight>color2</hilight> is valid only for the text part with the outline effect.</br>Notice that the <hilight>color2</hilight> of the textblock part is set in the text style.";
+               }
+               color3 { "Sets the text shadow color to the specified values in RGBA (0 to 255).</br>Notice that <hilight>color3</hilight> is valid only for the text part with the shadow effect.</br>Notice that the <hilight>color3</hilight> of the textblock part is set in the text style.";
+               }
+               color_class { "The part uses the color values of the named color_class, these values can be overridden by the <hilight>color</hilight>, <hilight>color2</hilight>, and <hilight>color3</hilight> properties.";
+               }
+               fill { "Sets how the image is going to fill the image part.";
+                  origin { "Sets the starting point of the image relatively to the image part.";
+                     offset { "Sets the starting point of the image in pixels from the top-left of the image part.</br>For example, 50 50 fills the image from 50 pixels right and 50 pixels down from the top-left point of the image part.";
+                     }
+                     relative { "Sets the starting point of the image relatively from the top-left of the image part.</br>For example, 0.1 0.1 fills the image from the 0.1 0.1 relative position of the image part.";
+                     }
+                  }
+                  size { "Sets the tile size.";
+                     offset { "Increases the tile size in pixels along each axis.</br>For example, 50 50 increases the tile size by 50 pixels along x and y axis.";
+                     }
+                     relative { "Sets the tile size relatively to the image size.</br>For example, 0.5 0.5 shrinks the tile size to 1/4 of the image size.";
+                     }
+                  }
+                  smooth { "Specifies whether the smooth scaling is applied to the image when the image is scaled.</br>The default value is 1 (enabled).";
+                  }
+                  type { "Spicifies whether the image is scaled or tiled to fill the image part.</br>The available types are SCALE (default) and TILE.";
+                  }
+               }
+               fixed { "Specifies whether the minimum size of this part affects the minimum size of the widget (group).</br>Normally, <hilight>fixed</hilight> is used to set a minimum width or height to a line or a point shaped part.</br>For example, rel1 and rel2 of a part are the same position along x axis and the part has a minimum width, then fixed: 1 0 should be applied not to increase the minimum width of the widget infinitely.</br>The default value is 0 0 (the minimum size of the part affects the minimum size of the widget).";
+               }
+               image { "On an image part, the <hilight>image</hilight> block is used to define how the image is displayed.";
+                  border { "Sets the area (in pixels) of each side of the image (left, right, top, and bottom) which is displayed as a fixed size border from the side.</br>The border area is not resized when the image is resized to fill the image part.";
+                  }
+                  border_scale { "Specifies whether the border is scaled by the object/global scale factors.";
+                  }
+                  border_scale_by { "If border scaling is enabled then normally the OUTPUT border sizes (e.g. if 3 pixels on the left edge are set as a border, then normally at scale 1.0, those 3 columns are always exactly 3 columns of output, or at scale 2.0 they are 6 columns, or 0.33 they merge into a single column).</br>This property multiplies the input scale factor by this multiplier, allowing the creation of supersampled borders to make higher resolution outputs possible by always using the highest resolution artwork and then runtime scaling it down.</br>Value can be: 0.0 or bigger (0.0 or 1.0 to turn it off).";
+                  }
+                  middle { "Specifies how the rest of the image (not covered by the defined border) is displayed.</br>The rest of the image can be displayed with alpha (DEFAULT), displayed without alpha (SOLID), or not displayed (NONE).</br>The default value is DEFAULT.";
+                  }
+                  normal { "Sets the name of an image to be used.</br>Notice that the name of the image should be declared in the <hilight>images</hilight> block.";
+                  }
+                  scale_hint { "Sets the evas image scale hint letting the engine more effectively save cached copies of the scaled image if it makes sense.</br>The available values are NONE, DYNAMIC, and STATIC.";
+                  }
+                  tween { "Sets the name of an image to be animated during the transition to the state of the part containing the <hilight>image</hilight> block.</br>The <hilight>image</hilight> block can have none, one or multiple <hilight>tween</hilight> declarations.</br>Images declared with <hilight>tween</hilight> are displayed in the order they are listed during the transition to the state they are declared in.</br>The <hilight>normal</hilight> image is displayed in the beginning and in the end.";
+                  }
+               }
+               inherit { "Inherits all the properties from the named description.</br>The properties defined in the description override the inherited properties, reducing the amount of necessary code for simple state changes.";
+               }
+               limit { "Emits a signal when the part size changes from zero or to a zero ("limit,width,over" or "limit,width,zero"). By default no signal are emitted.</br>The available values are NONE, WIDTH, HEIGHT, and BOTH.";
+               }
+               link { "The <hilight>link</hilight> block can be used to create transitions to the enclosing part description state.</br>The result of the above block is identical to creating a program with.";
+                  after { "Specifies a program that is run after the current program completes.</br>The source and signal parameters of a program run as an after are ignored.</br>Multiple after statements can be specified per program.";
+                  }
+                  base { "Specifies a signal and a source which triggers the transition to this state.</br>The source parameter is optional here and is filled with the current group's default value if it is not provided.";
+                  }
+                  in { "in [from] [range]</br>Waits [from] seconds before executing the program and adds a random number of seconds (from 0 to [range]) to the total waiting time.";
+                  }
+                  transition { "transition [type] [length] (interp val 1) (interp val 2) (option)</br>Defines how transitions occur using STATE_SET action.</br>[type] is the style of the transition and [length] is a double specifying the number of seconds in which to preform the transition.</br>The available types are LINEAR, SINUSOIDAL, ACCELERATE, ACCELERATE_FACTOR, DECELERATE_FACTOR, SINUSOIDAL_FACTOR, DIVISOR_INTERP, BOUNCE, and SPRING";
+                  }
+               }
+               map { "The <hilight>map</hilight> block is used to apply evas map rendering functions (e.g. perspective effect, rotation effect, lighting, and color blending).";
+                  alpha { "Specifies whether alpha channel is enabled or not during map rendering.</br>The default value is 1 (enabled).";
+                  }
+                  backface_cull { "Specifies whether backface culling is enabled or not.";
+                  }
+                  color { "color [point] [red] [green] [blue] [alpha]</br>Sets the color of a vertex in the map.</br>Colors are linearly interpolated between vertex points through the map.</br>The default color of a vertex in a map is white solid (255, 255, 255, 255) which means it has no affect on modifying the part pixels.</br>Currently only four points are supported: 0 - Left-Top point of a part. 1 - Right-Top point of a part. 2 - Left-Bottom point of a part. 3 - Right-Bottom point of a part.";
+                  }
+                  light { "Sets the part that is used as the light for calculating the brightness (based on how directly the part's surface is facing the light source point).</br>Like the perspective point part, the center point is used and zplane is used for the z position (0 being the zero-plane where all 2D objects normally live) and positive values being further away into the distance.</br>The light part color is used as the light color (alpha not used for light color). The color2 color is used for the ambient lighting when calculating brightness (alpha also not used).";
+                  }
+                  on { "Specifies whether mapping is enabled or not for the part.</br>The default value is 0 (disabled).";
+                  }
+                  perspective { "Sets the part that is used as the perspective point for giving a part a 3D look.</br>The perspective point must have a perspective section that provides zplane and focal properties. The center of this part is used as the focal point, thus size, color and visibility are not relevant, just center point, zplane and focal are used. This also implicitly enables perspective transforms.";
+                  }
+                  perspective_on { "Specifies whether perspective effect is enabled or not.";
+                  }
+                  rotation { "The <hilight>rotation</hilight> is used to rotate the part, optionally with the center on another part.";
+                     center { "Sets the part that is used as the center of rotation when rotating the part with this description.</br>The part's center point is used as the rotation center when applying rotation around the x, y and z axes.</br>If no center is given, the parts original center itself is used for the rotation center.";
+                     }
+                     x { "Sets the rotation around the x axis of the part considering the <hilight>center</hilight> set.</br>The value is given in degrees.";
+                     }
+                     y { "Sets the rotation around the y axis of the part considering the <hilight>center</hilight> set.</br>The value is given in degrees.";
+                     }
+                     z { "Sets the rotation around the x axis of the part considering the <hilight>center</hilight> set.</br>The value is given in degrees.";
+                     }
+                  }
+                  smooth { "Specifies whether smooth map rendering is enabled or not.</br>This may be linear interpolation, anisotropic filtering or anything the engine decides is smooth. This is a best-effort hint and may not produce precisely the same results in all engines and situations.</br>The default value is 1 (enabled).";
+                  }
+               }
+               max { "Sets the maximum size of the part.</br>The size of -1.0 means that it is ignored in that direction.";
+               }
+               min { "Sets the minimum size of the part.</br>To make this <hilight>min</hilight> size not affect to the minimum size of the object, <hilight>fixed</hilight> should be set with 1 for that direction.";
+               }
+               minmul { "Sets a multiplier forcibly applied to whatever minimum size is only during minimum size calculation.";
+               }
+               perspective { "The <hilight>perspective</hilight> is used to add focal and plane perspective to the part.</br>Must be provided if the part is being used by other parts as it is perspective target.";
+                  focal { "Sets the z value that is not scaled.</br>Normally this is 0 as that is the z distance.";
+                  }
+                  zplane { "Sets the distance from the focal z plane (zplane) and the camera (i.e. equating to focal length of the camera).";
+                  }
+               }
+               rel1 { "The <hilight>rel1</hilight> block is used to define the position of the top-left corner of the part.</br>";
+                  offset { "Adds an absoute offset (in pixels) along each axis.";
+                  }
+                  relative { "Moves the corner to a relative position of the part given to the keyword <hilight>to</hilight>.</br>The value for the left side of the part is 0.0 and the value for the right side of the part is 1.0.</br>The value for the top side of the part is 0.0 and the value for the bottom side of the part is 1.0";
+                  }
+                  to { "Sets another part referenced for positioning the corners along both x axis and y axis.";
+                  }
+                  to_x { "Sets another part referenced for positioning the corners along x axis.";
+                  }
+                  to_y { "Sets another part referenced for positioning the corners along y axis.";
+                  }
+               }
+               rel2 { "The <hilight>rel2</hilight> block is used to define the position of the bottom-right corner of the part.";
+                  #inherit "collections.group.parts.part.desc.rel1";
+               }
+               source { "Sets another part to be used by the part's content.</br>Notice that this works only with proxy parts.";
+               }
+               step { "Restricts resizing of each dimension to values divisible by its value.</br>This causes the part to jump from value to value while resizing.</br>The default value is 0 0 which disables stepping.";
+               }
+               table { "On a table part, the <hilight>table</hilight> block is used to define how items are displayed inside of the table part.";
+                  align { "Moves items relatively along both axis inside the table.</br>For horizontal alignment, 0.0 moves items to touch the left edge of the table and 1.0 moves items to touch the right edge of the table.</br>For vertical alignment, 0.0 moves items to touch the top edge of the table and 1.0 moves items to touch the bottom edge of the table.</br>The default value is 0.5 0.5.";
+                  }
+                  homogeneous { "Sets how the space for each item is arranged in the table.</br>The available modes are NONE (default), TABLE, and ITEM.";
+                  }
+                  min { "When any of the parameters is enabled (1) it forces the minimum size of the table to be equal to the minimum size of the items.</br>The default value is 0 0.";
+                  }
+                  padding { "Sets the padding in pixels between items of the table.</br>The default value is 0 0.";
+                  }
+               }
+               text { "The <hilight>text</hilight> block is used to define text properties.";
+                  align { "Moves the text relatively along both axis inside the part.</br>For horizontal alignment, 0.0 moves the text to touch the left edge of the part and 1.0 moves the text to touch the right edge of the part.</br>For vertical alignment, 0.0 moves the text to touch the top edge of the part and 1.0 moves the text to touch the bottom edge of the part.</br>The default value is 0.5 0.5.";
+                  }
+                  domain { "Sets the domain name of the .mo file which has to be checked for translation.";
+                  }
+                  ellipsis { "Balances the text in a relative point from 0.0 to 1.0, this point is the last section of the string to be cut out in case of a resize that is smaller than the text itself.</br>The default value is 0.0.";
+                  }
+                  fit { "Specifies whether resizing the text to fit in the part or not.</br>The default value is 0 0 (disabled).";
+                  }
+                  font { "Sets the font family to one of the aliases set up in the <hilight>fonts</hilight> block.";
+                  }
+                  max { "When any of the parameters is enabled (1) it forces the maximum size of the container to be equal to the maximum size of the text (width and height).</br>The default value is 0 0 (disabled).";
+                  }
+                  min { "When any of the parameters is enabled (1) it forces the minimum size of the container to be equal to the minimum size of the text (width and height).</br>The default value is 0 0 (disabled).";
+                  }
+                  repch { "Sets a replacement character string to hide the details in the password mode.</br>This works only if the part is <hilight>textblock</hilight> and the <hilight>entry_mode</hilight> is PASSWORD.</br>Normally * is used, but you can use anything you like.";
+                  }
+                  size { "Sets the default font size.";
+                  }
+                  size_range { "Sets the allowed font size.</br>Setting min and max to 0 means that sizing is not restricted.</br>The default value is 0 0 (sizing is not restricted).";
+                  }
+                  source { "Uses text properties of the given part (e.g. font and size).";
+                  }
+                  style { "Uses the default style and tags defined in the <hilight>style</hilight> block with the specified name.";
+                  }
+                  text { "Sets the default text string.";
+                  }
+                  text_class { "Sets the text's class which can be used to factor font and font size properties.";
+                  }
+                  text_source { "Sets the text string the same as the given part's text string.</br>The text string is updated when the given part's text string changes.";
+                  }
+               }
+               visible { "Specifies whether the part is visible or not.</br>If the part is not visible, then the part does not receive mouse events.</br>The default value is 1 (visible).";
+               }
+            }
+            description { "The <hilight>description</hilight> defines a state of a part.</br>The <hilight>description</hilight> block contains properties of a part such as size, position, color, image and text.";
+               #inherit "collections.group.parts.part.desc";
+            }
+            dragable { "When this block is used the part can be dragged around the interface, do not confuse with external drag and drop.</br>By default Edje (and most applications) attempts to use the minimal size possible for a draggable part.</br>If the min property is not set in the description the part is (most likely) set to 0px width and 0px height, thus invisible.";
+               confine { "Limits the movement of the dragged part to another part's container.</br>Set a min size for the part, or the dragged object will not show up.";
+               }
+               events { "Causes the part to forward the drag events to another part, thus ignoring them for itself.";
+               }
+               threshold { "When set, the movement of the dragged part can only start when it get moved enough to be outside of the threshold part.";
+               }
+               x { "Used to set up dragging events for the X axis.</br>The first parameter is used to enable (1 or -1) and disable (0) dragging along the axis.</br>When enabled, 1 sets the starting point at 0.0 and -1 at 1.0.</br>The second parameter takes any integer and limits movement to values divisible by it, causing the part to jump from position to position.</br>If the second parameter, step, is set to 0 it is calculated as width of confine part divided by the third parameter,count.";
+               }
+               y { "Used to set up dragging events for the Y axis.</br>The first parameter is used to enable (1 or -1) and disable (0) dragging along the axis.</br>When enabled, 1 sets the starting point at 0.0 and -1 at 1.0.</br>The second parameter takes any integer and limits movement to values divisible by it, causing the part to jump from position to position.</br>If the second parameter, step, is set to 0 it is calculated as height of confine part divided by the third parameter, count.";
+               }
+            }
+            effect { "Applies the selected outline, shadow, or glow effect to textblock parts.</br>The available effects are PLAIN, OUTLINE, SOFT_OUTLINE, SHADOW, SOFT_SHADOW, OUTLINE_SHADOW, OUTLINE_SOFT_SHADOW, FAR_SHADOW, FAR_SOFT_SHADOW, and GLOW.</br>The available shadow directions definitions are BOTTOM_RIGHT, BOTTOM, BOTTOM_LEFT, LEFT, TOP_LEFT, TOP, TOP_RIGHT, and RIGHT (default is BOTTOM_RIGHT).";
+            }
+            entry_mode { "Sets the edit mode for textblock parts.</br>The available modes are NONE, PLAIN, EDITABLE, and PASSWORD.";
+            }
+            ignore_flags { "Specifies whether events with the given flags are ignored, i.e., do not emit signals to the parts.</br>Multiple flags must be separated by spaces, the effect is ignoring all events with one of the flags specified.</br>The available flags are NONE and ON_HOLD";
+            }
+            insert_after { "Inserts the part above the given part.</br>Notice that one part cannot have both insert_before and insert_after.</br>Notice that one part cannot refer more than one by insert_after.";
+            }
+            insert_before { "Inserts the part below the given part.</br>Notice that one part cannot have both insert_before and insert_after.</br>Notice that one part cannot refer more than one by insert_before.";
+            }
+            mouse_events { "Specifies whether the part receives mouse events or not.</br>The default value is 1 (receiving mouse events).";
+            }
+            multiline { "Specifies whether multiple lines are allowed for editable textblock parts.";
+            }
+            pointer_mode { "Sets the mouse pointer behavior for the given part.</br>The default value is AUTOGRAB.</br>The available modes are AUTOGRAB and NOGRAB.";
+            }
+            repeat_events { "Specifies whether the part passes mouse events to other parts below it.</br>The default value is 0 (not passing mouse events).";
+            }
+            scale { "Specifies whether the part scales its size with an Edje scaling factor.</br>This is used to scale properties such as font size, min/max size of the part, and it can also be used to scale based on DPI of the target device.</br>The default value is 0 (not scaling).";
+            }
+            select_mode { "Sets how the text selection is triggered for textblock parts.</br>The available modes are DEFAULT and EXPLICIT.";
+            }
+            source { "Sets the given group to the group/textblock parts.</br>Sets the given elementary widget to the external part. (e.g. elm/button)";
+            }
+            table { "On a box part, the <hilight>table</hilight> block is used to set other groups as elements of the box.</br>These can be mixed with external objects set by the application through the edje_object_part_box*() functions.";
+               items { "The <hilight>items</hilight> block contains a list of <hilight>item</hilight> blocks.</br>Each <hilight>item</hilight> item block contains other group as an element of the box.";
+                  item { "The <hilight>item</hilight> item block contains other group as an element of the box.";
+                     align { "Moves the item relatively along both axis inside the part.</br>For horizontal alignment, 0.0 moves the item to touch the left edge of the part and 1.0 moves the item to touch the right edge of the part.</br>For vertical alignment, 0.0 moves the item to touch the top edge of the part and 1.0 moves the item to touch the bottom edge of the part.</br>The default value is 0.5 0.5.";
+                     }
+                     aspect { "Sets the aspect width and height hints for this object.";
+                     }
+                     aspect_mode { "Sets the aspect control hints for this object.</br>The available hints are NONE, NEITHER, HORIZONTAL, VERTICAL, and BOTH.";
+                     }
+                     max { "Sets the maximum size hints for this object.";
+                     }
+                     min { "Sets the minimum size hints for this object.";
+                     }
+                     name { "Sets the name of the object via evas_object_name_set()";
+                     }
+                     options { "Sets extra options for the object.";
+                     }
+                     padding { "Sets the padding hints for this object.";
+                     }
+                     position { "Sets the position in the table.";
+                     }
+                     prefer { "Sets the preferred size hints for this object.";
+                     }
+                     source { "Sets the group this object is made of.";
+                     }
+                     span { "Sets how many columns and rows this item uses.</br>The default value is 1 1.";
+                     }
+                     spread { "Replicates the item in a rectangle of size width x height box starting from the defined position of this item.</br>The default value is 1 1.";
+                     }
+                     type { "Sets the type of the object this item holds.</br>The supported type is GROUP.";
+                     }
+                     weight { "Sets the weight hints for this object.";
+                     }
+                  }
+               }
+            }
+            type { "Sets the part type.</br>The available types are IMAGE (default), RECT, SWALLOW, TEXT, TEXTBLOCK, SPACER, GROUP, BOX, TABLE, PROXY and EXTERNAL.";
+            }
+         }
+
+         box { "The <hilight>box</hilight> represents a box part. The <hilight>box</hilight> part is used to contain other objects.</br>The <hilight>box</hilight> block contains a list of descriptions that defines a state of the box part.</br>It also has a row or column.";
+            #inherit "collections.group.parts.part";
+         }
+
+         external { "The <hilight>external</hilight> represents an external part. The <hilight>external</hilight> part is used to set a widget inside of it.</br>The <hilight>external</hilight> block contains a list of descriptions that defines a state of the external part.";
+            #inherit "collections.group.parts.part";
+         }
+
+         group { "The <hilight>group</hilight> represents a group part. The <hilight>group</hilight> part is used to include other group (widget style) inside of it.</br>The <hilight>group</hilight> block contains a list of descriptions that defines a state of the group part.";
+            #inherit "collections.group.parts.part";
+         }
+
+         image { "The <hilight>image</hilight> represents an image part. The <hilight>image</hilight> part is used to display an image file.</br>The <hilight>image</hilight> block contains a list of descriptions that defines a state of the image part.";
+            #inherit "collections.group.parts.part";
+         }
+
+         proxy { "The <hilight>proxy</hilight> represents a proxy part. The <hilight>proxy</hilight> part is used to clone other part in the same group.</br>The <hilight>proxy</hilight> block contains a list of descriptions that defines a state of the proxy part.";
+            #inherit "collections.group.parts.part";
+         }
+
+         rect { "The <hilight>rect</hilight> represents a rectangle part. The <hilight>rect</hilight> part is used to draw a rectangle.</br>The <hilight>rect</hilight> block contains a list of descriptions that defines a state of the rectangle part.";
+            #inherit "collections.group.parts.part";
+         }
+
+         spacer { "The <hilight>spacer</hilight> represents a spacer part. The <hilight>spacer</hilight> part is used as a padding area (it is not visible and it does not receive mouse events and it also does not need any memory allocation unlike other parts.).</br>The <hilight>spacer</hilight> block contains a list of descriptions that defines a state of the spacer part.";
+            #inherit "collections.group.parts.part";
+         }
+
+         swallow { "The <hilight>swallow</hilight> represents a swallow part. The <hilight>swallow</hilight> part is used to set a widget into this part.</br>The <hilight>swallow</hilight> block contains a list of descriptions that defines a state of the swallow part.";
+            #inherit "collections.group.parts.part";
+         }
+
+         table { "The <hilight>table</hilight> represents a table part. The <hilight>table</hilight> part is used to contain other parts.</br>The <hilight>table</hilight> block contains a list of descriptions that defines a state of the table part.</br>It also has a row and column.";
+            #inherit "collections.group.parts.part";
+         }
+
+         text { "The <hilight>text</hilight> represents a text part. The <hilight>text</hilight> part is used to write a simple string with single line in this part.</br>The <hilight>text</hilight> block contains a list of descriptions that defines a state of the text part.";
+            #inherit "collections.group.parts.part";
+         }
+
+         textblock { "The <hilight>textblock</hilight> represents a textblock part. The <hilight>textblock</hilight> part is used to write complex strings and mark-up elements with multiple lines in this part.</br>The <hilight>textblock</hilight> block contains a list of descriptions that defines a state of the textblock part.";
+            #inherit "collections.group.parts.part";
+         }
+
+         vector { "The <hilight>vector</hilight> represents a vector part. The <hilight>vector</hilight> part is used to display a vector file.</br>The <hilight>vector</hilight> block contains a list of descriptions that defines a state of the vector part.";
+            #inherit "collections.group.parts.part";
+         }
+      }
+
+      programs { "The <hilight>programs</hilight> defines how your interface reacts to events.</br>The <hilight>programs</hilight> block contains a list of programs that reacts to events.";
+         program { "The <hilight>program</hilight> defines how your interface reacts to events. The <hilight>program</hilight> can change the state of parts and trigger/listen events.</br>The <hilight>program</hilight> block contains signal, source, action and target.</br>signal is an event that the program is waiting for.</br>source is a part that catches the signal. (e.g. mouse clicking area)</br>action defines what is going to do when the signal is caught. (e.g. changing the state of a part)</br>target is a part that changes its state.";
+            action { "action [type] (param1) (param2) (param3) (param4)</br>Specifies an action to be performed by the program.</br>The available types are STATE_SET, SIGNAL_EMIT, etc.";
+            }
+            after {"Specifies a program that is run after the current program completes.</br>The source and signal parameters of a program run as an after are ignored.</br>Multiple after statements can be specified per program.";
+            }
+            filter { "filter [part] [state]</br>Filters signals to be only accepted if the part is in state named [state].</br>Only one filter per program can be used.</br>If [state] is not given, the source of the event is used instead.";
+            }
+            in { "in [from] [range]</br>Waits [from] seconds before executing the program and adds a random number of seconds (from 0 to [range]) to the total waiting time.";
+            }
+            name { "Sets the name of the program as a unique identifier.";
+            }
+            signal { "Specifies a signal which triggers the transition to this state.</br>Only one signal per program can be used.</br>The available predefined signals are "mouse,in", "mouse,out", "mouse,move", "mouse,down,*", "mouse,up,*", "mouse,wheel,0,*", etc.";
+            }
+            source { "Specifies a source which filters the incoming signals depending on the sender name.</br>The part name which receives the signal is used as the source name (e.g. If a user does mouse down to a part named "abc", then "mouse,down,*" signal and "abc" source can catches this event.).</br>Only one source per program can be used.";
+            }
+            target { "Specifies a program or a part on which the specified action acts.";
+            }
+            transition { "transition [type] [length] (interp val 1) (interp val 2) (option)</br>Defines how transitions occur using STATE_SET action.</br>[type] is the style of the transition and [length] is a double specifying the number of seconds in which to preform the transition.</br>The available types are LINEAR, SINUSOIDAL, ACCELERATE, ACCELERATE_FACTOR, DECELERATE_FACTOR, SINUSOIDAL_FACTOR, DIVISOR_INTERP, BOUNCE, and SPRING";
+            }
+         }
+      }
+
+      script { "The <hilight>script</hilight> block is used to inject embryo scripts to a given Edje theme and it functions in two modalities. When it is included inside a program block, the script is executed every time the program is run, on the other hand, when included directly into a group, part, or description block, it is executed once at the load time, in the load order.";
+      }
+
+      sounds { "The <hilight>sounds</hilight> block contains a list of one or more sound samples and tone items.";
+         sample { "The <hilight>sample</hilight> block defines the sound sample.";
+            name { "Used to include each sound file. Valid types are RAW, COMP, LOSSY, and AS_IS.";
+            }
+            source { "The sound source file name.";
+            }
+         }
+         tone { "A sound of the given frequency.";
+         }
+      }
+
+      styles { "The <hilight>styles</hilight> block contains a list of one or more <hilight>style</hilight> blocks.</br>The <hilight>style</hilight> block is used to create style <tags> for advanced TEXTBLOCK formatting.";
+         style { "The <hilight>style</hilight> block is used to create style <tags> for advanced TEXTBLOCK formatting.";
+            base { "The <hilight>base</hilight> represents style properties that are applied to the text.</br>The available tags that can be used in the style property are as follows.</br>font, font_size, color, color_class, text_class, ellipsis, wrap, style, valign, and align.";
+            }
+            name { "The name of the style to be used as reference later in the theme.";
+            }
+            tag { "The <hilight>tag</hilight> defines the meaning of each tag in the style.</br>Style is applied to the text between the beginning tag <tags> and the ending tag </tags>.";
+            }
+         }
+      }
+   }
+
+   images { "The <hilight>images</hilight> block is used to list each image file which are used in the theme. If any compression method is used, it is also defined here.";
+      image { "The <hilight>image</hilight> represents an image file which is used in the theme. If any compression method is used, it is also defined here.";
+      }
+      set { "The <hilight>set</hilight> block is used to define an image with different content depending on their size.";
+         image { "The <hilight>image</hilight> block inside the <hilight>set</hilight> block defines the characteristic of an image. Every block describes one image and the size rule to use it.";
+            size { "Defines the minimum and maximum size that selects the specified image.";
+            }
+            image { "This is included in each image file. Available compression methods are RAW, COMP, LOSSY, and USER.";
+            }
+         }
+         name { "Defines the name that refer to this image description.";
+         }
+      }
+   }
+
+   sounds { "The <hilight>sounds</hilight> block contains a list of one or more sound samples and tone items.";
+      sample { "The <hilight>sample</hilight> block defines the sound sample.";
+         name { "Used to include each sound file. Valid types are RAW, COMP, LOSSY, and AS_IS.";
+         }
+         source { "The sound source file name.";
+         }
+      }
+      tone { "A sound of the given frequency.";
+      }
+   }
+
+   styles { "The <hilight>styles</hilight> block contains a list of one or more <hilight>style</hilight> blocks.</br>The <hilight>style</hilight> block is used to create style <tags> for advanced TEXTBLOCK formatting.";
+      style { "The <hilight>style</hilight> block is used to create style <tags> for advanced TEXTBLOCK formatting.";
+         base { "The <hilight>base</hilight> represents style properties that are applied to the text.</br>The available tags that can be used in the style property are as follows.</br>font, font_size, color, color_class, text_class, ellipsis, wrap, style, valign, and align.";
+         }
+         name { "The name of the style to be used as reference later in the theme.";
+         }
+         tag { "The <hilight>tag</hilight> defines the meaning of each tag in the style.</br>Style is applied to the text between the beginning tag <tags> and the ending tag </tags>.";
+         }
+      }
+   }
+}
+
+color_classes { "The <hilight>color_classes</hilight> block contains a list of one or more <hilight>color_class</hilight> blocks.</br>Each <hilight>color_class</hilight> allows designers to name an arbitary group of colors to be used in the theme, the application can use that name to alter the color values at runtime.";
+   color_class { "The <hilight>color_class</hilight> allows designers to name an arbitrary group of colors to be used in the theme, the application can use that name to alter the color values at runtime.";
+      color { "The main color.";
+      }
+      color2 { "Used as outline in text and textblock parts.";
+      }
+      color3 { "Used as shadow in text and textblock parts.";
+      }
+      name { "Sets the name for the color class, used as reference by both the theme and the application.";
+      }
+   }
+}
+
+data { "The <hilight>data</hilight> block is used to pass arbitrary parameters from the theme to the application.";
+   file { "Defines a new parameter, the value is the contents of the specified file formatted as a single string of text.</br>This property only works with plain text files.";
+   }
+   item { "Defines a new parameter, the value is the string specified next to it.";
+   }
+}
+
+fonts { "The <hilight>fonts</hilight> block is used to list each font file with an alias used later in the theme.";
+   font { "Defines each font file and alias.";
+   }
+}
+
+images { "The <hilight>images</hilight> block is used to list each image file which are used in the theme. If any compression method is used, it is also defined here.";
+   image { "The <hilight>image</hilight> represents an image file which is used in the theme. If any compression method is used, it is also defined here.";
+   }
+   set { "The <hilight>set</hilight> block is used to define an image with different content depending on their size.";
+      image { "The <hilight>image</hilight> block inside the <hilight>set</hilight> block defines the characteristic of an image. Every block describes one image and the size rule to use it.";
+         size { "Defines the minimum and maximum size that selects the specified image.";
+         }
+         image { "This is included in each image file. Available compression methods are RAW, COMP, LOSSY, and USER.";
+         }
+      }
+      name { "Defines the name that refer to this image description.";
+      }
+   }
+}
+
+styles { "The <hilight>styles</hilight> block contains a list of one or more <hilight>style</hilight> blocks.</br>The <hilight>style</hilight> block is used to create style <tags> for advanced TEXTBLOCK formatting.";
+   style { "The <hilight>style</hilight> block is used to create style <tags> for advanced TEXTBLOCK formatting.";
+      base { "The <hilight>base</hilight> represents style properties that are applied to the text.</br>The available tags that can be used in the style property are as follows.</br>font, font_size, color, color_class, text_class, ellipsis, wrap, style, valign, and align.";
+      }
+      name { "The name of the style to be used as reference later in the theme.";
+      }
+      tag { "The <hilight>tag</hilight> defines the meaning of each tag in the style.</br>Style is applied to the text between the beginning tag <tags> and the ending tag </tags>.";
+      }
+   }
+}

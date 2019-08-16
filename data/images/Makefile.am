@@ -1,0 +1,56 @@
+MAINTAINERCLEANFILES = Makefile.in
+
+filesdir = $(datadir)/$(PACKAGE)/images
+files_DATA = ENVENTOR_EMBEDDED_IMAGE.png \
+             ENVENTOR_EMBEDDED_TRIAB-01.png \
+             ENVENTOR_EMBEDDED_TRIAB-02.png \
+             ENVENTOR_EMBEDDED_TRIAB-03.png \
+             ENVENTOR_EMBEDDED_TRIAB-04.png \
+             ENVENTOR_EMBEDDED_TRIAB-05.png \
+             ENVENTOR_EMBEDDED_TRIAB-06.png \
+             ENVENTOR_EMBEDDED_TRIAB-07.png \
+             ENVENTOR_EMBEDDED_TRIAB-08.png \
+             ENVENTOR_EMBEDDED_TRIAB-09.png \
+             ENVENTOR_EMBEDDED_TRIAB-10.png \
+             ENVENTOR_EMBEDDED_TRIAB-11.png \
+             ENVENTOR_EMBEDDED_TRIAB-12.png \
+             ENVENTOR_EMBEDDED_MONTH_STROKE.png \
+             ENVENTOR_EMBEDDED_MOONPHASE_COVER.png \
+             ENVENTOR_EMBEDDED_MOONPHASE_MOON.png \
+             ENVENTOR_EMBEDDED_NEEDLE_HOUR.png \
+             ENVENTOR_EMBEDDED_NEEDLE_MINUTE.png \
+             ENVENTOR_EMBEDDED_NEEDLE_SECOND.png \
+             ENVENTOR_EMBEDDED_WATCHFACE.png \
+             ENVENTOR_EMBEDDED_NEEDLE_HOUR_RECT.png \
+             ENVENTOR_EMBEDDED_NEEDLE_MINUTE_RECT.png \
+             ENVENTOR_EMBEDDED_NEEDLE_SECOND_RECT.png \
+             ENVENTOR_EMBEDDED_WATCHFACE_RECT.png \
+             ENVENTOR_EMBEDDED_BUTTON_BG.png \
+             ENVENTOR_EMBEDDED_BUTTON_BG_HOVER.png \
+             ENVENTOR_EMBEDDED_BUTTON_BG_DOWN.png \
+             ENVENTOR_EMBEDDED_ICON_ARROW.png \
+             ENVENTOR_EMBEDDED_ICON_BADGE.png \
+             ENVENTOR_EMBEDDED_ICON_BADGE_DOWN.png \
+             ENVENTOR_EMBEDDED_ICON_CLIP.png \
+             ENVENTOR_EMBEDDED_ICON_CLIP_DOWN.png \
+             ENVENTOR_EMBEDDED_ICON_DOCK.png \
+             ENVENTOR_EMBEDDED_ICON_DOCK_DOWN.png \
+             ENVENTOR_EMBEDDED_ICON_LOCK.png \
+             ENVENTOR_EMBEDDED_ICON_LOCK_DOWN.png \
+             ENVENTOR_EMBEDDED_BAT1.svg \
+             ENVENTOR_EMBEDDED_BAT2.svg \
+             ENVENTOR_EMBEDDED_SVG.svg \
+             ENVENTOR_EMBEDDED_BG1.png \
+             ENVENTOR_EMBEDDED_BG2.png \
+             ENVENTOR_EMBEDDED_BG3.png \
+             ENVENTOR_EMBEDDED_FIELD.png \
+             ENVENTOR_EMBEDDED_PLATFORM.png \
+             ENVENTOR_EMBEDDED_LADDER.png \
+             ENVENTOR_EMBEDDED_TACK.png \
+             ENVENTOR_EMBEDDED_CHERRY.png \
+             ENVENTOR_EMBEDDED_MELON.png \
+             ENVENTOR_EMBEDDED_WATERMELON.png \
+             ENVENTOR_EMBEDDED_MASK.png \
+             enventor_logo.png
+
+EXTRA_DIST = $(files_DATA)

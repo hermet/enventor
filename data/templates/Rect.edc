@@ -1,0 +1,14 @@
+collections {
+   base_scale: 1.0;
+   group { "main";
+      parts {
+         rect { "rect";
+            desc { "default";
+               rel1.relative: 0.0 0.0;
+               rel2.relative: 1.0 1.0;
+               color: 0 136 170 255;
+            }
+         }
+      }
+   }
+}

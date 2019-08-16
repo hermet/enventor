@@ -1,0 +1,60 @@
+collections {
+   base_scale: 1.0;
+   group { "main";
+      /* TODO: Please replace embedded image files to your application image files. */
+      images {
+         image: "ENVENTOR_EMBEDDED_BG1.png" COMP;
+         image: "ENVENTOR_EMBEDDED_BG2.png" COMP;
+         image: "ENVENTOR_EMBEDDED_BG3.png" COMP;
+      }
+      parts {
+         image { "night";
+            desc { "default";
+               /* TODO: Please replace embedded image files to your application image files. */
+               image.normal: "ENVENTOR_EMBEDDED_BG1.png";
+            }
+         }
+         image { "sky";
+            desc { "default";
+               /* TODO: Please replace embedded image files to your application image files. */
+               image.normal: "ENVENTOR_EMBEDDED_BG2.png";
+            }
+            desc { "sunset";
+               inherit: "default";
+               color: 255 125 125 255;
+            }
+            desc { "night";
+               inherit: "default";
+               color: 0 0 0 0;
+            }
+         }
+         image { "mountain";
+            desc { "default";
+               /* TODO: Please replace embedded image files to your application image files. */
+               image.normal: "ENVENTOR_EMBEDDED_BG3.png";
+            }
+         }
+      }
+      programs {
+         program { "sunset";
+            signal: "load";
+            action: STATE_SET "sunset";
+            transition: LINEAR 5.0;
+            target: "sky";
+            after: "night";
+         }
+         program { "night";
+            action: STATE_SET "night";
+            transition: LINEAR 5.0;
+            target: "sky";
+            after: "day";
+         }
+         program { "day";
+            action: STATE_SET "default";
+            transition: LINEAR 5.0;
+            target: "sky";
+            after: "sunset";
+         }
+      }
+   }
+}
