@@ -69,7 +69,6 @@ ENVENTOR_VERSION_MINOR=v_min
 AC_SUBST(ENVENTOR_VERSION_MAJOR)
 AC_SUBST(ENVENTOR_VERSION_MINOR)
 
-EFL_ENABLE_EO_API_SUPPORT
 EFL_ENABLE_BETA_API_SUPPORT
 AC_DEFINE_UNQUOTED(ENVENTOR_WIN32_BUILD_SUPPORT, 1, "Support Win32 dllexport")
 AC_DEFINE_UNQUOTED(ENVENTOR_BETA_API_SUPPORT, 1, "Enable access to unstable ENVENTOR API that are still in beta")
@@ -78,6 +77,7 @@ AC_DEFINE_UNQUOTED(EFL_UI_FOCUS_OBJECT_PROTECTED, 1, "Enable Focus Protected API
 efl_version="1.18.0"
 requirement_enventor=" \
 eo >= ${efl_version} \
+efl >= ${efl_version} \
 eina >= ${efl_version} \
 eet >= ${efl_version} \
 elementary >= ${efl_version} \
@@ -94,21 +94,11 @@ PKG_CHECK_MODULES([ENVENTOR], [${requirement_enventor}])
 
 ### Checks for linker characteristics
 
-# Needs to be moved into a macro, and also, needs a way to automatically fetch from all the dependencies using the Requires.
-DEPS_EOLIAN_FLAGS=`${PKG_CONFIG} --variable=eolian_flags eo evas edje ecore elementary efl`
-AC_SUBST([DEPS_EOLIAN_FLAGS])
-
 EFL_ATTRIBUTE_UNUSED
 
 # Check edje_cc
 EFL_WITH_BIN([eet], [eet-eet], [eet])
 EFL_WITH_BIN([edje], [edje-cc], [edje_cc])
-EFL_WITH_BIN([eolian], [eolian-gen], [eolian_gen])
-EFL_WITH_BIN([eolian-cxx], [eolian-cxx], [eolian_cxx])
-
-# Force the helper to try external eolian generator
-AM_CONDITIONAL([HAVE_EOLIAN_GEN], [true])
-AM_CONDITIONAL([HAVE_EOLIAN_CXX], [true])
 
 AC_CONFIG_FILES([
 po/Makefile.in
