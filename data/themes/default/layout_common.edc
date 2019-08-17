@@ -16,6 +16,15 @@ images {
    image: "downlight_glow_right.png" COMP;
 }
 
+group { "enventor_object";
+   parts {
+      swallow { "main";
+         desc { "default";
+         }
+      }
+   }
+}
+
 group { "fileselector_layout";
    parts {
       rect { "clipper";

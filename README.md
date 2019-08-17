@@ -17,7 +17,7 @@ When your application requires real-time changeable layouts like animated ones, 
 ## Requirements
 
 ```
-  efl (>= 1.21.0)
+  efl (>= 1.18.0)
 ```
 Please note that some features may not quite function correctly or completely prior to EFL 1.21. Newer would be better.
 

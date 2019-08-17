@@ -2,22 +2,9 @@
  #include "config.h"
 #endif
 
-#define ELM_INTERNAL_API_ARGESFSDFEFC 1
-#define EFL_CANVAS_OBJECT_PROTECTED 1
-#define EFL_CANVAS_GROUP_PROTECTED
-#define EFL_CANVAS_GROUP_BETA
-
 #include <Enventor.h>
 #include <Eio.h>
 #include "enventor_private.h"
-
-#define MY_CLASS_NAME_LEGACY "enventor_object"
-
-#ifdef MY_CLASS
-#undef MY_CLASS
-#endif
-
-#define MY_CLASS ENVENTOR_OBJECT_CLASS
 
 #define DEFAULT_LINENUMBER EINA_TRUE
 #define DEFAULT_FONT_SCALE 1
@@ -25,6 +12,25 @@
 #define DEFAULT_PART_HIGHLIGHT EINA_TRUE
 #define DEFAULT_SMART_UNDO_REDO EINA_FALSE
 #define DEFAULT_CTXPOPUP EINA_TRUE
+
+#define ENVENTOR_OBJECT_DATA_GET(o, pd) \
+  Enventor_Object_Data *pd = evas_object_data_get(o, "_enventor")
+
+#define ENVENTOR_OBJECT_DATA_GET_OR_RETURN(o, pd)            \
+  ENVENTOR_OBJECT_DATA_GET(o, pd);                           \
+  if (!pd)                                                   \
+    {                                                        \
+       EINA_LOG_ERR("Failed to get Enventor_Object_Data!");  \
+       return;                                               \
+    }
+
+#define ENVENTOR_OBJECT_DATA_GET_OR_RETURN_VAL(o, pd, val)     \
+  ENVENTOR_OBJECT_DATA_GET(o, pd);                             \
+  if (!pd)                                                     \
+    {                                                          \
+       EINA_LOG_ERR("Failed to get Enventor_Object_Data!");    \
+       return val;                                             \
+    }
 
 typedef struct _Enventor_Object_Data Enventor_Object_Data;
 typedef struct _Enventor_Item_Data Enventor_Item_Data;
@@ -87,7 +93,6 @@ static Eina_Error ENVENTOR_FILE_SET_ERROR_GENERIC;
 /*****************************************************************************/
 /* Internal method implementation                                            */
 /*****************************************************************************/
-
 static void
 _enventor_main_item_free(Enventor_Object_Data *pd)
 {
@@ -242,132 +247,11 @@ call_error:
 }
 
 static void
-_enventor_part_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED, void *ei)
+_enventor_object_del_cb(void *data, Evas *e EINA_UNUSED,
+                        Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 {
-   Enventor_Object_Data *pd = (Enventor_Object_Data *)data;
-   if (pd->disabled || !pd->focused_it) return;
-   const char *part_name = (const char *)ei;
-   edit_part_cursor_set(pd->focused_it->ed, view_group_name_get(VIEW_DATA),
-                        part_name);
-}
+   Enventor_Object_Data *pd = data;
 
-
-/*****************************************************************************/
-/* Externally accessible calls                                               */
-/*****************************************************************************/
-#if 0
-EAPI void
-enventor_object_class_constructor(Efl_Class *klass)
-{
-   evas_smart_legacy_type_register(MY_CLASS_NAME_LEGACY, klass);
-
-   ENVENTOR_FILE_SET_ERROR_GENERIC = eina_error_msg_static_register("Generic load error");
-}
-
-EAPI void
-enventor_object_efl_canvas_group_group_member_add(Enventor_Object *obj, Evas_Object *child)
-{
-   //Don't go through elm_widget to avoid color set.
-   evas_object_data_set(child, "_elm_leaveme", (void*)1);
-
-   efl_canvas_group_member_add(efl_super(obj, MY_CLASS), child);
-
-   Evas_Coord x, y, w, h;
-   evas_object_geometry_get(obj, &x, &y, &w, &h);
-   evas_object_move(child, x, y);
-   evas_object_resize(child, w, h);
-   evas_object_clip_set(child, evas_object_clip_get(obj));
-}
-
-EAPI void
-enventor_object_efl_gfx_entity_position_set(Enventor_Object *obj, Eina_Position2D pos)
-{
-   efl_gfx_entity_position_set(efl_super(obj, MY_CLASS), pos);
-
-   Eina_Iterator *it = evas_object_smart_iterator_new(obj);
-   Evas_Object *o;
-   EINA_ITERATOR_FOREACH(it, o)
-     evas_object_move(o, pos.x, pos.y);
-   eina_iterator_free(it);
-}
-
-EAPI void
-enventor_object_efl_gfx_entity_size_set(Enventor_Object *obj, Eina_Size2D size)
-{
-   efl_gfx_entity_size_set(efl_super(obj, MY_CLASS), size);
-
-   Eina_Iterator *it = evas_object_smart_iterator_new(obj);
-   Evas_Object *o;
-   EINA_ITERATOR_FOREACH(it, o)
-     evas_object_resize(o, size.w, size.h);
-   eina_iterator_free(it);
-}
-
-EAPI void
-enventor_object_efl_gfx_entity_visible_set(Enventor_Object *obj, Eina_Bool vis)
-{
-   efl_gfx_entity_visible_set(efl_super(obj, MY_CLASS), vis);
-
-   if (!pd->focused_it) return;
-   Evas_Object *o = edit_obj_get(pd->focused_it->ed);
-   if (vis)
-     evas_object_show(o);
-   else
-     evas_object_hide(o);
-}
-
-EAPI void
-enventor_object_efl_canvas_object_clipper_set(Enventor_Object *obj, Evas_Object *clip)
-{
-   efl_canvas_object_clipper_set(efl_super(obj, MY_CLASS), clip);
-
-   Eina_Iterator *it = evas_object_smart_iterator_new(obj);
-   Evas_Object *o;
-   EINA_ITERATOR_FOREACH(it, o)
-     evas_object_clip_set(o, clip);
-   eina_iterator_free(it);
-}
-
-EAPI Enventor_Object *
-enventor_object_efl_object_constructor(Enventor_Object *obj)
-{
-   obj = efl_constructor(efl_super(obj, MY_CLASS));
-
-   pd->obj = obj;
-
-   elm_widget_sub_object_parent_add(obj);
-
-   build_init();
-   autocomp_init();
-   ref_init();
-   edj_mgr_init(obj);
-   build_err_noti_cb_set(build_err_noti_cb, pd);
-
-   elm_widget_can_focus_set(obj, EINA_FALSE);
-
-   pd->key_down_handler =
-      ecore_event_handler_add(ECORE_EVENT_KEY_DOWN, key_down_cb, pd);
-   pd->key_up_handler =
-      ecore_event_handler_add(ECORE_EVENT_KEY_UP, key_up_cb, pd);
-
-   evas_object_smart_callback_add(pd->obj, "part,clicked",
-                                  _enventor_part_clicked_cb, pd);
-
-   pd->font_scale = DEFAULT_FONT_SCALE;
-   pd->linenumber = DEFAULT_LINENUMBER;
-   pd->auto_indent = DEFAULT_AUTO_INDENT;
-   pd->part_highlight = DEFAULT_PART_HIGHLIGHT;
-   pd->smart_undo_redo = DEFAULT_SMART_UNDO_REDO;
-   pd->ctxpopup = DEFAULT_CTXPOPUP;
-
-   evas_object_smart_callbacks_descriptions_set(obj, _smart_callbacks);
-
-   return obj;
-}
-
-EAPI void
-enventor_object_efl_object_destructor(Enventor_Object *obj)
-{
    int i;
    for (i = ENVENTOR_SYNTAX_COLOR_STRING; i < ENVENTOR_SYNTAX_COLOR_LAST; i++)
      eina_stringshare_del(pd->text_color_val[i]);
@@ -385,31 +269,40 @@ enventor_object_efl_object_destructor(Enventor_Object *obj)
 
    edj_mgr_term();
    build_term();
-
-   efl_destructor(efl_super(obj, MY_CLASS));
 }
 
-EAPI Eina_Error
-enventor_object_efl_file_file_set(Enventor_Object *obj, const char *file)
+static void
+_enventor_part_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED, void *ei)
 {
-   build_edc_path_set(file);
-   if (!file) goto err;
+   Enventor_Object_Data *pd = (Enventor_Object_Data *)data;
+   if (pd->disabled || !pd->focused_it) return;
+   const char *part_name = (const char *)ei;
+   edit_part_cursor_set(pd->focused_it->ed, view_group_name_get(VIEW_DATA),
+                        part_name);
+}
 
-   if (!edit_load(pd->main_it->ed, file)) goto err;
-   build_edc();
-   edit_changed_set(pd->main_it->ed, EINA_FALSE);
-   return 0;
-err:
-   eina_error_set(ENVENTOR_FILE_SET_ERROR_GENERIC);
-   build_edc_path_set(NULL);
-   return 1;
+/*****************************************************************************/
+/* Externally accessible calls                                               */
+/*****************************************************************************/
+#if 0
+EAPI void
+enventor_object_efl_gfx_entity_visible_set(Enventor_Object *obj, Eina_Bool vis)
+{
+   efl_gfx_entity_visible_set(efl_super(obj, MY_CLASS), vis);
+
+   if (!pd->focused_it) return;
+   Evas_Object *o = edit_obj_get(pd->focused_it->ed);
+   if (vis)
+     evas_object_show(o);
+   else
+     evas_object_hide(o);
 }
 #endif
 
 EAPI Eina_List *
 enventor_object_programs_list_get(Enventor_Object *obj)
 {
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN_VAL(obj, pd, NULL);
 
    return view_programs_list_get(VIEW_DATA);
 }
@@ -417,7 +310,7 @@ enventor_object_programs_list_get(Enventor_Object *obj)
 EAPI Eina_List *
 enventor_object_part_states_list_get(Enventor_Object *obj, const char *part)
 {
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN_VAL(obj, pd, NULL);
 
    return view_part_states_list_get(VIEW_DATA, part);
 }
@@ -425,7 +318,7 @@ enventor_object_part_states_list_get(Enventor_Object *obj, const char *part)
 EAPI Edje_Part_Type
 enventor_object_part_type_get(Enventor_Object *obj, const char *part_name)
 {
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN_VAL(obj, pd, 0);
 
    return view_part_type_get(VIEW_DATA, part_name);
 }
@@ -433,7 +326,7 @@ enventor_object_part_type_get(Enventor_Object *obj, const char *part_name)
 EAPI Eina_List *
 enventor_object_parts_list_get(Enventor_Object *obj)
 {
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN_VAL(obj, pd, NULL);
 
    return view_parts_list_get(VIEW_DATA);
 }
@@ -441,7 +334,7 @@ enventor_object_parts_list_get(Enventor_Object *obj)
 EAPI void
 enventor_object_linenumber_set(Enventor_Object *obj, Eina_Bool linenumber)
 {
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN(obj, pd);
 
    linenumber = !!linenumber;
 
@@ -458,7 +351,7 @@ enventor_object_linenumber_set(Enventor_Object *obj, Eina_Bool linenumber)
 EAPI Eina_Bool
 enventor_object_linenumber_get(const Enventor_Object *obj)
 {
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN_VAL(obj, pd, EINA_FALSE);
 
    return pd->linenumber;
 }
@@ -466,7 +359,7 @@ enventor_object_linenumber_get(const Enventor_Object *obj)
 EAPI void
 enventor_object_smart_undo_redo_set(Enventor_Object *obj, Eina_Bool smart_undo_redo)
 {
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN(obj, pd);
 
    smart_undo_redo = !!smart_undo_redo;
    pd->smart_undo_redo = smart_undo_redo;
@@ -475,7 +368,7 @@ enventor_object_smart_undo_redo_set(Enventor_Object *obj, Eina_Bool smart_undo_r
 EAPI Eina_Bool
 enventor_object_smart_undo_redo_get(const Enventor_Object *obj)
 {
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN_VAL(obj, pd, EINA_FALSE);
 
    return pd->smart_undo_redo;
 }
@@ -483,7 +376,7 @@ enventor_object_smart_undo_redo_get(const Enventor_Object *obj)
 EAPI void
 enventor_object_auto_indent_set(Enventor_Object *obj, Eina_Bool auto_indent)
 {
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN(obj, pd);
 
    pd->auto_indent = !!auto_indent;
 }
@@ -491,7 +384,7 @@ enventor_object_auto_indent_set(Enventor_Object *obj, Eina_Bool auto_indent)
 EAPI Eina_Bool
 enventor_object_auto_indent_get(const Enventor_Object *obj)
 {
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN_VAL(obj, pd, EINA_FALSE);
 
    return pd->auto_indent;
 }
@@ -499,7 +392,7 @@ enventor_object_auto_indent_get(const Enventor_Object *obj)
 EAPI void
 enventor_object_auto_complete_set(Enventor_Object *obj, Eina_Bool auto_complete)
 {
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN(obj, pd);
 
    autocomp_enabled_set(auto_complete);
 }
@@ -507,7 +400,7 @@ enventor_object_auto_complete_set(Enventor_Object *obj, Eina_Bool auto_complete)
 EAPI Eina_Bool
 enventor_object_auto_complete_get(const Enventor_Object *obj)
 {
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN_VAL(obj, pd, EINA_FALSE);
 
    return autocomp_enabled_get();
 }
@@ -515,7 +408,7 @@ enventor_object_auto_complete_get(const Enventor_Object *obj)
 EAPI void
 enventor_object_auto_complete_list_show(Enventor_Object *obj)
 {
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN(obj, pd);
 
    autocomp_list_show();
 }
@@ -524,7 +417,7 @@ EAPI Eina_Bool
 enventor_object_path_set(Enventor_Object *obj, Enventor_Path_Type type,
                          Eina_List *pathes)
 {
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN_VAL(obj, pd, EINA_FALSE);
 
    return build_path_set(type, pathes);
 }
@@ -532,7 +425,7 @@ enventor_object_path_set(Enventor_Object *obj, Enventor_Path_Type type,
 EAPI const Eina_List *
 enventor_object_path_get(Enventor_Object *obj, Enventor_Path_Type type)
 {
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN_VAL(obj, pd, NULL);
 
    return build_path_get(type);
 }
@@ -540,7 +433,7 @@ enventor_object_path_get(Enventor_Object *obj, Enventor_Path_Type type)
 EAPI void
 enventor_object_live_view_scale_set(Enventor_Object *obj, double scale)
 {
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN(obj, pd);
 
    view_scale_set(VIEW_DATA, scale);
 }
@@ -548,7 +441,7 @@ enventor_object_live_view_scale_set(Enventor_Object *obj, double scale)
 EAPI void
 enventor_object_live_view_size_set(Enventor_Object *obj, Evas_Coord w, Evas_Coord h)
 {
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN(obj, pd);
 
    view_size_set(VIEW_DATA, w, h);
 }
@@ -556,7 +449,7 @@ enventor_object_live_view_size_set(Enventor_Object *obj, Evas_Coord w, Evas_Coor
 EAPI void
 enventor_object_live_view_size_get(Enventor_Object *obj, Evas_Coord *w, Evas_Coord *h)
 {
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN(obj, pd);
 
    view_size_get(VIEW_DATA, w, h);
 }
@@ -564,7 +457,7 @@ enventor_object_live_view_size_get(Enventor_Object *obj, Evas_Coord *w, Evas_Coo
 EAPI double
 enventor_object_live_view_scale_get(const Enventor_Object *obj)
 {
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN_VAL(obj, pd, 1);
 
    return view_scale_get(VIEW_DATA);
 }
@@ -572,7 +465,7 @@ enventor_object_live_view_scale_get(const Enventor_Object *obj)
 EAPI void
 enventor_object_dummy_parts_set(Enventor_Object *obj, Eina_Bool dummy_parts)
 {
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN(obj, pd);
 
    dummy_parts = !!dummy_parts;
    if (pd->dummy_parts == dummy_parts) return;
@@ -584,7 +477,7 @@ enventor_object_dummy_parts_set(Enventor_Object *obj, Eina_Bool dummy_parts)
 EAPI Eina_Bool
 enventor_object_ctxpopup_get(const Enventor_Object *obj)
 {
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN_VAL(obj, pd, EINA_FALSE);
 
    return pd->ctxpopup;
 }
@@ -592,7 +485,7 @@ enventor_object_ctxpopup_get(const Enventor_Object *obj)
 EAPI void
 enventor_object_ctxpopup_set(Enventor_Object *obj, Eina_Bool ctxpopup)
 {
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN(obj, pd);
 
    ctxpopup = !!ctxpopup;
    pd->ctxpopup = ctxpopup;
@@ -601,7 +494,7 @@ enventor_object_ctxpopup_set(Enventor_Object *obj, Eina_Bool ctxpopup)
 EAPI Eina_Bool
 enventor_object_ctxpopup_visible_get(Enventor_Object *obj)
 {
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN_VAL(obj, pd, EINA_FALSE);
 
    if (!pd->focused_it) return EINA_FALSE;
    return edit_ctxpopup_visible_get(pd->focused_it->ed);
@@ -610,7 +503,7 @@ enventor_object_ctxpopup_visible_get(Enventor_Object *obj)
 EAPI void
 enventor_object_ctxpopup_dismiss(Enventor_Object *obj)
 {
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN(obj, pd);
 
    if (!pd->focused_it) return;
    edit_ctxpopup_dismiss(pd->focused_it->ed);
@@ -619,7 +512,7 @@ enventor_object_ctxpopup_dismiss(Enventor_Object *obj)
 EAPI Eina_Bool
 enventor_object_dummy_parts_get(const Enventor_Object *obj)
 {
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN_VAL(obj, pd, EINA_FALSE);
 
    return pd->dummy_parts;
 }
@@ -627,7 +520,7 @@ enventor_object_dummy_parts_get(const Enventor_Object *obj)
 EAPI void
 enventor_object_wireframes_set(Enventor_Object *obj, Eina_Bool wireframes)
 {
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN(obj, pd);
 
    wireframes = !!wireframes;
 
@@ -638,7 +531,7 @@ enventor_object_wireframes_set(Enventor_Object *obj, Eina_Bool wireframes)
 EAPI Eina_Bool
 enventor_object_wireframes_get(const Enventor_Object *obj)
 {
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN_VAL(obj, pd, EINA_FALSE);
 
    return pd->wireframes;
 }
@@ -646,7 +539,7 @@ enventor_object_wireframes_get(const Enventor_Object *obj)
 EAPI void
 enventor_object_part_highlight_set(Enventor_Object *obj, Eina_Bool part_highlight)
 {
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN(obj, pd);
 
    part_highlight = !!part_highlight;
    if (pd->part_highlight == part_highlight) return;
@@ -662,7 +555,7 @@ enventor_object_part_highlight_set(Enventor_Object *obj, Eina_Bool part_highligh
 EAPI Eina_Bool
 enventor_object_part_highlight_get(const Enventor_Object *obj)
 {
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN_VAL(obj, pd, EINA_FALSE);
 
    return pd->part_highlight;
 }
@@ -670,7 +563,7 @@ enventor_object_part_highlight_get(const Enventor_Object *obj)
 EAPI void
 enventor_object_mirror_mode_set(Enventor_Object *obj, Eina_Bool mirror_mode)
 {
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN(obj, pd);
 
    pd->mirror_mode = !!mirror_mode;
    view_mirror_mode_update(VIEW_DATA);
@@ -679,7 +572,7 @@ enventor_object_mirror_mode_set(Enventor_Object *obj, Eina_Bool mirror_mode)
 EAPI Eina_Bool
 enventor_object_mirror_mode_get(const Enventor_Object *obj)
 {
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN_VAL(obj, pd, EINA_FALSE);
 
    return pd->mirror_mode;
 }
@@ -687,7 +580,7 @@ enventor_object_mirror_mode_get(const Enventor_Object *obj)
 EAPI void
 enventor_object_focus_set(Enventor_Object *obj, Eina_Bool focus)
 {
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN(obj, pd);
 
    if (!pd->focused_it) return;
 
@@ -697,7 +590,7 @@ enventor_object_focus_set(Enventor_Object *obj, Eina_Bool focus)
 EAPI Eina_Bool
 enventor_object_focus_get(const Enventor_Object *obj)
 {
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN_VAL(obj, pd, EINA_FALSE);
 
    if (!pd->focused_it) return EINA_FALSE;
    return edit_focus_get(pd->focused_it->ed);
@@ -706,7 +599,7 @@ enventor_object_focus_get(const Enventor_Object *obj)
 EAPI void
 enventor_object_font_scale_set(Enventor_Object *obj, double font_scale)
 {
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN(obj, pd);
 
    if (pd->font_scale == font_scale) return;
    pd->font_scale = font_scale;
@@ -718,7 +611,7 @@ enventor_object_font_scale_set(Enventor_Object *obj, double font_scale)
 EAPI double
 enventor_object_font_scale_get(const Enventor_Object *obj)
 {
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN_VAL(obj, pd, 1);
 
    return pd->font_scale;
 }
@@ -727,7 +620,7 @@ EAPI void
 enventor_object_font_set(Enventor_Object *obj, const char *font_name,
                          const char *font_style)
 {
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN(obj, pd);
 
    if (!font_name) return;
    if ((font_name == pd->font_name) && (font_style == pd->font_style)) return;
@@ -747,7 +640,7 @@ EAPI void
 enventor_object_font_get(Enventor_Object *obj, const char **font_name,
                          const char **font_style)
 {
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN(obj, pd);
 
    if (font_name) *font_name = pd->font_name;
    if (font_style) *font_style = pd->font_style;
@@ -758,8 +651,7 @@ enventor_object_syntax_color_set(Enventor_Object *obj,
                                  Enventor_Syntax_Color_Type color_type,
                                  const char *val)
 {
-   Enventor_Object_Data *pd;
-
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN(obj, pd);
    EINA_SAFETY_ON_NULL_RETURN(val);
 
    if ((color_type < ENVENTOR_SYNTAX_COLOR_STRING) ||
@@ -787,7 +679,7 @@ EAPI const char *
 enventor_object_syntax_color_get(Enventor_Object *obj,
                                  Enventor_Syntax_Color_Type color_type)
 {
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN_VAL(obj, pd, NULL);
 
    if ((color_type < ENVENTOR_SYNTAX_COLOR_STRING) ||
        (color_type >= ENVENTOR_SYNTAX_COLOR_LAST))
@@ -806,7 +698,7 @@ enventor_object_syntax_color_get(Enventor_Object *obj,
 EAPI Eo *
 enventor_object_live_view_get(Enventor_Object *obj)
 {
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN_VAL(obj, pd, NULL);
 
    return edj_mgr_obj_get();
 }
@@ -814,7 +706,7 @@ enventor_object_live_view_get(Enventor_Object *obj)
 EAPI void
 enventor_object_disabled_set(Enventor_Object *obj, Eina_Bool disabled)
 {
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN(obj, pd);
 
    disabled = !!disabled;
    if (pd->disabled == disabled) return;
@@ -828,7 +720,7 @@ enventor_object_disabled_set(Enventor_Object *obj, Eina_Bool disabled)
 EAPI void
 enventor_object_program_run(Enventor_Object *obj, const char *program)
 {
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN(obj, pd);
 
    view_program_run(VIEW_DATA, program);
 }
@@ -836,7 +728,7 @@ enventor_object_program_run(Enventor_Object *obj, const char *program)
 EAPI void
 enventor_object_programs_stop(Enventor_Object *obj)
 {
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN(obj, pd);
 
    view_programs_stop(VIEW_DATA);
 }
@@ -844,7 +736,7 @@ enventor_object_programs_stop(Enventor_Object *obj)
 EAPI void
 enventor_object_keyword_reference_show(Enventor_Object *obj)
 {
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN(obj, pd);
 
    if (!pd->focused_it) return;
    ref_show(pd->focused_it->ed);
@@ -853,7 +745,8 @@ enventor_object_keyword_reference_show(Enventor_Object *obj)
 EAPI double
 enventor_object_base_scale_get(Enventor_Object *obj)
 {
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN_VAL(obj, pd, 1);
+
    return view_base_scale_get(VIEW_DATA);
 }
 
@@ -861,16 +754,51 @@ EAPI Enventor_Object *
 enventor_object_add(Eo *parent)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(parent, NULL);
-//   Evas_Object *obj = efl_add(MY_CLASS, parent);
-//   return obj;
-   return NULL;
+
+   Enventor_Object_Data *pd = calloc(1, sizeof(Enventor_Object_Data));
+   if (!pd)
+     {
+        mem_fail_msg();
+        return NULL;
+     }
+
+   Eo *obj = elm_layout_add(parent);
+   elm_layout_file_set(obj, EDJE_PATH, "enventor_object");
+   evas_object_event_callback_add(obj, EVAS_CALLBACK_DEL, _enventor_object_del_cb, pd);
+   evas_object_data_set(obj, "_enventor", pd);
+
+   pd->obj = obj;
+
+   build_init();
+   autocomp_init();
+   ref_init();
+   edj_mgr_init(obj);
+   build_err_noti_cb_set(build_err_noti_cb, pd);
+
+   pd->key_down_handler =
+      ecore_event_handler_add(ECORE_EVENT_KEY_DOWN, key_down_cb, pd);
+   pd->key_up_handler =
+      ecore_event_handler_add(ECORE_EVENT_KEY_UP, key_up_cb, pd);
+
+   evas_object_smart_callback_add(pd->obj, "part,clicked",
+                                  _enventor_part_clicked_cb, pd);
+
+   pd->font_scale = DEFAULT_FONT_SCALE;
+   pd->linenumber = DEFAULT_LINENUMBER;
+   pd->auto_indent = DEFAULT_AUTO_INDENT;
+   pd->part_highlight = DEFAULT_PART_HIGHLIGHT;
+   pd->smart_undo_redo = DEFAULT_SMART_UNDO_REDO;
+   pd->ctxpopup = DEFAULT_CTXPOPUP;
+
+   elm_object_focus_allow_set(obj, EINA_FALSE);
+
+   return obj;
 }
 
 EAPI Enventor_Item *
 enventor_object_sub_item_add(Enventor_Object *obj, const char *file)
 {
-//   Enventor_Object_Data *pd = efl_data_scope_get(obj, ENVENTOR_OBJECT_CLASS);
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN_VAL(obj, pd, NULL);
 
    if (!file)
      {
@@ -914,8 +842,8 @@ enventor_object_sub_item_add(Enventor_Object *obj, const char *file)
 EAPI Enventor_Item *
 enventor_object_main_item_set(Enventor_Object *obj, const char *file)
 {
-//   Enventor_Object_Data *pd = efl_data_scope_get(obj, ENVENTOR_OBJECT_CLASS);
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN_VAL(obj, pd, NULL);
+
    edj_mgr_clear();
    _enventor_main_item_free(pd);
 
@@ -931,30 +859,37 @@ enventor_object_main_item_set(Enventor_Object *obj, const char *file)
    it->ed = edit_init(obj, it);
    it->pd = pd;
 
-   if (efl_file_set(obj, file))
-     {
-        edit_term(it->ed);
-        pd->main_it = NULL;
-        free(it);
-        return NULL;
-     }
+   build_edc_path_set(file);
+   if (!file) goto err;
+
+   if (!edit_load(pd->main_it->ed, file)) goto err;
+   build_edc();
+   edit_changed_set(pd->main_it->ed, EINA_FALSE);
 
    return it;
+
+err:
+   eina_error_set(ENVENTOR_FILE_SET_ERROR_GENERIC);
+   build_edc_path_set(NULL);
+   edit_term(it->ed);
+   pd->main_it = NULL;
+   free(it);
+
+   return NULL;
 }
 
 EAPI Enventor_Item *
 enventor_object_main_item_get(const Enventor_Object *obj)
 {
-//   Enventor_Object_Data *pd = efl_data_scope_get(obj, ENVENTOR_OBJECT_CLASS);
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN_VAL(obj, pd, NULL);
+
    return pd->main_it;
 }
 
 EAPI const Eina_List *
 enventor_object_sub_items_get(const Enventor_Object *obj)
 {
-//   Enventor_Object_Data *pd = efl_data_scope_get(obj, ENVENTOR_OBJECT_CLASS);
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN_VAL(obj, pd, NULL);
 
    return pd->sub_its;
 }
@@ -962,10 +897,7 @@ enventor_object_sub_items_get(const Enventor_Object *obj)
 EAPI Enventor_Item *
 enventor_object_focused_item_get(const Enventor_Object *obj)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(obj, EINA_FALSE);
-
-//   Enventor_Object_Data *pd = efl_data_scope_get(obj, ENVENTOR_OBJECT_CLASS);
-   Enventor_Object_Data *pd;
+   ENVENTOR_OBJECT_DATA_GET_OR_RETURN_VAL(obj, pd, NULL);
 
    return  pd->focused_it;
 }
