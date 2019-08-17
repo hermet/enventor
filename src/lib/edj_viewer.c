@@ -168,10 +168,10 @@ view_obj_create_post_job(view_data *vd)
 
    if (vd->part_name) view_part_highlight_set(vd, vd->part_name);
 
-   if (enventor_obj_dummy_parts_get(vd->enventor))
+   if (enventor_object_dummy_parts_get(vd->enventor))
      dummy_obj_new(vd->layout);
 
-   if (enventor_obj_wireframes_get(vd->enventor))
+   if (enventor_object_wireframes_get(vd->enventor))
      wireframes_obj_new(vd->layout);
 
    view_mirror_mode_update(vd);
@@ -961,7 +961,7 @@ view_mirror_mode_update(view_data *vd)
 {
    if (!vd || !vd->layout) return;
    edje_object_mirrored_set(vd->layout,
-                            enventor_obj_mirror_mode_get(vd->enventor));
+                            enventor_object_mirror_mode_get(vd->enventor));
    dummy_obj_update(vd->layout);
    part_obj_geom_cb(vd, evas_object_evas_get(vd->layout), vd->part_obj, NULL);
 }

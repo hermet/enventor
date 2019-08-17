@@ -22,6 +22,8 @@
 #define VIEW_DATA edj_mgr_view_get(NULL)
 #define ATTR_VALUE_MAX_CNT 4
 
+typedef Eo Enventor_Object;
+
 extern const char SIG_CURSOR_LINE_CHANGED[];
 extern const char SIG_CURSOR_GROUP_CHANGED[];
 extern const char SIG_MAX_LINE_CHANGED[];

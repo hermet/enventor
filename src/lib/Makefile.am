@@ -13,7 +13,7 @@ AM_CPPFLAGS = -DPACKAGE_DATA_DIR=\"$(pkgdatadir)\" \
 lib_LTLIBRARIES = libenventor.la
 
 includes_HEADERS = \
-   Enventor.h \
+   Enventor.h
 includesdir = $(includedir)/enventor-@ENVENTOR_VERSION_MAJOR@
 
 libenventor_la_SOURCES = \

@@ -64,7 +64,7 @@ static diff_data *
 smart_analyser(redoundo_data *rd, diff_data *diff)
 {
    Eina_Bool is_continues_text = EINA_FALSE;
-   if (!enventor_obj_smart_undo_redo_get(rd->enventor)) return diff;
+   if (!enventor_object_smart_undo_redo_get(rd->enventor)) return diff;
 
    if (rd->smart.timer)
      {
@@ -80,7 +80,7 @@ smart_analyser(redoundo_data *rd, diff_data *diff)
         return diff;
      }
 
-   if (diff->length == 1 && enventor_obj_auto_indent_get(rd->enventor))
+   if (diff->length == 1 && enventor_object_auto_indent_get(rd->enventor))
      {
        if (strstr(diff->text, "<br/>")) diff->relative = EINA_TRUE;
          else diff->relative = EINA_FALSE;

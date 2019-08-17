@@ -47,6 +47,7 @@ extern "C"
  * @li "file,open,requested":
 */
 
+typedef Eo Enventor_Object;
 typedef struct _Enventor_Item_Data Enventor_Item;
 
 typedef enum
@@ -114,6 +115,52 @@ EAPI int enventor_init(int argc, char **argv);
 EAPI int enventor_shutdown(void);
 
 EAPI Evas_Object *enventor_object_add(Evas_Object *parent);
+EAPI Eina_List *enventor_object_programs_list_get(Enventor_Object *obj);
+EAPI Eina_List *enventor_object_part_states_list_get(Enventor_Object *obj, const char *part);
+EAPI Edje_Part_Type enventor_object_part_type_get(Enventor_Object *obj, const char *part_name);
+EAPI Eina_List *enventor_object_parts_list_get(Enventor_Object *obj);
+EAPI void enventor_object_linenumber_set(Enventor_Object *obj, Eina_Bool linenumber);
+EAPI Eina_Bool enventor_object_linenumber_get(const Enventor_Object *obj);
+EAPI void enventor_object_smart_undo_redo_set(Enventor_Object *obj, Eina_Bool smart_undo_redo);
+EAPI Eina_Bool enventor_object_smart_undo_redo_get(const Enventor_Object *obj);
+EAPI void enventor_object_auto_indent_set(Enventor_Object *obj, Eina_Bool auto_indent);
+EAPI Eina_Bool enventor_object_auto_indent_get(const Enventor_Object *obj);
+EAPI void enventor_object_auto_complete_set(Enventor_Object *obj, Eina_Bool auto_complete);
+EAPI Eina_Bool enventor_object_auto_complete_get(const Enventor_Object *obj);
+EAPI void enventor_object_auto_complete_list_show(Enventor_Object *obj);
+EAPI Eina_Bool enventor_object_path_set(Enventor_Object *obj, Enventor_Path_Type type, Eina_List *pathes);
+EAPI const Eina_List *enventor_object_path_get(Enventor_Object *obj, Enventor_Path_Type type);
+EAPI void enventor_object_live_view_scale_set(Enventor_Object *obj, double scale);
+EAPI void enventor_object_live_view_size_set(Enventor_Object *obj, Evas_Coord w, Evas_Coord h);
+EAPI void enventor_object_live_view_size_get(Enventor_Object *obj, Evas_Coord *w, Evas_Coord *h);
+EAPI double enventor_object_live_view_scale_get(const Enventor_Object *obj);
+EAPI void enventor_object_dummy_parts_set(Enventor_Object *obj, Eina_Bool dummy_parts);
+EAPI Eina_Bool enventor_object_ctxpopup_get(const Enventor_Object *obj);
+EAPI void enventor_object_ctxpopup_set(Enventor_Object *obj, Eina_Bool ctxpopup);
+EAPI Eina_Bool enventor_object_ctxpopup_visible_get(Enventor_Object *obj);
+EAPI void enventor_object_ctxpopup_dismiss(Enventor_Object *obj);
+EAPI Eina_Bool enventor_object_dummy_parts_get(const Enventor_Object *obj);
+EAPI void enventor_object_wireframes_set(Enventor_Object *obj, Eina_Bool wireframes);
+EAPI Eina_Bool enventor_object_wireframes_get(const Enventor_Object *obj);
+EAPI void enventor_object_part_highlight_set(Enventor_Object *obj, Eina_Bool part_highlight);
+EAPI Eina_Bool enventor_object_part_highlight_get(const Enventor_Object *obj);
+EAPI void enventor_object_mirror_mode_set(Enventor_Object *obj, Eina_Bool mirror_mode);
+EAPI Eina_Bool enventor_object_mirror_mode_get(const Enventor_Object *obj);
+EAPI void enventor_object_focus_set(Enventor_Object *obj, Eina_Bool focus);
+EAPI Eina_Bool enventor_object_focus_get(const Enventor_Object *obj);
+EAPI void enventor_object_font_scale_set(Enventor_Object *obj, double font_scale);
+EAPI double enventor_object_font_scale_get(const Enventor_Object *obj);
+EAPI void enventor_object_font_set(Enventor_Object *obj, const char *font_name, const char *font_style);
+EAPI void enventor_object_font_get(Enventor_Object *obj, const char **font_name, const char **font_style);
+EAPI void enventor_object_syntax_color_set(Enventor_Object *obj, Enventor_Syntax_Color_Type color_type, const char *val);
+EAPI const char *enventor_object_syntax_color_get(Enventor_Object *obj, Enventor_Syntax_Color_Type color_type);
+EAPI Eo *enventor_object_live_view_get(Enventor_Object *obj);
+EAPI void enventor_object_disabled_set(Enventor_Object *obj, Eina_Bool disabled);
+EAPI void enventor_object_program_run(Enventor_Object *obj, const char *program);
+EAPI void enventor_object_programs_stop(Enventor_Object *obj);
+EAPI void enventor_object_keyword_reference_show(Enventor_Object *obj);
+EAPI double enventor_object_base_scale_get(Enventor_Object *obj);
+
 EAPI Enventor_Item *enventor_object_main_item_set(Evas_Object *obj, const char *file);
 EAPI Enventor_Item *enventor_object_sub_item_add(Evas_Object *obj, const char *file);
 EAPI Enventor_Item *enventor_object_main_item_get(const Evas_Object *obj);
