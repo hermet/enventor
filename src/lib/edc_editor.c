@@ -1504,8 +1504,6 @@ edit_init(Enventor_Object *enventor, Enventor_Item *it)
 
    //Layout
    Evas_Object *layout = elm_layout_add(enventor);
-   elm_layout_content_set(enventor, "main", layout);
-
    elm_layout_file_set(layout, EDJE_PATH, "edit_layout");
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(layout, EVAS_HINT_FILL, EVAS_HINT_FILL);

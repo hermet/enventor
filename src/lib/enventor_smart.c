@@ -762,6 +762,7 @@ enventor_object_add(Eo *parent)
         return NULL;
      }
 
+   //TODO: These could be remove when removing enventor object library support
    Eo *obj = elm_layout_add(parent);
    elm_layout_file_set(obj, EDJE_PATH, "enventor_object");
    evas_object_event_callback_add(obj, EVAS_CALLBACK_DEL, _enventor_object_del_cb, pd);
@@ -932,8 +933,10 @@ enventor_item_represent(Enventor_Item *it)
    edit_font_scale_set(it->ed, pd->font_scale);
    edit_disabled_set(it->ed, pd->disabled);
 
-   if (evas_object_visible_get(it->pd->obj))
-     evas_object_show(edit_obj_get(it->ed));
+   //TODO: Thise could be remove when removing enventor object library support
+   Eo *obj = elm_layout_content_unset(it->pd->obj, "main");
+   evas_object_hide(obj);
+   elm_layout_content_set(it->pd->obj, "main", edit_obj_get(it->ed));
 
    autocomp_target_set(it->ed);
 
