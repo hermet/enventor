@@ -231,16 +231,15 @@ syntax_color_apply(edit_data *ed, Eina_Bool partial)
 {
    Evas_Object *tb = elm_entry_textblock_get(ed->en_edit);
    char *text = (char *) evas_object_textblock_text_markup_get(tb);
+   if (!text) return EINA_FALSE;
+
    int text_len = strlen(text);
 
    //FIXME: We encountered a syntax coloring issue that won't be applied
    //at the opening an edc script. The situation condition is below,
    //and we try syntax coloring again in that case. Work around logic,
    //but it works.
-   if (text && (text_len == 0))
-     {
-        return EINA_FALSE;
-     }
+   if (text_len == 0) return EINA_FALSE;
 
    int from_line = 1;
    int to_line = -1;
