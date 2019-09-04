@@ -189,7 +189,7 @@ macro_key_push(color_data *cd, char *str)
    char *cut = strchr(key, '(');
    if (cut)
      {
-        key = strndup(str, cut - str);
+        key = eina_strndup(str, cut - str);
         if (!key) return;
      }
 
@@ -474,7 +474,7 @@ macro_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
    if ((macro_end > macro_begin) &&
        ((macro_begin[0] < '0') || (macro_begin[0] > '9')))
      {
-        char *macro = strndup(macro_begin, (macro_end - macro_begin));
+        char *macro = eina_strndup(macro_begin, (macro_end - macro_begin));
         macro_key_push(cd, macro);
         free(macro);
      }

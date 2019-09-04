@@ -397,7 +397,7 @@ calc_relative_info(live_data *ld)
              ld->rel_to_info.align_x = 0.0;
              ld->rel_to_info.rel2_x = ld->rel_to_info.rel1_x;
              free(ld->rel_to_info.rel2_x_part);
-             ld->rel_to_info.rel2_x_part = strndup(ld->rel_to_info.rel1_x_part,
+             ld->rel_to_info.rel2_x_part = eina_strndup(ld->rel_to_info.rel1_x_part,
                                           strlen(ld->rel_to_info.rel1_x_part));
           }
         else if (ld->rel_to_info.rel2_x_part)
@@ -405,7 +405,7 @@ calc_relative_info(live_data *ld)
              ld->rel_to_info.align_x = 1.0;
              ld->rel_to_info.rel1_x = ld->rel_to_info.rel2_x;
              free(ld->rel_to_info.rel1_x_part);
-             ld->rel_to_info.rel1_x_part = strndup(ld->rel_to_info.rel2_x_part,
+             ld->rel_to_info.rel1_x_part = eina_strndup(ld->rel_to_info.rel2_x_part,
                                           strlen(ld->rel_to_info.rel2_x_part));
           }
         else
@@ -433,7 +433,7 @@ calc_relative_info(live_data *ld)
              ld->rel_to_info.align_y = 0.0;
              ld->rel_to_info.rel2_y = ld->rel_to_info.rel1_y;
              free(ld->rel_to_info.rel2_y_part);
-             ld->rel_to_info.rel2_y_part = strndup(ld->rel_to_info.rel1_y_part,
+             ld->rel_to_info.rel2_y_part = eina_strndup(ld->rel_to_info.rel1_y_part,
                                           strlen(ld->rel_to_info.rel1_y_part));
           }
         else if (ld->rel_to_info.rel2_y_part)
@@ -441,7 +441,7 @@ calc_relative_info(live_data *ld)
              ld->rel_to_info.align_y = 1.0;
              ld->rel_to_info.rel1_y = ld->rel_to_info.rel2_y;
              free(ld->rel_to_info.rel1_y_part);
-             ld->rel_to_info.rel1_y_part = strndup(ld->rel_to_info.rel2_y_part,
+             ld->rel_to_info.rel1_y_part = eina_strndup(ld->rel_to_info.rel2_y_part,
                                           strlen(ld->rel_to_info.rel2_y_part));
           }
         else
@@ -1249,7 +1249,7 @@ rel_to_btn_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
                       (ld->last_cp == Ctrl_Pt_Left))
                     {
                       free(ld->rel_to_info.rel1_x_part);
-                      ld->rel_to_info.rel1_x_part = strndup(rel_data->part_name,
+                      ld->rel_to_info.rel1_x_part = eina_strndup(rel_data->part_name,
                                                     strlen(rel_data->part_name));
                       ld->rel_to_info.rel1_x = rel_data->rel_x;
                     }
@@ -1259,7 +1259,7 @@ rel_to_btn_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
                            (ld->last_cp == Ctrl_Pt_Right))
                     {
                       free(ld->rel_to_info.rel2_x_part);
-                      ld->rel_to_info.rel2_x_part = strndup(rel_data->part_name,
+                      ld->rel_to_info.rel2_x_part = eina_strndup(rel_data->part_name,
                                                     strlen(rel_data->part_name));
                       ld->rel_to_info.rel2_x = rel_data->rel_x;
                     }
@@ -1284,7 +1284,7 @@ rel_to_btn_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
                       (ld->last_cp == Ctrl_Pt_Top))
                     {
                       free(ld->rel_to_info.rel1_y_part);
-                      ld->rel_to_info.rel1_y_part = strndup(rel_data->part_name,
+                      ld->rel_to_info.rel1_y_part = eina_strndup(rel_data->part_name,
                                                     strlen(rel_data->part_name));
                       ld->rel_to_info.rel1_y = rel_data->rel_y;
                     }
@@ -1294,7 +1294,7 @@ rel_to_btn_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
                            (ld->last_cp == Ctrl_Pt_Bottom))
                     {
                       free(ld->rel_to_info.rel2_y_part);
-                      ld->rel_to_info.rel2_y_part = strndup(rel_data->part_name,
+                      ld->rel_to_info.rel2_y_part = eina_strndup(rel_data->part_name,
                                                     strlen(rel_data->part_name));
                       ld->rel_to_info.rel2_y = rel_data->rel_y;
                     }

@@ -733,7 +733,7 @@ states_update(navi_data *nd, part_it *pit)
         sit->tag.idx = idx;
         //Parsing "default" "0.00". We don't take care 0.00 in the state name.
         const char *brk = strpbrk(name, " ");
-        if (brk) sit->name = strndup(name, brk - name);
+        if (brk) sit->name = eina_strndup(name, brk - name);
         else sit->name = strdup(name);
 
         sit->pit = pit;

@@ -1049,7 +1049,7 @@ edit_quick_jump(edit_data *ed)
         name_begin++;
         char *name_end = strstr(name_begin, "\"");
         if (!name_end) goto end;
-        file_link = strndup(name_begin, name_end - name_begin);
+        file_link = eina_strndup(name_begin, name_end - name_begin);
         if (file_link)
           {
              //Compose the absolute file path.
@@ -1057,7 +1057,7 @@ edit_quick_jump(edit_data *ed)
              if (!file_name) goto end;
 
              char *file_path =
-                strndup(ed->filepath, (file_name - ed->filepath));
+                eina_strndup(ed->filepath, (file_name - ed->filepath));
              if (!file_path) goto end;
 
              char buf[PATH_MAX];

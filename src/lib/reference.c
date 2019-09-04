@@ -143,7 +143,7 @@ cursor_keyword_name_find(Evas_Object *entry)
         cur_ptr++;
      }
 
-   keyword_name = strndup(cur_begin_ptr, (cur_end_ptr - cur_begin_ptr + 1));
+   keyword_name = eina_strndup(cur_begin_ptr, (cur_end_ptr - cur_begin_ptr + 1));
 
 end:
    if (cur_begin) evas_textblock_cursor_free(cur_begin);
@@ -217,7 +217,7 @@ keyword_hierarchy_find(const char *text, const char *keyword_name)
                   if (parent_end && !parent_begin)
                     parent_begin = text;
 
-                  char *parent_name = strndup(parent_begin,
+                  char *parent_name = eina_strndup(parent_begin,
                                               (parent_end - parent_begin + 1));
                   keyword_hierarchy = eina_list_prepend(keyword_hierarchy,
                                                         parent_name);
@@ -357,7 +357,7 @@ keyword_full_name_parse(const char *keyword_full_name)
    char *dot = strstr(keyword_full_name, ".");
    while (dot)
      {
-        keyword_name = strndup(keyword_begin, (dot - keyword_begin));
+        keyword_name = eina_strndup(keyword_begin, (dot - keyword_begin));
         keyword_hierarchy = eina_list_append(keyword_hierarchy, keyword_name);
 
         keyword_begin = dot + 1; //Move pointer after ".".
@@ -369,7 +369,7 @@ keyword_full_name_parse(const char *keyword_full_name)
 
    keyword_hierarchy =
       eina_list_append(keyword_hierarchy,
-                       strndup(keyword_begin, (keyword_end - keyword_begin)));
+                       eina_strndup(keyword_begin, (keyword_end - keyword_begin)));
 
    return keyword_hierarchy;
 }
@@ -400,7 +400,7 @@ inherit_find(const char *text_begin, const char *text_end, char **inherit_end)
    base_keyword_end--;
 
    base_keyword_full_name =
-      strndup((const char *)base_keyword_begin,
+      eina_strndup((const char *)base_keyword_begin,
               (base_keyword_end - base_keyword_begin + 1));
 
    //Indicates the ending position of #inherit expression.
@@ -457,7 +457,7 @@ keyword_tree_load_internal(keyword_data *keyword_root, char **ptr,
           }
         if (!keyword_name_begin || !keyword_name_end) break;
 
-        keyword_name = strndup(keyword_name_begin,
+        keyword_name = eina_strndup(keyword_name_begin,
                                (keyword_name_end - keyword_name_begin + 1));
         if (!keyword_name) break;
         (*ptr)++; //Move pointer after "{".
@@ -483,7 +483,7 @@ keyword_tree_load_internal(keyword_data *keyword_root, char **ptr,
         keyword_desc_end--;
 
         keyword_desc =
-           strndup((const char *)keyword_desc_begin,
+           eina_strndup((const char *)keyword_desc_begin,
                    (keyword_desc_end - keyword_desc_begin + 1));
 
         if (!keyword_desc)

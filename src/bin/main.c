@@ -969,7 +969,7 @@ enventor_lock_create(void)
 #ifdef _WIN32
    hMutex = CreateMutex(NULL, FALSE, ENVENTOR_NAME);
 
-   HANDLE handle = CreateFile(buf, GENERIC_READ, NULL, NULL, CREATE_NEW,
+   HANDLE handle = CreateFile(buf, GENERIC_READ, 0, NULL, CREATE_NEW,
                               FILE_FLAG_DELETE_ON_CLOSE, 0);
    if (INVALID_HANDLE_VALUE == handle)
      {

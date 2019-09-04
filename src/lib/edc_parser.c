@@ -1431,7 +1431,7 @@ parser_name_get(parser_data *pd EINA_UNUSED, const char *cur)
    char *eol = strstr(cur, "\n");
    if (eol && (eol < p)) return NULL;
 
-   return strndup(p, (end - p));
+   return eina_strndup(p, (end - p));
 }
 
 attr_value *
@@ -1864,7 +1864,7 @@ parser_states_filtered_name_get(Eina_List *states)
               pp = p;
               p++;
            }
-        ret = eina_list_append(ret, strndup(state, pp - state));
+        ret = eina_list_append(ret, eina_strndup(state, pp - state));
      }
    return ret;
 }
