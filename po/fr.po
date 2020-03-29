@@ -1,0 +1,545 @@
+# French translation for Enventor.
+# This file is distributed under the same license as the enventor package.
+# similar <similar@orange.fr>, 2020.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: enventor 1.0.0\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2016-08-28 01:00+0900\n"
+"PO-Revision-Date: 2020-03-29 09:32+0200\n"
+"Language-Team: French\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.3\n"
+"Last-Translator: Philippe Jean Guillaumie <similar@orange.fr>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language: fr_FR\n"
+
+#: src/bin/base_gui.c:70
+#, c-format
+msgid "%s - Enventor"
+msgstr "%s - Enventor"
+
+#: src/bin/config_data.c:76
+msgid "Failed to generate tmp folder!"
+msgstr "Impossible de générer un dossier temporaire !"
+
+#: src/bin/config_data.c:97
+#, c-format
+msgid "Cannot create a config folder \"%s\""
+msgstr "Impossible de créer le dossier de configuration « %s »"
+
+#: src/bin/config_data.c:111
+#, c-format
+msgid "Cannot create a enventor config folder \"%s\""
+msgstr "Impossible de créer le dossier de configuration Enventor « %s »"
+
+#: src/bin/config_data.c:122
+#, c-format
+msgid "Cannot save a config file \"%s\""
+msgstr "Échec de l'enregistrement du fichier de configuration « %s »"
+
+#: src/bin/config_data.c:161
+#, c-format
+msgid "Cannot load a config file \"%s\""
+msgstr "Échec du chargement du fichier de configuration « %s »"
+
+#: src/bin/config_data.c:169
+msgid "Failed to allocate Memory!"
+msgstr "Impossible d'allouer de la mémoire !"
+
+#: src/bin/file_mgr.c:89
+msgid "EDC has been changed on the file system."
+msgstr "EDC a été modifié sur le système de fichiers."
+
+#: src/bin/file_mgr.c:91
+msgid "Do you want to replace the contents?"
+msgstr "Voulez-vous remplacer le contenu ?"
+
+#: src/bin/file_mgr.c:102
+msgid "Save As"
+msgstr "Enregistrer sous"
+
+#: src/bin/file_mgr.c:110 src/bin/search.c:421
+msgid "Replace"
+msgstr "Remplacer"
+
+#: src/bin/file_mgr.c:116
+msgid "Ignore"
+msgstr "Ignorer"
+
+#: src/bin/file_mgr.c:197
+#, c-format
+msgid "File saved. \"%s\""
+msgstr "Fichier « %s » enregistré."
+
+#: src/bin/file_mgr.c:199
+#, c-format
+msgid "Already saved. \"%s\""
+msgstr "Fichier « %s » déjà enregistré."
+
+#: src/bin/goto.c:78
+msgid "Invalid line number"
+msgstr "Numéro de ligne non valide"
+
+#: src/bin/goto.c:133
+msgid "Enventor Goto Line"
+msgstr "Enventor Se rendre à une ligne"
+
+#: src/bin/goto.c:137
+msgid "Go to Line"
+msgstr "Aller à la ligne"
+
+#: src/bin/goto.c:158
+#, c-format
+msgid "Enter line number [1..%d]:"
+msgstr "Entrer le numéro de ligne [1..%d] :"
+
+#: src/bin/goto.c:182 src/bin/menu.c:154
+msgid "Ok"
+msgstr "OK"
+
+#: src/bin/goto.c:194 src/bin/search.c:443
+msgid "Failed to grab key - Escape"
+msgstr "Impossible d'accaparer la touche - Échap"
+
+#: src/bin/live_edit.c:2020 src/bin/live_edit.c:2057 src/bin/live_edit.c:2059
+#: src/bin/main.c:870 src/lib/auto_comp.c:410 src/lib/ctxpopup.c:779
+#, c-format
+msgid "Failed to grab key - %s"
+msgstr "Impossible d'accaparer la touche - %s"
+
+#: src/bin/live_edit.c:2140
+msgid ""
+"Double click part to confirm.(Esc = cancel, Direction Key = move item per "
+"pixel,Ctrl = disable auto-aligning)"
+msgstr ""
+"Double clic sur la partie pour confirmer. (Échap = annuler, touches de "
+"direction = déplacer d'un pixel à la fois, Ctrl = désactiver l'auto-"
+"alignement)"
+
+#: src/bin/live_edit.c:2160
+msgid ""
+"Add a Rect part to the live view.<br>A Rect part is used as a solid "
+"color<br>component or clipping other components."
+msgstr ""
+"Ajouter une partie Rect à l'aperçu.<br>Cette partie est utilisée comme un "
+"élément de couleur<br>unie ou pour cacher d'autres éléments."
+
+#: src/bin/live_edit.c:2166
+msgid ""
+"Add a Text part to the live view.<br>A Text part is used for plain text."
+msgstr ""
+"Ajouter une partie Text à l'aperçu.<br>Cette partie est utilisée pour le "
+"texte ordinaire."
+
+#: src/bin/live_edit.c:2171
+msgid ""
+"Add an Image part to the live view.<br>An Image part contains a single "
+"image<br>resource, usually an image file."
+msgstr ""
+"Ajouter une partie Image à l'aperçu.<br>Cette partie contient une seule "
+"ressource,<br>généralement un fichier image."
+
+#: src/bin/live_edit.c:2177
+msgid ""
+"Add a Swallow part to the live view.<br>A Swallow part is a placeholder "
+"for<br>objects that you may want to<br>include in the layout later."
+msgstr ""
+"Ajouter une partie Swallow à l'aperçu.<br>Cette partie est un espace réservé "
+"pour<br>des objets que vous souhaitez inclure <br>plus tard dans votre "
+"composition."
+
+#: src/bin/live_edit.c:2184
+msgid ""
+"Add a Textblock part to the live view.<br>A Textblock part is a rich-text "
+"part<br>that can show big chunks of text."
+msgstr ""
+"Ajouter une partie Textblock à l'aperçu.<br>Cette partie affiche du texte "
+"formaté pouvant<br>contenir de gros blocs de texte."
+
+#: src/bin/live_edit.c:2190
+msgid ""
+"Add a Spacer part to the live view.<br>A Spacer part is an anchor to locate "
+"<br>other parts. It is invisible and<br>normally used for padding."
+msgstr ""
+"Ajouter une partie Spacer à l'aperçu.<br>Cette partie est un ancrage pour "
+"accueillir<br>d'autres éléments. Elle est invisible et<br>sert "
+"principalement pour le padding."
+
+#: src/bin/live_edit.c:2350
+msgid "Faild to allocate Memory!"
+msgstr "Impossible d'allouer de la mémoire !"
+
+#: src/bin/main.c:208
+#, c-format
+msgid "Font Size: %1.1fx"
+msgstr "Taille de la police : %1.1fx"
+
+#: src/bin/main.c:942
+#, c-format
+msgid "Cannot create temporary diretory \"%s\""
+msgstr "Impossible de créer le dossier temporaire « %s »"
+
+#: src/bin/menu.c:141
+msgid "New File: Choose a Template"
+msgstr "Nouveau fichier : choisir un modèle"
+
+#: src/bin/menu.c:160 src/bin/menu.c:206 src/bin/setting.c:242
+msgid "Cancel"
+msgstr "Annuler"
+
+#: src/bin/menu.c:179
+msgid "You have unsaved changes."
+msgstr "Des changements n'ont pas été enregistrés."
+
+#: src/bin/menu.c:181
+msgid "Do you want to save the changes?"
+msgstr "Voulez-vous enregistrer les modifications ?"
+
+#: src/bin/menu.c:192 src/bin/menu.c:475 src/bin/menu.c:591
+msgid "Save"
+msgstr "Enregistrer"
+
+#: src/bin/menu.c:200
+msgid "Discard"
+msgstr "Abandonner"
+
+#: src/bin/menu.c:328
+msgid "Choose a file to save"
+msgstr "Choisir un fichier à enregistrer"
+
+#: src/bin/menu.c:365
+#, c-format
+msgid "Failed to save: %s."
+msgstr "Impossible d'enregistrer : %s."
+
+#: src/bin/menu.c:419
+msgid "Support only .edc file."
+msgstr "Seuls les fichiers .edc sont pris en charge."
+
+#: src/bin/menu.c:429
+msgid "Choose a file to load."
+msgstr "Choisir un fichier à charger."
+
+#: src/bin/menu.c:440
+#, c-format
+msgid "Failed to load: %s."
+msgstr "Impossible de charger : %s."
+
+#: src/bin/menu.c:467
+msgid "Save File: Choose a EDC"
+msgstr "Enregistrer un fichier : choisir un EDC"
+
+#: src/bin/menu.c:476 src/bin/menu.c:511
+msgid "Close"
+msgstr "Fermer"
+
+#: src/bin/menu.c:501
+msgid "Load File: Choose a EDC"
+msgstr "Charger un fichier : choisir un EDC"
+
+#: src/bin/menu.c:510 src/bin/menu.c:595
+msgid "Load"
+msgstr "Charger"
+
+#: src/bin/menu.c:586
+msgid "New"
+msgstr "Nouveau"
+
+#: src/bin/menu.c:599 src/bin/setting.c:198
+msgid "Settings"
+msgstr "Configuration"
+
+#: src/bin/menu.c:603
+msgid "Help"
+msgstr "Aide"
+
+#: src/bin/menu.c:607
+msgid "Exit"
+msgstr "Quitter"
+
+#: src/bin/newfile.c:79
+#, c-format
+msgid "Cannot find templates folder! \"%s\""
+msgstr "Dossier des modèles « %s » introuvable !"
+
+#: src/bin/newfile.c:124 src/bin/newfile.c:146
+#, c-format
+msgid "Cannot find file! \"%s\""
+msgstr "Fichier « %s » introuvable !"
+
+#: src/bin/search.c:96
+#, c-format
+msgid "%d matches replaced"
+msgstr "%d correspondances remplacées"
+
+#: src/bin/search.c:145 src/bin/search.c:205
+#, c-format
+msgid "No \"%s\" in the text"
+msgstr "Aucun « %s » dans le texte"
+
+#: src/bin/search.c:242 src/bin/search.c:407
+msgid "Previous"
+msgstr "Précédent"
+
+#: src/bin/search.c:274 src/bin/search.c:414
+msgid "Next"
+msgstr "Suivant"
+
+#: src/bin/search.c:358
+msgid "Enventor Search"
+msgstr "Enventor Rechercher"
+
+#: src/bin/search.c:361
+msgid "Find/Replace"
+msgstr "Rechercher / Remplacer"
+
+#: src/bin/search.c:428
+msgid "Replace All"
+msgstr "Remplacer tout"
+
+#: src/bin/setting.c:210
+msgid "Preferences"
+msgstr "Préférences"
+
+#: src/bin/setting.c:212
+msgid "Text Editor"
+msgstr "Éditeur de texte"
+
+#: src/bin/setting.c:214
+msgid "EDC Build"
+msgstr "Construire EDC"
+
+#: src/bin/setting.c:228
+msgid "Apply"
+msgstr "Appliquer"
+
+#: src/bin/setting.c:235
+msgid "Reset"
+msgstr "Rétablir"
+
+#: src/bin/statusbar.c:319
+msgid "View zoom level (Ctrl + Mouse Wheel)<br>Zoom the live view in or out."
+msgstr "Niveau de zoom (Ctrl+molette souris)<br>Agrandir ou réduire l'aperçu."
+
+#: src/bin/statusbar.c:325
+msgid "Resize the width and height of the live view."
+msgstr "Redimensionner la largeur et la hauteur de l'aperçu."
+
+#: src/bin/statusbar.c:330
+msgid "Swap the width and height of the live view."
+msgstr "Interchanger la largeur et la hauteur de l'aperçu."
+
+#: src/bin/statusbar.c:340
+msgid ""
+"Mouse cursor position in live view.<br>Absolute coordinate | Relative "
+"coordinate."
+msgstr ""
+"Position du pointeur de la souris dans l'aperçu.<br>Coordonnée absolue | "
+"Coordonnée relative."
+
+#: src/bin/statusbar.c:351
+msgid "Name of the current editing group."
+msgstr "Nom du groupe en cours d'édition."
+
+#: src/bin/statusbar.c:361
+msgid "Cursor line number : Max line number"
+msgstr "Numéro de ligne du curseur : nombre de lignes max."
+
+#: src/bin/text_setting.c:552
+#, c-format
+msgid "Failed to open file \"%s\""
+msgstr "Impossible d'ouvrir le fichier « %s »"
+
+#: src/bin/text_setting.c:909
+msgid "Double click a keyword to change its color :"
+msgstr "Double clic sur un mot-clé pour changer sa couleur :"
+
+#: src/bin/text_setting.c:1004
+msgid "Font Name"
+msgstr "Nom de la police"
+
+#: src/bin/text_setting.c:1031
+msgid "Font Style"
+msgstr "Style de la police"
+
+#: src/bin/tools.c:142
+msgid "Redo text."
+msgstr "Répéter le texte."
+
+#: src/bin/tools.c:144
+msgid "No text to be redo."
+msgstr "Aucun texte à répéter."
+
+#: src/bin/tools.c:152
+msgid "Undo text."
+msgstr "Annuler le texte."
+
+#: src/bin/tools.c:154
+msgid "No text to be undo."
+msgstr "Aucun texte à annuler."
+
+#: src/bin/tools.c:209
+msgid ""
+"Part highlighting (Ctrl + H)<br>Show a highlight effect on the selected "
+"part<br>in the live view."
+msgstr ""
+"Surbrillance (Ctrl+H)<br>Mise en évidence de la partie<br>sélectionnée dans "
+"l'aperçu."
+
+#: src/bin/tools.c:220
+msgid ""
+"Dummy parts (Ctrl + U)<br>Display virtual images for the swallow "
+"and<br>spacer parts."
+msgstr ""
+"Maquette (Ctrl+U)<br>Affiche des images factices pour les<br>parties Swallow "
+"et Spacer."
+
+#: src/bin/tools.c:231
+msgid ""
+"Wireframes (Ctrl + W)<br>Display wireframes to identify the "
+"parts<br>boundaries."
+msgstr ""
+"Encadrement (Ctrl+W)<br>Affiche des guides pour délimiter<br>les différentes "
+"parties."
+
+#: src/bin/tools.c:242
+msgid ""
+"Mirror mode (Ctrl + M)<br>Invert the layout horizontally and review<br>the "
+"designed layout in RTL(right-to-left)<br>LTR(left-to-right) settings."
+msgstr ""
+"Miroir (Ctrl+M)<br>Inverse horizontalement la composition et permet "
+"de<br>tester les dispositions RTL (de droite à gauche)<br>et LTR (de gauche "
+"à droite)."
+
+#: src/bin/tools.c:280
+msgid "Save the file (Ctrl + S)<br>Save the current script to a file."
+msgstr ""
+"Enregistrer le fichier (Ctrl+S)<br>Enregistre le script actuel dans un "
+"fichier."
+
+#: src/bin/tools.c:288
+msgid "Undo text (Ctrl + Z)"
+msgstr "Annuler texte (Ctrl+Z)"
+
+#: src/bin/tools.c:295
+msgid "Redo text (Ctrl + R)"
+msgstr "Répéter texte (Ctrl+R)"
+
+#: src/bin/tools.c:302
+msgid "Find/Replace (Ctrl + F)<br>Find or replace text."
+msgstr "Chercher / Remplacer (Ctrl+F)<br>Cherche ou remplace du texte."
+
+#: src/bin/tools.c:311
+msgid ""
+"Go to line (Ctrl + L)<br>Open the Go to window to move the cursor<br>line "
+"position."
+msgstr ""
+"Aller à la ligne (Ctrl+L)<br>Ouvre une boîte de dialogue pour déplacer<br>le "
+"curseur à la ligne indiquée."
+
+#: src/bin/tools.c:321
+msgid "Line numbers<br>Display the script line numbers."
+msgstr "Numéros de lignes<br>Affiche les numéros de lignes."
+
+#: src/bin/tools.c:330
+msgid ""
+"Insert a code snippet (Ctrl + T)<br>Enventor chooses the best code with "
+"regards<br>to the current editing context. For instance,<br>if the cursor is "
+"inside a part section,<br>description code is generated."
+msgstr ""
+"Insérer un extrait de code (Ctrl+T)<br>Enventor sélectionne le code le plus "
+"adapté au contexte<br>actuel. Par exemple, si le curseur se trouve<br>dans "
+"une section Part, un code de<br>description est généré."
+
+#: src/bin/tools.c:342
+msgid ""
+"Console box (Alt + Down)<br>Display the console box, which shows the "
+"EDC<br>build logs, such as error messages. It pops<br>up automatically when "
+"compliation errors occur."
+msgstr ""
+"Console (Alt+Flèche bas)<br>Affiche les journaux EDC tels les messages "
+"d'erreur.<br>Elle apparaît automatiquement quand des<br>erreurs de "
+"compilation se produisent."
+
+#: src/bin/tools.c:353
+msgid ""
+"File browser (F9)<br>Display the file browser, which shows a file list<br>in "
+"current workspace."
+msgstr ""
+"Navigateur de fichiers (F9)<br>Affiche le navigateur pour lister les "
+"fichiers<br>de l'espace de travail actuel."
+
+#: src/bin/tools.c:363
+msgid ""
+"EDC navigator (F10)<br>Display the EDC navigator, which shows the "
+"current<br>group hierarchy tree that contains parts,<br>descriptions and "
+"programs lists."
+msgstr ""
+"Navigateur EDC (F10)<br>Affiche le navigateur montrant l'arbre hiérarchique "
+"de<br>l'EDC actuel qui contient les parties, descriptions<br>et listes de "
+"programmes."
+
+#: src/bin/tools.c:375
+msgid ""
+"File tab (F11)<br>Display the file tab in the bottom area<br>It shows an "
+"opened file list to switch<br>files quickly. to switch files quickly."
+msgstr ""
+"Onglet (F11)<br>Affiche l'onglet de la zone inférieure qui regroupe<br>les "
+"fichiers EDC et permet de passer<br>rapidement de l'un à l'autre."
+
+#: src/bin/tools.c:386
+msgid "Enventor menu (Esc)<br>Open the Enventor main menu."
+msgstr "Enventor Menu (Échap)<br>Ouvre le menu principal d'Enventor."
+
+#: src/bin/tools.c:432
+msgid "Part highlighting enabled."
+msgstr "Mode surbrillance activé."
+
+#: src/bin/tools.c:434
+msgid "Part highlighting disabled."
+msgstr "Mode surbrillance désactivé."
+
+#: src/bin/tools.c:519
+msgid "Dummy parts enabled."
+msgstr "Mode maquette activé."
+
+#: src/bin/tools.c:521
+msgid "Dummy parts disabled."
+msgstr "Mode maquette désactivé."
+
+#: src/bin/tools.c:543
+msgid "Wireframes enabled."
+msgstr "Mode encadrement activé."
+
+#: src/bin/tools.c:545
+msgid "Wireframes disabled."
+msgstr "Mode encadrement désactivé."
+
+#: src/bin/tools.c:568
+msgid "Mirror mode enabled."
+msgstr "Mode miroir activé."
+
+#: src/bin/tools.c:570
+msgid "Mirror mode disabled."
+msgstr "Mode miroir désactivé."
+
+#: src/bin/tools.c:624
+msgid "Insertion of template code is disabled while in Live Edit mode"
+msgstr "L'insertion de modèles de code est désactivée en mode Live Edit"
+
+#: src/bin/tools.c:635
+#, c-format
+msgid "Template code inserted, (%s)"
+msgstr "Insertion du modèle de code, (%s)"
+
+#: src/bin/tools.c:641
+msgid ""
+"Can't insert template code here. Move the cursor inside the \"Collections,"
+"Images,Parts,Part,Programs\" scope."
+msgstr ""
+"L'insertion d'un modèle de code n'est pas possible ici. Déplacer le curseur "
+"dans la section « Collections,Images,Parts,Part,Programs »."
