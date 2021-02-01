@@ -112,7 +112,7 @@ eddc_term(void)
 }
 
 static void
-color_load()
+color_load(void)
 {
    char buf[PATH_MAX];
    snprintf(buf, sizeof(buf), "%s/color/edc.eet", elm_app_data_dir_get());

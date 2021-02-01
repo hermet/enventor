@@ -6,5 +6,5 @@ void edc_navigator_group_update(const char *cur_group);
 void edc_navigator_deselect(void);
 void edc_navigator_tools_set(void);
 void edc_navigator_tools_visible_set(Eina_Bool visible);
-void edc_navigator_show();
-void edc_navigator_hide();
+void edc_navigator_show(void);
+void edc_navigator_hide(void);

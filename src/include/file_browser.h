@@ -9,5 +9,5 @@ void file_browser_refresh(void);
 void file_browser_selected_file_main_set(void);
 void file_brwser_refresh(void);
 void file_browser_main_file_unset(void);
-void file_browser_show();
-void file_browser_hide();
+void file_browser_show(void);
+void file_browser_hide(void);

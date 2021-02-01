@@ -50,7 +50,7 @@ entry_del_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
    rd->cursor = NULL;
 }
 
-Eina_Bool
+static Eina_Bool
 _input_timer_cb(void *data)
 {
    redoundo_data *rd = (redoundo_data *)data;

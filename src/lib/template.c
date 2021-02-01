@@ -2,6 +2,8 @@
  #include "config.h"
 #endif
 
+#include <locale.h> /* localeconv() */
+
 #include <Enventor.h>
 #include "enventor_private.h"
 #include "template_code.h"

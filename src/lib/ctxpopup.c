@@ -96,7 +96,7 @@ array_data_idx(const Eina_Array *array, void *data)
 {
    Eina_Stringshare *array_data;
    Eina_Array_Iterator itr;
-   int idx;
+   unsigned int idx;
 
    if (!array) return -1;
 

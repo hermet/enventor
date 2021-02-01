@@ -11,4 +11,4 @@ Eina_Bool live_edit_cancel(Eina_Bool phase_in);
 Eina_Bool live_edit_get(void);
 void live_edit_update(void);
 Eina_List *live_edit_tools_create(Evas_Object *parent);
-Evas_Object *live_edit_fixed_bar_get();
+Evas_Object *live_edit_fixed_bar_get(void);
