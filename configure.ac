@@ -106,7 +106,6 @@ Makefile
 src/Makefile
 src/include/Makefile
 src/lib/Makefile
-src/lib/Enventor.h
 src/bin/Makefile
 data/Makefile
 data/desktop/Makefile
