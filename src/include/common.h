@@ -86,6 +86,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n"
 #include "file_mgr.h"
 #include "build_setting.h"
 #include "preference_setting.h"
+#include "text_setting.h"
 #include "help.h"
 #include "file_tab.h"
 

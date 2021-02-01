@@ -131,7 +131,7 @@ menu_back_btn_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED,
    menu_close(md);
 }
 
-void
+static void
 newfile_open(menu_data *md)
 {
    if (md->newfile_layout) return;

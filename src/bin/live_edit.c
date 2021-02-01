@@ -525,7 +525,7 @@ keygrabber_key_up_cb(void *data, Evas *e EINA_UNUSED,
      ld->ctrl_pressed = EINA_FALSE;
 }
 
-Evas_Coord_Point
+static Evas_Coord_Point
 calc_ctrl_pt_auto_align_pos(live_data *ld, int cursor_x, int cursor_y,
                             int align_in, int *align_out)
 {

@@ -255,7 +255,7 @@ args_dispatch(int argc, char **argv,
    static const Ecore_Getopt optdesc = {
      PACKAGE_NAME,
      ENVENTOR_USAGE,
-     VERSION,
+     PACKAGE_VERSION,
      ENVENTOR_COPYRIGHT,
      ENVENTOR_LICENSE,
      ENVENTOR_INFO,
@@ -849,7 +849,7 @@ keygrabber_key_down_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
 }
 
 static void
-statusbar_set()
+statusbar_set(void)
 {
    Evas_Object *obj = stats_init(base_layout_get());
    elm_object_part_content_set(base_layout_get(), "elm.swallow.statusbar", obj);
@@ -993,7 +993,7 @@ enventor_lock_create(void)
 }
 
 static void
-enventor_lock_remove()
+enventor_lock_remove(void)
 {
    //You are not the owner of the lock.
    if (!own_lock) return;
@@ -1155,7 +1155,7 @@ term(void)
 }
 
 EAPI_MAIN
-int elm_main(int argc, char **argv)
+static int elm_main(int argc, char **argv)
 {
    app_data ad;
    memset(&ad, 0x00, sizeof(ad));
