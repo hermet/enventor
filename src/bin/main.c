@@ -395,7 +395,7 @@ config_data_set(int argc, char **argv, Eina_Bool *default_edc,
 }
 
 static void
-elm_setup()
+elm_setup(void)
 {
    elm_need_efreet();
    elm_config_profile_set("standard");
