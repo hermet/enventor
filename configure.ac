@@ -30,6 +30,8 @@ AM_INIT_AUTOMAKE(1.6 dist-bzip2 dist-xz)
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 AC_CONFIG_HEADERS(config.h)
 AC_GNU_SOURCE
+lt_cv_deplibs_check_method=pass_all
+LT_INIT([win32-dll])
 AC_PROG_LIBTOOL
 AM_PROG_CC_C_O
 ELM_QUICKLAUNCH
