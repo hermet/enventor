@@ -2,6 +2,10 @@
 #include "config.h"
 #endif
 
+#ifdef ENABLE_NLS
+# include <libintl.h>
+#endif
+
 #include <Ecore_Getopt.h>
 #include <Eio.h>
 #include "common.h"
@@ -1092,8 +1096,8 @@ init(app_data *ad, int argc, char **argv)
 {
 #ifdef ENABLE_NLS
       setlocale(LC_ALL, "");
-      bindtextdomain(PACKAGE, LOCALE_DIR);
-      textdomain(PACKAGE);
+      bindtextdomain(PACKAGE_NAME, LOCALE_DIR);
+      textdomain(PACKAGE_NAME);
 #endif /* set locale */
 
    elm_setup();
