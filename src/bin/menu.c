@@ -766,7 +766,7 @@ menu_deactivate_request(void)
 
    if (md->active_request == 0)
      {
-        efl_ui_focus_object_focus_set(base_enventor_get(), EINA_TRUE);
+        enventor_object_focus_set(base_enventor_get(), EINA_TRUE);
      }
    if (!md->menu_layout) return;
    elm_object_disabled_set(md->menu_layout, EINA_FALSE);
